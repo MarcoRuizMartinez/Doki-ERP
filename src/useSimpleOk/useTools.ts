@@ -1,0 +1,496 @@
+import {  exportFile,  useQuasar  } from "quasar"
+import {  LocationQueryValue      } from "vue-router"
+import {  ILabelValue,
+          labelValueNulo,         } from "src/models/TiposVarios"
+
+
+type Iconos = "" | "water" | "account" | "shield" | "clipboard" | "clock" | "cloud" | "sticker" | "comment" | "table" | "head" | "phone" | "timeline" | "bell" | "printer" | "email" | "lock" | "file" | "lock-open" | "map-marker"
+ 
+export function useTools() 
+{
+  const quasar                  = useQuasar()
+  const { notify              } = quasar
+  const esMobil                 = !!quasar.platform.is.mobile
+
+  function aviso( tipo : "positive" | "negative", mensaje : string, icono: Iconos = "", duracion : number = 1600)
+  {
+    let icon      = !!icono ? icono + "-" : ""
+
+    notify({
+      color:      tipo,
+      textColor:  "white",
+      icon:       "mdi-" + (tipo == "negative" ? icon + "alert" : icon + "check"),
+      position:   "top",
+      timeout:    duracion,
+      message:    mensaje,
+    })
+  }
+
+  return {
+    aviso,
+    esMobil
+  }
+}
+
+//const { notify } = useQuasar() 
+export function mayusculasPrimeraLetra( texto : string ) : string
+{
+  texto           = texto.toLowerCase()
+  return texto.charAt(0).toUpperCase() + texto.slice(1)
+}
+
+
+export function mayusculasPrimeraLetraAll( texto : string ) : string
+{
+  texto           = texto.trim().replaceAll("  ", " ")
+  const palabras  = texto.split(" ")
+  for (const i in palabras) {
+    palabras[i]   = mayusculasPrimeraLetra( palabras[i] )
+  }
+  const textMayusculas = palabras.join(" ")
+  return textMayusculas
+}
+
+export function getDateToStr( fechaStr : string, tipo : "UTC" | "local" = "local" ) : Date
+{
+  let miliExtras    = tipo == "UTC" ? new Date().getTimezoneOffset() * 60 * 1000 : 0
+  let milisegundos  = !!fechaStr ? Date.parse( fechaStr ) + miliExtras : 0
+
+  return new Date ( milisegundos )
+}
+
+export function getMilisecShortForApiDolibarr( fecha : Date ) : number
+{
+  return parseInt( fecha.valueOf().toString().slice(0,8) + "00" )
+}
+
+
+export function getColorTextFromHexa( color : string ) : { color : string, promedio: number }
+{
+  if(color.length != 7)
+    return { color: "", promedio: 0 }
+  
+  let hexa1       = color.slice(1, 3)
+  let hexa2       = color.slice(3, 5)
+  let hexa3       = color.slice(5, 7)
+  let promedio    = ( parseInt( hexa1, 16) + parseInt( hexa2, 16) + parseInt( hexa3, 16) ) / 3
+  let colorFinal  = promedio > 190 ? "#282828" : "#FFFFFF"
+  return { color: colorFinal, promedio: promedio }
+}
+
+export const formatoMilesInt  = new Intl.NumberFormat("es-CO",
+{
+  minimumFractionDigits: 0
+}
+)
+
+export function generarCSVDesdeTabla( nombre :string = "", columnas : string[], tabla : any[] ) : boolean
+{
+  let arrayCSV              = []
+      arrayCSV.push( columnas.map( c => c ) )
+
+  for (const item of tabla)
+  {
+    let arrayFila           = []
+    for (const columna of columnas)
+    {
+      let fila              = item as any
+      arrayFila.push( fila[columna] )
+    }
+    arrayCSV.push( arrayFila )
+  }
+
+  let csv                   = arrayCSV.map(e => e.join(";")).join("\n");
+  const status              = exportFile( nombre + ".csv", "\ufeff"+csv, "text/csv" )
+
+  return !!status 
+}
+
+
+export function DownloadFile_B64( file64 : string, name : string,  contentType : string ) 
+{
+  let contenBase64        = file64.replace("UTF-8", "")
+  const linkSource        = `data:${contentType};base64,${contenBase64}`
+  const downloadLink      = document.createElement("a")
+  downloadLink.href       = linkSource
+  downloadLink.download   = name
+  downloadLink.click()
+  downloadLink.remove()
+  setTimeout(() => URL.revokeObjectURL(downloadLink.href), 7000)
+}
+
+export function DownloadFile_Blob( blobStr : string, name : string,  contentType : string ) 
+{
+  //const blob = new Blob([blobStr], {type: contentType})
+  //const downloadLink      = document.createElement("a")
+  //downloadLink.href       = URL.createObjectURL(blob)
+  //downloadLink.download   = name
+  //
+  //downloadLink.click()
+  //downloadLink.remove()
+  //setTimeout(() => URL.revokeObjectURL(downloadLink.href), 7000)
+}
+
+
+export function nuevoJS()
+{
+  let cosa = 0
+  cosa  ||= 1 // Si x es falsy, se le asigna y
+  //console.log('%c⧭', 'color: #40fff2', "||=", cosa);
+  cosa  &&= 2 // Si x es truthy, se le asigna y
+  //console.log('%c⧭', 'color: #5200cc', "&&=", cosa);
+  cosa  ??= 3 // Si x es null o undefined, se le asigna y
+  //console.log('%c⧭', 'color: #f27999', "??=", cosa);  
+  
+// Equivale
+  var importe : number = 1_283_792_189;
+  //console.log('%c⧭', 'color: #607339', "importe", importe);  
+}
+
+export function FileToBase64(file : File) : Promise <string>
+{
+  return new Promise( async ( resolver, rechazar)=>{
+    let lector              = new FileReader()
+    lector.readAsDataURL(file)
+    lector.onload           = () => resolver(lector.result as string)
+    lector.onerror          = error => rechazar(error);
+  })
+}
+
+export function pausa( demora = 0 ) : Promise< any >
+{
+  return new Promise( async (resolver, rechazar) => {
+    setTimeout(resolver, demora);
+  })
+}
+
+  
+import confetti from 'canvas-confetti';
+export function confeti( total : number = 1 )
+{
+  const mili    = 500
+  const preset  = { particleCount: 70, spread: 360, zIndex: 2001, startVelocity: 20, gravity: 0.4, ticks: 250 }
+  const pos     = [ { y: 0.2, x: 0.5 }, { y: 0.3, x: 0.75 }, { y: 0.4, x: 0.3 } ]
+  let index     = 0
+  fuego()
+  if(total      === 1) return
+
+  const clock   = setInterval(()=>{
+    fuego()
+    if(index === pos.length ) index = 0
+  }, mili )
+
+  function fuego(){
+    confetti({ origin: pos[index] , ...preset})
+    index++
+  }
+
+  setTimeout(()=> clearInterval(clock), mili * ( total - 1 ) )
+}
+
+
+export function ID_URL_Ok( id : string ) : number
+{
+  let idEvaluar             = parseInt( id )
+
+  if
+  (
+    !id
+    ||
+    !idEvaluar
+    ||
+    idEvaluar               < 1 // es cero o negativo
+    ||
+    id.length               !== idEvaluar.toString().length // El ID de la URL tenia caracteres extraños
+  )
+    idEvaluar               = 0
+
+  return idEvaluar
+}
+
+
+export function valuesObjectArrayToNumber( array : any[] ) : any[]
+{
+  for (const item of array)
+  {
+    for (const key of Object.keys(item))
+    {
+      let valor :     number | string
+      valor           = parseFloat( item[key] ) 
+
+      if(isNaN(valor))
+        valor         = !!item[key] && item[key].length > 0 ? item[key] : 0
+
+      item[key]       = valor
+    }
+  }
+  
+  return array
+}
+
+
+let formato         = new Intl.NumberFormat("es-CO",
+                    {   style:    'currency',
+                        currency: 'COP',
+                        minimumFractionDigits: process.env.CON_DECIMALES ? 2 : 0 
+                    }
+                    );
+
+let formatoDecimal  = new Intl.NumberFormat("es-CO",
+                    {   style:    'currency',
+                        currency: 'COP',
+                        minimumFractionDigits: 2
+                    }
+                    );
+
+export function formatoPrecio( valor : string | number, tipo : "decimales-si" | "decimales-no" = "decimales-si" ) : string
+{
+  let precioNum         = 0
+  if(typeof valor       === "string")
+  {
+    precioNum           = parseFloat( valor )
+    if( isNaN(precioNum) )
+      return ""
+  }
+  else if(typeof valor  === "number")
+    precioNum = valor
+  else if(!valor)
+    return ""
+  
+  if(isNaN(precioNum))
+    precioNum           = 0
+    
+  let formatoFinal      = tipo == "decimales-si"
+                          ? formatoDecimal  .format( precioNum )
+                          : formato         .format( precioNum )
+  return formatoFinal
+}
+
+/* export function setMetaTitle( titulo : string )
+{
+  useMeta(  { title: titulo, titleTemplate: ( title : string ) => title } )
+} */
+
+export function X100( base : number, valorX100 : number ) : number {
+  return base / 100 * valorX100
+}
+
+export function X100_Aumento( base : number, valorX100 : number ) : number  {
+  return base + X100( base, valorX100 )
+}
+
+export function X100_Descuento( base : number, valorX100 : number ) : number {
+  return base - X100( base, valorX100 )
+}
+
+export function X100_Reduccion( base : number, valorX100 : number ) : number {
+  let multiplicador = valorX100 / 100 + 1
+  return base / multiplicador
+}
+
+export function X100_Calcular( base : number, aCalcular : number ) : number {
+  if(aCalcular === 0) return 0
+  return aCalcular * 100 / base
+}
+
+export function sortArray( arraySort : any[], key : string, orden : '<' | '>' = '<' ) : any[]
+{
+  arraySort = arraySort.sort ( ( a , b ) =>
+                                {
+                                  if(a[key] < b[key]) return orden == '<' ? -1  : 1
+                                  if(a[key] > b[key]) return orden == '<' ? 1   : -1
+                                  return 0
+                                })
+  return arraySort
+}
+
+
+export function roundInt(value : number, exp : number ) : number
+{
+  // Si el exp no está definido o es cero...
+  if (typeof exp === 'undefined' || +exp === 0) 
+    return Math.round(value)
+
+  value         = +value
+  exp           = +exp
+
+  // Si el valor no es un número o el exp no es un entero...
+  if (isNaN(value) || !(typeof exp === 'number' && exp % 1 === 0))
+  {
+      return NaN;
+  }
+
+  // Shift
+  let valorArr = value.toString().split('e')
+      value   = Math.round(+(valorArr[0] + 'e' + (valorArr[1] ? (+valorArr[1] - exp) : -exp)));
+  // Shift back
+      valorArr = value.toString().split('e');
+
+  return +(valorArr[0] + 'e' + (valorArr[1] ? (+valorArr[1] + exp) : exp));
+}
+
+export function filterArrayMaxMin< T >
+(
+  arrayOriginal : any[],
+  minValor      : number | undefined,
+  maxValor      : number | undefined,
+  key           : string
+)               : T[]
+{
+  let min                   = minValor ?? 0
+  let max                   = maxValor ?? 0
+      min                   =   min > max && !!max  ? max
+                              : min < 0             ? 0
+                              : min
+      max                   =   max < 0             ? 0 : max
+
+  let arrayFiltrada :T[]    = []
+
+  if(!!min  && !max)
+    arrayFiltrada           = arrayOriginal.filter( p => p[key] >= min )
+  else
+  if(!min   && !!max)
+    arrayFiltrada           = arrayOriginal.filter( p => p[key] <= max )
+  else
+  if(!!min  && !!max)
+    arrayFiltrada           = arrayOriginal.filter( p => p[key] >= min && p[key] <= max )    
+  else
+    arrayFiltrada           = arrayOriginal
+
+  return arrayFiltrada 
+}
+
+export function limpiarHTML (html : string ) : string
+{
+  let tmp                   = document.createElement("DIV")
+      tmp.innerHTML         = html;
+      
+  return tmp.textContent || tmp.innerText;
+}
+export const fechaCorta = ( fecha : Date ) : string => fecha.toLocaleDateString('sv-SE')
+export const fechaLarga = ( fecha : Date ) : string => fecha.toLocaleDateString('es-CO', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
+export const esValorOk  = ( valor : number | string ) : boolean => {
+  let ok                = true 
+  if( valor             == undefined  ||
+      valor             == null       ||
+      ( typeof valor    == "number" && isNaN( valor ) )
+  )
+    ok                  = false
+
+  return ok
+}
+
+export const siNo       = ( boleano : boolean, conIconos : boolean = true ) : string => {
+  let retorno           = ""
+  if(conIconos)
+    retorno             = boleano ? "✅ Si" : "❌ No"
+  else
+    retorno             = boleano ? "Si" : "No"
+  return retorno
+} 
+
+export const formatoNumeroCorto = ( valor : string | number, formato : "normal" | "precio" | "porcentaje" = "normal" ) : string =>
+{
+  if(!valor) return "0"
+
+  let numero            = 0
+  
+  if(typeof valor       === "string"){
+    numero              = parseInt(valor)
+    if(isNaN(numero)    || !numero) 
+      numero            = 0
+  }
+  else
+    numero              = valor
+
+  const numeroStr       = numero.toFixed(0) 
+  const largo           = numeroStr.length
+  let label             = ""
+  switch (largo) {
+    case 5:   label     = numeroStr.slice(0,2)  + " K"; break; // 10.000
+    case 6:   label     = numeroStr.slice(0,3)  + " K"; break; // 100.000
+    case 7:   label     = numeroStr.slice(0,1)  + " M"; break; // 1.000.000
+    case 8:   label     = numeroStr.slice(0,2)  + " M"; break; // 10.000.000
+    case 9:   label     = numeroStr.slice(0,3)  + " M"; break; // 100.000.000
+    case 10:  label     = numeroStr.slice(0,4)  + " M"; break; // 1.000.000.000
+    default:  label     = numeroStr;                    break;
+  }
+  
+  if (formato === "precio") label = "$" + label
+  
+  return label
+} 
+
+function siNoLargo( verdaderoFalso : boolean ) : string {
+  if(verdaderoFalso === true)
+    return "Si"
+  else
+    return "No" 
+}
+
+
+export const valorValido = ( valor : any ) : boolean => {
+  let valido = true
+
+  if
+  (
+    valor === undefined ||
+    valor === null      ||
+    (typeof valor === "number" && isNaN(valor))
+  )
+    valido = false
+
+  return valido
+}
+
+export function getQueryRouterLabelValue
+(
+    paramQuery  : LocationQueryValue  | LocationQueryValue[],
+    lista       : any[],
+    tipoKey     : "string"            | "number"              = "number"
+)               : ILabelValue
+{
+  
+
+  if( Array.isArray(paramQuery) || paramQuery === undefined )
+    return labelValueNulo
+
+  const valorRaw      = paramQuery as string
+  const valor         = tipoKey === "number" ? parseInt(valorRaw) : valorRaw
+  const itemTem       = lista.find( i => i.value == valor || i.id == valor )      
+  const estadoFinal   = itemTem !== undefined ? itemTem : labelValueNulo
+  //console.log('lista: ', valor, itemTem, lista, estadoFinal);
+  return estadoFinal
+}
+
+
+export function getQueryRouterString(paramQuery  : LocationQueryValue  | LocationQueryValue[]) : string
+{
+  if(Array.isArray(paramQuery) || paramQuery === undefined )  return ""
+  else                                                        return paramQuery as string
+}
+
+export function getQueryRouterNumber(paramQuery  : LocationQueryValue  | LocationQueryValue[]) : number | undefined
+{
+  if(paramQuery === undefined || Array.isArray(paramQuery) )
+    return undefined
+
+  const valorRaw  = parseInt( paramQuery as string )
+
+  if(valorValido(valorRaw))
+    return valorRaw
+  else
+    return undefined
+}
+
+export function getQueryRouterDate(paramQuery  : LocationQueryValue  | LocationQueryValue[]) : Date | ""
+{
+  if(Array.isArray(paramQuery) || paramQuery === undefined )
+    return ""
+
+  return fechaMasMedioDia( paramQuery as string ?? "" )
+}
+
+export function fechaMasMedioDia( fechaStr : string ) : Date | "" { return !!fechaStr ? new Date( new Date( fechaStr ).valueOf() + 43200000  ) : "" }
+  
+

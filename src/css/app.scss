@@ -1,0 +1,45 @@
+// app global css in SCSS form
+@import 'fuentes.scss';
+@import 'menu-desplegable.scss';
+@import 'tools.scss';
+@import 'ventana.scss';
+@import 'tablas-y-filtros.scss';
+
+body{
+    font-family: 'Cabin', sans-serif;
+    background-size: cover;
+    background-position: center center;
+    background-attachment: fixed;
+    background-repeat: repeat;
+    background: linear-gradient(to bottom, #FAFFD1, #83c4c7);
+}
+
+.fondo-app{
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.fondo-imagen{
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.fondo-barra{
+    background-position: center center;
+    background-repeat: repeat;
+}
+
+.q-loading-bar{
+    box-shadow: white 0px 0px 7px 2px;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+    -moz-appearance: textfield;
+}

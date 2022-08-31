@@ -1,0 +1,117 @@
+.tabla-maco a {
+    padding-left: 6px;
+    color: #1d274d;
+    text-decoration: none;
+}
+
+.tabla-maco a:hover {
+    text-decoration: underline;
+}
+    
+.tabla-maco a:active {
+    color: black;
+}
+
+.tabla-maco a:visited {
+    color: purple;
+}
+.tabla-maco .q-table__bottom ,
+.tabla-maco thead tr  {
+    background: linear-gradient(to bottom, #f9f9f9, #e3e3e3);
+}
+
+.tabla-maco td {
+    transition: background-color 1000ms  linear, opacity 1000ms  linear;
+}
+/* 
+.tabla-maco th {
+    font-weight: bold;
+} */
+
+.font-md th,
+.font-md td,
+.font-md {
+    font-size: 1.02em !important;
+}
+
+fieldset{
+    border-style: groove;
+    border-width: 2px;
+    border-radius: 8px;
+    padding: 10px;
+    border-color: rgba(255, 255, 255, 0.3);
+    gap: 6px;
+}
+
+legend{
+    padding: 0 5px;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    color: #929292;
+    text-shadow: 1px 1px white;
+}
+
+.grilla-ribom {
+    display: grid;
+    gap: 0.2rem;
+    grid-template-rows: 1fr 1fr;
+    grid-template-columns: repeat(auto-fill,  minmax(100px, 100%));
+    grid-auto-flow: column;
+}
+
+.grilla-linea{
+    display: grid;
+    gap: 0.7rem;
+    /* grid-template-rows: auto; */
+    grid-auto-rows: auto;
+    grid-template-columns: repeat(auto-fill,  minmax(170px, 1fr));
+    grid-auto-flow: column;
+}
+
+/* .input-hundido .q-field__control, */
+.campo-hundido{
+    box-shadow: inset 0px 0px 2px 1px rgb(0 0 0 / 34%);
+    border-radius: 6px;
+    background: rgb(255 255 255 / 100%);
+    padding: 0px 3px;
+    max-width: 100%;
+}
+
+.campo-md{
+    width: 260px;
+}
+
+
+.tabla-totales{
+    border-radius: 6px;
+    min-width: 220px;
+}
+.tabla-totales td:nth-child(even) {
+    text-align: right;
+    width: 50%;
+    /* padding-right: 4rem; */
+}
+.tabla-totales td:nth-child(odd) {
+    font-weight: bold;
+    text-align: right;
+    width: 50%;
+}
+.tabla-totales tr > td {
+    padding-bottom: 0px;
+}
+
+.grid-style-transition{
+    transition: transform .28s, background-color .28s;
+}  
+
+.tabla-tooltip td:nth-child(odd) {
+    font-weight: bold;
+    min-width: 70px;
+}
+.tabla-tooltip td:nth-child(odd)::after {
+    content: ":";
+}
+.tabla-tooltip{
+    max-width: 320px;
+    font-size: small;
+}

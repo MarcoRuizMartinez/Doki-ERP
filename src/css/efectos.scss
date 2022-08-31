@@ -1,0 +1,11 @@
+.mi-fade-enter-active, .mi-fade-leave-active {
+    transition: .5s;
+}
+
+.mi-fade-enter  {
+    opacity: 1;
+}
+
+.mi-fade-leave-to {
+    opacity: 0;
+}

@@ -1,0 +1,63 @@
+@import url('https://fonts.googleapis.com/css2?family=Cabin&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Julius+Sans+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@1,700&display=swap');
+//@import url('https://fonts.googleapis.com/css2?family=Azeret+Mono:wght@100&family=B612+Mono&family=Courier+Prime&family=Cutive+Mono&family=Syne+Mono&display=swap');
+//@import url('https://fonts.googleapis.com/css2?family=Courier+Prime&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=B612+Mono&display=swap');
+
+.sombra-3d{
+    text-shadow:  0px 0px 0 rgb(225,225,225),
+                  1px 1px 0 rgb(194,194,194),
+                  2px 2px 0 rgb(164,164,164),
+                  3px 3px  0 rgb(134,134,134),
+                  4px 4px 3px rgba(0,0,0,0.51),
+                  4px 4px 1px rgba(0,0,0,0.5),
+                  0px 0px 3px rgba(0,0,0,.2);
+}
+
+.fuente-gruesa{
+  font-family: 'Poppins', sans-serif;
+}
+.fuente-delicada{
+  font-family: 'Julius Sans One', sans-serif;  
+}
+.font-julius{
+  font-family: 'Julius Sans One', sans-serif;
+}
+.text-sombra-suave{
+  text-shadow: 2px 2px 1px rgb(0 0 0 / 90%);
+}
+
+.fuente-mono,
+.tabla-totales td:nth-child(even) {  
+  font-family: 'B612 Mono', monospace;
+  //font-family: 'Courier Prime', monospace;
+  font-size: 0.9em;
+}
+
+.titulo-xl{
+  font-size: 2.8em;
+  letter-spacing: 1px;
+}
+
+.titulo-lg{
+  font-size: 1.8em;
+}
+
+@media (max-width: 600px) {
+  .titulo-xl{
+    font-size: 1.8em;
+  }
+  .titulo-lg{
+    font-size: 1.1em  ;
+  }
+}
+
+.link-limpio {
+  text-decoration: none;
+}
+
+.link-limpio:hover {
+  text-decoration: underline;
+}
+  

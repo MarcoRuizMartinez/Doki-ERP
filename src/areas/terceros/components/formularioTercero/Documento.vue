@@ -1,0 +1,318 @@
+<template>
+  <q-select                 filled dense options-dense hide-bottom-space borderless
+    v-model                 ="modelTipo"
+    label                   ="Tipo documento*"
+    class                   ="col-md-5 col-12 text-caption"
+    options-selected-class  ="text-weight-bold"
+    :options                ="tiposDeDocumentos"
+    :readonly               ="readonly"
+    :rules                  ="[ validarTipoDocumento ]"
+    @update:model-value     ="cambiarTipo"
+    >
+    <template #prepend > <q-icon name="mdi-card-account-details" /> </template>
+  </q-select>
+  <input-number             solo-positivo alerta
+    v-if                    ="esNumero"
+    v-model                 ="modelo.numero"
+    label                   ="Numero"
+    icon                    ="mdi-card-account-details"
+    class                   ="col-md-4 col-12"
+    separador-mil           ="punto"
+    max-enteros             ="18"
+    retorno                 ="String"
+    :estadoCheck            ="estadoVerificar"
+    :rules                  ="[ validarNumero, validarExisteNumero ]"
+    :disable                ="modelTipo.length == 0"
+    :readonly               ="readonly"
+    @blur                   ="vericarNumeroEnDolibarr"
+    @update:model-value     ="inputNumero"
+  />
+  <input-text               clearable copy uppercase sinEspacios alerta
+    v-else
+    v-model                 ="modelo.numero"
+    label                   ="Numero"
+    icon                    ="mdi-card-account-details"
+    class                   ="col-md-4 col-12"
+    :estadoCheck            ="estadoVerificar"
+    :rules                  ="[ validarExisteNumero ]"
+    :disable                ="modelTipo.length == 0"
+    :readonly               ="readonly"
+    @blur                   ="vericarNumeroEnDolibarr"
+  />
+  <input-number             solo-positivo
+    v-model                 ="modelo.digito"
+    label                   ="Dígito"
+    icon                    ="mdi-card-account-details"
+    class                   ="col-md-3 col-12"
+    max-enteros             ="1"
+    retorno                 ="String"
+    :disable                ="modelo.tipo.label !== 'NIT'"
+    :readonly               ="readonly"
+  />
+</template>
+
+<script setup lang="ts">
+  import {  computed,
+            ref,
+            toRefs,
+            PropType,
+            watch,
+            onMounted
+                              } from 'vue'
+  import {  useQuasar         } from 'quasar'
+  import {  IDocumento,
+            Documento,
+                              } from "src/areas/terceros/models/DocumentoId"
+
+  import {  ITipoDocumento,
+            TipoDocumento,
+            TIPOS_DOCUMENTO
+                              } from "src/areas/terceros/models/TiposDocumento"
+  import {  EstadoVerificar   } from "src/models/TiposVarios"
+  import {  useRouter         } from 'vue-router'
+  import {  useDexie, TABLAS  } from "src/services/useDexie"
+  import {  useFetch          } from "src/useSimpleOk/useFetch"
+  import {  getURL,
+            getFormData       } from "src/services/APIMaco"
+  import    inputNumber         from "components/utilidades/input/InputFormNumber.vue"
+  import    inputText           from "components/utilidades/input/InputFormText.vue"
+
+  const { miFetch             } = useFetch()
+  const { notify              } = useQuasar()
+  const { lista               } = useDexie( TABLAS.TIPOS_DOCUMENTOS )
+  const tiposDeDocumentos       = computed( () => lista.value as ITipoDocumento [] )
+  const router                  = useRouter()
+  
+  const props                   = defineProps(
+    {
+      modelValue: { required: true,   type: Object as PropType<IDocumento>  },
+      lectura:    { default:  false,  type: Boolean                         },
+      readonly:   { default:  false,  type: Boolean                         },
+    }
+  )
+
+  const emit                    = defineEmits(["update:modelValue"])
+
+  const { modelValue }          = toRefs( props )
+  const modelo                  = ref<IDocumento>( modelValue.value )
+
+
+  const esNumero                = computed( () => modelo.value.tipo.codigo == TIPOS_DOCUMENTO.CEDULA_CIUDADANIA ||
+                                                  modelo.value.tipo.codigo == TIPOS_DOCUMENTO.NIT               ||
+                                                  modelo.value.tipo.codigo == TIPOS_DOCUMENTO.TARJETA_IDENTIDAD )
+  const estadoVerificar         = ref<EstadoVerificar>("off")  
+
+  const modelTipo               = ref< ITipoDocumento[] >( [  ] )
+  let   copiaNumero             : string
+
+  onMounted ( iniciar )
+
+  function iniciar()
+  {
+    /* if( tipo.value.value > 0 )
+      cambiarTipo(  getIDTipoDocumento( tipo.value.value ?? 0 ) ) */
+  }
+
+  watch(
+    modelValue,
+    (newModel, oldModel) =>
+    {
+      modelo.value              = newModel
+      modelTipo.value           = newModel.tipo as any
+
+      if(!!newModel.numero && !oldModel.numero) // se da solo al inicio
+      {
+        copiaNumero             = newModel.numero
+      }
+    }
+  )
+
+  watch(
+    tiposDeDocumentos,
+    (newTipos, oldTipos) =>
+    {
+      if(newTipos.length > 0 && oldTipos.length == 0 )
+      {
+        modelTipo.value         = newTipos[0] as any
+        cambiarTipo( newTipos[0] )
+      }
+    }
+  )
+
+  watch(
+    modelo,
+    (newDoc, oldDoc) => 
+    {
+      emit("update:modelValue", newDoc)
+    },
+    { deep: true }
+  )
+
+  function inputNumero( numero : string ) // Cambia a tipo cedula o nit segun el numero
+  {
+    if(esNumero.value)
+    {
+      let numeroDoc           = parseInt( numero )
+      let tipoDoc
+
+      if( numeroDoc           >= 1000000000 )
+        tipoDoc               = tiposDeDocumentos.value[1] // Cedula
+      else
+      if( numeroDoc           >= 800000000 )
+        tipoDoc               = tiposDeDocumentos.value[0] // Nit
+
+      if(tipoDoc              != undefined)
+      {
+        modelTipo.value       = tipoDoc as any
+        cambiarTipo( tipoDoc ) 
+      }
+    }
+
+    estadoVerificar.value     = estadoVerificar.value  == "alert" ? "off" : estadoVerificar.value
+  }
+  
+  function cambiarTipo( tipoDocumento : ITipoDocumento )
+  {
+    modelo.value.tipo           = tipoDocumento 
+
+    if(modelo.value.tipo.codigo != TIPOS_DOCUMENTO.NIT)
+    {
+      modelo.value.digito       = ""
+    }
+  }
+
+  function validarTipoDocumento( tipoDocumento : ITipoDocumento ){
+    return  !!tipoDocumento.value || "Por favor seleccione el tipo de documento"
+  }
+
+  function validarNumero( numeroTxt : string )
+  {
+    let numero                  = parseInt( numeroTxt.replace(/[^/0-9]+/g, "") )
+    let valido                  = true
+    let mensaje                 = ""
+
+    if(modelo.value.tipo.codigo == TIPOS_DOCUMENTO.NIT)
+    {
+      if(numero                 < 100000)
+      {
+        valido                  = false
+        mensaje                 = "El NIT no puede ser inferior a 100 mil"
+      }
+      else if(numero            > 100000000 && numero < 699999999)
+      {
+        valido                  = false
+        mensaje                 = "El NIT no puede estar en el rango de 100 a 699 millones"
+      }
+      else if(numero            > 999999999)
+      {
+        valido                  = false
+        mensaje                 = "El Nit no puede ser superior a 1000 millones"
+      }
+    }
+    else
+    if(modelo.value.tipo.codigo == TIPOS_DOCUMENTO.CEDULA_CIUDADANIA)
+    {
+      if(numero                 < 100000)
+      {
+        valido                  = false
+        mensaje                 = "La cedula no puede ser inferior a 100 mil"
+      }
+      else if(numero            > 100000000 && numero < 999999999)
+      {
+        valido                  = false
+        mensaje                 = "La cedula no puede estar en el rango de 100 a 999 millones"
+      }
+      else if(numero            > 2000000000)
+      {
+        valido                  = false
+        mensaje                 = "La cedula no puede ser mayor a 2000 millones"
+      }
+    }
+    else
+    if(modelo.value.tipo.codigo == TIPOS_DOCUMENTO.TARJETA_IDENTIDAD)
+    {
+      if(numero                 < 1000000000)
+      {
+        valido                  = false
+        mensaje                 = "La tarjeta de identidad no puede ser inferior a 1000 millones"
+      }
+      else if(numero            > 2000000000)
+      {
+        valido                  = false
+        mensaje                 = "La tarjeta de identidad no puede ser mayor a 2000 millones"
+      }
+    }
+
+    return  valido || mensaje
+  }
+
+  function validarExisteNumero( numeroTxt : string )
+  {
+    let valido                  = true
+    let mensaje                 = ""
+
+    if(estadoVerificar.value    == "alert")
+    {
+      valido                    = false
+      mensaje                   = "El tercero ya existe"
+    }
+    else
+    if(estadoVerificar.value    == "verificando" )
+    {
+      valido                    = false
+      mensaje                   = "Verificando si tercero ya existe"
+    }
+
+    return  valido || mensaje
+  }
+
+  async function vericarNumeroEnDolibarr()
+  {
+    if( !modelo.value.numero
+        ||
+        modelo.value.numero.length  < 5
+        ||
+        estadoVerificar.value       == "alert"
+        ||
+        modelo.value.numero         == copiaNumero
+      )
+      return
+
+    estadoVerificar.value       = "verificando"
+    
+    let { ok : existe, data}    = await miFetch(  getURL( "listas", "varios"),
+                                                  {
+                                                    method: "POST",
+                                                    body:   getFormData( "documentoExiste", { numero: modelo.value.numero } )
+                                                  },
+                                                  { mensaje: "buscar si existe numero de documento" }
+                                                )
+    let resultado : any         = data
+    if(existe && !!resultado && resultado.hasOwnProperty("vendedor") && !Array.isArray(resultado))
+    {
+      estadoVerificar.value     = "alert"
+      let vendedor              = JSON.parse(resultado.vendedor)[0].name
+      notify({
+        color:                  "negative",
+        textColor:              "white",
+        icon:                   "mdi-account-alert",
+        position:               "top",
+        timeout:                5000,
+        message:                "Este tercero ya ha sido creado por " + vendedor,
+          actions: [
+            { label: 'Ir a tercero', color: 'white', handler: () => { router.push("/tercero/" + resultado.id ) } }
+          ]
+      })
+    }
+    else
+      estadoVerificar.value   = "check"
+  }
+</script>
+
+<script lang="ts">
+import { defineComponent } from 'vue'
+
+export default defineComponent({
+  inheritAttrs: false,
+})
+</script>
