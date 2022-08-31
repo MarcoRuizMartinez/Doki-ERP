@@ -11,4 +11,5 @@
   useLogin( ORIGEN.APP )
   useOnline()
   useInciarApariencia()
+  console.log("Hola")
 </script>
