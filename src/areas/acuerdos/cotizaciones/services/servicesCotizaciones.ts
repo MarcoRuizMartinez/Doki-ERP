@@ -1,6 +1,6 @@
 export interface IBusquedaCotizacion {
   idTercero?:     number
-  idComercial?:   string | number  
+  idComercial?:   string | number
   tercero?:       string
   contacto?:      string
   estado?:        number
@@ -20,11 +20,11 @@ export interface IBusquedaCotizacion {
 }
 
 import {  useApiDolibarr    } from "src/services/useApiDolibarr"
-import {  getURL, 
+import {  getURL,
           getFormData       } from "src/services/APIMaco"
 import {  useFetch          } from "src/useSimpleOk/useFetch"
 import {  date              } from "quasar"
-import {  ICotizacion,  
+import {  ICotizacion,
           Cotizacion        } from "src/areas/acuerdos/cotizaciones/models/Cotizacion"
 import {  ILineaApi         } from "src/areas/acuerdos/.models/LineaAcuerdo"
 import {  TIPOS_CONTACTO_ID } from "src/areas/terceros/models/Contacto"
@@ -35,7 +35,7 @@ import {  pausa,
           valuesObjectArrayToNumber,
                             } from "src/useSimpleOk/useTools"
 
-export function servicesCotizaciones() 
+export function servicesCotizaciones()
 {
   const { miFetch           } = useFetch()
   const { apiDolibarr       } = useApiDolibarr()
@@ -72,7 +72,7 @@ export function servicesCotizaciones()
       let { data, ok            } = await miFetch( getURL("listas", "cotizaciones"),
                                                     {
                                                       body: getFormData(  "cotizacion",  { id: id } ),
-                                                      method: "POST" 
+                                                      method: "POST"
                                                     },
                                                     {
                                                       mensaje:      "cargar cotizacion",
@@ -80,7 +80,7 @@ export function servicesCotizaciones()
                                                     }
                                                   )
       if(ok && typeof data == "object" )
-      { 
+      {
         let cotizacion    = await Cotizacion.convertirDataApiACotizacion( data )
         resolver( cotizacion )
       }
@@ -98,7 +98,7 @@ export function servicesCotizaciones()
       let { data, ok            } = await miFetch(  getURL("listas", "cotizaciones"),
                                                     {
                                                       body:   getFormData(  "busqueda", query ),
-                                                      method: "POST" 
+                                                      method: "POST"
                                                     },
                                                     {
                                                       mensaje:      "buscar cotizaciones",
@@ -107,13 +107,13 @@ export function servicesCotizaciones()
                                                     }
                                                   )
       let quotes : ICotizacion[]  = []
-
+      console.log("Datas", data, Array.isArray( data ))
       if(ok && Array.isArray( data ))
-      {        
+      {
         for (const item of data)
         {
           let quote : ICotizacion = await Cotizacion.convertirDataApiACotizacion( item )
-          quotes.push( quote )          
+          quotes.push( quote )
         }
         resolver( quotes )
       }
@@ -121,9 +121,9 @@ export function servicesCotizaciones()
       {
         resolver( [] )
       }
-      /*                                                   
+      /*
       if(ok && typeof data == "object" )
-      { 
+      {
         let cotizacion    = await Cotizacion.convertirDataApiACotizacion( data )
         resolver( cotizacion )
       }
@@ -145,7 +145,7 @@ export function servicesCotizaciones()
       let { ok      } = await miFetch( getURL("servicios", "cotizaciones"),
                                                     {
                                                       body:   getFormData(  "editarFechaValidez", obj ),
-                                                      method: "POST" 
+                                                      method: "POST"
                                                     },
                                                     { mensaje: "editar fecha validez" }
                                                   )
@@ -163,9 +163,9 @@ export function servicesCotizaciones()
       let { ok      } = await miFetch( getURL("servicios", "cotizaciones"),
                                                     {
                                                       body: getFormData(  "editarFechaEntrega", obj ),
-                                                      method: "POST" 
+                                                      method: "POST"
                                                     },
-                                                    { mensaje: "editar fecha entrega" }                                                
+                                                    { mensaje: "editar fecha entrega" }
                                                   )
       resolver( ok )
     })
@@ -180,7 +180,7 @@ export function servicesCotizaciones()
       let { ok      } = await miFetch( getURL("servicios", "cotizaciones"),
                                                     {
                                                       body: getFormData(  "editarCondicionPago", obj ),
-                                                      method: "POST" 
+                                                      method: "POST"
                                                     },
                                                     { mensaje: "editar condición de pago" }
                                                   )
@@ -197,7 +197,7 @@ export function servicesCotizaciones()
       let { ok      } = await miFetch( getURL("servicios", "cotizaciones"),
                                                     {
                                                       body: getFormData( "editarFormaPago", obj ),
-                                                      method: "POST" 
+                                                      method: "POST"
                                                     },
                                                     { mensaje: "editar forma de pago" }
                                                   )
@@ -220,7 +220,7 @@ export function servicesCotizaciones()
                                                   )
       resolver( ok )
     })
-  }  
+  }
 
   async function setRefCliente( ctz_id : number, ref : string  ) : Promise< boolean >
   {
@@ -231,7 +231,7 @@ export function servicesCotizaciones()
       let { ok      } = await miFetch( getURL("servicios", "cotizaciones"),
                                                     {
                                                       body: getFormData( "editarRefCliente", obj ),
-                                                      method: "POST" 
+                                                      method: "POST"
                                                     },
                                                     { mensaje: "editar referencia de cliente" }
                                                   )
@@ -248,14 +248,14 @@ export function servicesCotizaciones()
       let { ok      } = await miFetch( getURL("servicios", "cotizaciones"),
                                                     {
                                                       body: getFormData( "editarTitulo", obj ),
-                                                      method: "POST" 
+                                                      method: "POST"
                                                     },
                                                     { mensaje: "editar titulo de cotizacion" }
                                                   )
       resolver( ok )
     })
-  }  
-  
+  }
+
   async function setAiu( ctz_id : number, valor : number, tipo : "aiu" | "aiuAdmin" | "aiuImpre" | "aiuUtili" ) : Promise< boolean >
   {
     let obj           = { id: ctz_id, valor: valor }
@@ -265,13 +265,13 @@ export function servicesCotizaciones()
       let { ok      } = await miFetch( getURL("servicios", "cotizaciones"),
                                                     {
                                                       body: getFormData( tipo, obj ),
-                                                      method: "POST" 
+                                                      method: "POST"
                                                     },
                                                     { mensaje: "editar AIU" }
                                                   )
       resolver( ok )
     })
-  }  
+  }
 
   async function setTotal( ctz_id : number, on : boolean) : Promise< boolean >
   {
@@ -282,7 +282,7 @@ export function servicesCotizaciones()
       let { ok      } = await miFetch( getURL("servicios", "cotizaciones"),
                                                     {
                                                       body: getFormData( "conTotal", obj ),
-                                                      method: "POST" 
+                                                      method: "POST"
                                                     },
                                                     { mensaje: "editar total" }
                                                   )
@@ -299,13 +299,13 @@ export function servicesCotizaciones()
       let { ok      } = await miFetch( getURL("servicios", "cotizaciones"),
                                                     {
                                                       body: getFormData( "conIVA", obj ),
-                                                      method: "POST" 
+                                                      method: "POST"
                                                     },
                                                     { mensaje: "editar IVA" }
                                                   )
       resolver( ok )
     })
-  }    
+  }
 
   async function setMetodoEntrega( ctz_id : number, valor : number  ) : Promise< boolean >
   {
@@ -316,7 +316,7 @@ export function servicesCotizaciones()
       let { ok      } = await miFetch( getURL("servicios", "cotizaciones"),
                                                     {
                                                       body: getFormData( "editarMetodoEntrega", obj ),
-                                                      method: "POST" 
+                                                      method: "POST"
                                                     },
                                                     { mensaje: "editar método de entrega" }
                                                   )
@@ -334,7 +334,7 @@ export function servicesCotizaciones()
       let { ok      } = await miFetch( getURL("servicios", "cotizaciones"),
                                                     {
                                                       body:   getFormData( "ordenarLineas", obj ),
-                                                      method: "POST" 
+                                                      method: "POST"
                                                     },
                                                     { mensaje: "ordenar líneas" }
                                                   )
@@ -352,7 +352,7 @@ export function servicesCotizaciones()
       let { ok      } = await miFetch( getURL("servicios", "cotizaciones"),
                                                     {
                                                       body:   getFormData( "editarTiempoEntrega", obj ),
-                                                      method: "POST" 
+                                                      method: "POST"
                                                     },
                                                     { mensaje: "editar tiempo de entrega" }
                                                   )
@@ -370,7 +370,7 @@ export function servicesCotizaciones()
       let { ok      } = await miFetch( getURL("servicios", "cotizaciones"),
                                                     {
                                                       body: getFormData( "editarOrigenContacto", obj ),
-                                                      method: "POST" 
+                                                      method: "POST"
                                                     },
                                                     { mensaje: "editar origen contacto" }
                                                   )
@@ -387,7 +387,7 @@ export function servicesCotizaciones()
       let { ok      } = await miFetch( getURL("servicios", "cotizaciones"),
                                                     {
                                                       body: getFormData( "editarComercial", obj ),
-                                                      method: "POST" 
+                                                      method: "POST"
                                                     },
                                                     { mensaje: "editar comercial" }
                                                   )
@@ -397,7 +397,7 @@ export function servicesCotizaciones()
 
   async function getIdEnlaceContacto( idCotizacion : number, idContacto : number  ) : Promise< number >
   {
-    let obj           = { 
+    let obj           = {
                           idElemento:   idCotizacion,
                           contactoTipo: TIPOS_CONTACTO_ID.CTZ_CUSTOMER,
                           contactoId:   idContacto,
@@ -407,9 +407,9 @@ export function servicesCotizaciones()
     {
       const url         = getURL("listas", "varios")
       await pausa(400)
-      
+
       let { ok, data  } = await miFetch(url,  { method: "POST", body: getFormData(  "idEnlaceCont", obj ) },
-                                              { mensaje: "Buscar id de enlace de contacto"        }                                                
+                                              { mensaje: "Buscar id de enlace de contacto"        }
                                         )
       const id          =   typeof data === "number" ? data
                           : typeof data === "string" ? parseInt( data )
@@ -426,10 +426,10 @@ export function servicesCotizaciones()
     return new Promise
     ( async (resolver, rechazar ) =>
       {
-        const url               = getURL("informes", "cotizaciones") + `?tipo=${tipo}&tiempo=${tiempo}` 
+        const url               = getURL("informes", "cotizaciones") + `?tipo=${tipo}&tiempo=${tiempo}`
 
         let { ok, data  }       = await miFetch(url,  { method: "GET" }, { mensaje: "Cargar informe de cotizaciones" })
-        
+
         let seriesRaw           = []
         if(!!data && Array.isArray(data) && data.length > 0)
           seriesRaw             = valuesObjectArrayToNumber(data)
@@ -453,9 +453,9 @@ export function servicesCotizaciones()
                                         + (s.semana < 10 ? "0" + s.semana.toString()  : s.semana.toString())
                                         + (s.mes    < 10 ? "0" + s.mes.toString()     : s.mes.toString())
                                       )
-                                    )  
+                                    )
                                   ].sort()
-          
+
           for (const ymw of YMWs)
           {
             const año           = parseInt( ymw.slice(0,4) )
@@ -484,7 +484,7 @@ export function servicesCotizaciones()
     )
 
   }
-  
+
 
   return {
     getCotizacion,

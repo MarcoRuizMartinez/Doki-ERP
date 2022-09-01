@@ -44,11 +44,14 @@ export function useFetch()
         solicitud.signal      = controller.signal
         loadingBar.start()
         const resultado       = await fetch( url, solicitud )
+        const esJson          = resultado.headers.get('content-type')?.includes('application/json');
+        //const data = esJson ? await response.json() : null;
+        console.log("resultado", resultado, esJson)
         const data            = await resultado.json()
+        console.log("datag", data)
         loadingBar.stop()
-        
-        cargando              = false 
-        
+
+        cargando              = false
         if(!!data)
         {
           if(Array.isArray(data) && data.length == 1 && !dataEsArray)
@@ -90,13 +93,13 @@ export function useFetch()
       catch (e : any)
       {
         loadingBar.stop()
-        console.error("Error en miFetch: ", e, mensajeGlobal)
+        console.warn("Error en miFetch: ", e, mensajeGlobal)
         if( e instanceof DOMException)
         {
           if(e.name == "AbortError")
             resolver( { codigo: CODES_FETCH.AbortError, ok: false } )
         }
-        
+
         resolver( { codigo: CODES_FETCH.errorDesconocido, ok: false } )
         return e;
       }
@@ -143,8 +146,8 @@ export function useFetch()
       message:    "Problemas con la conexión de internet para " + mensajeGlobal,
       position:   "top",
       timeout:    2800,
-    })    
-  }  
+    })
+  }
 
   return {
     miFetch

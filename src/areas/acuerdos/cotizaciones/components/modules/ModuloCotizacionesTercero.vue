@@ -4,7 +4,7 @@
     class-contenido             ="column items-center"
     icono                       ="mdi-format-list-text"
     size-icon-carga             ="14em"
-    mensaje-sin-resultados      ="Tercero sin cotizaciones" 
+    mensaje-sin-resultados      ="Tercero sin cotizaciones"
     :padding-contenido          ="modo == 'normal' ? '0' : '12px' "
     :modo                       ="modo"
     >
@@ -60,10 +60,10 @@
             {{ props.row.estadoLabel }}
           </span>
         </q-td>
-      </template> 
+      </template>
 <!--       <template #body="props">
         <q-tr :props="props">
-          <q-td key="nombre"    :props="props"> 
+          <q-td key="nombre"    :props="props">
             <link-tercero       :tercero="( props.row as Tercero ) "/>
           </q-td>
         </q-tr>
@@ -85,7 +85,7 @@
   import    tooltipCotizacion from "src/areas/acuerdos/cotizaciones/components/tools/TooltipCotizacion.vue"
   import    tooltipLineas     from "src/areas/acuerdos/.components/TooltipLineas.vue"
   import {  btnBaseSm       } from "src/useSimpleOk/useEstilos"
-  import {  useRouter       } from 'vue-router'   
+  import {  useRouter       } from 'vue-router'
 
   const urlDolibarr           = process.env.URL_DOLIBARR
   const { getCotizaciones   } = servicesCotizaciones()
@@ -104,7 +104,7 @@
 
   onMounted( buscar )
 
-  async function buscar()  
+  async function buscar()
   {
     modo.value          = "buscando"
     cotizaciones.value  = await getCotizaciones( { idTercero: terceroId.value } )

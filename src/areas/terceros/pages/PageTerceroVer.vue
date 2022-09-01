@@ -22,12 +22,12 @@
         :puede-editar         ="puedeModificar"
       />
       <efecto efecto          ="Down">
-<!--         <cotizaciones
+        <cotizaciones
           v-if                ="storeUser.permisos.cotizar_ver && tercero.esCliente"
           class               ="col-12"
           height-card         ="210px"
           :tercero-id         ="tercero.id ?? 0"
-        /> -->
+        />
       </efecto>
       <efecto>
 <!--         <documentos
@@ -60,7 +60,7 @@
             computed,
             onMounted,
                             } from "vue"
-  import {  useRouter       } from 'vue-router'                      
+  import {  useRouter       } from 'vue-router'
   import  formularioTercero   from "src/areas/terceros/components/formularioTercero/FormularioTercero.vue"
   import  contactos           from "src/areas/terceros/components/contactos/ModuloContactos.vue"
   import  notas               from "src/areas/terceros/components/helper/ModuloNotasTercero.vue"
@@ -76,17 +76,17 @@
   import    efecto            from "components/utilidades/Efecto.vue"
   import {  useTitle        } from '@vueuse/core'
 
-  const storeUser             = useStoreUser()          
+  const storeUser             = useStoreUser()
 
   const router                = useRouter()
-  const { aviso             } = useTools()  
+  const { aviso             } = useTools()
   const tercero               = ref<ITercero>(new Tercero())
   const props                 = defineProps({
     id: { required: true, type: String }
   })
 
   const { buscarTercero    }  = servicesTerceros()
-  const { id }                = toRefs( props )  
+  const { id }                = toRefs( props )
   const cargando              = ref< boolean >(false)
   const title                 = useTitle( "🏪 Cargando..." )
   const usuarioEsDueño        = computed( () =>{ return tercero.value.responsables.some( r => r.id == storeUser.usuario.id ) })
@@ -99,13 +99,13 @@
                                   )
                                     return true
                                   else
-                                    return false 
+                                    return false
                                 })
 
   onMounted( evaluarID_y_buscar )
   provide("tercero",  tercero )
 
-  //* ////////////////////////////////////////////////////////////////////////////////// Inicio Motor de carga de tercero  
+  //* ////////////////////////////////////////////////////////////////////////////////// Inicio Motor de carga de tercero
   function evaluarID_y_buscar()
   {
     let idOk                  = ID_URL_Ok( id.value )
@@ -116,7 +116,7 @@
   }
 
 
-  //* ////////////////////////////////////////////////////////////////////////////////////// Buscar tercero 
+  //* ////////////////////////////////////////////////////////////////////////////////////// Buscar tercero
   async function buscarTerceroDolibarr( id_ : number )
   {
     cargando.value            = true
