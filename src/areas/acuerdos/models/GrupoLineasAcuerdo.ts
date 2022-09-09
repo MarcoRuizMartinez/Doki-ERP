@@ -1,4 +1,4 @@
-import { ILineaAcuerdo, LineaAcuerdo  } from "../../../areas/acuerdos/.models/LineaAcuerdo"
+import { ILineaAcuerdo, LineaAcuerdo  } from "../../../areas/acuerdos/models/LineaAcuerdo"
 import {  X100                        } from "../../../useSimpleOk/useTools"
 
 export interface IGrupoLineas {

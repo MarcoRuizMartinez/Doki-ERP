@@ -374,7 +374,7 @@
   import    inputNumber         from "components/utilidades/input/InputFormNumber.vue"
   import    efecto              from "components/utilidades/Efecto.vue"
   import    efectoGrupo         from "components/utilidades/EfectoGrupo.vue"
-  import    tooltipPrecios      from "src/areas/acuerdos/.components/TooltipPreciosProducto.vue"
+  import    tooltipPrecios      from "src/areas/acuerdos/components/TooltipPreciosProducto.vue"
   import {  ModosVentana      } from "src/models/TiposVarios"
   import {  useApiDolibarr    } from "src/services/useApiDolibarr"
   import {  useDexie, TABLAS  } from "src/services/useDexie"
@@ -388,9 +388,9 @@
             ProductoCategoria } from "src/areas/productos/models/ProductoCategoria"
   import {  ProductoDoli,
             IProductoDoli     } from "src/areas/productos/models/ProductoDolibarr"
-  import {  IGrupoLineas      } from "src/areas/acuerdos/.models/GrupoLineasAcuerdo"
+  import {  IGrupoLineas      } from "src/areas/acuerdos/models/GrupoLineasAcuerdo"
   import {  LineaAcuerdo,
-            ILineaAcuerdo     } from "src/areas/acuerdos/.models/LineaAcuerdo"
+            ILineaAcuerdo     } from "src/areas/acuerdos/models/LineaAcuerdo"
   import {  IColumna,
             Columna           } from "src/models/Tabla"
   import {  servicesProductos,
@@ -406,7 +406,7 @@
   const props                 = defineProps({
     grupo:        { required: true,   type: Object as PropType< IGrupoLineas >  },
     cotizacionId: { required: true,   type: Number                              },
-    conIva:       { required: true,   type: Number                              },
+    conIva:       { required: true,   type: Boolean                             }, // /* Number */
   })
   const tipoVista             = ref<"grilla" | "lista">("grilla")
   const { apiDolibarr    }    = useApiDolibarr()
@@ -478,7 +478,7 @@
       for (const linea of productosAñadidos)
       {
         linea.orden           = mayorOrden.value + 1
-        linea.iva             = conIva.value ? process.env.IVA : 0
+        linea.iva             = conIva.value ? +process.env.IVA : 0
         let lineaAPI          = LineaAcuerdo.lineaToLineaApi( linea )
         let { data, ok }      = await apiDolibarr("crear", "lineaCotizacion", lineaAPI, cotizacionId.value)
         if(ok)
@@ -524,7 +524,8 @@
     if( txt.length >= 3 ) buscar()
   }
 
-  function seleccionar( rows : IProductoDoli[] ) {
+  // IProductoDoli[] ) {
+  function seleccionar( rows : any[] ){ 
     seleccion.value   = rows.filter(p=>p.activo)
   }
 

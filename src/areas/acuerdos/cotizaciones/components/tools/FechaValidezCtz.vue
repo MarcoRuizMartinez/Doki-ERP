@@ -15,6 +15,7 @@
   import {  ref,
             toRefs,
             watch,
+            onMounted
                               } from "vue"
   import    inputFecha          from "src/components/utilidades/input/InputFecha.vue"
   import {  useConstantes,
@@ -34,10 +35,20 @@
   const modelo                = ref<Date> ( modelValue.value )
   const diasDefault           = useConstantes( CONSTANTES.CTZ_DIAS_VALIDEZ )
 
-  watch([modelValue, diasDefault], ([ newFecha, newDias ]) =>
+  //onMounted()
+
+  watch([modelValue, diasDefault], ([ newFecha, newDias ],[oldFecha, oldDias ]) =>
   {
     let miliSec1970           = newFecha.valueOf()
-    if(!miliSec1970           && !!newDias && nuevo.value)
+
+    if
+    (
+      // Si fecha de model value es 0 y los dias son validos, y es un nueva cotizacion, 
+      (!miliSec1970           && !!newDias && nuevo.value)
+      ||
+      // Los nuevos dias son validos y es una nueva cotizacion, y los nuevos son diferentes a los viejos dias
+      (newDias > 0 && newDias !== oldDias && nuevo.value)
+    )
     {
       modelo.value            = getFechaDefault()
       emitir()

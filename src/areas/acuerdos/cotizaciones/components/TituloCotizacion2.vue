@@ -1,7 +1,7 @@
 <template>
   <titulo
-    :color-left               ="cotizacion.estadoColor"
-    :color-right              ="cotizacion.estadoColor"
+    :color-left               ="acuerdo.estadoColor"
+    :color-right              ="acuerdo.estadoColor"  
     >
     <!-- //* ///////////////////////////////////////////////////////// SLOT LEFT -->
     <template #left>
@@ -29,7 +29,7 @@
     <template                 #center>
       <!-- <fx-out-down-group> -->
       <div
-        v-if                ="!!cotizacion.id || nuevo"
+        v-if                ="!!acuerdo.id || nuevo"
         key                 ="key1"
         class               ="row items-center  justify-between q-mr-sm"
         >
@@ -48,11 +48,11 @@
           :style            ="esMobil ? 'order: 3;' : ''"
           >
           <span class       ="q-ma-none q-pa-none op20 titulo-lg">
-            {{ !!cotizacion.titulo ? cotizacion.titulo : '. . . .'}}
+            {{ !!acuerdo.titulo ? acuerdo.titulo : '. . . .'}}
             <Tooltip label  ="Titulo cotizacion"/>
           </span>
           <q-popup-edit     auto-save fit
-            v-model         ="cotizacion.titulo"
+            v-model         ="acuerdo.titulo"
             v-slot          ="scope"
             class           ="row panel-blur70 q-col-gutter-xs"
             max-width       ="500px"
@@ -65,7 +65,7 @@
               class         ="col-12"
               @keyup.enter  ="scope.set"
             />
-          </q-popup-edit>
+          </q-popup-edit> 
         </div>
         <!-- //* ////////////////////////////////////////////////////// Ref Cotizacion -->
         <span
@@ -74,10 +74,10 @@
           :class            ="esMobil ? 'q-ma-none q-pa-none' : 'q-mt-sm'"
           >
           <a
-            :href           ="urlDolibarr + '/comm/propal/card.php?id=' + cotizacion.id"
+            :href           ="urlDolibarr + '/comm/propal/card.php?id=' + acuerdo.id"
             target          ="_blank"
             >
-            {{cotizacion.ref}}
+            {{acuerdo.ref}}
             <Tooltip label  ="Ir a Dolibarr" />
           </a>
           <!--
@@ -91,7 +91,7 @@
             >
             <Tooltip label        ="Recargar"/>
           </q-btn>
-          -->          
+          -->
         </span>
       </div>
       <!-- //* ///////////////////////////////////////////////////////// Spiner cargando -->
@@ -112,21 +112,21 @@
     <template               #right>
       <efecto efecto        ="UpDown">
         <div
-          v-if              ="!!cotizacion.id || nuevo"
+          v-if              ="!!acuerdo.id || nuevo"
           class             ="column items-center q-pt-sm q-pl-sm"
           >
           <!-- //* ///////////////////////////////////////////////////// Icono Estado -->
           <q-icon
             size            ="lg"
             class           ="op90"
-            :name           ="cotizacion.estadoIcono"
+            :name           ="acuerdo.estadoIcono"
           />
           <!-- //* ///////////////////////////////////////////////////// Label Estado -->
           <span
             class           ="text-sombra-suave"
             :class          ="esMobil ? 'text-14px' : 'text-20px'"
             >
-            {{cotizacion.estadoLabel}}
+            {{acuerdo.estadoLabel}}
           </span>
         </div>
       </efecto>
@@ -134,18 +134,17 @@
   </titulo>
 </template>
 <script setup lang="ts">
-  import {  PropType,
-            toRefs,
-            computed,
-            onMounted,
-                            } from "vue"
-  import {  ICotizacion     } from "src/areas/acuerdos/cotizaciones/models/Cotizacion"
-  import {  servicesCotizaciones   } from "src/areas/acuerdos/cotizaciones/services/servicesCotizaciones"
-  import {  useTools        } from "src/useSimpleOk/useTools"
-  import    titulo            from "components/utilidades/Titulo.vue"
-  import    efecto            from "components/utilidades/Efecto.vue"
-  import {  ILoading        } from "src/models/TiposVarios"
+  import {  PropType              } from "vue"
+  import {  servicesCotizaciones  } from "src/areas/acuerdos/cotizaciones/services/servicesCotizaciones"
+  import {  useTools              } from "src/useSimpleOk/useTools"
+  import    titulo                  from "components/utilidades/Titulo.vue"
+  import    efecto                  from "components/utilidades/Efecto.vue"
+  import {  ILoading              } from "src/models/TiposVarios"
+  import {  storeToRefs           } from 'pinia'                            
+  import {  useStoreAcuerdo       } from 'src/stores/acuerdo'  
 
+  const storeAcuerdo          = useStoreAcuerdo()
+  const { acuerdo           } = storeToRefs(storeAcuerdo)  
   const { esMobil, aviso    } = useTools()
   const { setTitulo         } = servicesCotizaciones()
   const   urlDolibarr         = process.env.URL_DOLIBARR
@@ -154,13 +153,11 @@
   const props                 = defineProps({
     nuevo:      { default:  false,  type: Boolean                         },
     loading:    { required: true,   type: Object as PropType< ILoading >  },
-    cotizacion: { required: true,   type: Object as PropType<ICotizacion> },
-  })
-  const { cotizacion }        = toRefs( props )
+  })  
 
   async function editarTitulo( titulo : string )
   {
-    let ok                    = await setTitulo( cotizacion.value.id, titulo )
+    let ok                    = await setTitulo( acuerdo.value.id, titulo )
     aviso("positive", "Titulo editado", "comment")
   }
 </script>

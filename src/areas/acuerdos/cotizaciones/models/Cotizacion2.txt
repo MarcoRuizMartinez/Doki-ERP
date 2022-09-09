@@ -1,0 +1,278 @@
+import {  getCondicionesPagoDB,
+          getFormasPagoDB,
+          getMetodosEntregaDB,
+          getOrigenContactoDB,
+          getTiempoEntregaDB,
+          getUsuarioDB,
+                                            } from "src/services/useDexie"
+import {  ILineaAcuerdo,    LineaAcuerdo    } from "src/areas/acuerdos/models/LineaAcuerdo"
+import {  ITercero,         Tercero         } from "src/areas/terceros/models/Tercero"
+import {  IContacto,        Contacto        } from "src/areas/terceros/models/Contacto"
+import {  date                              } from "quasar"
+import {  getDateToStr,
+          getMilisecShortForApiDolibarr     } from "src/useSimpleOk/useTools"
+import { Acuerdo, IAcuerdo                  } from "src/areas/acuerdos/models/Acuerdo"
+
+export enum ESTADO_CTZ
+{
+  NO_GUARDADO                 = -1,
+  BORRADOR                    = 0,
+  COTIZADO                    = 1,
+  APROBADO                    = 2,
+  RECHAZADO                   = 3,
+  FACTURADO                   = 4,
+}
+
+export function estadoCtzToName( estado : number ): string {
+  let valor :string         =   estado == ESTADO_CTZ.NO_GUARDADO ? "Boceto"
+                              : estado == ESTADO_CTZ.BORRADOR    ? "Edición"
+                              : estado == ESTADO_CTZ.COTIZADO    ? "Cotizado"
+                              : estado == ESTADO_CTZ.APROBADO    ? "Aprobado"
+                              : estado == ESTADO_CTZ.RECHAZADO   ? "Rechazado"
+                              : estado == ESTADO_CTZ.FACTURADO   ? "Facturado"
+                              : ""
+  return valor 
+}
+
+export function estadoCtzToColor( estado : number ): string
+{
+  let color :string           = estado == ESTADO_CTZ.NO_GUARDADO ? "#1A1A1A"
+                              : estado == ESTADO_CTZ.BORRADOR    ? "#BCBABA"
+                              : estado == ESTADO_CTZ.COTIZADO    ? "#0f61dd"
+                              : estado == ESTADO_CTZ.APROBADO    ? "#06c700"
+                              : estado == ESTADO_CTZ.RECHAZADO   ? "#832362"
+                              : estado == ESTADO_CTZ.FACTURADO   ? "#FF6805"
+                              : "transparent"
+  return color 
+}
+
+export const estadosCtz       = [
+  { value: ESTADO_CTZ.NO_GUARDADO, label: estadoCtzToName( ESTADO_CTZ.NO_GUARDADO ) },
+  { value: ESTADO_CTZ.BORRADOR,    label: estadoCtzToName( ESTADO_CTZ.BORRADOR    ) },
+  { value: ESTADO_CTZ.COTIZADO,    label: estadoCtzToName( ESTADO_CTZ.COTIZADO    ) },
+  { value: ESTADO_CTZ.APROBADO,    label: estadoCtzToName( ESTADO_CTZ.APROBADO    ) },
+  { value: ESTADO_CTZ.RECHAZADO,   label: estadoCtzToName( ESTADO_CTZ.RECHAZADO   ) },
+  { value: ESTADO_CTZ.FACTURADO,   label: estadoCtzToName( ESTADO_CTZ.FACTURADO   ) },
+]  
+
+export function estadoStrCtzToColor( estado : string ): string
+{
+  let color :string           = estado == "Boceto"    ? "#1A1A1A"
+                              : estado == "Edición"   ? "#BCBABA"
+                              : estado == "Cotizado"  ? "#0f61dd"
+                              : estado == "Aprobado"  ? "#06c700"
+                              : estado == "Rechazado" ? "#832362"
+                              : estado == "Facturado" ? "#FF6805"
+                              : "transparent"
+  return color 
+}
+
+
+export interface ICotizacion2 extends IAcuerdo
+{
+  titulo:                     string 
+  fechaFinValidez:            Date
+  fechaFinValidezCorta:       string
+  diasValidez:                number
+  conTotal:                   boolean
+  pdfNombre:                  string
+  pdfContacto:                string
+  pdfCorreo:                  string 
+  pdfCiudad:                  string
+
+  esTerceroCtz:               boolean  
+}
+export class Cotizacion2 extends Acuerdo implements ICotizacion2
+{
+  titulo:                     string
+  fechaFinValidez:            Date
+  conTotal:                   boolean
+
+  constructor()
+  {
+    super()
+    console.log("En constructor Cotizacion")
+    this.titulo               = ""
+    this.fechaFinValidez      = new Date(0)
+    this.conTotal             = true    
+  }
+
+  // * /////////////////////////////////////////////////////////////////////////////// Color
+  get estadoColor(): string { return estadoCtzToColor(this.estado) }
+
+  // * /////////////////////////////////////////////////////////////////////////////// Status o Estado
+  get estadoLabel(): string { return estadoCtzToName(this.estado) }
+
+  // * /////////////////////////////////////////////////////////////////////////////// Dias de validez
+  get diasValidez(): number {
+    const fechaCalculo    = !!this.fechaValidacion.valueOf() ? this.fechaValidacion : this.fechaCreacion
+    const   dias          = date.getDateDiff(this.fechaFinValidez, fechaCalculo, "days")
+    return  dias
+  }
+
+  get refCorta()              : string {
+    return this.ref.length > 10 ? this.ref.slice( 5 , 20 ) : this.ref
+  }
+
+  get fechaFinValidezCorta()  : string { return this.fechaFinValidez  .toLocaleDateString('sv-SE') }
+
+  // * /////////////////////////////////////////////////////////////////////////////// 
+  get pdfNombre() :  string {
+    let nombre              = "" 
+    if(this.esTerceroCtz)
+      nombre                = !!this.contacto.empresa ? this.contacto.empresa : this.contacto.nombreCompleto
+    else
+    if(this.tercero.esEmpresa)
+      nombre                = this.tercero.nombre
+    else
+      nombre                = this.tercero.nombre
+
+    return nombre
+  }
+
+  get pdfContacto() :string {
+    let contacto            = "" 
+    const nombreYtel        = this.contacto.nombreCompleto + " - Tel: " + this.contacto.telefono
+    if(this.esTerceroCtz)
+      contacto              = !!this.contacto.empresa ? nombreYtel : this.contacto.telefono
+    else
+    if(this.tercero.esEmpresa)
+      contacto              = nombreYtel
+    else
+      contacto              = this.tercero.telefono
+
+    return contacto 
+  }
+
+  get pdfCorreo() :string {
+    let correo              =   this.esTerceroCtz   || this.tercero.esEmpresa
+                              ? this.contacto.correo
+                              : this.tercero.correo
+    return correo
+  }
+
+  get pdfCiudad() :string {
+    let correo              =   this.esTerceroCtz   || this.tercero.esEmpresa
+                              ? this.contacto.municipio.label
+                              : this.tercero.municipio.label
+    return correo
+  }
+
+  get esTerceroCtz() : boolean {
+    return this.tercero.id === this.comercial.terceroIdCtz
+  }
+
+  get title() : string {
+    let titulo              = ""
+    
+    if(!!this.titulo)
+      titulo                = this.titulo + " "
+
+    if(this.esTerceroCtz)
+      titulo                +=  !!this.contacto.empresa
+                                ? this.contacto.empresa + " " + this.contacto.nombreCompleto
+                                : this.contacto.nombreCompleto
+    else
+    if(this.tercero.esEmpresa)
+      titulo                += this.tercero.nombre + " " + this.contacto.nombreCompleto
+    else
+      titulo                += this.tercero.nombre
+
+    return titulo
+  }
+
+  getCotizacionForApi( usuarioId : number ) : any {
+    let ctzForApi : any = {
+      socid:                  this.tercero.id,
+      ref_client:             this.refCliente,
+      date:                   getMilisecShortForApiDolibarr( new Date() ),
+      user_author_id:         usuarioId,
+      array_options:
+      {
+        options_descuento:    0,
+        options_vendedor:     this.comercial.nombre,
+        options_comercial_id: this.comercial.id,
+        options_titulo:       this.titulo,
+        options_con_total:    +this.conTotal,
+        options_con_iva:      +this.conIVA,
+        options_aiuok:        +this.aiuOn,
+        options_aiuadmin:     this.aiuAdmin,
+        options_aiuimpre:     this.aiuImpre,
+        options_aiuutili:     this.aiuUtili
+      },
+    }
+
+    if(!!this.tiempoEntrega.id)
+      ctzForApi.availability_id     = this.tiempoEntrega.id
+
+    if(!!this.origenContacto.id)
+      ctzForApi.demand_reason_id    = this.origenContacto.id
+
+    if(!!this.formaPago.id)
+      ctzForApi.mode_reglement_id   = this.formaPago.id
+
+    if(!!this.condicionPago.id)
+      ctzForApi.cond_reglement_id   = this.condicionPago.id
+
+    if(!!this.metodoEntrega.id)
+      ctzForApi.shipping_method_id  = this.metodoEntrega.id
+
+    if(!!this.fechaEntrega.valueOf())
+      ctzForApi.date_livraison      = getMilisecShortForApiDolibarr( this.fechaEntrega )
+
+    if(!!this.fechaFinValidez.valueOf())
+      ctzForApi.fin_validite        = getMilisecShortForApiDolibarr( this.fechaFinValidez )
+
+    return ctzForApi
+  }
+
+
+  // * ///////////////////////////////////////////////////// static convertir data de API en new Cotizacion
+  static async convertirDataApiACotizacion( ctzApi : any ) : Promise < ICotizacion2 >
+  {
+    ctzApi.id                 = +ctzApi.id
+    ctzApi.terceroId          = +ctzApi.terceroId
+    ctzApi.comercialId        = +ctzApi.comercialId
+    ctzApi.usuariId           = +ctzApi.usuariId          
+    ctzApi.estado             = +ctzApi.estado
+    ctzApi.descuento          = +ctzApi.descuento
+    ctzApi.conTotal           = Boolean( +ctzApi.conTotal )
+    ctzApi.conIVA             = Boolean( +ctzApi.conIVA )
+    ctzApi.vinculado          = Boolean( +ctzApi.vinculado )
+    ctzApi.aiuOn              = Boolean( +ctzApi.aiu )
+    ctzApi.aiuAdmin           = +ctzApi.aiuAdmin
+    ctzApi.aiuImpre           = +ctzApi.aiuImpre
+    ctzApi.aiuUtili           = +ctzApi.aiuUtili
+
+    ctzApi.condicionPagoId    = +ctzApi.condicionPagoId
+    ctzApi.formaPagoId        = +ctzApi.formaPagoId
+    ctzApi.metodoEntregaId    = +ctzApi.metodoEntregaId
+    ctzApi.origenContactoId   = +ctzApi.origenContactoId  
+    ctzApi.tiempoEntregaId    = +ctzApi.tiempoEntregaId
+
+    ctzApi.fechaCreacion      = getDateToStr( ctzApi.fechaCreacion    )
+    ctzApi.fechaValidacion    = getDateToStr( ctzApi.fechaValidacion  )
+    ctzApi.fechaCierre        = getDateToStr( ctzApi.fechaCierre      )
+    ctzApi.fechaFinValidez    = getDateToStr( ctzApi.fechaFinValidez  )
+    ctzApi.fechaEntrega       = getDateToStr( ctzApi.fechaEntrega, "UTC")
+
+    let ctz                   = Object.assign( new Cotizacion2(), ctzApi ) as ICotizacion2
+        ctz.comercial         = await getUsuarioDB          ( ctz.comercialId       )
+        ctz.tercero           = await Tercero.convertirDataApiATercero( ctzApi.tercero )
+        ctz.contacto          = await Contacto.getContactoFromAPIMaco( ctzApi.contacto )
+        ctz.contacto.terceroId= ctzApi.terceroId
+        ctz.condicionPago     = await getCondicionesPagoDB  ( ctz.condicionPagoId   )
+        ctz.formaPago         = await getFormasPagoDB       ( ctz.formaPagoId       )
+        ctz.metodoEntrega     = await getMetodosEntregaDB   ( ctz.metodoEntregaId   )
+        ctz.origenContacto    = await getOrigenContactoDB   ( ctz.origenContactoId  )
+        ctz.tiempoEntrega     = await getTiempoEntregaDB    ( ctz.tiempoEntregaId   )
+        ctz.productos         = await LineaAcuerdo.getLineaFromAPIMaco( ctz.productos, ctzApi.id )
+        ctz.productos         = ctz.productos.sort ( ( a : ILineaAcuerdo, b : ILineaAcuerdo ) =>
+                                {
+                                  if(a.orden < b.orden) return -1
+                                  if(a.orden > b.orden) return 1
+                                  return 0;
+                                })
+    return ctz
+  }
+}

@@ -84,7 +84,8 @@
 <script setup lang="ts">
   import {  ref,
             computed            } from "vue"
-  import {  useUsuario          } from "src/useSimpleOk/useUsuario"
+  import {  storeToRefs         } from 'pinia'                                            
+  import {  useStoreUser        } from 'src/stores/user'  
   import {  servicesCotizaciones,
             IBusquedaCotizacion } from "src/areas/acuerdos/cotizaciones/services/servicesCotizaciones"
   import {  ModosVentana,
@@ -96,16 +97,18 @@
   import {  useTitle            } from "@vueuse/core"
   import    linkTercero           from "src/areas/terceros/components/LinkTercero.vue"
   import    ventana               from "components/utilidades/Ventana.vue"  
-  
+  import {  Tercero             } from "src/areas/terceros/models/Tercero"
+  import {  Contacto            } from "src/areas/terceros/models/Contacto"    
   import {  ICotizacion         } from "src/areas/acuerdos/cotizaciones/models/Cotizacion"
   import    selectColumnas        from "components/utilidades/select/SelectColumnas.vue"
   import    tooltipCotizacion     from "src/areas/acuerdos/cotizaciones/components/tools/TooltipCotizacion.vue"
-  import    tooltipLineas         from "src/areas/acuerdos/.components/TooltipLineas.vue"
+  import    tooltipLineas         from "src/areas/acuerdos/components/TooltipLineas.vue"
   import    tooltipContacto       from "src/areas/terceros/components/contactos/TooltipContacto.vue"
   import    barraBusqueda         from "./BarraBusqueda.vue"
   
   const title                     = useTitle("🔍 Buscar cotizaciones")
-  const { usuario, permisos     } = useUsuario()
+  const storeUser                 = useStoreUser()
+  const { usuario, permisos }     = storeToRefs(storeUser)  
   const { getCotizaciones       } = servicesCotizaciones()
   const { esMobil, aviso        } = useTools()
   const modo                      = ref< ModosVentana >("esperando-busqueda")  

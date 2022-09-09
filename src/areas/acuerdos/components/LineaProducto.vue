@@ -37,7 +37,7 @@
             toRefs
                               } from "vue"
   import {  ILineaAcuerdo,
-            LineaAcuerdo      } from "src/areas/acuerdos/.models/LineaAcuerdo"
+            LineaAcuerdo      } from "src/areas/acuerdos/models/LineaAcuerdo"
 
 
 

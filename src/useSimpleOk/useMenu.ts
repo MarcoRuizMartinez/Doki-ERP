@@ -83,6 +83,13 @@ export function useMenu()
                                               }),
                             },
                             { ...new ItemMenu({
+                                                label:      "Crear cotización 2",
+                                                icon:       "mdi-format-list-checks",
+                                                to:         "/cotizaciones/crear2",
+                                                visible:    permisos.value.terceros_ver
+                                              }),
+                            },                            
+                            { ...new ItemMenu({
                                                 label:      "Informes",
                                                 icon:       "mdi-chart-areaspline",
                                                 to:         "/cotizaciones/informes",

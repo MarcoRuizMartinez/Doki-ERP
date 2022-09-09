@@ -44,11 +44,10 @@ export function useFetch()
         solicitud.signal      = controller.signal
         loadingBar.start()
         const resultado       = await fetch( url, solicitud )
-        const esJson          = resultado.headers.get('content-type')?.includes('application/json');
-        //const data = esJson ? await response.json() : null;
-        console.log("resultado", resultado, esJson)
-        const data            = await resultado.json()
-        console.log("datag", data)
+        const esJson          = resultado.headers.get('content-type')?.includes('application/json')
+        const data            = esJson
+                                  ? await resultado.json()
+                                  : await resultado.text()
         loadingBar.stop()
 
         cargando              = false
@@ -117,7 +116,6 @@ export function useFetch()
 
   function limpiarTiempo()
   {
-    //console.log("Limpiando Tiempo en useFectch")
     clearTimeout( idTimeout )
   }
 

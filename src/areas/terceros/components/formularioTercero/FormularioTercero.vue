@@ -105,7 +105,7 @@
         :readonly               ="readonly"
       />
       <!-- //* //////////////   Municipio o Ciudad  -->
-      <municipios
+      <municipios               requerido
         v-model                 ="tercero.municipio"
         class                   ="col-12"
         :readonly               ="readonly"
@@ -382,8 +382,8 @@
     {
       copiaResponsables       = responsables
       let url                 = getURL( "servicios", "terceros")
-      let { ok : borrado    } = await miFetch( url, { method: "POST", body: getFormData( "borrarResponsables",  { id: tercero.value.id } ) }, { mensaje: "borrar responsables de tercero" } )
-      let { ok : okUsuarios } = await miFetch( url, { method: "POST", body: getFormData( "asignarResponsables", { id: tercero.value.id , responsables: tercero.value.responsablesIDS } ) }, { mensaje: "asignar usuarios a tercero" } )
+      let { ok : borrado    } = await miFetch( url, { method: "POST", body: getFormData( "borrarResponsables",  { id: tercero.value.id } ) },                                               { mensaje: "borrar responsables de tercero" } )
+      let { ok : okUsuarios } = await miFetch( url, { method: "POST", body: getFormData( "asignarResponsables", { id: tercero.value.id , responsables: tercero.value.responsablesIDS } ) }, { mensaje: "asignar usuarios a tercero"     } )
       if(!borrado || !okUsuarios )
         aviso( "negative", "Error al asignar el responsable del tercero" )
     }

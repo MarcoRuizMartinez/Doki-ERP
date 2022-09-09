@@ -26,7 +26,7 @@ import {  useFetch          } from "src/useSimpleOk/useFetch"
 import {  date              } from "quasar"
 import {  ICotizacion,
           Cotizacion        } from "src/areas/acuerdos/cotizaciones/models/Cotizacion"
-import {  ILineaApi         } from "src/areas/acuerdos/.models/LineaAcuerdo"
+import {  ILineaApi         } from "src/areas/acuerdos/models/LineaAcuerdo"
 import {  TIPOS_CONTACTO_ID } from "src/areas/terceros/models/Contacto"
 import {  ISerieCtz,
           SerieCtz          } from "src/areas/acuerdos/cotizaciones/models/SeriesCotizacion"
@@ -107,7 +107,7 @@ export function servicesCotizaciones()
                                                     }
                                                   )
       let quotes : ICotizacion[]  = []
-      console.log("Datas", data, Array.isArray( data ))
+
       if(ok && Array.isArray( data ))
       {
         for (const item of data)

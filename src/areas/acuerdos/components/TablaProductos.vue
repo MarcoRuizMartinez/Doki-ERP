@@ -189,17 +189,17 @@
             toRefs
                               } from "vue"
   import {  ILineaAcuerdo,
-            LineaAcuerdo      } from "src/areas/acuerdos/.models/LineaAcuerdo"
+            LineaAcuerdo      } from "src/areas/acuerdos/models/LineaAcuerdo"
   import {  IColumna,
             Columna           } from "src/models/Tabla"
-  import {  IGrupoLineas      } from "src/areas/acuerdos/.models/GrupoLineasAcuerdo"
+  import {  IGrupoLineas      } from "src/areas/acuerdos/models/GrupoLineasAcuerdo"
   import {  formatoPrecio,
             useTools          } from "src/useSimpleOk/useTools"
-  import    formularioLinea     from "src/areas/acuerdos/.components/FormularioLinea.vue"
+  import    formularioLinea     from "src/areas/acuerdos/components/FormularioLinea.vue"
   import    visorImagen         from "components/utilidades/VisorImagen.vue"
   import    efecto              from "components/utilidades/Efecto.vue"
-  import    editarEnMasa        from "src/areas/acuerdos/.components/TablaProductosEditarEnMasa.vue"  
-  import    precioTabla         from "src/areas/acuerdos/.components/TablaProductosPrecio.vue"  
+  import    editarEnMasa        from "src/areas/acuerdos/components/TablaProductosEditarEnMasa.vue"  
+  import    precioTabla         from "src/areas/acuerdos/components/TablaProductosPrecio.vue"  
   import    numeroPaso          from "components/utilidades/input/InputNumeroPaso.vue"
   import {  ESTADO_CTZ        } from "src/areas/acuerdos/cotizaciones/models/Cotizacion"
   import {  useApiDolibarr    } from "src/services/useApiDolibarr"

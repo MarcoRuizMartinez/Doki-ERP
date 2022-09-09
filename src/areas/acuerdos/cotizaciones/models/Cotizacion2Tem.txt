@@ -20,6 +20,7 @@ import {  ITiempoEntrega,   TiempoEntrega   } from "src/models/Diccionarios/Tiem
 import {  date                              } from "quasar"
 import {  getDateToStr,
           getMilisecShortForApiDolibarr     } from "src/useSimpleOk/useTools"
+import { Acuerdo, IAcuerdo                  } from "src/areas/acuerdos/models/Acuerdo"
 
 export enum ESTADO_CTZ
 {
@@ -76,87 +77,28 @@ export function estadoStrCtzToColor( estado : string ): string
 }
 
 
-export interface ICotizacion
+export interface ICotizacion2 extends IAcuerdo
 {
-  id:                         number
-  ref:                        string
-  refCorta:                   string
-  refCliente:                 string
-  titulo:                     string
-  title:                      string // Titulo HTML
-  sufijo:                     string
-  terceroId:                  number
-  tercero:                    ITercero
+  titulo:                     string 
+  //sufijo:                     string
 
-  fechaCreacion:              Date 
-  fechaCreacionCorta:         string
-  fechaValidacion:            Date
-  fechaValidacionCorta:       string
-  fechaCierre:                Date
-  fechaCierreCorta:           string
   fechaFinValidez:            Date
   fechaFinValidezCorta:       string
-  fechaEntrega:               Date
-  fechaEntregaCorta:          string
   diasValidez:                number
 
-  comercialId:                number
-  comercial:                  IUsuario
-  usuariId:                   number      // Creador
-  estado:                     ESTADO_CTZ
   estadoIcono:                string
   estadoColor:                string
   estadoLabel:                string
   
-  notaVendedor:               string
-  notaCotizacion:             string
-
-  condicionPagoId:            number
-  condicionPago:              ICondicionPago
-
-  formaPagoId:                number
-  formaPago:                  IFormaPago
-
-  metodoEntregaId:            number
-  metodoEntrega:              IMetodoEntrega
-
-  tiempoEntregaId:            number
-  tiempoEntrega:              ITiempoEntrega
-
-  origenContactoId:           number
-  origenContacto:             IOrigenContacto 
-
-  aiuOn:                      boolean
-  aiuAdmin:                   number
-  aiuImpre:                   number
-  aiuUtili:                   number
-  aiuAdminValor:              number
-  aiuImpreValor:              number
-  aiuUtiliValor:              number
-  aiuTotal:                   number
-
-  descuento:                  number
-  contacto:                   IContacto
-  productos:                  ILineaAcuerdo[]
-  proGrupos:                  IGrupoLineas[]
 
   conTotal:                   boolean
-  conIVA:                     boolean
-
-  hayDescuento:               boolean
-  descuentoValor:             number      // Descuento valor
-  totalSinDescu:              number      // Subtotal sin descuento
-  totalConDescu:              number      // Subtotal con descuento
-  ivaValor:                   number
-  totalConIva:                number  
 
   pdfNombre:                  string
   pdfContacto:                string
   pdfCorreo:                  string 
   pdfCiudad:                  string
 
-  esTerceroCtz:               boolean
-  vinculado:                  boolean     // Tiene un vinculo con otro elemento en dolibarr como facturas o pedidos
+  esTerceroCtz:               boolean  
 
   getCotizacionForApi:        ( usuarioId : number ) => any
 }
@@ -166,7 +108,7 @@ export class Cotizacion implements ICotizacion
   id:                         number
   ref:                        string
   refCliente:                 string
-  sufijo:                     string
+  //sufijo:                     string
   titulo:                     string
   terceroId:                  number
   tercero:                    ITercero
@@ -179,8 +121,7 @@ export class Cotizacion implements ICotizacion
   comercialId:                number
   comercial:                  IUsuario
   estado:                     ESTADO_CTZ
-  notaVendedor:               string
-  notaCotizacion:             string
+
   condicionPagoId:            number
   formaPagoId:                number
   metodoEntregaId:            number
@@ -208,7 +149,7 @@ export class Cotizacion implements ICotizacion
     this.id                   = 0
     this.ref                  = ""
     this.refCliente           = ""
-    this.sufijo               = ""
+    //this.sufijo               = ""
     this.titulo               = ""
     this.terceroId            = 0
     this.tercero              = new Tercero()
@@ -221,8 +162,7 @@ export class Cotizacion implements ICotizacion
     this.comercial            = new Usuario()
     this.usuariId             = 0
     this.estado               = ESTADO_CTZ.NO_GUARDADO
-    this.notaVendedor         = ''
-    this.notaCotizacion       = ''
+
     this.condicionPagoId      = 0
     this.formaPagoId          = 0
     this.metodoEntregaId      = 0

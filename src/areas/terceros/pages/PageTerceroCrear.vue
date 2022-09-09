@@ -4,7 +4,7 @@
     >
     <transition               appear enter-active-class="animated fadeInDown" leave-active-class="animated fadeOutDown" mode="out-in">
       <formulario-tercero
-        class                   ="col"
+        class                   ="col-md-7 col-12"
         :tipo                   ="tipo"
       />
     </transition>

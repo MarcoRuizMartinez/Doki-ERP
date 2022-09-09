@@ -4,7 +4,7 @@
     titulo                      ="Documentos"
     icono                       ="mdi-file-document-multiple"
     size-icon-carga             ="6em"
-    mensaje-sin-resultados      ="Tercero sin documentos"
+    mensaje-sin-resultados      ="Sin documentos"
     icono-sin-resultados        ="mdi-file-document-multiple"
     :padding-contenido          ="modo == 'normal' ? '0' : '12px' "
     :modo                       ="modo"
@@ -84,7 +84,7 @@
       />
       <Tooltip label            ="Subir archivos en Dolibarr"/>      
     </template>
-    <template #menu v-if  ="puedeSubir">
+    <template #menu v-if        ="puedeSubir">
       <!-- //* ///////////////  Subir archivo  -->
       <subir-archivo />
     </template>    
@@ -132,7 +132,7 @@
           modulo,
           puedeEditar
                             } = toRefs( props )
-  let puedeSubir              = modulo.value === "thirdparty" || !puedeEditar.value ? false : true //computed(()=>{ modulo.value === "thirdparty" })
+  let puedeSubir              = false//modulo.value === "thirdparty" || !puedeEditar.value ? false : true //computed(()=>{ modulo.value === "thirdparty" })
   const urlDolibarr           = process.env.URL_DOLIBARR
 
   const columnas: IColumna[]  = [

@@ -137,9 +137,7 @@
         >
         <Tooltip label      ="Limpiar búsqueda"/>
       </q-btn>
-
     </div>
-
   </fieldset-filtro>
 </template>
 <script lang="ts" setup>
@@ -149,9 +147,10 @@
             computed,
             onMounted,
                                 } from "vue"
+  import {  storeToRefs         } from 'pinia'
   import {  IBusquedaCotizacion } from "src/areas/acuerdos/cotizaciones/services/servicesCotizaciones"
   import {  IUsuario            } from "src/areas/usuarios/models/Usuario"
-  import {  useUsuario          } from "src/useSimpleOk/useUsuario"
+  import {  useStoreUser        } from 'src/stores/user'
   import {  estadosCtz          } from "src/areas/acuerdos/cotizaciones/models/Cotizacion"
   import {  useDexie, TABLAS    } from "src/services/useDexie"
   import {  ILabelValue,
@@ -171,7 +170,8 @@
   const router                    = useRouter()
   let queryURL                    = router.currentRoute.value.query  
   const { lista : origenes  }     = useDexie( TABLAS.ORIGEN_CONTACTO)
-  const { usuario, permisos }     = useUsuario()
+  const storeUser                 = useStoreUser()
+  const { usuario, permisos }     = storeToRefs(storeUser)  
   const opcionesTotales           = [{value:0, label:'Sin totalizar'},  {value:1, label:'Totalizado'}]
   const opcionesIVA               = [{value:0, label:'Sin IVA'},        {value:1, label:'Con IVA'   }]  
 

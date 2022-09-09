@@ -90,6 +90,12 @@ const routes: RouteRecordRaw[] = [
         component: () => import('src/areas/acuerdos/cotizaciones/pages/PageCotizacionCrear.vue'),
       },
       {
+        path: '/cotizaciones/crear2',
+        name: 'crearCotizacion2',
+        props:  true,
+        component: () => import('src/areas/acuerdos/cotizaciones/pages/PageCotizacionCrear2.vue'),
+      },      
+      {
         path: '/cotizaciones/informes',
         name: 'cotizacionInformes',
         props:  true,

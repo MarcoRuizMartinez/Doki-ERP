@@ -23,7 +23,7 @@
 </template>
 <script setup lang="ts">
   import {  PropType, ref      } from "vue"
-  import {  ILineaAcuerdo } from "src/areas/acuerdos/.models/LineaAcuerdo"
+  import {  ILineaAcuerdo } from "src/areas/acuerdos/models/LineaAcuerdo"
   const props = defineProps({
     lineas:  { required: true, type: Object as PropType<ILineaAcuerdo[]> }
   })

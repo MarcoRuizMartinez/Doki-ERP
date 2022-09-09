@@ -155,10 +155,10 @@
       let numeroDoc           = parseInt( numero )
       let tipoDoc
 
-      if( numeroDoc           >= 1000000000 )
+      if( numeroDoc           >= 1_000_000_000 )
         tipoDoc               = tiposDeDocumentos.value[1] // Cedula
       else
-      if( numeroDoc           >= 800000000 )
+      if( numeroDoc           >= 800_000_000 )
         tipoDoc               = tiposDeDocumentos.value[0] // Nit
 
       if(tipoDoc              != undefined)
@@ -193,36 +193,36 @@
 
     if(modelo.value.tipo.codigo == TIPOS_DOCUMENTO.NIT)
     {
-      if(numero                 < 100000)
+      if(numero                 < 100_000)
       {
         valido                  = false
         mensaje                 = "El NIT no puede ser inferior a 100 mil"
       }
-      else if(numero            > 100000000 && numero < 699999999)
+      else if(numero            > 100_000_000 && numero < 699_999_999)
       {
         valido                  = false
         mensaje                 = "El NIT no puede estar en el rango de 100 a 699 millones"
       }
-      else if(numero            > 999999999)
+      else if(numero            > 1_999_999_999)
       {
         valido                  = false
-        mensaje                 = "El Nit no puede ser superior a 1000 millones"
+        mensaje                 = "El Nit no puede ser superior a 2000 millones"
       }
     }
     else
     if(modelo.value.tipo.codigo == TIPOS_DOCUMENTO.CEDULA_CIUDADANIA)
     {
-      if(numero                 < 100000)
+      if(numero                 < 100_000)
       {
         valido                  = false
         mensaje                 = "La cedula no puede ser inferior a 100 mil"
       }
-      else if(numero            > 100000000 && numero < 999999999)
+      else if(numero            > 100_000_000 && numero < 999_999_999)
       {
         valido                  = false
         mensaje                 = "La cedula no puede estar en el rango de 100 a 999 millones"
       }
-      else if(numero            > 2000000000)
+      else if(numero            > 1_999_999_999)
       {
         valido                  = false
         mensaje                 = "La cedula no puede ser mayor a 2000 millones"
@@ -231,12 +231,12 @@
     else
     if(modelo.value.tipo.codigo == TIPOS_DOCUMENTO.TARJETA_IDENTIDAD)
     {
-      if(numero                 < 1000000000)
+      if(numero                 < 1_000_000_000)
       {
         valido                  = false
         mensaje                 = "La tarjeta de identidad no puede ser inferior a 1000 millones"
       }
-      else if(numero            > 2000000000)
+      else if(numero            > 2_000_000_000)
       {
         valido                  = false
         mensaje                 = "La tarjeta de identidad no puede ser mayor a 2000 millones"

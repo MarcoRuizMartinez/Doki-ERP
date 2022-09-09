@@ -61,7 +61,7 @@
   import {  useQuasar         } from "quasar"
   import {  useTools, pausa   } from "src/useSimpleOk/useTools"
   import {  LineaAcuerdo,
-            ILineaAcuerdo     } from "src/areas/acuerdos/.models/LineaAcuerdo"
+            ILineaAcuerdo     } from "src/areas/acuerdos/models/LineaAcuerdo"
   const emit                  = defineEmits(["update:lineas", "edicionOk", "borrarLinea", "borradoOk", ])
   const props                 = defineProps({
     lineas: { required: true,   type: Array as PropType< ILineaAcuerdo[] >  }, 

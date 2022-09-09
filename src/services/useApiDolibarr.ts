@@ -158,10 +158,6 @@ export function useApiDolibarr()
         else
           resultado           = await apiDolibarrAxios[metodo](endPoint, objeto, { headers: getHeadersAxios(), cancelToken: cancelTokenSource.token })
 
-        //console.log('resultado: ', resultado);
-        cargando              = false
-        loadingBar.stop()
-
         if(!!resultado.data)
         {
           if( resultado.data.hasOwnProperty("error") && resultado.data.error !== null)
@@ -172,10 +168,20 @@ export function useApiDolibarr()
         else
           resolver(   { codigo: resultado.status, ok: false,  data : resultado.data } )
 
-      } catch (error) {
+      } catch (error : any) {
+        const errorTxt = error.toString()
+        if(metodo === "get" && error.toString().includes("Request failed with status code 404"))
+        {
+          console.log("Consulta sin resultados")
+        }
+        else
+          console.warn('error: ', endPoint, error);
+
         resolver( { codigo: CODES_FETCH.errorConsulta, ok: false }  )
       }
       finally {
+        cargando              = false
+        loadingBar.stop()
         limpiarTiempo()
       }
     })

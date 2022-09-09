@@ -1,3 +1,14 @@
+import {  X100                              } from "../../../useSimpleOk/useTools"
+import {  ILineaAcuerdo,    LineaAcuerdo    } from "../../../areas/acuerdos/models/LineaAcuerdo"
+import {  ITercero,         Tercero         } from "../../../areas/terceros/models/Tercero"
+import {  IUsuario,         Usuario         } from "../../../areas/usuarios/models/Usuario"
+import {  IContacto,        Contacto        } from "../../../areas/terceros/models/Contacto"
+import {  ICondicionPago,   CondicionPago   } from "../../../models/Diccionarios/CondicionPago"
+import {  IFormaPago,       FormaPago       } from "../../../models/Diccionarios/FormaPago"
+import {  IMetodoEntrega,   MetodoEntrega   } from "../../../models/Diccionarios/MetodoEntrega"
+import {  IOrigenContacto,  OrigenContacto  } from "../../../models/Diccionarios/OrigenContacto"
+import {  IGrupoLineas,     GrupoLineas     } from "../../../areas/acuerdos/models/GrupoLineasAcuerdo"
+import {  ITiempoEntrega,   TiempoEntrega   } from "../../../models/Diccionarios/TiempoEntrega"
 import {  getCondicionesPagoDB,
           getFormasPagoDB,
           getMetodosEntregaDB,
@@ -5,21 +16,10 @@ import {  getCondicionesPagoDB,
           getTiempoEntregaDB,
           getUsuarioDB,
                                             } from "src/services/useDexie"
-import {  X100                              } from "src/useSimpleOk/useTools"
-                                            
-import {  ILineaAcuerdo,    LineaAcuerdo    } from "src/areas/acuerdos/models/LineaAcuerdo"
-import {  ITercero,         Tercero         } from "src/areas/terceros/models/Tercero"
-import {  IUsuario,         Usuario         } from "src/areas/usuarios/models/Usuario"
-import {  IContacto,        Contacto        } from "src/areas/terceros/models/Contacto"
-import {  ICondicionPago,   CondicionPago   } from "src/models/Diccionarios/CondicionPago"
-import {  IFormaPago,       FormaPago       } from "src/models/Diccionarios/FormaPago"
-import {  IMetodoEntrega,   MetodoEntrega   } from "src/models/Diccionarios/MetodoEntrega"
-import {  IOrigenContacto,  OrigenContacto  } from "src/models/Diccionarios/OrigenContacto"
-import {  IGrupoLineas,     GrupoLineas     } from "src/areas/acuerdos/models/GrupoLineasAcuerdo"
-import {  ITiempoEntrega,   TiempoEntrega   } from "src/models/Diccionarios/TiempoEntrega"
 import {  date                              } from "quasar"
 import {  getDateToStr,
           getMilisecShortForApiDolibarr     } from "src/useSimpleOk/useTools"
+
 
 export enum ESTADO_CTZ
 {
@@ -30,6 +30,15 @@ export enum ESTADO_CTZ
   RECHAZADO                   = 3,
   FACTURADO                   = 4,
 }
+
+export enum TIPO_ACUERDO
+{
+  COTIZACION                  = "cotizacion",
+  PEDIDO                      = "pedido",
+  ENTREGA                     = "entraga",
+  FACTURA                     = "factura",
+}
+
 
 export function estadoCtzToName( estado : number ): string {
   let valor :string         =   estado == ESTADO_CTZ.NO_GUARDADO ? "Boceto"
@@ -76,41 +85,38 @@ export function estadoStrCtzToColor( estado : string ): string
 }
 
 
-export interface ICotizacion
+export interface IAcuerdo
 {
+  tipo:                       TIPO_ACUERDO
+  esNuevo:                    boolean
   id:                         number
   ref:                        string
   refCorta:                   string
   refCliente:                 string
-  titulo:                     string
   title:                      string // Titulo HTML
-  sufijo:                     string
   terceroId:                  number
   tercero:                    ITercero
-
   fechaCreacion:              Date 
   fechaCreacionCorta:         string
   fechaValidacion:            Date
   fechaValidacionCorta:       string
   fechaCierre:                Date
   fechaCierreCorta:           string
-  fechaFinValidez:            Date
-  fechaFinValidezCorta:       string
   fechaEntrega:               Date
   fechaEntregaCorta:          string
-  diasValidez:                number
-
+  
   comercialId:                number
   comercial:                  IUsuario
   usuariId:                   number      // Creador
-  estado:                     ESTADO_CTZ
+  
+  estado:                     number
   estadoIcono:                string
   estadoColor:                string
   estadoLabel:                string
-  
-  notaVendedor:               string
-  notaCotizacion:             string
 
+  notaPrivada:                string
+  notaPublica:                string
+  
   condicionPagoId:            number
   condicionPago:              ICondicionPago
 
@@ -140,7 +146,6 @@ export interface ICotizacion
   productos:                  ILineaAcuerdo[]
   proGrupos:                  IGrupoLineas[]
 
-  conTotal:                   boolean
   conIVA:                     boolean
 
   hayDescuento:               boolean
@@ -150,37 +155,41 @@ export interface ICotizacion
   ivaValor:                   number
   totalConIva:                number  
 
+  vinculado:                  boolean     // Tiene un vinculo con otro elemento en dolibarr como facturas o pedidos
+
+  /* Solo para cotizaciones */
+  titulo:                     string 
+  fechaFinValidez:            Date
+  fechaFinValidezCorta:       string
+  diasValidez:                number
+  conTotal:                   boolean
   pdfNombre:                  string
   pdfContacto:                string
   pdfCorreo:                  string 
   pdfCiudad:                  string
 
-  esTerceroCtz:               boolean
-  vinculado:                  boolean     // Tiene un vinculo con otro elemento en dolibarr como facturas o pedidos
-
-  getCotizacionForApi:        ( usuarioId : number ) => any
+  esTerceroCtz:               boolean    
 }
 
-export class Cotizacion implements ICotizacion
+export class Acuerdo implements IAcuerdo
 {
+  tipo:                       TIPO_ACUERDO
+  esNuevo:                    boolean
   id:                         number
   ref:                        string
-  refCliente:                 string
-  sufijo:                     string
-  titulo:                     string
+  refCliente:                 string  
   terceroId:                  number
   tercero:                    ITercero
-  fechaCreacion:              Date 
-  fechaFinValidez:            Date
+  fechaCreacion:              Date   
   fechaValidacion:            Date
   fechaCierre:                Date
   fechaEntrega:               Date
   usuariId:                   number
+  estado:                     number
+  notaPrivada:                string
+  notaPublica:                string  
   comercialId:                number
   comercial:                  IUsuario
-  estado:                     ESTADO_CTZ
-  notaVendedor:               string
-  notaCotizacion:             string
   condicionPagoId:            number
   formaPagoId:                number
   metodoEntregaId:            number
@@ -199,30 +208,33 @@ export class Cotizacion implements ICotizacion
   metodoEntrega:              IMetodoEntrega  
   origenContacto:             IOrigenContacto 
   tiempoEntrega:              ITiempoEntrega
-  conTotal:                   boolean
   conIVA:                     boolean
   vinculado:                  boolean
 
+  /* Solo para cotizaciones */
+  titulo:                     string
+  fechaFinValidez:            Date
+  conTotal:                   boolean  
+
   constructor()
   {
+    this.tipo                 = TIPO_ACUERDO.COTIZACION
+    this.esNuevo              = true
     this.id                   = 0
     this.ref                  = ""
     this.refCliente           = ""
-    this.sufijo               = ""
-    this.titulo               = ""
     this.terceroId            = 0
     this.tercero              = new Tercero()
     this.fechaCreacion        = new Date()
-    this.fechaFinValidez      = new Date(0)
     this.fechaValidacion      = new Date()
     this.fechaCierre          = new Date(0)
     this.fechaEntrega         = new Date(0)
     this.comercialId          = 0
     this.comercial            = new Usuario()
     this.usuariId             = 0
-    this.estado               = ESTADO_CTZ.NO_GUARDADO
-    this.notaVendedor         = ''
-    this.notaCotizacion       = ''
+    this.estado               = 0
+    this.notaPrivada          = ''
+    this.notaPublica          = ''    
     this.condicionPagoId      = 0
     this.formaPagoId          = 0
     this.metodoEntregaId      = 0
@@ -241,41 +253,16 @@ export class Cotizacion implements ICotizacion
     this.metodoEntrega        = new MetodoEntrega()  
     this.origenContacto       = new OrigenContacto() 
     this.tiempoEntrega        = new TiempoEntrega()
-    this.conTotal             = true
     this.conIVA               = true
     this.vinculado            = false
+
+    /* Solo para cotizaciones */
+    this.titulo               = ""
+    this.fechaFinValidez      = new Date(0)
+    this.conTotal             = true        
   }
 
-  // * ///////////////////////////////////////////////////////////////////////////////  Icono
-  get estadoIcono(): string {
-    let valor :string         =   this.estado == ESTADO_CTZ.NO_GUARDADO ? "mdi-eraser-variant"
-                                : this.estado == ESTADO_CTZ.BORRADOR    ? "mdi-circle-edit-outline"
-                                : this.estado == ESTADO_CTZ.COTIZADO    ? "mdi-notebook-check"
-                                : this.estado == ESTADO_CTZ.APROBADO    ? "mdi-check-decagram"
-                                : this.estado == ESTADO_CTZ.RECHAZADO   ? "mdi-close-circle"
-                                : this.estado == ESTADO_CTZ.FACTURADO   ? "mdi-lock-check"
-                                : ""
-    return valor 
-  }
-
-  // * /////////////////////////////////////////////////////////////////////////////// Color
-  get estadoColor(): string { return estadoCtzToColor(this.estado) }
-
-  // * /////////////////////////////////////////////////////////////////////////////// Status o Estado
-  get estadoLabel(): string { return estadoCtzToName(this.estado) }
-
-  // * /////////////////////////////////////////////////////////////////////////////// Dias de validez
-  get diasValidez(): number {
-    const fechaCalculo    = !!this.fechaValidacion.valueOf() ? this.fechaValidacion : this.fechaCreacion
-    const   dias          = date.getDateDiff(this.fechaFinValidez, fechaCalculo, "days")
-    return  dias
-  }
-
-  // * /////////////////////////////////////////////////////////////////////////////// Dias de validez
-  //get fechaFinValidezLarga(): string {
-  //  return  date.formatDate(this.fechaFinValidez, 'YYYY-MM-DD')
-  //}
-
+  
   // * /////////////////////////////////////////////////////////////////////////////// Total sin descuento
   get totalSinDescu() :number {
     let sumaProductos       = 0
@@ -345,6 +332,7 @@ export class Cotizacion implements ICotizacion
 
 
   // * /////////////////////////////////////////////////////////////////////////////// IVA valor
+
   get ivaValor() :number {
     let ivaTotal            = 0
     let ivaX100             = parseInt( process.env.IVA ?? "0" )
@@ -368,14 +356,36 @@ export class Cotizacion implements ICotizacion
     return total
   }
 
-  get fechaCreacionCorta()    : string { return this.fechaCreacion    .toLocaleDateString('sv-SE') }
-  get fechaValidacionCorta()  : string { return this.fechaValidacion  .toLocaleDateString('sv-SE') } 
-  get fechaCierreCorta()      : string { return this.fechaCierre      .toLocaleDateString('sv-SE') }
-  get fechaFinValidezCorta()  : string { return this.fechaFinValidez  .toLocaleDateString('sv-SE') }
-  get fechaEntregaCorta()     : string { return this.fechaEntrega     .toLocaleDateString('sv-SE') }
+  // * ///////////////////////////////////////////////////////////////////////////////  Icono
+  get estadoIcono(): string {
+    let valor :string         =   this.estado == ESTADO_CTZ.NO_GUARDADO ? "mdi-eraser-variant"
+                                : this.estado == ESTADO_CTZ.BORRADOR    ? "mdi-circle-edit-outline"
+                                : this.estado == ESTADO_CTZ.COTIZADO    ? "mdi-notebook-check"
+                                : this.estado == ESTADO_CTZ.APROBADO    ? "mdi-check-decagram"
+                                : this.estado == ESTADO_CTZ.RECHAZADO   ? "mdi-close-circle"
+                                : this.estado == ESTADO_CTZ.FACTURADO   ? "mdi-lock-check"
+                                : ""
+    return valor 
+  }
+
+  // * /////////////////////////////////////////////////////////////////////////////// Color
+  get estadoColor(): string { return estadoCtzToColor(this.estado) }
+
+  // * /////////////////////////////////////////////////////////////////////////////// Status o Estado
+  get estadoLabel(): string { return estadoCtzToName(this.estado) }
+
+  // * /////////////////////////////////////////////////////////////////////////////// Dias de validez
+  get diasValidez(): number {
+    const fechaCalculo    = !!this.fechaValidacion.valueOf() ? this.fechaValidacion : this.fechaCreacion
+    const   dias          = date.getDateDiff(this.fechaFinValidez, fechaCalculo, "days")
+    return  dias
+  }
+
   get refCorta()              : string {
     return this.ref.length > 10 ? this.ref.slice( 5 , 20 ) : this.ref
   }
+
+  get fechaFinValidezCorta()  : string { return this.fechaFinValidez  .toLocaleDateString('sv-SE') }
 
   // * /////////////////////////////////////////////////////////////////////////////// 
   get pdfNombre() :  string {
@@ -442,6 +452,11 @@ export class Cotizacion implements ICotizacion
     return titulo
   }
 
+  get fechaCreacionCorta()    : string { return this.fechaCreacion    .toLocaleDateString('sv-SE') }
+  get fechaValidacionCorta()  : string { return this.fechaValidacion  .toLocaleDateString('sv-SE') } 
+  get fechaCierreCorta()      : string { return this.fechaCierre      .toLocaleDateString('sv-SE') }
+  get fechaEntregaCorta()     : string { return this.fechaEntrega     .toLocaleDateString('sv-SE') }
+
   getCotizacionForApi( usuarioId : number ) : any {
     let ctzForApi : any = {
       socid:                  this.tercero.id,
@@ -489,7 +504,7 @@ export class Cotizacion implements ICotizacion
 
 
   // * ///////////////////////////////////////////////////// static convertir data de API en new Cotizacion
-  static async convertirDataApiACotizacion( ctzApi : any ) : Promise < ICotizacion >
+  static async convertirDataApiACotizacion( ctzApi : any ) : Promise < IAcuerdo >
   {
     ctzApi.id                 = +ctzApi.id
     ctzApi.terceroId          = +ctzApi.terceroId
@@ -517,7 +532,7 @@ export class Cotizacion implements ICotizacion
     ctzApi.fechaFinValidez    = getDateToStr( ctzApi.fechaFinValidez  )
     ctzApi.fechaEntrega       = getDateToStr( ctzApi.fechaEntrega, "UTC")
 
-    let ctz                   = Object.assign( new Cotizacion(), ctzApi ) as ICotizacion
+    let ctz                   = Object.assign( new Acuerdo(), ctzApi ) as IAcuerdo
         ctz.comercial         = await getUsuarioDB          ( ctz.comercialId       )
         ctz.tercero           = await Tercero.convertirDataApiATercero( ctzApi.tercero )
         ctz.contacto          = await Contacto.getContactoFromAPIMaco( ctzApi.contacto )

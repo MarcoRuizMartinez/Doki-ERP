@@ -184,8 +184,9 @@
                             } from "vue"
   import {  useQuasar,
             extend          } from 'quasar'
+  import {  storeToRefs     } from 'pinia'            
   import {  useApiDolibarr  } from "src/services/useApiDolibarr"
-  import {  useUsuario      } from "src/useSimpleOk/useUsuario"
+  import {  useStoreUser    } from 'src/stores/user'
   import {  useTools,
             mayusculasPrimeraLetraAll
                             } from "src/useSimpleOk/useTools"
@@ -199,8 +200,9 @@
   import    inputText         from "src/components/utilidades/input/InputFormText.vue"
 
   const { dialog            } = useQuasar()
-  const { apiDolibarr    } = useApiDolibarr()
-  const { permisos          } = useUsuario()
+  const { apiDolibarr       } = useApiDolibarr()
+  const storeUser             = useStoreUser()
+  const { permisos          } = storeToRefs(storeUser)
   const { aviso             } = useTools()
   const contacto              = ref<IContacto>(new Contacto())
   const cargando              = ref< boolean >(false)

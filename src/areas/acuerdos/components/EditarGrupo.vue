@@ -116,7 +116,7 @@
                               } from "vue"
   import {  ICotizacion,
             ESTADO_CTZ        } from "src/areas/acuerdos/cotizaciones/models/Cotizacion"
-  import {  IGrupoLineas      } from "src/areas/acuerdos/.models/GrupoLineasAcuerdo"
+  import {  IGrupoLineas      } from "src/areas/acuerdos/models/GrupoLineasAcuerdo"
   import {  useTools          } from "src/useSimpleOk/useTools"
   import {  useApiDolibarr    } from "src/services/useApiDolibarr"
   import {  btnBaseMd,

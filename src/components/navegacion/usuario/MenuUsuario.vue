@@ -73,7 +73,7 @@
             computed          } from "vue"
   import    apariencia          from "./Apariencia.vue"
   import {  useStoreUser      } from 'src/stores/user'
-  //import {  limpiarDB         } from "src/services/useDexie"
+  import {  limpiarDB         } from "src/services/useDexie"
   import {  btnBaseMd,
             btnBaseSm         } from "src/useSimpleOk/useEstilos"
 
@@ -91,6 +91,6 @@
 
   function limpiar()
   {
-    ///limpiarDB()
+    limpiarDB()
   }  
 </script>

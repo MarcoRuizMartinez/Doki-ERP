@@ -2,6 +2,13 @@
   "extends": "@quasar/app-webpack/tsconfig-preset",
   "compilerOptions": {
     "baseUrl": ".",
-    "target": "es2021",    
+    "target": "es2022",
+    "strictNullChecks": false
+  },
+  "typedocOptions": {
+      "entryPoints": [
+        "src/index.ts"
+      ],
+      "out": "docs"
   }
 }

@@ -17,11 +17,11 @@ export interface IBusquedaProducto {
 //area?:        string
 //orden?:       "ASC" | "DESC"  
 }
-
+//import {  storeToRefs     } from 'pinia'
 import {  getURL,
           getFormData     } from "src/services/APIMaco"
 import {  useFetch        } from "src/useSimpleOk/useFetch"
-import {  useUsuario      } from "src/useSimpleOk/useUsuario"
+//import {  useStoreUser    } from 'src/stores/user'
 import {  IProductoDoli,
           ProductoDoli    } from "src/areas/productos/models/ProductoDolibarr"
 
@@ -29,9 +29,8 @@ import {  IProductoDoli,
 export function servicesProductos() 
 {
   const { miFetch           } = useFetch()
-  const { usuario           } = useUsuario()
-
-
+  //const storeUser             = useStoreUser()
+  //const { permisos          } = storeToRefs(storeUser)  
   
   async function buscarProductos( query : IBusquedaProducto ) : Promise< IProductoDoli[] >
   {

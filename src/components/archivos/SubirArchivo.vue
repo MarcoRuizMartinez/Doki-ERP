@@ -34,7 +34,7 @@
             FileToBase64    } from "src/useSimpleOk/useTools"
   import {  format          } from 'quasar'
 
-  const { apiDolibarr    } = useApiDolibarr()
+  const { apiDolibarr       } = useApiDolibarr()
   const { aviso             } = useTools()
   const { humanStorageSize  } = format
   const cargandoArchivos      = ref< boolean    >(false)
@@ -61,22 +61,34 @@
     cargandoArchivos.value    = true
     archivosSubir.value.forEach( async ( file : File ) =>
     {
-      //console.log('%c⧭', 'color: #917399', file)
+      console.log('%c⧭', 'color: #917399', file)
       let b64                 = await FileToBase64(file)
       
       let objSubir            = {
-                                  "filename":          file.name,
-                                  "modulepart":        "societe", //   
-                                  "ref":               "",//idTercero.value.toString(),
+                                  //"filename":          file.name,
+                                  "filename":          "texto.txt",
+                                  "modulepart":        "proposal", //   societethirdparty
+                                  //"ref":               "Cotiz 22.06.07-1317",//idTercero.value.toString(),
+                                  "ref":                1479,
                                   "subdir":            "",
-                                  "filecontent":       "SG9sYSBtdW5kbw==",
-                                  "fileencoding":      "base64",
+                                  //"filecontent":       "SG9sYSBtdW5kbw==",
+                                  "filecontent":       "Hola Mundo",
+                                  //"fileencoding":      "base64",
                                   "overwriteifexists": 1
                                 } 
-      //console.log('%c⧭', 'FileToBase64: #00bf00', objSubir)
+/* { 
+"filename": "mynewfile.txt",
+"modulepart": "invoice",
+"ref": "FA1701-001",
+"subdir": "",
+"filecontent": "content text",
+"fileencoding": "",
+"overwriteifexists": "0"
+} */
+      console.log('%c⧭', 'FileToBase64: #00bf00', objSubir)
 
       let { data, ok }        = await apiDolibarr( "subir", "documento", objSubir )
-      //console.log('%c⧭', 'color: #0088cc', ok, data)
+      console.log('%c⧭', 'color: #0088cc', ok, data)
     })
     cargandoArchivos.value    = false
   }

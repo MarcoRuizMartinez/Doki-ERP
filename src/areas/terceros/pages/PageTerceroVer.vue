@@ -30,14 +30,14 @@
         />
       </efecto>
       <efecto>
-<!--         <documentos
+        <documentos
           v-show              ="!!tercero.id"
           class               ="col-12 col-md-7"
           modulo              ="thirdparty"
           height-card         ="180px"
           :ref-modulo         ="tercero.id ?? 0"
           :puede-editar       ="puedeModificar"
-        /> -->
+        />
       </efecto>
       <efecto>
         <notas

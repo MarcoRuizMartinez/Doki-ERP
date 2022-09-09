@@ -57,40 +57,41 @@
             provide,
             computed,
             onMounted,
-                            } from "vue"
-  import {  useRouter       } from 'vue-router'
-  import {  servicesCotizaciones } from "src/areas/acuerdos/cotizaciones/services/servicesCotizaciones"
-  import {  servicesTerceros     } from "src/areas/terceros/services/servicesTerceros"  
-  import {  useUsuario      } from "src/useSimpleOk/useUsuario"
-  import {  useApiDolibarr  } from "src/services/useApiDolibarr"
-  import {  useTitle        } from "@vueuse/core"
+                                  } from "vue"
+  import {  useRouter             } from 'vue-router'
+  import {  storeToRefs           } from 'pinia'  
+  import {  servicesCotizaciones  } from "src/areas/acuerdos/cotizaciones/services/servicesCotizaciones"
+  import {  servicesTerceros      } from "src/areas/terceros/services/servicesTerceros"  
+  import {  useStoreUser          } from 'src/stores/user'
+  import {  useApiDolibarr        } from "src/services/useApiDolibarr"
+  import {  useTitle              } from "@vueuse/core"
   import {  useTools,
             ID_URL_Ok,
-            confeti         } from "src/useSimpleOk/useTools"
+            confeti               } from "src/useSimpleOk/useTools"
   import {  ICotizacion,
             Cotizacion,
-            ESTADO_CTZ      } from "src/areas/acuerdos/cotizaciones/models/Cotizacion"
+            ESTADO_CTZ            } from "src/areas/acuerdos/cotizaciones/models/Cotizacion"
   import {  ITercero,
-            Tercero         } from "src/areas/terceros/models/Tercero"
+            Tercero               } from "src/areas/terceros/models/Tercero"
   import {  ILoading,
-            LoadingDefault  } from "src/models/TiposVarios"
+            LoadingDefault        } from "src/models/TiposVarios"
   //* ///////////////////////////////////////////////////////////////////////////////// Componentes
-  import {  useCotizacionPDF} from "src/areas/acuerdos/cotizaciones/composables/useCotizacionPDF"
-  import    botonera          from "src/areas/acuerdos/cotizaciones/components/BotoneraCotizacion.vue"
-  import    tituloCtz         from "src/areas/acuerdos/cotizaciones/components/TituloCotizacion.vue"
-  import    terceroYContacto  from "src/areas/acuerdos/cotizaciones/components/TerceroYcontacto.vue"
-  import    condiciones       from "src/areas/acuerdos/cotizaciones/components/CondicionesCotizacion.vue"
-  import    totales           from "src/areas/acuerdos/cotizaciones/components/TotalesCotizacion.vue"
-  import    productos         from "src/areas/acuerdos/.components/ProductosAcuerdo.vue"
-  import    visorPdf          from "components/utilidades/VisorPDF.vue"
-  
+  import {  useCotizacionPDF      } from "src/areas/acuerdos/cotizaciones/composables/useCotizacionPDF"
+  import    botonera                from "src/areas/acuerdos/cotizaciones/components/BotoneraCotizacion.vue"
+  import    tituloCtz               from "src/areas/acuerdos/cotizaciones/components/TituloCotizacion.vue"
+  import    terceroYContacto        from "src/areas/acuerdos/cotizaciones/components/TerceroYcontacto.vue"
+  import    condiciones             from "src/areas/acuerdos/cotizaciones/components/CondicionesCotizacion.vue"
+  import    totales                 from "src/areas/acuerdos/cotizaciones/components/TotalesCotizacion.vue"
+  import    productos               from "src/areas/acuerdos/components/ProductosAcuerdo.vue"
+  import    visorPdf                from "components/utilidades/VisorPDF.vue"
 
-  const { usuario, permisos } = useUsuario()
   const { getCotizacion     } = servicesCotizaciones()
   const { generarPDF,
           guardarPDF        } = useCotizacionPDF()
   const { buscarTercero     } = servicesTerceros()
   const { aviso             } = useTools()  
+  const storeUser             = useStoreUser()
+  const { usuario, permisos } = storeToRefs(storeUser)  
   const router                = useRouter()
   const cotizacion            = ref< ICotizacion  >( new Cotizacion() )
   //const { tercero  }          = toRefs( cotizacion.value )

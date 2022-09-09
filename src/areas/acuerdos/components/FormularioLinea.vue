@@ -161,7 +161,7 @@
   import    numeroPaso          from "src/components/utilidades/input/InputNumeroPaso.vue"
   import    inputNumber         from "src/components/utilidades/input/InputFormNumber.vue"
   import {  ILineaAcuerdo,
-            LineaAcuerdo      } from "src/areas/acuerdos/.models/LineaAcuerdo"
+            LineaAcuerdo      } from "src/areas/acuerdos/models/LineaAcuerdo"
   import {  useApiDolibarr    } from "src/services/useApiDolibarr"
   import    selectLabelValue    from "components/utilidades/select/SelectLabelValue.vue"            
   import {  WYSIWYG_Limpio    } from "src/useSimpleOk/useEstilos"

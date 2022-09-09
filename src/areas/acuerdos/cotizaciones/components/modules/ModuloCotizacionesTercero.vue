@@ -83,7 +83,7 @@
   import {  ICotizacion     } from "src/areas/acuerdos/cotizaciones/models/Cotizacion"
   import    ventana           from "components/utilidades/Ventana.vue"
   import    tooltipCotizacion from "src/areas/acuerdos/cotizaciones/components/tools/TooltipCotizacion.vue"
-  import    tooltipLineas     from "src/areas/acuerdos/.components/TooltipLineas.vue"
+  import    tooltipLineas     from "src/areas/acuerdos/components/TooltipLineas.vue"
   import {  btnBaseSm       } from "src/useSimpleOk/useEstilos"
   import {  useRouter       } from 'vue-router'
 
