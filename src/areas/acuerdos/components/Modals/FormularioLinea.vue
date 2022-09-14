@@ -66,7 +66,7 @@
         <span class           ="fuente-mono text-grey-8 h-20px">
           {{ formatoPrecio( linea.descuentoValor ) }}
         </span>
-      </div>    
+      </div>
     </div>
     <!-- //* ///////////////////////////////////////////////////////////// Precio con IVA -->
     <input-number             con-decimales
@@ -100,11 +100,11 @@
           <tr>
             <td>IVA:</td>
             <td>{{ formatoPrecio(  aIVA )}}</td>
-          </tr>        
+          </tr>
           <tr>
             <td>Total:</td>
             <td>{{ formatoPrecio(  aTotal )}}</td>
-          </tr>       
+          </tr>
         </table>
       </div>
     </div>
@@ -121,7 +121,7 @@
     />
     <!-- //* ///////////////////////////////////////////////////////////// Descripcion -->
     <div class                ="col-12">
-      <q-editor                 
+      <q-editor
         v-model               ="linea.descripcion"
         v-bind                ="WYSIWYG_Limpio"
         :readonly             ="acuerdo.estado > ESTADO_CTZ.BORRADOR"
@@ -132,8 +132,8 @@
       v-if                    ="acuerdo.estado <= ESTADO_CTZ.BORRADOR"
       class                   ="col-6"
       >
-      <q-btn                  flat 
-        label                 ="Borrar"        
+      <q-btn                  flat
+        label                 ="Borrar"
         class                 ="full-width"
         color                 ="negative"
         icon                  ="mdi-trash-can"
@@ -146,26 +146,26 @@
       class                   ="col-6"
       >
       <q-btn                  flat
-        label                 ="Guardar"        
+        label                 ="Guardar"
         class                 ="full-width"
         color                 ="positive"
         icon                  ="mdi-content-save"
         :disable              ="lineaVirgen"
         @click                ="guardar"
       />
-    </div>    
+    </div>
   </ventana>
 </template>
 <script setup lang="ts">
   import    ventana             from "components/utilidades/Ventana.vue"
   import    numeroPaso          from "src/components/utilidades/input/InputNumeroPaso.vue"
   import    inputNumber         from "src/components/utilidades/input/InputFormNumber.vue"
-  import {  storeToRefs       } from 'pinia'  
+  import {  storeToRefs       } from 'pinia'
   import {  ILineaAcuerdo,
             LineaAcuerdo      } from "src/areas/acuerdos/models/LineaAcuerdo"
   import {  useApiDolibarr    } from "src/services/useApiDolibarr"
-  import {  useControlProductos } from "src/areas/acuerdos/controllers/ControlLineasProductos"            
-  import    selectLabelValue    from "components/utilidades/select/SelectLabelValue.vue"            
+  import {  useControlProductos } from "src/areas/acuerdos/controllers/ControlLineasProductos"
+  import    selectLabelValue    from "components/utilidades/select/SelectLabelValue.vue"
   import {  WYSIWYG_Limpio    } from "src/useSimpleOk/useEstilos"
   import {  dexieUnidades     } from "src/services/useDexie"
   import {  ESTADO_CTZ        } from "src/areas/acuerdos/cotizaciones/models/Cotizacion"
@@ -179,7 +179,7 @@
             toRefs,
             computed
                               } from "vue"
-  
+
   const { dialog              } = useQuasar()
   const { apiDolibarr         } = useApiDolibarr()
   const { aviso               } = useTools()
@@ -188,18 +188,18 @@
     (e: 'update:model-value',   value: ILineaAcuerdo        ): void
     (e: 'cerrar',               value: void ): void
     (e: 'borrar',               value: void ): void
-  }>()  
+  }>()
   const storeAcuerdo            = useStoreAcuerdo()
   const { acuerdo,
           loading,
           grupoElegido,
-          lineaElegida        } = storeToRefs(storeAcuerdo)  
+          lineaElegida        } = storeToRefs(storeAcuerdo)
 
 
   const linea                   = ref< ILineaAcuerdo >( Object.assign( new LineaAcuerdo(), lineaElegida.value ) )
   const copiaLinea              = JSON.stringify(linea.value)
   let conDecimales              = Boolean(!!process.env.CON_DECIMALES)
-  const { borrarLinea   
+  const { borrarLinea
                               } = useControlProductos()
 
   const duracion                = 300
@@ -213,7 +213,7 @@
 
   async function guardar()
   {
-    loading.value.editar        = true    
+    loading.value.editar        = true
     let lineaAPI                = LineaAcuerdo.lineaToLineaApi( linea.value )
     const estadoBoceto          = acuerdo.value.estado === ESTADO_CTZ.NO_GUARDADO
     let seguir                  = true

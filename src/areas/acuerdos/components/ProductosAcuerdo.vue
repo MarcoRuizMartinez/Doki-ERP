@@ -3,9 +3,10 @@
     :titulo                     ="acuerdo.estado === ESTADO_CTZ.NO_GUARDADO ? 'Consultar productos - No se guardan en cotizacion... por ahora. enserio🙏😱😩🤯' : 'Productos'"
     icono                       ="mdi-package-variant-closed"
     padding-contenido           ="0"
+    :cargando                   ="loading.borrarLote || loading.editarLote"
     >
     <template                   #barra
-      v-if                      ="acuerdo.estado <= 0" 
+      v-if                      ="acuerdo.estado <= 0"
       >
       <!-- //* ///////////////////////////////////////////////////////////// Boton nuevo grupo   -->
       <q-btn
@@ -16,7 +17,7 @@
         @click                  ="crearNuevoGrupo"
       />
     </template>
-    <q-list                   
+    <q-list
       class                     ="fit"
       >
       <!-- //* ///////////////////////////////////////////////////////////////  For expansion item -->
@@ -38,11 +39,11 @@
             />
           </q-item-section>
           <q-item-section       side
-            v-if                ="acuerdo.estado <= 0" 
+            v-if                ="acuerdo.estado <= 0"
             >
             <div class          ="row items-center">
               <!-- //* /////////////////////////////////////////////////////// Boton agregar producto  -->
-              <q-btn            
+              <q-btn
                 v-bind          ="btnBaseSm"
                 class           ="text-black"
                 color           ="grey-1"
@@ -51,7 +52,7 @@
                 @click          ="mostrarBuscarProductos(grupo)"
                 >
                 <Tooltip label  ="Agregar productos"/>
-              </q-btn>            
+              </q-btn>
             </div>
           </q-item-section>
         </template>
@@ -72,7 +73,7 @@
       <buscar-productos
         v-model:grupo           ="grupoSelect"
         @update:grupo           ="addProductosDeBusqueda"
-        @eliminar-linea-id      ="eliminarLineaDesdeBusqueda"     
+        @eliminar-linea-id      ="eliminarLineaDesdeBusqueda"
         @cerrar                 ="ventanaProductos = false; grupoSelect.noDestacarProductos()"
       />
     </q-dialog>
@@ -113,10 +114,10 @@
                               } from "vue"
   import {  ICotizacion,
             ESTADO_CTZ        } from "src/areas/acuerdos/cotizaciones/models/Cotizacion"
-  import {  useControlProductos } from "src/areas/acuerdos/controllers/ControlLineasProductos"            
+  import {  useControlProductos } from "src/areas/acuerdos/controllers/ControlLineasProductos"
   import {  ITercero          } from "src/areas/terceros/models/Tercero"
   import {  IGrupoLineas,
-            GrupoLineas       } from "src/areas/acuerdos/models/GrupoLineasAcuerdo"            
+            GrupoLineas       } from "src/areas/acuerdos/models/GrupoLineasAcuerdo"
   import {  servicesCotizaciones   } from "src/areas/acuerdos/cotizaciones/services/servicesCotizaciones"
   import {  useTools, pausa   } from "src/useSimpleOk/useTools"
   import {  btnBaseSm         } from "src/useSimpleOk/useEstilos"
@@ -132,19 +133,19 @@
           lineaElegida,
           grupoElegido,
           loading,
-          modales             } = storeToRefs(storeAcuerdo)  
+          modales             } = storeToRefs(storeAcuerdo)
 
   type SourcesEdit              = "tablaProductos" | "otrosOrigenes" | "buscarProductos" | "borrarGrupo" | "editarSubTotales" | "moverGrupo" | "borrarLineaFromBusqueda"
   const terceros                = ref< ITercero[] > ([])
   const { aviso               } = useTools()
   const { ordenarLineas       } = servicesCotizaciones()
   const { apiDolibarr         } = useApiDolibarr()
-  const { crearNuevoGrupo   
+  const { crearNuevoGrupo
                               } = useControlProductos()
 
   const emit                    = defineEmits(["update:cotizacion"])
   const ventanaProductos        = ref< boolean >( false )
-  
+
   watch(()=>modales.value.formulario, (mostrarForm) => destacarLineaElegida(mostrarForm) )
 
   function destacarLineaElegida( mostrarForm : boolean )
@@ -179,7 +180,7 @@
           &&
           ( origen                  == "editarSubTotales"
             ||
-            origen                  == "buscarProductos" 
+            origen                  == "buscarProductos"
           )
         )
         {
@@ -188,22 +189,22 @@
 
           if(ok)
           {
-            let newId               = !!data ? +data : 0 
+            let newId               = !!data ? +data : 0
             linea.lineaId           = newId
 
             const grupo             = acuerdo.value.proGrupos.at(-1)
-            
+
             if(linea.tipoLinea      === "titulo"  && !!grupo)
               grupo.lineaIdTitulo   = linea.lineaId
             else
             if(linea.tipoLinea      === "subtotal" && !!grupo)
               grupo.lineaIdSubtotal = linea.lineaId
-            
+
           }
           else
             aviso("negative", "Error al crear una línea de cotizacion. Info: " + data)
         }
-        
+
         // Borrar lineas
         if(linea.borrar)
         {
@@ -214,22 +215,22 @@
 
       ordenarLineasEnDolibarr()
     }
-    
+
     borrarGruposSinProductos()
     actualizarArrayGrupos( acuerdo.value.productos )
-  
+
     //emit("update:cotizacion", acuerdo.value)
   }
 
 
-  const totalTem                = computed( ()=> 
+  const totalTem                = computed( ()=>
     !!acuerdo.value.proGrupos.length ? acuerdo.value.proGrupos[0].totalConDescu : 0
   )
   const largo                   = computed( ()=> acuerdo.value.proGrupos.length )
-  const grupoSelect             = ref< IGrupoLineas >( new GrupoLineas() ) 
+  const grupoSelect             = ref< IGrupoLineas >( new GrupoLineas() )
 
   //const gruposProductos         = ref<IGrupoLineas[]>([])
-  
+
   let esVirgen                  = true
 
   onMounted(()=>{
@@ -240,11 +241,11 @@
   watch( () => acuerdo.value.productos, (newProductos, oldProductos) => {
     if(acuerdo.value.estado  !== ESTADO_CTZ.NO_GUARDADO && !newProductos.length) // Crea un grupo si no hay productos
       crearNuevoGrupo()
-    
+
     if(newProductos.length > 0 && oldProductos.length === 0 )
     {
       esVirgen                    = false
-      actualizarArrayGrupos( newProductos )      
+      actualizarArrayGrupos( newProductos )
       borrarGruposSinProductos()
     }
   })
@@ -253,7 +254,7 @@
   {
     if(lineas.length > 0)
       acuerdo.value.proGrupos  = GrupoLineas.productosAgrupoDeProductos( lineas )
-    else 
+    else
       crearNuevoGrupo()
   }
 
@@ -273,7 +274,7 @@
     grupoSelect.value.productos[index].borrar = true
     await cambioEnGrupos('borrarLineaFromBusqueda')
     grupoSelect.value.productos.splice(index, 1)
-    let indexGrupo = acuerdo.value.proGrupos.findIndex( g => g.index === grupoSelect.value.index ) 
+    let indexGrupo = acuerdo.value.proGrupos.findIndex( g => g.index === grupoSelect.value.index )
     acuerdo.value.proGrupos[indexGrupo] = grupoSelect.value
   }
 
@@ -291,21 +292,21 @@
 
   function borrarGruposSinProductos()
   {
-    if(acuerdo.value.proGrupos.length === 1 ) return 
+    if(acuerdo.value.proGrupos.length === 1 ) return
 
     for (const grupo of acuerdo.value.proGrupos)
     {
       if(!grupo.productos.length){
-        borrarGrupo( grupo, "borrar"  ) 
+        borrarGrupo( grupo, "borrar"  )
       }
     }
   }
 
   function addProductosDeBusqueda( grupo : IGrupoLineas )
   {
-    let indexGrupo = acuerdo.value.proGrupos.findIndex( g => g.index === grupo.index ) 
+    let indexGrupo = acuerdo.value.proGrupos.findIndex( g => g.index === grupo.index )
     acuerdo.value.proGrupos[indexGrupo] = grupo
-    cambioEnGrupos('buscarProductos') 
+    cambioEnGrupos('buscarProductos')
   }
 
 
@@ -315,9 +316,9 @@
     if(accion                   == 'conservar')
     {
       let indexGrupoMover       = grupo.index == 0 ? grupo.index + 1 : grupo.index - 1
-      acuerdo.value.proGrupos[ indexGrupoMover ].productos.push( ...grupo.productos )      
+      acuerdo.value.proGrupos[ indexGrupoMover ].productos.push( ...grupo.productos )
     }
-      
+
     acuerdo.value.proGrupos.splice(grupo.index, 1)            // Borrar Grupo
     acuerdo.value.proGrupos.forEach( (g, i)  => g.index = i ) // Reasignar Index
 
