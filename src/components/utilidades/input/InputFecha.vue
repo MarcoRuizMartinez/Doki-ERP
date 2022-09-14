@@ -61,7 +61,7 @@
       </q-icon>
     </template>
     <Tooltip v-if               ="!!modelValue.valueOf()">
-      {{modelValue.toLocaleDateString('es-CO', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}}
+      {{new Date(modelValue).toLocaleDateString('es-CO', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}}
     </Tooltip> 
   </q-input>  
 </template>

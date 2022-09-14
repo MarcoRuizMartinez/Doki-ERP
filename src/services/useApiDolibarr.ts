@@ -8,11 +8,14 @@ import {  axios,
 import {  IResultado,
           CODES_FETCH    } from "src/models/TiposVarios"
 
-type AccionDolibarr           = "crear" | "editar" | "ver" | "buscar" | "borrar" | "descargar" | "subir" | "generar" |
-                                "contacto-vincular" | "contacto-desvincular" |
-                                "close" | "setinvoiced" | "settodraft" | "validate"
+type AccionDolibarr           = "crear"         | "editar"        | "ver"           | "contacto-desvincular"  | "contacto-vincular" |
+                                "buscar"        | "borrar"        | "borrar-linea"  |
+                                "crear-linea"   | "crear-lineas"  | "borrar-lineas" | "editar-linea"  |
+                                "descargar"     | "subir"         | "generar"       | 
+                                "close"         | "setinvoiced"   | "settodraft"    | "validate"
+//  | "crear-lineas"  |  |
 
-type ModuloDolibarr           = "tercero" | "contacto" | "documento" | "cotizacion" | "lineaCotizacion"
+type ModuloDolibarr           = "tercero" | "contacto" | "documento" | "cotizacion"
 type Metodo                   = "post" | "put" | "get" | "delete"
 
 export function useApiDolibarr()
@@ -35,14 +38,8 @@ export function useApiDolibarr()
     return miHeaders
   }
 
-  function getHeadersAxios() : any
-  {
-    const header = {
-                      "DOLAPIKEY": token.value,
-                      //"Accept": "application/json",
-                      //"Access-Control-Allow-Origin": "*"
-                    }
-    return header
+  function getHeadersAxios() : any {    
+    return { "DOLAPIKEY": token.value}
   }
 
   function getEndPoint( modulo : ModuloDolibarr )
@@ -53,7 +50,6 @@ export function useApiDolibarr()
       case "contacto":          endPoint = "contacts";      break;
       case "documento":         endPoint = "documents";     break;
       case "cotizacion":        endPoint = "proposals";     break;
-      case "lineaCotizacion":   endPoint = "proposals";     break;
       default: break;
     }
 
@@ -70,17 +66,21 @@ export function useApiDolibarr()
   {
     mensajeGlobal             = "crear " + tipo
     let endPoint  : string    = getEndPoint( tipo )
-    let esLinea               = tipo.includes("linea")
+    let esLinea               = accion.includes("linea")
     let metodo    : Metodo    = "post"
     loadingBar.start()
 
-
-    if(accion                 === "crear")
+    
+    if(accion.includes("crear"))
     {
       metodo                  = "post"
-      if(esLinea) endPoint    += "/" + id + "/lines"
+      if(accion               === "crear-lineas")
+        endPoint              += "/" + id + "/lines" 
+      else 
+      if(accion               === "crear-linea")
+        endPoint              += "/" + id + "/line"               
     }
-    else if(accion            === "editar")
+    else if(accion.includes("editar"))
     {
       metodo                  = "put"
 
@@ -99,16 +99,19 @@ export function useApiDolibarr()
       metodo                  = "get"
       endPoint                += "/?" + objeto
     }
-    else if(accion            === "borrar" && ( typeof objeto === "string" || typeof objeto === "number") )
+    else if(accion.includes("borrar") && ( typeof objeto === "string" || typeof objeto === "number") )
     {
       metodo                  = "delete"
       if(typeof objeto        === "string" && objeto.length > 10)
         endPoint              += "?" + objeto // si es mas de 10, es una consulta ejem modulepart=thirdparty&id=1
       else {                  // asume que cuando se manda un id es de largo maximo 10 ejem 2313
-        if(esLinea)
+        if(accion             === "borrar-lineas")
           endPoint            += "/" + id + "/lines/" + objeto
+        //else 
+        //if(accion               === "borrar-linea")
+        //  endPoint            += "/" + id + "/line/" + objeto
         else
-          endPoint            += "/" + objeto
+          endPoint            += "/" + objeto        
       }
     }
     else if(accion            === "descargar" && typeof objeto === "string")
@@ -127,7 +130,7 @@ export function useApiDolibarr()
     else if(accion            === "contacto-desvincular")
     {
       metodo                  = "delete"
-      endPoint                += `/${id}/contact/${objeto}`
+      endPoint                += `/${id}/contact/${objeto.id}/${objeto.tipo}`
     }
     else if(accion            === "contacto-vincular")
     {
@@ -148,8 +151,7 @@ export function useApiDolibarr()
           avisoSinConexion()
           resolver( { codigo: CODES_FETCH.sinConexion, ok: false } )
         }
-
-        //console.log("metodo", metodo, "endPoint", endPoint, "objeto", objeto )
+        
         idTimeout             = setTimeout( abortarSiDemora, 20000)
         cargando              = true
         let resultado
@@ -157,6 +159,9 @@ export function useApiDolibarr()
           resultado           = await apiDolibarrAxios[metodo](endPoint,         { headers: getHeadersAxios(), cancelToken: cancelTokenSource.token })
         else
           resultado           = await apiDolibarrAxios[metodo](endPoint, objeto, { headers: getHeadersAxios(), cancelToken: cancelTokenSource.token })
+
+        console.log({metodo}, {endPoint}, {objeto} )
+        console.log("useApiDoliabrr Resultado: ", resultado);
 
         if(!!resultado.data)
         {

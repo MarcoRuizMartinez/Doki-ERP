@@ -24,13 +24,12 @@ import {  getURL,
           getFormData       } from "src/services/APIMaco"
 import {  useFetch          } from "src/useSimpleOk/useFetch"
 import {  date              } from "quasar"
-import {  ICotizacion,
-          Cotizacion        } from "src/areas/acuerdos/cotizaciones/models/Cotizacion"
 import {  ILineaApi         } from "src/areas/acuerdos/models/LineaAcuerdo"
 import {  TIPOS_CONTACTO_ID } from "src/areas/terceros/models/Contacto"
 import {  ISerieCtz,
           SerieCtz          } from "src/areas/acuerdos/cotizaciones/models/SeriesCotizacion"
-
+import {  Acuerdo,
+          IAcuerdo,       } from "src/areas/acuerdos/models/Acuerdo"
 import {  pausa,
           valuesObjectArrayToNumber,
                             } from "src/useSimpleOk/useTools"
@@ -45,7 +44,8 @@ export function servicesCotizaciones()
   {
     return new Promise( async (resolver, rechazar) => {
 
-      let { data, ok }        = await apiDolibarr( "crear", "lineaCotizacion", linea )
+      console.log("postLinea")
+      let { data, ok }        = await apiDolibarr( "crear-lineas", "cotizacion", linea )
 
       if(ok)
       {
@@ -65,7 +65,7 @@ export function servicesCotizaciones()
     })
   }
 
-  async function getCotizacion( id : number ) : Promise< ICotizacion >
+  async function getCotizacion( id : number ) : Promise< IAcuerdo >
   {
     return new Promise( async (resolver, rechazar ) =>
     {
@@ -81,17 +81,17 @@ export function servicesCotizaciones()
                                                   )
       if(ok && typeof data == "object" )
       {
-        let cotizacion    = await Cotizacion.convertirDataApiACotizacion( data )
+        let cotizacion    = await Acuerdo.convertirDataApiACotizacion( data )
         resolver( cotizacion )
       }
       else
       {
-        resolver( new Cotizacion() )
+        resolver( new Acuerdo() )
       }
     })
   }
 
-  async function getCotizaciones( query : IBusquedaCotizacion ) : Promise< ICotizacion[] >
+  async function getCotizaciones( query : IBusquedaCotizacion ) : Promise< IAcuerdo[] >
   {
     return new Promise( async (resolver, rechazar ) =>
     {
@@ -106,13 +106,13 @@ export function servicesCotizaciones()
                                                       dataEsArray:  true
                                                     }
                                                   )
-      let quotes : ICotizacion[]  = []
+      let quotes : IAcuerdo[]  = []
 
       if(ok && Array.isArray( data ))
       {
         for (const item of data)
         {
-          let quote : ICotizacion = await Cotizacion.convertirDataApiACotizacion( item )
+          let quote : IAcuerdo = await Acuerdo.convertirDataApiACotizacion( item )
           quotes.push( quote )
         }
         resolver( quotes )

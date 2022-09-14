@@ -1,6 +1,6 @@
 <template>
   <ventana                  minimizar
-    titulo                  ="Totales"
+    titulo                  ="Totalesss"
     icono                   ="mdi-counter"
     class-contenido         ="q-col-gutter-sm"
     >
@@ -12,6 +12,7 @@
         v-model             ="acuerdo.conTotal"
         label               ="Con Total"
         class               ="col-4"
+        :icon               ="loading.conTotal ? 'mdi-loading mdi-spin' : ''"
         @update:model-value ="editarConTotal"
       />
       <!-- //* /////////////////////////////////////////////////////////////  Con IVA -->
@@ -19,8 +20,8 @@
         v-model             ="acuerdo.conIVA"
         label               ="Con IVA"
         class               ="col-4"
-        :icon               ="cargandoConIVA ? 'mdi-loading mdi-spin' : ''"
-        :disable            ="acuerdo.tercero.aplicaIVA || cargandoConIVA" 
+        :icon               ="loading.conIVA ? 'mdi-loading mdi-spin' : ''"
+        :disable            ="acuerdo.tercero.aplicaIVA || loading.conIVA " 
         @update:model-value ="editarConIVA"
       />
       <!-- //* /////////////////////////////////////////////////////////////  Con AIU -->
@@ -28,7 +29,8 @@
         v-model             ="acuerdo.aiuOn"
         label               ="Con AIU"
         class               ="col-4"
-        @update:model-value ="editarAIU"
+        :icon               ="loading.conAIU ? 'mdi-loading mdi-spin' : ''"
+        @update:model-value ="editarConAIU"
       />
     </div>
     <!-- //* /////////////////////////////////////////////////////////////  Nombre cotizacion -->
@@ -112,73 +114,16 @@
 <script setup lang="ts">
   import    ventana             from "components/utilidades/Ventana.vue"
   import    inputNumber         from "src/components/utilidades/input/InputFormNumber.vue"
-  import    fechaVencimiento    from "src/areas/acuerdos/cotizaciones/components/FechaValidezCtz.vue"
-  import    selectLabelValue    from "components/utilidades/select/SelectLabelValue.vue"
   import {  formatoPrecio     } from "src/useSimpleOk/useTools" 
-
-  import {  ref,
-            toRefs,
-            PropType,
-                              } from "vue"
-  import {  ITercero,
-            Tercero           } from "src/areas/terceros/models/Tercero"
-  import {  servicesCotizaciones   } from "src/areas/acuerdos/cotizaciones/services/servicesCotizaciones"
-  import {  useTools          } from "src/useSimpleOk/useTools"
-  import {  useApiDolibarr    } from "src/services/useApiDolibarr"
   import {  storeToRefs       } from 'pinia'                            
   import {  useStoreAcuerdo   } from 'src/stores/acuerdo'  
+  import {  useControlCotizacion  } from "src/areas/acuerdos/controllers/ControlCotizaciones"
 
   const storeAcuerdo            = useStoreAcuerdo()
-  const { acuerdo             } = storeToRefs(storeAcuerdo)  
-  const terceros                = ref< ITercero[] > ([])
-  const { aviso               } = useTools()
-  const { setAiu,
-          setTotal,
-          setConIVA           } = servicesCotizaciones()
-  const { apiDolibarr         } = useApiDolibarr()
-  const emit                    = defineEmits(["update:cotizacion"])
-  const cargandoConIVA          = ref<boolean>(false)  
-
-  async function editarAIU( on : boolean )
-  {
-    let ok                      = await setAiu( acuerdo.value.id, +on, "aiu" )
-    if(ok) aviso("positive", "AIU " + ( on ? "activado" : "desactivado" ))
-  }
-
-  async function editarValorAIU( valor : number, tipo : "aiuAdmin" | "aiuImpre" | "aiuUtili" )
-  {
-    let ok                      = await setAiu( acuerdo.value.id, valor, tipo )
-    //if(!ok) aviso("positive", "AIU modificado")
-  }
-  
-  async function editarConTotal( on : boolean )
-  {
-    let ok                      = await setTotal( acuerdo.value.id, on )
-    if(ok) aviso("positive", "Total " + ( on ? "activado" : "desactivado" ))
-  }
-
-  async function editarConIVA( on : boolean )
-  {
-    cargandoConIVA.value        = true
-    let conIVAEditado           = await setConIVA( acuerdo.value.id, on )
-    
-    for (const linea of acuerdo.value.productos)
-    {
-      const iva                 = parseInt( process.env.IVA ?? "0" )
-      linea.iva                 =  on ? iva : 0
-      let lineaEdit             = { id: linea.lineaId, tva_tx: linea.iva }
-      let {ok}                  = await apiDolibarr("editar", "lineaCotizacion", lineaEdit, acuerdo.value.id )
-      if (!ok){ 
-        const error             = "Error al cambiar el IVA del producto"
-        console.trace()
-        console.error(error)
-        aviso("negative", error)
-      }
-    }
-    
-    if(conIVAEditado) aviso("positive", "IVA " + ( on ? "activado" : "desactivado" ))
-    cargandoConIVA.value        = false
-  }
-
-
+  const { acuerdo, loading    } = storeToRefs(storeAcuerdo)  
+  const { editarConAIU,
+          editarValorAIU,
+          editarConTotal,
+          editarConIVA,
+                              } = useControlCotizacion()
 </script>

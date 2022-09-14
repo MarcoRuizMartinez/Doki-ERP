@@ -17,53 +17,50 @@
       height-card         ="260px"
       size-icon-carga     ="12em"
       />
-    <modulo-usuarios
-      v-if                ="storeUser.usuario.esDev"
-      class               ="col-md-4 col-12"
-      height-card         ="260px"
-      :usuarios           ="usuarios"
-    />
+    <template v-if        ="storeUser.usuario.esDev">    
+      <modulo-usuarios            class="col-md-4 col-12" height-card="260px"/>
+      <modulo-municipios          class="col-md-4 col-12" height-card="260px"/>
+      <modulo-condiciones         class="col-md-4 col-12" height-card="260px"/>
+      <modulo-formas-pago         class="col-md-4 col-12" height-card="260px"/>
+      <modulo-metodos-entrega     class="col-md-4 col-12" height-card="260px"/>
+      <modulo-tiempos-entrega     class="col-md-4 col-12" height-card="260px"/>
+      <modulo-tipos-contacto      class="col-md-4 col-12" height-card="260px"/>
+      <modulo-origenes-contacto   class="col-md-4 col-12" height-card="260px"/>
+      <modulo-tipos-documentos    class="col-md-4 col-12" height-card="260px"/>
+      <modulo-unidades            class="col-md-4 col-12" height-card="260px"/>
+      <modulo-categorias-producto class="col-md-4 col-12" height-card="260px"/>
+      <modulo-constantes          class="col-md-4 col-12" height-card="260px"/>
+    </template>
   </q-page>
 </template>
 
 <script setup lang="ts">
-  import    buscarTerceros        from "src/areas/terceros/components/modules/ModuloBuscarTercerosMini.vue"
-  import    tercerosFavoritos     from "src/areas/terceros/components/modules/ModuloTercerosFavoritos.vue"
-  import    misTerceros           from "src/areas/terceros/components/modules/ModuloMisTerceros.vue"
-  import {  useTitle            } from "@vueuse/core"
-  import    moduloUsuarios        from "src/areas/usuarios/components/ModuloUsuarios.vue"
-  import {  useDexie,
-            TABLAS,
-            checkListasVencidas } from "src/services/useDexie"
-  import {  useStoreUser        } from 'src/stores/user'  
-  import {  ref,  
-            provide
-                                } from 'vue'
+  import {  ref,  provide             } from 'vue'  
+  import {  useStoreUser              } from 'src/stores/user'   
+  import    buscarTerceros            from "src/areas/terceros/components/modules/ModuloBuscarTercerosMini.vue"
+  import    tercerosFavoritos         from "src/areas/terceros/components/modules/ModuloTercerosFavoritos.vue"
+  import    misTerceros               from "src/areas/terceros/components/modules/ModuloMisTerceros.vue"
+  import {  useTitle            }     from "@vueuse/core"
   
+  import    moduloUsuarios            from "src/areas/sistemas/components/ModuloUsuarios.vue"
+  import    moduloMunicipios          from "src/areas/sistemas/components/ModuloMunicipios.vue"
+  import    moduloCondiciones         from "src/areas/sistemas/components/ModuloCondicionesPago.vue"
+  import    moduloFormasPago          from "src/areas/sistemas/components/ModuloFormasPago.vue"
+  import    moduloMetodosEntrega      from "src/areas/sistemas/components/ModuloMetodosEntrega.vue"
+  import    moduloTiemposEntrega      from "src/areas/sistemas/components/ModuloTiemposEntrega.vue"
+  import    moduloTiposContacto       from "src/areas/sistemas/components/ModuloTiposContacto.vue"
+  import    moduloOrigenesContacto    from "src/areas/sistemas/components/ModuloOrigenesContacto.vue"
+  import    moduloTiposDocumentos     from "src/areas/sistemas/components/ModuloTiposDocumentos.vue"
+  import    moduloUnidades            from "src/areas/sistemas/components/ModuloUnidades.vue"
+  import    moduloCategoriasProducto  from "src/areas/sistemas/components/ModuloCategoriasProducto.vue"
+  import    moduloConstantes          from "src/areas/sistemas/components/ModuloConstantes.vue"
+
+  import {  cargarListasIndex         } from "src/services/useDexie"
+
   const storeUser                 = useStoreUser()
   const minimizadoTodo            = ref< boolean >(false)
   const title                     = useTitle("🏠 Inicio Grupo Escom")
-  
-
   provide('superminimizado', minimizadoTodo)
 
-  const { lista : usuarios      } = useDexie( TABLAS.USUARIOS,    { cargarSiempre : true } )
-  const { lista : constantes    } = useDexie( TABLAS.CONSTANTE,   { cargarSiempre : true } )
-
-  let check = checkListasVencidas()
-  //console.log("check", check)
-  if(check)
-  {
-    let param                     = { demora: 5_000, cargarSiempre : true }
-    useDexie( TABLAS.CONDICION_PAGO,    param )
-    useDexie( TABLAS.FORMA_PAGO,        param )
-    useDexie( TABLAS.METODO_ENTREGA,    param )
-    useDexie( TABLAS.ORIGEN_CONTACTO,   param )
-    useDexie( TABLAS.UNIDAD,            param )
-    useDexie( TABLAS.TIPOS_DOCUMENTOS,  param )
-    useDexie( TABLAS.MUNICIPIOS,        param )
-    useDexie( TABLAS.TIEMPO_ENTREGA,    param )
-    useDexie( TABLAS.TIPO_CONTACTO,     param )
-  }
-
+  cargarListasIndex()
 </script>

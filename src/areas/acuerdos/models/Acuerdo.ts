@@ -33,7 +33,7 @@ export enum ESTADO_CTZ
 
 export enum TIPO_ACUERDO
 {
-  COTIZACION                  = "cotizacion",
+  COTIZACION                  = "cotizaciones", // Igual que el END POINT del servicio
   PEDIDO                      = "pedido",
   ENTREGA                     = "entraga",
   FACTURA                     = "factura",
@@ -533,7 +533,9 @@ export class Acuerdo implements IAcuerdo
     ctzApi.fechaEntrega       = getDateToStr( ctzApi.fechaEntrega, "UTC")
 
     let ctz                   = Object.assign( new Acuerdo(), ctzApi ) as IAcuerdo
-        ctz.comercial         = await getUsuarioDB          ( ctz.comercialId       )
+        ctz.esNuevo           = false
+        ctz.tipo              = TIPO_ACUERDO.COTIZACION
+        ctz.comercial         = await getUsuarioDB          ( ctz.comercialId )
         ctz.tercero           = await Tercero.convertirDataApiATercero( ctzApi.tercero )
         ctz.contacto          = await Contacto.getContactoFromAPIMaco( ctzApi.contacto )
         ctz.contacto.terceroId= ctzApi.terceroId

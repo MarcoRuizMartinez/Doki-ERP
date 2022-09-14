@@ -83,7 +83,7 @@
             TIPOS_CONTACTO
                                   } from "src/areas/terceros/models/Contacto"
   import {  servicesCotizaciones  } from "src/areas/acuerdos/cotizaciones/services/servicesCotizaciones"              
-  import {  useDexie, TABLAS      } from "src/services/useDexie"
+  import {  dexieOrigenesContacto } from "src/services/useDexie"
   import {  useTools              } from "src/useSimpleOk/useTools"
   import {  useApiDolibarr        } from "src/services/useApiDolibarr"
 
@@ -105,7 +105,7 @@
 
   const { moverContactoAOtroTercero 
                             } = servicesTerceros()                              
-  const { lista : origenNego} = useDexie( TABLAS.ORIGEN_CONTACTO)
+  const origenNego            = dexieOrigenesContacto()
   const { aviso             } = useTools()
   const { apiDolibarr       } = useApiDolibarr()
   const terceros              = ref< ITercero[] > ([])

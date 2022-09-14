@@ -147,7 +147,7 @@
     grupo.titulo            = mayusculasPrimeraLetra( nuevoTitulo ).trim()
     cargandoMenuGrupo.value = true
     let lineaEdit           = { id: grupo.lineaIdTitulo, label: grupo.titulo }
-    let {ok, data}          = await apiDolibarr("editar", "lineaCotizacion", lineaEdit, cotizacion.value.id)
+    let {ok, data}          = await apiDolibarr("editar-linea", "cotizacion", lineaEdit, cotizacion.value.id)
     if(!ok) aviso("negative", "Error al cambiar nombre de grupo")
     cargandoMenuGrupo.value = false
   }

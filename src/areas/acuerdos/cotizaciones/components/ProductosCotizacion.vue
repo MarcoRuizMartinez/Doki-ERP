@@ -84,7 +84,7 @@
 <script setup lang="ts">
   import    ventana             from "components/utilidades/Ventana.vue"
   import    tablaProductos      from "src/areas/acuerdos/components/TablaProductos.vue"
-  import    buscarProductos     from "src/areas/acuerdos/components/BuscarAgregarProductos.vue"
+  import    buscarProductos     from "src/areas/acuerdos/components/Modals/BuscarAgregarProductos.vue"
 
   import {  ref,
             toRefs,
@@ -195,7 +195,7 @@
         )
         {
           let lineaApi              = LineaAcuerdo.lineaToLineaApi( linea )
-          let { data, ok }          = await apiDolibarr("crear", "lineaCotizacion", lineaApi, acuerdo.value.id)
+          let { data, ok }          = await apiDolibarr("crear-lineas", "cotizacion", lineaApi, acuerdo.value.id)
 
           if(ok)
           {
@@ -218,7 +218,7 @@
         // Borrar lineas
         if(linea.borrar)
         {
-          let {ok, data}        = await apiDolibarr("borrar", "lineaCotizacion", linea.lineaId, acuerdo.value.id)
+          let {ok, data}        = await apiDolibarr("borrar-lineas", "cotizacion", linea.lineaId, acuerdo.value.id)
           //if(!ok)  aviso("negative", "Error al borrar una línea de cotizacion")
         }
       }

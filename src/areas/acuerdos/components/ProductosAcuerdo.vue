@@ -4,7 +4,6 @@
     icono                       ="mdi-package-variant-closed"
     padding-contenido           ="0"
     >
-    ss
     <template                   #barra
       v-if                      ="acuerdo.estado <= 0" 
       >
@@ -34,8 +33,8 @@
             <editar-grupo
               :grupo            ="grupo"
               @moverGrupo       ="cambioEnGrupos( 'moverGrupo' )"
-              @borrar-todo      ="( ( grupo : any ) => borrarGrupo(grupo, 'borrar'    ) )"
-              @borrar-conservar ="( ( grupo : any ) => borrarGrupo(grupo, 'conservar' ) )"
+              @borrar-todo      ="( ( grupo : IGrupoLineas ) => borrarGrupo(grupo, 'borrar'    ) )"
+              @borrar-conservar ="( ( grupo : IGrupoLineas ) => borrarGrupo(grupo, 'conservar' ) )"
             />
           </q-item-section>
           <q-item-section       side
@@ -59,12 +58,12 @@
         <!-- //* ///////////////////////////////////////////////////////////// Tabla productos  -->
         <tabla-productos
           :grupo                ="grupo"
-          :estado               ="acuerdo.estado"  
           @editar-sub-totales   ="cambioEnGrupos( 'editarSubTotales')"
           @update:grupo         ="cambioEnGrupos( 'tablaProductos')"
         />
       </q-expansion-item>
     </q-list>
+    <!-- //* ///////////////////////////////////////////////////////////// Modal Buscar productos -->
     <q-dialog                   maximized
       v-model                   ="ventanaProductos"
       transition-show           ="slide-up"
@@ -72,19 +71,38 @@
       >
       <buscar-productos
         v-model:grupo           ="grupoSelect"
-        :cotizacion-id          ="acuerdo.id"
-        :con-iva                ="acuerdo.tercero.aplicaIVA"
         @update:grupo           ="addProductosDeBusqueda"
         @eliminar-linea-id      ="eliminarLineaDesdeBusqueda"     
         @cerrar                 ="ventanaProductos = false; grupoSelect.noDestacarProductos()"
       />
     </q-dialog>
+    <!-- //* ///////////////////////////////////////////////////////////// Modal formulario edicion Linea   -->
+    <q-dialog
+      v-model                   ="modales.formulario"
+      :persistent               ="loading.editarLinea || loading.borrarLinea"
+      >
+      <formulario-linea />
+    </q-dialog>
+    <!-- //* ///////////////////////////////////////////////////////////// Modal editar en lote -->
+    <q-dialog
+      v-model                   ="modales.editarEnLote"
+      :persistent               ="loading.editarLote"
+      >
+      <editar-en-lote />
+        <!--
+          @edicion-ok             ="editarVariosOk"
+          @borrado-ok             ="limpiarSeleccion"
+          @borrar-linea             ="borrarLinea"
+        -->
+    </q-dialog>
   </ventana>
 </template>
 <script setup lang="ts">
   import    ventana             from "components/utilidades/Ventana.vue"
-  import    tablaProductos      from "src/areas/acuerdos/components/TablaProductos.vue"
-  import    buscarProductos     from "src/areas/acuerdos/components/BuscarAgregarProductos.vue"
+  import    tablaProductos      from "src/areas/acuerdos/components/TablaProductos/TablaProductos.vue"
+  import    buscarProductos     from "./Modals/BuscarAgregarProductos.vue"
+  import    formularioLinea     from "./Modals/FormularioLinea.vue"
+  import    editarEnLote        from "./Modals/EditarEnLoteQtyDesc.vue"
 
   import {  ref,
             PropType,
@@ -95,6 +113,7 @@
                               } from "vue"
   import {  ICotizacion,
             ESTADO_CTZ        } from "src/areas/acuerdos/cotizaciones/models/Cotizacion"
+  import {  useControlProductos } from "src/areas/acuerdos/controllers/ControlLineasProductos"            
   import {  ITercero          } from "src/areas/terceros/models/Tercero"
   import {  IGrupoLineas,
             GrupoLineas       } from "src/areas/acuerdos/models/GrupoLineasAcuerdo"            
@@ -109,16 +128,100 @@
   import {  useStoreAcuerdo   } from 'src/stores/acuerdo'
 
   const storeAcuerdo            = useStoreAcuerdo()
-  const { acuerdo             } = storeToRefs(storeAcuerdo)  
+  const { acuerdo,
+          lineaElegida,
+          grupoElegido,
+          loading,
+          modales             } = storeToRefs(storeAcuerdo)  
 
   type SourcesEdit              = "tablaProductos" | "otrosOrigenes" | "buscarProductos" | "borrarGrupo" | "editarSubTotales" | "moverGrupo" | "borrarLineaFromBusqueda"
   const terceros                = ref< ITercero[] > ([])
   const { aviso               } = useTools()
   const { ordenarLineas       } = servicesCotizaciones()
   const { apiDolibarr         } = useApiDolibarr()
+  const { crearNuevoGrupo   
+                              } = useControlProductos()
+
   const emit                    = defineEmits(["update:cotizacion"])
   const ventanaProductos        = ref< boolean >( false )
   
+  watch(()=>modales.value.formulario, (mostrarForm) => destacarLineaElegida(mostrarForm) )
+
+  function destacarLineaElegida( mostrarForm : boolean )
+  {
+    if(mostrarForm)
+      lineaElegida.value.destacar( "seleccionar" )
+    else
+    {
+      if(lineaElegida.value.accion === "borrar")
+        lineaElegida.value.destacar( "borrar", "ocultar")
+      else {
+        lineaElegida.value.destacar( "no-destacar" )
+        lineaElegida.value          = new LineaAcuerdo()
+      }
+    }
+  }
+
+  async function cambioEnGrupos( origen : SourcesEdit = "otrosOrigenes" )
+  {
+    if(1+1==2) return
+    acuerdo.value.productos      = GrupoLineas.deGruposAProductos( acuerdo.value.proGrupos )
+
+    if(!!acuerdo.value.id)
+    {
+      for (const linea of acuerdo.value.productos)
+      {
+        // Crear lineas nuevas como titulo y subtotal
+        if
+        ( linea.lineaId             == 0
+          &&
+          linea.tipo                == 9
+          &&
+          ( origen                  == "editarSubTotales"
+            ||
+            origen                  == "buscarProductos" 
+          )
+        )
+        {
+          let lineaApi              = LineaAcuerdo.lineaToLineaApi( linea )
+          let { data, ok }          = await apiDolibarr("crear-lineas", "cotizacion", lineaApi, acuerdo.value.id)
+
+          if(ok)
+          {
+            let newId               = !!data ? +data : 0 
+            linea.lineaId           = newId
+
+            const grupo             = acuerdo.value.proGrupos.at(-1)
+            
+            if(linea.tipoLinea      === "titulo"  && !!grupo)
+              grupo.lineaIdTitulo   = linea.lineaId
+            else
+            if(linea.tipoLinea      === "subtotal" && !!grupo)
+              grupo.lineaIdSubtotal = linea.lineaId
+            
+          }
+          else
+            aviso("negative", "Error al crear una línea de cotizacion. Info: " + data)
+        }
+        
+        // Borrar lineas
+        if(linea.borrar)
+        {
+          let {ok, data}        = await apiDolibarr("borrar-lineas", "cotizacion", linea.lineaId, acuerdo.value.id)
+          //if(!ok)  aviso("negative", "Error al borrar una línea de cotizacion")
+        }
+      }
+
+      ordenarLineasEnDolibarr()
+    }
+    
+    borrarGruposSinProductos()
+    actualizarArrayGrupos( acuerdo.value.productos )
+  
+    //emit("update:cotizacion", acuerdo.value)
+  }
+
+
   const totalTem                = computed( ()=> 
     !!acuerdo.value.proGrupos.length ? acuerdo.value.proGrupos[0].totalConDescu : 0
   )
@@ -156,7 +259,9 @@
 
   function mostrarBuscarProductos( grupo : IGrupoLineas )
   {
+    grupoElegido.value          = grupo
     grupoSelect.value           = grupo
+
     ventanaProductos.value      = true
   }
 
@@ -174,63 +279,6 @@
 
 
 
-  async function cambioEnGrupos( origen : SourcesEdit = "otrosOrigenes" )
-  {
-    acuerdo.value.productos      = GrupoLineas.deGruposAProductos( acuerdo.value.proGrupos )
-
-    if(!!acuerdo.value.id)
-    {
-      for (const linea of acuerdo.value.productos)
-      {
-        // Crear lineas nuevas como titulo y subtotal
-        if
-        ( linea.lineaId             == 0
-          &&
-          linea.tipo                == 9
-          &&
-          ( origen                  == "editarSubTotales"
-            ||
-            origen                  == "buscarProductos" 
-          )
-        )
-        {
-          let lineaApi              = LineaAcuerdo.lineaToLineaApi( linea )
-          let { data, ok }          = await apiDolibarr("crear", "lineaCotizacion", lineaApi, acuerdo.value.id)
-
-          if(ok)
-          {
-            let newId               = !!data ? +data : 0 
-            linea.lineaId           = newId
-
-            const grupo             = acuerdo.value.proGrupos.at(-1)
-            
-            if(linea.tipoLinea      === "titulo"  && !!grupo)
-              grupo.lineaIdTitulo   = linea.lineaId
-            else
-            if(linea.tipoLinea      === "subtotal" && !!grupo)
-              grupo.lineaIdSubtotal = linea.lineaId
-            
-          }
-          else
-            aviso("negative", "Error al crear una línea de cotizacion. Info: " + data)
-        }
-        
-        // Borrar lineas
-        if(linea.borrar)
-        {
-          let {ok, data}        = await apiDolibarr("borrar", "lineaCotizacion", linea.lineaId, acuerdo.value.id)
-          //if(!ok)  aviso("negative", "Error al borrar una línea de cotizacion")
-        }
-      }
-
-      ordenarLineasEnDolibarr()
-    }
-    
-    borrarGruposSinProductos()
-    actualizarArrayGrupos( acuerdo.value.productos )
-  
-    //emit("update:cotizacion", acuerdo.value)
-  }
 
 
   async function ordenarLineasEnDolibarr( )
@@ -259,26 +307,6 @@
     acuerdo.value.proGrupos[indexGrupo] = grupo
     cambioEnGrupos('buscarProductos') 
   }
-
-  async function crearNuevoGrupo()
-  {
-    let index                   = acuerdo.value.proGrupos.length
-    let nuevoGrupo              = new GrupoLineas( index )
-    acuerdo.value.proGrupos.push( nuevoGrupo )
-    
-    if(!!index)
-      aviso("positive", "Nuevo grupo creado")    
-    // let lineaTituloApi          = LineaAcuerdo.getLineaApiEspecial( "titulo", nuevoGrupo.titulo )
-    // let lineaSubtotalApi        = LineaAcuerdo.getLineaApiEspecial( "subtotal" )
-    // let { data:dTit, ok:okTitu }= await apiDolibarr("crear", "lineaCotizacion", lineaTituloApi,  acuerdo.value.id)
-    // let { data:dSub, ok:okSub  }= await apiDolibarr("crear", "lineaCotizacion", lineaSubtotalApi, acuerdo.value.id)
-    await pausa(200) // Para darle tiempo que el virtual DOM genere el nuevo espacio y calcule el nuevo alto del documento
-    window.scrollTo({ top: document.body.scrollHeight,  behavior: 'smooth'})
-    // if(!!okTitu && !!okSub )
-    {
-    }
-  }
-
 
 
 

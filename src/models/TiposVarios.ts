@@ -80,21 +80,69 @@ export const enum GRUPO_USUARIO {
 
 
 export interface ILoading {
-  carga?:     boolean
-  borrar?:    boolean
-  validar?:   boolean
-  editar?:    boolean
-  anular?:    boolean
-  aprobar?:   boolean
-  pdf?:       boolean
+  carga           ?: boolean
+  borrar          ?: boolean
+  validar         ?: boolean
+  editar          ?: boolean
+  anular          ?: boolean
+  aprobar         ?: boolean
+  pdf             ?: boolean
+  origen          ?: boolean
+  ref             ?: boolean
+  comercial       ?: boolean
+  fechaFinValidez ?: boolean
+  fechaEntrega    ?: boolean
+  condicionPago   ?: boolean
+  formaPago       ?: boolean
+  metodoEntrega   ?: boolean
+  tiempoEntrega   ?: boolean
+  conTotal        ?: boolean
+  conIVA          ?: boolean  
+  conAIU          ?: boolean
+  valoresAIU      ?: boolean  
+  añadir          ?: boolean
+  borrarLinea     ?: boolean
+  editarLinea     ?: boolean
+  editarLote      ?: boolean
+  borrarLote      ?: boolean
 }
 
 export const LoadingDefault = {
-  carga:     false,
-  borrar:    false,
-  validar:   false,
-  editar:    false,
-  anular:    false,
-  aprobar:   false,
-  pdf:       false,
+  carga           : false,
+  borrar          : false,
+  validar         : false,
+  editar          : false,
+  anular          : false,
+  aprobar         : false,
+  pdf             : false,
+  origen          : false,
+  ref             : false,
+  comercial       : false,
+  fechaFinValidez : false,
+  fechaEntrega    : false,
+  condicionPago   : false,
+  formaPago       : false,
+  metodoEntrega   : false,
+  tiempoEntrega   : false,
+  conTotal        : false,
+  conIVA          : false,
+  conAIU          : false,
+  valoresAIU      : false,
+  añadir          : false,
+  borrarLinea     : false,
+  editarLinea     : false,
+  editarLote      : false,
+  borrarLote      : false,
+}
+
+
+export interface IModales {
+  formulario      ?: boolean
+  editarEnLote    ?: boolean
+
+}
+
+export const ModalesDefault = {
+  formulario      : false,
+  editarEnLote    : false,
 }

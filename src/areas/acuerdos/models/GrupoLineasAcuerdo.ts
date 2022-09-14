@@ -3,6 +3,7 @@ import {  X100                        } from "../../../useSimpleOk/useTools"
 
 export interface IGrupoLineas {
   productos:                ILineaAcuerdo[]
+  seleccion:                ILineaAcuerdo[]
   conTitulo:                boolean
   titulo:                   string
   conTotal:                 boolean
@@ -24,6 +25,7 @@ export interface IGrupoLineas {
 export class GrupoLineas implements IGrupoLineas
 {
   productos:                ILineaAcuerdo[]
+  seleccion:                ILineaAcuerdo[]
   conTitulo:                boolean
   titulo:                   string
   conTotal:                 boolean
@@ -35,6 +37,7 @@ export class GrupoLineas implements IGrupoLineas
   constructor( index : number = -1 )
   {
     this.productos          = []
+    this.seleccion          = []
     this.titulo             = "Grupo " + (index + 1)
     this.conTitulo          = true
     this.conTotal           = false
@@ -45,6 +48,7 @@ export class GrupoLineas implements IGrupoLineas
   }
 
   noDestacarProductos()  {
+    console.log("noDestacarProductos")
     this.productos.forEach(p=>p.destacar('no-destacar'))
   }
 

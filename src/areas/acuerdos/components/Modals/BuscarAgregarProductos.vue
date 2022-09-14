@@ -173,7 +173,7 @@
                 transition-hide ="jump-up"                
                 >
                 <div class      ="q-pa-sm filtro-panel bg-gris column items-center shadow-3">
-                  <input-number hundido clearable
+<!--                   <input-number hundido clearable
                     v-model     ="precioMinFiltro"
                     label       ="Precio mínimo "
                     icon        ="mdi-currency-usd"
@@ -182,7 +182,7 @@
                     :paso       ="10000"
                     :minimo     ="0"
                     :maximo     ="precioMaxFiltro"
-                  />
+                  /> -->
                   <input-number hundido clearable
                     v-model     ="precioMaxFiltro"
                     label       ="Precio máximo"
@@ -315,7 +315,7 @@
                 icon          ="mdi-plus-circle-outline"
                 padding       ="0"
                 class         ="op30 op100-hover"
-                @click        ="agregarProductos([(props.row as ProductoDoli)])"
+                @click        ="agregarProducctosAControl( [ ( props.row as ProductoDoli ) ] )"
                 >
                 <Tooltip label="Agregar producto"/>
               </q-btn>
@@ -345,7 +345,7 @@
           v-if                ="!!seleccion.length"  
           icon                ="mdi-plus"
           color               ="primary"
-          @click              ="agregarProductos(seleccion)"
+          @click              ="agregarProducctosAControl( seleccion )"
           >
           <q-tooltip
             class             ="bg-black text-caption"
@@ -367,20 +367,25 @@
             watch,
             computed
                               } from "vue"
+  import {  storeToRefs       } from 'pinia'
   import {  useQuasar         } from "quasar"
+  import {  useStoreAcuerdo   } from 'src/stores/acuerdo'  
   import    ventana             from "components/utilidades/Ventana.vue"
   import    inputBuscar         from "components/utilidades/input/InputSimple.vue"
   import    selectLabelValue    from "components/utilidades/select/SelectLabelValue.vue"
   import    inputNumber         from "components/utilidades/input/InputFormNumber.vue"
+  import {  useControlProductos } from "src/areas/acuerdos/controllers/ControlLineasProductos"              
   import    efecto              from "components/utilidades/Efecto.vue"
   import    efectoGrupo         from "components/utilidades/EfectoGrupo.vue"
-  import    tooltipPrecios      from "src/areas/acuerdos/components/TooltipPreciosProducto.vue"
+  import    tooltipPrecios      from "src/areas/acuerdos/components/Tooltips/TooltipPreciosProducto.vue"
   import {  ModosVentana      } from "src/models/TiposVarios"
   import {  useApiDolibarr    } from "src/services/useApiDolibarr"
-  import {  useDexie, TABLAS  } from "src/services/useDexie"
+  import {  dexieCategoriasProducto
+                              } from "src/services/useDexie"
   import {  toggleGris        } from "src/useSimpleOk/useEstilos"
   import {  formatoPrecio,
             sortArray,
+            useTools,
             filterArrayMaxMin,
             siNo
                               } from "src/useSimpleOk/useTools"
@@ -403,16 +408,16 @@
     (e: 'addLineas',      value: ILineaAcuerdo[]): void
   }>()
 
-  const props                 = defineProps({
-    grupo:        { required: true,   type: Object as PropType< IGrupoLineas >  },
-    cotizacionId: { required: true,   type: Number                              },
-    conIva:       { required: true,   type: Boolean                             }, // /* Number */
-  })
   const tipoVista             = ref<"grilla" | "lista">("grilla")
   const { apiDolibarr    }    = useApiDolibarr()
-  const { grupo,
-          cotizacionId,
-          conIva            } = toRefs( props )
+  const { aviso             } = useTools()  
+  const {
+          agregarProductos
+                            } = useControlProductos()
+  const storeAcuerdo          = useStoreAcuerdo()                            
+  const { acuerdo,
+          grupoElegido,
+          loading           } = storeToRefs(storeAcuerdo)                              
   const busqueda              = ref< string   >("")
   const modo                  = ref< ModosVentana >("esperando-busqueda")
   const categoria             = ref< IProductoCategoria  >( new ProductoCategoria() )
@@ -421,7 +426,7 @@
   const seleccion             = ref< IProductoDoli[] >([])
   const filtro                = ref< string >("")
   const { buscarProductos   } = servicesProductos()  
-  const { lista : categorias} = useDexie( TABLAS.PRODUCTO_CATE )
+  const categorias            = dexieCategoriasProducto()
   const popupOn               = ref < boolean >(false)
   const popupOnPrecio         = ref < boolean >(false)
   const cargando              = ref < boolean >(false)
@@ -434,7 +439,7 @@
   const soloConImagen         = ref < boolean>(false)
   const quasar                = useQuasar()
   const { notify            } = quasar
-  const mayorOrden            = computed(()=> Math.max( ...grupo.value.productos.map( p => p.orden ) ) )
+  const mayorOrden            = computed(()=> Math.max( ...grupoElegido.value.productos.map( p => p.orden ) ) )
   //Math.max( ...grupo.value.productos.map( p => p.orden ) ) )
 
   const columnas: IColumna[]  = [
@@ -462,59 +467,29 @@
     productos.value           = sortArray( productosOriginal.value, "activo", ">")
 
     modo.value                = !!productos.value.length ? "normal" : "sin-resultados"
-    buscarSiEstaEnGrupo()
+    buscarSiProductosEstanEnGrupo()
   }
 
-
-  async function agregarProductos(  productoAdd : IProductoDoli[]  )
+  async function agregarProducctosAControl( productoAdd : IProductoDoli[] )
   {
-    if(!productoAdd.length) return
-    cargando.value            = true
-
-    const productosAñadidos   = LineaAcuerdo.lineasDeProductos( productoAdd.filter(p => p.activo), cantidad.value, descuento.value )
-
-    if(!!cotizacionId.value)
-    {    
-      for (const linea of productosAñadidos)
-      {
-        linea.orden           = mayorOrden.value + 1
-        linea.iva             = conIva.value ? +process.env.IVA : 0
-        let lineaAPI          = LineaAcuerdo.lineaToLineaApi( linea )
-        let { data, ok }      = await apiDolibarr("crear", "lineaCotizacion", lineaAPI, cotizacionId.value)
-        if(ok)
-        {
-          let newId : number  = !!data ? +data : 0 
-          linea.lineaId       = newId
-          linea.padreId       = cotizacionId.value
-        }
-      }
-    }
-
-    //emit("addLineas", productosAñadidos)
-    grupo.value.productos.push( ...productosAñadidos )
-    buscarSiEstaEnGrupo()
-    avisoProductosAgregados()
-    emit("update:grupo", grupo.value)
+    console.log("::En agregarProducctosAControl productoAdd: ", productoAdd);
+    await agregarProductos(productoAdd, cantidad.value, descuento.value)
+    buscarSiProductosEstanEnGrupo()
+    emit("update:grupo", grupoElegido.value)
     seleccion.value           = []
-    cargando.value            = false
+    aviso(  "positive",
+            seleccion.value.length > 1 ? "Productos agregados" : "Producto agregado",
+            "",
+            2000,
+            [{ label: 'Cerrar', color: 'white', handler: () => emit('cerrar') }]
+        )
   }
 
-  function avisoProductosAgregados()
-  {
-    notify({
-      message: seleccion.value.length > 1 ? "Productos agregados" : "Producto agregado",
-      color: "positive",
-      icon:  "mdi-check",
-      actions: [
-        { label: 'Cerrar', color: 'white', handler: () => emit('cerrar') },
-      ]
-    })
-  }
   
-  function buscarSiEstaEnGrupo()
+  function buscarSiProductosEstanEnGrupo()
   {
     productos.value.forEach( p => {
-      p.elegido = grupo.value.productos.some( pg => p.ref == pg.ref ) 
+      p.elegido = grupoElegido.value.productos.some( pg => p.ref == pg.ref ) 
     })
   }
   
@@ -525,7 +500,7 @@
   }
 
   // IProductoDoli[] ) {
-  function seleccionar( rows : any[] ){ 
+  function seleccionar( rows : readonly IProductoDoli[] ){ 
     seleccion.value   = rows.filter(p=>p.activo)
   }
 
@@ -561,14 +536,14 @@
     if( producto.elegido )
       emitirBorrarProducto( producto )
     else
-      agregarProductos( [ producto ] )
+      agregarProducctosAControl( [ producto ] )
   }
   function emitirBorrarProducto( producto : IProductoDoli )
   {
     emit("eliminarLineaId", producto.id)
     producto.elegido = false
     avisoProductosEliminado()
-  }
+  }  
 
   function avisoProductosEliminado()
   {

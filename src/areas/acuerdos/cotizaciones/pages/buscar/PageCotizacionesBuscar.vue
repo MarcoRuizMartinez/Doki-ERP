@@ -102,7 +102,7 @@
   import {  ICotizacion         } from "src/areas/acuerdos/cotizaciones/models/Cotizacion"
   import    selectColumnas        from "components/utilidades/select/SelectColumnas.vue"
   import    tooltipCotizacion     from "src/areas/acuerdos/cotizaciones/components/tools/TooltipCotizacion.vue"
-  import    tooltipLineas         from "src/areas/acuerdos/components/TooltipLineas.vue"
+  import    tooltipLineas         from "src/areas/acuerdos/components/Tooltips/TooltipLineas.vue"
   import    tooltipContacto       from "src/areas/terceros/components/contactos/TooltipContacto.vue"
   import    barraBusqueda         from "./BarraBusqueda.vue"
   

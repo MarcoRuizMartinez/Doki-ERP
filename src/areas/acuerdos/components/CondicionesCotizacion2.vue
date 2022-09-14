@@ -25,7 +25,7 @@
       class                   ="col-md-6 col-12"
       :dias                   ="acuerdo.diasValidez"
       :nuevo                  ="acuerdo.esNuevo"
-      :loading                ="cargarFechaFinValidez"
+      :loading                ="loading.fechaFinValidez"
       @update:model-value     ="editarFechaFinValidez"
     />
     <!-- //* ///////////////////////////////////////////////// Fecha entrega -->
@@ -34,7 +34,7 @@
       label                   ="Fecha entrega"
       titulo                  ="Fecha entrega"
       class                   ="col-md-6 col-12"
-      :loading                ="cargarFechaEntrega"
+      :loading                ="loading.fechaEntrega"
       @update:model-value     ="editarFechaEntrega"
     />
     <!-- //* ///////////////////////////////////////////////// Condiciones pago -->
@@ -45,7 +45,7 @@
       class                   ="col-md-6 col-12"
       defecto                 ="Anticipo 100%"
       :options                ="condicPago"
-      :loading                ="cargarCondicionPago"
+      :loading                ="loading.condicionPago"
       @select                 ="editarCondicionPago"
     />
     <!-- //* ///////////////////////////////////////////////// Forma de pago -->
@@ -55,7 +55,7 @@
       icon                    ="mdi-cash-refund"
       class                   ="col-md-6 col-12"
       :options                ="formadPago"
-      :loading                ="cargarFormaPago"
+      :loading                ="loading.formaPago"
       @select                 ="editarFormaPago"
     />
     <!-- //* ///////////////////////////////////////////////// Metodo entrega -->
@@ -65,7 +65,7 @@
       icon                    ="mdi-truck-delivery"
       class                   ="col-md-6 col-12"
       :options                ="entregas"
-      :loading                ="cargarMetodoEntrega"
+      :loading                ="loading.metodoEntrega"
       @select                 ="editarMetodoEntrega"
     />
     <!-- //* ///////////////////////////////////////////////// Tiempo entrega -->
@@ -75,128 +75,39 @@
       icon                    ="mdi-calendar-check"
       class                   ="col-md-6 col-12"
       :options                ="tiempoEntreg"
-      :loading                ="cargarTiempoEntrega"
+      :loading                ="loading.tiempoEntrega"
       @select                 ="editarTiempoEntrega"
     />
   </ventana>
 </template>
 <script setup lang="ts">
-//Condiciones de pago
-//Forma de pago
-//Método de entrega
-  import    ventana             from "components/utilidades/Ventana.vue"
-  import    inputFecha          from "src/components/utilidades/input/InputFecha.vue"
-  import    fechaVencimiento    from "src/areas/acuerdos/cotizaciones/components/tools/FechaValidezCtz.vue"
-  import    selectLabelValue    from "components/utilidades/select/SelectLabelValue.vue"
+  import    ventana                 from "components/utilidades/Ventana.vue"
+  import    inputFecha              from "src/components/utilidades/input/InputFecha.vue"
+  import    fechaVencimiento        from "src/areas/acuerdos/cotizaciones/components/tools/FechaValidezCtz.vue"
+  import    selectLabelValue        from "components/utilidades/select/SelectLabelValue.vue"
+  import {  useControlCotizacion  } from "src/areas/acuerdos/controllers/ControlCotizaciones"
+  import {  dexieCondicionesPago,
+            dexieFormasPago,
+            dexieMetodosEntrega,
+            dexieTiemposEntrega
+                              } from "src/services/useDexie"
 
-  import {  ref               } from "vue"
-  import {  ITercero,
-            Tercero           } from "src/areas/terceros/models/Tercero"
-  import {  servicesCotizaciones   } from "src/areas/acuerdos/cotizaciones/services/servicesCotizaciones"
-  import {  useDexie, TABLAS  } from "src/services/useDexie"
-  import {  useTools          } from "src/useSimpleOk/useTools"
-  import {  ICondicionPago    } from "src/models/Diccionarios/CondicionPago"
-  import {  IFormaPago        } from "src/models/Diccionarios/FormaPago"
-  import {  IMetodoEntrega    } from "src/models/Diccionarios/MetodoEntrega"
-  import {  ITiempoEntrega    } from "src/models/Diccionarios/TiempoEntrega"
-  import {  IAcuerdo          } from "src/areas/acuerdos/models/Acuerdo"
   import {  storeToRefs       } from 'pinia'                            
   import {  useStoreAcuerdo   } from 'src/stores/acuerdo'  
 
   const storeAcuerdo          = useStoreAcuerdo()
-  const { acuerdo           } = storeToRefs(storeAcuerdo)  
-  const terceros                = ref< ITercero[] > ([])
-  const { aviso               } = useTools()
-  const { setFechaFinValidez,
-          setFechaEntrega,
-          setCondicionPago,
-          setFormaPago,
-          setMetodoEntrega,
-          setTiempoEntrega,
-                              } = servicesCotizaciones()
-  //* /////////////////////////////////////////////////////////////// Define Emits
-  const emit                  = defineEmits<{
-    (e: 'update:cotizacion',  value: IAcuerdo ): void
-  }>()
-  
-  
+  const { acuerdo, loading  } = storeToRefs(storeAcuerdo)
+
   //* /////////////////////////////////////////////////////////////// Tablas Dexie
-  const { lista : condicPago  } = useDexie( TABLAS.CONDICION_PAGO )
-  const { lista : formadPago  } = useDexie( TABLAS.FORMA_PAGO     )
-  const { lista : entregas    } = useDexie( TABLAS.METODO_ENTREGA )
-  const { lista : tiempoEntreg} = useDexie( TABLAS.TIEMPO_ENTREGA )
-
-  //* /////////////////////////////////////////////////////////////// Cargadores  
-  const cargarFechaFinValidez   = ref< boolean >( false )
-  const cargarFechaEntrega      = ref< boolean >( false )
-  const cargarCondicionPago     = ref< boolean >( false )
-  const cargarFormaPago         = ref< boolean >( false )
-  const cargarMetodoEntrega     = ref< boolean >( false )
-  const cargarTiempoEntrega     = ref< boolean >( false )
-
-  //* /////////////////////////////////////////////////////////////// Editar fecha validez
-  async function editarFechaFinValidez( fecha : Date )
-  {
-    if(acuerdo.value.esNuevo) return
-    
-    cargarFechaFinValidez.value = true
-    let ok                      = await setFechaFinValidez( acuerdo.value.id, acuerdo.value.fechaFinValidez )
-    if (ok) aviso("positive", "Fecha cambiada", "clock" )
-    cargarFechaFinValidez.value = false
-  }
-
-  //* /////////////////////////////////////////////////////////////// Editar fecha entrega
-  async function editarFechaEntrega( fecha : Date )
-  {
-    if(acuerdo.value.esNuevo) return
-
-    cargarFechaEntrega.value    = true
-    let ok                      = await setFechaEntrega( acuerdo.value.id, acuerdo.value.fechaEntrega )
-    if (ok) aviso("positive", "Fecha cambiada editarFechaEntrega", "clock" )
-    cargarFechaEntrega.value    = false
-  }
-  
-  //* /////////////////////////////////////////////////////////////// Editar condiciones de pago
-  async function editarCondicionPago( condicion : ICondicionPago )
-  {
-    if(acuerdo.value.esNuevo) return
-
-    cargarCondicionPago.value   = true
-    let ok                      = await setCondicionPago( acuerdo.value.id, condicion.id )
-    if (ok) aviso("positive", "Condición de pago cambiada" )
-    cargarCondicionPago.value   = false
-  }
-
-  //* /////////////////////////////////////////////////////////////// Editar forma de pago
-  async function editarFormaPago( forma : IFormaPago )
-  {
-    if(acuerdo.value.esNuevo) return
-
-    cargarFormaPago.value       = true
-    let ok                      = await setFormaPago( acuerdo.value.id, forma.id )
-    if (ok) aviso("positive", "Forma de pago cambiada" )
-    cargarFormaPago.value       = false
-  }    
-
-  //* /////////////////////////////////////////////////////////////// Editar metodo de entrega
-  async function editarMetodoEntrega( metodo : IMetodoEntrega )
-  {
-    if(acuerdo.value.esNuevo) return
-
-    cargarMetodoEntrega.value       = true
-    let ok                          = await setMetodoEntrega( acuerdo.value.id, metodo.id )
-    if (ok) aviso("positive", "Método de entrega cambiado" )
-    cargarMetodoEntrega.value       = false
-  }    
-
-  //* /////////////////////////////////////////////////////////////// Editar tiempo de entrega
-  async function editarTiempoEntrega( tiempo : ITiempoEntrega )
-  {
-    if(acuerdo.value.esNuevo) return
-
-    cargarTiempoEntrega.value       = true
-    let ok                          = await setTiempoEntrega( acuerdo.value.id, tiempo.id )
-    if (ok) aviso("positive", "Tiempo de entrega cambiado" )
-    cargarTiempoEntrega.value       = false
-  }
+  const condicPago            = dexieCondicionesPago()
+  const formadPago            = dexieFormasPago()
+  const entregas              = dexieMetodosEntrega()
+  const tiempoEntreg          = dexieTiemposEntrega()
+  const { editarTiempoEntrega,
+          editarMetodoEntrega,
+          editarFormaPago,
+          editarCondicionPago,
+          editarFechaEntrega,
+          editarFechaFinValidez
+                              } = useControlCotizacion()
 </script>

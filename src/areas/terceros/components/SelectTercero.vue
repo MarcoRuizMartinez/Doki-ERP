@@ -66,7 +66,7 @@
     if((!busqueda || busqueda.length < 2) && !virgen.value)
     {
       cargando.value          = false
-      doneFn(() => terceros.value = [] )
+      doneFn(() => { terceros.value = [] } )
       return 
     }
     else 

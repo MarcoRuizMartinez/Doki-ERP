@@ -3,10 +3,8 @@
     class-contenido             ="column items-center"
     titulo                      ="Usuarios"
     icono                       ="mdi-account-group"
-    mensaje-sin-resultados      ="Problema desconocido"
     size-icon-carga             ="14em"
-    :padding-contenido          ="modo == 'normal' ? '0' : '12px' "
-    :modo                       ="modo"
+    :cargando                   ="!lista.length"
     >
     <template                   #menu>
       <input-buscar             autofocus clearable hundido
@@ -18,7 +16,7 @@
     <q-table                    borbordered dense flat
       class                     ="fit tabla-maco"
       row-key                   ="id"
-      :rows                     ="usuarios"
+      :rows                     ="lista"
       :columns                  ="columnas"
       :filter                   ="filtro"
       >
@@ -27,27 +25,15 @@
 </template>
 
 <script setup lang="ts">
-  import {  computed,
-            ref,
-            toRefs,
-            PropType,
-                            } from "vue"
+  import {  ref             } from "vue"
   import {  IColumna,
             Columna         } from "src/models/Tabla"
-  import {  IUsuario        } from "src/areas/usuarios/models/Usuario"
   import    ventana           from "components/utilidades/Ventana.vue"
   import    inputBuscar       from "src/components/utilidades/input/InputSimple.vue"
+  import {  dexieUsuarios   } from "src/services/useDexie"
 
   const filtro                = ref< string >("")  
-  const props                 = defineProps({
-    usuarios: { required: true, type: Array as PropType < IUsuario[] > }
-  })
-
-  const { usuarios }          = toRefs( props )
-  const modo                  = computed( ()=> {
-                                  let total = usuarios.value.length
-                                  return !!total ? "normal" : "buscando"
-                                })
+  const lista                 = dexieUsuarios()
   const columnas: IColumna[]  = [
                                   new Columna({ name: "id"}),
                                   new Columna({ name: "nombreCompleto",   label: "Usuario" }),

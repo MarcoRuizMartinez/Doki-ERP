@@ -4,9 +4,9 @@ import {  UtilPDF,
           IInicioPDF,
           crearImageHTML,
           GRISES            } from 'src/useSimpleOk/UtilPDF';
-import {  ICotizacion,
-          Cotizacion,
-          ESTADO_CTZ        } from "src/areas/acuerdos/cotizaciones/models/Cotizacion"
+import {  Acuerdo,
+          IAcuerdo,
+          ESTADO_CTZ        } from "src/areas/acuerdos/models/Acuerdo"          
 import {  useQuasar,
           QSpinnerGears     } from "quasar"
 import {  fechaLarga,
@@ -20,7 +20,7 @@ export function useCotizacionPDF()
 {
   const { notify          } = useQuasar()
   let aviso   : Function
-  let quote   : ICotizacion = new Cotizacion()
+  let quote   : IAcuerdo    = new Acuerdo()
   let algunGrupoConSubTotal = false
   const pdf   : jsPDF       = new jsPDF('p','px')
   const setup : IInicioPDF  = { ancho:      447,
@@ -33,7 +33,7 @@ export function useCotizacionPDF()
                               }
   const doc   : IUtilPDF    = new UtilPDF( setup )
 
-  async function generarPDF( cotizacion : ICotizacion ) : Promise<string>
+  async function generarPDF( cotizacion : IAcuerdo ) : Promise<string>
   {
           limpiar()
           mostrarAviso()

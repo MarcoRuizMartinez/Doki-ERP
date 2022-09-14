@@ -11,9 +11,8 @@
     {{acuerdo.condicionPago}}
     <br/>
     {{acuerdo.fechaEntrega}}
-    <titulo-ctz               nuevo
+    <titulo-ctz
       class                   ="col-12"
-      :loading                ="loading"
       @click                  ="generarPDFCotizacion"
     />
     <barra  class             ="row col-12 justify-end gap-sm">
@@ -23,7 +22,6 @@
         color                 ="positive"
         icon=                 "mdi-plus"
         :disable              ="!formularioOk"
-        :loading              ="cargando"
         />
         <!-- @click                ="crearCotizacion" -->
     </barra>
@@ -32,7 +30,7 @@
       class                   ="col-md-4 col-12 full-height"
       height-card             ="220px"
     />
-    <condiciones              nuevo
+    <condiciones
       ref                     ="componenteCondiciones"
       class                   ="col-md-4 col-12 full-height"
       height-card             ="220px"
@@ -69,22 +67,21 @@
   // import {  TIPOS_CONTACTO  } from "src/areas/terceros/models/Contacto"  
   // import {  ICotizacion,
   //           Cotizacion      } from "src/areas/acuerdos/cotizaciones/models/Cotizacion"
-  import    tituloCtz         from "src/areas/acuerdos/cotizaciones/components/TituloCotizacion2.vue"
+  import    tituloCtz         from "src/areas/acuerdos/components/TituloCotizacion2.vue"
   import    productos         from "src/areas/acuerdos/components/ProductosAcuerdo.vue"  
   import    barra             from "components/utilidades/Barra.vue"
   import    terceroYContacto  from "src/areas/acuerdos/components/TerceroYcontacto2.vue"
   import    condiciones       from "src/areas/acuerdos/components/CondicionesCotizacion2.vue" 
-  import    totales           from "src/areas/acuerdos/cotizaciones/components/TotalesCotizacion2.vue"
+  import    totales           from "src/areas/acuerdos/components/TotalesCotizacion2.vue"
   import {  btnBaseMd       } from "src/useSimpleOk/useEstilos"
   import {  useCotizacionPDF} from "src/areas/acuerdos/cotizaciones/composables/useCotizacionPDF"
   import    visorPdf          from "components/utilidades/VisorPDF.vue"
-  import {  ILoading,
-            LoadingDefault  } from "src/models/TiposVarios"
   import {  storeToRefs     } from 'pinia'                            
   import {  useStoreAcuerdo } from 'src/stores/acuerdo'  
 
   const storeCotizacion       = useStoreAcuerdo()
-  const { acuerdo           } = storeToRefs(storeCotizacion)              
+  const { acuerdo,
+          loading           } = storeToRefs(storeCotizacion)              
   // const  {  apiDolibarr     } = useApiDolibarr()
 
   
@@ -92,7 +89,6 @@
   // const { aviso             } = useTools()  
   // const router                = useRouter()
   const { generarPDF        } = useCotizacionPDF()
-  const loading               = ref< ILoading >( LoadingDefault )  
   const storeUser             = useStoreUser()
   const { usuario, permisos } = storeToRefs(storeUser)  
   // const cotizacion            = ref< ICotizacion  >( new Cotizacion() )

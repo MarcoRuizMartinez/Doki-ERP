@@ -3,7 +3,7 @@
     :titulo                   ="linea.ref + ' - ' + linea.nombre"
     icono                     ="mdi-package-variant-closed"
     class-contenido           ="row ancho-ventana q-col-gutter-sm justify-left"
-    :cargando                 ="cargando"
+    :cargando                 ="loading.editarLinea || loading.borrarLinea"
     >
     <!-- //* ///////////////////////////////////////////////////////////// Referencia y nombre -->
     <div class="text-1_2em col-12"><span class="text-bold">{{linea.ref}}</span> - {{linea.nombre}}</div>
@@ -14,7 +14,7 @@
       label                   ="Cantidad"
       modo                    ="right"
       :minimo                 ="0.1"
-      :readonly               ="estado > ESTADO_CTZ.BORRADOR"
+      :readonly               ="acuerdo.estado > ESTADO_CTZ.BORRADOR"
     />
     <!-- //* ///////////////////////////////////////////////////////////// Precio Base -->
     <input-number             no-undefined
@@ -28,7 +28,7 @@
       :alerta                 ="false"
       :con-decimales          ="conDecimales"
       :paso                   ="conDecimales ? 0.01 : 100"
-      :readonly               ="estado > ESTADO_CTZ.BORRADOR"
+      :readonly               ="acuerdo.estado > ESTADO_CTZ.BORRADOR"
     />
     <!-- //* ///////////////////////////////////////////////////////////// Descuento -->
     <numero-paso              porcentaje
@@ -39,10 +39,10 @@
       :paso                   ="0.1"
       :maximo                 ="linea.x100Maximo"
       :minimo                 ="0"
-      :readonly               ="estado > ESTADO_CTZ.BORRADOR"
+      :readonly               ="acuerdo.estado > ESTADO_CTZ.BORRADOR"
     />
     <!-- //* ///////////////////////////////////////////////////////////// Precio final -->
-    <input-number             con-decimales
+    <input-number
       v-model                 ="linea.precioFinal"
       label                   ="Precio final"
       class                   ="col-7 col-md-6"
@@ -54,7 +54,7 @@
       :alerta                 ="false"
       :con-decimales          ="conDecimales"
       :paso                   ="conDecimales ? 0.01 : 50"
-      :readonly               ="estado > ESTADO_CTZ.BORRADOR"
+      :readonly               ="acuerdo.estado > ESTADO_CTZ.BORRADOR"
     />
     <!-- //* ///////////////////////////////////////////////////////////// Descuento valor -->
     <div class                ="col-5 col-md-6">
@@ -79,7 +79,7 @@
       :alerta                 ="false"
       :minimo                 ="linea.precioMinimoConIVA"
       :paso                   ="conDecimales ? 0.01 : 50"
-      :readonly               ="estado > ESTADO_CTZ.BORRADOR"
+      :readonly               ="acuerdo.estado > ESTADO_CTZ.BORRADOR"
     />
     <!-- //* ///////////////////////////////////////////////////////////// Tabla totales -->
     <div        class         ="col-12">
@@ -117,19 +117,19 @@
       behavior                ="dialog"
       options-sort            ="orden"
       :options                ="unidades"
-      :readonly               ="estado > ESTADO_CTZ.BORRADOR"
+      :readonly               ="acuerdo.estado > ESTADO_CTZ.BORRADOR"
     />
     <!-- //* ///////////////////////////////////////////////////////////// Descripcion -->
     <div class                ="col-12">
       <q-editor                 
         v-model               ="linea.descripcion"
         v-bind                ="WYSIWYG_Limpio"
-        :readonly             ="estado > ESTADO_CTZ.BORRADOR"
+        :readonly             ="acuerdo.estado > ESTADO_CTZ.BORRADOR"
       />
     </div>
     <!-- //* ///////////////////////////////////////////////////////////// Boton Borrar -->
     <div
-      v-if                    ="estado <= ESTADO_CTZ.BORRADOR"
+      v-if                    ="acuerdo.estado <= ESTADO_CTZ.BORRADOR"
       class                   ="col-6"
       >
       <q-btn                  flat 
@@ -142,7 +142,7 @@
     </div>
     <!-- //* ///////////////////////////////////////////////////////////// Boton Guardar -->
     <div
-      v-if                    ="estado <= ESTADO_CTZ.BORRADOR"
+      v-if                    ="acuerdo.estado <= ESTADO_CTZ.BORRADOR"
       class                   ="col-6"
       >
       <q-btn                  flat
@@ -160,17 +160,20 @@
   import    ventana             from "components/utilidades/Ventana.vue"
   import    numeroPaso          from "src/components/utilidades/input/InputNumeroPaso.vue"
   import    inputNumber         from "src/components/utilidades/input/InputFormNumber.vue"
+  import {  storeToRefs       } from 'pinia'  
   import {  ILineaAcuerdo,
             LineaAcuerdo      } from "src/areas/acuerdos/models/LineaAcuerdo"
   import {  useApiDolibarr    } from "src/services/useApiDolibarr"
+  import {  useControlProductos } from "src/areas/acuerdos/controllers/ControlLineasProductos"            
   import    selectLabelValue    from "components/utilidades/select/SelectLabelValue.vue"            
   import {  WYSIWYG_Limpio    } from "src/useSimpleOk/useEstilos"
-  import {  useDexie, TABLAS  } from "src/services/useDexie"
+  import {  dexieUnidades     } from "src/services/useDexie"
   import {  ESTADO_CTZ        } from "src/areas/acuerdos/cotizaciones/models/Cotizacion"
   import {  formatoPrecio,
             useTools          } from "src/useSimpleOk/useTools"
   import {  useTransition     } from '@vueuse/core'
   import {  useQuasar         } from 'quasar'
+  import {  useStoreAcuerdo   } from 'src/stores/acuerdo'
   import {  ref,
             PropType,
             toRefs,
@@ -180,18 +183,25 @@
   const { dialog              } = useQuasar()
   const { apiDolibarr         } = useApiDolibarr()
   const { aviso               } = useTools()
-  const { lista : unidades    } = useDexie( TABLAS.UNIDAD )
-  const cargando                = ref< boolean >(false)
-  const emit                    = defineEmits(["update:model-value", "cerrar", "borrar"])
-  const props                   = defineProps({
-    modelValue: { required: true,   type: Object as PropType< ILineaAcuerdo > }, 
-    estado:     { required: true,   type: Number as PropType< ESTADO_CTZ >    },
-  })
-  const { modelValue, estado }  = toRefs( props )
-  const linea                   = ref< ILineaAcuerdo >( Object.assign( new LineaAcuerdo(), modelValue.value ) )
+  const unidades                = dexieUnidades()
+  const emit                    = defineEmits<{
+    (e: 'update:model-value',   value: ILineaAcuerdo        ): void
+    (e: 'cerrar',               value: void ): void
+    (e: 'borrar',               value: void ): void
+  }>()  
+  const storeAcuerdo            = useStoreAcuerdo()
+  const { acuerdo,
+          loading,
+          grupoElegido,
+          lineaElegida        } = storeToRefs(storeAcuerdo)  
+
+
+  const linea                   = ref< ILineaAcuerdo >( Object.assign( new LineaAcuerdo(), lineaElegida.value ) )
   const copiaLinea              = JSON.stringify(linea.value)
-  let conDecimales              = !!process.env.CON_DECIMALES
-  
+  let conDecimales              = Boolean(!!process.env.CON_DECIMALES)
+  const { borrarLinea   
+                              } = useControlProductos()
+
   const duracion                = 300
   const aTotalConDescu          = useTransition( computed(()=> linea.value.totalConDescu  ),  { duration: duracion } )
   const aTotalSinDescu          = useTransition( computed(()=> linea.value.totalSinDescu  ),  { duration: duracion } )
@@ -203,15 +213,16 @@
 
   async function guardar()
   {
-    cargando.value              = true
+    loading.value.editar        = true    
     let lineaAPI                = LineaAcuerdo.lineaToLineaApi( linea.value )
-    const estadoBoceto          = estado.value === ESTADO_CTZ.NO_GUARDADO
+    const estadoBoceto          = acuerdo.value.estado === ESTADO_CTZ.NO_GUARDADO
     let seguir                  = true
     if(!estadoBoceto){
-      let {ok, data}            = await apiDolibarr("editar", "lineaCotizacion", lineaAPI, linea.value.padreId )
+      let {ok, data}            = await apiDolibarr("editar-linea", "cotizacion", lineaAPI, linea.value.padreId )
       seguir                    = ok
     }
 
+    loading.value.editar        = false
     if(seguir || estadoBoceto)
     {
       linea.value.destacar( "guardar", "ocultar" )
@@ -221,7 +232,6 @@
     }
   }
 
-
   function confirmarBorrar()
   {
     dialog({
@@ -230,38 +240,19 @@
       cancel:   true,
       class:    "text-center",
       html:     true,
-    }).onOk(() => {
-      borrarLinea()
-    })
+    }).onOk( borrarLineasDesdeControl )
   }
 
-  async function borrarLinea()
+  async function borrarLineasDesdeControl()
   {
-    cargando.value      = true
-    const estadoBoceto  = estado.value === ESTADO_CTZ.NO_GUARDADO
-    let seguir          = true
-    let info  : any
-    if(!estadoBoceto){
-      let {ok, data}    = await apiDolibarr("borrar", "lineaCotizacion", linea.value.lineaId, linea.value.padreId )
-      seguir            = ok
-      info              = data
+    const ok = await borrarLinea( lineaElegida.value )
+    if(ok){
+    //emit("update:model-value", linea.value)
+    emit("cerrar")
+    //emit("borrar", linea.value)
     }
-      
-    if(seguir || estadoBoceto)
-    {
-      linea.value.destacar( "borrar", "ocultar")
-      aviso("positive", "Producto borrado")
-      emit("update:model-value", linea.value)
-      emit("cerrar")
-      emit("borrar", linea.value)
-    }
-    else
-    {
-      console.error('Error al eliminar linea: ', info);
-    }
-
-    cargando.value  = false
   }
+
 
 
   const lineaVirgen             = computed(() : boolean =>{

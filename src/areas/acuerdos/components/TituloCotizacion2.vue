@@ -20,7 +20,7 @@
           src                 ="images/iconos/iconoCotizacion.webp"
         />
         <Tooltip
-          v-if                ="!nuevo"
+          v-if                ="!acuerdo.esNuevo"
           label               ="Generar PDF"
         />
       </q-btn>
@@ -29,7 +29,7 @@
     <template                 #center>
       <!-- <fx-out-down-group> -->
       <div
-        v-if                ="!!acuerdo.id || nuevo"
+        v-if                ="!!acuerdo.id || acuerdo.esNuevo"
         key                 ="key1"
         class               ="row items-center  justify-between q-mr-sm"
         >
@@ -44,7 +44,7 @@
         </q-btn>
         <!-- //* ////////////////////////////////////////////////////// Titulo Cotizacion -->
         <div
-          v-if              ="!nuevo"
+          v-if              ="!acuerdo.esNuevo"
           :style            ="esMobil ? 'order: 3;' : ''"
           >
           <span class       ="q-ma-none q-pa-none op20 titulo-lg">
@@ -69,7 +69,7 @@
         </div>
         <!-- //* ////////////////////////////////////////////////////// Ref Cotizacion -->
         <span
-          v-if              ="!nuevo"
+          v-if              ="!acuerdo.esNuevo"
           class             ="fuente-delicada titulo-lg"
           :class            ="esMobil ? 'q-ma-none q-pa-none' : 'q-mt-sm'"
           >
@@ -112,7 +112,7 @@
     <template               #right>
       <efecto efecto        ="UpDown">
         <div
-          v-if              ="!!acuerdo.id || nuevo"
+          v-if              ="!!acuerdo.id || acuerdo.esNuevo"
           class             ="column items-center q-pt-sm q-pl-sm"
           >
           <!-- //* ///////////////////////////////////////////////////// Icono Estado -->
@@ -139,21 +139,17 @@
   import {  useTools              } from "src/useSimpleOk/useTools"
   import    titulo                  from "components/utilidades/Titulo.vue"
   import    efecto                  from "components/utilidades/Efecto.vue"
-  import {  ILoading              } from "src/models/TiposVarios"
   import {  storeToRefs           } from 'pinia'                            
   import {  useStoreAcuerdo       } from 'src/stores/acuerdo'  
 
   const storeAcuerdo          = useStoreAcuerdo()
-  const { acuerdo           } = storeToRefs(storeAcuerdo)  
+  const { acuerdo,
+          loading           } = storeToRefs(storeAcuerdo)  
   const { esMobil, aviso    } = useTools()
   const { setTitulo         } = servicesCotizaciones()
   const   urlDolibarr         = process.env.URL_DOLIBARR
 
   const emit                  = defineEmits(["click", "recargar"])
-  const props                 = defineProps({
-    nuevo:      { default:  false,  type: Boolean                         },
-    loading:    { required: true,   type: Object as PropType< ILoading >  },
-  })  
 
   async function editarTitulo( titulo : string )
   {

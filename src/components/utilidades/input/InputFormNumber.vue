@@ -97,8 +97,8 @@
       readonly:     { default:  false,        type: Boolean             },
       soloPositivo: { default:  false,        type: Boolean             },
       paso:         { default:  0,            type: Number              },
-      maximo:       { default:  9999999999,   type: Number              },
-      minimo:       { default:  -999999999,   type: Number              },
+      maximo:       { default:  9999999999,   type: [String, Number]    },
+      minimo:       { default:  -999999999,   type: [String, Number]    },
       maxEnteros:   { default:  0,            type: [String, Number]    },
       estadoCheck:  { default:  "off",        type: String as PropType< EstadoVerificar > },
       retorno:      { default:  "Number",     type: String as PropType< "Number"  | "String" | "StringFormat" > },
@@ -278,9 +278,9 @@
         numero.value      = parseInt ( numero.value.toString() )        
       }
 
-      numero.value        =   numero.value > maximo.value ? maximo.value
+      numero.value        =+( numero.value > maximo.value ? maximo.value
                             : numero.value < minimo.value ? minimo.value
-                            : numero.value
+                            : numero.value )
 
       modelo.value        = formato.format( numero.value )
     }

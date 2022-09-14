@@ -49,7 +49,7 @@
             watch
                               } from 'vue'
   import {  IUsuario, Usuario } from "src/areas/usuarios/models/Usuario"
-  import {  useDexie, TABLAS  } from "src/services/useDexie"
+  import {  dexieUsuarios     } from "src/services/useDexie"
   import {  useStoreUser      } from 'src/stores/user'
   import {  AREA              } from "src/models/TiposVarios"
 
@@ -62,7 +62,7 @@
     tabindex: number
   }
 
-  const { lista : usuariosDB} = useDexie( TABLAS.USUARIOS )    
+  const usuariosDB            = dexieUsuarios()
   const storeUser             = useStoreUser()
   const usuarios              = ref< IUsuario [] > ( [] )
   const usuario               = computed( () => storeUser.usuario )

@@ -3,7 +3,7 @@
     <efecto-grupo efecto    ="Down">
       <!-- //* //////////////////////////////////////////////////////////  Boton PDF -->
       <q-btn
-        v-if                ="estado !== ESTADO_CTZ.BORRADOR"
+        v-if                ="acuerdo.estado !== ESTADO_CTZ.BORRADOR"
         v-bind              ="btnBaseMd"
         color               ="primary"
         icon                ="mdi-pdf-box"
@@ -16,10 +16,10 @@
       </q-btn>
     </efecto-grupo>
     <!-- <efecto efecto          ="Down"> -->
-      <q-btn-group  v-if    ="estado === ESTADO_CTZ.COTIZADO">
+      <q-btn-group  v-if    ="acuerdo.estado === ESTADO_CTZ.COTIZADO">
         <!-- //* //////////////////////////////////////////////////////////  Boton Aprobar -->
         <q-btn 
-          v-if              ="!cotizacion.esTerceroCtz"
+          v-if              ="!acuerdo.esTerceroCtz"
           v-bind            ="btnBaseMd"
           color             ="positive"
           icon              ="mdi-handshake"
@@ -46,15 +46,15 @@
     <!-- </efecto> -->
     <!-- //* ////////////////////////////////////////////////////////// Boton Validar -->
     <q-btn
-      v-if                  ="estado === ESTADO_CTZ.BORRADOR"
+      v-if                  ="acuerdo.estado === ESTADO_CTZ.BORRADOR"
       v-bind                ="btnBaseMd"
       color                 ="positive"
       icon                  ="mdi-check-circle-outline"
       :label                ="esMobil ? '' : 'Validar'"
       :disable              ="cargandoAlgo
-                              || !cotizacion.proGrupos.length
-                              || !cotizacion.proGrupos[0].productos.length
-                              || (!cotizacion.contacto.id && (cotizacion.tercero.esEmpresa || cotizacion.esTerceroCtz))
+                              || !acuerdo.proGrupos.length
+                              || !acuerdo.proGrupos[0].productos.length
+                              || (!acuerdo.contacto.id && (acuerdo.tercero.esEmpresa || acuerdo.esTerceroCtz))
                             "
       :loading              ="loading.validar"
       @click                ="emit('clickValidar')"
@@ -63,7 +63,7 @@
     </q-btn>
     <!-- //* ////////////////////////////////////////////////////////// Boton Editar -->
     <q-btn
-      v-if                  ="estado !== ESTADO_CTZ.BORRADOR && estado !== ESTADO_CTZ.FACTURADO"
+      v-if                  ="acuerdo.estado !== ESTADO_CTZ.BORRADOR && acuerdo.estado !== ESTADO_CTZ.FACTURADO"
       v-bind                ="btnBaseMd"
       color                 ="positive"
       icon                  ="mdi-square-edit-outline"
@@ -80,7 +80,7 @@
       color                 ="negative"
       icon                  ="mdi-trash-can"
       :label                ="esMobil ? '' : 'Borrar'"
-      :disable              ="cargandoAlgo || cotizacion.vinculado"
+      :disable              ="cargandoAlgo || acuerdo.vinculado"
       :loading              ="loading.borrar"
       >
       <confirmar  @ok       ="emit('clickBorrar')" :con-label="!esMobil"/>
@@ -99,15 +99,15 @@
   import {  ESTADO_CTZ      } from "src/areas/acuerdos/cotizaciones/models/Cotizacion"
   import {  ILoading        } from "src/models/TiposVarios"
   import {  ICotizacion     } from "src/areas/acuerdos/cotizaciones/models/Cotizacion"
-            
+  import {  storeToRefs           } from 'pinia'                            
+  import {  useStoreAcuerdo       } from 'src/stores/acuerdo'  
+
+  const storeAcuerdo          = useStoreAcuerdo()
+  const { acuerdo,
+          loading           } = storeToRefs(storeAcuerdo)  
+
   const {  esMobil    } = useTools()
   const emit            = defineEmits(["clickPDF","clickAprobar", "clickAnular", "clickValidar", "clickEditar", "clickBorrar"])
-  const props           = defineProps({
-    estado:     { required: true,   type: Number as PropType< ESTADO_CTZ >  },
-    loading:    { required: true,   type: Object as PropType< ILoading >    },
-    cotizacion: { required: true,   type: Object as PropType< ICotizacion > },
-  })
-  const { loading }     = toRefs(props)
   const cargandoAlgo    = computed(()=> Object.values(loading.value).some( ( estado : boolean )=> !!estado ) )
 
 </script>

@@ -84,28 +84,32 @@
 //Condiciones de pago
 //Forma de pago
 //Método de entrega
-  import    ventana             from "components/utilidades/Ventana.vue"
-  import    inputFecha          from "src/components/utilidades/input/InputFecha.vue"
-  import    fechaVencimiento    from "src/areas/acuerdos/cotizaciones/components/tools/FechaValidezCtz.vue"
-  import    selectLabelValue    from "components/utilidades/select/SelectLabelValue.vue"
+  import    ventana                 from "components/utilidades/Ventana.vue"
+  import    inputFecha              from "src/components/utilidades/input/InputFecha.vue"
+  import    fechaVencimiento        from "src/areas/acuerdos/cotizaciones/components/tools/FechaValidezCtz.vue"
+  import    selectLabelValue        from "components/utilidades/select/SelectLabelValue.vue"
 
   import {  ref,
             PropType,
             toRefs,
             computed,
             onMounted,
-                              } from "vue"
+                                  } from "vue"
   import {  ICotizacion,
-            Cotizacion        } from "src/areas/acuerdos/cotizaciones/models/Cotizacion"    
+            Cotizacion            } from "src/areas/acuerdos/cotizaciones/models/Cotizacion"    
   import {  ITercero,
-            Tercero           } from "src/areas/terceros/models/Tercero"
-  import {  servicesCotizaciones   } from "src/areas/acuerdos/cotizaciones/services/servicesCotizaciones"
-  import {  useDexie, TABLAS  } from "src/services/useDexie"
-  import {  useTools          } from "src/useSimpleOk/useTools"
-  import {  ICondicionPago    } from "src/models/Diccionarios/CondicionPago"
-  import {  IFormaPago        } from "src/models/Diccionarios/FormaPago"
-  import {  IMetodoEntrega    } from "src/models/Diccionarios/MetodoEntrega"
-  import {  ITiempoEntrega    } from "src/models/Diccionarios/TiempoEntrega"
+            Tercero               } from "src/areas/terceros/models/Tercero"
+  import {  servicesCotizaciones  } from "src/areas/acuerdos/cotizaciones/services/servicesCotizaciones"
+  import {  dexieCondicionesPago,
+            dexieFormasPago,
+            dexieMetodosEntrega,
+            dexieTiemposEntrega
+                                  } from "src/services/useDexie"
+  import {  useTools              } from "src/useSimpleOk/useTools"
+  import {  ICondicionPago        } from "src/models/Diccionarios/CondicionPago"
+  import {  IFormaPago            } from "src/models/Diccionarios/FormaPago"
+  import {  IMetodoEntrega        } from "src/models/Diccionarios/MetodoEntrega"
+  import {  ITiempoEntrega        } from "src/models/Diccionarios/TiempoEntrega"
 
   const terceros                = ref< ITercero[] > ([])
   const { aviso               } = useTools()
@@ -131,10 +135,10 @@
           nuevo               } = toRefs( props )  
   
   //* /////////////////////////////////////////////////////////////// Tablas Dexie
-  const { lista : condicPago  } = useDexie( TABLAS.CONDICION_PAGO )
-  const { lista : formadPago  } = useDexie( TABLAS.FORMA_PAGO     )
-  const { lista : entregas    } = useDexie( TABLAS.METODO_ENTREGA )
-  const { lista : tiempoEntreg} = useDexie( TABLAS.TIEMPO_ENTREGA )
+  const condicPago            = dexieCondicionesPago()
+  const formadPago            = dexieFormasPago()
+  const entregas              = dexieMetodosEntrega()
+  const tiempoEntreg          = dexieTiemposEntrega()  
 
   //* /////////////////////////////////////////////////////////////// Cargadores  
   const cargarFechaFinValidez   = ref< boolean >( false )

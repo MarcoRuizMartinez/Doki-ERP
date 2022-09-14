@@ -43,10 +43,10 @@
             Municipio
                             } from "src/models/Municipio"
   
-  import { useDexie, TABLAS } from "src/services/useDexie"
+  import { dexieMunicipios  } from "src/services/useDexie"
 
   const model                 = ref< IMunicipio >( new Municipio() )
-  const { lista }             = useDexie( TABLAS.MUNICIPIOS )
+  const lista                 = dexieMunicipios()
   const  municipios           = ref< IMunicipio [] > ( lista.value as IMunicipio[] )
 
   const emit                  = defineEmits(["update:modelValue", "clear"])

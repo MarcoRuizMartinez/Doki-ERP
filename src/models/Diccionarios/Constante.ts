@@ -26,12 +26,12 @@ export class Constante implements IConstante
 }
 
 import {  ref, watch        } from "vue"
-import {  useDexie, TABLAS  } from "src/services/useDexie"
+import {  dexieConstantes   } from "src/services/useDexie"
 import {  ID_URL_Ok         } from "src/useSimpleOk/useTools"
 
 export function useConstantes( constanteBuscada : CONSTANTES )
 {
-  const { lista : constantes  } = useDexie( TABLAS.CONSTANTE, { cargarSiempre : true } ) // Para buscar de Dolibarr los valores y cargarlos a la DB local
+  const constantes              = dexieConstantes( { cargarSiempre : true } ) // Para buscar de Dolibarr los valores y cargarlos a la DB local
   const constante               = ref<number>(0)
 
   watch(constantes, (newValue) =>

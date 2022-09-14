@@ -1,6 +1,6 @@
 import {    
           ref,
-          computed,
+          Ref,
           onMounted,
           onUnmounted
                             } from 'vue'
@@ -22,9 +22,9 @@ import {  ITiempoEntrega,     TiempoEntrega     } from "src/models/Diccionarios/
 import {  ITipoContacto,      TipoContacto      } from "src/models/Diccionarios/TipoContacto"
 import {  IProductoCategoria, ProductoCategoria } from "src/areas/productos/models/ProductoCategoria"
 import {  IConstante,         Constante         } from "src/models/Diccionarios/Constante"
+import {  storeToRefs     } from 'pinia'
 
 //* ///////////////////////////////////////////////////////////// Tipos de documento
-
 export enum TABLAS
 {
   MUNICIPIOS                  = "municipios",
@@ -46,26 +46,112 @@ export type ITabla            = IMunicipio      | IUsuario        | ITipoDocumen
                                 ITiempoEntrega  | ITipoContacto   | IProductoCategoria  | IConstante
 
 
-const pre                 = process.env.PREFIJO
+const pre                     = process.env.PREFIJO
 
-interface parametros {
-  cargarSiempre?:  boolean
-  demora?:         number 
+
+export function cargarListasIndex() {
+  dexieUsuarios   ({ cargarSiempre : true})
+  dexieConstantes ({ cargarSiempre : true})
+  
+  const check                     = checkListasVencidas()
+  if(check)
+  {
+    const param                   = { demora: 5_000, cargarSiempre : true }
+    /* municipios                    = */ dexieMunicipios(param)
+    /* condicionesPago               = */ dexieCondicionesPago(param)
+    /* formasPago                    = */ dexieFormasPago(param)
+    /* metodosEntrega                = */ dexieMetodosEntrega(param)
+    /* tiemposEntrega                = */ dexieTiemposEntrega(param)
+    /* tiposContacto                 = */ dexieTiposContacto(param)
+    /* origenesContacto              = */ dexieOrigenesContacto(param)
+    /* tiposDocumentos               = */ dexieTiposDocumentos(param)
+    /* unidades                      = */ dexieUnidades(param)
+  }
 }
 
-export function useDexie(
-                          tabla : TABLAS,
-                          {
-                            cargarSiempre = false,
-                            demora = 0
-                          } : parametros = {
-                                              cargarSiempre : false,
-                                              demora : 0
-                                            }
-                        ) //
+
+
+interface IParametros         { cargarSiempre?:  boolean , demora?:         number }
+
+const paramDefault : IParametros = { cargarSiempre : false, demora : 0 }
+
+//* ///////////////////////////////////////////////////////////// Usuarios
+export function dexieUsuarios         ( { cargarSiempre = false, demora = 0 } = paramDefault ) :Ref< IUsuario[] > {
+  const { lista } = useDexie( TABLAS.USUARIOS, { cargarSiempre, demora } )
+  return lista as Ref< IUsuario[] >
+}
+
+//* ///////////////////////////////////////////////////////////// Municipios
+export function dexieMunicipios       ( { cargarSiempre = false, demora = 0 } = paramDefault ) :Ref< IMunicipio[] > {
+  const { lista } = useDexie( TABLAS.MUNICIPIOS, { cargarSiempre, demora } )
+  return lista as Ref< IMunicipio[] >
+}
+
+//* ///////////////////////////////////////////////////////////// Condicios de pago
+export function dexieCondicionesPago  ( { cargarSiempre = false, demora = 0 } = paramDefault ) :Ref< ICondicionPago[] > {
+  const { lista } = useDexie( TABLAS.CONDICION_PAGO, { cargarSiempre, demora } )
+  return lista as Ref< ICondicionPago[] >
+}
+
+//* ///////////////////////////////////////////////////////////// Formas de pago
+export function dexieFormasPago       ( { cargarSiempre = false, demora = 0 } = paramDefault ) :Ref< IFormaPago[] > {
+  const { lista } = useDexie( TABLAS.FORMA_PAGO, { cargarSiempre, demora } )
+  return lista as Ref< IFormaPago[] >
+}
+
+//* ///////////////////////////////////////////////////////////// Metodos de entrega
+export function dexieMetodosEntrega   ( { cargarSiempre = false, demora = 0 } = paramDefault ) :Ref< IMetodoEntrega[] > {
+  const { lista } = useDexie( TABLAS.METODO_ENTREGA, { cargarSiempre, demora } )
+  return lista as Ref< IMetodoEntrega[] >
+}
+
+//* ///////////////////////////////////////////////////////////// Tiempos de entrega
+export function dexieTiemposEntrega   ( { cargarSiempre = false, demora = 0 } = paramDefault ) :Ref< ITiempoEntrega[] > {
+  const { lista } = useDexie( TABLAS.TIEMPO_ENTREGA, { cargarSiempre, demora } )
+  return lista as Ref< ITiempoEntrega[] >
+}
+
+//* ///////////////////////////////////////////////////////////// Tipos de contacto
+export function dexieTiposContacto    ( { cargarSiempre = false, demora = 0 } = paramDefault ) :Ref< ITipoContacto[] > {
+  const { lista } = useDexie( TABLAS.TIPO_CONTACTO, { cargarSiempre, demora } )
+  return lista as Ref< ITipoContacto[] >
+}
+
+//* ///////////////////////////////////////////////////////////// Origenes de contacto
+export function dexieOrigenesContacto ( { cargarSiempre = false, demora = 0 } = paramDefault ) :Ref< IOrigenContacto[] > {
+  const { lista } = useDexie( TABLAS.ORIGEN_CONTACTO, { cargarSiempre, demora } )
+  return lista as Ref< IOrigenContacto[] >
+}
+
+//* ///////////////////////////////////////////////////////////// Tipos de documentos
+export function dexieTiposDocumentos  ( { cargarSiempre = false, demora = 0 } = paramDefault ) :Ref< ITipoDocumento[] > {
+  const { lista } = useDexie( TABLAS.TIPOS_DOCUMENTOS, { cargarSiempre, demora } )
+  return lista as Ref< ITipoDocumento[] >
+}
+
+//* ///////////////////////////////////////////////////////////// Unidades
+export function dexieUnidades         ( { cargarSiempre = false, demora = 0 } = paramDefault ) :Ref< IUnidad[] > {
+  const { lista } = useDexie( TABLAS.UNIDAD, { cargarSiempre, demora } )
+  return lista as Ref< IUnidad[] >
+}
+
+//* ///////////////////////////////////////////////////////////// Categorias de productos
+export function dexieCategoriasProducto( { cargarSiempre = false, demora = 0 } = paramDefault ) :Ref< IProductoCategoria[] > {
+  const { lista } = useDexie( TABLAS.PRODUCTO_CATE, { cargarSiempre, demora } )
+  return lista as Ref< IProductoCategoria[] >
+}
+
+//* ///////////////////////////////////////////////////////////// Unidades
+export function dexieConstantes         ( { cargarSiempre = false, demora = 0 } = paramDefault ) :Ref< IConstante[] > {
+  const { lista } = useDexie( TABLAS.CONSTANTE, { cargarSiempre, demora } )
+  return lista as Ref< IConstante[] >
+}
+
+
+function useDexie( tabla : TABLAS, { cargarSiempre = false, demora = 0 } = paramDefault )
 {
   const storeApp                  = useStoreApp()  
-  const online                    = computed(() => storeApp.online)
+  const{ online }                 = storeToRefs( storeApp )
   const lista                     = ref< Array < any > >( [] )
   
   //* ///////////////////////////////////////////////////////////////////////// On Mounted
@@ -290,7 +376,7 @@ export async function getUsuariosDB( ids : number[] ) : Promise < IUsuario[] >
 }
 
 export async function getUsuarioDB( id : number ) : Promise < IUsuario >
-{ 
+{
   return db.transaction('r', db[ TABLAS.USUARIOS ], async () =>
     {
       let usuario           = await db[ TABLAS.USUARIOS ].where("id").equals(id).toArray()
@@ -396,7 +482,7 @@ export async function getConstante( label : string ) : Promise < IConstante >
   )
 }
 
-export function checkListasVencidas() : boolean
+function checkListasVencidas() : boolean
 {
   const TIEMPO_EXPIRAR  = 86_400_000 * 2 // ( 24 * 120)
 

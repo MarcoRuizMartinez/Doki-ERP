@@ -12,7 +12,7 @@
     :option-label             ="(contacto) => !contacto ? '' : contacto.nombreCompleto + ( !!contacto.empresa ? ' - ' + contacto.empresa : '') "
     @filter                   ="buscar"
     @popup-show               ="virgen = true"
-    @update:model-value       ="( conta ) => emit('update:contacto', conta)"
+    @update:model-value       ="( conta ) => emit('update:contacto', conta )"
     >
     <template                 #prepend>
       <q-icon name            ="mdi-account" />
@@ -85,7 +85,14 @@
   const { apiDolibarr       } = useApiDolibarr()
   const editar                = ref< boolean >(true)
 
-  const emit                  = defineEmits(["update:contacto"])
+    const emit                  = defineEmits<{
+    (e: 'update:contacto',  value: IContacto                ): void
+    (e: 'contactoInicial',  value: IContacto                ): void
+    (e: 'contactoNuevo',    value: IContacto                ): void
+    (e: 'contactoCambio',   value: IContacto, idOld: number ): void
+  }>()
+
+
   const props                 = defineProps({
     disable:    { default:  false,  type: Boolean                           },
     readonly:   { default:  false,  type: Boolean                           },
@@ -99,9 +106,24 @@
   watch(contacto, (newValue, oldValue)=>{
     //if(!!newValue.id)
       modelo.value            = newValue
-    
-    //if(!newValue.id)
-      //console.log("Caso Raro:", newValue )
+  })
+
+  watch( modelo, (newContacto, oldContacto)=>
+  {
+    // Se asume que si oldContacto es undefinide, y newContacto es valido, es porque se esta cargando por primeva vez
+    if(!!newContacto && !oldContacto) {
+      emit('contactoInicial', newContacto )
+    }
+    else
+    // Contacto Old esta vacio y se esta agregando un contacto desde cero
+    if(!!newContacto && !!oldContacto && !oldContacto.id) {
+      emit('contactoNuevo', newContacto )
+    }
+    else
+    // New y Old son validos entonces es un cambio de contacto 
+    if(!!newContacto && !!oldContacto && !!oldContacto.id) {      
+      emit('contactoCambio', newContacto, oldContacto.id )
+    }
   })
 
   
@@ -110,7 +132,7 @@
     if((!busqueda || busqueda.length < 2) && !virgen.value)
     {
       cargando.value          = false
-      doneFn(() => contactos.value = [] )
+      doneFn(() => { contactos.value = [] } )
       return 
     }
 
@@ -123,12 +145,10 @@
     let contacts :IContacto[] = []
 
     if(ok && Array.isArray( data ) && !!data.length)
-    {
-      
+    {      
       for (const contacto of data as any[])
       {
-        if(contacto.hasOwnProperty("statut") && contacto.statut == "0") continue
-        
+        if(contacto.hasOwnProperty("statut") && contacto.statut == "0") continue        
         contacts.push( await Contacto.getContactoFromAPIDolibarr( contacto ) )        
       }
     }
@@ -154,7 +174,7 @@
 
   function contactoEditado( contac : IContacto )
   {
-    let index                 = contactos.value.findIndex( c => c.id == contac.id) 
+    const index               = contactos.value.findIndex( c => c.id == contac.id) 
     contactos.value[index]    = contac
     modelo.value              = contac
     ventanaOk.value           = false

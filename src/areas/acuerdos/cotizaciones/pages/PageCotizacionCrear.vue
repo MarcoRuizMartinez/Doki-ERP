@@ -63,6 +63,7 @@
   import {  useTitle        } from "@vueuse/core"
   import {  useTools        } from "src/useSimpleOk/useTools"
   import {  TIPOS_CONTACTO  } from "src/areas/terceros/models/Contacto"  
+  import {  useControlCotizacion  } from "src/areas/acuerdos/controllers/ControlCotizaciones"
   import {  ICotizacion,
             Cotizacion      } from "src/areas/acuerdos/cotizaciones/models/Cotizacion"
   import    tituloCtz         from "src/areas/acuerdos/cotizaciones/components/TituloCotizacion.vue"

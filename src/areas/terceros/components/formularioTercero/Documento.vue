@@ -70,7 +70,8 @@
                               } from "src/areas/terceros/models/TiposDocumento"
   import {  EstadoVerificar   } from "src/models/TiposVarios"
   import {  useRouter         } from 'vue-router'
-  import {  useDexie, TABLAS  } from "src/services/useDexie"
+  import {  dexieTiposDocumentos
+                              } from "src/services/useDexie"
   import {  useFetch          } from "src/useSimpleOk/useFetch"
   import {  getURL,
             getFormData       } from "src/services/APIMaco"
@@ -79,7 +80,7 @@
 
   const { miFetch             } = useFetch()
   const { notify              } = useQuasar()
-  const { lista               } = useDexie( TABLAS.TIPOS_DOCUMENTOS )
+  const lista                   = dexieTiposDocumentos()
   const tiposDeDocumentos       = computed( () => lista.value as ITipoDocumento [] )
   const router                  = useRouter()
   

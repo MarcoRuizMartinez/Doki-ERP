@@ -10,7 +10,8 @@ import {  getUnidadDB       } from "../../../services/useDexie"
 
 export type TipoLinea       = "producto" | "servicio" | "titulo" | "subtotal" | "descripcion"
 
-type TAccionDestacar = "seleccionar" | "guardar" | "borrar" | "no-destacar"
+type TAccionDestacar        = "seleccionar" | "guardar" | "borrar" | "no-destacar"
+type TAccionesSobreLinea    = "editar" | "borrar" | "crear" | ""
 
 export interface  ILineaApi {
   id?:                      number
@@ -24,7 +25,7 @@ export interface  ILineaApi {
   desc?:                    string
   fk_unit?:                 number
   label?:                   string
-  special_code?:            number
+  special_code?:            number  
 }
 
 export interface ILineaAcuerdo extends IProductoDoli {
@@ -58,6 +59,7 @@ export interface ILineaAcuerdo extends IProductoDoli {
   qtyUnd:                   string
   borrar:                   boolean
   destacar:                 ( accion? : TAccionDestacar , mostrar? : "mostrar" | "ocultar" )=>void
+  accion:                   TAccionesSobreLinea
 }
 
 export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
@@ -72,6 +74,7 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
   class:                    string
   precioBase:               number
   borrar:                   boolean
+  accion:                   TAccionesSobreLinea
 
   constructor()
   {
@@ -87,6 +90,7 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
     this.fixed              = false
     this.class              = ""
     this.borrar             = false
+    this.accion             = ""
   }
 
   // * /////////////////////////////////////////////////////////////////////////////// Tipo de linea
@@ -227,6 +231,7 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
             mostrar : "mostrar" | "ocultar"             = "mostrar"
           )
   {
+    //console.log({accion}, {mostrar})
     this.class              = getEstilo( accion, this.class )
 
     setTimeout( () => {
@@ -328,8 +333,7 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
     for (const producto of productos)
     {
       let linea               = LineaAcuerdo.lineaDeProducto(producto)
-          linea.qty           = qty ?? 1
-          linea.destacar( "guardar" )
+          linea.qty           = !qty || (typeof qty === "number" && qty < 0 ) ? 1 : qty
           //linea.descuentoX100 = descu ?? 0
       lineas.push( linea )
     }

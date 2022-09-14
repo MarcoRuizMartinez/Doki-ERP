@@ -116,7 +116,7 @@
                               } from "vue"
   import {  ICotizacion,
             ESTADO_CTZ        } from "src/areas/acuerdos/cotizaciones/models/Cotizacion"
-  import {  Acuerdo, IAcuerdo } from "src/areas/acuerdos/models/Acuerdo"            
+  import {  Acuerdo, IAcuerdo } from "src/areas/acuerdos/models/Acuerdo"
   import {  IGrupoLineas      } from "src/areas/acuerdos/models/GrupoLineasAcuerdo"
   import {  useTools          } from "src/useSimpleOk/useTools"
   import {  useApiDolibarr    } from "src/services/useApiDolibarr"
@@ -151,7 +151,7 @@
     grupo.titulo            = mayusculasPrimeraLetra( nuevoTitulo ).trim()
     cargandoMenuGrupo.value = true
     let lineaEdit           = { id: grupo.lineaIdTitulo, label: grupo.titulo }
-    let {ok, data}          = await apiDolibarr("editar", "lineaCotizacion", lineaEdit, acuerdo.value.id)
+    let {ok, data}          = await apiDolibarr("editar-linea", "cotizacion", lineaEdit, acuerdo.value.id)
     if(!ok) aviso("negative", "Error al cambiar nombre de grupo")
     cargandoMenuGrupo.value = false
   }

@@ -1,4 +1,8 @@
-import {  exportFile,  useQuasar  } from "quasar"
+import {  exportFile,
+          useQuasar,
+          QNotifyAction,
+                                  } from "quasar"
+
 import {  LocationQueryValue      } from "vue-router"
 import {  ILabelValue,
           labelValueNulo,         } from "src/models/TiposVarios"
@@ -12,7 +16,14 @@ export function useTools()
   const { notify              } = quasar
   const esMobil                 = !!quasar.platform.is.mobile
 
-  function aviso( tipo : "positive" | "negative", mensaje : string, icono: Iconos = "", duracion : number = 1600)
+  function aviso
+  (
+    tipo      : "positive" | "negative",
+    mensaje   : string,
+    icono     : Iconos          = "",
+    duracion  : number          = 1600,   
+    acciones  : QNotifyAction[] = [],
+  )
   {
     let icon      = !!icono ? icono + "-" : ""
 
@@ -23,6 +34,7 @@ export function useTools()
       position:   "top",
       timeout:    duracion,
       message:    mensaje,
+      actions:    acciones
     })
   }
 

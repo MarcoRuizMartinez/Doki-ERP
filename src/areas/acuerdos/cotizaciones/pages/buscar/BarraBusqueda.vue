@@ -152,7 +152,8 @@
   import {  IUsuario            } from "src/areas/usuarios/models/Usuario"
   import {  useStoreUser        } from 'src/stores/user'
   import {  estadosCtz          } from "src/areas/acuerdos/cotizaciones/models/Cotizacion"
-  import {  useDexie, TABLAS    } from "src/services/useDexie"
+  import {  dexieOrigenesContacto
+                                } from "src/services/useDexie"
   import {  ILabelValue,
             labelValueNulo      } from "src/models/TiposVarios"
   import {  useRouter           } from "vue-router"
@@ -169,7 +170,7 @@
                                 } from "src/useSimpleOk/useTools"  
   const router                    = useRouter()
   let queryURL                    = router.currentRoute.value.query  
-  const { lista : origenes  }     = useDexie( TABLAS.ORIGEN_CONTACTO)
+  const origenes                  = dexieOrigenesContacto()
   const storeUser                 = useStoreUser()
   const { usuario, permisos }     = storeToRefs(storeUser)  
   const opcionesTotales           = [{value:0, label:'Sin totalizar'},  {value:1, label:'Totalizado'}]
