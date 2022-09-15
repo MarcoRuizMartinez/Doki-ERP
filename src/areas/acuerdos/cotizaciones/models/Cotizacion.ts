@@ -6,7 +6,7 @@ import {  getCondicionesPagoDB,
           getUsuarioDB,
                                             } from "src/services/useDexie"
 import {  X100                              } from "src/useSimpleOk/useTools"
-                                            
+
 import {  ILineaAcuerdo,    LineaAcuerdo    } from "src/areas/acuerdos/models/LineaAcuerdo"
 import {  ITercero,         Tercero         } from "src/areas/terceros/models/Tercero"
 import {  IUsuario,         Usuario         } from "src/areas/usuarios/models/Usuario"
@@ -39,7 +39,7 @@ export function estadoCtzToName( estado : number ): string {
                               : estado == ESTADO_CTZ.RECHAZADO   ? "Rechazado"
                               : estado == ESTADO_CTZ.FACTURADO   ? "Facturado"
                               : ""
-  return valor 
+  return valor
 }
 
 export function estadoCtzToColor( estado : number ): string
@@ -51,7 +51,7 @@ export function estadoCtzToColor( estado : number ): string
                               : estado == ESTADO_CTZ.RECHAZADO   ? "#832362"
                               : estado == ESTADO_CTZ.FACTURADO   ? "#FF6805"
                               : "transparent"
-  return color 
+  return color
 }
 
 export const estadosCtz       = [
@@ -61,7 +61,7 @@ export const estadosCtz       = [
   { value: ESTADO_CTZ.APROBADO,    label: estadoCtzToName( ESTADO_CTZ.APROBADO    ) },
   { value: ESTADO_CTZ.RECHAZADO,   label: estadoCtzToName( ESTADO_CTZ.RECHAZADO   ) },
   { value: ESTADO_CTZ.FACTURADO,   label: estadoCtzToName( ESTADO_CTZ.FACTURADO   ) },
-]  
+]
 
 export function estadoStrCtzToColor( estado : string ): string
 {
@@ -72,7 +72,7 @@ export function estadoStrCtzToColor( estado : string ): string
                               : estado == "Rechazado" ? "#832362"
                               : estado == "Facturado" ? "#FF6805"
                               : "transparent"
-  return color 
+  return color
 }
 
 
@@ -88,7 +88,7 @@ export interface ICotizacion
   terceroId:                  number
   tercero:                    ITercero
 
-  fechaCreacion:              Date 
+  fechaCreacion:              Date
   fechaCreacionCorta:         string
   fechaValidacion:            Date
   fechaValidacionCorta:       string
@@ -107,7 +107,7 @@ export interface ICotizacion
   estadoIcono:                string
   estadoColor:                string
   estadoLabel:                string
-  
+
   notaVendedor:               string
   notaCotizacion:             string
 
@@ -124,7 +124,7 @@ export interface ICotizacion
   tiempoEntrega:              ITiempoEntrega
 
   origenContactoId:           number
-  origenContacto:             IOrigenContacto 
+  origenContacto:             IOrigenContacto
 
   aiuOn:                      boolean
   aiuAdmin:                   number
@@ -148,11 +148,11 @@ export interface ICotizacion
   totalSinDescu:              number      // Subtotal sin descuento
   totalConDescu:              number      // Subtotal con descuento
   ivaValor:                   number
-  totalConIva:                number  
+  totalConIva:                number
 
   pdfNombre:                  string
   pdfContacto:                string
-  pdfCorreo:                  string 
+  pdfCorreo:                  string
   pdfCiudad:                  string
 
   esTerceroCtz:               boolean
@@ -170,7 +170,7 @@ export class Cotizacion implements ICotizacion
   titulo:                     string
   terceroId:                  number
   tercero:                    ITercero
-  fechaCreacion:              Date 
+  fechaCreacion:              Date
   fechaFinValidez:            Date
   fechaValidacion:            Date
   fechaCierre:                Date
@@ -194,10 +194,10 @@ export class Cotizacion implements ICotizacion
   contacto:                   IContacto
   productos:                  ILineaAcuerdo[]
   proGrupos:                  IGrupoLineas[]
-  condicionPago:              ICondicionPago  
-  formaPago:                  IFormaPago      
-  metodoEntrega:              IMetodoEntrega  
-  origenContacto:             IOrigenContacto 
+  condicionPago:              ICondicionPago
+  formaPago:                  IFormaPago
+  metodoEntrega:              IMetodoEntrega
+  origenContacto:             IOrigenContacto
   tiempoEntrega:              ITiempoEntrega
   conTotal:                   boolean
   conIVA:                     boolean
@@ -236,10 +236,10 @@ export class Cotizacion implements ICotizacion
     this.contacto             = new Contacto()
     this.productos            = []
     this.proGrupos            = []
-    this.condicionPago        = new CondicionPago()  
-    this.formaPago            = new FormaPago()      
-    this.metodoEntrega        = new MetodoEntrega()  
-    this.origenContacto       = new OrigenContacto() 
+    this.condicionPago        = new CondicionPago()
+    this.formaPago            = new FormaPago()
+    this.metodoEntrega        = new MetodoEntrega()
+    this.origenContacto       = new OrigenContacto()
     this.tiempoEntrega        = new TiempoEntrega()
     this.conTotal             = true
     this.conIVA               = true
@@ -255,7 +255,7 @@ export class Cotizacion implements ICotizacion
                                 : this.estado == ESTADO_CTZ.RECHAZADO   ? "mdi-close-circle"
                                 : this.estado == ESTADO_CTZ.FACTURADO   ? "mdi-lock-check"
                                 : ""
-    return valor 
+    return valor
   }
 
   // * /////////////////////////////////////////////////////////////////////////////// Color
@@ -281,7 +281,7 @@ export class Cotizacion implements ICotizacion
     let sumaProductos       = 0
 
     if(this.productos.length==0) return 0
-    
+
     sumaProductos           = this.productos.map    ( ( p:ILineaAcuerdo )     : number => p.totalSinDescu )
                                             .reduce ( ( v1:number, v2:number) : number => v1 + v2 )
     return sumaProductos
@@ -292,7 +292,7 @@ export class Cotizacion implements ICotizacion
     let sumaProductos       = 0
 
     if(this.productos.length==0) return 0
-    
+
     sumaProductos           = this.productos.map    ( ( p:ILineaAcuerdo )     : number => p.totalConDescu )
                                             .reduce ( ( v1:number, v2:number) : number => v1 + v2 )
     return sumaProductos
@@ -301,14 +301,14 @@ export class Cotizacion implements ICotizacion
   // * /////////////////////////////////////////////////////////////////////////////// Descuento valor
   get descuentoValor() :number {
     return this.totalSinDescu - this.totalConDescu
-  }  
+  }
 
   // * /////////////////////////////////////////////////////////////////////////////// Descuento valor
   get hayDescuento() :boolean {
     return this.descuentoValor > 0
-  }  
+  }
 
-  
+
 
   // * /////////////////////////////////////////////////////////////////////////////// AIU Administracion
   get aiuAdminValor(): number {
@@ -348,7 +348,7 @@ export class Cotizacion implements ICotizacion
   get ivaValor() :number {
     let ivaTotal            = 0
     let ivaX100             = parseInt( process.env.IVA ?? "0" )
-    
+
     if(this.conIVA          && !this.aiuOn)
       ivaTotal              = X100( this.totalConDescu, ivaX100 )
     else
@@ -361,7 +361,7 @@ export class Cotizacion implements ICotizacion
   // * /////////////////////////////////////////////////////////////////////////////// TOTAL
   get totalConIva() :number {
     let total               = this.totalConDescu + this.ivaValor
-    
+
     if(this.aiuOn)
       total                 += this.aiuAdminValor + this.aiuImpreValor + this.aiuUtiliValor
 
@@ -369,7 +369,7 @@ export class Cotizacion implements ICotizacion
   }
 
   get fechaCreacionCorta()    : string { return this.fechaCreacion    .toLocaleDateString('sv-SE') }
-  get fechaValidacionCorta()  : string { return this.fechaValidacion  .toLocaleDateString('sv-SE') } 
+  get fechaValidacionCorta()  : string { return this.fechaValidacion  .toLocaleDateString('sv-SE') }
   get fechaCierreCorta()      : string { return this.fechaCierre      .toLocaleDateString('sv-SE') }
   get fechaFinValidezCorta()  : string { return this.fechaFinValidez  .toLocaleDateString('sv-SE') }
   get fechaEntregaCorta()     : string { return this.fechaEntrega     .toLocaleDateString('sv-SE') }
@@ -377,9 +377,9 @@ export class Cotizacion implements ICotizacion
     return this.ref.length > 10 ? this.ref.slice( 5 , 20 ) : this.ref
   }
 
-  // * /////////////////////////////////////////////////////////////////////////////// 
+  // * ///////////////////////////////////////////////////////////////////////////////
   get pdfNombre() :  string {
-    let nombre              = "" 
+    let nombre              = ""
     if(this.esTerceroCtz)
       nombre                = !!this.contacto.empresa ? this.contacto.empresa : this.contacto.nombreCompleto
     else
@@ -392,7 +392,7 @@ export class Cotizacion implements ICotizacion
   }
 
   get pdfContacto() :string {
-    let contacto            = "" 
+    let contacto            = ""
     const nombreYtel        = this.contacto.nombreCompleto + " - Tel: " + this.contacto.telefono
     if(this.esTerceroCtz)
       contacto              = !!this.contacto.empresa ? nombreYtel : this.contacto.telefono
@@ -402,7 +402,7 @@ export class Cotizacion implements ICotizacion
     else
       contacto              = this.tercero.telefono
 
-    return contacto 
+    return contacto
   }
 
   get pdfCorreo() :string {
@@ -425,7 +425,7 @@ export class Cotizacion implements ICotizacion
 
   get title() : string {
     let titulo              = ""
-    
+
     if(!!this.titulo)
       titulo                = this.titulo + " "
 
@@ -489,12 +489,12 @@ export class Cotizacion implements ICotizacion
 
 
   // * ///////////////////////////////////////////////////// static convertir data de API en new Cotizacion
-  static async convertirDataApiACotizacion( ctzApi : any ) : Promise < ICotizacion >
+  static async convertirDataApiToAcuerdo( ctzApi : any ) : Promise < ICotizacion >
   {
     ctzApi.id                 = +ctzApi.id
     ctzApi.terceroId          = +ctzApi.terceroId
     ctzApi.comercialId        = +ctzApi.comercialId
-    ctzApi.usuariId           = +ctzApi.usuariId          
+    ctzApi.usuariId           = +ctzApi.usuariId
     ctzApi.estado             = +ctzApi.estado
     ctzApi.descuento          = +ctzApi.descuento
     ctzApi.conTotal           = Boolean( +ctzApi.conTotal )
@@ -508,7 +508,7 @@ export class Cotizacion implements ICotizacion
     ctzApi.condicionPagoId    = +ctzApi.condicionPagoId
     ctzApi.formaPagoId        = +ctzApi.formaPagoId
     ctzApi.metodoEntregaId    = +ctzApi.metodoEntregaId
-    ctzApi.origenContactoId   = +ctzApi.origenContactoId  
+    ctzApi.origenContactoId   = +ctzApi.origenContactoId
     ctzApi.tiempoEntregaId    = +ctzApi.tiempoEntregaId
 
     ctzApi.fechaCreacion      = getDateToStr( ctzApi.fechaCreacion    )

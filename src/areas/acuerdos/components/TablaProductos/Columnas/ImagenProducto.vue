@@ -1,7 +1,8 @@
 <template>
   <div
     v-if                  ="!!linea.imagen"
-    class                 ="float-left"
+    class                 ="float-left-xxx"
+    :class                ="$attrs.class"
     >
     <q-img
       :src                ="linea.imagen100px"
@@ -19,13 +20,13 @@
   </div>
   <q-dialog v-model       ="ventanaImagen">
     <visor-imagen v-bind  ="imagenBig"/>
-  </q-dialog>   
+  </q-dialog>
 </template>
 <script lang="ts" setup>
-  import {  ref, PropType } from "vue"    
+  import {  ref, PropType } from "vue"
   import {  ILineaAcuerdo } from "src/areas/acuerdos/models/LineaAcuerdo"
-  import    visorImagen     from "components/utilidades/VisorImagen.vue"              
-  const ventanaImagen       = ref< boolean >( false )            
+  import    visorImagen     from "components/utilidades/VisorImagen.vue"
+  const ventanaImagen       = ref< boolean >( false )
   type  TImagenBig          = { src : string, titulo: string }
   const imagenBig           = ref< TImagenBig >( { titulo: "", src: "" } )
   const props               = defineProps({

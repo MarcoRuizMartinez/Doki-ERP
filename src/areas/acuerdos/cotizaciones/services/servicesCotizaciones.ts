@@ -81,7 +81,7 @@ export function servicesCotizaciones()
                                                   )
       if(ok && typeof data == "object" )
       {
-        let cotizacion    = await Acuerdo.convertirDataApiACotizacion( data )
+        let cotizacion    = await Acuerdo.convertirDataApiToAcuerdo( data )
         resolver( cotizacion )
       }
       else
@@ -112,7 +112,7 @@ export function servicesCotizaciones()
       {
         for (const item of data)
         {
-          let quote : IAcuerdo = await Acuerdo.convertirDataApiACotizacion( item )
+          let quote : IAcuerdo = await Acuerdo.convertirDataApiToAcuerdo( item )
           quotes.push( quote )
         }
         resolver( quotes )
@@ -124,7 +124,7 @@ export function servicesCotizaciones()
       /*
       if(ok && typeof data == "object" )
       {
-        let cotizacion    = await Cotizacion.convertirDataApiACotizacion( data )
+        let cotizacion    = await Cotizacion.convertirDataApiToAcuerdo( data )
         resolver( cotizacion )
       }
       else

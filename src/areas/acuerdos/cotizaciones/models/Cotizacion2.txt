@@ -31,7 +31,7 @@ export function estadoCtzToName( estado : number ): string {
                               : estado == ESTADO_CTZ.RECHAZADO   ? "Rechazado"
                               : estado == ESTADO_CTZ.FACTURADO   ? "Facturado"
                               : ""
-  return valor 
+  return valor
 }
 
 export function estadoCtzToColor( estado : number ): string
@@ -43,7 +43,7 @@ export function estadoCtzToColor( estado : number ): string
                               : estado == ESTADO_CTZ.RECHAZADO   ? "#832362"
                               : estado == ESTADO_CTZ.FACTURADO   ? "#FF6805"
                               : "transparent"
-  return color 
+  return color
 }
 
 export const estadosCtz       = [
@@ -53,7 +53,7 @@ export const estadosCtz       = [
   { value: ESTADO_CTZ.APROBADO,    label: estadoCtzToName( ESTADO_CTZ.APROBADO    ) },
   { value: ESTADO_CTZ.RECHAZADO,   label: estadoCtzToName( ESTADO_CTZ.RECHAZADO   ) },
   { value: ESTADO_CTZ.FACTURADO,   label: estadoCtzToName( ESTADO_CTZ.FACTURADO   ) },
-]  
+]
 
 export function estadoStrCtzToColor( estado : string ): string
 {
@@ -64,23 +64,23 @@ export function estadoStrCtzToColor( estado : string ): string
                               : estado == "Rechazado" ? "#832362"
                               : estado == "Facturado" ? "#FF6805"
                               : "transparent"
-  return color 
+  return color
 }
 
 
 export interface ICotizacion2 extends IAcuerdo
 {
-  titulo:                     string 
+  titulo:                     string
   fechaFinValidez:            Date
   fechaFinValidezCorta:       string
   diasValidez:                number
   conTotal:                   boolean
   pdfNombre:                  string
   pdfContacto:                string
-  pdfCorreo:                  string 
+  pdfCorreo:                  string
   pdfCiudad:                  string
 
-  esTerceroCtz:               boolean  
+  esTerceroCtz:               boolean
 }
 export class Cotizacion2 extends Acuerdo implements ICotizacion2
 {
@@ -94,7 +94,7 @@ export class Cotizacion2 extends Acuerdo implements ICotizacion2
     console.log("En constructor Cotizacion")
     this.titulo               = ""
     this.fechaFinValidez      = new Date(0)
-    this.conTotal             = true    
+    this.conTotal             = true
   }
 
   // * /////////////////////////////////////////////////////////////////////////////// Color
@@ -116,9 +116,9 @@ export class Cotizacion2 extends Acuerdo implements ICotizacion2
 
   get fechaFinValidezCorta()  : string { return this.fechaFinValidez  .toLocaleDateString('sv-SE') }
 
-  // * /////////////////////////////////////////////////////////////////////////////// 
+  // * ///////////////////////////////////////////////////////////////////////////////
   get pdfNombre() :  string {
-    let nombre              = "" 
+    let nombre              = ""
     if(this.esTerceroCtz)
       nombre                = !!this.contacto.empresa ? this.contacto.empresa : this.contacto.nombreCompleto
     else
@@ -131,7 +131,7 @@ export class Cotizacion2 extends Acuerdo implements ICotizacion2
   }
 
   get pdfContacto() :string {
-    let contacto            = "" 
+    let contacto            = ""
     const nombreYtel        = this.contacto.nombreCompleto + " - Tel: " + this.contacto.telefono
     if(this.esTerceroCtz)
       contacto              = !!this.contacto.empresa ? nombreYtel : this.contacto.telefono
@@ -141,7 +141,7 @@ export class Cotizacion2 extends Acuerdo implements ICotizacion2
     else
       contacto              = this.tercero.telefono
 
-    return contacto 
+    return contacto
   }
 
   get pdfCorreo() :string {
@@ -164,7 +164,7 @@ export class Cotizacion2 extends Acuerdo implements ICotizacion2
 
   get title() : string {
     let titulo              = ""
-    
+
     if(!!this.titulo)
       titulo                = this.titulo + " "
 
@@ -228,12 +228,12 @@ export class Cotizacion2 extends Acuerdo implements ICotizacion2
 
 
   // * ///////////////////////////////////////////////////// static convertir data de API en new Cotizacion
-  static async convertirDataApiACotizacion( ctzApi : any ) : Promise < ICotizacion2 >
+  static async convertirDataApiToAcuerdo( ctzApi : any ) : Promise < ICotizacion2 >
   {
     ctzApi.id                 = +ctzApi.id
     ctzApi.terceroId          = +ctzApi.terceroId
     ctzApi.comercialId        = +ctzApi.comercialId
-    ctzApi.usuariId           = +ctzApi.usuariId          
+    ctzApi.usuariId           = +ctzApi.usuariId
     ctzApi.estado             = +ctzApi.estado
     ctzApi.descuento          = +ctzApi.descuento
     ctzApi.conTotal           = Boolean( +ctzApi.conTotal )
@@ -247,7 +247,7 @@ export class Cotizacion2 extends Acuerdo implements ICotizacion2
     ctzApi.condicionPagoId    = +ctzApi.condicionPagoId
     ctzApi.formaPagoId        = +ctzApi.formaPagoId
     ctzApi.metodoEntregaId    = +ctzApi.metodoEntregaId
-    ctzApi.origenContactoId   = +ctzApi.origenContactoId  
+    ctzApi.origenContactoId   = +ctzApi.origenContactoId
     ctzApi.tiempoEntregaId    = +ctzApi.tiempoEntregaId
 
     ctzApi.fechaCreacion      = getDateToStr( ctzApi.fechaCreacion    )

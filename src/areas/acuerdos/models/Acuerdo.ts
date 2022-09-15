@@ -48,7 +48,7 @@ export function estadoCtzToName( estado : number ): string {
                               : estado == ESTADO_CTZ.RECHAZADO   ? "Rechazado"
                               : estado == ESTADO_CTZ.FACTURADO   ? "Facturado"
                               : ""
-  return valor 
+  return valor
 }
 
 export function estadoCtzToColor( estado : number ): string
@@ -60,7 +60,7 @@ export function estadoCtzToColor( estado : number ): string
                               : estado == ESTADO_CTZ.RECHAZADO   ? "#832362"
                               : estado == ESTADO_CTZ.FACTURADO   ? "#FF6805"
                               : "transparent"
-  return color 
+  return color
 }
 
 export const estadosCtz       = [
@@ -70,7 +70,7 @@ export const estadosCtz       = [
   { value: ESTADO_CTZ.APROBADO,    label: estadoCtzToName( ESTADO_CTZ.APROBADO    ) },
   { value: ESTADO_CTZ.RECHAZADO,   label: estadoCtzToName( ESTADO_CTZ.RECHAZADO   ) },
   { value: ESTADO_CTZ.FACTURADO,   label: estadoCtzToName( ESTADO_CTZ.FACTURADO   ) },
-]  
+]
 
 export function estadoStrCtzToColor( estado : string ): string
 {
@@ -81,7 +81,7 @@ export function estadoStrCtzToColor( estado : string ): string
                               : estado == "Rechazado" ? "#832362"
                               : estado == "Facturado" ? "#FF6805"
                               : "transparent"
-  return color 
+  return color
 }
 
 
@@ -96,7 +96,7 @@ export interface IAcuerdo
   title:                      string // Titulo HTML
   terceroId:                  number
   tercero:                    ITercero
-  fechaCreacion:              Date 
+  fechaCreacion:              Date
   fechaCreacionCorta:         string
   fechaValidacion:            Date
   fechaValidacionCorta:       string
@@ -104,11 +104,11 @@ export interface IAcuerdo
   fechaCierreCorta:           string
   fechaEntrega:               Date
   fechaEntregaCorta:          string
-  
+
   comercialId:                number
   comercial:                  IUsuario
   usuariId:                   number      // Creador
-  
+
   estado:                     number
   estadoIcono:                string
   estadoColor:                string
@@ -116,7 +116,7 @@ export interface IAcuerdo
 
   notaPrivada:                string
   notaPublica:                string
-  
+
   condicionPagoId:            number
   condicionPago:              ICondicionPago
 
@@ -130,7 +130,7 @@ export interface IAcuerdo
   tiempoEntrega:              ITiempoEntrega
 
   origenContactoId:           number
-  origenContacto:             IOrigenContacto 
+  origenContacto:             IOrigenContacto
 
   aiuOn:                      boolean
   aiuAdmin:                   number
@@ -153,22 +153,22 @@ export interface IAcuerdo
   totalSinDescu:              number      // Subtotal sin descuento
   totalConDescu:              number      // Subtotal con descuento
   ivaValor:                   number
-  totalConIva:                number  
+  totalConIva:                number
 
   vinculado:                  boolean     // Tiene un vinculo con otro elemento en dolibarr como facturas o pedidos
 
   /* Solo para cotizaciones */
-  titulo:                     string 
+  titulo:                     string
   fechaFinValidez:            Date
   fechaFinValidezCorta:       string
   diasValidez:                number
   conTotal:                   boolean
   pdfNombre:                  string
   pdfContacto:                string
-  pdfCorreo:                  string 
+  pdfCorreo:                  string
   pdfCiudad:                  string
 
-  esTerceroCtz:               boolean    
+  esTerceroCtz:               boolean
 }
 
 export class Acuerdo implements IAcuerdo
@@ -177,17 +177,17 @@ export class Acuerdo implements IAcuerdo
   esNuevo:                    boolean
   id:                         number
   ref:                        string
-  refCliente:                 string  
+  refCliente:                 string
   terceroId:                  number
   tercero:                    ITercero
-  fechaCreacion:              Date   
+  fechaCreacion:              Date
   fechaValidacion:            Date
   fechaCierre:                Date
   fechaEntrega:               Date
   usuariId:                   number
   estado:                     number
   notaPrivada:                string
-  notaPublica:                string  
+  notaPublica:                string
   comercialId:                number
   comercial:                  IUsuario
   condicionPagoId:            number
@@ -203,10 +203,10 @@ export class Acuerdo implements IAcuerdo
   contacto:                   IContacto
   productos:                  ILineaAcuerdo[]
   proGrupos:                  IGrupoLineas[]
-  condicionPago:              ICondicionPago  
-  formaPago:                  IFormaPago      
-  metodoEntrega:              IMetodoEntrega  
-  origenContacto:             IOrigenContacto 
+  condicionPago:              ICondicionPago
+  formaPago:                  IFormaPago
+  metodoEntrega:              IMetodoEntrega
+  origenContacto:             IOrigenContacto
   tiempoEntrega:              ITiempoEntrega
   conIVA:                     boolean
   vinculado:                  boolean
@@ -214,7 +214,7 @@ export class Acuerdo implements IAcuerdo
   /* Solo para cotizaciones */
   titulo:                     string
   fechaFinValidez:            Date
-  conTotal:                   boolean  
+  conTotal:                   boolean
 
   constructor()
   {
@@ -234,7 +234,7 @@ export class Acuerdo implements IAcuerdo
     this.usuariId             = 0
     this.estado               = 0
     this.notaPrivada          = ''
-    this.notaPublica          = ''    
+    this.notaPublica          = ''
     this.condicionPagoId      = 0
     this.formaPagoId          = 0
     this.metodoEntregaId      = 0
@@ -248,10 +248,10 @@ export class Acuerdo implements IAcuerdo
     this.contacto             = new Contacto()
     this.productos            = []
     this.proGrupos            = []
-    this.condicionPago        = new CondicionPago()  
-    this.formaPago            = new FormaPago()      
-    this.metodoEntrega        = new MetodoEntrega()  
-    this.origenContacto       = new OrigenContacto() 
+    this.condicionPago        = new CondicionPago()
+    this.formaPago            = new FormaPago()
+    this.metodoEntrega        = new MetodoEntrega()
+    this.origenContacto       = new OrigenContacto()
     this.tiempoEntrega        = new TiempoEntrega()
     this.conIVA               = true
     this.vinculado            = false
@@ -259,16 +259,16 @@ export class Acuerdo implements IAcuerdo
     /* Solo para cotizaciones */
     this.titulo               = ""
     this.fechaFinValidez      = new Date(0)
-    this.conTotal             = true        
+    this.conTotal             = true
   }
 
-  
+
   // * /////////////////////////////////////////////////////////////////////////////// Total sin descuento
   get totalSinDescu() :number {
     let sumaProductos       = 0
 
     if(this.productos.length==0) return 0
-    
+
     sumaProductos           = this.productos.map    ( ( p:ILineaAcuerdo )     : number => p.totalSinDescu )
                                             .reduce ( ( v1:number, v2:number) : number => v1 + v2 )
     return sumaProductos
@@ -279,7 +279,7 @@ export class Acuerdo implements IAcuerdo
     let sumaProductos       = 0
 
     if(this.productos.length==0) return 0
-    
+
     sumaProductos           = this.productos.map    ( ( p:ILineaAcuerdo )     : number => p.totalConDescu )
                                             .reduce ( ( v1:number, v2:number) : number => v1 + v2 )
     return sumaProductos
@@ -288,14 +288,14 @@ export class Acuerdo implements IAcuerdo
   // * /////////////////////////////////////////////////////////////////////////////// Descuento valor
   get descuentoValor() :number {
     return this.totalSinDescu - this.totalConDescu
-  }  
+  }
 
   // * /////////////////////////////////////////////////////////////////////////////// Descuento valor
   get hayDescuento() :boolean {
     return this.descuentoValor > 0
-  }  
+  }
 
-  
+
 
   // * /////////////////////////////////////////////////////////////////////////////// AIU Administracion
   get aiuAdminValor(): number {
@@ -336,7 +336,7 @@ export class Acuerdo implements IAcuerdo
   get ivaValor() :number {
     let ivaTotal            = 0
     let ivaX100             = parseInt( process.env.IVA ?? "0" )
-    
+
     if(this.conIVA          && !this.aiuOn)
       ivaTotal              = X100( this.totalConDescu, ivaX100 )
     else
@@ -349,7 +349,7 @@ export class Acuerdo implements IAcuerdo
   // * /////////////////////////////////////////////////////////////////////////////// TOTAL
   get totalConIva() :number {
     let total               = this.totalConDescu + this.ivaValor
-    
+
     if(this.aiuOn)
       total                 += this.aiuAdminValor + this.aiuImpreValor + this.aiuUtiliValor
 
@@ -365,7 +365,7 @@ export class Acuerdo implements IAcuerdo
                                 : this.estado == ESTADO_CTZ.RECHAZADO   ? "mdi-close-circle"
                                 : this.estado == ESTADO_CTZ.FACTURADO   ? "mdi-lock-check"
                                 : ""
-    return valor 
+    return valor
   }
 
   // * /////////////////////////////////////////////////////////////////////////////// Color
@@ -387,9 +387,9 @@ export class Acuerdo implements IAcuerdo
 
   get fechaFinValidezCorta()  : string { return this.fechaFinValidez  .toLocaleDateString('sv-SE') }
 
-  // * /////////////////////////////////////////////////////////////////////////////// 
+  // * ///////////////////////////////////////////////////////////////////////////////
   get pdfNombre() :  string {
-    let nombre              = "" 
+    let nombre              = ""
     if(this.esTerceroCtz)
       nombre                = !!this.contacto.empresa ? this.contacto.empresa : this.contacto.nombreCompleto
     else
@@ -402,7 +402,7 @@ export class Acuerdo implements IAcuerdo
   }
 
   get pdfContacto() :string {
-    let contacto            = "" 
+    let contacto            = ""
     const nombreYtel        = this.contacto.nombreCompleto + " - Tel: " + this.contacto.telefono
     if(this.esTerceroCtz)
       contacto              = !!this.contacto.empresa ? nombreYtel : this.contacto.telefono
@@ -412,7 +412,7 @@ export class Acuerdo implements IAcuerdo
     else
       contacto              = this.tercero.telefono
 
-    return contacto 
+    return contacto
   }
 
   get pdfCorreo() :string {
@@ -435,7 +435,7 @@ export class Acuerdo implements IAcuerdo
 
   get title() : string {
     let titulo              = ""
-    
+
     if(!!this.titulo)
       titulo                = this.titulo + " "
 
@@ -453,7 +453,7 @@ export class Acuerdo implements IAcuerdo
   }
 
   get fechaCreacionCorta()    : string { return this.fechaCreacion    .toLocaleDateString('sv-SE') }
-  get fechaValidacionCorta()  : string { return this.fechaValidacion  .toLocaleDateString('sv-SE') } 
+  get fechaValidacionCorta()  : string { return this.fechaValidacion  .toLocaleDateString('sv-SE') }
   get fechaCierreCorta()      : string { return this.fechaCierre      .toLocaleDateString('sv-SE') }
   get fechaEntregaCorta()     : string { return this.fechaEntrega     .toLocaleDateString('sv-SE') }
 
@@ -504,12 +504,12 @@ export class Acuerdo implements IAcuerdo
 
 
   // * ///////////////////////////////////////////////////// static convertir data de API en new Cotizacion
-  static async convertirDataApiACotizacion( ctzApi : any ) : Promise < IAcuerdo >
+  static async convertirDataApiToAcuerdo( ctzApi : any ) : Promise < IAcuerdo >
   {
     ctzApi.id                 = +ctzApi.id
     ctzApi.terceroId          = +ctzApi.terceroId
     ctzApi.comercialId        = +ctzApi.comercialId
-    ctzApi.usuariId           = +ctzApi.usuariId          
+    ctzApi.usuariId           = +ctzApi.usuariId
     ctzApi.estado             = +ctzApi.estado
     ctzApi.descuento          = +ctzApi.descuento
     ctzApi.conTotal           = Boolean( +ctzApi.conTotal )
@@ -523,7 +523,7 @@ export class Acuerdo implements IAcuerdo
     ctzApi.condicionPagoId    = +ctzApi.condicionPagoId
     ctzApi.formaPagoId        = +ctzApi.formaPagoId
     ctzApi.metodoEntregaId    = +ctzApi.metodoEntregaId
-    ctzApi.origenContactoId   = +ctzApi.origenContactoId  
+    ctzApi.origenContactoId   = +ctzApi.origenContactoId
     ctzApi.tiempoEntregaId    = +ctzApi.tiempoEntregaId
 
     ctzApi.fechaCreacion      = getDateToStr( ctzApi.fechaCreacion    )
@@ -554,3 +554,4 @@ export class Acuerdo implements IAcuerdo
     return ctz
   }
 }
+

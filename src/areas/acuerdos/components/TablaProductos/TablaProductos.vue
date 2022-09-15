@@ -24,11 +24,15 @@
     <template #body-cell-ref    ="props">
       <q-td   :props            ="props"
         :class                  ="props.row.class" >
-        <div class              ="w-600px">
+        <div class              ="w-600px row">
           <!-- //* //////////////////////////////////////////////////////// Imagen -->
-          <imagen-producto      :linea="(props.row as LineaAcuerdo)"/>
+          <imagen-producto
+            class               ="col-2"
+            :linea              ="(props.row as LineaAcuerdo)"
+          />
           <!-- //* //////////////////////////////////////////////////////// Nombre-->
           <nombre-descripcion
+            class               ="col-8"
             :linea              ="(props.row as LineaAcuerdo)"
             @click              ="mostrarFormulario( props.row as LineaAcuerdo )"
           />
