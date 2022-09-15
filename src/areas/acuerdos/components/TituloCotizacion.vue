@@ -134,7 +134,6 @@
   </titulo>
 </template>
 <script setup lang="ts">
-  import {  PropType              } from "vue"
   import {  servicesCotizaciones  } from "src/areas/acuerdos/cotizaciones/services/servicesCotizaciones"
   import {  useTools              } from "src/useSimpleOk/useTools"
   import    titulo                  from "components/utilidades/Titulo.vue"
@@ -143,8 +142,7 @@
   import {  useStoreAcuerdo       } from 'src/stores/acuerdo'  
 
   const storeAcuerdo          = useStoreAcuerdo()
-  const { acuerdo,
-          loading           } = storeToRefs(storeAcuerdo)  
+  const { acuerdo           } = storeToRefs(storeAcuerdo)  
   const { esMobil, aviso    } = useTools()
   const { setTitulo         } = servicesCotizaciones()
   const   urlDolibarr         = process.env.URL_DOLIBARR

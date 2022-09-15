@@ -89,25 +89,25 @@
   </barra>    
 </template>
 <script lang="ts" setup>
-  import {  toRefs, PropType, computed } from "vue"
-  import    efecto            from "components/utilidades/Efecto.vue"
-  import    efectoGrupo       from "components/utilidades/EfectoGrupo.vue"
-  import    barra             from "components/utilidades/Barra.vue"
-  import    confirmar         from "components/utilidades/MenuConfirmar.vue"
+  // * /////////////////////////////////////////////////////////////////////// Core
+  import {  computed        } from "vue"
+  // * /////////////////////////////////////////////////////////////////////// Store
+  import {  storeToRefs     } from 'pinia'                            
+  import {  useStoreAcuerdo } from 'src/stores/acuerdo'  
+  // * /////////////////////////////////////////////////////////////////////// Componibles
   import {  useTools        } from "src/useSimpleOk/useTools"
   import {  btnBaseMd       } from "src/useSimpleOk/useEstilos"
   import {  ESTADO_CTZ      } from "src/areas/acuerdos/cotizaciones/models/Cotizacion"
-  import {  ILoading        } from "src/models/TiposVarios"
-  import {  ICotizacion     } from "src/areas/acuerdos/cotizaciones/models/Cotizacion"
-  import {  storeToRefs           } from 'pinia'                            
-  import {  useStoreAcuerdo       } from 'src/stores/acuerdo'  
+  // * /////////////////////////////////////////////////////////////////////// Componentes
+  import    barra             from "components/utilidades/Barra.vue"
+  import    efectoGrupo       from "components/utilidades/EfectoGrupo.vue"
+  import    confirmar         from "components/utilidades/MenuConfirmar.vue"
 
   const storeAcuerdo          = useStoreAcuerdo()
   const { acuerdo,
           loading           } = storeToRefs(storeAcuerdo)  
 
-  const {  esMobil    } = useTools()
+  const { esMobil     } = useTools()
   const emit            = defineEmits(["clickPDF","clickAprobar", "clickAnular", "clickValidar", "clickEditar", "clickBorrar"])
   const cargandoAlgo    = computed(()=> Object.values(loading.value).some( ( estado : boolean )=> !!estado ) )
-
 </script>

@@ -252,7 +252,7 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
         clase               = "bg-yellow-2"
       else
       if( accion            == "guardar" )
-        clase               = "bg-green-2"
+        clase               = "bg-light-green-11"
       else
       if( accion            == "borrar" )
         clase               = "bg-red-9 op00"

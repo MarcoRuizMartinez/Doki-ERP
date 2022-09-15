@@ -74,40 +74,40 @@
       label                   ="Tiempo de entrega"
       icon                    ="mdi-calendar-check"
       class                   ="col-md-6 col-12"
-      :options                ="tiempoEntreg"
+      :options                ="tiempoEntrega"
       :loading                ="loading.tiempoEntrega"
       @select                 ="editarTiempoEntrega"
     />
   </ventana>
 </template>
 <script setup lang="ts">
-  import    ventana                 from "components/utilidades/Ventana.vue"
-  import    inputFecha              from "src/components/utilidades/input/InputFecha.vue"
-  import    fechaVencimiento        from "src/areas/acuerdos/cotizaciones/components/tools/FechaValidezCtz.vue"
-  import    selectLabelValue        from "components/utilidades/select/SelectLabelValue.vue"
+  // * ///////////////////////////////////////////////////////////////////////////////// Store
+  import {  storeToRefs           } from 'pinia'                            
+  import {  useStoreAcuerdo       } from 'src/stores/acuerdo'  
+  // * ///////////////////////////////////////////////////////////////////////////////// Componibles
   import {  useControlCotizacion  } from "src/areas/acuerdos/controllers/ControlCotizaciones"
   import {  dexieCondicionesPago,
             dexieFormasPago,
             dexieMetodosEntrega,
-            dexieTiemposEntrega
-                              } from "src/services/useDexie"
+            dexieTiemposEntrega   } from "src/services/useDexie"
+  // * ///////////////////////////////////////////////////////////////////////////////// Componentes
+  import    ventana                 from "components/utilidades/Ventana.vue"
+  import    inputFecha              from "components/utilidades/input/InputFecha.vue"
+  import    selectLabelValue        from "components/utilidades/select/SelectLabelValue.vue"
+  import    fechaVencimiento        from "src/areas/acuerdos/cotizaciones/components/tools/FechaValidezCtz.vue"
 
-  import {  storeToRefs       } from 'pinia'                            
-  import {  useStoreAcuerdo   } from 'src/stores/acuerdo'  
-
-  const storeAcuerdo          = useStoreAcuerdo()
-  const { acuerdo, loading  } = storeToRefs(storeAcuerdo)
-
-  //* /////////////////////////////////////////////////////////////// Tablas Dexie
-  const condicPago            = dexieCondicionesPago()
-  const formadPago            = dexieFormasPago()
-  const entregas              = dexieMetodosEntrega()
-  const tiempoEntreg          = dexieTiemposEntrega()
+  const storeAcuerdo                = useStoreAcuerdo()
+  const { acuerdo, loading        } = storeToRefs(storeAcuerdo)
+  //* //////////////////////      ///////////////////////////////////////// Tablas Dexie
+  const condicPago                  = dexieCondicionesPago()
+  const formadPago                  = dexieFormasPago()
+  const entregas                    = dexieMetodosEntrega()
+  const tiempoEntrega               = dexieTiemposEntrega()
   const { editarTiempoEntrega,
           editarMetodoEntrega,
           editarFormaPago,
           editarCondicionPago,
           editarFechaEntrega,
           editarFechaFinValidez
-                              } = useControlCotizacion()
+                                  } = useControlCotizacion()
 </script>

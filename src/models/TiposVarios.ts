@@ -139,10 +139,11 @@ export const LoadingDefault = {
 export interface IModales {
   formulario      ?: boolean
   editarEnLote    ?: boolean
-
+  añadirProductos ?: boolean
 }
 
 export const ModalesDefault = {
   formulario      : false,
   editarEnLote    : false,
+  añadirProductos : false,
 }

@@ -7,8 +7,8 @@
     padding-contenido         ="0"
     size-icon-carga           ="28vw"
     :modo                     ="modo"
-    :cargando                 ="cargando"
-    @cerrar                   ="emit('cerrar')"
+    :cargando                 ="loading.añadir || loading.borrarLote"
+    @cerrar                   ="cerrar"
     >
     <template                 #barra>
       <q-btn-toggle
@@ -361,25 +361,24 @@
   </ventana>
 </template>
 <script setup lang="ts">
-  import {  ref,
-            PropType,
-            toRefs,
-            watch,
-            computed
-                              } from "vue"
+  // * /////////////////////////////////////////////////////////////////////////////////// Core
+  import {  ref, watch,       } from "vue"
+  // * /////////////////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs       } from 'pinia'
-  import {  useQuasar         } from "quasar"
   import {  useStoreAcuerdo   } from 'src/stores/acuerdo'  
-  import    ventana             from "components/utilidades/Ventana.vue"
-  import    inputBuscar         from "components/utilidades/input/InputSimple.vue"
-  import    selectLabelValue    from "components/utilidades/select/SelectLabelValue.vue"
-  import    inputNumber         from "components/utilidades/input/InputFormNumber.vue"
-  import {  useControlProductos } from "src/areas/acuerdos/controllers/ControlLineasProductos"              
-  import    efecto              from "components/utilidades/Efecto.vue"
-  import    efectoGrupo         from "components/utilidades/EfectoGrupo.vue"
-  import    tooltipPrecios      from "src/areas/acuerdos/components/Tooltips/TooltipPreciosProducto.vue"
-  import {  ModosVentana      } from "src/models/TiposVarios"
-  import {  useApiDolibarr    } from "src/services/useApiDolibarr"
+  // * /////////////////////////////////////////////////////////////////////////////////// Modelos
+  import {  ILineaAcuerdo       } from "src/areas/acuerdos/models/LineaAcuerdo"
+  import {  IColumna, Columna   } from "src/models/Tabla"  
+  import {  ModosVentana        } from "src/models/TiposVarios"
+  import {  IProductoCategoria,
+            ProductoCategoria   } from "src/areas/productos/models/ProductoCategoria"
+  import {  ProductoDoli,
+            IProductoDoli       } from "src/areas/productos/models/ProductoDolibarr"
+// * /////////////////////////////////////////////////////////////////////////////////// Componibles
+  import {  useControlProductos } from "src/areas/acuerdos/controllers/ControlLineasProductos"      
+  import {  servicesProductos,
+            IBusquedaProducto   } from "src/areas/productos/services/servicesProductos"
+  
   import {  dexieCategoriasProducto
                               } from "src/services/useDexie"
   import {  toggleGris        } from "src/useSimpleOk/useEstilos"
@@ -388,35 +387,28 @@
             useTools,
             filterArrayMaxMin,
             siNo
-                              } from "src/useSimpleOk/useTools"
-  import {  IProductoCategoria,
-            ProductoCategoria } from "src/areas/productos/models/ProductoCategoria"
-  import {  ProductoDoli,
-            IProductoDoli     } from "src/areas/productos/models/ProductoDolibarr"
-  import {  IGrupoLineas      } from "src/areas/acuerdos/models/GrupoLineasAcuerdo"
-  import {  LineaAcuerdo,
-            ILineaAcuerdo     } from "src/areas/acuerdos/models/LineaAcuerdo"
-  import {  IColumna,
-            Columna           } from "src/models/Tabla"
-  import {  servicesProductos,
-            IBusquedaProducto } from "src/areas/productos/services/servicesProductos"
-  //const emit                  = defineEmits(["update:grupo", "cerrar", "borrar", "addLineas"])
+                                } from "src/useSimpleOk/useTools"
+  // * /////////////////////////////////////////////////////////////////////////////////// Componentes
+  import    efecto                from "components/utilidades/Efecto.vue"
+  import    ventana               from "components/utilidades/Ventana.vue"
+  import    inputBuscar           from "components/utilidades/input/InputSimple.vue"
+  import    inputNumber           from "components/utilidades/input/InputFormNumber.vue"
+  import    selectLabelValue      from "components/utilidades/select/SelectLabelValue.vue"
+  import    tooltipPrecios        from "src/areas/acuerdos/components/Tooltips/TooltipPreciosProducto.vue"
+
   const emit = defineEmits<{
-    (e: 'update:grupo',   value: IGrupoLineas   ): void
     (e: 'cerrar',         value: void           ): void
     (e: 'eliminarLineaId',value: number         ): void
     (e: 'addLineas',      value: ILineaAcuerdo[]): void
   }>()
 
   const tipoVista             = ref<"grilla" | "lista">("grilla")
-  const { apiDolibarr    }    = useApiDolibarr()
+
   const { aviso             } = useTools()  
-  const {
-          agregarProductos
-                            } = useControlProductos()
+  const { agregarProductos  } = useControlProductos()
   const storeAcuerdo          = useStoreAcuerdo()                            
-  const { acuerdo,
-          grupoElegido,
+  const { grupoElegido,
+          modales,
           loading           } = storeToRefs(storeAcuerdo)                              
   const busqueda              = ref< string   >("")
   const modo                  = ref< ModosVentana >("esperando-busqueda")
@@ -429,7 +421,6 @@
   const categorias            = dexieCategoriasProducto()
   const popupOn               = ref < boolean >(false)
   const popupOnPrecio         = ref < boolean >(false)
-  const cargando              = ref < boolean >(false)
   const precioMinFiltro       = ref < number >()
   const precioMaxFiltro       = ref < number >()
   const precioMinQuery        = ref < number >()
@@ -437,27 +428,14 @@
   const descuento             = ref < number >()
   const cantidad              = ref < number >()
   const soloConImagen         = ref < boolean>(false)
-  const quasar                = useQuasar()
-  const { notify            } = quasar
-  const mayorOrden            = computed(()=> Math.max( ...grupoElegido.value.productos.map( p => p.orden ) ) )
-  //Math.max( ...grupo.value.productos.map( p => p.orden ) ) )
 
   const columnas: IColumna[]  = [
     new Columna           ({ name: "sigla",   sortable: false, label: "Imagen",  visible: false }),
     new Columna           ({ name: "ref",     sortable: false, label: "Filtrar", clase: "text-bold" }),
     new Columna           ({ name: "nombre"                                     }),
     new Columna           ({ name: "precio",  sortable: false                   }),
-    //Columna.ColumnaPrecio ({ name: "precio",    label: "Precio" }),
-    //Columna.ColumnaX100   ({ name: "iva",           label: "IVA"          }),
-    //new Columna           ({ name: "qtyUnd",        label: "Cant",        align: "center"       }),
-    //Columna.ColumnaPrecio ({ name: "precioBase",    label: "Precio",      clase: "text-grey-7"  }),
-    //Columna.ColumnaX100   ({ name: "descuentoX100", label: "Descu"        }),
-    //Columna.ColumnaPrecio ({ name: "precioFinal",   label: "$ Final"      }),
-    //Columna.ColumnaPrecio ({ name: "totalConDescu", label: "Total",       clase: "text-bold"    }),
   ]
 
-
-  
   async function buscar()
   {
     if(busquedaVacia()) return
@@ -472,20 +450,23 @@
 
   async function agregarProducctosAControl( productoAdd : IProductoDoli[] )
   {
-    console.log("::En agregarProducctosAControl productoAdd: ", productoAdd);
     await agregarProductos(productoAdd, cantidad.value, descuento.value)
     buscarSiProductosEstanEnGrupo()
-    emit("update:grupo", grupoElegido.value)
     seleccion.value           = []
     aviso(  "positive",
             seleccion.value.length > 1 ? "Productos agregados" : "Producto agregado",
             "",
             2000,
-            [{ label: 'Cerrar', color: 'white', handler: () => emit('cerrar') }]
+            [{ label: 'Cerrar', color: 'white', handler: cerrar }]
         )
   }
 
-  
+  function cerrar()
+  {
+    emit("cerrar")
+    modales.value.añadirProductos  = false
+  }
+
   function buscarSiProductosEstanEnGrupo()
   {
     productos.value.forEach( p => {
@@ -499,7 +480,6 @@
     if( txt.length >= 3 ) buscar()
   }
 
-  // IProductoDoli[] ) {
   function seleccionar( rows : readonly IProductoDoli[] ){ 
     seleccion.value   = rows.filter(p=>p.activo)
   }
@@ -542,20 +522,9 @@
   {
     emit("eliminarLineaId", producto.id)
     producto.elegido = false
-    avisoProductosEliminado()
   }  
 
-  function avisoProductosEliminado()
-  {
-    notify({
-      message: "Producto eliminado",
-      color: "positive",
-      icon:  "mdi-check",
-      actions: [
-        { label: 'Cerrar', color: 'white', handler: () => emit('cerrar') },
-      ]
-    })
-  }
+
 
   function getQuery() : IBusquedaProducto
   {

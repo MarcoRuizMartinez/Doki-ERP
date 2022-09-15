@@ -128,7 +128,7 @@
   async function generarPDFCotizacion()
   {
     ventanaPDF.value          = true
-    srcPDF.value              = await generarPDF( cotizacion.value )
+    //srcPDF.value              = await generarPDF( cotizacion.value )
   }
 
   //* /////////////////////////////////////////////////////////////// Crear Cotizacion

@@ -13,6 +13,7 @@
     <template                 #titulo
       v-if                    ="!acuerdo.esNuevo"
       >
+      <!-- //* /////////////////////////////////////////////////////// Link a tercero -->
       <router-link
         class                 ="link-limpio text-white"
         :to                   ="'/tercero/' + acuerdo.tercero.id"
@@ -75,18 +76,22 @@
   </ventana>
 </template>
 <script setup lang="ts">
-  import    ventana                 from "components/utilidades/Ventana.vue"
-  import    selectTercero           from "src/areas/terceros/components/SelectTercero.vue"
-  import    selectContacto          from "src/areas/terceros/components/contactos/SelectContacto.vue"
-  import    tooltipTercero          from "src/areas/terceros/components/TooltipTerceros.vue"
-  import    comercial               from "src/areas/usuarios/components/SelectUsuario.vue"
-  import    selectLabelValue        from "components/utilidades/select/SelectLabelValue.vue"  
-  import    inputText               from "src/components/utilidades/input/InputFormText.vue"
-  import {  useControlCotizacion  } from "src/areas/acuerdos/controllers/ControlCotizaciones"  
-  import {  ESTADO_CTZ            } from "../../../areas/acuerdos/models/Acuerdo"
-  import {  dexieOrigenesContacto } from "../../../services/useDexie"
+  //* ///////////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs           } from 'pinia'                            
   import {  useStoreAcuerdo       } from '../../../stores/acuerdo'  
+  //* ///////////////////////////////////////////////////////////////////////////// Componibles
+  import {  dexieOrigenesContacto } from "../../../services/useDexie"
+  import {  useControlCotizacion  } from "src/areas/acuerdos/controllers/ControlCotizaciones"  
+  //* ///////////////////////////////////////////////////////////////////////////// Modelos
+  import {  ESTADO_CTZ            } from "../../../areas/acuerdos/models/Acuerdo"
+  //* ///////////////////////////////////////////////////////////////////////////// Componentes
+  import    ventana                 from "components/utilidades/Ventana.vue"
+  import    inputText               from "components/utilidades/input/InputFormText.vue"
+  import    selectLabelValue        from "components/utilidades/select/SelectLabelValue.vue"  
+  import    selectTercero           from "src/areas/terceros/components/SelectTercero.vue"
+  import    comercial               from "src/areas/usuarios/components/SelectUsuario.vue"
+  import    tooltipTercero          from "src/areas/terceros/components/TooltipTerceros.vue"
+  import    selectContacto          from "src/areas/terceros/components/contactos/SelectContacto.vue"
 
   const storeAcuerdo                = useStoreAcuerdo()
   const { acuerdo, loading        } = storeToRefs(storeAcuerdo)  

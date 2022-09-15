@@ -15,7 +15,7 @@
       <q-th :props              ="props">
         <btn-editar-lote
           :largo                ="grupo.seleccion.length"
-          @click-editar         ="activarSeleccionEnLote"
+          @click-editar         ="activarEdicionEnLote"
           @click-borrar         ="activarBorrarEnLote"
         />
       </q-th>
@@ -110,7 +110,9 @@
   import    cantidad            from "./Columnas/Cantidad.vue"
   import    descuento           from "./Columnas/Descuento.vue"
 
-  const { borrarLineas        } = useControlProductos()
+  const { borrarLineas,
+          mostrarFormularioLinea
+                              } = useControlProductos()
   const storeAcuerdo            = useStoreAcuerdo()
   const { acuerdo,
           grupoElegido,
@@ -129,24 +131,25 @@
     Columna.ColumnaPrecio ({ name: "totalConDescu", label: "Total",     sortable: false,  clase: "text-bold"    }),
   ]
 
-  function activarSeleccionEnLote()
+  function mostrarFormulario( linea : ILineaAcuerdo )
   {
+    mostrarFormularioLinea( linea, grupo.value )
+  }
+
+
+  // * ////////////////////////////////////////////////// Activar edicion en lote
+  function activarEdicionEnLote(){
     grupoElegido.value              = grupo.value
     modales.value.editarEnLote      = true
   }
 
-  function activarBorrarEnLote()
-  {
+  // * ////////////////////////////////////////////////// Activar borrar en lote
+  function activarBorrarEnLote(){
     grupoElegido.value              = grupo.value
     borrarLineas()
   }
 
-  function mostrarFormulario( linea : ILineaAcuerdo )
-  {
-    grupoElegido.value              = grupo.value
-    lineaElegida.value              = linea
-    modales.value.formulario        = true
-  }
+
 
 /*
   function lineaEditada( lineaModificada : ILineaAcuerdo )
@@ -166,7 +169,7 @@
   {
     emit("update:grupo", grupo.value)
   }
- */
+*/
 </script>
 <style>
 .w-600px{

@@ -4,6 +4,7 @@
     titulo                      ="Usuarios"
     icono                       ="mdi-account-group"
     size-icon-carga             ="14em"
+    padding-contenido           ="0"
     :cargando                   ="!lista.length"
     >
     <template                   #menu>

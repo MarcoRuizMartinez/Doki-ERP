@@ -4,6 +4,7 @@
       titulo                      ="Constantes"
       icono                       ="mdi-cube-outline"
       size-icon-carga             ="14em"
+      padding-contenido           ="0"
       :cargando                   ="!lista.length"
       >
       <template                   #menu>

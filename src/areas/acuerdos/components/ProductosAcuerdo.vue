@@ -66,15 +66,14 @@
     </q-list>
     <!-- //* ///////////////////////////////////////////////////////////// Modal Buscar productos -->
     <q-dialog                   maximized
-      v-model                   ="ventanaProductos"
+      v-model                   ="modales.añadirProductos"
+      :persistent               ="loading.añadir || loading.borrarLote"
       transition-show           ="slide-up"
       transition-hide           ="slide-down"
+      @hide                     ="grupoElegido.noDestacarProductos()"
       >
       <buscar-productos
-        v-model:grupo           ="grupoSelect"
-        @update:grupo           ="addProductosDeBusqueda"
         @eliminar-linea-id      ="eliminarLineaDesdeBusqueda"
-        @cerrar                 ="ventanaProductos = false; grupoSelect.noDestacarProductos()"
       />
     </q-dialog>
     <!-- //* ///////////////////////////////////////////////////////////// Modal formulario edicion Linea   -->
@@ -90,43 +89,40 @@
       :persistent               ="loading.editarLote"
       >
       <editar-en-lote />
-        <!--
-          @edicion-ok             ="editarVariosOk"
-          @borrado-ok             ="limpiarSeleccion"
-          @borrar-linea             ="borrarLinea"
-        -->
     </q-dialog>
   </ventana>
 </template>
 <script setup lang="ts">
-  import    ventana             from "components/utilidades/Ventana.vue"
-  import    tablaProductos      from "src/areas/acuerdos/components/TablaProductos/TablaProductos.vue"
-  import    buscarProductos     from "./Modals/BuscarAgregarProductos.vue"
-  import    formularioLinea     from "./Modals/FormularioLinea.vue"
-  import    editarEnLote        from "./Modals/EditarEnLoteQtyDesc.vue"
-
+  // * ///////////////////////////////////////////////////////////////////////////// Core
   import {  ref,
-            PropType,
-            toRefs,
             computed,
             watch,
-            onMounted
-                              } from "vue"
-  import {  ICotizacion,
-            ESTADO_CTZ        } from "src/areas/acuerdos/cotizaciones/models/Cotizacion"
-  import {  useControlProductos } from "src/areas/acuerdos/controllers/ControlLineasProductos"
-  import {  ITercero          } from "src/areas/terceros/models/Tercero"
+            onMounted             } from "vue"
+  // * ///////////////////////////////////////////////////////////////////////////// Store
+  import {  storeToRefs           } from 'pinia'
+  import {  useStoreAcuerdo       } from 'src/stores/acuerdo'
+  // * ///////////////////////////////////////////////////////////////////////////// Componibles
+  import {  useControlProductos   } from "src/areas/acuerdos/controllers/ControlLineasProductos"
+  import {  servicesCotizaciones  } from "src/areas/acuerdos/cotizaciones/services/servicesCotizaciones"
+  import {  useTools              } from "src/useSimpleOk/useTools"
+  import {  btnBaseSm             } from "src/useSimpleOk/useEstilos"  
+  import {  useApiDolibarr        } from "src/services/useApiDolibarr"
+  // * ///////////////////////////////////////////////////////////////////////////// Modelos
+  import {  ITercero              } from "src/areas/terceros/models/Tercero"
+  import {  ESTADO_CTZ            } from "src/areas/acuerdos/cotizaciones/models/Cotizacion"
   import {  IGrupoLineas,
-            GrupoLineas       } from "src/areas/acuerdos/models/GrupoLineasAcuerdo"
-  import {  servicesCotizaciones   } from "src/areas/acuerdos/cotizaciones/services/servicesCotizaciones"
-  import {  useTools, pausa   } from "src/useSimpleOk/useTools"
-  import {  btnBaseSm         } from "src/useSimpleOk/useEstilos"
+            GrupoLineas           } from "src/areas/acuerdos/models/GrupoLineasAcuerdo"  
   import {  ILineaAcuerdo,
-            LineaAcuerdo      } from "src/areas/acuerdos/models/LineaAcuerdo"
-  import {  useApiDolibarr    } from "src/services/useApiDolibarr"
-  import    editarGrupo         from "src/areas/acuerdos/components/EditarGrupo2.vue"
-  import {  storeToRefs       } from 'pinia'
-  import {  useStoreAcuerdo   } from 'src/stores/acuerdo'
+            LineaAcuerdo          } from "src/areas/acuerdos/models/LineaAcuerdo"
+  // * ///////////////////////////////////////////////////////////////////////////// Componentes
+  import    ventana                 from "components/utilidades/Ventana.vue"
+  import    editarGrupo             from "src/areas/acuerdos/components/Grupos/EditarGrupo2.vue"
+  import    tablaProductos          from "./TablaProductos/TablaProductos.vue"
+  import    buscarProductos         from "./Modals/BuscarAgregarProductos.vue"
+  import    formularioLinea         from "./Modals/FormularioLinea.vue"
+  import    editarEnLote            from "./Modals/EditarEnLoteQtyDesc.vue"
+
+  const { borrarLineas        } = useControlProductos()
 
   const storeAcuerdo            = useStoreAcuerdo()
   const { acuerdo,
@@ -142,9 +138,6 @@
   const { apiDolibarr         } = useApiDolibarr()
   const { crearNuevoGrupo
                               } = useControlProductos()
-
-  const emit                    = defineEmits(["update:cotizacion"])
-  const ventanaProductos        = ref< boolean >( false )
 
   watch(()=>modales.value.formulario, (mostrarForm) => destacarLineaElegida(mostrarForm) )
 
@@ -226,8 +219,7 @@
   const totalTem                = computed( ()=>
     !!acuerdo.value.proGrupos.length ? acuerdo.value.proGrupos[0].totalConDescu : 0
   )
-  const largo                   = computed( ()=> acuerdo.value.proGrupos.length )
-  const grupoSelect             = ref< IGrupoLineas >( new GrupoLineas() )
+  const largo                   = computed( ()=> acuerdo.value.proGrupos.length )  
 
   //const gruposProductos         = ref<IGrupoLineas[]>([])
 
@@ -240,7 +232,10 @@
 
   watch( () => acuerdo.value.productos, (newProductos, oldProductos) => {
     if(acuerdo.value.estado  !== ESTADO_CTZ.NO_GUARDADO && !newProductos.length) // Crea un grupo si no hay productos
+    {
+      console.log("watch( () => acuerdo.value.productos")
       crearNuevoGrupo()
+    }
 
     if(newProductos.length > 0 && oldProductos.length === 0 )
     {
@@ -254,28 +249,34 @@
   {
     if(lineas.length > 0)
       acuerdo.value.proGrupos  = GrupoLineas.productosAgrupoDeProductos( lineas )
-    else
+    else{
+      console.log("actualizarArrayGrupos")
       crearNuevoGrupo()
+    }
   }
 
   function mostrarBuscarProductos( grupo : IGrupoLineas )
   {
-    grupoElegido.value          = grupo
-    grupoSelect.value           = grupo
-
-    ventanaProductos.value      = true
+    grupoElegido.value            = grupo
+    grupoElegido.value.seleccion  = []
+    modales.value.añadirProductos = true
   }
 
 
   async function eliminarLineaDesdeBusqueda( idProducto : number )
   {
-    //* ///////////// Horribleeeeee
-    const index = grupoSelect.value.productos.findIndex((p )=> p.id === idProducto )
-    grupoSelect.value.productos[index].borrar = true
+    grupoElegido.value.seleccion  = grupoElegido.value.productos.filter( ( p : ILineaAcuerdo ) => p.id === idProducto)
+    if(!!grupoElegido.value.seleccion.length){
+      borrarLineas( 200 )
+    }
+    /* ///////////// Horribleeeeee
+    const index = grupoElegido.value.productos.findIndex((p )=> p.id === idProducto )
+    grupoElegido.value.productos[index].borrar = true
     await cambioEnGrupos('borrarLineaFromBusqueda')
-    grupoSelect.value.productos.splice(index, 1)
-    let indexGrupo = acuerdo.value.proGrupos.findIndex( g => g.index === grupoSelect.value.index )
-    acuerdo.value.proGrupos[indexGrupo] = grupoSelect.value
+    grupoElegido.value.productos.splice(index, 1)
+    let indexGrupo = acuerdo.value.proGrupos.findIndex( g => g.index === grupoElegido.value.index )
+    acuerdo.value.proGrupos[indexGrupo] = grupoElegido.value
+    */
   }
 
 

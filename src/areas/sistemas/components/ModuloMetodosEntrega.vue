@@ -4,6 +4,7 @@
       titulo                      ="Métodos de entrega"
       icono                       ="mdi-truck-check"
       size-icon-carga             ="14em"
+      padding-contenido           ="0"
       :cargando                   ="!lista.length"
       >
       <template                   #menu>

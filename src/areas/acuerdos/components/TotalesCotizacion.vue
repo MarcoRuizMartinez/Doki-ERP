@@ -33,12 +33,13 @@
         @update:model-value ="editarConAIU"
       />
     </div>
-    <!-- //* /////////////////////////////////////////////////////////////  Nombre cotizacion -->
+    <!-- //* ///////////////////////////////////////////////////////////// Valores AIUs -->
     <transition             enter-active-class="animated fadeInDown" leave-active-class="animated fadeOutDown" mode="out-in">
       <div
         v-if                ="acuerdo.aiuOn"
         class               ="col-12 row q-col-gutter-sm"
         >
+        <!-- //* ///////////////////////////////////////////////////////// AIU Administración -->
         <div class          ="col-4">
           <input-number     conDecimales
             v-model         ="acuerdo.aiuAdmin"
@@ -51,6 +52,7 @@
             {{ formatoPrecio( acuerdo.aiuAdminValor ) }}
           </div>
         </div>
+        <!-- //* ///////////////////////////////////////////////////////// AIU Imprevistos -->
         <div class          ="col-4">
           <input-number     conDecimales
             v-model         ="acuerdo.aiuImpre"
@@ -63,6 +65,7 @@
             {{ formatoPrecio( acuerdo.aiuImpreValor ) }}
           </div>
         </div>
+        <!-- //* ///////////////////////////////////////////////////////// AIU Utilidad -->
         <div class          ="col-4">
           <input-number     conDecimales
             v-model         ="acuerdo.aiuUtili"
@@ -77,7 +80,7 @@
         </div>
       </div>
     </transition>
-     <!-- //* ///////////////////////////////////////////////////////////// Tabla totales -->
+    <!-- //* ///////////////////////////////////////////////////////////// Tabla totales -->
     <div        class       ="col-12">
       <div      class       ="row justify-center bg-grey-3 rounded-borders transi"
                 :class      ="{ 'op40' : !acuerdo.conTotal } ">
@@ -112,12 +115,12 @@
   </ventana>
 </template>
 <script setup lang="ts">
-  import    ventana             from "components/utilidades/Ventana.vue"
-  import    inputNumber         from "src/components/utilidades/input/InputFormNumber.vue"
-  import {  formatoPrecio     } from "src/useSimpleOk/useTools" 
-  import {  storeToRefs       } from 'pinia'                            
-  import {  useStoreAcuerdo   } from 'src/stores/acuerdo'  
+  import {  storeToRefs           } from 'pinia'                            
+  import {  useStoreAcuerdo       } from 'src/stores/acuerdo'  
+  import {  formatoPrecio         } from "src/useSimpleOk/useTools" 
   import {  useControlCotizacion  } from "src/areas/acuerdos/controllers/ControlCotizaciones"
+  import    ventana                 from "components/utilidades/Ventana.vue"
+  import    inputNumber             from "src/components/utilidades/input/InputFormNumber.vue"
 
   const storeAcuerdo            = useStoreAcuerdo()
   const { acuerdo, loading    } = storeToRefs(storeAcuerdo)  

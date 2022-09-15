@@ -4,6 +4,7 @@
       titulo                      ="Formas de pago"
       icono                       ="mdi-cash-check"
       size-icon-carga             ="14em"
+      padding-contenido           ="0"
       :cargando                   ="!lista.length"
       >
       <template                   #menu>

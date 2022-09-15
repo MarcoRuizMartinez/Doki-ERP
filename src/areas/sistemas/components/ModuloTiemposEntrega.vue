@@ -4,6 +4,7 @@
       titulo                      ="Tiempos de entrega"
       icono                       ="mdi-calendar-clock"
       size-icon-carga             ="14em"
+      padding-contenido           ="0"
       :cargando                   ="!lista.length"
       >
       <template                   #menu>

@@ -104,7 +104,7 @@
   import {  ILineaAcuerdo,
             LineaAcuerdo      } from "src/areas/acuerdos/models/LineaAcuerdo"
   import {  useApiDolibarr    } from "src/services/useApiDolibarr"
-  import    editarGrupo         from "src/areas/acuerdos/components/EditarGrupo2.vue"
+  import    editarGrupo         from "src/areas/acuerdos/components/Grupos/EditarGrupo2.vue"
   import {  storeToRefs       } from 'pinia'                            
   import {  useStoreAcuerdo   } from 'src/stores/acuerdo'  
 
@@ -273,6 +273,7 @@
     // let { data:dTit, ok:okTitu }= await apiDolibarr("crear", "lineaCotizacion", lineaTituloApi,  acuerdo.value.id)
     // let { data:dSub, ok:okSub  }= await apiDolibarr("crear", "lineaCotizacion", lineaSubtotalApi, acuerdo.value.id)
     await pausa(200) // Para darle tiempo que el virtual DOM genere el nuevo espacio y calcule el nuevo alto del documento
+    console.log("crear grupo 2 window.scrollTo")
     window.scrollTo({ top: document.body.scrollHeight,  behavior: 'smooth'})
     // if(!!okTitu && !!okSub )
     {

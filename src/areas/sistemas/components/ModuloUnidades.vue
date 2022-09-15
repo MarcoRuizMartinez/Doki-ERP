@@ -4,6 +4,7 @@
       titulo                      ="Unidades"
       icono                       ="mdi-ruler-square-compass"
       size-icon-carga             ="14em"
+      padding-contenido           ="0"
       :cargando                   ="!lista.length"
       >
       <template                   #menu>

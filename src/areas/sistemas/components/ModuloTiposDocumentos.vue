@@ -4,6 +4,7 @@
       titulo                      ="Tipos de documento de identidad"
       icono                       ="mdi-file-document-multiple"
       size-icon-carga             ="14em"
+      padding-contenido           ="0"
       :cargando                   ="!lista.length"
       >
       <template                   #menu>

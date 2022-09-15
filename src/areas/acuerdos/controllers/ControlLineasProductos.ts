@@ -53,7 +53,41 @@ export function useControlProductos()
     loading.value.añadir      = false
   }
 
+  async function editarLinea( linea : ILineaAcuerdo ) : Promise<boolean>
+  {
+    loading.value.editarLinea   = true
+    let lineaForAPI             = LineaAcuerdo.lineaToLineaApi( linea )
+    const estadoBoceto          = acuerdo.value.estado === ESTADO_CTZ.NO_GUARDADO
+    let seguir                  = true
+    if(!estadoBoceto){
+      let {ok, data}            = await apiDolibarr("editar-linea", "cotizacion", lineaForAPI, acuerdo.value.id )
+      seguir                    = ok
 
+      if(ok){                     // Object.assign es para que no pierda la identidad o referencia
+        lineaElegida.value      = Object.assign( lineaElegida.value, linea ) 
+      }
+      else
+        return false
+    }
+    
+    if(seguir || estadoBoceto)
+    {
+      lineaElegida.value.destacar( "guardar", "ocultar" )
+      aviso("positive", "Producto editado")
+    }
+
+    loading.value.editarLinea   = false
+    modales.value.formulario    = false
+    return true
+  }
+
+  // * ////////////////////////////////////////////////// Mostrar formulario 
+  function mostrarFormularioLinea( linea : ILineaAcuerdo, grupo : IGrupoLineas ){
+    grupoElegido.value              = grupo
+    grupoElegido.value.seleccion    = []
+    lineaElegida.value              = linea
+    modales.value.formulario        = true
+  }
 
 
   //* /////////////////////////////////////////////////////////////// Crear nuevo grupo vacio
@@ -66,6 +100,7 @@ export function useControlProductos()
     if(!!index)
       aviso("positive", "Nuevo grupo creado")
     await pausa(200) // Para darle tiempo que el virtual DOM genere el nuevo espacio y calcule el nuevo alto del documento
+    console.log("window.scrollTo")
     window.scrollTo({ top: document.body.scrollHeight,  behavior: 'smooth'})
   }
 
@@ -96,7 +131,7 @@ export function useControlProductos()
     loading.value.borrarLinea   = false
     modales.value.formulario    = false
 
-    let i                       = grupoElegido.value.productos.findIndex( p => p.orden == lineaBorrar.orden )
+    let i                       = grupoElegido.value.productos.findIndex( (p:any) => p.orden == lineaBorrar.orden )
     setTimeout( ( index = i )=>
     {
         grupoElegido.value.productos.splice(index, 1)
@@ -108,19 +143,18 @@ export function useControlProductos()
   }
 
 
-  async function borrarLineas()
+  async function borrarLineas( retrasoEntreLineas = 1200 )
   {
-    const msRetraso               = 1200
     loading.value.borrarLote      = true
     for (const linea of grupoElegido.value.seleccion)
     {
-      await borrarLinea( linea, true, msRetraso )
+      await borrarLinea( linea, true, retrasoEntreLineas )
       linea.destacar( "borrar", "ocultar")
-      await pausa(msRetraso)
+      await pausa(retrasoEntreLineas)
     }
     loading.value.borrarLote      = false
-    grupoElegido.value.seleccion  = []
     aviso("positive", grupoElegido.value.seleccion.length === 1 ? "Producto borrado" : "Productos borrados")
+    grupoElegido.value.seleccion  = []
   }
 
   async function editarCantidad( linea : ILineaAcuerdo ) {
@@ -195,9 +229,11 @@ export function useControlProductos()
     crearNuevoGrupo,
     borrarLinea,
     borrarLineas,
+    editarLinea,
     editarCantidad,
     editarDescuento,
     editarSubTotales,
-    editarEnLoteQtyYDescu
+    editarEnLoteQtyYDescu,
+    mostrarFormularioLinea
   }
 }

@@ -134,17 +134,17 @@
   </titulo>
 </template>
 <script setup lang="ts">
-  import {  PropType,
-            toRefs,
-            computed,
-            onMounted,
-                            } from "vue"
-  import {  ICotizacion     } from "src/areas/acuerdos/cotizaciones/models/Cotizacion"
-  import {  servicesCotizaciones   } from "src/areas/acuerdos/cotizaciones/services/servicesCotizaciones"
-  import {  useTools        } from "src/useSimpleOk/useTools"
-  import    titulo            from "components/utilidades/Titulo.vue"
-  import    efecto            from "components/utilidades/Efecto.vue"
-  import {  ILoading        } from "src/models/TiposVarios"
+  // *///////////////////////////////////////////////////////////////////// Core
+  import {  PropType, toRefs      } from "vue"
+  // *///////////////////////////////////////////////////////////////////// Componibles
+  import {  useTools              } from "src/useSimpleOk/useTools"
+  import {  servicesCotizaciones  } from "src/areas/acuerdos/cotizaciones/services/servicesCotizaciones"
+  // *///////////////////////////////////////////////////////////////////// Modeles
+  import {  ICotizacion           } from "src/areas/acuerdos/cotizaciones/models/Cotizacion"
+  import {  ILoading              } from "src/models/TiposVarios"
+  // *///////////////////////////////////////////////////////////////////// Componentes
+  import    titulo                  from "components/utilidades/Titulo.vue"
+  import    efecto                  from "components/utilidades/Efecto.vue"
 
   const { esMobil, aviso    } = useTools()
   const { setTitulo         } = servicesCotizaciones()
@@ -164,6 +164,3 @@
     aviso("positive", "Titulo editado", "comment")
   }
 </script>
-<style>
-
-</style>

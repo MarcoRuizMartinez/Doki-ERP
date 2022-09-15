@@ -48,7 +48,6 @@ export class GrupoLineas implements IGrupoLineas
   }
 
   noDestacarProductos()  {
-    console.log("noDestacarProductos")
     this.productos.forEach(p=>p.destacar('no-destacar'))
   }
 

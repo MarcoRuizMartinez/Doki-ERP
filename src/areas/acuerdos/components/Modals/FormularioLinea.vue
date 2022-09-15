@@ -151,86 +151,61 @@
         color                 ="positive"
         icon                  ="mdi-content-save"
         :disable              ="lineaVirgen"
-        @click                ="guardar"
+        @click                ="editarLinea( linea )"
       />
     </div>
   </ventana>
 </template>
 <script setup lang="ts">
-  import    ventana             from "components/utilidades/Ventana.vue"
-  import    numeroPaso          from "src/components/utilidades/input/InputNumeroPaso.vue"
-  import    inputNumber         from "src/components/utilidades/input/InputFormNumber.vue"
-  import {  storeToRefs       } from 'pinia'
+  //* ////////////////////////////////////////////////////////////////////////// Core
+  import {  ref, computed       } from "vue"
+  import {  useTransition       } from '@vueuse/core'
+  import {  useQuasar           } from 'quasar'
+  //* ////////////////////////////////////////////////////////////////////////// Store
+  import {  storeToRefs         } from 'pinia'
+  import {  useStoreAcuerdo     } from 'src/stores/acuerdo'
+  //* ////////////////////////////////////////////////////////////////////////// Modelos
   import {  ILineaAcuerdo,
-            LineaAcuerdo      } from "src/areas/acuerdos/models/LineaAcuerdo"
-  import {  useApiDolibarr    } from "src/services/useApiDolibarr"
+            LineaAcuerdo        } from "src/areas/acuerdos/models/LineaAcuerdo"
+  import {  ESTADO_CTZ          } from "src/areas/acuerdos/cotizaciones/models/Cotizacion"            
+  //* ////////////////////////////////////////////////////////////////////////// Componibles
+  import {  WYSIWYG_Limpio      } from "src/useSimpleOk/useEstilos"
+  import {  dexieUnidades       } from "src/services/useDexie"  
   import {  useControlProductos } from "src/areas/acuerdos/controllers/ControlLineasProductos"
-  import    selectLabelValue    from "components/utilidades/select/SelectLabelValue.vue"
-  import {  WYSIWYG_Limpio    } from "src/useSimpleOk/useEstilos"
-  import {  dexieUnidades     } from "src/services/useDexie"
-  import {  ESTADO_CTZ        } from "src/areas/acuerdos/cotizaciones/models/Cotizacion"
-  import {  formatoPrecio,
-            useTools          } from "src/useSimpleOk/useTools"
-  import {  useTransition     } from '@vueuse/core'
-  import {  useQuasar         } from 'quasar'
-  import {  useStoreAcuerdo   } from 'src/stores/acuerdo'
-  import {  ref,
-            PropType,
-            toRefs,
-            computed
-                              } from "vue"
+  import {  formatoPrecio       } from "src/useSimpleOk/useTools"
+  //* ////////////////////////////////////////////////////////////////////////// Componentes
+  import    ventana               from "components/utilidades/Ventana.vue"
+  import    selectLabelValue      from "components/utilidades/select/SelectLabelValue.vue"
+  import    numeroPaso            from "components/utilidades/input/InputNumeroPaso.vue"
+  import    inputNumber           from "components/utilidades/input/InputFormNumber.vue"
 
   const { dialog              } = useQuasar()
-  const { apiDolibarr         } = useApiDolibarr()
-  const { aviso               } = useTools()
   const unidades                = dexieUnidades()
-  const emit                    = defineEmits<{
+  /* const emit                    = defineEmits<{
     (e: 'update:model-value',   value: ILineaAcuerdo        ): void
     (e: 'cerrar',               value: void ): void
     (e: 'borrar',               value: void ): void
-  }>()
+  }>() */
   const storeAcuerdo            = useStoreAcuerdo()
   const { acuerdo,
-          loading,
-          grupoElegido,
+          loading,          
           lineaElegida        } = storeToRefs(storeAcuerdo)
 
 
   const linea                   = ref< ILineaAcuerdo >( Object.assign( new LineaAcuerdo(), lineaElegida.value ) )
   const copiaLinea              = JSON.stringify(linea.value)
   let conDecimales              = Boolean(!!process.env.CON_DECIMALES)
-  const { borrarLinea
+  const { editarLinea,
+          borrarLinea
                               } = useControlProductos()
 
-  const duracion                = 300
-  const aTotalConDescu          = useTransition( computed(()=> linea.value.totalConDescu  ),  { duration: duracion } )
-  const aTotalSinDescu          = useTransition( computed(()=> linea.value.totalSinDescu  ),  { duration: duracion } )
-  const aDescuento              = useTransition( computed(()=> linea.value.totalDescuento ),  { duration: duracion } )
-  const aIVA                    = useTransition( computed(()=> linea.value.ivaValorTotal  ),  { duration: duracion } )
-  const aTotal                  = useTransition( computed(()=> linea.value.totalConIva    ),  { duration: duracion } )
+  const duracion                = { duration: 300 }
+  const aTotalConDescu          = useTransition( computed(()=> linea.value.totalConDescu  ),   )
+  const aTotalSinDescu          = useTransition( computed(()=> linea.value.totalSinDescu  ),  duracion )
+  const aDescuento              = useTransition( computed(()=> linea.value.totalDescuento ),  duracion )
+  const aIVA                    = useTransition( computed(()=> linea.value.ivaValorTotal  ),  duracion )
+  const aTotal                  = useTransition( computed(()=> linea.value.totalConIva    ),  duracion )
 
-
-
-  async function guardar()
-  {
-    loading.value.editar        = true
-    let lineaAPI                = LineaAcuerdo.lineaToLineaApi( linea.value )
-    const estadoBoceto          = acuerdo.value.estado === ESTADO_CTZ.NO_GUARDADO
-    let seguir                  = true
-    if(!estadoBoceto){
-      let {ok, data}            = await apiDolibarr("editar-linea", "cotizacion", lineaAPI, linea.value.padreId )
-      seguir                    = ok
-    }
-
-    loading.value.editar        = false
-    if(seguir || estadoBoceto)
-    {
-      linea.value.destacar( "guardar", "ocultar" )
-      aviso("positive", "Producto editado")
-      emit("update:model-value", linea.value)
-      emit("cerrar")
-    }
-  }
 
   function confirmarBorrar()
   {
@@ -240,17 +215,17 @@
       cancel:   true,
       class:    "text-center",
       html:     true,
-    }).onOk( borrarLineasDesdeControl )
+    }).onOk( borrarConfirmado )
   }
 
-  async function borrarLineasDesdeControl()
+  async function borrarConfirmado()
   {
     const ok = await borrarLinea( lineaElegida.value )
-    if(ok){
-    //emit("update:model-value", linea.value)
-    emit("cerrar")
-    //emit("borrar", linea.value)
-    }
+    //if(ok){
+      //emit("update:model-value", linea.value)
+      //emit("cerrar")
+      //emit("borrar", linea.value)
+    //}
   }
 
 

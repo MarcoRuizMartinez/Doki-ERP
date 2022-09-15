@@ -60,14 +60,13 @@
   import {  useControlCotizacion  } from "src/areas/acuerdos/controllers/ControlCotizaciones"
   import {  useCotizacionPDF      } from "src/areas/acuerdos/cotizaciones/composables/useCotizacionPDF"
   //* ///////////////////////////////////////////////////////////////////////////////// Componentes  
-  import    tituloCtz               from "src/areas/acuerdos/components/TituloCotizacion2.vue"
-  import    totales                 from "src/areas/acuerdos/components/TotalesCotizacion2.vue"
+  import    visorPdf                from "components/utilidades/VisorPDF.vue"  
+  import    tituloCtz               from "src/areas/acuerdos/components/TituloCotizacion.vue"
+  import    totales                 from "src/areas/acuerdos/components/TotalesCotizacion.vue"
   import    botonera                from "src/areas/acuerdos/components/BotoneraCotizacion.vue"
-  import    terceroYContacto        from "src/areas/acuerdos/components/TerceroYcontacto2.vue"
-  import    condiciones             from "src/areas/acuerdos/components/CondicionesCotizacion2.vue" 
+  import    terceroYContacto        from "src/areas/acuerdos/components/TerceroYcontacto.vue"
+  import    condiciones             from "src/areas/acuerdos/components/CondicionesCotizacion.vue" 
   import    productos               from "src/areas/acuerdos/components/ProductosAcuerdo.vue"
-  import    visorPdf                from "components/utilidades/VisorPDF.vue"
-  
 
   const storeAcuerdo          = useStoreAcuerdo()
   const { acuerdo,
