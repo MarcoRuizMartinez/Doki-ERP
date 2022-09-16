@@ -108,8 +108,7 @@
   import {  storeToRefs       } from 'pinia'                            
   import {  useStoreAcuerdo   } from 'src/stores/acuerdo'  
 
-  const storeAcuerdo          = useStoreAcuerdo()
-  const { acuerdo           } = storeToRefs(storeAcuerdo)  
+  const { acuerdo           } = storeToRefs( useStoreAcuerdo() )  
 
   type SourcesEdit              = "tablaProductos" | "otrosOrigenes" | "buscarProductos" | "borrarGrupo" | "editarSubTotales" | "moverGrupo" | "borrarLineaFromBusqueda"
   const terceros                = ref< ITercero[] > ([])
@@ -273,7 +272,7 @@
     // let { data:dTit, ok:okTitu }= await apiDolibarr("crear", "lineaCotizacion", lineaTituloApi,  acuerdo.value.id)
     // let { data:dSub, ok:okSub  }= await apiDolibarr("crear", "lineaCotizacion", lineaSubtotalApi, acuerdo.value.id)
     await pausa(200) // Para darle tiempo que el virtual DOM genere el nuevo espacio y calcule el nuevo alto del documento
-    console.log("crear grupo 2 window.scrollTo")
+    //console.log(Maco"crear grupo 2 window.scrollTo")
     window.scrollTo({ top: document.body.scrollHeight,  behavior: 'smooth'})
     // if(!!okTitu && !!okSub )
     {

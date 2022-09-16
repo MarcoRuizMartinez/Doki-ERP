@@ -75,6 +75,7 @@ export function useMenu()
                                                 visible:    permisos.value.terceros_ver
                                               }),
                             },
+                            /*
                             { ...new ItemMenu({
                                                 label:      "Crear cotización",
                                                 icon:       "mdi-format-list-checks",
@@ -82,8 +83,9 @@ export function useMenu()
                                                 visible:    permisos.value.terceros_ver
                                               }),
                             },
+                            */
                             { ...new ItemMenu({
-                                                label:      "Crear cotización 2",
+                                                label:      "Crear cotización",
                                                 icon:       "mdi-format-list-checks",
                                                 to:         "/cotizaciones/crear2",
                                                 visible:    permisos.value.terceros_ver

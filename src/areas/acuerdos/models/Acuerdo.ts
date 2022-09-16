@@ -113,6 +113,9 @@ export interface IAcuerdo
   estadoIcono:                string
   estadoColor:                string
   estadoLabel:                string
+  esEstadoBoceto:             boolean
+  esEstadoNoValidado:         boolean
+  esEstadoValidado:           boolean
 
   notaPrivada:                string
   notaPublica:                string
@@ -167,8 +170,8 @@ export interface IAcuerdo
   pdfContacto:                string
   pdfCorreo:                  string
   pdfCiudad:                  string
-
   esTerceroCtz:               boolean
+  getCotizacionForApi:        ( usuarioId : number ) => any
 }
 
 export class Acuerdo implements IAcuerdo
@@ -356,6 +359,9 @@ export class Acuerdo implements IAcuerdo
     return total
   }
 
+  get esEstadoBoceto      ():boolean { return this.estado === ESTADO_CTZ.NO_GUARDADO }            
+  get esEstadoNoValidado  ():boolean { return this.estado === ESTADO_CTZ.NO_GUARDADO || this.estado === ESTADO_CTZ.BORRADOR}
+  get esEstadoValidado    ():boolean { return this.estado > ESTADO_CTZ.BORRADOR }
   // * ///////////////////////////////////////////////////////////////////////////////  Icono
   get estadoIcono(): string {
     let valor :string         =   this.estado == ESTADO_CTZ.NO_GUARDADO ? "mdi-eraser-variant"
@@ -551,6 +557,8 @@ export class Acuerdo implements IAcuerdo
                                   if(a.orden > b.orden) return 1
                                   return 0;
                                 })
+        if(ctz.productos.length > 0)
+          ctz.proGrupos       = GrupoLineas.productosAgrupoDeProductos( ctz.productos )     
     return ctz
   }
 }

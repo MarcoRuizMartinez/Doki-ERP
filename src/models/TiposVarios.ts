@@ -81,6 +81,7 @@ export const enum GRUPO_USUARIO {
 
 export interface ILoading {
   carga           ?: boolean
+  crear           ?: boolean
   borrar          ?: boolean
   validar         ?: boolean
   editar          ?: boolean
@@ -109,6 +110,7 @@ export interface ILoading {
 
 export const LoadingDefault = {
   carga           : false,
+  crear           : false,
   borrar          : false,
   validar         : false,
   editar          : false,

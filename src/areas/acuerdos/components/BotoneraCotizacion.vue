@@ -92,20 +92,19 @@
   // * /////////////////////////////////////////////////////////////////////// Core
   import {  computed        } from "vue"
   // * /////////////////////////////////////////////////////////////////////// Store
-  import {  storeToRefs     } from 'pinia'                            
-  import {  useStoreAcuerdo } from 'src/stores/acuerdo'  
+  import {  storeToRefs     } from 'pinia'
+  import {  useStoreAcuerdo } from 'src/stores/acuerdo'
   // * /////////////////////////////////////////////////////////////////////// Componibles
   import {  useTools        } from "src/useSimpleOk/useTools"
   import {  btnBaseMd       } from "src/useSimpleOk/useEstilos"
-  import {  ESTADO_CTZ      } from "src/areas/acuerdos/cotizaciones/models/Cotizacion"
+  import {  ESTADO_CTZ      } from "src/areas/acuerdos/models/Acuerdo"  
   // * /////////////////////////////////////////////////////////////////////// Componentes
   import    barra             from "components/utilidades/Barra.vue"
   import    efectoGrupo       from "components/utilidades/EfectoGrupo.vue"
   import    confirmar         from "components/utilidades/MenuConfirmar.vue"
 
-  const storeAcuerdo          = useStoreAcuerdo()
   const { acuerdo,
-          loading           } = storeToRefs(storeAcuerdo)  
+          loading           } = storeToRefs( useStoreAcuerdo() )
 
   const { esMobil     } = useTools()
   const emit            = defineEmits(["clickPDF","clickAprobar", "clickAnular", "clickValidar", "clickEditar", "clickBorrar"])

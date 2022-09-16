@@ -72,9 +72,7 @@
       transition-hide           ="slide-down"
       @hide                     ="grupoElegido.noDestacarProductos()"
       >
-      <buscar-productos
-        @eliminar-linea-id      ="eliminarLineaDesdeBusqueda"
-      />
+      <buscar-productos />
     </q-dialog>
     <!-- //* ///////////////////////////////////////////////////////////// Modal formulario edicion Linea   -->
     <q-dialog
@@ -122,14 +120,15 @@
   import    formularioLinea         from "./Modals/FormularioLinea.vue"
   import    editarEnLote            from "./Modals/EditarEnLoteQtyDesc.vue"
 
-  const { borrarLineas        } = useControlProductos()
+  const { destacarLineaElegida,
+          mostrarBuscarProductos
+                              } = useControlProductos()
 
-  const storeAcuerdo            = useStoreAcuerdo()
   const { acuerdo,
           lineaElegida,
           grupoElegido,
           loading,
-          modales             } = storeToRefs(storeAcuerdo)
+          modales             } = storeToRefs( useStoreAcuerdo() )
 
   type SourcesEdit              = "tablaProductos" | "otrosOrigenes" | "buscarProductos" | "borrarGrupo" | "editarSubTotales" | "moverGrupo" | "borrarLineaFromBusqueda"
   const terceros                = ref< ITercero[] > ([])
@@ -139,22 +138,44 @@
   const { crearNuevoGrupo
                               } = useControlProductos()
 
+  ////////////////////////////////////////////////////////////////////// Ok
   watch(()=>modales.value.formulario, (mostrarForm) => destacarLineaElegida(mostrarForm) )
 
-  function destacarLineaElegida( mostrarForm : boolean )
-  {
-    if(mostrarForm)
-      lineaElegida.value.destacar( "seleccionar" )
-    else
+  ////////////////////////////////////////////////////////////////////// No entiendo
+
+  
+  let esVirgen                  = true
+
+
+  watch( () => acuerdo.value.productos, (newProductos, oldProductos) => {
+    if(1+1==2) return
+    if(acuerdo.value.estado  !== ESTADO_CTZ.NO_GUARDADO && !newProductos.length) // Crea un grupo si no hay productos
     {
-      if(lineaElegida.value.accion === "borrar")
-        lineaElegida.value.destacar( "borrar", "ocultar")
-      else {
-        lineaElegida.value.destacar( "no-destacar" )
-        lineaElegida.value          = new LineaAcuerdo()
-      }
+      //console.log(Maco"watch( () => acuerdo.value.productos")
+      crearNuevoGrupo()
     }
+    
+
+    if(newProductos.length > 0 && oldProductos.length === 0 )
+    {
+      esVirgen                    = false
+      actualizarArrayGrupos( newProductos )
+      borrarGruposSinProductos()
+    }
+  })
+  
+
+  function actualizarArrayGrupos( lineas : ILineaAcuerdo[] )
+  {
+    if(!lineas.length) crearNuevoGrupo()
+  
+    /* if(lineas.length > 0)
+      acuerdo.value.proGrupos  = GrupoLineas.productosAgrupoDeProductos( lineas )
+    else{
+      crearNuevoGrupo()
+    } */
   }
+
 
   async function cambioEnGrupos( origen : SourcesEdit = "otrosOrigenes" )
   {
@@ -215,74 +236,6 @@
     //emit("update:cotizacion", acuerdo.value)
   }
 
-
-  const totalTem                = computed( ()=>
-    !!acuerdo.value.proGrupos.length ? acuerdo.value.proGrupos[0].totalConDescu : 0
-  )
-  const largo                   = computed( ()=> acuerdo.value.proGrupos.length )  
-
-  //const gruposProductos         = ref<IGrupoLineas[]>([])
-
-  let esVirgen                  = true
-
-  onMounted(()=>{
-   // if(acuerdo.value.estado  === ESTADO_CTZ.NO_GUARDADO)
-   //   crearNuevoGrupo()
-  })
-
-  watch( () => acuerdo.value.productos, (newProductos, oldProductos) => {
-    if(acuerdo.value.estado  !== ESTADO_CTZ.NO_GUARDADO && !newProductos.length) // Crea un grupo si no hay productos
-    {
-      console.log("watch( () => acuerdo.value.productos")
-      crearNuevoGrupo()
-    }
-
-    if(newProductos.length > 0 && oldProductos.length === 0 )
-    {
-      esVirgen                    = false
-      actualizarArrayGrupos( newProductos )
-      borrarGruposSinProductos()
-    }
-  })
-
-  function actualizarArrayGrupos( lineas : ILineaAcuerdo[] )
-  {
-    if(lineas.length > 0)
-      acuerdo.value.proGrupos  = GrupoLineas.productosAgrupoDeProductos( lineas )
-    else{
-      console.log("actualizarArrayGrupos")
-      crearNuevoGrupo()
-    }
-  }
-
-  function mostrarBuscarProductos( grupo : IGrupoLineas )
-  {
-    grupoElegido.value            = grupo
-    grupoElegido.value.seleccion  = []
-    modales.value.añadirProductos = true
-  }
-
-
-  async function eliminarLineaDesdeBusqueda( idProducto : number )
-  {
-    grupoElegido.value.seleccion  = grupoElegido.value.productos.filter( ( p : ILineaAcuerdo ) => p.id === idProducto)
-    if(!!grupoElegido.value.seleccion.length){
-      borrarLineas( 200 )
-    }
-    /* ///////////// Horribleeeeee
-    const index = grupoElegido.value.productos.findIndex((p )=> p.id === idProducto )
-    grupoElegido.value.productos[index].borrar = true
-    await cambioEnGrupos('borrarLineaFromBusqueda')
-    grupoElegido.value.productos.splice(index, 1)
-    let indexGrupo = acuerdo.value.proGrupos.findIndex( g => g.index === grupoElegido.value.index )
-    acuerdo.value.proGrupos[indexGrupo] = grupoElegido.value
-    */
-  }
-
-
-
-
-
   async function ordenarLineasEnDolibarr( )
   {
     let ids = acuerdo.value.productos.map( p => p.lineaId ).join()
@@ -303,13 +256,6 @@
     }
   }
 
-  function addProductosDeBusqueda( grupo : IGrupoLineas )
-  {
-    let indexGrupo = acuerdo.value.proGrupos.findIndex( g => g.index === grupo.index )
-    acuerdo.value.proGrupos[indexGrupo] = grupo
-    cambioEnGrupos('buscarProductos')
-  }
-
 
 
   function borrarGrupo( grupo : IGrupoLineas, accion : "conservar" | "borrar" )
@@ -325,4 +271,27 @@
 
     cambioEnGrupos( "borrarGrupo" )
   }
+
+  //////////////////////////////////////////////////////////////// Borrar ?
+  onMounted(()=>{
+   // if(acuerdo.value.estado  === ESTADO_CTZ.NO_GUARDADO)
+   //   crearNuevoGrupo()
+  })  
+
+  const totalTem                = computed( ()=>
+    !!acuerdo.value.proGrupos.length ? acuerdo.value.proGrupos[0].totalConDescu : 0
+  )
+  const largo                   = computed( ()=> acuerdo.value.proGrupos.length )  
+
+  //const gruposProductos         = ref<IGrupoLineas[]>([])
+
+  function addProductosDeBusqueda( grupo : IGrupoLineas )
+  {
+    let indexGrupo = acuerdo.value.proGrupos.findIndex( g => g.index === grupo.index )
+    acuerdo.value.proGrupos[indexGrupo] = grupo
+    cambioEnGrupos('buscarProductos')
+  }
+
+
+
 </script>

@@ -19,7 +19,7 @@
         </q-toolbar-title>
 
         <menu-top class ="gt-sm desktop-only"/>
-        <q-space />
+        <q-space />        
         <online />
         <menu-usuario />
       </q-toolbar>
@@ -61,46 +61,53 @@
 
 
 <script setup lang="ts">
-import {
-          onMounted,
-          ref,
-          computed
-                            } from 'vue'
-import {  useStoreUser      } from 'src/stores/user'
-import {  useStoreApp       } from 'src/stores/app'
-import {  ALMACEN_LOCAL     } from "src/models/TiposVarios"
-import {  useMenu           } from "src/useSimpleOk/useMenu"
-import {  LocalStorage      } from 'quasar'
-import {  useTools          } from "src/useSimpleOk/useTools"
-import    menuTop             from "src/components/navegacion/menus/MenuTop.vue";
-import    online              from "components/navegacion/IconOnline.vue";
-import    menuUsuario         from "components/navegacion/usuario/MenuUsuario.vue";
-import    menuExpandible      from "src/components/navegacion/menus/MenuLateralLeft.vue"
+  ///////////////////////////////////////////////////////////////////////// Core
+  import {
+            onMounted,
+            ref,
+            computed
+                              } from 'vue'
+  import {  LocalStorage      } from 'quasar'                              
+  ///////////////////////////////////////////////////////////////////////// Store
+  import {  storeToRefs       } from 'pinia'
+  import {  useStoreApp       } from 'src/stores/app'
+  import {  useStoreUser      } from 'src/stores/user'
+  //import {  useStoreAcuerdo   } from 'src/stores/acuerdo'
+  ///////////////////////////////////////////////////////////////////////// Modelos
+  import {  ALMACEN_LOCAL     } from "src/models/TiposVarios"
+  ///////////////////////////////////////////////////////////////////////// Componibles
+  import {  useMenu           } from "src/useSimpleOk/useMenu"  
+  import {  useTools          } from "src/useSimpleOk/useTools"
+  ///////////////////////////////////////////////////////////////////////// Componentes
+  import    online              from "components/navegacion/IconOnline.vue";
+  import    menuTop             from "src/components/navegacion/menus/MenuTop.vue";
+  import    menuUsuario         from "components/navegacion/usuario/MenuUsuario.vue";
+  import    menuExpandible      from "src/components/navegacion/menus/MenuLateralLeft.vue"
 
 
-useMenu()
-const storeUser           = useStoreUser()
-const storeApp            = useStoreApp()
+  useMenu()
+  const { patron }          = storeToRefs( useStoreUser() )
+  const { menu }            = storeToRefs( useStoreApp() )
+  //const { acuerdo }       = storeToRefs( useStoreAcuerdo() ) 
 
-const { esMobil         } = useTools()
-const leftDrawerOpen      = ref(false)
-const miniState           = ref(true)
-const menu                = computed(() => storeApp.menu )
-const fondoBarra          = computed(() => "background-image: url('images/patrones/"  + storeUser.patron + "');" )
-const pre                 = process.env.PREFIJO
+  const { esMobil         } = useTools()
+  const leftDrawerOpen      = ref(false)
+  const miniState           = ref(true)  
+  const fondoBarra          = computed(() => "background-image: url('images/patrones/"  + patron.value + "');" )
+  const pre                 = process.env.PREFIJO
 
-//* ///////////////////////////////////////////////////////////////////////// On Mounted
-onMounted(() =>
-{
-  let menuAbierto         = LocalStorage.getItem  ( pre + ALMACEN_LOCAL.MENU_IZQUIERDO ) as boolean
-  if( menuAbierto === null) LocalStorage.set      ( pre + ALMACEN_LOCAL.MENU_IZQUIERDO, leftDrawerOpen.value)
-  else
-    leftDrawerOpen.value  =  esMobil ? false : menuAbierto
-})
+  //* ///////////////////////////////////////////////////////////////////////// On Mounted
+  onMounted(() =>
+  {
+    let menuAbierto         = LocalStorage.getItem  ( pre + ALMACEN_LOCAL.MENU_IZQUIERDO ) as boolean
+    if( menuAbierto === null) LocalStorage.set      ( pre + ALMACEN_LOCAL.MENU_IZQUIERDO, leftDrawerOpen.value)
+    else
+      leftDrawerOpen.value  =  esMobil ? false : menuAbierto
+  })
 
-function toggleLeftDrawer()
-{
-  leftDrawerOpen.value  = !leftDrawerOpen.value      
-  LocalStorage.set( pre + ALMACEN_LOCAL.MENU_IZQUIERDO, leftDrawerOpen.value) 
-}
+  function toggleLeftDrawer()
+  {
+    leftDrawerOpen.value  = !leftDrawerOpen.value      
+    LocalStorage.set( pre + ALMACEN_LOCAL.MENU_IZQUIERDO, leftDrawerOpen.value) 
+  }
 </script>

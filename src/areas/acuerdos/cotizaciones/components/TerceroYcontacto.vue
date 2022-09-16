@@ -202,34 +202,27 @@
   //* /////////////////////////////////////////////////////////////// Watch contacto
   watch( ()=> cotizacion.value.contacto, async (newContacto, oldContacto)=>
   {
-    console.log("newContacto: ", newContacto);
-    console.log("oldContacto: ", oldContacto);
     //* ///////////////////////////////// Restricciones 
     if( nuevo.value ) return
 
     if(newContacto.id === oldContacto.id) {
       cotizacion.value.contacto.idRelacion = oldContacto.idRelacion
-      console.log("A")
       return
     }
 
     //* ///////////////////////////////// Desvincular contacto
     if(!!oldContacto.idRelacion) 
     {
-      console.log("B")
       const { ok : desvinculado } = await apiDolibarr("contacto-desvincular",  "cotizacion", oldContacto.idRelacion, cotizacion.value.id)
       if(!desvinculado){
         aviso("negative", "error al desvincular contacto", "account")
-        console.log("C")
         return
       }
     }
 
     //* ///////////////////////////////// Vincular contacto
     if(!oldContacto.id) return
-    console.log("B1")
     const { ok : vinculado      } = await apiDolibarr("contacto-vincular",     "cotizacion", {id: newContacto.id, tipo: TIPOS_CONTACTO.CTZ_CUSTOMER }, cotizacion.value.id)
-    console.log("B2")
     if(vinculado){
       const id                    = await getIdEnlaceContacto( cotizacion.value.id, newContacto.id )
       cotizacion.value.contacto.idRelacion  = id

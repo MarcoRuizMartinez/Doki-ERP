@@ -99,7 +99,7 @@
   import    ventana               from "components/utilidades/Ventana.vue"  
   import {  Tercero             } from "src/areas/terceros/models/Tercero"
   import {  Contacto            } from "src/areas/terceros/models/Contacto"    
-  import {  ICotizacion         } from "src/areas/acuerdos/cotizaciones/models/Cotizacion"
+  import {  IAcuerdo            } from "src/areas/acuerdos/models/Acuerdo"
   import    selectColumnas        from "components/utilidades/select/SelectColumnas.vue"
   import    tooltipCotizacion     from "src/areas/acuerdos/cotizaciones/components/tools/TooltipCotizacion.vue"
   import    tooltipLineas         from "src/areas/acuerdos/components/Tooltips/TooltipLineas.vue"
@@ -107,12 +107,11 @@
   import    barraBusqueda         from "./BarraBusqueda.vue"
   
   const title                     = useTitle("🔍 Buscar cotizaciones")
-  const storeUser                 = useStoreUser()
-  const { usuario, permisos }     = storeToRefs(storeUser)  
+  const { usuario, permisos }     = storeToRefs( useStoreUser() )  
   const { getCotizaciones       } = servicesCotizaciones()
   const { esMobil, aviso        } = useTools()
   const modo                      = ref< ModosVentana >("esperando-busqueda")  
-  const cotizaciones              = ref< ICotizacion[] >([])
+  const cotizaciones              = ref< IAcuerdo [] >([])
   //const filtroMovil               = ref< boolean >(false)
   const filtro                    = ref< string   >("")
   const titulo                    = computed(()=>

@@ -1,9 +1,16 @@
+//* ////////////////////////////////////////////////////////////////// Core
 import {  useRouter             } from 'vue-router'
-import {  useStoreAcuerdo       } from 'src/stores/acuerdo'
+//* ////////////////////////////////////////////////////////////////// Store
 import {  storeToRefs           } from 'pinia'  
+import {  useStoreAcuerdo       } from 'src/stores/acuerdo'
+//* ////////////////////////////////////////////////////////////////// Componibles
 import {  servicesCotizaciones  } from "src/areas/acuerdos/cotizaciones/services/servicesCotizaciones"
 import {  servicesTerceros      } from "src/areas/terceros/services/servicesTerceros"
 import {  useApiDolibarr        } from "src/services/useApiDolibarr"  
+import {  useTools,
+          ID_URL_Ok,
+          confeti               } from "src/useSimpleOk/useTools"
+//* ////////////////////////////////////////////////////////////////// Modelos
 import {  ESTADO_CTZ            } from "../../../areas/acuerdos/models/Acuerdo"
 import {  IOrigenContacto       } from "../../../models/Diccionarios/OrigenContacto"
 import {  IUsuario              } from "../../../areas/usuarios/models/Usuario"
@@ -16,15 +23,12 @@ import {  IContacto,
           Contacto,
           TIPOS_CONTACTO
                                 } from "../../../areas/terceros/models/Contacto"
-import {  useTools,
-          ID_URL_Ok,
-          confeti               } from "src/useSimpleOk/useTools"
+
 
 export function useControlCotizacion() 
 {
   const router                  = useRouter()
   const { aviso               } = useTools()  
-  const storeAcuerdo            = useStoreAcuerdo()
   const {
           setFechaFinValidez,
           setFechaEntrega,
@@ -35,7 +39,6 @@ export function useControlCotizacion()
           getCotizacion,
           setOrigenContacto,
           setRefCliente,
-          getIdEnlaceContacto,
           setComercial,
           setTerceroId,
           setAiu,
@@ -47,7 +50,39 @@ export function useControlCotizacion()
                               } = servicesTerceros()
   const { apiDolibarr         } = useApiDolibarr()
   const { acuerdo,
-          loading             } = storeToRefs(storeAcuerdo)  
+          loading             } = storeToRefs( useStoreAcuerdo() )  
+
+  //* /////////////////////////////////////////////////////////////// Crear Cotizacion
+  async function crearCotizacion( idUsuario : number )
+  {
+    loading.value.crear       = true
+    const ctzForApi           = acuerdo.value.getCotizacionForApi( idUsuario )    
+    const { ok, data }        = await apiDolibarr("crear", "cotizacion", ctzForApi )
+    if(!ok || !data) {
+      aviso("negative", "Error al crear al tercero", "file")      
+      loading.value.crear     = false
+      return
+    }
+    const id                  = typeof data === "number" ? data : 0
+    //* ////////////////////  Creando Contacto si corresponde
+    if(!!acuerdo.value.contacto.id)
+    {
+      const { ok : vinculado  } = await apiDolibarr("contacto-vincular", "cotizacion",
+                                          {
+                                            id:   acuerdo.value.contacto.id,
+                                            tipo: TIPOS_CONTACTO.CTZ_CUSTOMER
+                                          },
+                                          id
+                                          )
+        if(!vinculado){
+          aviso("negative", "Error al asignar contacto", "file")
+        }                                        
+    }
+    //* ////////////////////  Notificando y redireccionando
+    aviso("positive", "Cotización creada", "file")
+    loading.value.crear       = false
+    router.push( "/cotizaciones/" + id )
+  }          
 
   //* ////////////////////////////////////////////////////////////////////// Buscar cotizacion 
   async function buscarCotizacion( id_ : string )
@@ -57,7 +92,7 @@ export function useControlCotizacion()
 
     loading.value.carga         = true
     acuerdo.value.productos     = []
-    acuerdo.value               = await getCotizacion( idOk )    
+    acuerdo.value               = await getCotizacion( idOk )
 
     if(!!acuerdo.value.id)
     {
@@ -408,6 +443,7 @@ export function useControlCotizacion()
 
   //* /////////////////////////////////////////////////////////////// Return
   return {
+    crearCotizacion,
     actualizarTercero,
     aprobarCotizacion,
     anularCotizacion,

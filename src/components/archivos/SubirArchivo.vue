@@ -61,7 +61,7 @@
     cargandoArchivos.value    = true
     archivosSubir.value.forEach( async ( file : File ) =>
     {
-      console.log('%c⧭', 'color: #917399', file)
+      //console.log('%c⧭', 'color: #917399', file)
       let b64                 = await FileToBase64(file)
       
       let objSubir            = {
@@ -85,10 +85,10 @@
 "fileencoding": "",
 "overwriteifexists": "0"
 } */
-      console.log('%c⧭', 'FileToBase64: #00bf00', objSubir)
+      //console.log('%c⧭', 'FileToBase64: #00bf00', objSubir)
 
       let { data, ok }        = await apiDolibarr( "subir", "documento", objSubir )
-      console.log('%c⧭', 'color: #0088cc', ok, data)
+      //console.log('%c⧭', 'color: #0088cc', ok, data)
     })
     cargandoArchivos.value    = false
   }

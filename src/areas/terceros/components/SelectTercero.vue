@@ -49,10 +49,12 @@
   })
   const { tercero }           = toRefs(props)
 
-  watch(tercero, (newValue, oldValue)=>{
+  watch(tercero, (newValue)=>{
     if(!!newValue.id)
       modelo.value            = newValue
-  })
+    },
+    { immediate: true}
+  )
 
   
   async function buscar( busqueda : string, doneFn : Function )

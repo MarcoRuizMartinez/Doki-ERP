@@ -2,15 +2,6 @@
   <q-page                     padding
     class                     ="row items-stretch content-start justify-left q-col-gutter-md"
     >
-    {{acuerdo.tiempoEntrega}}
-    <br/>
-    {{acuerdo.metodoEntrega}}
-    <br/>
-    {{acuerdo.formaPago}}
-    <br/>
-    {{acuerdo.condicionPago}}
-    <br/>
-    {{acuerdo.fechaEntrega}}
     <titulo-ctz
       class                   ="col-12"
       @click                  ="generarPDFCotizacion"
@@ -20,10 +11,11 @@
         v-bind                ="btnBaseMd"
         label                 ="Crear cotizacion"
         color                 ="positive"
-        icon=                 "mdi-plus"
+        icon                  ="mdi-plus"
+        :loading              ="loading.crear"
         :disable              ="!formularioOk"
+        @click                ="crearCotizacion( usuario.id )"
         />
-        <!-- @click                ="crearCotizacion" -->
     </barra>
     <tercero-y-contacto
       ref                     ="componenteTerYcont"
@@ -51,37 +43,36 @@
 </template>
 
 <script setup lang="ts">
+  // * /////////////////////////////////////////////////////////////////////////////////// Core
   import {  ref,
-            watch,
             toRefs,
-            provide,
             computed,
             onMounted,
-                            } from "vue"
-  // import {  useRouter       } from 'vue-router'                  
-  // import {  servicesTerceros     } from "src/areas/terceros/services/servicesTerceros"  
-  // import {  useApiDolibarr  } from "src/services/useApiDolibarr"  
-  import {  useStoreUser    } from 'src/stores/user'
-  // import {  useTitle        } from "@vueuse/core"
-  // import {  useTools        } from "src/useSimpleOk/useTools"
-  // import {  TIPOS_CONTACTO  } from "src/areas/terceros/models/Contacto"  
-  // import {  ICotizacion,
-  //           Cotizacion      } from "src/areas/acuerdos/cotizaciones/models/Cotizacion"
-  import    tituloCtz         from "src/areas/acuerdos/components/TituloCotizacion.vue"
-  import    productos         from "src/areas/acuerdos/components/ProductosAcuerdo.vue"  
-  import    barra             from "components/utilidades/Barra.vue"
-  import    terceroYContacto  from "src/areas/acuerdos/components/TerceroYcontacto.vue"
-  import    condiciones       from "src/areas/acuerdos/components/CondicionesCotizacion.vue" 
-  import    totales           from "src/areas/acuerdos/components/TotalesCotizacion.vue"
-  import {  btnBaseMd       } from "src/useSimpleOk/useEstilos"
-  import {  useCotizacionPDF} from "src/areas/acuerdos/cotizaciones/composables/useCotizacionPDF"
-  import    visorPdf          from "components/utilidades/VisorPDF.vue"
-  import {  storeToRefs     } from 'pinia'                            
-  import {  useStoreAcuerdo } from 'src/stores/acuerdo'  
+                                  } from "vue"
+  // * /////////////////////////////////////////////////////////////////////////////////// Store
+  import {  storeToRefs           } from 'pinia'
+  import {  useStoreUser          } from 'src/stores/user'
+  import {  useStoreAcuerdo       } from 'src/stores/acuerdo'  
 
-  const storeCotizacion       = useStoreAcuerdo()
+  // * /////////////////////////////////////////////////////////////////////////////////// Modelos
+  import {  ESTADO_CTZ            } from "src/areas/acuerdos/models/Acuerdo"
+
+  // * /////////////////////////////////////////////////////////////////////////////////// Componibles
+  import {  btnBaseMd             } from "src/useSimpleOk/useEstilos"
+  import {  useCotizacionPDF      } from "src/areas/acuerdos/cotizaciones/composables/useCotizacionPDF"
+  import {  useControlCotizacion  } from "src/areas/acuerdos/controllers/ControlCotizaciones"
+
+  // * /////////////////////////////////////////////////////////////////////////////////// Componentes
+  import    barra                   from "components/utilidades/Barra.vue"
+  import    visorPdf                from "components/utilidades/VisorPDF.vue"
+  import    tituloCtz               from "src/areas/acuerdos/components/TituloCotizacion.vue"
+  import    productos               from "src/areas/acuerdos/components/ProductosAcuerdo.vue"  
+  import    terceroYContacto        from "src/areas/acuerdos/components/TerceroYcontacto.vue"
+  import    totales                 from "src/areas/acuerdos/components/TotalesCotizacion.vue"
+  import    condiciones             from "src/areas/acuerdos/components/CondicionesCotizacion.vue" 
+
   const { acuerdo,
-          loading           } = storeToRefs(storeCotizacion)              
+          loading           } = storeToRefs( useStoreAcuerdo() )              
   // const  {  apiDolibarr     } = useApiDolibarr()
 
   
@@ -89,21 +80,21 @@
   // const { aviso             } = useTools()  
   // const router                = useRouter()
   const { generarPDF        } = useCotizacionPDF()
-  const storeUser             = useStoreUser()
-  const { usuario, permisos } = storeToRefs(storeUser)  
+  const { crearCotizacion   } = useControlCotizacion()
+  const { usuario           } = storeToRefs( useStoreUser() )  
   // const cotizacion            = ref< ICotizacion  >( new Cotizacion() )
-  const cargando              = ref< boolean >(false)
   const ventanaPDF            = ref< boolean  >(false)
   const srcPDF                = ref< string   >("")
 
   onMounted(()=>{
     acuerdo.value.esNuevo     = true
+    acuerdo.value.estado      = ESTADO_CTZ.NO_GUARDADO
   })
   //* /////////////////////////////////////////////////////////////// Props
-/*   const props                 = defineProps({
+  const props                 = defineProps({
     terceroId: { default: 0, type: [String, Number] }
-  }) */
-  //const { terceroId }         = toRefs(props)
+  })
+  const { terceroId }         = toRefs(props)
   //const title                 = useTitle("📜 Crear cotización")
 
   //* /////////////////////////////////////////////////////////////// Provide Super minimizado
@@ -116,7 +107,7 @@
   
   //* /////////////////////////////////////////////////////////////// Computed
   const usuarioEsDueño        = computed( () =>{ return acuerdo.value.tercero.responsables.some( r => r.id == usuario.value.id ) })
-  const puedeModificar        = computed( () => permisos.value.cotizar_crear && ( usuarioEsDueño.value || permisos.value.acceso_total ) )
+
   
   //* /////////////////////////////////////////////////////////////// Computed Formulario Ok
   const formularioOk          = computed(()=>
@@ -136,49 +127,7 @@
   async function generarPDFCotizacion()
   {
     ventanaPDF.value          = true
-    //srcPDF.value              = await generarPDF( cotizacion.value )
+    srcPDF.value              = await generarPDF( acuerdo.value )
   }
-
-  //* /////////////////////////////////////////////////////////////// Crear Cotizacion
-/*   async function crearCotizacion()
-  {
-    cargando.value            = true
-    const ctzForApi           = cotizacion.value.getCotizacionForApi( usuario.value.id )
-    //////////////////////  Creando
-    const { ok, data }        = await apiDolibarr("crear", "cotizacion", ctzForApi )
-    if(!ok || !data) {
-      aviso("negative", "Error al crear al tercero", "file")      
-      cargando.value          = false
-      return
-    }
-    const id                  = typeof data === "number" ? data : 0
-    ////////////////////  Creando Contacto si corresponde
-    if(!!cotizacion.value.contacto.id)
-    {
-      const { ok : vinculado  } = await apiDolibarr("contacto-vincular", "cotizacion",
-                                          {
-                                            id:   cotizacion.value.contacto.id,
-                                            tipo: TIPOS_CONTACTO.CTZ_CUSTOMER
-                                          },
-                                          id
-                                          )
-        if(!vinculado){
-          aviso("negative", "Error al asignar contacto", "file")
-        }                                        
-    }
-    //////////////////////  Notificando y redireccionando
-    aviso("positive", "Cotización creada", "file")
-    cargando.value            = false
-    router.push( "/cotizaciones/" + id )
-  } */
-
-  //* /////////////////////////////////////////////////////////////// Buscar Tercero 
-/*   watch( terceroId, async (newId)=>{
-    if(!newId) return
-    cotizacion.value.terceroId= +newId 
-    cotizacion.value.tercero  = await buscarTercero( +newId )
-  }
-  ,{ immediate: true }) */
-
 
 </script>

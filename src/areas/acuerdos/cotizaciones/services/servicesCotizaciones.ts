@@ -43,8 +43,6 @@ export function servicesCotizaciones()
   async function postLinea( linea : ILineaApi ) : Promise< number >
   {
     return new Promise( async (resolver, rechazar) => {
-
-      console.log("postLinea")
       let { data, ok }        = await apiDolibarr( "crear-lineas", "cotizacion", linea )
 
       if(ok)

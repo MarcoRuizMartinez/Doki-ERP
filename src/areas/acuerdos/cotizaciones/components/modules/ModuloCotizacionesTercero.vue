@@ -34,7 +34,7 @@
     <q-table                    borbordered dense flat
       class                     ="fit tabla-maco"
       row-key                   ="id"
-      :rows                     ="cotizaciones"
+      :rows                     ="acuerdos"
       :columns                  ="columnas"
       >
       <!-- //* ///////////////  Columna Ref  -->
@@ -73,20 +73,24 @@
 </template>
 
 <script setup lang="ts">
+  //* /////////////////////////////////////////////////////////////////////////////////// Core
   import {  ref,
             toRefs,
-            onMounted       } from "vue"
-  import {  ModosVentana    } from "src/models/TiposVarios"
-  import {  servicesCotizaciones } from "src/areas/acuerdos/cotizaciones/services/servicesCotizaciones"
+            onMounted             } from "vue"
+  import {  useRouter             } from 'vue-router'
+  //* /////////////////////////////////////////////////////////////////////////////////// Modelos
+  import {  ModosVentana          } from "src/models/TiposVarios"
   import {  IColumna,
-            Columna         } from "src/models/Tabla"
-  import {  ICotizacion     } from "src/areas/acuerdos/cotizaciones/models/Cotizacion"
-  import    ventana           from "components/utilidades/Ventana.vue"
-  import    tooltipCotizacion from "src/areas/acuerdos/cotizaciones/components/tools/TooltipCotizacion.vue"
-  import    tooltipLineas     from "src/areas/acuerdos/components/Tooltips/TooltipLineas.vue"
-  import {  btnBaseSm       } from "src/useSimpleOk/useEstilos"
-  import {  useRouter       } from 'vue-router'
-
+            Columna               } from "src/models/Tabla"
+  import {  IAcuerdo              } from "src/areas/acuerdos/models/Acuerdo"  
+  //* /////////////////////////////////////////////////////////////////////////////////// Componibles
+  import {  servicesCotizaciones  } from "src/areas/acuerdos/cotizaciones/services/servicesCotizaciones"
+  import {  btnBaseSm             } from "src/useSimpleOk/useEstilos"
+  //* /////////////////////////////////////////////////////////////////////////////////// Componentes
+  import    ventana                 from "components/utilidades/Ventana.vue"
+  import    tooltipLineas           from "src/areas/acuerdos/components/Tooltips/TooltipLineas.vue"
+  import    tooltipCotizacion       from "src/areas/acuerdos/cotizaciones/components/tools/TooltipCotizacion.vue"
+    
   const urlDolibarr           = process.env.URL_DOLIBARR
   const { getCotizaciones   } = servicesCotizaciones()
   const router                = useRouter()
@@ -100,18 +104,20 @@
     terceroId: { required: true, type: Number },
   })
   const { terceroId }         = toRefs( props )
-  const cotizaciones          = ref< ICotizacion[] >([])
+  const acuerdos              = ref< IAcuerdo[] >([])
 
   onMounted( buscar )
 
   async function buscar()
   {
-    modo.value          = "buscando"
-    cotizaciones.value  = await getCotizaciones( { idTercero: terceroId.value } )
-    modo.value          = !!cotizaciones.value.length ? "normal" : "sin-resultados"
+    modo.value            = "buscando"
+    acuerdos.value        = await getCotizaciones( { idTercero: terceroId.value } )
+    modo.value            = !!acuerdos.value.length ? "normal" : "sin-resultados"
   }
 
-  const crearCotizacion = ()=> router.push({name: "crearCotizacion" , params: { terceroId: +terceroId.value }}  )
+  function crearCotizacion(){
+    router.push({name: "crearCotizacion2" , params: { terceroId: +terceroId.value }}  )
+  } 
 
 </script>
 <style>

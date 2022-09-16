@@ -141,8 +141,7 @@
   import {  storeToRefs           } from 'pinia'                            
   import {  useStoreAcuerdo       } from 'src/stores/acuerdo'  
 
-  const storeAcuerdo          = useStoreAcuerdo()
-  const { acuerdo           } = storeToRefs(storeAcuerdo)  
+  const { acuerdo           } = storeToRefs( useStoreAcuerdo() )  
   const { esMobil, aviso    } = useTools()
   const { setTitulo         } = servicesCotizaciones()
   const   urlDolibarr         = process.env.URL_DOLIBARR

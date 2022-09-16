@@ -29,8 +29,7 @@ import {  IProductoDoli,
 export function servicesProductos() 
 {
   const { miFetch           } = useFetch()
-  //const storeUser             = useStoreUser()
-  //const { permisos          } = storeToRefs(storeUser)  
+  //const { permisos          } = storeToRefs( useStoreUser() )  
   
   async function buscarProductos( query : IBusquedaProducto ) : Promise< IProductoDoli[] >
   {

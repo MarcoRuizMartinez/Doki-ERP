@@ -122,8 +122,7 @@
   import    ventana                 from "components/utilidades/Ventana.vue"
   import    inputNumber             from "src/components/utilidades/input/InputFormNumber.vue"
 
-  const storeAcuerdo            = useStoreAcuerdo()
-  const { acuerdo, loading    } = storeToRefs(storeAcuerdo)  
+  const { acuerdo, loading    } = storeToRefs( useStoreAcuerdo() )  
   const { editarConAIU,
           editarValorAIU,
           editarConTotal,

@@ -76,7 +76,7 @@ export function useLogin( origen_ : string )
   //* ///////////////////////////////////////////////////////////////////////// Loguin false, esto produce que se cierre la sesion
   function loginToFalse()
   {
-    console.log('loginToFalse: ', "aca hay un problema");
+    console.warn('loginToFalse: ', "aca hay un problema");
     //store.commit( '', false ) // activa el Watch que cierra sesion
   }
 

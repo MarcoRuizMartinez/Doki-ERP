@@ -171,8 +171,7 @@
   const router                    = useRouter()
   let queryURL                    = router.currentRoute.value.query  
   const origenes                  = dexieOrigenesContacto()
-  const storeUser                 = useStoreUser()
-  const { usuario, permisos }     = storeToRefs(storeUser)  
+  const { usuario, permisos }     = storeToRefs( useStoreUser() )  
   const opcionesTotales           = [{value:0, label:'Sin totalizar'},  {value:1, label:'Totalizado'}]
   const opcionesIVA               = [{value:0, label:'Sin IVA'},        {value:1, label:'Con IVA'   }]  
 

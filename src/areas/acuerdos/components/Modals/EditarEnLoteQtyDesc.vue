@@ -61,9 +61,8 @@
 
   const { editarEnLoteQtyYDescu}= useControlProductos()  
 
-  const storeAcuerdo            = useStoreAcuerdo()
   const { grupoElegido,          
-          loading             } = storeToRefs(storeAcuerdo)  
+          loading             } = storeToRefs( useStoreAcuerdo() )  
 
   const descuento               = ref < number >()
   const cantidad                = ref < number >()

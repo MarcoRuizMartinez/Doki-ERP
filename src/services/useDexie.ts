@@ -150,8 +150,7 @@ export function dexieConstantes         ( { cargarSiempre = false, demora = 0 } 
 
 function useDexie( tabla : TABLAS, { cargarSiempre = false, demora = 0 } = paramDefault )
 {
-  const storeApp                  = useStoreApp()  
-  const{ online }                 = storeToRefs( storeApp )
+  const{ online }                 = storeToRefs( useStoreApp() )
   const lista                     = ref< Array < any > >( [] )
   
   //* ///////////////////////////////////////////////////////////////////////// On Mounted

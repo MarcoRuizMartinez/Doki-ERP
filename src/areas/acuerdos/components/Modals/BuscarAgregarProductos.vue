@@ -398,18 +398,17 @@
 
   const emit = defineEmits<{
     (e: 'cerrar',         value: void           ): void
-    (e: 'eliminarLineaId',value: number         ): void
     (e: 'addLineas',      value: ILineaAcuerdo[]): void
   }>()
 
   const tipoVista             = ref<"grilla" | "lista">("grilla")
 
   const { aviso             } = useTools()  
-  const { agregarProductos  } = useControlProductos()
-  const storeAcuerdo          = useStoreAcuerdo()                            
+  const { agregarProductos,
+          borrarLineas      } = useControlProductos()
   const { grupoElegido,
           modales,
-          loading           } = storeToRefs(storeAcuerdo)                              
+          loading           } = storeToRefs( useStoreAcuerdo() )                              
   const busqueda              = ref< string   >("")
   const modo                  = ref< ModosVentana >("esperando-busqueda")
   const categoria             = ref< IProductoCategoria  >( new ProductoCategoria() )
@@ -514,15 +513,28 @@
     if( !producto.activo ) return
 
     if( producto.elegido )
-      emitirBorrarProducto( producto )
+      eliminarLineaDesdeBusqueda( producto )
     else
       agregarProducctosAControl( [ producto ] )
   }
-  function emitirBorrarProducto( producto : IProductoDoli )
+
+  async function eliminarLineaDesdeBusqueda( producto : IProductoDoli  )
   {
-    emit("eliminarLineaId", producto.id)
-    producto.elegido = false
-  }  
+    producto.elegido              = false
+    grupoElegido.value.seleccion  = grupoElegido.value.productos.filter( ( p : ILineaAcuerdo ) => p.id === producto.id)
+    if(!!grupoElegido.value.seleccion.length){
+      borrarLineas( 200 )
+    }
+    /* ///////////// Horribleeeeee
+    const index = grupoElegido.value.productos.findIndex((p )=> p.id === idProducto )
+    grupoElegido.value.productos[index].borrar = true
+    await cambioEnGrupos('borrarLineaFromBusqueda')
+    grupoElegido.value.productos.splice(index, 1)
+    let indexGrupo = acuerdo.value.proGrupos.findIndex( g => g.index === grupoElegido.value.index )
+    acuerdo.value.proGrupos[indexGrupo] = grupoElegido.value
+    */
+  }
+
 
 
 

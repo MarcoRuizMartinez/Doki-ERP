@@ -17,37 +17,58 @@ import {  useTools, pausa       } from "src/useSimpleOk/useTools"
 export function useControlProductos()
 {
   const { aviso               } = useTools()
-  const storeAcuerdo            = useStoreAcuerdo()
   const { apiDolibarr         } = useApiDolibarr()
   const { acuerdo,
           grupoElegido,
           lineaElegida,
           loading,
-          modales             } = storeToRefs(storeAcuerdo)
+          modales             } = storeToRefs( useStoreAcuerdo() )
+
+
+  // * ////////////////////////////////////////////////// Mostrar formulario 
+  function mostrarFormularioLinea( linea : ILineaAcuerdo, grupo : IGrupoLineas ){
+    grupoElegido.value              = grupo
+    grupoElegido.value.seleccion    = []
+    lineaElegida.value              = linea
+    modales.value.formulario        = true
+  }
+
+
+  function mostrarBuscarProductos( grupo : IGrupoLineas )
+  {
+    grupoElegido.value              = grupo
+    grupoElegido.value.seleccion    = []
+    modales.value.añadirProductos   = true
+  }
 
   async function agregarProductos( productoAdd : IProductoDoli[],  cantidad : number, descuento : number )
   {
     if(!productoAdd.length) return
+
     loading.value.añadir      = true
     const productosAñadidos   = LineaAcuerdo.lineasDeProductos( productoAdd.filter(p => p.activo), cantidad, descuento )
+    
+    // let   hayQueCrearSubtotal = false
+    // if(!grupoElegido.value.productos.length) // Quiere decir que no hay productos en ese grupo
+    //   hayQueCrearSubtotal     = true
 
-    if(!!acuerdo.value.id)
+    for (const linea of productosAñadidos)
     {
-      for (const linea of productosAñadidos)
-      {
-        const mayorOrden      = Math.max( ...grupoElegido.value.productos.map( p => p.orden ) )
-        linea.orden           = mayorOrden === -Infinity ? 1 : mayorOrden + 1
-        linea.iva             = acuerdo.value.tercero.aplicaIVA ? +process.env.IVA : 0
+      
+      const mayorOrden        = Math.max( ...grupoElegido.value.productos.map( p => p.orden ) )
+      linea.orden             = mayorOrden === -Infinity ? 1 : mayorOrden + 1
+      linea.iva               = acuerdo.value.tercero.aplicaIVA ? +process.env.IVA : 0
+      if(!acuerdo.value.esEstadoBoceto ) {
         let lineaAPI          = LineaAcuerdo.lineaToLineaApi( linea )
-        let { data, ok }      = await apiDolibarr("crear-linea", "cotizacion", lineaAPI, acuerdo.value.id)
-        if(ok)
-        {
+        let { data, ok }      = await apiDolibarr("crear-linea", "cotizacion", lineaAPI, acuerdo.value.id)        
+        if(ok){
           let newId : number  = !!data ? +data : 0
-          linea.lineaId       = newId
-          linea.destacar( "guardar" )
-          grupoElegido.value.productos.push(linea)
+          linea.lineaId       = newId        
         }
       }
+      
+      linea.destacar( "guardar" )
+      grupoElegido.value.productos.push(linea)      
     }
 
     loading.value.añadir      = false
@@ -57,36 +78,30 @@ export function useControlProductos()
   {
     loading.value.editarLinea   = true
     let lineaForAPI             = LineaAcuerdo.lineaToLineaApi( linea )
-    const estadoBoceto          = acuerdo.value.estado === ESTADO_CTZ.NO_GUARDADO
     let seguir                  = true
-    if(!estadoBoceto){
+    if(!acuerdo.value.esEstadoBoceto){
       let {ok, data}            = await apiDolibarr("editar-linea", "cotizacion", lineaForAPI, acuerdo.value.id )
       seguir                    = ok
-
-      if(ok){                     // Object.assign es para que no pierda la identidad o referencia
-        lineaElegida.value      = Object.assign( lineaElegida.value, linea ) 
-      }
-      else
+      if(!ok){      
+        modalYLoadingOff()               
         return false
+      }
     }
     
-    if(seguir || estadoBoceto)
+    if(seguir || acuerdo.value.esEstadoBoceto)
     {
+      lineaElegida.value        = Object.assign( lineaElegida.value, linea ) // Object.assign es para que no pierda la identidad o referencia
       lineaElegida.value.destacar( "guardar", "ocultar" )
       aviso("positive", "Producto editado")
+      modalYLoadingOff()
     }
 
-    loading.value.editarLinea   = false
-    modales.value.formulario    = false
+    function modalYLoadingOff(){
+      loading.value.editarLinea   = false
+      modales.value.formulario    = false
+    }
+    
     return true
-  }
-
-  // * ////////////////////////////////////////////////// Mostrar formulario 
-  function mostrarFormularioLinea( linea : ILineaAcuerdo, grupo : IGrupoLineas ){
-    grupoElegido.value              = grupo
-    grupoElegido.value.seleccion    = []
-    lineaElegida.value              = linea
-    modales.value.formulario        = true
   }
 
 
@@ -100,44 +115,53 @@ export function useControlProductos()
     if(!!index)
       aviso("positive", "Nuevo grupo creado")
     await pausa(200) // Para darle tiempo que el virtual DOM genere el nuevo espacio y calcule el nuevo alto del documento
-    console.log("window.scrollTo")
+    //console.log(Maco"window.scrollTo")
     window.scrollTo({ top: document.body.scrollHeight,  behavior: 'smooth'})
   }
 
 
   async function borrarLinea( lineaBorrar : ILineaAcuerdo, enLote = false, retrasoBorrar = 1200 ) :Promise<boolean>
   {
-    //lineaElegida.value.accion = "borrar"
     lineaBorrar.accion        = "borrar"
     loading.value.borrarLinea = true
 
-    const estadoBoceto        = acuerdo.value.estado === ESTADO_CTZ.NO_GUARDADO
     let seguir                = true
     let info  : any
-    if(!estadoBoceto){
+
+    if(!acuerdo.value.esEstadoBoceto){
       let {ok, data}          = await apiDolibarr("borrar-lineas", "cotizacion", lineaBorrar.lineaId, acuerdo.value.id /* lineaElegida.value.padreId */ )
       seguir                  = ok
       info                    = data
 
-      if(!ok) return false
+      if(!ok){ 
+        console.error('Error al eliminar linea: ', info)        
+        modalYLoadingOff()
+        return false
+      }
     }
 
-    if(seguir || estadoBoceto){
-      if(!enLote) aviso("positive", "Producto borrado")
+    if((seguir || acuerdo.value.esEstadoBoceto) && !enLote ){
+      aviso("positive", "Producto borrado")
     }
-    else
-      console.error('Error al eliminar linea: ', info)
 
-    loading.value.borrarLinea   = false
-    modales.value.formulario    = false
+    ocultarLineaBorrada()
+    modalYLoadingOff()
 
-    let i                       = grupoElegido.value.productos.findIndex( (p:any) => p.orden == lineaBorrar.orden )
-    setTimeout( ( index = i )=>
-    {
-        grupoElegido.value.productos.splice(index, 1)
-        if(!enLote)
-          grupoElegido.value.seleccion = []
-      }, retrasoBorrar )
+    function ocultarLineaBorrada(){
+      let i                       = grupoElegido.value.productos.findIndex( (p:any) => p.orden == lineaBorrar.orden )
+      setTimeout( ( index = i )=>
+      {
+          grupoElegido.value.productos.splice(index, 1)
+          if(!enLote)
+            grupoElegido.value.seleccion = []
+        }, retrasoBorrar )
+    }
+
+    function modalYLoadingOff(){
+      loading.value.borrarLinea   = false
+      modales.value.formulario    = false
+    }      
+
 
     return true
   }
@@ -158,7 +182,12 @@ export function useControlProductos()
   }
 
   async function editarCantidad( linea : ILineaAcuerdo ) {
-    if(acuerdo.value.estado     === ESTADO_CTZ.NO_GUARDADO) return
+    
+    if(acuerdo.value.esEstadoBoceto){
+      linea.destacar("guardar", "ocultar")
+      return
+    }
+
     const objecto               = { qty: linea.qty, id: linea.lineaId }
     let {ok}                    = await apiDolibarr("editar-linea", "cotizacion", objecto, acuerdo.value.id )
     if(ok){
@@ -168,12 +197,14 @@ export function useControlProductos()
   }
 
   async function editarDescuento( linea : ILineaAcuerdo ) {
-    if(acuerdo.value.estado     === ESTADO_CTZ.NO_GUARDADO) return
+    if(acuerdo.value.esEstadoBoceto) {
+      linea.destacar("guardar", "ocultar")
+      return
+    }    
     const objecto               = { remise_percent: linea.descuentoX100, id: linea.lineaId }
     let {ok}                    = await apiDolibarr("editar-linea", "cotizacion", objecto, acuerdo.value.id )
     if(ok){
-      aviso("positive", "Descuento cambiado")
-      linea.destacar("guardar", "ocultar")
+      aviso("positive", "Descuento cambiado")      
     }
   }
 
@@ -198,6 +229,8 @@ export function useControlProductos()
     loading.value.editarLote  = true
     for (const linea of grupoElegido.value.seleccion)
     {
+ 
+
       if(!!cantidad)
         linea.qty             = cantidad
 
@@ -209,6 +242,11 @@ export function useControlProductos()
           linea.descuentoX100 = descuento
       }
 
+      if(acuerdo.value.esEstadoBoceto) {
+        linea.destacar("guardar", "ocultar")
+        continue
+      }   
+      else      
       if(descuento !== undefined || !!cantidad)
       {
         let lineaAPI          = LineaAcuerdo.lineaToLineaApi( linea )
@@ -223,6 +261,26 @@ export function useControlProductos()
     modales.value.editarEnLote  = false
     aviso("positive", grupoElegido.value.seleccion.length === 1 ? "Producto editado" : "Productos editados")
   }
+
+
+  function destacarLineaElegida( mostrarForm : boolean )
+  {
+    if(mostrarForm)
+      lineaElegida.value.destacar( "seleccionar" )
+    else
+    {
+      if(lineaElegida.value.accion === "borrar")
+        lineaElegida.value.destacar( "borrar", "ocultar")
+      else {
+        lineaElegida.value.destacar( "no-destacar" )
+        lineaElegida.value          = new LineaAcuerdo()
+      }
+    }
+  }
+
+
+
+
   //* /////////////////////////////////////////////////////////////// Return
   return {
     agregarProductos,
@@ -234,6 +292,8 @@ export function useControlProductos()
     editarDescuento,
     editarSubTotales,
     editarEnLoteQtyYDescu,
-    mostrarFormularioLinea
+    mostrarFormularioLinea,
+    mostrarBuscarProductos,
+    destacarLineaElegida
   }
 }

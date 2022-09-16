@@ -15,7 +15,7 @@
     </transition>
     <div class                ="col-md-6 col-12 row q-col-gutter-sm">
       <contactos
-        v-if                  ="storeUser.permisos.contactos_ver"
+        v-if                  ="permisos.contactos_ver"
         class                 ="col-12"
         height-card           ="210px"
         :tercero-id           ="tercero.id ?? 0"
@@ -23,7 +23,7 @@
       />
       <efecto efecto          ="Down">
         <cotizaciones
-          v-if                ="storeUser.permisos.cotizar_ver && tercero.esCliente"
+          v-if                ="permisos.cotizar_ver && tercero.esCliente"
           class               ="col-12"
           height-card         ="210px"
           :tercero-id         ="tercero.id ?? 0"
@@ -54,30 +54,39 @@
 </template>
 
 <script setup lang="ts">
+  //* ///////////////////////////////////////////////////////////////////////////////////// Core
   import {  ref,
             toRefs,
             provide,
             computed,
             onMounted,
-                            } from "vue"
-  import {  useRouter       } from 'vue-router'
-  import  formularioTercero   from "src/areas/terceros/components/formularioTercero/FormularioTercero.vue"
-  import  contactos           from "src/areas/terceros/components/contactos/ModuloContactos.vue"
-  import  notas               from "src/areas/terceros/components/helper/ModuloNotasTercero.vue"
-  import  documentos          from "src/components/archivos/ModuloArchivos.vue"
-  import  cotizaciones        from "src/areas/acuerdos/cotizaciones/components/modules/ModuloCotizacionesTercero.vue"
-  import {  servicesTerceros     } from "src/areas/terceros/services/servicesTerceros"
+                              } from "vue"
+  import {  useRouter         } from 'vue-router'
+  import {  useTitle          } from '@vueuse/core'
+
+  // * /////////////////////////////////////////////////////////////////////////////////// Store
+  import {  storeToRefs     } from 'pinia'
   import {  useStoreUser    } from 'src/stores/user'
-  import {  useTools,
-            ID_URL_Ok       } from "src/useSimpleOk/useTools"
+  import {  useStoreAcuerdo } from 'src/stores/acuerdo'    
+  //* ///////////////////////////////////////////////////////////////////////////////////// Modelos
   import {  ITercero,
             Tercero,
-                            } from "src/areas/terceros/models/Tercero"
-  import    efecto            from "components/utilidades/Efecto.vue"
-  import {  useTitle        } from '@vueuse/core'
+                              } from "src/areas/terceros/models/Tercero"  
+  //* ///////////////////////////////////////////////////////////////////////////////////// Componibles
+  import {  servicesTerceros  } from "src/areas/terceros/services/servicesTerceros"
+  import {  useTools,
+            ID_URL_Ok         } from "src/useSimpleOk/useTools"  
+  //* ///////////////////////////////////////////////////////////////////////////////////// Componentes
+  import  efecto                from "components/utilidades/Efecto.vue"  
+  import  documentos            from "components/archivos/ModuloArchivos.vue"
+  import  contactos             from "src/areas/terceros/components/contactos/ModuloContactos.vue"
+  import  notas                 from "src/areas/terceros/components/helper/ModuloNotasTercero.vue"
+  import  formularioTercero     from "src/areas/terceros/components/formularioTercero/FormularioTercero.vue"
+  import  cotizaciones          from "src/areas/acuerdos/cotizaciones/components/modules/ModuloCotizacionesTercero.vue"  
 
-  const storeUser             = useStoreUser()
-
+ 
+  const { usuario, permisos } = storeToRefs( useStoreUser() )
+  const { acuerdo           } = storeToRefs( useStoreAcuerdo() )
   const router                = useRouter()
   const { aviso             } = useTools()
   const tercero               = ref<ITercero>(new Tercero())
@@ -89,13 +98,13 @@
   const { id }                = toRefs( props )
   const cargando              = ref< boolean >(false)
   const title                 = useTitle( "🏪 Cargando..." )
-  const usuarioEsDueño        = computed( () =>{ return tercero.value.responsables.some( r => r.id == storeUser.usuario.id ) })
+  const usuarioEsDueño        = computed( () =>{ return tercero.value.responsables.some( r => r.id == usuario.value.id ) })
   const puedeModificar        = computed( () =>{
                                   if
                                   (
-                                    storeUser.permisos.terceros_crear
+                                    permisos.value.terceros_crear
                                     &&
-                                    ( usuarioEsDueño.value || storeUser.permisos.acceso_total )
+                                    ( usuarioEsDueño.value || permisos.value.acceso_total )
                                   )
                                     return true
                                   else
@@ -121,6 +130,7 @@
   {
     cargando.value            = true
     tercero.value             = await buscarTercero( id_ )
+    acuerdo.value.tercero     = tercero.value
 
     if(!!tercero.value.id)
     {
@@ -140,9 +150,9 @@
   {
     if
     (
-      ( tercero.value.esProveedor   && !storeUser.permisos.terceros_ver_proveedor )
+      ( tercero.value.esProveedor   && !permisos.value.terceros_ver_proveedor )
       ||
-      ( !usuarioEsDueño.value       && !storeUser.permisos.acceso_total && tercero.value.esCliente && !tercero.value.esProveedor )
+      ( !usuarioEsDueño.value       && !permisos.value.acceso_total && tercero.value.esCliente && !tercero.value.esProveedor )
     )
     {
       router.push("/error")

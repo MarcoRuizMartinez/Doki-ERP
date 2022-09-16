@@ -68,16 +68,13 @@
   import    condiciones             from "src/areas/acuerdos/components/CondicionesCotizacion.vue" 
   import    productos               from "src/areas/acuerdos/components/ProductosAcuerdo.vue"
 
-  const storeAcuerdo          = useStoreAcuerdo()
   const { acuerdo,
-          loading           } = storeToRefs(storeAcuerdo)  
-
+          loading           } = storeToRefs( useStoreAcuerdo() )  
+  const { usuario, permisos } = storeToRefs( useStoreUser() )  
   
   const { generarPDF,
-          guardarPDF        } = useCotizacionPDF()
+          guardarPDF        } = useCotizacionPDF()  
   
-  const storeUser             = useStoreUser()
-  const { usuario, permisos } = storeToRefs(storeUser)  
   const router                = useRouter()
 
   const { buscarCotizacion,

@@ -32,8 +32,7 @@
   import    efecto            from "components/utilidades/Efecto.vue"
   import    confirmar         from "components/utilidades/MenuConfirmar.vue"
 
-  const storeAcuerdo          = useStoreAcuerdo()
-  const { loading           } = storeToRefs(storeAcuerdo)    
+  const { loading           } = storeToRefs( useStoreAcuerdo() )    
   const props                 = defineProps({
     largo: { required: true,   type: Number  },
   })

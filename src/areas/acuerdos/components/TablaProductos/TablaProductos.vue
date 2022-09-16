@@ -4,7 +4,7 @@
     table-header-class          ="bg-gris text-grey-10"
     row-key                     ="orden"
     class                       ="tabla-maco font-md"
-    :selection                  ="acuerdo.estado === ESTADO_CTZ.BORRADOR ? 'multiple' : 'none'"
+    :selection                  ="acuerdo.esEstadoNoValidado ? 'multiple' : 'none'"
     :class                      ="$attrs.class"
     :rows                       ="grupo.productos"
     :columns                    ="columnas"
@@ -27,12 +27,12 @@
         <div class              ="w-600px row">
           <!-- //* //////////////////////////////////////////////////////// Imagen -->
           <imagen-producto
-            class               ="col-2"
+            class               ="col-shrink q-mr-sm"
             :linea              ="(props.row as LineaAcuerdo)"
           />
           <!-- //* //////////////////////////////////////////////////////// Nombre-->
           <nombre-descripcion
-            class               ="col-8"
+            class               ="col"
             :linea              ="(props.row as LineaAcuerdo)"
             @click              ="mostrarFormulario( props.row as LineaAcuerdo )"
           />
@@ -117,11 +117,10 @@
   const { borrarLineas,
           mostrarFormularioLinea
                               } = useControlProductos()
-  const storeAcuerdo            = useStoreAcuerdo()
   const { acuerdo,
           grupoElegido,
           modales,
-          lineaElegida        } = storeToRefs(storeAcuerdo)
+          lineaElegida        } = storeToRefs( useStoreAcuerdo() )
   const props                   = defineProps({
     grupo:      { required: true,   type: Object as PropType< IGrupoLineas >  },
   })

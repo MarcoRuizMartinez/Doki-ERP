@@ -96,8 +96,7 @@
   import    selectLabelValue        from "components/utilidades/select/SelectLabelValue.vue"
   import    fechaVencimiento        from "src/areas/acuerdos/cotizaciones/components/tools/FechaValidezCtz.vue"
 
-  const storeAcuerdo                = useStoreAcuerdo()
-  const { acuerdo, loading        } = storeToRefs(storeAcuerdo)
+  const { acuerdo, loading        } = storeToRefs( useStoreAcuerdo() )
   //* //////////////////////      ///////////////////////////////////////// Tablas Dexie
   const condicPago                  = dexieCondicionesPago()
   const formadPago                  = dexieFormasPago()

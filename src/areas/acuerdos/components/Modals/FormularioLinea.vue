@@ -186,10 +186,9 @@
     (e: 'cerrar',               value: void ): void
     (e: 'borrar',               value: void ): void
   }>() */
-  const storeAcuerdo            = useStoreAcuerdo()
   const { acuerdo,
           loading,          
-          lineaElegida        } = storeToRefs(storeAcuerdo)
+          lineaElegida        } = storeToRefs( useStoreAcuerdo() )
 
 
   const linea                   = ref< ILineaAcuerdo >( Object.assign( new LineaAcuerdo(), lineaElegida.value ) )

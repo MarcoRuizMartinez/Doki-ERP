@@ -31,7 +31,7 @@
     <select-tercero
       class                   ="col-12"
       v-model:tercero         ="acuerdo.tercero"
-      :readonly               ="acuerdo.estado > ESTADO_CTZ.BORRADOR || acuerdo.vinculado"
+      :readonly               ="acuerdo.esEstadoValidado || acuerdo.vinculado"
       @update:tercero         ="actualizarTercero"
     />
     <!-- //* ///////////////////////////////////////////////// Contacto -->
@@ -78,7 +78,7 @@
 <script setup lang="ts">
   //* ///////////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs           } from 'pinia'                            
-  import {  useStoreAcuerdo       } from '../../../stores/acuerdo'  
+  import {  useStoreAcuerdo       } from 'stores/acuerdo'  
   //* ///////////////////////////////////////////////////////////////////////////// Componibles
   import {  dexieOrigenesContacto } from "../../../services/useDexie"
   import {  useControlCotizacion  } from "src/areas/acuerdos/controllers/ControlCotizaciones"  
@@ -93,8 +93,7 @@
   import    tooltipTercero          from "src/areas/terceros/components/TooltipTerceros.vue"
   import    selectContacto          from "src/areas/terceros/components/contactos/SelectContacto.vue"
 
-  const storeAcuerdo                = useStoreAcuerdo()
-  const { acuerdo, loading        } = storeToRefs(storeAcuerdo)  
+  const { acuerdo, loading        } = storeToRefs( useStoreAcuerdo() )  
   const { actualizarTercero,
           editarOrigen,
           editarRefCliente,

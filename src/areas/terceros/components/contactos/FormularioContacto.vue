@@ -201,8 +201,7 @@
 
   const { dialog            } = useQuasar()
   const { apiDolibarr       } = useApiDolibarr()
-  const storeUser             = useStoreUser()
-  const { permisos          } = storeToRefs(storeUser)
+  const { permisos          } = storeToRefs( useStoreUser() )
   const { aviso             } = useTools()
   const contacto              = ref<IContacto>(new Contacto())
   const cargando              = ref< boolean >(false)
