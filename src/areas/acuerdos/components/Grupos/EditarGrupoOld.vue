@@ -1,12 +1,12 @@
 <template>
   <div
-    v-if              ="acuerdo.proGrupos.length > 1"
+    v-if              ="cotizacion.proGrupos.length > 1"
     class             ="w-320px"
     >
     <!-- //* /////////////////////////////////////////////////////// Tres puntos -->
     <div>
       <q-icon
-        v-if          ="acuerdo.estado === ESTADO_CTZ.BORRADOR" 
+        v-if          ="cotizacion.estado === ESTADO_CTZ.BORRADOR" 
         name          ="mdi-dots-vertical"
         size          ="xs"
         class         ="cursor-pointer"
@@ -16,7 +16,7 @@
     </div>
     <!-- //* /////////////////////////////////////////////////////// Popup Edit nombre -->
     <q-popup-edit     auto-save fit 
-      v-if            ="acuerdo.estado === ESTADO_CTZ.BORRADOR" 
+      v-if            ="cotizacion.estado === ESTADO_CTZ.BORRADOR" 
       v-model         ="grupo.titulo"
       v-slot          ="scope"
       class           ="row panel-blur70 q-col-gutter-xs"
@@ -55,7 +55,7 @@
           v-bind      ="btnFlatSm"
           class       ="full-width col-6"
           icon        ="mdi-menu-down"
-          :disable    ="grupo.index == acuerdo.proGrupos.length-1"
+          :disable    ="grupo.index == cotizacion.proGrupos.length-1"
           @click      ="moverGrupo( grupo.index, 'bajar' )"
           >
           <Tooltip>Bajar grupo</Tooltip>
@@ -116,7 +116,6 @@
                               } from "vue"
   import {  ICotizacion,
             ESTADO_CTZ        } from "src/areas/acuerdos/cotizaciones/models/Cotizacion"
-  import {  Acuerdo, IAcuerdo } from "src/areas/acuerdos/models/Acuerdo"
   import {  IGrupoLineas      } from "src/areas/acuerdos/models/GrupoLineasAcuerdo"
   import {  useTools          } from "src/useSimpleOk/useTools"
   import {  useApiDolibarr    } from "src/services/useApiDolibarr"
@@ -124,10 +123,6 @@
             btnFlatSm         } from "src/useSimpleOk/useEstilos"
   import {  mayusculasPrimeraLetra
                             } from "src/useSimpleOk/useTools"
-                            import {  storeToRefs       } from 'pinia'
-  import {  useStoreAcuerdo   } from 'src/stores/acuerdo'
-
-  const { acuerdo             } = storeToRefs( useStoreAcuerdo() )  
 
   const cargandoMenuGrupo       = ref< boolean >( false )
   const { apiDolibarr         } = useApiDolibarr()
@@ -142,15 +137,17 @@
 //@click="borrarGrupo(grupo, 'borrar')"    
   }>()
   const props                   = defineProps({
+    cotizacion: { required: true, type: Object as PropType< ICotizacion > },
     grupo:      { required: true, type: Object as PropType< IGrupoLineas > },
   })
+  const { cotizacion }          = toRefs( props )
 
   async function editarTituloGrupo( nuevoTitulo :string , grupo : IGrupoLineas )
   {
     grupo.titulo            = mayusculasPrimeraLetra( nuevoTitulo ).trim()
     cargandoMenuGrupo.value = true
     let lineaEdit           = { id: grupo.lineaIdTitulo, label: grupo.titulo }
-    let {ok, data}          = await apiDolibarr("editar-linea", "cotizacion", lineaEdit, acuerdo.value.id)
+    let {ok, data}          = await apiDolibarr("editar-linea", "cotizacion", lineaEdit, cotizacion.value.id)
     if(!ok) aviso("negative", "Error al cambiar nombre de grupo")
     cargandoMenuGrupo.value = false
   }
@@ -158,9 +155,9 @@
   function moverGrupo( index: number, accion: "subir" | "bajar" )
   {
     let ope                     = accion == "subir" ? -1 : 1
-    acuerdo.value.proGrupos[ index      ].index = index + ope
-    acuerdo.value.proGrupos[ index + ope].index = index
-    acuerdo.value.proGrupos  = acuerdo.value.proGrupos.sort ( ( a : IGrupoLineas, b : IGrupoLineas ) =>
+    cotizacion.value.proGrupos[ index      ].index = index + ope
+    cotizacion.value.proGrupos[ index + ope].index = index
+    cotizacion.value.proGrupos  = cotizacion.value.proGrupos.sort ( ( a : IGrupoLineas, b : IGrupoLineas ) =>
                                   {
                                     if(a.index < b.index) return -1
                                     if(a.index > b.index) return 1

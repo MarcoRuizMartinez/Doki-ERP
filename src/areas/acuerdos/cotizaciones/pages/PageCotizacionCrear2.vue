@@ -59,8 +59,9 @@
 
   // * /////////////////////////////////////////////////////////////////////////////////// Componibles
   import {  btnBaseMd             } from "src/useSimpleOk/useEstilos"
+  import {  useControlCotizacion  } from "src/areas/acuerdos/controllers/ControlCotizaciones"  
+  import {  useControlProductos   } from "src/areas/acuerdos/controllers/ControlLineasProductos"  
   import {  useCotizacionPDF      } from "src/areas/acuerdos/cotizaciones/composables/useCotizacionPDF"
-  import {  useControlCotizacion  } from "src/areas/acuerdos/controllers/ControlCotizaciones"
 
   // * /////////////////////////////////////////////////////////////////////////////////// Componentes
   import    barra                   from "components/utilidades/Barra.vue"
@@ -81,6 +82,7 @@
   // const router                = useRouter()
   const { generarPDF        } = useCotizacionPDF()
   const { crearCotizacion   } = useControlCotizacion()
+  const { crearNuevoGrupo   } = useControlProductos()
   const { usuario           } = storeToRefs( useStoreUser() )  
   // const cotizacion            = ref< ICotizacion  >( new Cotizacion() )
   const ventanaPDF            = ref< boolean  >(false)
@@ -89,6 +91,8 @@
   onMounted(()=>{
     acuerdo.value.esNuevo     = true
     acuerdo.value.estado      = ESTADO_CTZ.NO_GUARDADO
+    if(!acuerdo.value.proGrupos.length)
+      crearNuevoGrupo()
   })
   //* /////////////////////////////////////////////////////////////// Props
   const props                 = defineProps({

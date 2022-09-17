@@ -159,6 +159,8 @@ export interface IAcuerdo
   totalConIva:                number
 
   vinculado:                  boolean     // Tiene un vinculo con otro elemento en dolibarr como facturas o pedidos
+  puedeCrearSubtotal:         boolean
+  puedeCrearNuevoGrupo:       boolean
 
   /* Solo para cotizaciones */
   titulo:                     string
@@ -170,8 +172,9 @@ export interface IAcuerdo
   pdfContacto:                string
   pdfCorreo:                  string
   pdfCiudad:                  string
-  esTerceroCtz:               boolean
+  esTerceroCtz:               boolean  
   getCotizacionForApi:        ( usuarioId : number ) => any
+  reorganizarLineas:          () => void
 }
 
 export class Acuerdo implements IAcuerdo
@@ -265,6 +268,21 @@ export class Acuerdo implements IAcuerdo
     this.conTotal             = true
   }
 
+
+  reorganizarLineas()
+  {
+    let orden                 = 0
+    for (const grupo of this.proGrupos)
+    {
+      if(grupo.tituloCreado)  orden++
+      for (const linea of grupo.productos){
+        orden++
+        linea.orden           = orden
+      }
+
+      if(grupo.totalCreado)   orden++
+    }
+  }
 
   // * /////////////////////////////////////////////////////////////////////////////// Total sin descuento
   get totalSinDescu() :number {
@@ -373,6 +391,15 @@ export class Acuerdo implements IAcuerdo
                                 : ""
     return valor
   }
+
+  get puedeCrearSubtotal():boolean{
+    return this.proGrupos.length > 1 && !!this.proGrupos[1].productos.length
+  }
+
+  get puedeCrearNuevoGrupo():boolean{
+    const i     = this.proGrupos.length - 1
+    return i < 0 ? true : this.proGrupos[i].productos.length > 0
+  }  
 
   // * /////////////////////////////////////////////////////////////////////////////// Color
   get estadoColor(): string { return estadoCtzToColor(this.estado) }
@@ -558,7 +585,7 @@ export class Acuerdo implements IAcuerdo
                                   return 0;
                                 })
         if(ctz.productos.length > 0)
-          ctz.proGrupos       = GrupoLineas.productosAgrupoDeProductos( ctz.productos )     
+          ctz.proGrupos       = GrupoLineas.getGruposDesdeProductos( ctz.productos )     
     return ctz
   }
 }

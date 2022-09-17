@@ -325,6 +325,7 @@ export function servicesCotizaciones()
 
   async function ordenarLineas( ids : string, padreId : number  ) : Promise< boolean >
   {
+    if(!ids) return true
     let obj           = { ids: ids, padreId: padreId }
 
     return new Promise( async (resolver, rechazar ) =>

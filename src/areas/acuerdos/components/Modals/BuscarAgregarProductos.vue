@@ -146,7 +146,7 @@
                 transition-hide ="jump-up"                
                 >
                 <div class      ="q-pa-lg filtro-panel bg-gris">
-                  <input-buscar autofocus hundido clearable
+                  <input-buscar hundido clearable
                     v-model     ="filtro"
                     label       ="Filtrar.."
                     icon        ="mdi-magnify"
@@ -449,7 +449,7 @@
 
   async function agregarProducctosAControl( productoAdd : IProductoDoli[] )
   {
-    await agregarProductos(productoAdd, cantidad.value, descuento.value)
+    await agregarProductos(productoAdd, cantidad.value) /* descuento.value */
     buscarSiProductosEstanEnGrupo()
     seleccion.value           = []
     aviso(  "positive",

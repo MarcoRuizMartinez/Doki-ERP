@@ -106,6 +106,8 @@ export interface ILoading {
   editarLinea     ?: boolean
   editarLote      ?: boolean
   borrarLote      ?: boolean
+  editarGrupo     ?: boolean
+  subtotal        ?: boolean
 }
 
 export const LoadingDefault = {
@@ -135,6 +137,8 @@ export const LoadingDefault = {
   editarLinea     : false,
   editarLote      : false,
   borrarLote      : false,
+  editarGrupo     : false,
+  subtotal        : false,
 }
 
 

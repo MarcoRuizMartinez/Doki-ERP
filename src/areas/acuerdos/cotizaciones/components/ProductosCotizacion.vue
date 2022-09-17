@@ -148,7 +148,7 @@
   function actualizarArrayGrupos( lineas : ILineaAcuerdo[] )
   {
     if(lineas.length > 0)
-      acuerdo.value.proGrupos  = GrupoLineas.productosAgrupoDeProductos( lineas )
+      acuerdo.value.proGrupos  = GrupoLineas.getGruposDesdeProductos( lineas )
     else 
       crearNuevoGrupo()
   }
@@ -175,7 +175,7 @@
 
   async function cambioEnGrupos( origen : SourcesEdit = "otrosOrigenes" )
   {
-    acuerdo.value.productos      = GrupoLineas.deGruposAProductos( acuerdo.value.proGrupos )
+    acuerdo.value.productos      = GrupoLineas.getProductosDesdeGrupos( acuerdo.value.proGrupos )
 
     if(!!acuerdo.value.id)
     {

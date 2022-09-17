@@ -188,18 +188,51 @@ export class ProductoDoli implements IProductoDoli
   }
 
   get activo() :boolean {
-    return (this.activo_proveedor && this.disponible && this.en_venta) || this.esRefEspecial
+    return  (
+              this.activo_proveedor && this.disponible && this.en_venta
+            )
+            || this.esRefEspecial
   }
 
 
   get esRefEspecial() : boolean {
-    return  this.ref.includes("TRAN-") ||
+    return  this.ref.includes("-ITEM") ||
+            this.ref.includes("ADC-")  ||
+            this.ref.includes("CABL-") ||
+            this.ref.includes("CANT-") ||
+            this.ref.includes("CERR-") ||
+            this.ref.includes("CIER-") ||
+            this.ref.includes("CORT-") ||
+            this.ref.includes("DI-")   ||
+            this.ref.includes("DIAP-") ||
+            this.ref.includes("DID-")  ||
+            this.ref.includes("DIMA-") ||
+            this.ref.includes("DIMI-") ||
+            this.ref.includes("DIMO-") ||
+            this.ref.includes("DISÑ-") ||
+            this.ref.includes("DIVR-") ||
+            this.ref.includes("DUCT-") ||
             this.ref.includes("EMBA-") ||
-            this.ref.includes("TELA-") ||
-            this.ref.includes("TAPZ-") ||
+            this.ref.includes("FINC-") ||
             this.ref.includes("INST-") ||
+            this.ref.includes("LUZ-")  ||
             this.ref.includes("MANT-") ||
-            this.ref.includes("SERV-")
+            this.ref.includes("MURO-") ||
+            this.ref.includes("OBRA-") ||
+            this.ref.includes("PANE-") ||
+            this.ref.includes("PINT-") ||
+            this.ref.includes("PISO-") ||
+            this.ref.includes("PUER-") ||
+            this.ref.includes("RED-")  ||
+            this.ref.includes("REPR-") ||
+            this.ref.includes("REUB-") ||
+            this.ref.includes("SERV-") ||
+            this.ref.includes("TAPZ-") ||
+            this.ref.includes("TECH-") ||
+            this.ref.includes("TELA-") ||
+            this.ref.includes("TOOL-") ||
+            this.ref.includes("TRAN-") ||
+            this.ref.includes("VIAT-")
   }  
 
   static async productoAPItoProducto( productoApi : any ) : Promise<IProductoDoli>

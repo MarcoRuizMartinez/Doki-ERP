@@ -9,6 +9,7 @@
     :rows                       ="grupo.productos"
     :columns                    ="columnas"
     :rows-per-page-options      ="[200, 400]"
+    @selection                  ="seleccionarLineas(grupo)"
     >
     <!-- //* ////////////////////////////////////////////////////////////// Botones editar en lote seleccion -->
     <template                   #header-cell-ref="props">
@@ -86,7 +87,10 @@
     </template>
     <!-- //* ////////////////////////////////////////////////////////////// Footer activar subtotal -->
     <template                   #bottom>
-      <subtotal-toggle :grupo   ="grupo" />
+      <subtotal-toggle
+        :grupo                  ="grupo"
+        :disable                ="!acuerdo.puedeCrearSubtotal"
+      />
     </template>
   </q-table>
 </template>
@@ -97,7 +101,6 @@
   import {  storeToRefs       } from 'pinia'
   import {  useStoreAcuerdo   } from 'src/stores/acuerdo'
   // ////////////////////////////////////////////////////////////////////// Models
-  import {  ESTADO_CTZ        } from "src/areas/acuerdos/cotizaciones/models/Cotizacion"
   import {  IGrupoLineas      } from "src/areas/acuerdos/models/GrupoLineasAcuerdo"
   import {  ILineaAcuerdo,
             LineaAcuerdo      } from "src/areas/acuerdos/models/LineaAcuerdo"
@@ -115,12 +118,12 @@
   import    descuento           from "./Columnas/Descuento.vue"
 
   const { borrarLineas,
+          seleccionarLineas,
           mostrarFormularioLinea
                               } = useControlProductos()
   const { acuerdo,
           grupoElegido,
-          modales,
-          lineaElegida        } = storeToRefs( useStoreAcuerdo() )
+          modales             } = storeToRefs( useStoreAcuerdo() )
   const props                   = defineProps({
     grupo:      { required: true,   type: Object as PropType< IGrupoLineas >  },
   })
@@ -128,17 +131,16 @@
   const columnas: IColumna[]    = [
     new Columna           ({ name: "ref",           label: "Productos", sortable: false }),
     new Columna           ({ name: "qtyUnd",        label: "Cant",      sortable: false,  align: "right"}),
+    //new Columna           ({ name: "orden",                             sortable: false }),
     Columna.ColumnaPrecio ({ name: "precioBase",    label: "Precio",    sortable: false,  clase: "text-grey-7"  }),
     Columna.ColumnaX100   ({ name: "descuentoX100", label: "Descu",     sortable: false  }),
     Columna.ColumnaPrecio ({ name: "precioFinal",   label: "$ Final",   sortable: false  }),
     Columna.ColumnaPrecio ({ name: "totalConDescu", label: "Total",     sortable: false,  clase: "text-bold"    }),
   ]
 
-  function mostrarFormulario( linea : ILineaAcuerdo )
-  {
+  function mostrarFormulario( linea : ILineaAcuerdo ){
     mostrarFormularioLinea( linea, grupo.value )
   }
-
 
   // * ////////////////////////////////////////////////// Activar edicion en lote
   function activarEdicionEnLote(){
@@ -151,28 +153,6 @@
     grupoElegido.value              = grupo.value
     borrarLineas()
   }
-
-
-
-/*
-  function lineaEditada( lineaModificada : ILineaAcuerdo )
-  {
-    let i                           = grupo.value.productos.findIndex( p => p.orden == lineaModificada.orden )
-    grupo.value.productos[i] = lineaModificada
-    emitir()
-  }
-
-  function editarVariosOk()
-  {
-    ventanaEditarVarios.value   = false
-    emitir()
-  }
-
-  function emitir()
-  {
-    emit("update:grupo", grupo.value)
-  }
-*/
 </script>
 <style>
 .w-600px{

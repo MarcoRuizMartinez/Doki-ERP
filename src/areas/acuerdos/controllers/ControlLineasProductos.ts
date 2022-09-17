@@ -1,8 +1,9 @@
 // * //////////////////////////////////////////////////////////////////////////////// Store
 import {  storeToRefs           } from 'pinia'
 import {  useStoreAcuerdo       } from 'src/stores/acuerdo'
-// * //////////////////////////////////////////////////////////////////////////////// Servicios
+// * //////////////////////////////////////////////////////////////////////////////// Componibles
 import {  useApiDolibarr        } from "src/services/useApiDolibarr"
+import {  servicesCotizaciones  } from "src/areas/acuerdos/cotizaciones/services/servicesCotizaciones"
 // * //////////////////////////////////////////////////////////////////////////////// Modelos
 import {  IProductoDoli         } from "src/areas/productos/models/ProductoDolibarr"
 import {  IGrupoLineas,
@@ -10,13 +11,13 @@ import {  IGrupoLineas,
 import {  LineaAcuerdo,
           ILineaAcuerdo         } from "src/areas/acuerdos/models/LineaAcuerdo"
 // * //////////////////////////////////////////////////////////////////////////////// Tools
-import {  ESTADO_CTZ            } from "../models/Acuerdo"
-import {  useTools, pausa       } from "src/useSimpleOk/useTools"
-
+import {  useTools,
+          pausa                 } from "src/useSimpleOk/useTools"
 
 export function useControlProductos()
 {
   const { aviso               } = useTools()
+  const { ordenarLineas       } = servicesCotizaciones()
   const { apiDolibarr         } = useApiDolibarr()
   const { acuerdo,
           grupoElegido,
@@ -33,46 +34,93 @@ export function useControlProductos()
     modales.value.formulario        = true
   }
 
-
-  function mostrarBuscarProductos( grupo : IGrupoLineas )
-  {
+  function mostrarBuscarProductos( grupo : IGrupoLineas ){
     grupoElegido.value              = grupo
     grupoElegido.value.seleccion    = []
     modales.value.añadirProductos   = true
   }
 
-  async function agregarProductos( productoAdd : IProductoDoli[],  cantidad : number, descuento : number )
+  async function deGruposAProductos(){
+    await borrarGruposSinProductos()
+    acuerdo.value.reorganizarLineas()
+    acuerdo.value.productos         = GrupoLineas.getProductosDesdeGrupos( acuerdo.value.proGrupos )
+    if(!acuerdo.value.esEstadoBoceto){
+      ordenarLineasEnDolibarr()
+    }
+
+    if(!acuerdo.value.proGrupos.length)
+      crearNuevoGrupo()
+  }
+
+  async function ordenarLineasEnDolibarr()
   {
-    if(!productoAdd.length) return
+    let ids = acuerdo.value.productos.map( p => p.lineaId ).join()
+    if(!ids) return
+    let ok  = await ordenarLineas(ids, acuerdo.value.id )
+    if(!ok && acuerdo.value.productos.length >= 1)
+      aviso("negative", "Error al ordenar")
+  }
 
+
+
+  async function agregarProductos( productoAdd : IProductoDoli[] = [],  cantidad : number = 1 ) : Promise<boolean>
+  {
     loading.value.añadir      = true
-    const productosAñadidos   = LineaAcuerdo.lineasDeProductos( productoAdd.filter(p => p.activo), cantidad, descuento )
-    
-    // let   hayQueCrearSubtotal = false
-    // if(!grupoElegido.value.productos.length) // Quiere decir que no hay productos en ese grupo
-    //   hayQueCrearSubtotal     = true
+    const productosAñadidos   : ILineaAcuerdo[] = []
 
-    for (const linea of productosAñadidos)
+    // * !productoAdd.length es porque es ejecutado desde, Cambiarle nombre al grupo. 
+    // El unico grupo que no tiene titulo creado es el primero. Solo se crea cuando se edita el nombre...
+    // ... pero como por defecto, este titulo no se crea, de alguna forma toca saber cuando toca crearlo
+    if(grupoElegido.value.hayQueCrearTitulo || !productoAdd.length) 
+      productosAñadidos.push( LineaAcuerdo.getTitulo( grupoElegido.value.titulo ) )
+
+    if(!!productoAdd.length)
+      productosAñadidos.push(...LineaAcuerdo.lineasDeProductos( productoAdd.filter(p => p.activo), cantidad ))   
+    
+    let mayorOrden            = Math.max( ...grupoElegido.value.productos.map( p => p.orden ) )
+        mayorOrden            = mayorOrden === -Infinity ? 0 : mayorOrden
+    
+    for (const [i, linea] of productosAñadidos.entries())
     {
-      
-      const mayorOrden        = Math.max( ...grupoElegido.value.productos.map( p => p.orden ) )
-      linea.orden             = mayorOrden === -Infinity ? 1 : mayorOrden + 1
+      linea.orden             = mayorOrden + i + 1 // Luego se vuelve a ordenar
       linea.iva               = acuerdo.value.tercero.aplicaIVA ? +process.env.IVA : 0
-      if(!acuerdo.value.esEstadoBoceto ) {
-        let lineaAPI          = LineaAcuerdo.lineaToLineaApi( linea )
-        let { data, ok }      = await apiDolibarr("crear-linea", "cotizacion", lineaAPI, acuerdo.value.id)        
-        if(ok){
-          let newId : number  = !!data ? +data : 0
-          linea.lineaId       = newId        
-        }
-      }
+      linea.lineaId           = await crearLineaEnApi( linea )
       
-      linea.destacar( "guardar" )
-      grupoElegido.value.productos.push(linea)      
+      if(!linea.lineaId){
+        console.warn("Error al crear linea")
+        return false
+      }
+
+      if(linea.esTitulo)
+      {
+        grupoElegido.value.lineaIdTitulo  = linea.lineaId
+        grupoElegido.value.tituloCreado   = true
+      }
+      else
+      {
+        linea.destacar( "guardar" )
+        grupoElegido.value.productos.push(linea)
+      }
     }
 
     loading.value.añadir      = false
+    deGruposAProductos()
+    return true
   }
+
+  async function crearLineaEnApi( nuevaLinea : ILineaAcuerdo ) : Promise<number>
+  {
+    if(acuerdo.value.esEstadoBoceto) return 0
+    
+    let lineaAPI          = LineaAcuerdo.lineaToLineaApi( nuevaLinea )      
+    let { data, ok }      = await apiDolibarr("crear-linea", "cotizacion", lineaAPI, acuerdo.value.id)        
+    if(ok){
+      const newId : number= !!data ? +data : 0
+      return newId
+    }
+    
+    return 0
+  }   
 
   async function editarLinea( linea : ILineaAcuerdo ) : Promise<boolean>
   {
@@ -104,12 +152,12 @@ export function useControlProductos()
     return true
   }
 
-
   //* /////////////////////////////////////////////////////////////// Crear nuevo grupo vacio
   async function crearNuevoGrupo()
   {
     let index                   = acuerdo.value.proGrupos.length
     let nuevoGrupo              = new GrupoLineas( index )
+    console.log("nuevoGrupo: ", nuevoGrupo);
     acuerdo.value.proGrupos.push( nuevoGrupo )
 
     if(!!index)
@@ -119,19 +167,43 @@ export function useControlProductos()
     window.scrollTo({ top: document.body.scrollHeight,  behavior: 'smooth'})
   }
 
+  async function borrarGruposSinProductos()
+  {
+    for( let i = acuerdo.value.proGrupos.length - 1; i >= 0 ; i--)
+    {
+      const grupo           = acuerdo.value.proGrupos[i]
+      const sinProductos    = !grupo.productos.length
+
+      if(sinProductos)
+      {
+        if( grupo.totalCreado )
+          await borrarSubtotal( grupo )
+        if( grupo.tituloCreado )
+          await borrarTitulo( grupo )
+
+        acuerdo.value.proGrupos.splice(grupo.index, 1)            // Borrar Grupo
+        acuerdo.value.proGrupos.forEach( (g, i)  => g.index = i ) // Reasignar Index          
+      }
+    }
+  }
+
+
+
+
 
   async function borrarLinea( lineaBorrar : ILineaAcuerdo, enLote = false, retrasoBorrar = 1200 ) :Promise<boolean>
   {
-    lineaBorrar.accion        = "borrar"
-    loading.value.borrarLinea = true
+    lineaBorrar.accion          = "borrar"
+    if(!enLote)
+      loading.value.borrarLinea = true
 
-    let seguir                = true
+    let seguir                  = true
     let info  : any
 
     if(!acuerdo.value.esEstadoBoceto){
-      let {ok, data}          = await apiDolibarr("borrar-lineas", "cotizacion", lineaBorrar.lineaId, acuerdo.value.id /* lineaElegida.value.padreId */ )
-      seguir                  = ok
-      info                    = data
+      let {ok, data}            = await apiDolibarr("borrar-lineas", "cotizacion", lineaBorrar.lineaId, acuerdo.value.id )
+      seguir                    = ok
+      info                      = data
 
       if(!ok){ 
         console.error('Error al eliminar linea: ', info)        
@@ -142,26 +214,27 @@ export function useControlProductos()
 
     if((seguir || acuerdo.value.esEstadoBoceto) && !enLote ){
       aviso("positive", "Producto borrado")
-    }
+      modalYLoadingOff()      
+    }   
 
-    ocultarLineaBorrada()
-    modalYLoadingOff()
+    ocultarLineaBorrada()    
 
     function ocultarLineaBorrada(){
-      let i                       = grupoElegido.value.productos.findIndex( (p:any) => p.orden == lineaBorrar.orden )
+      let i                     = grupoElegido.value.productos.findIndex( (p:any) => p.orden == lineaBorrar.orden )
       setTimeout( ( index = i )=>
       {
-          grupoElegido.value.productos.splice(index, 1)
-          if(!enLote)
-            grupoElegido.value.seleccion = []
-        }, retrasoBorrar )
+        grupoElegido.value.productos.splice(index, 1)
+        if(!enLote){
+          grupoElegido.value.seleccion = []
+          deGruposAProductos()
+        }
+      }, retrasoBorrar )
     }
 
     function modalYLoadingOff(){
-      loading.value.borrarLinea   = false
-      modales.value.formulario    = false
-    }      
-
+      loading.value.borrarLinea = false
+      modales.value.formulario  = false
+    }
 
     return true
   }
@@ -179,6 +252,7 @@ export function useControlProductos()
     loading.value.borrarLote      = false
     aviso("positive", grupoElegido.value.seleccion.length === 1 ? "Producto borrado" : "Productos borrados")
     grupoElegido.value.seleccion  = []
+    deGruposAProductos()
   }
 
   async function editarCantidad( linea : ILineaAcuerdo ) {
@@ -208,20 +282,45 @@ export function useControlProductos()
     }
   }
 
-  async function editarSubTotales( conSubTotal :boolean , grupo : IGrupoLineas )
+  async function editarSubTotales( subTotalOn :boolean , grupo : IGrupoLineas )
   {
-    grupo.conTotal              = conSubTotal
-    if(conSubTotal)
-    {
-    }
-    else if(!!grupo.lineaIdSubtotal) // quiere decir que si hay una fila en DB y debe ser eliminada
-    {
-      let {ok, data}            = await apiDolibarr("borrar-lineas", "cotizacion", grupo.lineaIdSubtotal, grupo.padreId )
-      if(ok)
-      {
-        grupo.lineaIdSubtotal   = 0
+    loading.value.subtotal      = true
+    if(subTotalOn && !grupo.totalCreado){
+      const idLinea             = await crearLineaEnApi( LineaAcuerdo.getSubTotal() )
+      if(!!idLinea){
+        grupo.lineaIdSubtotal   = idLinea
+        grupo.totalCreado       = true
+        grupo.conTotal          = true
       }
     }
+    else
+    if(!subTotalOn && grupo.totalCreado) // quiere decir que si hay una fila en DB y debe ser eliminada
+    {
+      await borrarSubtotal( grupo )
+    }
+    loading.value.subtotal      = false
+    deGruposAProductos()
+  }
+
+  async function borrarSubtotal( grupo : IGrupoLineas ) {
+    let {ok}                    = await apiDolibarr("borrar-lineas", "cotizacion", grupo.lineaIdSubtotal, acuerdo.value.id )
+    if(ok){
+      grupo.lineaIdSubtotal     = 0
+      grupo.totalCreado         = false
+      grupo.conTotal            = false
+    }
+    else
+      aviso("negative", "Error al borrar subtotal")  
+  }
+
+  async function borrarTitulo( grupo : IGrupoLineas ) {
+    let {ok}                    = await apiDolibarr("borrar-lineas", "cotizacion", grupo.lineaIdTitulo, acuerdo.value.id )
+    if(ok){
+      grupo.lineaIdTitulo       = 0
+      grupo.tituloCreado        = false
+    }
+    else
+      aviso("negative", "Error al borrar subtotal")  
   }
 
   async function editarEnLoteQtyYDescu( cantidad : number | undefined, descuento : number | undefined, addDescuento : boolean)
@@ -229,8 +328,6 @@ export function useControlProductos()
     loading.value.editarLote  = true
     for (const linea of grupoElegido.value.seleccion)
     {
- 
-
       if(!!cantidad)
         linea.qty             = cantidad
 
@@ -278,8 +375,47 @@ export function useControlProductos()
     }
   }
 
+  async function editarTituloGrupo( nuevoTitulo :string , grupo : IGrupoLineas )
+  {
+    grupo.titulo                = nuevoTitulo.trim() //mayusculasPrimeraLetra( nuevoTitulo ).trim()
+    loading.value.editarGrupo   = true
 
+    if(!grupo.tituloCreado){
+      grupoElegido.value        = grupo
+      await agregarProductos()
+    }
+    else
+    {
+      let lineaEdit             = { id: grupo.lineaIdTitulo, label: grupo.titulo }
+      let {ok, data}            = await apiDolibarr("editar-linea", "cotizacion", lineaEdit, acuerdo.value.id)
+      if(!ok) aviso("negative", "Error al cambiar nombre de grupo")
+    }  
 
+    aviso("positive", "Titulo editado")
+    loading.value.editarGrupo = false
+  }
+
+  function moverGrupo( index: number, accion: "subir" | "bajar" )
+  {
+    let ope                     = accion == "subir" ? -1 : 1
+    acuerdo.value.proGrupos[ index      ].index = index + ope
+    acuerdo.value.proGrupos[ index + ope].index = index
+    acuerdo.value.proGrupos  = acuerdo.value.proGrupos.sort ( ( a : IGrupoLineas, b : IGrupoLineas ) =>
+                                  {
+                                    if(a.index < b.index) return -1
+                                    if(a.index > b.index) return 1
+                                    return 0
+                                  })
+    deGruposAProductos()
+  }
+
+  function seleccionarLineas( grupo : IGrupoLineas )
+  {
+    acuerdo.value.proGrupos.forEach(( g )=>{
+      if(g.index !== grupo.index)
+        g.seleccion             = []
+    })
+  }
 
   //* /////////////////////////////////////////////////////////////// Return
   return {
@@ -294,6 +430,9 @@ export function useControlProductos()
     editarEnLoteQtyYDescu,
     mostrarFormularioLinea,
     mostrarBuscarProductos,
-    destacarLineaElegida
+    destacarLineaElegida,
+    editarTituloGrupo,
+    moverGrupo,
+    seleccionarLineas
   }
 }

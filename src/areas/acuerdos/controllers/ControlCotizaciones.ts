@@ -4,6 +4,7 @@ import {  useRouter             } from 'vue-router'
 import {  storeToRefs           } from 'pinia'  
 import {  useStoreAcuerdo       } from 'src/stores/acuerdo'
 //* ////////////////////////////////////////////////////////////////// Componibles
+import {  useControlProductos   } from "src/areas/acuerdos/controllers/ControlLineasProductos"
 import {  servicesCotizaciones  } from "src/areas/acuerdos/cotizaciones/services/servicesCotizaciones"
 import {  servicesTerceros      } from "src/areas/terceros/services/servicesTerceros"
 import {  useApiDolibarr        } from "src/services/useApiDolibarr"  
@@ -45,6 +46,8 @@ export function useControlCotizacion()
           setTotal,
           setConIVA,
                               } = servicesCotizaciones()
+
+  const { crearNuevoGrupo     } = useControlProductos()
   const { buscarTercero,
           moverContactoAOtroTercero
                               } = servicesTerceros()
@@ -93,6 +96,8 @@ export function useControlCotizacion()
     loading.value.carga         = true
     acuerdo.value.productos     = []
     acuerdo.value               = await getCotizacion( idOk )
+
+    if(!acuerdo.value.proGrupos.length) crearNuevoGrupo()
 
     if(!!acuerdo.value.id)
     {

@@ -361,7 +361,7 @@ export function useCotizacionPDF()
 
   async function generarCondiciones()
   {
-    const altoImagen          = 254
+    const altoImagen          = 440
     const alto                = altoImagen + 20 + 10 + 25
     const ancho               = 360
     const posX                = ( doc.ancho - ancho ) / 2

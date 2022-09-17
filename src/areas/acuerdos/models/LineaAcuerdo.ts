@@ -36,6 +36,8 @@ export interface ILineaAcuerdo extends IProductoDoli {
   orden:                    number
   codeX:                    number
   tipoLinea:                TipoLinea
+  esTitulo:                 boolean
+  esSubTotal:               boolean
   fixed:                    boolean
   precioBase:               number
   precioBaseConIVA:         number
@@ -58,7 +60,7 @@ export interface ILineaAcuerdo extends IProductoDoli {
   class:                    string
   qtyUnd:                   string
   borrar:                   boolean
-  destacar:                 ( accion? : TAccionDestacar , mostrar? : "mostrar" | "ocultar" )=>void
+  destacar:                 ( accion? : TAccionDestacar , mostrar? : "mostrar" | "ocultar" ) => void
   accion:                   TAccionesSobreLinea
 }
 
@@ -110,6 +112,9 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
 
     return tipo
   }
+
+  get esTitulo()    : boolean { return this.tipo === 9 && this.codeX === 104777 && this.qty === 1 }
+  get esSubTotal()  : boolean { return this.tipo === 9 && this.codeX === 104777 && this.qty === 99 }
 
   // * ////////////////////////////////////////////////////////////////////////////////////////////////////
   // * ////////////////////////////////////////////////////////////////////// GET SET Descuento redondeado
@@ -308,6 +313,25 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
     return linea
   }
 
+  static getTitulo( nombre : string ) : ILineaAcuerdo
+  {
+    let linea               = new LineaAcuerdo()
+        linea.codeX         = 104777
+        linea.qty           = 1
+        linea.tipo          = 9        
+        linea.nombre        = nombre
+    return linea
+  }
+
+  static getSubTotal() : ILineaAcuerdo
+  {
+    let linea               = new LineaAcuerdo()
+        linea.codeX         = 104777
+        linea.qty           = 99
+        linea.tipo          = 9
+    return linea
+  }
+
   static lineaDeProducto( producto : IProductoDoli ) : ILineaAcuerdo
   {
     let linea : ILineaAcuerdo = Object.assign( new LineaAcuerdo(), producto ) 
@@ -353,8 +377,9 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
       rang:           linea.orden,
       desc:           linea.descripcion,
       fk_unit:        linea.unidadId,
-      special_code:   linea.codeX
-    }
+      special_code:   linea.codeX,
+      label:          linea.nombre.length > 2 ? linea.nombre : undefined,
+    }    
     return lineaApi
   }
 

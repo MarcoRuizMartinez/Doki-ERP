@@ -11,7 +11,8 @@ export interface IGrupoLineas {
   totalSinDescu:            number
   totalConDescu:            number
   totalLabel:               string
-  tieneTituloOTotal:        boolean
+  totalCreado:              boolean
+  tituloCreado:             boolean
   index:                    number
   lineaIdTitulo:            number
   lineaIdSubtotal:          number
@@ -20,6 +21,7 @@ export interface IGrupoLineas {
   totalConIva:              number
   padreId:                  number
   noDestacarProductos:      ()=>void
+  hayQueCrearTitulo:        boolean
 }
 
 export class GrupoLineas implements IGrupoLineas
@@ -29,10 +31,12 @@ export class GrupoLineas implements IGrupoLineas
   conTitulo:                boolean
   titulo:                   string
   conTotal:                 boolean
+  totalCreado:              boolean
+  tituloCreado:             boolean  
   totalLabel:               string
   index:                    number
   lineaIdTitulo:            number
-  lineaIdSubtotal:          number  
+  lineaIdSubtotal:          number    
 
   constructor( index : number = -1 )
   {
@@ -41,6 +45,8 @@ export class GrupoLineas implements IGrupoLineas
     this.titulo             = "Grupo " + (index + 1)
     this.conTitulo          = true
     this.conTotal           = false
+    this.totalCreado        = false
+    this.tituloCreado       = false
     this.totalLabel         = "Subtotal"
     this.index              = index
     this.lineaIdTitulo      = 0
@@ -105,7 +111,15 @@ export class GrupoLineas implements IGrupoLineas
     return id
   }
 
-  static productosAgrupoDeProductos( productos : ILineaAcuerdo[] ) :IGrupoLineas[] 
+  get hayQueCrearTitulo() : boolean{
+    return  !this.productos.length   // Grupo sin productos
+            &&
+            !this.tituloCreado      // Grupo sin titulo creado
+            &&
+            !!this.index            // No es el grupo 0              
+  }
+
+  static getGruposDesdeProductos( productos : ILineaAcuerdo[] ) :IGrupoLineas[] 
   {
     let indiceGrupo                     = -1
     let gruposProductos :IGrupoLineas[] = []
@@ -114,9 +128,9 @@ export class GrupoLineas implements IGrupoLineas
     {
       if
       (
-        producto.tipoLinea  == "producto"   ||
-        producto.tipoLinea  == "servicio"   ||
-        producto.tipoLinea  == "descripcion"
+        producto.tipoLinea  === "producto"   ||
+        producto.tipoLinea  === "servicio"   ||
+        producto.tipoLinea  === "descripcion"
       )
       {
         if(!gruposProductos.length)
@@ -135,17 +149,19 @@ export class GrupoLineas implements IGrupoLineas
         {
           addNuevoGrupo( producto.lineaId, "titulo")
           let titulo = !!producto.nombre ? producto.nombre : "Grupo " + (indiceGrupo + 1)
-          gruposProductos[indiceGrupo].titulo     = titulo
+          gruposProductos[indiceGrupo].titulo       = titulo
         }
         else
         {
-          gruposProductos[indiceGrupo].conTitulo  = true
-          gruposProductos[indiceGrupo].titulo     = producto.nombre
+          gruposProductos[indiceGrupo].conTitulo    = true
+          gruposProductos[indiceGrupo].titulo       = producto.nombre
         }
+        gruposProductos[indiceGrupo].tituloCreado   = true
       }
       else
       if(producto.tipoLinea  == "subtotal")
       {
+        gruposProductos[indiceGrupo].totalCreado    = true
         gruposProductos[indiceGrupo].conTotal       = true
         gruposProductos[indiceGrupo].lineaIdSubtotal= producto.lineaId
         //addNuevoGrupo( producto.lineaId, "subtotal" )
@@ -171,7 +187,7 @@ export class GrupoLineas implements IGrupoLineas
     return gruposProductos
   }
 
-  static deGruposAProductos( grupos :IGrupoLineas[] ) : ILineaAcuerdo[]
+  static getProductosDesdeGrupos( grupos :IGrupoLineas[] ) : ILineaAcuerdo[]
   {
     let productos : ILineaAcuerdo[] = []
     let count = 0
@@ -180,13 +196,16 @@ export class GrupoLineas implements IGrupoLineas
     for(let grupo of grupos)
     {
       count++
-      let sinProductos    = !grupo.productos.length
+      const sinProductos  = !grupo.productos.length
 
       if(grupos.length    > 1)  orden++
-      let titulo          = grupo.conTitulo && !! grupo.titulo ? grupo.titulo : "Grupo " + count
-      let lineaTitulo     = LineaAcuerdo.getLineaEspecial( "titulo", grupo.lineaIdTitulo, orden, titulo)
-      lineaTitulo.borrar  = sinProductos || grupos.length == 1
-      productos.push( lineaTitulo )
+
+      if(grupo.tituloCreado){
+        const titulo        = grupo.conTitulo && !!grupo.titulo ? grupo.titulo : "Grupo " + count
+        const lineaTitulo   = LineaAcuerdo.getLineaEspecial( "titulo", grupo.lineaIdTitulo, orden, titulo)
+        //lineaTitulo.borrar  = sinProductos || grupos.length == 1
+        productos.push( lineaTitulo )
+      }
       
       for(const producto of grupo.productos)
       {
@@ -201,11 +220,11 @@ export class GrupoLineas implements IGrupoLineas
         //else if( producto.tipoLinea == "subtotal" )
       }
 
-      if( grupo.conTotal      && grupos.length > 1 )
+      if( grupo.conTotal && grupo.totalCreado && grupos.length > 1 )
       {
         orden++
         let lineaTotal        = LineaAcuerdo.getLineaEspecial( "subtotal", grupo.lineaIdSubtotal, orden  )
-        lineaTotal.borrar     = sinProductos
+        //lineaTotal.borrar     = sinProductos
         productos.push( lineaTotal )
       }
 
