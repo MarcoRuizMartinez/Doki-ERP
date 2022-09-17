@@ -1,7 +1,8 @@
 import {  IUnidad,
           Unidad            } from "src/models/Diccionarios/Unidad"
 import {  getUnidadDB       } from "src/services/useDexie"
-import {  X100_Aumento,
+import {  roundInt,
+          X100_Aumento,
           X100_Calcular     } from "src/useSimpleOk/useTools"
 
 export const imagenDefault  :string  = "https://dolibarr.mublex.com/_maco/img/box.jpg"
@@ -24,7 +25,14 @@ export interface IProductoDoli {
   imagen300px:              string
   activo_proveedor:         boolean       // Activo proveedor
   aumento:                  number
+  aumento_escom:            number
   aumento_descuento:        number
+  aumento_loco:             number
+  precio_aumento:           number
+  precio_aumento_escom:     number
+  precio_aumento_descuento: number
+  precio_aumento_loco:      number
+  precio_escom:             number
   descuentoCalculado:       number
   costo_adicional:          number
   creador_id:               number
@@ -67,7 +75,9 @@ export class ProductoDoli implements IProductoDoli
   imagen:                   string
   activo_proveedor:         boolean       
   aumento:                  number
+  aumento_escom:            number
   aumento_descuento:        number
+  aumento_loco:             number
   costo_adicional:          number
   creador_id:               number
   disponible:               boolean        
@@ -104,7 +114,9 @@ export class ProductoDoli implements IProductoDoli
     this.activo_proveedor   = true       
     this.disponible         = true
     this.aumento            = 0
-    this.aumento_descuento  = 0
+    this.aumento_escom      = 0  
+    this.aumento_descuento  = 0  
+    this.aumento_loco       = 0  
     this.costo_adicional    = 0
     this.creador_id         = 0
     this.en_compra          = true
@@ -124,6 +136,33 @@ export class ProductoDoli implements IProductoDoli
     this.codigo             = 0
     this.competencia        = 0
     this.elegido            = false
+  }
+
+  get precio_aumento()          :number { return this.calcularPrecioConAumento( this.aumento            ) } 
+  get precio_aumento_escom()    :number { return this.calcularPrecioConAumento( this.aumento_escom      ) } 
+  get precio_aumento_descuento():number { return this.calcularPrecioConAumento( this.aumento_descuento  ) } 
+  get precio_aumento_loco()     :number { return this.calcularPrecioConAumento( this.aumento_loco       ) } 
+
+  calcularPrecioConAumento( aumento : number) : number {
+    if(!this.costo || !aumento) return 0
+    else                        return roundInt( X100_Aumento( this.costo, aumento), 3 )    
+  }
+
+  get precio_escom() : number {
+    let precio                    = 0
+    if( this.precio_aumento_escom < this.precio_aumento &&
+        this.precio_aumento       > this.costo          &&
+        !this.precio_aumento_descuento
+    )
+      precio                = this.precio_aumento
+
+    if(this.precio_aumento_escom  < this.precio_aumento_descuento  && this.precio_aumento_descuento  > this.costo)
+      precio                = this.precio_aumento_descuento
+
+    if(precio                     < this.precio_aumento_escom)
+      precio                = this.precio_aumento_escom
+
+    return precio
   }
 
   get imagenFull() : string
@@ -252,20 +291,22 @@ export class ProductoDoli implements IProductoDoli
                                       : productoApi.tipo == 9 ? 9
                                       : 0
 
-    producto.activo_proveedor       = Boolean( +productoApi.activo_proveedor    )
-    producto.disponible             = Boolean( +productoApi.disponible          )
-    producto.en_compra              = Boolean( +productoApi.en_compra           )
-    producto.en_venta               = Boolean( +productoApi.en_venta            )
+    producto.activo_proveedor       = Boolean( +productoApi.activo_proveedor      )
+    producto.disponible             = Boolean( +productoApi.disponible            )
+    producto.en_compra              = Boolean( +productoApi.en_compra             )
+    producto.en_venta               = Boolean( +productoApi.en_venta              )
     
-    producto.aumento                = parseFloat( productoApi.aumento           )
-    producto.aumento_descuento      = parseFloat( productoApi.aumento_descuento )
-    producto.costo                  = parseFloat( productoApi.costo             )
-    producto.costo_adicional        = parseFloat( productoApi.costo_adicional   )    
-    producto.precio                 = parseFloat( productoApi.precio            )
-    producto.precio_promocion       = parseFloat( productoApi.precio_promocion  )
-    producto.precio_proveedor       = parseFloat( productoApi.precio_proveedor  )
-    producto.precio_publico         = parseFloat( productoApi.precio_publico    )
-    producto.competencia            = parseFloat( productoApi.competencia       )
+    producto.aumento                = parseFloat( productoApi.aumento             )
+    producto.aumento_escom          = parseFloat( productoApi.aumento_escom       )
+    producto.aumento_descuento      = parseFloat( productoApi.aumento_descuento   )
+    producto.aumento_loco           = parseFloat( productoApi.aumento_loco        )
+    producto.costo                  = parseFloat( productoApi.costo               )
+    producto.costo_adicional        = parseFloat( productoApi.costo_adicional     )    
+    producto.precio                 = parseFloat( productoApi.precio              )
+    producto.precio_promocion       = parseFloat( productoApi.precio_promocion    )
+    producto.precio_proveedor       = parseFloat( productoApi.precio_proveedor    )
+    producto.precio_publico         = parseFloat( productoApi.precio_publico      )
+    producto.competencia            = parseFloat( productoApi.competencia         )
     producto.imagen                 = !!producto.imagen ? producto.imagen : imagenDefault
     
     producto.unidad                 = await getUnidadDB( producto.unidadId      )

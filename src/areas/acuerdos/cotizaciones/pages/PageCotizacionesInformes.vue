@@ -11,9 +11,9 @@
         />
       </panel>
     </div>
+    <!-- formato                 ="porcentaje" -->
     <ventana-apex-chart
       class                   ="col-6"
-      formato                 ="porcentaje"
       :titulo                 ="'Cotizaciones por estado ' + (!!comercial ? ' de ' + comercial : '')"      
       :series                 ="estadosCtzSerie"
       :tiempo                 ="tiempo"
@@ -24,10 +24,10 @@
         :options              ="comerciales"
       />
     </ventana-apex-chart>
+    <!-- formato                 ="porcentaje" -->
     <ventana-apex-chart
       class                   ="col-6"
       titulo                  ="Cotizaciones realizadas"      
-      formato                 ="porcentaje"
       :series                 ="cuentaCtzSerie"
       :tiempo                 ="tiempo"
     />  
@@ -49,19 +49,24 @@
 </template>
 
 <script setup lang="ts">
+  // * ///////////////////////////////////////////////////////////////////////// Core
   import {  ref,
             watch,  
             onMounted,
                                 } from "vue"
-  import {  useUsuario          } from "src/useSimpleOk/useUsuario"
-  import {  useTools,
-                                } from "src/useSimpleOk/useTools"
   import {  useTitle            } from "@vueuse/core"
-  import    panel                 from "components/utilidades/Panel.vue"
-  import    ventanaApexChart      from "components/utilidades/VentanaX.vue"
+  // * /////////////////////////////////////////////////////////////////////////////////// Store
+  import {  storeToRefs           } from 'pinia'
+  import {  useStoreUser          } from 'src/stores/user'  
+  // * ///////////////////////////////////////////////////////////////////////// Componibles
+  import {  useTools            } from "src/useSimpleOk/useTools"
   import {  useInformesCtz      } from "src/areas/acuerdos/cotizaciones/composables/useInformesCtz"
+  // * ///////////////////////////////////////////////////////////////////////// Modelos
   import {  Tiempo,             } from "src/models/TiposInformes"
   import {  ILabelValue         } from "src/models/TiposVarios"
+  // * ///////////////////////////////////////////////////////////////////////// Componentes
+  import    panel                 from "components/utilidades/Panel.vue"
+  import    ventanaApexChart      from "components/utilidades/VentanaX.vue"
 
   const tiempos :ILabelValue[]    = [
     { label: "Diario",    value:"day"   },
@@ -81,10 +86,10 @@
         }                         = useInformesCtz()
 
   const title                     = useTitle("📈 Cotizaciones informes")
-  const { usuario, permisos     } = useUsuario()
   const { esMobil, aviso        } = useTools()
   const tiempo                    = ref< Tiempo >("week")
   const comercial                 = ref< string >("") 
+  const { usuario, permisos     } = storeToRefs( useStoreUser() )
 
   onMounted(cargarInformes)
 

@@ -87,7 +87,7 @@ export function useMenu()
                             { ...new ItemMenu({
                                                 label:      "Crear cotización",
                                                 icon:       "mdi-format-list-checks",
-                                                to:         "/cotizaciones/crear2",
+                                                to:         "/cotizaciones/crear",
                                                 visible:    permisos.value.terceros_ver
                                               }),
                             },                            

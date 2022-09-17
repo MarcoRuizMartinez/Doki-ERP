@@ -1,6 +1,6 @@
 <template>
   <ventana                      minimizar
-    :titulo                     ="acuerdo.esEstadoBoceto ? 'Consultar productos - No se guardan en cotizacion... por ahora. enserio🙏😱😩🤯' : 'Productos'"
+    titulo                      ="Productos"
     icono                       ="mdi-package-variant-closed"
     padding-contenido           ="0"
     :cargando                   ="loading.carga || loading.borrarLote || loading.editarLote"
@@ -34,7 +34,6 @@
           <q-item-section class ="q-my-sm">
             <editar-grupo :grupo="grupo"/>
           </q-item-section>
-          {{grupo.tituloCreado}}
           <q-item-section       side
             v-if                ="acuerdo.esEstadoNoValidado"
             >

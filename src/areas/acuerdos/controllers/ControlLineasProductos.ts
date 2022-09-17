@@ -40,11 +40,10 @@ export function useControlProductos()
     modales.value.añadirProductos   = true
   }
 
-  async function deGruposAProductos(){
+  async function deGruposAProductos()
+  {
     await borrarGruposSinProductos()
-    acuerdo.value.reorganizarLineas()
     acuerdo.value.productos         = GrupoLineas.getProductosDesdeGrupos( acuerdo.value.proGrupos )
-    console.log("acuerdo.value.productos: ", acuerdo.value.productos);
     if(!acuerdo.value.esEstadoBoceto){
       ordenarLineasEnDolibarr()
     }
@@ -64,19 +63,19 @@ export function useControlProductos()
 
 
 
-  async function agregarProductos( productoAdd : IProductoDoli[] = [],  cantidad : number = 1 ) : Promise<boolean>
+  async function agregarProductos( productosAdd : IProductoDoli[] = [],  cantidad : number = 1 ) : Promise<boolean>
   {
     loading.value.añadir      = true
     const productosAñadidos   : ILineaAcuerdo[] = []
 
-    // * !productoAdd.length es porque es ejecutado desde, Cambiarle nombre al grupo.
+    // * !productosAdd.length es porque es ejecutado desde, Cambiarle nombre al grupo.
     // El unico grupo que no tiene titulo creado es el primero. Solo se crea cuando se edita el nombre...
     // ... pero como por defecto, este titulo no se crea, de alguna forma toca saber cuando toca crearlo
-    if(grupoElegido.value.hayQueCrearTitulo || !productoAdd.length)
+    if(grupoElegido.value.hayQueCrearTitulo || !productosAdd.length)
       productosAñadidos.push( LineaAcuerdo.getTitulo( grupoElegido.value.titulo ) )
 
-    if(!!productoAdd.length)
-      productosAñadidos.push(...LineaAcuerdo.lineasDeProductos( productoAdd.filter(p => p.activo), cantidad ))
+    if(!!productosAdd.length)
+      productosAñadidos.push(...LineaAcuerdo.lineasDeProductos( productosAdd.filter(p => p.activo), cantidad ))
 
     let mayorOrden            = Math.max( ...grupoElegido.value.productos.map( p => p.orden ) )
         mayorOrden            = mayorOrden === -Infinity ? 0 : mayorOrden
@@ -111,30 +110,21 @@ export function useControlProductos()
     return true
   }
 
-  function copiarYAgregarProductos( productoAdd : IProductoDoli[] )
-  {/*
-    if(!acuerdo.value.esEstadoBoceto) return
-    for (const linea of productoAdd)
-    {
-      {
-        linea.lineaId         = await crearLineaEnApi( linea )
+  async function copiarProductos( lineasAdd : ILineaAcuerdo[] ) : Promise<boolean>
+  {
+    if(acuerdo.value.esEstadoBoceto || !lineasAdd.length) return false
+    loading.value.carga       = true
 
-        if(!linea.lineaId){
-          console.warn("Error al crear linea")
-          return false
-        }
+    for (const linea of lineasAdd){
+      linea.lineaId           = await crearLineaEnApi( linea )
+      if(!linea.lineaId){ 
+        aviso("negative", "Error al crear producto")
+        return false
       }
-
-      if(linea.esTitulo){
-        grupoElegido.value.lineaIdTitulo  = linea.lineaId
-        grupoElegido.value.tituloCreado   = true
-      }
-      else
-      {
-        linea.destacar( "guardar" )
-        grupoElegido.value.productos.push(linea)
-      }
-    } */
+    }
+    aviso("positive", "Productos creados")
+    loading.value.carga       = false
+    return true
   }
 
   async function crearLineaEnApi( nuevaLinea : ILineaAcuerdo ) : Promise<number>
@@ -462,6 +452,8 @@ export function useControlProductos()
     destacarLineaElegida,
     editarTituloGrupo,
     moverGrupo,
-    seleccionarLineas
+    seleccionarLineas,
+    copiarProductos,
+    deGruposAProductos
   }
 }

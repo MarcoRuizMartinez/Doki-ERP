@@ -61,6 +61,7 @@
   import {  useStoreAcuerdo       } from 'src/stores/acuerdo'
   //* ///////////////////////////////////////////////////////////////////////////////// Componibles
   import {  useControlCotizacion  } from "src/areas/acuerdos/controllers/ControlCotizaciones"
+  import {  useControlProductos   } from "src/areas/acuerdos/controllers/ControlLineasProductos"
   import {  useCotizacionPDF      } from "src/areas/acuerdos/cotizaciones/composables/useCotizacionPDF"
   //* ///////////////////////////////////////////////////////////////////////////////// Componentes
   import    visorPdf                from "components/utilidades/VisorPDF.vue"
@@ -88,6 +89,8 @@ import { Acuerdo } from "../../models/Acuerdo"
           eliminarCotizacion,
           validarCotizacion,
                             } = useControlCotizacion()
+  const { copiarProductos,
+          deGruposAProductos } = useControlProductos()
   const minimizadoTodo        = ref< boolean  >(false)
   const srcPDF                = ref< string   >("")
   const ventanaPDF            = ref< boolean  >(false)
@@ -123,24 +126,25 @@ import { Acuerdo } from "../../models/Acuerdo"
 
   async function iniciar()
   {
-    const productosBoceto = Object.assign( acuerdo.value.productos, {} )
-    console.log("productosBoceto: ", productosBoceto);
-
+    const gruposBoceto              = Object.assign( acuerdo.value.proGrupos, {} )
     await buscarCotizacion( id.value )
     copiarProductosDeBoceto()
 
-    function copiarProductosDeBoceto(){
-      if(!!productosBoceto.length){
-        acuerdo.value.productos     = productosBoceto
-        console.log("acuerdo.value.productos: ", acuerdo.value.productos);
-        //acuerdo.value.proGrupos = GrupoLineas.getGruposDesdeProductos( productosBoceto )
+    async function copiarProductosDeBoceto()
+    {
+      if(!!gruposBoceto.length){
+        acuerdo.value.proGrupos     = gruposBoceto
+        await deGruposAProductos()
+        const ok                    = await copiarProductos( acuerdo.value.productos )
+        if(ok)
+          await buscarCotizacion( id.value )
       }
     }
   }
 
 
   function finalizar()  {
-    acuerdo.value           = new Acuerdo()
+    acuerdo.value             = new Acuerdo()
   }
 
   async function generarPDFCotizacion()

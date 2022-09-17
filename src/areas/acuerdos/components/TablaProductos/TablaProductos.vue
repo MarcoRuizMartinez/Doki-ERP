@@ -131,7 +131,7 @@
   const columnas: IColumna[]    = [
     new Columna           ({ name: "ref",           label: "Productos", sortable: false }),
     new Columna           ({ name: "qtyUnd",        label: "Cant",      sortable: false,  align: "right"}),
-    new Columna           ({ name: "orden",                             sortable: false }),
+    //new Columna           ({ name: "orden",                             sortable: false }),
     Columna.ColumnaPrecio ({ name: "precioBase",    label: "Precio",    sortable: false,  clase: "text-grey-7"  }),
     Columna.ColumnaX100   ({ name: "descuentoX100", label: "Descu",     sortable: false  }),
     Columna.ColumnaPrecio ({ name: "precioFinal",   label: "$ Final",   sortable: false  }),

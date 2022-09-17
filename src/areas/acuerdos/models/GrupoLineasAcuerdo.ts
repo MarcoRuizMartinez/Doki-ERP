@@ -187,21 +187,21 @@ export class GrupoLineas implements IGrupoLineas
     return gruposProductos
   }
 
+  // Tambien reorganiza los productos de los grupos
   static getProductosDesdeGrupos( grupos :IGrupoLineas[] ) : ILineaAcuerdo[]
   {
     let productos : ILineaAcuerdo[] = []
-    let count = 0
-    let orden = 0
+    let cuentaGrupos      = 0
+    let orden             = 0
 
     for(let grupo of grupos)
     {
-      count++
+      cuentaGrupos++
       const sinProductos  = !grupo.productos.length
 
-      if(grupos.length    > 1)  orden++
-
       if(grupo.tituloCreado){
-        const titulo        = grupo.conTitulo && !!grupo.titulo ? grupo.titulo : "Grupo " + count
+        orden++
+        const titulo        = grupo.conTitulo && !!grupo.titulo ? grupo.titulo : "Grupo " + cuentaGrupos
         const lineaTitulo   = LineaAcuerdo.getLineaEspecial( "titulo", grupo.lineaIdTitulo, orden, titulo)
         //lineaTitulo.borrar  = sinProductos || grupos.length == 1
         productos.push( lineaTitulo )

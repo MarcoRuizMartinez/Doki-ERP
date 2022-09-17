@@ -174,7 +174,7 @@ export interface IAcuerdo
   pdfCiudad:                  string
   esTerceroCtz:               boolean
   getCotizacionForApi:        ( usuarioId : number ) => any
-  reorganizarLineas:          () => void
+  //reorganizarProductosGrupos: () => void
 }
 
 export class Acuerdo implements IAcuerdo
@@ -269,20 +269,20 @@ export class Acuerdo implements IAcuerdo
   }
 
 
-  reorganizarLineas()
+/*   reorganizarProductosGrupos()
   {
     let orden                 = 0
     for (const grupo of this.proGrupos)
     {
       if(grupo.tituloCreado)  orden++
-      for (const linea of grupo.productos){
+      for (let linea of grupo.productos){
         orden++
         linea.orden           = orden
       }
 
       if(grupo.totalCreado)   orden++
     }
-  }
+  } */
 
   // * /////////////////////////////////////////////////////////////////////////////// Total sin descuento
   get totalSinDescu() :number {

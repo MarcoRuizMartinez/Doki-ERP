@@ -442,7 +442,6 @@
     modo.value                = "buscando"
     productosOriginal.value   = await buscarProductos( getQuery() )
     productos.value           = sortArray( productosOriginal.value, "activo", ">")
-
     modo.value                = !!productos.value.length ? "normal" : "sin-resultados"
     buscarSiProductosEstanEnGrupo()
   }

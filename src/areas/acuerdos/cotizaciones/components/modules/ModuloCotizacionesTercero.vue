@@ -16,6 +16,7 @@
         label                   ="Pedido"
         color                   ="positive"
         icon                    ="mdi-plus"
+        target                  ="_blank"
         :disable                ="modo == 'buscando'"
         :href                   ="urlDolibarr + `/commande/card.php?socid=${terceroId}&action=create`"
         >
@@ -116,7 +117,7 @@
   }
 
   function crearCotizacion(){
-    router.push({name: "crearCotizacion2" , params: { terceroId: +terceroId.value }}  )
+    router.push({name: "crearCotizacion" , params: { terceroId: +terceroId.value }}  )
   } 
 
 </script>
