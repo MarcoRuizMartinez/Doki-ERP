@@ -1,7 +1,7 @@
 <template>
   <q-page                     padding
     class                     ="row items-stretch content-start justify-left q-col-gutter-md"
-    >    
+    >
     <titulo-ctz
       class                   ="col-12"
       @click                  ="generarPDFCotizacion"
@@ -38,7 +38,7 @@
       nombre-pdf              ="cotizacion"
       @click-descargar        ="guardarPDF"
     />
-  </q-page> 
+  </q-page>
 </template>
 
 <script setup lang="ts">
@@ -49,32 +49,36 @@
             provide,
             computed,
             onMounted,
+            onUnmounted,
                                   } from "vue"
   import {  useRouter             } from 'vue-router'
   import {  useTitle              } from "@vueuse/core"
+  import {  GrupoLineas,
+                      } from "src/areas/acuerdos/models/GrupoLineasAcuerdo"
   //* ///////////////////////////////////////////////////////////////////////////////// Store
-  import {  storeToRefs           } from 'pinia'  
-  import {  useStoreUser          } from 'src/stores/user' 
+  import {  storeToRefs           } from 'pinia'
+  import {  useStoreUser          } from 'src/stores/user'
   import {  useStoreAcuerdo       } from 'src/stores/acuerdo'
   //* ///////////////////////////////////////////////////////////////////////////////// Componibles
   import {  useControlCotizacion  } from "src/areas/acuerdos/controllers/ControlCotizaciones"
   import {  useCotizacionPDF      } from "src/areas/acuerdos/cotizaciones/composables/useCotizacionPDF"
-  //* ///////////////////////////////////////////////////////////////////////////////// Componentes  
-  import    visorPdf                from "components/utilidades/VisorPDF.vue"  
+  //* ///////////////////////////////////////////////////////////////////////////////// Componentes
+  import    visorPdf                from "components/utilidades/VisorPDF.vue"
   import    tituloCtz               from "src/areas/acuerdos/components/TituloCotizacion.vue"
   import    totales                 from "src/areas/acuerdos/components/TotalesCotizacion.vue"
   import    botonera                from "src/areas/acuerdos/components/BotoneraCotizacion.vue"
   import    terceroYContacto        from "src/areas/acuerdos/components/TerceroYcontacto.vue"
-  import    condiciones             from "src/areas/acuerdos/components/CondicionesCotizacion.vue" 
+  import    condiciones             from "src/areas/acuerdos/components/CondicionesCotizacion.vue"
   import    productos               from "src/areas/acuerdos/components/ProductosAcuerdo.vue"
+import { Acuerdo } from "../../models/Acuerdo"
 
   const { acuerdo,
-          loading           } = storeToRefs( useStoreAcuerdo() )  
-  const { usuario, permisos } = storeToRefs( useStoreUser() )  
-  
+          loading           } = storeToRefs( useStoreAcuerdo() )
+  const { usuario, permisos } = storeToRefs( useStoreUser() )
+
   const { generarPDF,
-          guardarPDF        } = useCotizacionPDF()  
-  
+          guardarPDF        } = useCotizacionPDF()
+
   const router                = useRouter()
 
   const { buscarCotizacion,
@@ -82,7 +86,7 @@
           anularCotizacion,
           editarCotizacion,
           eliminarCotizacion,
-          validarCotizacion,    
+          validarCotizacion,
                             } = useControlCotizacion()
   const minimizadoTodo        = ref< boolean  >(false)
   const srcPDF                = ref< string   >("")
@@ -93,8 +97,8 @@
   const props                 = defineProps({
     id: { required: true, type: String }
   })
-  
-  const { id }                = toRefs( props )  
+
+  const { id }                = toRefs( props )
   const usuarioEsDueño        = computed( () =>{ return acuerdo.value.tercero.responsables.some( r => r.id == usuario.value.id ) })
   const puedeModificar        = computed( () =>{
                                   if
@@ -105,7 +109,7 @@
                                   )
                                     return true
                                   else
-                                    return false 
+                                    return false
                                 })
   const disableBtnValidar     = computed( () =>{
                                   const largo = acuerdo.value.productos.filter( p => p.tipo < 3 ).length
@@ -115,11 +119,28 @@
   watch(acuerdo, ()=>  title.value =  `📜 ${acuerdo.value.title}`,{ deep: true } )
 
   onMounted( iniciar )
+  onUnmounted( finalizar )
 
-  function iniciar()
+  async function iniciar()
   {
-    //acuerdo.value.esNuevo     = false
-    buscarCotizacion( id.value ) 
+    const productosBoceto = Object.assign( acuerdo.value.productos, {} )
+    console.log("productosBoceto: ", productosBoceto);
+
+    await buscarCotizacion( id.value )
+    copiarProductosDeBoceto()
+
+    function copiarProductosDeBoceto(){
+      if(!!productosBoceto.length){
+        acuerdo.value.productos     = productosBoceto
+        console.log("acuerdo.value.productos: ", acuerdo.value.productos);
+        //acuerdo.value.proGrupos = GrupoLineas.getGruposDesdeProductos( productosBoceto )
+      }
+    }
+  }
+
+
+  function finalizar()  {
+    acuerdo.value           = new Acuerdo()
   }
 
   async function generarPDFCotizacion()
@@ -128,8 +149,8 @@
     ventanaPDF.value          = true
     srcPDF.value              = await generarPDF( acuerdo.value )
     loading.value.pdf         = false
-  } 
-  
+  }
+
 
   //* ////////////////////////////////////////////////////////////////////// Verificar permisos de lectura
   function verificarPermisosLectura()

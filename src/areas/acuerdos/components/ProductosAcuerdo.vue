@@ -31,9 +31,10 @@
         <!-- //* ///////////////////////////////////////////////////////////// Slot cabezote expansion item-->
         <template               #header>
           <q-item-section       avatar class="hidden"></q-item-section>
-          <q-item-section class ="q-my-sm">            
+          <q-item-section class ="q-my-sm">
             <editar-grupo :grupo="grupo"/>
           </q-item-section>
+          {{grupo.tituloCreado}}
           <q-item-section       side
             v-if                ="acuerdo.esEstadoNoValidado"
             >
@@ -90,7 +91,7 @@
   import {  useStoreAcuerdo       } from 'src/stores/acuerdo'
   // * ///////////////////////////////////////////////////////////////////////////// Componibles
   import {  useControlProductos   } from "src/areas/acuerdos/controllers/ControlLineasProductos"
-  import {  btnBaseSm             } from "src/useSimpleOk/useEstilos"  
+  import {  btnBaseSm             } from "src/useSimpleOk/useEstilos"
   // * ///////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana                 from "components/utilidades/Ventana.vue"
   import    editarGrupo             from "src/areas/acuerdos/components/Grupos/EditarGrupo.vue"

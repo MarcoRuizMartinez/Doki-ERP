@@ -172,7 +172,7 @@ export interface IAcuerdo
   pdfContacto:                string
   pdfCorreo:                  string
   pdfCiudad:                  string
-  esTerceroCtz:               boolean  
+  esTerceroCtz:               boolean
   getCotizacionForApi:        ( usuarioId : number ) => any
   reorganizarLineas:          () => void
 }
@@ -238,7 +238,7 @@ export class Acuerdo implements IAcuerdo
     this.comercialId          = 0
     this.comercial            = new Usuario()
     this.usuariId             = 0
-    this.estado               = 0
+    this.estado               = ESTADO_CTZ.NO_GUARDADO
     this.notaPrivada          = ''
     this.notaPublica          = ''
     this.condicionPagoId      = 0
@@ -377,7 +377,7 @@ export class Acuerdo implements IAcuerdo
     return total
   }
 
-  get esEstadoBoceto      ():boolean { return this.estado === ESTADO_CTZ.NO_GUARDADO }            
+  get esEstadoBoceto      ():boolean { return this.estado === ESTADO_CTZ.NO_GUARDADO }
   get esEstadoNoValidado  ():boolean { return this.estado === ESTADO_CTZ.NO_GUARDADO || this.estado === ESTADO_CTZ.BORRADOR}
   get esEstadoValidado    ():boolean { return this.estado > ESTADO_CTZ.BORRADOR }
   // * ///////////////////////////////////////////////////////////////////////////////  Icono
@@ -399,7 +399,7 @@ export class Acuerdo implements IAcuerdo
   get puedeCrearNuevoGrupo():boolean{
     const i     = this.proGrupos.length - 1
     return i < 0 ? true : this.proGrupos[i].productos.length > 0
-  }  
+  }
 
   // * /////////////////////////////////////////////////////////////////////////////// Color
   get estadoColor(): string { return estadoCtzToColor(this.estado) }
@@ -585,7 +585,7 @@ export class Acuerdo implements IAcuerdo
                                   return 0;
                                 })
         if(ctz.productos.length > 0)
-          ctz.proGrupos       = GrupoLineas.getGruposDesdeProductos( ctz.productos )     
+          ctz.proGrupos       = GrupoLineas.getGruposDesdeProductos( ctz.productos )
     return ctz
   }
 }

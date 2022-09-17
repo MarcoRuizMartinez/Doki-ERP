@@ -11,10 +11,10 @@
     @filter                   ="buscar"
     @popup-show               ="virgen = true"
     @update:model-value       ="( tercero_ ) => emit('update:tercero', tercero_)"
-    > 
+    >
     <template #no-option>
       <q-item>
-        <q-item-section class ="text-grey text-h6 ">          
+        <q-item-section class ="text-grey text-h6 ">
           {{virgen ? "Escribe tu búsqueda": "No se encontró ningún tercero" }}
         </q-item-section>
       </q-item>
@@ -24,7 +24,7 @@
 <script setup lang="ts">
 
   import {  servicesTerceros,
-            IBusquedaTercero} from "src/areas/terceros/services/servicesTerceros"  
+            IBusquedaTercero} from "src/areas/terceros/services/servicesTerceros"
   import {  useStoreUser    } from 'src/stores/user'
   import {  ref,
             toRefs,
@@ -40,7 +40,7 @@
 
   const storeUser             = useStoreUser()
   const { buscarTerceros,
-          buscarTercero     } = servicesTerceros()  
+          buscarTercero     } = servicesTerceros()
 
   const emit                  = defineEmits(["update:tercero"])
   const props                 = defineProps({
@@ -50,13 +50,13 @@
   const { tercero }           = toRefs(props)
 
   watch(tercero, (newValue)=>{
-    if(!!newValue.id)
+    //if(!!newValue.id)
       modelo.value            = newValue
     },
     { immediate: true}
   )
 
-  
+
   async function buscar( busqueda : string, doneFn : Function )
   {
     if(busqueda.length        > 0)
@@ -69,9 +69,9 @@
     {
       cargando.value          = false
       doneFn(() => { terceros.value = [] } )
-      return 
+      return
     }
-    else 
+    else
     if(virgen.value)
     {
       if(!!storeUser.usuario.terceroIdCtz)
@@ -80,7 +80,7 @@
       query                   = { idUsuarios: storeUser.usuario.id, limite: 10, orden: "DESC", esCliente: 1 }
     }
     else
-    { 
+    {
       cargando.value          = false
       query                   = { like: busqueda, esCliente: 1, limite: 30 }
       if( !storeUser.permisos.acceso_total )

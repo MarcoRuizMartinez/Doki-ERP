@@ -35,7 +35,7 @@
       class                   ="col-12"
     />
     <!-- //* /////////////////  Visor PDF  -->
-    <visor-pdf                
+    <visor-pdf
       v-model:src             ="srcPDF"
       v-model:visible         ="ventanaPDF"
     />
@@ -49,48 +49,48 @@
             computed,
             onMounted,
                                   } from "vue"
+  import {  useTitle        } from "@vueuse/core"
   // * /////////////////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs           } from 'pinia'
   import {  useStoreUser          } from 'src/stores/user'
-  import {  useStoreAcuerdo       } from 'src/stores/acuerdo'  
-
+  import {  useStoreAcuerdo       } from 'src/stores/acuerdo'
   // * /////////////////////////////////////////////////////////////////////////////////// Modelos
-  import {  ESTADO_CTZ            } from "src/areas/acuerdos/models/Acuerdo"
-
+  import {  Acuerdo, ESTADO_CTZ            } from "src/areas/acuerdos/models/Acuerdo"
   // * /////////////////////////////////////////////////////////////////////////////////// Componibles
   import {  btnBaseMd             } from "src/useSimpleOk/useEstilos"
-  import {  useControlCotizacion  } from "src/areas/acuerdos/controllers/ControlCotizaciones"  
-  import {  useControlProductos   } from "src/areas/acuerdos/controllers/ControlLineasProductos"  
+  import {  useControlCotizacion  } from "src/areas/acuerdos/controllers/ControlCotizaciones"
+  import {  useControlProductos   } from "src/areas/acuerdos/controllers/ControlLineasProductos"
   import {  useCotizacionPDF      } from "src/areas/acuerdos/cotizaciones/composables/useCotizacionPDF"
-
   // * /////////////////////////////////////////////////////////////////////////////////// Componentes
   import    barra                   from "components/utilidades/Barra.vue"
   import    visorPdf                from "components/utilidades/VisorPDF.vue"
   import    tituloCtz               from "src/areas/acuerdos/components/TituloCotizacion.vue"
-  import    productos               from "src/areas/acuerdos/components/ProductosAcuerdo.vue"  
+  import    productos               from "src/areas/acuerdos/components/ProductosAcuerdo.vue"
   import    terceroYContacto        from "src/areas/acuerdos/components/TerceroYcontacto.vue"
   import    totales                 from "src/areas/acuerdos/components/TotalesCotizacion.vue"
-  import    condiciones             from "src/areas/acuerdos/components/CondicionesCotizacion.vue" 
+  import    condiciones             from "src/areas/acuerdos/components/CondicionesCotizacion.vue"
 
   const { acuerdo,
-          loading           } = storeToRefs( useStoreAcuerdo() )              
+          loading           } = storeToRefs( useStoreAcuerdo() )
   // const  {  apiDolibarr     } = useApiDolibarr()
 
-  
+
   // const { buscarTercero     } = servicesTerceros()
-  // const { aviso             } = useTools()  
+  // const { aviso             } = useTools()
   // const router                = useRouter()
   const { generarPDF        } = useCotizacionPDF()
   const { crearCotizacion   } = useControlCotizacion()
   const { crearNuevoGrupo   } = useControlProductos()
-  const { usuario           } = storeToRefs( useStoreUser() )  
+  const { usuario           } = storeToRefs( useStoreUser() )
   // const cotizacion            = ref< ICotizacion  >( new Cotizacion() )
   const ventanaPDF            = ref< boolean  >(false)
   const srcPDF                = ref< string   >("")
 
   onMounted(()=>{
-    acuerdo.value.esNuevo     = true
-    acuerdo.value.estado      = ESTADO_CTZ.NO_GUARDADO
+    const terceroTem        = Object.assign( acuerdo.value.tercero, {} )
+    acuerdo.value           = new Acuerdo()
+    if(!!terceroId.value)
+      acuerdo.value.tercero = terceroTem
     if(!acuerdo.value.proGrupos.length)
       crearNuevoGrupo()
   })
@@ -99,7 +99,8 @@
     terceroId: { default: 0, type: [String, Number] }
   })
   const { terceroId }         = toRefs(props)
-  //const title                 = useTitle("📜 Crear cotización")
+  const title                 = useTitle("📜 Crear cotización")
+
 
   //* /////////////////////////////////////////////////////////////// Provide Super minimizado
   //const minimizadoTodo        = ref< boolean >(false)
@@ -108,11 +109,10 @@
   //* /////////////////////////////////////////////////////////////// Ref componentes
   const componenteTerYcont    = ref<InstanceType<typeof terceroYContacto> | null>(null)
   const componenteCondiciones = ref<InstanceType<typeof condiciones>      | null>(null)
-  
+
   //* /////////////////////////////////////////////////////////////// Computed
   const usuarioEsDueño        = computed( () =>{ return acuerdo.value.tercero.responsables.some( r => r.id == usuario.value.id ) })
 
-  
   //* /////////////////////////////////////////////////////////////// Computed Formulario Ok
   const formularioOk          = computed(()=>
   {
@@ -128,10 +128,8 @@
     return terceroOk && ( contactoOk || ( esPersona && !esEspecial ) ) && comercialOk && origenOk && vencimientoOk && pagoOk
   })
 
-  async function generarPDFCotizacion()
-  {
+  async function generarPDFCotizacion(){
     ventanaPDF.value          = true
     srcPDF.value              = await generarPDF( acuerdo.value )
   }
-
 </script>
