@@ -27,20 +27,30 @@ export const  useStoreUser = defineStore('user', {
 
   actions: {
     setFondo(fondo : string){
-      this.fondo        = fondo
+      this.fondo              = fondo
       
-      const fondoCSS    = "url('images/fondos/" + this.fondo + "')"  
+      const fondoCSS          = "url('images/fondos/" + this.fondo + "')"  
       document.body.style.backgroundImage = fondoCSS
     },    
     setPermisos( jsonPermisos : string ){
-      let arrayPermisos       = JSON.parse( jsonPermisos )
+      let arrayPermisos
+
+      try {
+        arrayPermisos         = JSON.parse( jsonPermisos )
+      } catch(e) {
+        console.warn("Error en setPermisos:", e)
+        this.permisos         = new Permisos()
+        return
+      }      
+      
+
       let objectoConPermisos  = {}
   
       for (const permiso of arrayPermisos) {
         Object.assign(objectoConPermisos, permiso);
       }
   
-      this.permisos    = Object.assign( new Permisos(), objectoConPermisos )
+      this.permisos    = Object.assign( new Permisos(), objectoConPermisos )      
     },    
   }
 });
