@@ -37,9 +37,9 @@
         >
         <Tooltip label        ="Recargar"/>
       </q-btn>
-    </template>                 
+    </template>
     <!-- //* ///////////////////////////////////////////////////////////// Referencia y nombre -->
-    <template                 #menu>    
+    <template                 #menu>
       <div class              ="row col gap-pa-md">
         <input-buscar         autofocus clearable hundido
           v-model             ="busqueda"
@@ -115,7 +115,7 @@
       </q-btn>
     </template>
     <div  class                 ="bg-grey-3 fit">
-      <q-table                  dense  
+      <q-table                  dense
         v-model:selected        ="seleccion"
         class                   ="bg-grey-3"
         row-key                 ="id"
@@ -143,7 +143,7 @@
               <q-popup-proxy
                 v-model         ="popupOn"
                 transition-show ="jump-down"
-                transition-hide ="jump-up"                
+                transition-hide ="jump-up"
                 >
                 <div class      ="q-pa-lg filtro-panel bg-gris">
                   <input-buscar hundido clearable
@@ -165,12 +165,12 @@
               :icon             ="!filtro.length ? 'mdi-filter' : 'mdi-filter-off'"
               color             ="grey-9"
               padding           ="0"
-              size              ="12px"              
+              size              ="12px"
               >
               <q-popup-proxy
                 v-model         ="popupOnPrecio"
                 transition-show ="jump-down"
-                transition-hide ="jump-up"                
+                transition-hide ="jump-up"
                 >
                 <div class      ="q-pa-sm filtro-panel bg-gris column items-center shadow-3">
 <!--                   <input-number hundido clearable
@@ -200,18 +200,18 @@
                     label       ="Ordenar de mayor a menor"
                     icon        ="mdi-order-numeric-descending"
                     @click      ="ordenar('>')"
-                  />                  
+                  />
                 </div>
               </q-popup-proxy>
             </q-btn>
           </q-th>
-        </template>        
+        </template>
         <template             #item="props">
           <div
             class             ="q-pa-xs col-xs-6 col-sm-3 col-md-12-5 col-lg-12-5 grid-style-transition "
             :style=           "props.selected ? 'transform: scale(0.95);' : ''"
             >
-            <q-card           
+            <q-card
               class           ="card-producto"
               :class          ="[ { 'select-producto' : props.selected    },
                                   { 'cursor-pointer'  : props.row.activo  },
@@ -236,14 +236,14 @@
                   </table>
                 </Tooltip>
                 <efecto efecto="UpDown">
-                  <q-icon 
+                  <q-icon
                     v-if      ="props.row.elegido"
                     name      ="mdi-check-decagram"
                     class     ="absolute-right"
                     color     ="positive"
                     size      ="lg"
                     >
-                      <Tooltip  label="Ya seleccionado"/>                
+                      <Tooltip  label="Ya seleccionado"/>
                   </q-icon>
                 </efecto>
                 <q-badge
@@ -252,7 +252,7 @@
                   color       ="orange"
                   >
                   <span>{{props.row.descuentoCalculado}}%</span>
-                  <Tooltip>Descuento del {{props.row.descuentoCalculado}}%</Tooltip>   
+                  <Tooltip>Descuento del {{props.row.descuentoCalculado}}%</Tooltip>
                 </q-badge>
               </q-card-section>
               <q-separator />
@@ -266,7 +266,7 @@
                     v-if      ="props.row.activo"
                     :label    ="props.row.nombre"
                   />
-                </div>                
+                </div>
                 <div class    ="fuente-mono col-2 text-grey-9 text-1_1em">
                   {{ formatoPrecio( props.row.precio, "decimales-no" ) }}
                   <tooltip-precios
@@ -300,14 +300,14 @@
             </q-img>
             <efecto efecto    ="UpDown"
               >
-              <q-icon 
+              <q-icon
                 v-if          ="props.row.elegido"
                 name          ="mdi-check-decagram"
                 color         ="positive"
                 size          ="sm"
                 v-touch-hold.mouse="()=> mouseLargo( props.row )"
                 >
-                  <Tooltip  label="Ya seleccionado"/>                
+                  <Tooltip  label="Ya seleccionado"/>
               </q-icon>
               <q-btn          round
                 v-else-if     ="props.row.activo"
@@ -320,7 +320,7 @@
                 <Tooltip label="Agregar producto"/>
               </q-btn>
             </efecto>
-            
+
           </q-td>
         </template>
         <template #body-cell-precio="props">
@@ -342,7 +342,7 @@
       >
       <efecto efecto          ="UpDown">
         <q-btn                fab-mini
-          v-if                ="!!seleccion.length"  
+          v-if                ="!!seleccion.length"
           icon                ="mdi-plus"
           color               ="primary"
           @click              ="agregarProducctosAControl( seleccion )"
@@ -357,28 +357,29 @@
           <q-badge color="red" floating>{{seleccion.length}}</q-badge>
         </q-btn>
       </efecto>
-    </q-page-sticky> 
+    </q-page-sticky>
   </ventana>
 </template>
 <script setup lang="ts">
   // * /////////////////////////////////////////////////////////////////////////////////// Core
-  import {  ref, watch,       } from "vue"
+  import {  ref, watch          } from "vue"
   // * /////////////////////////////////////////////////////////////////////////////////// Store
-  import {  storeToRefs       } from 'pinia'
-  import {  useStoreAcuerdo   } from 'src/stores/acuerdo'  
+  import {  storeToRefs         } from 'pinia'
+  import {  useStoreAcuerdo     } from 'src/stores/acuerdo'
+  import {  useStoreUser        } from 'src/stores/user'
   // * /////////////////////////////////////////////////////////////////////////////////// Modelos
   import {  ILineaAcuerdo       } from "src/areas/acuerdos/models/LineaAcuerdo"
-  import {  IColumna, Columna   } from "src/models/Tabla"  
+  import {  IColumna, Columna   } from "src/models/Tabla"
   import {  ModosVentana        } from "src/models/TiposVarios"
   import {  IProductoCategoria,
             ProductoCategoria   } from "src/areas/productos/models/ProductoCategoria"
   import {  ProductoDoli,
             IProductoDoli       } from "src/areas/productos/models/ProductoDolibarr"
 // * /////////////////////////////////////////////////////////////////////////////////// Componibles
-  import {  useControlProductos } from "src/areas/acuerdos/controllers/ControlLineasProductos"      
+  import {  useControlProductos } from "src/areas/acuerdos/controllers/ControlLineasProductos"
   import {  servicesProductos,
             IBusquedaProducto   } from "src/areas/productos/services/servicesProductos"
-  
+
   import {  dexieCategoriasProducto
                               } from "src/services/useDexie"
   import {  toggleGris        } from "src/useSimpleOk/useEstilos"
@@ -403,12 +404,13 @@
 
   const tipoVista             = ref<"grilla" | "lista">("grilla")
 
-  const { aviso             } = useTools()  
+  const { aviso             } = useTools()
   const { agregarProductos,
           borrarLineas      } = useControlProductos()
   const { grupoElegido,
           modales,
-          loading           } = storeToRefs( useStoreAcuerdo() )                              
+          loading           } = storeToRefs( useStoreAcuerdo() )
+  const { usuario           } = storeToRefs( useStoreUser() )
   const busqueda              = ref< string   >("")
   const modo                  = ref< ModosVentana >("esperando-busqueda")
   const categoria             = ref< IProductoCategoria  >( new ProductoCategoria() )
@@ -416,7 +418,7 @@
   const productosOriginal     = ref< IProductoDoli[] >([])
   const seleccion             = ref< IProductoDoli[] >([])
   const filtro                = ref< string >("")
-  const { buscarProductos   } = servicesProductos()  
+  const { buscarProductos   } = servicesProductos()
   const categorias            = dexieCategoriasProducto()
   const popupOn               = ref < boolean >(false)
   const popupOnPrecio         = ref < boolean >(false)
@@ -441,11 +443,39 @@
 
     modo.value                = "buscando"
     productosOriginal.value   = await buscarProductos( getQuery() )
-    console.log("productosOriginal.value: ", productosOriginal.value);
-    productos.value           = sortArray( productosOriginal.value, "activo", ">")
+    productos.value           = procesarProductosDeBusqueda( productosOriginal.value )
+    console.log("productos.value: ", productos.value);
     modo.value                = !!productos.value.length ? "normal" : "sin-resultados"
     buscarSiProductosEstanEnGrupo()
   }
+
+  function procesarProductosDeBusqueda( productosProcesar : IProductoDoli[] ) : IProductoDoli[]
+  {
+    //if(usuario.value.areaEsEscom)
+    //  asignarPreciosDeEscom()
+    return sortArray( productosProcesar, "activo", ">")
+
+    function asignarPreciosDeEscom()
+    {
+      productosProcesar.forEach( (p)=> {
+        let precioPromo     = 0
+        let precioPubli     = 0
+        if(p.precio_escom < p.precio_publico){
+          precioPromo       = p.precio_escom
+          precioPubli       = p.precio_publico
+        }
+        else{
+          precioPromo       = p.precio_escom
+          precioPubli       = p.precio_escom
+        }
+        p.precio            = precioPromo
+        p.precio_promocion  = precioPromo
+        p.precio_publico    = precioPubli
+      })
+    }
+  }
+
+
 
   async function agregarProducctosAControl( productoAdd : IProductoDoli[] )
   {
@@ -469,17 +499,17 @@
   function buscarSiProductosEstanEnGrupo()
   {
     productos.value.forEach( p => {
-      p.elegido = grupoElegido.value.productos.some( pg => p.ref == pg.ref ) 
+      p.elegido = grupoElegido.value.productos.some( pg => p.ref == pg.ref )
     })
   }
-  
+
   function editarBusqueda(txt : string )
   {
     busqueda.value = txt.trim()
     if( txt.length >= 3 ) buscar()
   }
 
-  function seleccionar( rows : readonly IProductoDoli[] ){ 
+  function seleccionar( rows : readonly IProductoDoli[] ){
     seleccion.value   = rows.filter(p=>p.activo)
   }
 
@@ -506,7 +536,7 @@
         )
       )
       buscar()
-  })  
+  })
 
   function mouseLargo( producto : IProductoDoli )
   {
@@ -554,7 +584,7 @@
     return q
   }
 
-  function busquedaVacia() : boolean 
+  function busquedaVacia() : boolean
   {
     return  !categoria.value.value && busqueda.value.length < 3
   }

@@ -32,6 +32,9 @@ export interface IUsuario {
     grupos:             string[]
     esComercial:        boolean
     esDev:              boolean
+    areaEsEscom:        boolean
+    areaEsMublex:       boolean
+    areaEsGlobal:       boolean
 }
 
 export class Usuario implements IUsuario
@@ -51,7 +54,7 @@ export class Usuario implements IUsuario
   tipo:           TIPO_USUARIO
   permisos:       string
   gruposString:   string
-    
+
   constructor( usuario? : IUsuario )
   {
       this.id                 = -1
@@ -69,7 +72,7 @@ export class Usuario implements IUsuario
       this.gruposString       = ""
       this.cel                = ""
       this.correo             = ""
-      
+
       if(!!usuario)
       {
         this.id               = +usuario.id
@@ -111,13 +114,13 @@ export class Usuario implements IUsuario
     {
       let foto        = fotoDefault
       if(!!this.foto)
-      {      
+      {
         let extencion = this.foto.slice(this.foto.lastIndexOf('.') )
         foto          = this.urlFoto + "/thumbs/" + this.foto.replace(extencion, '_small' + extencion)
       }
-        
+
       return foto
-    }    
+    }
 
     get fotoPerfilBig() :string
     {
@@ -126,15 +129,18 @@ export class Usuario implements IUsuario
                 : fotoDefault
     }
 
-    get label():string { return this.nombre } 
+    get label():string { return this.nombre }
     get value():number { return this.id }
-    
+
     set label( valor : string ) { this.nombre = valor  }
     set value( valor : number ) { this.id = valor }
-  
+
 
     get nombreCompleto():string     { return this.nombre + " " + this.apellido }
 
     get esComercial ():boolean { return this.grupos.length > 0 ? this.grupos.some( g => g == GRUPO_USUARIO.COMERCIALES ) : false }
     get esDev       ():boolean { return this.grupos.length > 0 ? this.grupos.some( g => g == GRUPO_USUARIO.DESARROLLO  ) : false }
+    get areaEsEscom ():boolean { return this.area === AREA.ESCOM  }
+    get areaEsMublex():boolean { return this.area === AREA.MUBLEX }
+    get areaEsGlobal():boolean { return this.area === AREA.GLOBAL }
 }
