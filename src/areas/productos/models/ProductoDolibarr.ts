@@ -236,6 +236,9 @@ export class ProductoDoli implements IProductoDoli
 
   get esRefEspecial() : boolean {
     return  this.ref.includes("-ITEM") ||
+            this.ref.includes("ARRA-") ||
+            this.ref.includes("ARR-")  ||
+            this.ref.includes("ARRP-") ||                            
             this.ref.includes("ADC-")  ||
             this.ref.includes("CABL-") ||
             this.ref.includes("CANT-") ||

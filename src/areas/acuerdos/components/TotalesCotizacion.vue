@@ -1,6 +1,6 @@
 <template>
   <ventana                  minimizar
-    titulo                  ="Totalesss"
+    titulo                  ="Totales"
     icono                   ="mdi-counter"
     class-contenido         ="q-col-gutter-sm"
     >

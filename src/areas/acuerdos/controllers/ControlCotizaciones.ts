@@ -56,7 +56,7 @@ export function useControlCotizacion()
           loading             } = storeToRefs( useStoreAcuerdo() )  
 
   //* /////////////////////////////////////////////////////////////// Crear Cotizacion
-  async function crearCotizacion( idUsuario : number )
+  async function crearCotizacion( idUsuario : number ) : Promise<boolean>
   {
     loading.value.crear       = true
     const ctzForApi           = acuerdo.value.getCotizacionForApi( idUsuario )    
@@ -64,7 +64,7 @@ export function useControlCotizacion()
     if(!ok || !data) {
       aviso("negative", "Error al crear al tercero", "file")      
       loading.value.crear     = false
-      return
+      return false
     }
     const id                  = typeof data === "number" ? data : 0
     //* ////////////////////  Creando Contacto si corresponde
@@ -85,6 +85,7 @@ export function useControlCotizacion()
     aviso("positive", "Cotización creada", "file")
     loading.value.crear       = false
     router.push( "/cotizaciones/" + id )
+    return true
   }          
 
   //* ////////////////////////////////////////////////////////////////////// Buscar cotizacion 

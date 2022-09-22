@@ -14,7 +14,7 @@
         icon                  ="mdi-plus"
         :loading              ="loading.crear"
         :disable              ="!formularioOk"
-        @click                ="crearCotizacion( usuario.id )"
+        @click                ="crearCotizacionEnControl"
         />
     </barra>
     <tercero-y-contacto
@@ -48,6 +48,7 @@
             toRefs,
             computed,
             onMounted,
+            onUnmounted
                                   } from "vue"
   import {  useTitle        } from "@vueuse/core"
   // * /////////////////////////////////////////////////////////////////////////////////// Store
@@ -87,13 +88,18 @@
     if(!acuerdo.value.proGrupos.length)
       crearNuevoGrupo()
   })
+
+  onUnmounted(()=>{
+    if(cotizacionCreada) return
+    acuerdo.value             = new Acuerdo()
+  })
   //* /////////////////////////////////////////////////////////////// Props
   const props                 = defineProps({
     terceroId: { default: 0, type: [String, Number] }
   })
   const { terceroId }         = toRefs(props)
   const title                 = useTitle("📜 Crear cotización")
-
+  let cotizacionCreada        = false
 
   //* /////////////////////////////////////////////////////////////// Provide Super minimizado
   //const minimizadoTodo        = ref< boolean >(false)
@@ -124,5 +130,10 @@
   async function generarPDFCotizacion(){
     ventanaPDF.value          = true
     srcPDF.value              = await generarPDF( acuerdo.value )
+  }
+
+  async function crearCotizacionEnControl()
+  {
+    cotizacionCreada          = await crearCotizacion( usuario.value.id )
   }
 </script>

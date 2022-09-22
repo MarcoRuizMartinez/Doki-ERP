@@ -244,9 +244,9 @@ export function useControlProductos()
       {
         grupoElegido.value.productos.splice(index, 1)
         if(!enLote){
-          grupoElegido.value.seleccion = []
-          deGruposAProductos()
+          grupoElegido.value.seleccion = []          
         }
+        deGruposAProductos()
       }, retrasoBorrar )
     }
 
@@ -274,39 +274,50 @@ export function useControlProductos()
   }
 
   async function editarCantidad( linea : ILineaAcuerdo ) {
-
-    if(acuerdo.value.esEstadoBoceto){
-      linea.destacar("guardar", "ocultar")
+    if(acuerdo.value.esEstadoBoceto) {
+      edicionOk()
       return
-    }
+    }      
 
     const objecto               = { qty: linea.qty, id: linea.lineaId }
     let {ok}                    = await apiDolibarr("editar-linea", "cotizacion", objecto, acuerdo.value.id )
-    if(ok){
+    if  (ok) edicionOk()
+
+    function edicionOk(){
       aviso("positive", "Cantidad cambiada")
       linea.destacar("guardar", "ocultar")
+      deGruposAProductos()      
     }
   }
 
   async function editarDescuento( linea : ILineaAcuerdo ) {
     if(acuerdo.value.esEstadoBoceto) {
-      linea.destacar("guardar", "ocultar")
+      edicionOk()
       return
     }
+
     const objecto               = { remise_percent: linea.descuentoX100, id: linea.lineaId }
     let {ok}                    = await apiDolibarr("editar-linea", "cotizacion", objecto, acuerdo.value.id )
-    if(ok){
+    if  (ok) edicionOk()
+
+    function edicionOk(){
       aviso("positive", "Descuento cambiado")
+      linea.destacar("guardar", "ocultar")
+      deGruposAProductos()
     }
   }
 
   async function editarSubTotales( subTotalOn :boolean , grupo : IGrupoLineas )
   {
-    loading.value.subtotal      = true
-    grupo.totalCreado           = subTotalOn
     grupo.conTotal              = subTotalOn
+    if(acuerdo.value.esEstadoBoceto) {
+      grupo.totalCreado         = subTotalOn
+      return
+    }
 
-    if(subTotalOn && !grupo.totalCreado){
+    loading.value.subtotal      = true    
+
+    if(subTotalOn && !grupo.totalCreado){      
       const idLinea             = await crearLineaEnApi( LineaAcuerdo.getSubTotal() )
       if(!!idLinea){
         grupo.lineaIdSubtotal   = idLinea
@@ -317,6 +328,7 @@ export function useControlProductos()
     {
       await borrarSubtotal( grupo )
     }
+    grupo.totalCreado           = subTotalOn
     loading.value.subtotal      = false
     deGruposAProductos()
   }
@@ -376,6 +388,7 @@ export function useControlProductos()
     loading.value.editarLote    = false
     modales.value.editarEnLote  = false
     aviso("positive", grupoElegido.value.seleccion.length === 1 ? "Producto editado" : "Productos editados")
+    deGruposAProductos()
   }
 
 

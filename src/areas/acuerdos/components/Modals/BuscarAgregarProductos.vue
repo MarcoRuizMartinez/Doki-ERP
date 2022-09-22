@@ -443,16 +443,15 @@
 
     modo.value                = "buscando"
     productosOriginal.value   = await buscarProductos( getQuery() )
-    productos.value           = procesarProductosDeBusqueda( productosOriginal.value )
-    console.log("productos.value: ", productos.value);
+    productos.value           = procesarProductosDeBusqueda( productosOriginal.value )    
     modo.value                = !!productos.value.length ? "normal" : "sin-resultados"
     buscarSiProductosEstanEnGrupo()
   }
 
   function procesarProductosDeBusqueda( productosProcesar : IProductoDoli[] ) : IProductoDoli[]
   {
-    //if(usuario.value.areaEsEscom)
-    //  asignarPreciosDeEscom()
+    if(usuario.value.areaEsEscom)
+      asignarPreciosDeEscom()
     return sortArray( productosProcesar, "activo", ">")
 
     function asignarPreciosDeEscom()
