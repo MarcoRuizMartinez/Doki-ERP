@@ -1,144 +1,164 @@
 <template>
-  <fieldset-filtro
-    titulo                  ="Búsqueda"
-    class-conenido          ="column q-gutter-xs"
+  <q-tab-panels                 animated keep-alive vertical
+    v-model                     ="tabs" 
+    class                       ="transparent fit"
     >
-    <input-buscar           clearable hundido
-      v-model               ="busquedaTercero"
-      label                 ="Terceros"
-      class                 ="width180"
-      icon                  ="mdi-account-search"      
-    />
-    <input-buscar           clearable hundido
-      v-model               ="busquedaContacto"
-      label                 ="Contactos"
-      icon                  ="mdi-target-account"
-      class                 ="width180"
-    />
-  </fieldset-filtro>
-  <fieldset-filtro
-    titulo                  ="Fechas"
-    class-conenido          ="column q-gutter-xs"
-    >
-    <input-fecha            hundido no-futuro clearable
-      v-model               ="desde"
-      label                 ="Desde"
-      class                 ="width140"
-      :hasta                ="hasta"
-    />
-    <input-fecha            hundido no-futuro clearable
-      v-model               ="hasta"
-      label                 ="Hasta"
-      class                 ="width140"
-      :desde                ="desde"
-    />
-  </fieldset-filtro>
-  <fieldset-filtro
-    titulo                  ="Subtotal"
-    class-conenido          ="column q-gutter-xs"
-    >
-    <input-number           hundido clearable
-      v-model               ="precioMinimo"
-      label                 ="Mínimo"
-      icon                  ="mdi-currency-usd"
-      class                 ="width160"
-      :minimo               ="0"
-      :maximo               ="!!precioMaximo ? precioMaximo : undefined"
-    />
-    <input-number           hundido clearable
-      v-model               ="precioMaximo"
-      label                 ="Máximo"
-      icon                  ="mdi-currency-usd"
-      class                 ="width160"
-      :minimo               ="!!precioMinimo ? precioMinimo : undefined"
-      :maximo               ="999_999_999"
-    />
-  </fieldset-filtro>    
-  <fieldset-filtro
-    titulo                  ="Opciones"
-    class-conenido          ="grilla-ribom"
-    >
-    <!-- //* ///////////////////////////////////////////////////////////// Unidad -->
-    <select-label-value     use-input hundido clearable flat bordered
-      v-model               ="estado"
-      label                 ="Estado"
-      icon                  ="mdi-label"
-      class                 ="width150"
-      :options              ="estadosCtz.filter(e => e.value >= 0)"
-    />
-    <select-label-value     use-input hundido clearable flat bordered
-      v-model               ="origen"
-      label                 ="Origen"
-      icon                  ="mdi-source-branch"
-      class                 ="width150"
-      :options              ="origenes"
-    />
-    <select-label-value     use-input hundido clearable flat bordered
-      v-model               ="conIva"
-      label                 ="IVA"
-      icon                  ="mdi-bank"
-      class                 ="width140"
-      :options              ="opcionesIVA"
-    />
-    <select-label-value     use-input hundido clearable flat bordered
-      v-model               ="totalizado"
-      label                 ="Totalizar"
-      icon                  ="mdi-counter"
-      class                 ="width140"
-      :options              ="opcionesTotales"
-    />
-    <select-responsable     hundido clearable
-      v-model               ="responsable"
-      class                 ="width170"
-      :autoselect           ="comercialSelect"
-      :area                 ="usuario.area"
-      :readonly             ="!permisos.acceso_total"
-    />
-    <slot>
-
-    </slot>
-    <div class              ="">
-      <q-btn-toggle         spread push unelevated round 
-        v-model             ="resultadosPorPagina"
-        color               ="white"
-        text-color          ="grey-8"
-        toggle-color        ="primary"
-        :options            ="[{label: '25', value: 25},{label: '50', value: 50},{label: '100', value: 100}]"
-      />
-      <Tooltip label        ="Resultados por pagina"/>        
-    </div>  
-
-    <div class              ="row justify-center full-width">   
-      <q-pagination         push unelevated dense
-        v-model             ="pagina"
-        :max                ="pagina + (totalResultados >= resultadosPorPagina ? 1 : 0)"
-        :max-pages          ="3"
-        :ellipses           ="false"
-        :boundary-numbers   ="false"
-      />
-      <Tooltip label        ="Pagina"/>
-    </div>
-    <div class              ="q-ml-sm">
-      <q-btn                round push glossy
-        icon                ="mdi-refresh"
-        padding             ="xs"
-        color               ="primary"        
-        @click              ="buscar"
+    <q-tab-panel
+      name                      ="tab_1"
+      class                     ="row q-pa-none"
+      >
+      <fieldset-filtro
+        titulo                  ="Búsqueda"
+        class-conenido          ="column q-gutter-xs"
         >
-        <Tooltip label      ="Recargar"/>
-      </q-btn>      
-    </div>
-    <div class              ="q-ml-sm">
-      <q-btn                round push glossy
-        icon                ="mdi-filter-remove"
-        padding             ="xs"  
-        color               ="primary"
-        @click              ="limpiarBusqueda"
+        <input-buscar           clearable hundido
+          v-model               ="busquedaTercero"
+          label                 ="Terceros"
+          class                 ="width180"
+          icon                  ="mdi-account-search"      
+        />
+        <input-buscar           clearable hundido
+          v-model               ="busquedaContacto"
+          label                 ="Contactos"
+          icon                  ="mdi-target-account"
+          class                 ="width180"
+        />
+      </fieldset-filtro>
+      <fieldset-filtro
+        titulo                  ="Fechas"
+        class-conenido          ="column q-gutter-xs"
         >
-        <Tooltip label      ="Limpiar búsqueda"/>
-      </q-btn>
-    </div>
-  </fieldset-filtro>
+        <input-fecha            hundido no-futuro clearable
+          v-model               ="desde"
+          label                 ="Desde"
+          class                 ="width140"
+          :hasta                ="hasta"
+        />
+        <input-fecha            hundido no-futuro clearable
+          v-model               ="hasta"
+          label                 ="Hasta"
+          class                 ="width140"
+          :desde                ="desde"
+        />
+      </fieldset-filtro>
+      <fieldset-filtro
+        titulo                  ="Subtotal"
+        class-conenido          ="column q-gutter-xs"
+        >
+        <input-number           hundido clearable
+          v-model               ="precioMinimo"
+          label                 ="Mínimo"
+          icon                  ="mdi-currency-usd"
+          class                 ="width160"
+          :minimo               ="0"
+          :maximo               ="!!precioMaximo ? precioMaximo : undefined"
+        />
+        <input-number           hundido clearable
+          v-model               ="precioMaximo"
+          label                 ="Máximo"
+          icon                  ="mdi-currency-usd"
+          class                 ="width160"
+          :minimo               ="!!precioMinimo ? precioMinimo : undefined"
+          :maximo               ="999_999_999"
+        />
+      </fieldset-filtro>      
+      <fieldset-filtro
+        titulo                  ="Opciones"
+        class-conenido          ="grilla-ribom"
+        >
+        <select-responsable     hundido clearable
+          v-model               ="responsable"
+          class                 ="width170"
+          :autoselect           ="comercialSelect"
+          :area                 ="usuario.area"
+          :readonly             ="!permisos.acceso_total"
+        />
+        <slot>
+
+        </slot>
+        <div class              ="">
+          <q-btn-toggle         spread push unelevated round 
+            v-model             ="resultadosPorPagina"
+            color               ="white"
+            text-color          ="grey-8"
+            toggle-color        ="primary"
+            :options            ="[{label: '25', value: 25},{label: '50', value: 50},{label: '100', value: 100}]"
+          />
+          <Tooltip label        ="Resultados por pagina"/>        
+        </div>  
+
+        <div class              ="row justify-center full-width">   
+          <q-pagination         push unelevated dense
+            v-model             ="pagina"
+            :max                ="pagina + (totalResultados >= resultadosPorPagina ? 1 : 0)"
+            :max-pages          ="3"
+            :ellipses           ="false"
+            :boundary-numbers   ="false"
+          />
+          <Tooltip label        ="Pagina"/>
+        </div>
+        <div class              ="q-ml-sm">
+          <q-btn                round push glossy
+            icon                ="mdi-refresh"
+            padding             ="xs"
+            color               ="primary"        
+            @click              ="buscar"
+            >
+            <Tooltip label      ="Recargar"/>
+          </q-btn>      
+        </div>
+        <div class              ="q-ml-sm">
+          <q-btn                round push glossy
+            icon                ="mdi-filter-remove"
+            padding             ="xs"  
+            color               ="primary"
+            @click              ="limpiarBusqueda"
+            >
+            <Tooltip label      ="Limpiar búsqueda"/>
+          </q-btn>
+        </div>
+      </fieldset-filtro>      
+    </q-tab-panel>
+    <q-tab-panel
+      name                      ="tab_2"
+      class                     ="row q-pa-none"
+      >
+      <fieldset-filtro
+        titulo                  ="Opciones"
+        class-conenido          ="grilla-ribom"
+        >
+        <!-- //* ///////////////////////////////////////////////////////////// Unidad -->
+        <select-label-value     use-input hundido clearable flat bordered
+          v-model               ="estado"
+          label                 ="Estado"
+          icon                  ="mdi-label"
+          class                 ="width150"
+          :options              ="estadosCtz.filter(e => e.value >= 0)"
+        />
+        <select-label-value     use-input hundido clearable flat bordered
+          v-model               ="origen"
+          label                 ="Origen"
+          icon                  ="mdi-source-branch"
+          class                 ="width150"
+          :options              ="origenes"
+        />
+        <select-label-value     use-input hundido clearable flat bordered
+          v-model               ="conIva"
+          label                 ="IVA"
+          icon                  ="mdi-bank"
+          class                 ="width140"
+          :options              ="opcionesIVA"
+        />
+        <select-label-value     use-input hundido clearable flat bordered
+          v-model               ="totalizado"
+          label                 ="Totalizar"
+          icon                  ="mdi-counter"
+          class                 ="width140"
+          :options              ="opcionesTotales"
+        />
+      </fieldset-filtro>      
+    </q-tab-panel>
+  </q-tab-panels>    
 </template>
 <script lang="ts" setup>
 
@@ -148,10 +168,11 @@
             onMounted,
                                 } from "vue"
   import {  storeToRefs         } from 'pinia'
+  import {  useStoreApp         } from 'src/stores/app'    
   import {  IBusquedaCotizacion } from "src/areas/acuerdos/cotizaciones/services/servicesCotizaciones"
   import {  IUsuario            } from "src/areas/usuarios/models/Usuario"
   import {  useStoreUser        } from 'src/stores/user'
-  import {  estadosCtz          } from "src/areas/acuerdos/cotizaciones/models/Cotizacion"
+  import {  estadosCtz          } from "src/areas/acuerdos/models/ConstantesAcuerdos"
   import {  dexieOrigenesContacto
                                 } from "src/services/useDexie"
   import {  ILabelValue,
@@ -175,6 +196,9 @@
   const opcionesTotales           = [{value:0, label:'Sin totalizar'},  {value:1, label:'Totalizado'}]
   const opcionesIVA               = [{value:0, label:'Sin IVA'},        {value:1, label:'Con IVA'   }]  
 
+
+
+  const { tabs }                  = storeToRefs( useStoreApp() )
   const queryToApi                = ref<IBusquedaCotizacion >({})
   const busquedaTercero           = ref< string             >("")
   const busquedaContacto          = ref< string             >("")
@@ -193,7 +217,10 @@
   const comercialSelect           = computed(()=> Object.keys(queryURL).length === 0 ? true : getQueryRouterNumber( queryURL.idComercial ) ?? false )
   //const queryToApiLength          = computed(()=> Object.keys(queryToApi.value).length)
   
-  onMounted(asignarQueryRouterACampos)
+  onMounted(()=>{
+    asignarQueryRouterACampos()
+    tabs.value                    = "tab_1"
+  })
 
   const props                     = defineProps({
     totalResultados: { required: true,   type: Number },

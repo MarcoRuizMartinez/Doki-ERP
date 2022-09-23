@@ -12,7 +12,7 @@ import {  useTools,
           ID_URL_Ok,
           confeti               } from "src/useSimpleOk/useTools"
 //* ////////////////////////////////////////////////////////////////// Modelos
-import {  ESTADO_CTZ            } from "../../../areas/acuerdos/models/Acuerdo"
+import {  ESTADO_CTZ            } from "../../../areas/acuerdos/models/ConstantesAcuerdos"
 import {  IOrigenContacto       } from "../../../models/Diccionarios/OrigenContacto"
 import {  IUsuario              } from "../../../areas/usuarios/models/Usuario"
 import {  ITercero              } from "../../../areas/terceros/models/Tercero"
@@ -287,7 +287,7 @@ export function useControlCotizacion()
 
     if(ok){
       aviso("positive", "Cotización anulada")
-      acuerdo.value.estado = ESTADO_CTZ.RECHAZADO
+      acuerdo.value.estado    = ESTADO_CTZ.RECHAZADO
     }
     else
       aviso("negative", "Error al anular cotización")
@@ -303,7 +303,7 @@ export function useControlCotizacion()
     const newCtz : any        = data
     if(ok){
       aviso("positive", "Cotización validada")
-      acuerdo.value.estado = ESTADO_CTZ.COTIZADO
+      acuerdo.value.estado    = ESTADO_CTZ.COTIZADO
       if(!!newCtz && newCtz.hasOwnProperty("ref") && typeof newCtz.ref === "string")
       acuerdo.value.ref  = newCtz.ref
     }

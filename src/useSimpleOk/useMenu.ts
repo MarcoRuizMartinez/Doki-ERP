@@ -115,6 +115,22 @@ export function useMenu()
                             },
                         ]
         },
+      {
+        ...new ItemMenu({
+                          label:    "Logistica",
+                          icon:     "mdi-truck-fast"
+                        }),
+                        submenu:
+                        [
+                            { ...new ItemMenu({
+                                                label:      "Pedidos",
+                                                icon:       "mdi-cart",
+                                                to:         "/pedidos",
+                                                visible:    permisos.value.terceros_ver
+                                              }),
+                            }, 
+                        ]
+      },        
 /*       {
           ...new ItemMenu(        {
                                       label:      "Producto",

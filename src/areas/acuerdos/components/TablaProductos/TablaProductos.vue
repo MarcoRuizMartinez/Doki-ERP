@@ -45,7 +45,7 @@
       <q-td>
         <cantidad
           v-model               ="props.row"
-          :estado               ="acuerdo.estado"
+          :readonly             ="acuerdo.esEstadoValidado"
         />
       </q-td>
     </template>
@@ -54,7 +54,7 @@
       <q-td :props="props">
         <descuento
           v-model               ="props.row"
-          :estado               ="acuerdo.estado"
+          :readonly             ="acuerdo.esEstadoValidado"
         />
       </q-td>
     </template>

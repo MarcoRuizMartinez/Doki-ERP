@@ -41,7 +41,7 @@
       v-model:contacto        ="acuerdo.contacto"
       :tercero                ="acuerdo.tercero"
       :disable                ="!acuerdo.tercero.id || (!acuerdo.tercero.esEmpresa && !acuerdo.esTerceroCtz)"
-      :readonly               ="acuerdo.estado > ESTADO_CTZ.BORRADOR"
+      :readonly               ="acuerdo.esEstadoValidado"
       @contacto-nuevo         ="vincularContactoAcuerdo"
       @contacto-cambio        ="cambiarContactoAcuerdo"
     />
@@ -81,9 +81,7 @@
   import {  useStoreAcuerdo       } from 'stores/acuerdo'  
   //* ///////////////////////////////////////////////////////////////////////////// Componibles
   import {  dexieOrigenesContacto } from "../../../services/useDexie"
-  import {  useControlCotizacion  } from "src/areas/acuerdos/controllers/ControlCotizaciones"  
-  //* ///////////////////////////////////////////////////////////////////////////// Modelos
-  import {  ESTADO_CTZ            } from "../../../areas/acuerdos/models/Acuerdo"
+  import {  useControlCotizacion  } from "src/areas/acuerdos/controllers/ControlCotizaciones"
   //* ///////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana                 from "components/utilidades/Ventana.vue"
   import    inputText               from "components/utilidades/input/InputFormText.vue"

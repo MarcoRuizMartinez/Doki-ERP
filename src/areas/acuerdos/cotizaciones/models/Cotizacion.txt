@@ -23,7 +23,7 @@ import {  getDateToStr,
 
 export enum ESTADO_CTZ
 {
-  NO_GUARDADO                 = -1,
+  NO_GUARDADO                 = -2,
   BORRADOR                    = 0,
   COTIZADO                    = 1,
   APROBADO                    = 2,

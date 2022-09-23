@@ -5,8 +5,7 @@ import {  UtilPDF,
           crearImageHTML,
           GRISES            } from 'src/useSimpleOk/UtilPDF';
 import {  Acuerdo,
-          IAcuerdo,
-          ESTADO_CTZ        } from "src/areas/acuerdos/models/Acuerdo"          
+          IAcuerdo          } from "src/areas/acuerdos/models/Acuerdo"          
 import {  useQuasar,
           QSpinnerGears     } from "quasar"
 import {  fechaLarga,
@@ -115,7 +114,7 @@ export function useCotizacionPDF()
     //* ///////////////////////////////////// Textos Arriba derecha
     doc.y               = 17
     doc.setFont         ( 16, 60 )
-    const titulo        = quote.estado === ESTADO_CTZ.BORRADOR ? "NO VALIDO" : "COTIZACIÓN"
+    const titulo        = quote.esEstadoNoValidado ? "NO VALIDO" : "COTIZACIÓN"
     pdf.text            ( titulo, doc.ancho - 80, doc.y, { align: "center", renderingMode: 'fillThenStroke' } )
 
     //* ///////////////////////////////////// Datos empresa

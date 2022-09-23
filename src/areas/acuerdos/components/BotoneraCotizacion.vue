@@ -3,7 +3,7 @@
     <efecto-grupo efecto    ="Down">
       <!-- //* //////////////////////////////////////////////////////////  Boton PDF -->
       <q-btn
-        v-if                ="acuerdo.estado !== ESTADO_CTZ.BORRADOR"
+        v-if                ="acuerdo.esEstadoValidado"
         v-bind              ="btnBaseMd"
         color               ="primary"
         icon                ="mdi-pdf-box"
@@ -16,7 +16,7 @@
       </q-btn>
     </efecto-grupo>
     <!-- <efecto efecto          ="Down"> -->
-      <q-btn-group  v-if    ="acuerdo.estado === ESTADO_CTZ.COTIZADO">
+      <q-btn-group  v-if    ="acuerdo.esEstadoCotizado">
         <!-- //* //////////////////////////////////////////////////////////  Boton Aprobar -->
         <q-btn 
           v-if              ="!acuerdo.esTerceroCtz"
@@ -46,7 +46,7 @@
     <!-- </efecto> -->
     <!-- //* ////////////////////////////////////////////////////////// Boton Validar -->
     <q-btn
-      v-if                  ="acuerdo.estado === ESTADO_CTZ.BORRADOR"
+      v-if                  ="acuerdo.esEstadoNoValidado"
       v-bind                ="btnBaseMd"
       color                 ="positive"
       icon                  ="mdi-check-circle-outline"
@@ -63,7 +63,7 @@
     </q-btn>
     <!-- //* ////////////////////////////////////////////////////////// Boton Editar -->
     <q-btn
-      v-if                  ="acuerdo.estado !== ESTADO_CTZ.BORRADOR && acuerdo.estado !== ESTADO_CTZ.FACTURADO"
+      v-if                  ="acuerdo.esEstadoValidado && !acuerdo.esEstadoFacturado"
       v-bind                ="btnBaseMd"
       color                 ="positive"
       icon                  ="mdi-square-edit-outline"
@@ -97,7 +97,6 @@
   // * /////////////////////////////////////////////////////////////////////// Componibles
   import {  useTools        } from "src/useSimpleOk/useTools"
   import {  btnBaseMd       } from "src/useSimpleOk/useEstilos"
-  import {  ESTADO_CTZ      } from "src/areas/acuerdos/models/Acuerdo"  
   // * /////////////////////////////////////////////////////////////////////// Componentes
   import    barra             from "components/utilidades/Barra.vue"
   import    efectoGrupo       from "components/utilidades/EfectoGrupo.vue"

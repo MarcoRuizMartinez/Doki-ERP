@@ -1,3 +1,13 @@
+import {  TIPO_ACUERDO,
+          ESTADO_CTZ,
+          estadoCtzToName,
+          estadoCtzToColor,
+          estadosCtz,
+          ESTADO_PED,
+          estadoPedToName,
+          estadoPedToColor,
+          estadosPed,
+                                            } from "./ConstantesAcuerdos"
 import {  X100                              } from "../../../useSimpleOk/useTools"
 import {  ILineaAcuerdo,    LineaAcuerdo    } from "../../../areas/acuerdos/models/LineaAcuerdo"
 import {  ITercero,         Tercero         } from "../../../areas/terceros/models/Tercero"
@@ -19,70 +29,6 @@ import {  getCondicionesPagoDB,
 import {  date                              } from "quasar"
 import {  getDateToStr,
           getMilisecShortForApiDolibarr     } from "src/useSimpleOk/useTools"
-
-
-export enum ESTADO_CTZ
-{
-  NO_GUARDADO                 = -1,
-  BORRADOR                    = 0,
-  COTIZADO                    = 1,
-  APROBADO                    = 2,
-  RECHAZADO                   = 3,
-  FACTURADO                   = 4,
-}
-
-export enum TIPO_ACUERDO
-{
-  COTIZACION                  = "cotizaciones", // Igual que el END POINT del servicio
-  PEDIDO                      = "pedido",
-  ENTREGA                     = "entraga",
-  FACTURA                     = "factura",
-}
-
-
-export function estadoCtzToName( estado : number ): string {
-  let valor :string         =   estado == ESTADO_CTZ.NO_GUARDADO ? "Boceto"
-                              : estado == ESTADO_CTZ.BORRADOR    ? "Edición"
-                              : estado == ESTADO_CTZ.COTIZADO    ? "Cotizado"
-                              : estado == ESTADO_CTZ.APROBADO    ? "Aprobado"
-                              : estado == ESTADO_CTZ.RECHAZADO   ? "Rechazado"
-                              : estado == ESTADO_CTZ.FACTURADO   ? "Facturado"
-                              : ""
-  return valor
-}
-
-export function estadoCtzToColor( estado : number ): string
-{
-  let color :string           = estado == ESTADO_CTZ.NO_GUARDADO ? "#1A1A1A"
-                              : estado == ESTADO_CTZ.BORRADOR    ? "#BCBABA"
-                              : estado == ESTADO_CTZ.COTIZADO    ? "#0f61dd"
-                              : estado == ESTADO_CTZ.APROBADO    ? "#06c700"
-                              : estado == ESTADO_CTZ.RECHAZADO   ? "#832362"
-                              : estado == ESTADO_CTZ.FACTURADO   ? "#FF6805"
-                              : "transparent"
-  return color
-}
-
-export const estadosCtz       = [
-  { value: ESTADO_CTZ.NO_GUARDADO, label: estadoCtzToName( ESTADO_CTZ.NO_GUARDADO ) },
-  { value: ESTADO_CTZ.BORRADOR,    label: estadoCtzToName( ESTADO_CTZ.BORRADOR    ) },
-  { value: ESTADO_CTZ.COTIZADO,    label: estadoCtzToName( ESTADO_CTZ.COTIZADO    ) },
-  { value: ESTADO_CTZ.APROBADO,    label: estadoCtzToName( ESTADO_CTZ.APROBADO    ) },
-  { value: ESTADO_CTZ.RECHAZADO,   label: estadoCtzToName( ESTADO_CTZ.RECHAZADO   ) },
-  { value: ESTADO_CTZ.FACTURADO,   label: estadoCtzToName( ESTADO_CTZ.FACTURADO   ) },
-]
-
-export function estadoStrCtzToColor( estado : string ): string
-{
-  let color :string           = estado == "Boceto"    ? "#1A1A1A"
-                              : estado == "Edición"   ? "#BCBABA"
-                              : estado == "Cotizado"  ? "#0f61dd"
-                              : estado == "Aprobado"  ? "#06c700"
-                              : estado == "Rechazado" ? "#832362"
-                              : estado == "Facturado" ? "#FF6805"
-                              : "transparent"
-  return color
-}
 
 
 export interface IAcuerdo
@@ -116,6 +62,8 @@ export interface IAcuerdo
   esEstadoBoceto:             boolean
   esEstadoNoValidado:         boolean
   esEstadoValidado:           boolean
+  esEstadoCotizado:           boolean
+  esEstadoFacturado:          boolean
 
   notaPrivada:                string
   notaPublica:                string
@@ -175,6 +123,10 @@ export interface IAcuerdo
   esTerceroCtz:               boolean
   getCotizacionForApi:        ( usuarioId : number ) => any
   //reorganizarProductosGrupos: () => void
+
+
+  /* Solo para pediso */
+  facturado:                  boolean
 }
 
 export class Acuerdo implements IAcuerdo
@@ -222,6 +174,9 @@ export class Acuerdo implements IAcuerdo
   fechaFinValidez:            Date
   conTotal:                   boolean
 
+  /* Solo para pedidos */
+  facturado:                  boolean
+
   constructor()
   {
     this.tipo                 = TIPO_ACUERDO.COTIZACION
@@ -266,6 +221,9 @@ export class Acuerdo implements IAcuerdo
     this.titulo               = ""
     this.fechaFinValidez      = new Date(0)
     this.conTotal             = true
+
+    /* Solo para pedidos */
+    this.facturado            = false
   }
 
 
@@ -380,6 +338,8 @@ export class Acuerdo implements IAcuerdo
   get esEstadoBoceto      ():boolean { return this.estado === ESTADO_CTZ.NO_GUARDADO }
   get esEstadoNoValidado  ():boolean { return this.estado === ESTADO_CTZ.NO_GUARDADO || this.estado === ESTADO_CTZ.BORRADOR}
   get esEstadoValidado    ():boolean { return this.estado > ESTADO_CTZ.BORRADOR }
+  get esEstadoCotizado    ():boolean { return this.estado > ESTADO_CTZ.COTIZADO }
+  get esEstadoFacturado   ():boolean { return this.estado > ESTADO_CTZ.FACTURADO }
   // * ///////////////////////////////////////////////////////////////////////////////  Icono
   get estadoIcono(): string {
     let valor :string         =   this.estado == ESTADO_CTZ.NO_GUARDADO ? "mdi-eraser-variant"

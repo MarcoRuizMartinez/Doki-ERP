@@ -82,7 +82,7 @@
       <!-- //?* ////////////////////////////////////////////////////////////// SLOT Menu --> 
       <q-card-actions
         v-if                  ="hayMenu || menuVisible"
-        class                 ="row menu-ventana menu-gris"
+        class                 ="row menu-ventana menu-gris no-wrap overflow-auto"
         :class                ="classMenu, { 'minimizado' : minimizado }"
         >
         <slot                 name="menu">

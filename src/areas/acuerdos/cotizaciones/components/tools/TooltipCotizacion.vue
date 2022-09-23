@@ -48,11 +48,12 @@
   </q-tooltip>
 </template>
 <script setup lang="ts">
-  import {  PropType      } from "vue"
-  import {  ICotizacion   } from "src/areas/acuerdos/cotizaciones/models/Cotizacion"
+  import {  PropType      } from "vue"  
   import {  fechaLarga,
             formatoPrecio } from "src/useSimpleOk/useTools"
+  import {  IAcuerdo      } from "src/areas/acuerdos/models/Acuerdo"  
+
   const props = defineProps({
-    cotizacion:  { required: true, type: Object as PropType<ICotizacion> }
+    cotizacion:  { required: true, type: Object as PropType<IAcuerdo> }
   })
 </script>

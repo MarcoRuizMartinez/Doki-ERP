@@ -3,7 +3,7 @@ import {  ISerie,
           Tiempo,
           IApexSerie          } from "src/models/TiposInformes"
 import {  estadoCtzToName,
-          estadoCtzToColor    } from "src/areas/acuerdos/cotizaciones/models/Cotizacion"
+          estadoCtzToColor    } from "src/areas/acuerdos/models/ConstantesAcuerdos"
 
 export interface ISerieCtz extends ISerie
 {

@@ -14,7 +14,7 @@
       label                   ="Cantidad"
       modo                    ="right"
       :minimo                 ="0.1"
-      :readonly               ="acuerdo.estado > ESTADO_CTZ.BORRADOR"
+      :readonly               ="acuerdo.esEstadoValidado"
     />
     <!-- //* ///////////////////////////////////////////////////////////// Precio Base -->
     <input-number             no-undefined
@@ -28,7 +28,7 @@
       :alerta                 ="false"
       :con-decimales          ="conDecimales"
       :paso                   ="conDecimales ? 0.01 : 100"
-      :readonly               ="acuerdo.estado > ESTADO_CTZ.BORRADOR"
+      :readonly               ="acuerdo.esEstadoValidado"
     />
     <!-- //* ///////////////////////////////////////////////////////////// Descuento -->
     <numero-paso              porcentaje
@@ -39,7 +39,7 @@
       :paso                   ="0.1"
       :maximo                 ="linea.x100Maximo"
       :minimo                 ="0"
-      :readonly               ="acuerdo.estado > ESTADO_CTZ.BORRADOR"
+      :readonly               ="acuerdo.esEstadoValidado"
     />
     <!-- //* ///////////////////////////////////////////////////////////// Precio final -->
     <input-number
@@ -54,7 +54,7 @@
       :alerta                 ="false"
       :con-decimales          ="conDecimales"
       :paso                   ="conDecimales ? 0.01 : 50"
-      :readonly               ="acuerdo.estado > ESTADO_CTZ.BORRADOR"
+      :readonly               ="acuerdo.esEstadoValidado"
     />
     <!-- //* ///////////////////////////////////////////////////////////// Descuento valor -->
     <div class                ="col-5 col-md-6">
@@ -79,7 +79,7 @@
       :alerta                 ="false"
       :minimo                 ="linea.precioMinimoConIVA"
       :paso                   ="conDecimales ? 0.01 : 50"
-      :readonly               ="acuerdo.estado > ESTADO_CTZ.BORRADOR"
+      :readonly               ="acuerdo.esEstadoValidado"
     />
     <!-- //* ///////////////////////////////////////////////////////////// Tabla totales -->
     <div        class         ="col-12">
@@ -117,19 +117,19 @@
       behavior                ="dialog"
       options-sort            ="orden"
       :options                ="unidades"
-      :readonly               ="acuerdo.estado > ESTADO_CTZ.BORRADOR"
+      :readonly               ="acuerdo.esEstadoValidado"
     />
     <!-- //* ///////////////////////////////////////////////////////////// Descripcion -->
     <div class                ="col-12">
       <q-editor
         v-model               ="linea.descripcion"
         v-bind                ="WYSIWYG_Limpio"
-        :readonly             ="acuerdo.estado > ESTADO_CTZ.BORRADOR"
+        :readonly             ="acuerdo.esEstadoValidado"
       />
     </div>
     <!-- //* ///////////////////////////////////////////////////////////// Boton Borrar -->
+    <!-- v-if                    ="acuerdo.esEstadoNoValidado" -->
     <div
-      v-if                    ="acuerdo.estado <= ESTADO_CTZ.BORRADOR"
       class                   ="col-6"
       >
       <q-btn                  flat
@@ -141,12 +141,12 @@
       />
     </div>
     <!-- //* ///////////////////////////////////////////////////////////// Boton Guardar -->
+    <!-- v-if                    ="acuerdo.estado <= ESTADO_CTZ.BORRADOR" -->
     <div
-      v-if                    ="acuerdo.estado <= ESTADO_CTZ.BORRADOR"
       class                   ="col-6"
       >
       <q-btn                  flat
-        label                 ="Guardar"
+        label                 ="Guardddddar"
         class                 ="full-width"
         color                 ="positive"
         icon                  ="mdi-content-save"
@@ -167,7 +167,6 @@
   //* ////////////////////////////////////////////////////////////////////////// Modelos
   import {  ILineaAcuerdo,
             LineaAcuerdo        } from "src/areas/acuerdos/models/LineaAcuerdo"
-  import {  ESTADO_CTZ          } from "src/areas/acuerdos/cotizaciones/models/Cotizacion"            
   //* ////////////////////////////////////////////////////////////////////////// Componibles
   import {  WYSIWYG_Limpio      } from "src/useSimpleOk/useEstilos"
   import {  dexieUnidades       } from "src/services/useDexie"  

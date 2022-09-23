@@ -3,7 +3,7 @@
     {{ linea.qtyUnd }}
   </div>
   <q-popup-edit           buttons
-    v-if                  ="estado <= ESTADO_CTZ.BORRADOR"
+    v-if                  ="!readonly"
     v-model               ="linea.qty"
     v-slot                ="scope"
     label-set             ="Editar"
@@ -15,7 +15,6 @@
       label               ="Cantidad"
       modo                ="right"
       :minimo             ="0.1"
-      :readonly           ="estado > ESTADO_CTZ.BORRADOR"
       @enter              ="scope.set"
     />
   </q-popup-edit> 
@@ -23,15 +22,14 @@
 <script lang="ts" setup>
   import {  ref, toRefs, PropType } from "vue"    
   import {  ILineaAcuerdo         } from "src/areas/acuerdos/models/LineaAcuerdo"
-  import {  ESTADO_CTZ            } from "src/areas/acuerdos/models/Acuerdo"
   import {  useControlProductos   } from "src/areas/acuerdos/controllers/ControlLineasProductos"            
   import    numeroPaso              from "components/utilidades/input/InputNumeroPaso.vue"
 
   const { editarCantidad  } = useControlProductos()  
 
   const props               = defineProps({
-    modelValue: { required: true, type: Object as PropType< ILineaAcuerdo > },
-    estado:     { required: true, type: Number                              },
+    modelValue: { required: true,   type: Object as PropType< ILineaAcuerdo > },
+    readonly:   { default:  false,  type: Boolean                             }
   })
   const { modelValue }      = toRefs(props)
   const linea               = ref<ILineaAcuerdo>(modelValue.value)  

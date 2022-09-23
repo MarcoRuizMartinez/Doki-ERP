@@ -6,7 +6,7 @@
     <!-- //* /////////////////////////////////////////////////////// Tres puntos -->
     <div>
       <q-icon
-        v-if              ="acuerdo.estado === ESTADO_CTZ.BORRADOR" 
+        v-if              ="acuerdo.esEstadoNoValidado" 
         name              ="mdi-dots-vertical"
         size              ="xs"
         class             ="cursor-pointer"
@@ -16,7 +16,7 @@
     </div>
     <!-- //* /////////////////////////////////////////////////////// Popup Edit nombre -->
     <q-popup-edit         auto-save fit 
-      v-if                ="acuerdo.estado === ESTADO_CTZ.BORRADOR" 
+      v-if                ="acuerdo.esEstadoNoValidado" 
       v-model             ="grupo.titulo"
       v-slot              ="scope"
       class               ="row panel-blur70 q-col-gutter-xs"
@@ -118,7 +118,6 @@
   import {  btnBaseMd,
             btnFlatSm           } from "src/useSimpleOk/useEstilos"
   //* //////////////////////////////////////////////////////////////////////////////// Modelos
-  import {  ESTADO_CTZ          } from "src/areas/acuerdos/models/Acuerdo"
   import {  IGrupoLineas        } from "src/areas/acuerdos/models/GrupoLineasAcuerdo"
   
 
