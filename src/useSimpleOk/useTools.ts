@@ -476,6 +476,36 @@ export function getQueryRouterLabelValue
 }
 
 
+export function getQueryRouterLabelValueArray
+(
+    paramQuery  : LocationQueryValue  | LocationQueryValue[],
+    lista       : ILabelValue[],
+    separador   : string                                      = "-",
+    tipoKey     : "string"            | "number"              = "number"
+)               : ILabelValue[]
+{
+  
+
+  if( Array.isArray(paramQuery) || paramQuery === undefined )
+    return []
+
+  //console.log("aca estoy ")
+  const valorRaw      = paramQuery as string
+  const arrayRaw      = valorRaw.split(separador)
+  //console.log("arrayRaw: ", arrayRaw);
+  //console.log("lista: ", lista);
+  const arrayFinal    = lista.filter( item => arrayRaw.some( valor => valor == item.value )  )
+  //console.log("arrayFinal: ", arrayFinal);
+
+  //const valor         = tipoKey === "number" ? arrayRaw.forEach( i => i = +i ) : valorRaw
+  //const itemTem       = lista.find( i => i.value == valor || i.id == valor )      
+  //const estadoFinal   = itemTem !== undefined ? itemTem : labelValueNulo
+  //console.log('lista: ', valor, itemTem, lista, estadoFinal);
+  return arrayFinal
+}
+
+
+
 export function getQueryRouterString(paramQuery  : LocationQueryValue  | LocationQueryValue[]) : string
 {
   if(Array.isArray(paramQuery) || paramQuery === undefined )  return ""

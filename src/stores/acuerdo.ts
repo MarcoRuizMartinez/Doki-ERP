@@ -1,22 +1,26 @@
-import {  defineStore     } from 'pinia';
+import {  defineStore       } from 'pinia';
 import {  Acuerdo,
-          IAcuerdo,       } from "src/areas/acuerdos/models/Acuerdo"
+          IAcuerdo,         } from "src/areas/acuerdos/models/Acuerdo"
 import {  ILoading,
           LoadingDefault,
           IModales,
           ModalesDefault
-                          } from "src/models/TiposVarios"
+                            } from "src/models/TiposVarios"
 import {  GrupoLineas,
-          IGrupoLineas    } from "src/areas/acuerdos/models/GrupoLineasAcuerdo"
+          IGrupoLineas      } from "src/areas/acuerdos/models/GrupoLineasAcuerdo"
 import {  ILineaAcuerdo,
-          LineaAcuerdo    } from "src/areas/acuerdos/models/LineaAcuerdo"
+          LineaAcuerdo      } from "src/areas/acuerdos/models/LineaAcuerdo"
+import {  BusquedaAcuerdo,
+          IBusquedaAcuerdo  } from "src/areas/acuerdos/models/BusquedaAcuerdos"
 
 export interface iAcuerdoState {
   acuerdo         : IAcuerdo,
   loading         : ILoading,  
   grupoElegido    : IGrupoLineas,
   lineaElegida    : ILineaAcuerdo,
-  modales         : IModales
+  modales         : IModales,
+  acuerdos        : IAcuerdo[],
+  busqueda        : IBusquedaAcuerdo,
 }
 
 export const useStoreAcuerdo = defineStore('acuerdo', {
@@ -27,7 +31,9 @@ export const useStoreAcuerdo = defineStore('acuerdo', {
     loading       : LoadingDefault,
     grupoElegido  : new GrupoLineas(),
     lineaElegida  : new LineaAcuerdo(),
-    modales       : ModalesDefault
+    modales       : ModalesDefault,
+    acuerdos      : [],
+    busqueda      : new BusquedaAcuerdo(),
   }),
 
 

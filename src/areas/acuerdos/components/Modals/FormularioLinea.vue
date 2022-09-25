@@ -146,7 +146,7 @@
       class                   ="col-6"
       >
       <q-btn                  flat
-        label                 ="Guardddddar"
+        label                 ="Guardar"
         class                 ="full-width"
         color                 ="positive"
         icon                  ="mdi-content-save"

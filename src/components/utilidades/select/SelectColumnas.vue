@@ -1,8 +1,10 @@
 <template>
-  <q-select                     multiple emit-value map-options dense options-dense hide-bottom-space borderless
+  <q-select                     dense options-dense hide-bottom-space borderless
+                                multiple emit-value map-options 
     v-model                     ="modelo"
     option-value                ="name"
     class                       ="campo-hundido"
+    popup-content-class         ="panel-blur"
     :class                      ="{ 'width60' : !label }"
     :display-value              ="label"
     :options                    ="options"

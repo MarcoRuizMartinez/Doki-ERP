@@ -1,11 +1,16 @@
 export enum TIPO_ACUERDO
 {
+  NULO                        = "",
   COTIZACION                  = "cotizaciones", // Igual que el END POINT del servicio
-  PEDIDO                      = "pedido",
-  ENTREGA                     = "entraga",
-  FACTURA                     = "factura",
+  PEDIDO                      = "pedidos",
+  ENTREGA                     = "entregas",
+  FACTURA                     = "facturas",
 }
 
+export type TTipoAcuerdo      =   TIPO_ACUERDO.COTIZACION
+                                | TIPO_ACUERDO.PEDIDO
+                                | TIPO_ACUERDO.ENTREGA
+                                | TIPO_ACUERDO.FACTURA
 
 export enum ESTADO_CTZ
 {
@@ -27,7 +32,14 @@ export enum ESTADO_PED
   ENTREGADO                   = 3,
 }
 
-
+export function getTipoAcuerdoSingular( tipo : TIPO_ACUERDO ) : string {
+  const singular              =   tipo === TIPO_ACUERDO.COTIZACION  ? "cotizacion"
+                                : tipo === TIPO_ACUERDO.PEDIDO      ? "pedido"
+                                : tipo === TIPO_ACUERDO.ENTREGA     ? "entrega"
+                                : tipo === TIPO_ACUERDO.FACTURA     ? "factura"
+                                : ""
+  return singular
+}
 
 export function estadoCtzToName( estado : number ): string {
   let valor :string         =   estado == ESTADO_CTZ.NO_GUARDADO  ? "Boceto"
@@ -39,6 +51,7 @@ export function estadoCtzToName( estado : number ): string {
                               : ""
   return valor
 }
+
 export function estadoPedToName( estado : number ): string {
   let valor :string         =   estado == ESTADO_PED.NO_GUARDADO  ? "Boceto"
                               : estado == ESTADO_PED.CANCELADO    ? "Cancelado"
@@ -49,7 +62,6 @@ export function estadoPedToName( estado : number ): string {
                               : ""
   return valor
 }
-
 
 export function estadoCtzToColor( estado : number ): string
 {
@@ -62,7 +74,6 @@ export function estadoCtzToColor( estado : number ): string
                               : "transparent"
   return color
 }
-
 
 export function estadoPedToColor( estado : number ): string
 {

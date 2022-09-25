@@ -12,16 +12,16 @@
         class-conenido          ="column q-gutter-xs"
         >
         <input-buscar           clearable hundido
-          v-model               ="busquedaTercero"
+          v-model               ="busqueda.tercero"
           label                 ="Terceros"
-          class                 ="width180"
+          class                 ="width220"
           icon                  ="mdi-account-search"      
         />
         <input-buscar           clearable hundido
-          v-model               ="busquedaContacto"
+          v-model               ="busqueda.contacto"
           label                 ="Contactos"
           icon                  ="mdi-target-account"
-          class                 ="width180"
+          class                 ="width220"
         />
       </fieldset-filtro>
       <fieldset-filtro
@@ -29,16 +29,16 @@
         class-conenido          ="column q-gutter-xs"
         >
         <input-fecha            hundido no-futuro clearable
-          v-model               ="desde"
+          v-model               ="busqueda.desde"
           label                 ="Desde"
           class                 ="width140"
-          :hasta                ="hasta"
+          :hasta                ="busqueda.hasta"
         />
         <input-fecha            hundido no-futuro clearable
-          v-model               ="hasta"
+          v-model               ="busqueda.hasta"
           label                 ="Hasta"
           class                 ="width140"
-          :desde                ="desde"
+          :desde                ="busqueda.desde"
         />
       </fieldset-filtro>
       <fieldset-filtro
@@ -46,19 +46,19 @@
         class-conenido          ="column q-gutter-xs"
         >
         <input-number           hundido clearable
-          v-model               ="precioMinimo"
+          v-model               ="busqueda.precioMinimo"
           label                 ="Mínimo"
           icon                  ="mdi-currency-usd"
           class                 ="width160"
           :minimo               ="0"
-          :maximo               ="!!precioMaximo ? precioMaximo : undefined"
+          :maximo               ="!!busqueda.precioMaximo ? busqueda.precioMaximo : undefined"
         />
         <input-number           hundido clearable
-          v-model               ="precioMaximo"
+          v-model               ="busqueda.precioMaximo"
           label                 ="Máximo"
           icon                  ="mdi-currency-usd"
           class                 ="width160"
-          :minimo               ="!!precioMinimo ? precioMinimo : undefined"
+          :minimo               ="!!busqueda.precioMinimo ? busqueda.precioMinimo : undefined"
           :maximo               ="999_999_999"
         />
       </fieldset-filtro>      
@@ -67,9 +67,9 @@
         class-conenido          ="grilla-ribom"
         >
         <select-responsable     hundido clearable
-          v-model               ="responsable"
+          v-model               ="busqueda.responsable"
           class                 ="width170"
-          :autoselect           ="comercialSelect"
+          :autoselect           ="autoSelectUsuario"
           :area                 ="usuario.area"
           :readonly             ="!permisos.acceso_total"
         />
@@ -78,7 +78,7 @@
         </slot>
         <div class              ="">
           <q-btn-toggle         spread push unelevated round 
-            v-model             ="resultadosPorPagina"
+            v-model             ="busqueda.resultadosXPage"
             color               ="white"
             text-color          ="grey-8"
             toggle-color        ="primary"
@@ -89,8 +89,8 @@
 
         <div class              ="row justify-center full-width">   
           <q-pagination         push unelevated dense
-            v-model             ="pagina"
-            :max                ="pagina + (totalResultados >= resultadosPorPagina ? 1 : 0)"
+            v-model             ="busqueda.pagina"
+            :max                ="busqueda.pagina + (totalResultados >= busqueda.resultadosXPage ? 1 : 0)"
             :max-pages          ="3"
             :ellipses           ="false"
             :boundary-numbers   ="false"
@@ -128,189 +128,175 @@
         class-conenido          ="grilla-ribom"
         >
         <!-- //* ///////////////////////////////////////////////////////////// Unidad -->
-        <select-label-value     use-input hundido clearable flat bordered
-          v-model               ="estado"
+<!--         <select-label-value     use-input hundido clearable flat bordered
+          v-model               ="busqueda.estado"
           label                 ="Estado"
           icon                  ="mdi-label"
           class                 ="width150"
           :options              ="estadosCtz.filter(e => e.value >= 0)"
-        />
-        <select-label-value     use-input hundido clearable flat bordered
-          v-model               ="origen"
+        /> -->
+<!--         <select-label-value     use-input hundido clearable flat bordered
+          v-model               ="busqueda.origen"
           label                 ="Origen"
           icon                  ="mdi-source-branch"
           class                 ="width150"
           :options              ="origenes"
-        />
+        /> -->
+        <multi-label-value
+          v-model               ="busqueda.estado"
+          label                 ="Estado"
+          icon                  ="mdi-label"
+          :options              ="estados"
+        />             
+        <multi-label-value
+          v-model               ="busqueda.origen"
+          label                 ="Origen"
+          icon                  ="mdi-source-branch"
+          :options              ="origenes"
+        />                
         <select-label-value     use-input hundido clearable flat bordered
-          v-model               ="conIva"
+          v-model               ="busqueda.conIva"
           label                 ="IVA"
           icon                  ="mdi-bank"
           class                 ="width140"
           :options              ="opcionesIVA"
         />
         <select-label-value     use-input hundido clearable flat bordered
-          v-model               ="totalizado"
+          v-model               ="busqueda.totalizado"
           label                 ="Totalizar"
           icon                  ="mdi-counter"
           class                 ="width140"
           :options              ="opcionesTotales"
-        />
+        />   
       </fieldset-filtro>      
     </q-tab-panel>
   </q-tab-panels>    
 </template>
 <script lang="ts" setup>
-
+  // * /////////////////////////////////////////////////////////////////////// Core
   import {  ref,
             watch,
             computed,
             onMounted,
                                 } from "vue"
+  import {  useRouter           } from "vue-router"                                
+  // * /////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs         } from 'pinia'
-  import {  useStoreApp         } from 'src/stores/app'    
-  import {  IBusquedaCotizacion } from "src/areas/acuerdos/cotizaciones/services/servicesCotizaciones"
-  import {  IUsuario            } from "src/areas/usuarios/models/Usuario"
+  import {  useStoreApp         } from 'src/stores/app'
   import {  useStoreUser        } from 'src/stores/user'
-  import {  estadosCtz          } from "src/areas/acuerdos/models/ConstantesAcuerdos"
+  import {  useStoreAcuerdo     } from 'src/stores/acuerdo'
+  // * /////////////////////////////////////////////////////////////////////// Componibles
   import {  dexieOrigenesContacto
                                 } from "src/services/useDexie"
-  import {  ILabelValue,
-            labelValueNulo      } from "src/models/TiposVarios"
-  import {  useRouter           } from "vue-router"
-  import    inputBuscar           from "src/components/utilidades/input/InputSimple.vue"
-  import    selectResponsable     from "src/areas/usuarios/components/SelectUsuario.vue"
-  import    selectLabelValue      from "components/utilidades/select/SelectLabelValue.vue"     
-  import    fieldsetFiltro        from "components/utilidades/Fieldset.vue"
-  import    inputFecha            from "src/components/utilidades/input/InputFecha.vue"
-  import    inputNumber           from "components/utilidades/input/InputFormNumber.vue"
-  import {  getQueryRouterLabelValue,
+  import {  getQueryRouterDate,
             getQueryRouterString,
             getQueryRouterNumber,
-            getQueryRouterDate
-                                } from "src/useSimpleOk/useTools"  
+            getQueryRouterLabelValue,
+            getQueryRouterLabelValueArray
+                                } from "src/useSimpleOk/useTools"
+  // * /////////////////////////////////////////////////////////////////////// Modelos
+  
+  import {  IQueryAcuerdo       } from "src/areas/acuerdos/models/BusquedaAcuerdos"
+  import {  estadosCtz,
+            estadosPed,
+                                } from "src/areas/acuerdos/models/ConstantesAcuerdos"
+
+  // * /////////////////////////////////////////////////////////////////////// Componentes
+  import    fieldsetFiltro        from "components/utilidades/Fieldset.vue"
+  import    inputNumber           from "components/utilidades/input/InputFormNumber.vue"
+  import    selectLabelValue      from "components/utilidades/select/SelectLabelValue.vue"     
+  import    multiLabelValue       from "components/utilidades/select/SelectLabelValueMulti.vue"
+  import    inputFecha            from "src/components/utilidades/input/InputFecha.vue"
+  import    selectResponsable     from "src/areas/usuarios/components/SelectUsuario.vue"
+  import    inputBuscar           from "src/components/utilidades/input/InputSimple.vue"
+  import {  ILabelValue,
+            labelValueNulo      } from "src/models/TiposVarios"
+
   const router                    = useRouter()
   let queryURL                    = router.currentRoute.value.query  
   const origenes                  = dexieOrigenesContacto()
   const { usuario, permisos }     = storeToRefs( useStoreUser() )  
+  const { busqueda              } = storeToRefs( useStoreAcuerdo() )  
   const opcionesTotales           = [{value:0, label:'Sin totalizar'},  {value:1, label:'Totalizado'}]
-  const opcionesIVA               = [{value:0, label:'Sin IVA'},        {value:1, label:'Con IVA'   }]  
+  const opcionesIVA               = [{value:0, label:'Sin IVA'},        {value:1, label:'Con IVA'   }]
 
-
+  const multi                     = ref<ILabelValue[]>([])
+  const estados                   = computed(()=>   busqueda.value.esCotizacion ? estadosCtz.filter(e => e.value >= -1) 
+                                                  : busqueda.value.esPedido     ? estadosPed.filter(e => e.value >= -1)
+                                                  : [] )
 
   const { tabs }                  = storeToRefs( useStoreApp() )
-  const queryToApi                = ref<IBusquedaCotizacion >({})
-  const busquedaTercero           = ref< string             >("")
-  const busquedaContacto          = ref< string             >("")
-  const desde                     = ref< Date | string      >("")
-  const hasta                     = ref< Date | string      >("")
-  const precioMinimo              = ref< number | undefined >()
-  const precioMaximo              = ref< number | undefined >()
-  const estado                    = ref< ILabelValue        >( labelValueNulo )
-  const conIva                    = ref< ILabelValue        >( labelValueNulo )
-  const totalizado                = ref< ILabelValue        >( labelValueNulo )
-  const origen                    = ref< ILabelValue        >( labelValueNulo )
-  
-  const responsable               = ref< IUsuario >()
-  const resultadosPorPagina       = ref< number   >(25)
-  const pagina                    = ref< number   >(1)
-  const comercialSelect           = computed(()=> Object.keys(queryURL).length === 0 ? true : getQueryRouterNumber( queryURL.idComercial ) ?? false )
+  //const queryToApi                = ref< IBusquedaAcuerdo >({})
+
+  const autoSelectUsuario         = computed(()=> Object.keys(queryURL).length === 0 ? true : getQueryRouterNumber( queryURL.idComercial ) ?? false )
   //const queryToApiLength          = computed(()=> Object.keys(queryToApi.value).length)
   
+
+  
   onMounted(()=>{
-    asignarQueryRouterACampos()
-    tabs.value                    = "tab_1"
+    tabs.value                    = "tab_2"
   })
 
   const props                     = defineProps({
     totalResultados: { required: true,   type: Number },
   })  
   
+  watch([estados, origenes], ()=>{
+    // Estan cargados las opciones, para que estas se puedan asignar desde la query de la URL 
+    if(!!estados.value.length && !!origenes.value.length){
+      asignarQueryRouterACampos()
+    }
+  })
+
   function asignarQueryRouterACampos()
   {
-    busquedaTercero.value         = getQueryRouterString    ( queryURL.tercero      )
-    busquedaContacto.value        = getQueryRouterString    ( queryURL.contacto     )
-    desde.value                   = getQueryRouterDate      ( queryURL.fechaDesde   )
-    hasta.value                   = getQueryRouterDate      ( queryURL.fechaHasta   )
-    precioMinimo.value            = getQueryRouterNumber    ( queryURL.subtotalMin  )
-    precioMaximo.value            = getQueryRouterNumber    ( queryURL.subtotalMax  )
-    estado.value                  = getQueryRouterLabelValue( queryURL.estado,      estadosCtz      )
-    conIva.value                  = getQueryRouterLabelValue( queryURL.conIva,      opcionesIVA     )
-    totalizado.value              = getQueryRouterLabelValue( queryURL.conTotal,    opcionesTotales )
-    origen.value                  = getQueryRouterLabelValue( queryURL.origen,      origenes.value  )
+    busqueda.value.tercero        = getQueryRouterString    ( queryURL.tercero      )
+    busqueda.value.contacto       = getQueryRouterString    ( queryURL.contacto     )
+    busqueda.value.desde          = getQueryRouterDate      ( queryURL.fechaDesde   )
+    busqueda.value.hasta          = getQueryRouterDate      ( queryURL.fechaHasta   )
+    busqueda.value.precioMinimo   = getQueryRouterNumber    ( queryURL.subtotalMin  )
+    busqueda.value.precioMaximo   = getQueryRouterNumber    ( queryURL.subtotalMax  )
+    busqueda.value.conIva         = getQueryRouterLabelValue( queryURL.conIva,        opcionesIVA     )
+    busqueda.value.totalizado     = getQueryRouterLabelValue( queryURL.conTotal,      opcionesTotales )
+    busqueda.value.estado         = getQueryRouterLabelValueArray ( queryURL.estado,  estados.value      )
+    busqueda.value.origen         = getQueryRouterLabelValueArray ( queryURL.origen,  origenes.value     )
   }
-  watch(origenes,()=>origen.value = getQueryRouterLabelValue( queryURL.origen, origenes.value,  "number" ))
+
+  //watch(origenes,()=>
+  //  busqueda.value.origen         = getQueryRouterLabelValueArray( queryURL.origen, origenes.value )
+  //)
   
   const emit = defineEmits<{
-    (e: 'buscar',   value: IBusquedaCotizacion  ): void
-    (e: 'limpiar',                              ): void
+    (e: 'buscar',   value: IQueryAcuerdo  ): void
+    (e: 'limpiar',                            ): void
   }>()
 
-  watch
-  (
-    [ busquedaTercero,
-      busquedaContacto,
-      desde,
-      hasta,
-      precioMinimo,
-      precioMaximo,
-      estado,
-      origen,
-      conIva,
-      totalizado,
-      responsable,
-      resultadosPorPagina,
-      pagina,
-    ],
-    (
-      [ terceroNew,
-        contactoNew,
-        desdeNew,
-        hastaNew,
-        precioMixNew,
-        precioMaxNew,
-        estadoNew,
-        origenNew,
-        conIvaNew,
-        totalizadoNew,
-        responsableNew,
-        porPaginaNew,
-        paginaNew
-      ]
-    ) =>
+  watch(busqueda, (b)=>
     {
-      queryToApi.value                                              = {}
-      if(terceroNew.length  > 3)    queryToApi.value.tercero        = terceroNew
-      if(contactoNew.length > 3)    queryToApi.value.contacto       = contactoNew
-      if(!!precioMixNew)            queryToApi.value.subtotalMin    = precioMixNew
-      if(!!precioMaxNew)            queryToApi.value.subtotalMax    = precioMaxNew
-      if(!!estadoNew.label)         queryToApi.value.estado         = estadoNew.value
-      if(!!origenNew.label)         queryToApi.value.origen         = origenNew.value
-      if(!!conIvaNew.label)         queryToApi.value.conIva         = conIvaNew.value
-      if(!!totalizadoNew.label)     queryToApi.value.conTotal       = totalizadoNew.value
-      if(!!responsableNew)          queryToApi.value.idComercial    = responsableNew.id
-      if(desdeNew instanceof Date && !isNaN(desdeNew.valueOf()))  queryToApi.value.fechaDesde  = desdeNew.toLocaleDateString('sv-SE') 
-      if(hastaNew instanceof Date && !isNaN(hastaNew.valueOf()))  queryToApi.value.fechaHasta  = hastaNew.toLocaleDateString('sv-SE') 
       //if( !permisos.value.acceso_total )
         //query.idComercial         = usuario.value.id
-
-
       buscar()
 
-      if(Object.keys(queryToApi.value).length  == 0  ){
+      if(!Object.keys(b.query).length){
         router.replace({ query: {} })
         return
       }
-    }
+    },
+    { deep: true }
   )
 
-  function buscar(){
-    if(Object.keys(queryToApi.value).length > 0)
+
+  function buscar()
+  {
+    const query         = busqueda.value.query
+    if(!!Object.keys(query).length)
     {
-      router.replace({ query: {...queryToApi.value}  })
-      queryToApi.value.limite     = resultadosPorPagina.value
-      queryToApi.value.offset     = queryToApi.value.limite * (pagina.value - 1)
-      emit("buscar", queryToApi.value)
+      router.replace({ query: {...query }  })
+      query.limite      = busqueda.value.resultadosXPage
+      query.offset      = query.limite * (busqueda.value.pagina - 1)
+      query.acuerdo     = busqueda.value.acuerdo
+      query.tipo        = "busqueda"
+      emit("buscar", query)
     }
   }
 
@@ -319,6 +305,5 @@
     queryURL = {}
     asignarQueryRouterACampos()
     emit("limpiar")
-
   }
 </script>

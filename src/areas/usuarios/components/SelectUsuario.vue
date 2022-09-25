@@ -9,6 +9,7 @@
     option-label            ="nombreCompleto"
     options-selected-class  ="text-weight-bold"
     class                   ="text-caption"
+    popup-content-class     ="panel-blur"
     :class                  ="{ 'campo-hundido' : hundido }"
     :filled                 ="!hundido"
     :options                ="usuarios"

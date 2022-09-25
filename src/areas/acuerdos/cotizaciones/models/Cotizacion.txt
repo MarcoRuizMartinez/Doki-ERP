@@ -108,7 +108,7 @@ export interface ICotizacion
   estadoColor:                string
   estadoLabel:                string
 
-  notaVendedor:               string
+  notaPrivada:                string
   notaCotizacion:             string
 
   condicionPagoId:            number
@@ -179,7 +179,7 @@ export class Cotizacion implements ICotizacion
   comercialId:                number
   comercial:                  IUsuario
   estado:                     ESTADO_CTZ
-  notaVendedor:               string
+  notaPrivada:               string
   notaCotizacion:             string
   condicionPagoId:            number
   formaPagoId:                number
@@ -221,7 +221,7 @@ export class Cotizacion implements ICotizacion
     this.comercial            = new Usuario()
     this.usuariId             = 0
     this.estado               = ESTADO_CTZ.NO_GUARDADO
-    this.notaVendedor         = ''
+    this.notaPrivada         = ''
     this.notaCotizacion       = ''
     this.condicionPagoId      = 0
     this.formaPagoId          = 0

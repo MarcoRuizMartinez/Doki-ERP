@@ -505,6 +505,7 @@ export class Acuerdo implements IAcuerdo
     ctzApi.usuariId           = +ctzApi.usuariId
     ctzApi.estado             = +ctzApi.estado
     ctzApi.descuento          = +ctzApi.descuento
+    ctzApi.facturado          = Boolean( +ctzApi.facturado )
     ctzApi.conTotal           = Boolean( +ctzApi.conTotal )
     ctzApi.conIVA             = Boolean( +ctzApi.conIVA )
     ctzApi.vinculado          = Boolean( +ctzApi.vinculado )

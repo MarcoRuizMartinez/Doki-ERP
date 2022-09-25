@@ -46,7 +46,7 @@
           </q-icon>
           <router-link :to      ="'/cotizaciones/' + props.row.id">
             {{ props.row.refCorta }}
-            <tooltip-cotizacion :cotizacion="props.row"/>
+            <tooltip-acuerdo    :acuerdo="props.row"/>
           </router-link>
         </q-td>
       </template>
@@ -90,7 +90,7 @@
   //* /////////////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana                 from "components/utilidades/Ventana.vue"
   import    tooltipLineas           from "src/areas/acuerdos/components/Tooltips/TooltipLineas.vue"
-  import    tooltipCotizacion       from "src/areas/acuerdos/cotizaciones/components/tools/TooltipCotizacion.vue"
+  import    tooltipAcuerdo          from "src/areas/acuerdos/components/Tooltips/TooltipAcuerdo.vue"
     
   const urlDolibarr           = process.env.URL_DOLIBARR
   const { getCotizaciones   } = servicesCotizaciones()
