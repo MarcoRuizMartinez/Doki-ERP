@@ -1,6 +1,6 @@
 <template>
   <q-tab-panels                 animated keep-alive vertical
-    v-model                     ="tabs" 
+    v-model                     ="tabs"
     class                       ="transparent fit"
     >
     <q-tab-panel
@@ -15,7 +15,7 @@
           v-model               ="busqueda.tercero"
           label                 ="Terceros"
           class                 ="width220"
-          icon                  ="mdi-account-search"      
+          icon                  ="mdi-account-search"
         />
         <input-buscar           clearable hundido
           v-model               ="busqueda.contacto"
@@ -61,7 +61,7 @@
           :minimo               ="!!busqueda.precioMinimo ? busqueda.precioMinimo : undefined"
           :maximo               ="999_999_999"
         />
-      </fieldset-filtro>      
+      </fieldset-filtro>
       <fieldset-filtro
         titulo                  ="Opciones"
         class-conenido          ="grilla-ribom"
@@ -77,17 +77,17 @@
 
         </slot>
         <div class              ="">
-          <q-btn-toggle         spread push unelevated round 
+          <q-btn-toggle         spread push unelevated round
             v-model             ="busqueda.resultadosXPage"
             color               ="white"
             text-color          ="grey-8"
             toggle-color        ="primary"
             :options            ="[{label: '25', value: 25},{label: '50', value: 50},{label: '100', value: 100}]"
           />
-          <Tooltip label        ="Resultados por pagina"/>        
-        </div>  
+          <Tooltip label        ="Resultados por pagina"/>
+        </div>
 
-        <div class              ="row justify-center full-width">   
+        <div class              ="row justify-center full-width">
           <q-pagination         push unelevated dense
             v-model             ="busqueda.pagina"
             :max                ="busqueda.pagina + (totalResultados >= busqueda.resultadosXPage ? 1 : 0)"
@@ -101,23 +101,23 @@
           <q-btn                round push glossy
             icon                ="mdi-refresh"
             padding             ="xs"
-            color               ="primary"        
+            color               ="primary"
             @click              ="buscar"
             >
             <Tooltip label      ="Recargar"/>
-          </q-btn>      
+          </q-btn>
         </div>
         <div class              ="q-ml-sm">
           <q-btn                round push glossy
             icon                ="mdi-filter-remove"
-            padding             ="xs"  
+            padding             ="xs"
             color               ="primary"
             @click              ="limpiarBusqueda"
             >
             <Tooltip label      ="Limpiar búsqueda"/>
           </q-btn>
         </div>
-      </fieldset-filtro>      
+      </fieldset-filtro>
     </q-tab-panel>
     <q-tab-panel
       name                      ="tab_2"
@@ -127,33 +127,18 @@
         titulo                  ="Opciones"
         class-conenido          ="grilla-ribom"
         >
-        <!-- //* ///////////////////////////////////////////////////////////// Unidad -->
-<!--         <select-label-value     use-input hundido clearable flat bordered
-          v-model               ="busqueda.estado"
-          label                 ="Estado"
-          icon                  ="mdi-label"
-          class                 ="width150"
-          :options              ="estadosCtz.filter(e => e.value >= 0)"
-        /> -->
-<!--         <select-label-value     use-input hundido clearable flat bordered
-          v-model               ="busqueda.origen"
-          label                 ="Origen"
-          icon                  ="mdi-source-branch"
-          class                 ="width150"
-          :options              ="origenes"
-        /> -->
         <multi-label-value
           v-model               ="busqueda.estado"
           label                 ="Estado"
           icon                  ="mdi-label"
           :options              ="estados"
-        />             
+        />
         <multi-label-value
           v-model               ="busqueda.origen"
           label                 ="Origen"
           icon                  ="mdi-source-branch"
           :options              ="origenes"
-        />                
+        />
         <select-label-value     use-input hundido clearable flat bordered
           v-model               ="busqueda.conIva"
           label                 ="IVA"
@@ -167,10 +152,10 @@
           icon                  ="mdi-counter"
           class                 ="width140"
           :options              ="opcionesTotales"
-        />   
-      </fieldset-filtro>      
+        />
+      </fieldset-filtro>
     </q-tab-panel>
-  </q-tab-panels>    
+  </q-tab-panels>
 </template>
 <script lang="ts" setup>
   // * /////////////////////////////////////////////////////////////////////// Core
@@ -179,7 +164,7 @@
             computed,
             onMounted,
                                 } from "vue"
-  import {  useRouter           } from "vue-router"                                
+  import {  useRouter           } from "vue-router"
   // * /////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs         } from 'pinia'
   import {  useStoreApp         } from 'src/stores/app'
@@ -195,7 +180,7 @@
             getQueryRouterLabelValueArray
                                 } from "src/useSimpleOk/useTools"
   // * /////////////////////////////////////////////////////////////////////// Modelos
-  
+
   import {  IQueryAcuerdo       } from "src/areas/acuerdos/models/BusquedaAcuerdos"
   import {  estadosCtz,
             estadosPed,
@@ -204,7 +189,7 @@
   // * /////////////////////////////////////////////////////////////////////// Componentes
   import    fieldsetFiltro        from "components/utilidades/Fieldset.vue"
   import    inputNumber           from "components/utilidades/input/InputFormNumber.vue"
-  import    selectLabelValue      from "components/utilidades/select/SelectLabelValue.vue"     
+  import    selectLabelValue      from "components/utilidades/select/SelectLabelValue.vue"
   import    multiLabelValue       from "components/utilidades/select/SelectLabelValueMulti.vue"
   import    inputFecha            from "src/components/utilidades/input/InputFecha.vue"
   import    selectResponsable     from "src/areas/usuarios/components/SelectUsuario.vue"
@@ -213,15 +198,15 @@
             labelValueNulo      } from "src/models/TiposVarios"
 
   const router                    = useRouter()
-  let queryURL                    = router.currentRoute.value.query  
+  let queryURL                    = router.currentRoute.value.query
   const origenes                  = dexieOrigenesContacto()
-  const { usuario, permisos }     = storeToRefs( useStoreUser() )  
-  const { busqueda              } = storeToRefs( useStoreAcuerdo() )  
+  const { usuario, permisos }     = storeToRefs( useStoreUser() )
+  const { busqueda              } = storeToRefs( useStoreAcuerdo() )
   const opcionesTotales           = [{value:0, label:'Sin totalizar'},  {value:1, label:'Totalizado'}]
   const opcionesIVA               = [{value:0, label:'Sin IVA'},        {value:1, label:'Con IVA'   }]
 
   const multi                     = ref<ILabelValue[]>([])
-  const estados                   = computed(()=>   busqueda.value.esCotizacion ? estadosCtz.filter(e => e.value >= -1) 
+  const estados                   = computed(()=>   busqueda.value.esCotizacion ? estadosCtz.filter(e => e.value >= -1)
                                                   : busqueda.value.esPedido     ? estadosPed.filter(e => e.value >= -1)
                                                   : [] )
 
@@ -230,19 +215,19 @@
 
   const autoSelectUsuario         = computed(()=> Object.keys(queryURL).length === 0 ? true : getQueryRouterNumber( queryURL.idComercial ) ?? false )
   //const queryToApiLength          = computed(()=> Object.keys(queryToApi.value).length)
-  
 
-  
+
+
   onMounted(()=>{
     tabs.value                    = "tab_2"
   })
 
   const props                     = defineProps({
     totalResultados: { required: true,   type: Number },
-  })  
-  
+  })
+
   watch([estados, origenes], ()=>{
-    // Estan cargados las opciones, para que estas se puedan asignar desde la query de la URL 
+    // Estan cargados las opciones, para que estas se puedan asignar desde la query de la URL
     if(!!estados.value.length && !!origenes.value.length){
       asignarQueryRouterACampos()
     }
@@ -265,7 +250,7 @@
   //watch(origenes,()=>
   //  busqueda.value.origen         = getQueryRouterLabelValueArray( queryURL.origen, origenes.value )
   //)
-  
+
   const emit = defineEmits<{
     (e: 'buscar',   value: IQueryAcuerdo  ): void
     (e: 'limpiar',                            ): void
