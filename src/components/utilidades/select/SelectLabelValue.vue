@@ -21,7 +21,10 @@
       @update:model-value     ="seleccionar"
       >
       <template v-if          ="!!icon" #prepend>
-        <q-icon :name         ="icon" />
+        <q-icon
+          :name               ="icon"
+          :color              ="!!modelo && !!modelo.label ? 'primary' : 'grey-6'"
+        />
       </template>
     </q-select>
   </div>

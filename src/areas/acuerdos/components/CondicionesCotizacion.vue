@@ -44,7 +44,7 @@
       icon                    ="mdi-account-cash"
       class                   ="col-md-6 col-12"
       defecto                 ="Anticipo 100%"
-      :options                ="condicPago"
+      :options                ="condicPago.filter( c => c.esFacturable || !acuerdo.esCotizacion )"
       :loading                ="loading.condicionPago"
       @select                 ="editarCondicionPago"
     />

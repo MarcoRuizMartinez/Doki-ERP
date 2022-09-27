@@ -40,5 +40,6 @@
                                     new Columna({ name: "label"}),
                                     new Columna({ name: "descripcion"}),
                                     new Columna({ name: "dias"}),
+                                    new Columna({ name: "facturable"}),
                                   ]
   </script>

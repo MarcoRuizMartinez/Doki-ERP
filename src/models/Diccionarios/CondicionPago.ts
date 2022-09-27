@@ -5,6 +5,8 @@ export interface ICondicionPago
   descripcion:        string
   dias:               number
   value:              number
+  facturable:         number
+  esFacturable:       boolean
 }
 
 export class CondicionPago implements ICondicionPago
@@ -13,6 +15,7 @@ export class CondicionPago implements ICondicionPago
   label:              string  
   descripcion:        string
   dias:               number
+  facturable:         number
   
   constructor()
   {
@@ -20,7 +23,9 @@ export class CondicionPago implements ICondicionPago
     this.label        = ""  
     this.descripcion  = ""
     this.dias         = 0
+    this.facturable   = 0 // Es boolean
   }
 
-  get value() : number  { return this.id }
+  get value()       : number  { return this.id }
+  get esFacturable(): boolean { return !!this.facturable ? Boolean( +this.facturable ) : false }
 }

@@ -2,9 +2,9 @@
   <ventana
     class                     ="col-12"
     class-contenido           ="column items-center"
-    icono                     ="mdi-table-search"
     height                    ="100%"
     size-icon-carga           ="22em"
+    :icono                    ="icono"
     :mensaje-sin-resultados   ="'No se encontraron ' + tipo" 
     :titulo                   ="titulo"
     :padding-contenido        ="modo === 'normal' ? '0' : '12px' "
@@ -115,7 +115,8 @@
 
   
   const props                     = defineProps({
-    tipo: { required: true, type: String as PropType< TTipoAcuerdo > },
+    tipo:   { required: true, type: String as PropType< TTipoAcuerdo >  },
+    icono:  { required: true, type: String                              },
   })
   const { tipo }                  = toRefs(props) 
   const title                     = useTitle("🔍 Buscar " + tipo.value)

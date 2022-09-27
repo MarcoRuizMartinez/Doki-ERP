@@ -504,6 +504,14 @@ export function getQueryRouterLabelValueArray
   return arrayFinal
 }
 
+export function fechaValida( fecha : string | Date ) : boolean {
+  if( typeof fecha === "string")
+    return !!fecha
+  else
+    return fecha.toString() !== "Invalid Date"
+
+  
+}
 
 
 export function getQueryRouterString(paramQuery  : LocationQueryValue  | LocationQueryValue[]) : string

@@ -34,6 +34,8 @@ import {  getDateToStr,
 export interface IAcuerdo
 {
   tipo:                       TIPO_ACUERDO
+  esCotizacion:               boolean  
+
   esNuevo:                    boolean
   id:                         number
   ref:                        string
@@ -241,6 +243,8 @@ export class Acuerdo implements IAcuerdo
       if(grupo.totalCreado)   orden++
     }
   } */
+
+  get esCotizacion() : boolean { return this.tipo === TIPO_ACUERDO.COTIZACION }
 
   // * /////////////////////////////////////////////////////////////////////////////// Total sin descuento
   get totalSinDescu() :number {

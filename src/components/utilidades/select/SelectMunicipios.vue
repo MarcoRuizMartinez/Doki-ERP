@@ -2,10 +2,9 @@
   <q-select                 dense options-dense use-input
                             hide-selected fill-input hide-bottom-space borderless 
     v-model                 ="model"
-    label                   ="Ciudad"
     input-debounce          ="0"
     class                   ="text-caption"
-    
+    :label                  ="label"
     display-value           =""
     :filled                 ="!hundido"
     options-selected-class  ="text-weight-bold"
@@ -27,8 +26,15 @@
       </q-item>
     </template>
     <template #prepend>
-      <q-icon name          ="mdi-map-marker" @click.stop />
+      <q-icon               @click.stop
+        name                ="mdi-map-marker"
+        :color              ="!!model.id ? 'primary' : 'grey-6'"
+      />
     </template>
+    <Tooltip
+      v-if                  ="!!tooltip"
+      :label                ="tooltip"
+    />
   </q-select>
 </template>
 
@@ -51,10 +57,12 @@
 
   const emit                  = defineEmits(["update:modelValue", "clear"])
   const props                 = defineProps({
-    modelValue: { required: true,   type: Object as PropType < IMunicipio > },
-    readonly:   { default:  false,  type: Boolean                           },
-    hundido:    { default:  false,  type: Boolean                           },
-    requerido:  { default:  false,  type: Boolean                           },
+    modelValue: { required: true,     type: Object as PropType < IMunicipio > },
+    readonly:   { default:  false,    type: Boolean                           },
+    hundido:    { default:  false,    type: Boolean                           },
+    requerido:  { default:  false,    type: Boolean                           },
+    tooltip:    { default:  "",       type: String                            },
+    label:      { default:  "Ciudad", type: String                            },
   })
   const { modelValue,
           requerido         } = toRefs( props )

@@ -1,6 +1,7 @@
 <template>
   <q-page padding class         ="row item-stretch content-start justify-left">
     <ventana-busqueda
+      icono                     ="mdi-cart"
       :tipo                     ="TIPO_ACUERDO.PEDIDO"
     />
   </q-page>
