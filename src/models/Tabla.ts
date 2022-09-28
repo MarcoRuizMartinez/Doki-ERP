@@ -1,6 +1,7 @@
 import {  QTableProps             } from "quasar"
 import {  mayusculasPrimeraLetra  } from "../useSimpleOk/useTools"
-import {  formatoPrecio           } from "src/useSimpleOk/useTools"
+import {  siNo, formatoPrecio     } from "src/useSimpleOk/useTools"
+
 
 export interface IColumna {
   name:           string
@@ -88,4 +89,14 @@ export class Columna implements IColumna
 
     return col
   }
+
+  static ColumnaSiNo({ name = "", label = "",  sortable = true, clase = "" }) : IColumna 
+  {
+    let col               = new Columna({ name : name, label : label, sortable : sortable, clase: clase })
+        col.format        = ( val : boolean ) => siNo(val)
+        col.align         = "center"
+        col.classes       = clase + " fuente-mono"
+
+    return col
+  }  
 }

@@ -106,12 +106,19 @@
         <div class              ="row justify-center full-width">
           <q-pagination         push unelevated dense
             v-model             ="busqueda.pagina"
-            :max                ="busqueda.pagina + (acuerdos.length >= busqueda.resultadosXPage ? 1 : 0)"
+            :max                ="siguientePagina"
             :max-pages          ="3"
             :ellipses           ="false"
             :boundary-numbers   ="false"
           />
           <Tooltip label        ="Pagina"/>
+          
+          <q-spinner-puff
+            v-if                ="haySiguientePagina"
+            color               ="primary"
+            size                ="2em"
+            class               ="q-mt-xs"
+          />          
         </div>
       </fieldset-filtro>
       <fieldset-filtro
@@ -122,8 +129,8 @@
         <slot></slot>
         <!-- //* ///////////////////////////////////////////////// Botones -->
         <div class                ="row justify-around q-mt-sm">
+          <!-- //* /////////////////////////////////////////////// Boton recargar -->
           <div>
-            <!-- //* ///////////////////////////////////////////// Boton recargar -->
             <q-btn                round push glossy
               icon                ="mdi-refresh"
               padding             ="xs"
@@ -133,8 +140,8 @@
               <Tooltip label      ="Recargar"/>
             </q-btn>
           </div>
+          <!-- //* /////////////////////////////////////////////// Boton limpiar -->
           <div>
-            <!-- //* ///////////////////////////////////////////// Boton limpiar -->
             <q-btn                round push glossy
               icon                ="mdi-magnify-close"
               padding             ="xs"
@@ -145,6 +152,19 @@
               <Tooltip label      ="Limpiar búsqueda"/>
             </q-btn>
           </div>
+          <!-- //* /////////////////////////////////////////////// Boton exportar -->
+          <div>
+            <q-btn                round push glossy
+              v-if                ="permisos.terceros_exportar"
+              icon                ="mdi-microsoft-excel"
+              color               ="primary"
+              padding             ="xs"
+              :disable            ="busqueda.busquedaVacia"
+              @click              ="emit('exportar')"
+              >
+              <Tooltip label      ="Descargar"/>
+            </q-btn>
+          </div>          
         </div>
       </fieldset-filtro>      
     </q-tab-panel>
@@ -183,6 +203,7 @@
         />
         <!-- //* ///////////////////////////////////////////////// Con IVA o sin IVA -->
         <select-label-value     use-input hundido clearable flat bordered
+          v-if                  ="busqueda.esCotizacion"
           v-model               ="busqueda.conIva"
           label                 ="IVA"
           icon                  ="mdi-bank"
@@ -215,10 +236,27 @@
           :readonly             ="!permisos.acceso_total"
         />
         <!-- //* ///////////////////////////////////////////////// Municipio -->
-        <municipios               hundido
-          v-model                 ="busqueda.municipio"
-          class                   ="width160"
-          tooltip                 ="Municipio tercero"
+        <municipios             hundido
+          v-model               ="busqueda.municipio"
+          class                 ="width160"
+          tooltip               ="Municipio tercero"
+        />
+        <!-- //* ///////////////////////////////////////////////// Tercero interno o externo -->
+        <select-label-value     use-input hundido clearable flat bordered
+          v-model               ="busqueda.tipoTercero"
+          label                 ="Tipo tercero"
+          icon                  ="mdi-circle-multiple"
+          class                 ="width160"
+          :options              ="opcionesTerceroTipo"
+        />    
+        <!-- //* ///////////////////////////////////////////////// Con pedidos a proveedor -->
+        <select-label-value     use-input hundido clearable flat bordered
+          v-if                  ="busqueda.esPedido"
+          v-model               ="busqueda.conOrdenes"
+          label                 ="OC proveedor"
+          icon                  ="mdi-factory"
+          class                 ="width160"
+          :options              ="opcionesOrdenesProv"
         />
       </fieldset-filtro>
       <fieldset-filtro
@@ -300,14 +338,19 @@
   const { usuario, permisos     } = storeToRefs( useStoreUser() )
   const { busqueda, acuerdos    } = storeToRefs( useStoreAcuerdo() )
   const { tabs                  } = storeToRefs( useStoreApp() )
-  const opcionesFacturado         = [{value:0, label:'No facturado'},   {value:1, label:'Facturado'}]
-  const opcionesTotales           = [{value:0, label:'Sin totalizar'},  {value:1, label:'Totalizado'}]
-  const opcionesIVA               = [{value:0, label:'Sin IVA'},        {value:1, label:'Con IVA'   }]
+  const opcionesFacturado         = [{value:0, label:'No facturado'},   {value:1, label:'Facturado'   }]
+  const opcionesTotales           = [{value:0, label:'Sin totalizar'},  {value:1, label:'Totalizado'  }]
+  const opcionesIVA               = [{value:0, label:'Sin IVA'},        {value:1, label:'Con IVA'     }]
+  const opcionesTerceroTipo       = [{value:0, label:'Externo'},        {value:1, label:'Interno'     }]
+  const opcionesOrdenesProv       = [{value:0, label:'Sin ordenes'},    {value:1, label:'Con ordenes' }]
   const estados                   = computed(()=>   busqueda.value.esCotizacion ? estadosCtz.filter(e => e.value >= -1)
                                                   : busqueda.value.esPedido     ? estadosPed.filter(e => e.value >= -1)
                                                   : [] )
   
   const autoSelectUsuario         = computed(()=> Object.keys(queryURL).length === 0 ? true : getQueryRouterNumber( queryURL.comercial ) ?? false )
+  const siguientePagina           = computed(()=> busqueda.value.pagina + (acuerdos.value.length >= busqueda.value.resultadosXPage ? 1 : 0) )
+  const haySiguientePagina        = computed(()=> busqueda.value.pagina !== siguientePagina.value )
+
 
   onMounted(()=>{
     tabs.value                    = { activa : "tab_1", alerts: [ false, true]}
@@ -333,6 +376,8 @@
     busqueda.value.facturado      = getQueryRouterLabelValue( queryURL.facturado,         opcionesFacturado     )
     busqueda.value.conIva         = getQueryRouterLabelValue( queryURL.conIva,            opcionesIVA           )
     busqueda.value.totalizado     = getQueryRouterLabelValue( queryURL.conTotal,          opcionesTotales       )
+    busqueda.value.tipoTercero    = getQueryRouterLabelValue( queryURL.interno,           opcionesTerceroTipo   )
+    busqueda.value.conOrdenes     = getQueryRouterLabelValue( queryURL.conOrdenes,        opcionesOrdenesProv   )
     busqueda.value.estados        = getQueryRouterLabelValueArray ( queryURL.estados,     estados.value         )    
     busqueda.value.formaPago      = getQueryRouterLabelValueArray ( queryURL.formaPago,   formasPago.value      )
     busqueda.value.entrega        = getQueryRouterLabelValueArray ( queryURL.entrega,     metodosEntrega.value  )
@@ -346,6 +391,7 @@
   const emit = defineEmits<{
     (e: 'buscar',   value: IQueryAcuerdo  ): void
     (e: 'limpiar',                        ): void
+    (e: 'exportar',                       ): void    
   }>()
 
   watch(busqueda, (b)=>
@@ -364,7 +410,7 @@
                             )
     tabs.value.alerts[1]  = ( !!b.formaPago.length  || !!b.entrega.length     || !!b.origenes.length    || !!b.conIva.label       ||  
                               !!b.area.label        || !!b.creador            || !!b.municipio.id       || !!b.totalizado.label   ||  
-                              !!b.precioMinimo      || !!b.precioMaximo
+                              !!b.tipoTercero.label ||!!b.conOrdenes.label    ||!!b.precioMinimo        || !!b.precioMaximo
                             )
   }
 

@@ -17,15 +17,9 @@
         <tr>
           <td>Comercial</td>
           <td>
-            <q-chip               dense
-              color               ="primary"
-              text-color          ="white"
-              >
-              <q-avatar text-color="white" >
-                <img :src         ="acuerdo.comercial.fotoPerfilMini">
-              </q-avatar>
-              {{acuerdo.comercial.nombre}} 
-            </q-chip>
+            <chip-usuario
+              :usuario            ="acuerdo.comercial"
+            />
           </td>
         </tr>
         <tr> <td>Estado</td> <td>
@@ -52,7 +46,7 @@
   import {  fechaLarga,
             formatoPrecio } from "src/useSimpleOk/useTools"
   import {  IAcuerdo      } from "src/areas/acuerdos/models/Acuerdo"  
-
+  import    chipUsuario     from "src/areas/usuarios/components/ChipUsuario.vue";    
   const props = defineProps({
     acuerdo:  { required: true, type: Object as PropType<IAcuerdo> }
   })

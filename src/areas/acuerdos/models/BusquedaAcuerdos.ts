@@ -25,11 +25,13 @@ export interface IQueryAcuerdo {
   facturado            ?:  number
   conIva               ?:  number
   conTotal             ?:  number
+  interno              ?:  number
+  conOrdenes           ?:  number
   limite               ?:  number
   offset               ?:  number
   area                 ?:  string
   orden                ?:  "ASC" | "DESC"
-  municipio            ?:  number
+  municipio            ?:  number  
   //idEspecial?:       number
 }
 
@@ -51,6 +53,8 @@ export interface IBusquedaAcuerdo {
   facturado             : ILabelValue
   conIva                : ILabelValue
   totalizado            : ILabelValue
+  tipoTercero           : ILabelValue
+  conOrdenes            : ILabelValue
   municipio             : IMunicipio
   comercial            ?: IUsuario
   creador              ?: IUsuario
@@ -78,6 +82,8 @@ export class BusquedaAcuerdo implements IBusquedaAcuerdo
   facturado             : ILabelValue
   conIva                : ILabelValue
   totalizado            : ILabelValue
+  tipoTercero           : ILabelValue
+  conOrdenes            : ILabelValue
   municipio             : IMunicipio
   comercial            ?: IUsuario
   creador              ?: IUsuario
@@ -102,7 +108,9 @@ export class BusquedaAcuerdo implements IBusquedaAcuerdo
     this.area             = labelValueNulo
     this.facturado        = labelValueNulo
     this.conIva           = labelValueNulo
+    this.tipoTercero      = labelValueNulo
     this.totalizado       = labelValueNulo
+    this.conOrdenes       = labelValueNulo
     this.municipio        = new Municipio()
     this.resultadosXPage  = 25
     this.pagina           = 1
@@ -132,7 +140,9 @@ export class BusquedaAcuerdo implements IBusquedaAcuerdo
     if(!!this.facturado.label)    q.facturado     = this.facturado.value
     if(!!this.conIva.label)       q.conIva        = this.conIva.value
     if(!!this.totalizado.label)   q.conTotal      = this.totalizado.value
+    if(!!this.tipoTercero.label)  q.interno       = this.tipoTercero.value
     if(!!this.municipio.id)       q.municipio     = this.municipio.id
+    if(!!this.conOrdenes.label)   q.conOrdenes    = this.conOrdenes.value
 
     if(!!this.comercial)          q.comercial     = this.comercial.id
     if(!!this.creador)            q.creador       = this.creador.id

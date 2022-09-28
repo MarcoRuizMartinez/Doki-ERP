@@ -17,6 +17,7 @@
       <barra-busqueda
         @buscar               ="buscar"
         @limpiar              ="limpiarBusqueda"
+        @exportar             ="descargarAcuerdos"
         >
         <select-columnas
           v-model             ="columnasVisibles"
@@ -48,6 +49,14 @@
           <link-tercero         :tercero="props.value"/>
         </q-td>
       </template>
+      <!-- //* ///////////////  Columna Comercial  -->
+      <template
+        #body-cell-comercial    ="props">
+        <q-td   :props          ="props">
+          <chip-usuario         :usuario="props.value"/>
+        </q-td>
+      </template>
+      chipUsuario
       <!-- //* ///////////////  Columna contacto  -->
       <template
         #body-cell-contacto     ="props">
@@ -82,12 +91,11 @@
   import {  useTitle            } from "@vueuse/core"
   import {  servicesAcuerdos    } from "src/areas/acuerdos/services/servicesAcuerdos"
   import {  useTools,
-            //generarCSVDesdeTabla
-                                } from "src/useSimpleOk/useTools"  
+            generarCSVDesdeTabla} from "src/useSimpleOk/useTools"  
   // * /////////////////////////////////////////////////////////////////////// Modelos
   import {  BusquedaAcuerdo,
             IQueryAcuerdo       } from "src/areas/acuerdos/models/BusquedaAcuerdos"
-  import {  Columna             } from "src/models/Tabla"
+  import {  Columna, IColumna   } from "src/models/Tabla"
   import {  ModosVentana,
             ALMACEN_LOCAL       } from "src/models/TiposVarios"  
   import {  TTipoAcuerdo,
@@ -103,6 +111,7 @@
   // * ////////////////////////// Columnas
   import    refAcuerdo            from "./Columnas/RefAcuerdo.vue"
   import    estado                from "./Columnas/Estado.vue"
+  import    chipUsuario           from "src/areas/usuarios/components/ChipUsuario.vue"
 
   
   const props                     = defineProps({
@@ -115,6 +124,7 @@
   const { acuerdos, busqueda    } = storeToRefs( useStoreAcuerdo() )  
   const { getAcuerdos           } = servicesAcuerdos()
   const { esMobil, aviso        } = useTools()
+  
   const modo                      = ref< ModosVentana >("esperando-busqueda")  
   //const filtroMovil               = ref< boolean >(false)
   const titulo                    = computed(()=>
@@ -123,11 +133,13 @@
                                       ( acuerdos.value.length === 1 ? getTipoAcuerdoSingular(tipo.value) : tipo.value )
                                     : `Buscando ${tipo.value}...`
   })
-  
+  const columnas                  = ref< IColumna[] >([])
+  const columnasVisibles          = ref< string[]   >( columnas.value.filter(c => c.visible ).map( c => c.name ) )
   
   onMounted(()=>{
     acuerdos.value                = []
     busqueda.value                = new BusquedaAcuerdo( tipo.value )
+    crearColumnas()
   })
 
   onUnmounted(()=>{
@@ -140,12 +152,11 @@
   async function buscar( query : IQueryAcuerdo )
   {
     console.log("query: ", query);
-    acuerdos.value            = []            
-    modo.value                = "buscando"
-    acuerdos.value            = await getAcuerdos( query )
+    acuerdos.value                = []            
+    modo.value                    = "buscando"
+    acuerdos.value                = await getAcuerdos( query )
 
     modo.value                    = !!acuerdos.value.length ? "normal" : "sin-resultados"
-    //query                         = {}
   }
 
   function limpiarBusqueda()
@@ -154,34 +165,36 @@
     acuerdos.value                = []
   }
 
-  const columnas                  = [
-    new Columna({ name: "ref"       }),
-    new Columna({ name: "estado"    }),
-    new Columna({ name: "tercero"   }),
-    new Columna({ name: "contacto"  }),
-    new Columna({ name: "fechaCreacionCorta",       label: "Creado"    }),
-    new Columna({ name: "fechaValidacionCorta",     label: "Validado"    }),
-    new Columna({ name: "condicionPagoLabel",       label: "Condiciones" }), 
-    new Columna({ name: "formaPagoLabel",           label: "Forma de pago" }), 
-    new Columna({ name: "metodoEntregaLabel",       label: "Entrega" }), 
-    new Columna({ name: "origenContactoLabel",      label: "Origen" }),  
-    Columna.ColumnaPrecio ({ name: "totalConDescu", label: "Subtotal",    clase: "text-bold"    }),
-
-/* 
-    new Columna({name: "nombre",            iterable: false       }),
-    new Columna({name: "responsablesLista", label: "Responsables" }),
-    new Columna({name: "ciudad"                                   }),
-    new Columna({name: "correo",                                  visible: false  }),
-    new Columna({name: "alias",                                   visible: false  }),
-    new Columna({name: "telefono",          label: "Teléfono",    visible: false  }),
-    new Columna({name: "numeroDocumento",   label: "Documento"    }),
-    new Columna({name: "direccion",         label: "dirección"    }),
-    new Columna({name: "areaNombre",        label: "area"         }),
-    new Columna({name: "tiposTerceros",     label: "Tipo"         }),                                      
-    new Columna({name: "fechaCreadoCorta",  label: "Creado",      visible: false  }),
-      */
-  ]
-
-  const columnasVisibles          = ref< string []>( columnas.filter(c => c.visible ).map( c => c.name ) )  
+  function crearColumnas(){
+    columnas.value                = [
+      new Columna({ name: "ref"                                                   }),
+      new Columna({ name: "refCliente",               label: "Ref cliente"        }),
+      new Columna({ name: "estado"                                                }),
+      new Columna({ name: "tercero"                                               }),
+      new Columna({ name: "municipioTercero",         label: "Municipio tercero"  }),      
+      new Columna({ name: "comercial",                label: "Asesor"             }),
+      new Columna({ name: "contacto"                                              }),
+      new Columna({ name: "fechaCreacionCorta",       label: "Creado"             }),
+      new Columna({ name: "fechaValidacionCorta",     label: "Validado"           }),
+      new Columna({ name: "condicionPagoLabel",       label: "Condiciones"        }), 
+      new Columna({ name: "formaPagoLabel",           label: "Forma de pago"      }), 
+      new Columna({ name: "metodoEntregaLabel",       label: "Entrega"            }), 
+      new Columna({ name: "origenContactoLabel",      label: "Origen"             }),
+      new Columna({ name: "area",                     label: "Área"               }),
+      Columna.ColumnaPrecio ({ name: "totalConDescu", label: "Subtotal",          clase: "text-bold" }),
+      Columna.ColumnaPrecio ({ name: "ivaValor",      label: "IVA",               clase: "text-bold" }),
+      Columna.ColumnaPrecio ({ name: "totalConIva",   label: "Total",             clase: "text-bold" }),
+    ]
     
+    if(busqueda.value.esPedido)
+      columnas.value.push( Columna.ColumnaSiNo({ name: "facturado",         label: "Facturado"      }) )    
+  } 
+
+  function descargarAcuerdos()
+  {
+    let ok = generarCSVDesdeTabla(  busqueda.value.acuerdo,  columnas.value, acuerdos.value )
+
+    if (ok) aviso("positive", "Archivo generado", "file")
+    else    aviso("negative", "Error al generar el archivo...", "file")
+  }
 </script>

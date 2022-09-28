@@ -44,6 +44,9 @@ export interface IAcuerdo
   title:                      string // Titulo HTML
   terceroId:                  number
   tercero:                    ITercero
+  terceroNombre:              string
+  area:                       string
+  municipioTercero:           string
   fechaCreacion:              Date
   fechaCreacionCorta:         string
   fechaValidacion:            Date
@@ -55,12 +58,14 @@ export interface IAcuerdo
 
   comercialId:                number
   comercial:                  IUsuario
+  comercialNombre:            string
   usuariId:                   number      // Creador
 
   estado:                     number
   estadoIcono:                string
   estadoColor:                string
   estadoLabel:                string
+
   esEstadoBoceto:             boolean
   esEstadoNoValidado:         boolean
   esEstadoValidado:           boolean
@@ -249,9 +254,18 @@ export class Acuerdo implements IAcuerdo
     }
   } */
 
-  get esCotizacion()  : boolean { return this.tipo === TIPO_ACUERDO.COTIZACION }
-  get esPedido()      : boolean { return this.tipo === TIPO_ACUERDO.PEDIDO     }
-  get esFactura()     : boolean { return this.tipo === TIPO_ACUERDO.FACTURA    }
+  get esCotizacion()      : boolean { return this.tipo === TIPO_ACUERDO.COTIZACION  }
+  get esPedido()          : boolean { return this.tipo === TIPO_ACUERDO.PEDIDO      }
+  get esFactura()         : boolean { return this.tipo === TIPO_ACUERDO.FACTURA     }
+  get municipioTercero()  : string  { return this.tercero.municipio.label           }
+  get area()              : string  { return this.tercero.areaNombre                }
+
+  get comercialNombre() : string {
+    return this.comercial.nombreCompleto
+  }
+  get terceroNombre() : string {
+    return this.tercero.nombre
+  }
 
   // * /////////////////////////////////////////////////////////////////////////////// Total sin descuento
   get totalSinDescu() :number {

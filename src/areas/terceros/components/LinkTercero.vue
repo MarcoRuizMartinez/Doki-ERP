@@ -13,12 +13,12 @@
   import {  PropType,
             toRefs,
                                   } from "vue"
-  import {  Tercero               } from "src/areas/terceros/models/Tercero"
+  import {  ITercero              } from "src/areas/terceros/models/Tercero"
   import    tooltipTercero          from "src/areas/terceros/components/TooltipTerceros.vue"
   import {  getColorTextFromHexa  } from "src/useSimpleOk/useTools"
 
   const props           = defineProps({
-    tercero:  { required: true, type: Object as PropType< Tercero > }
+    tercero:  { required: true, type: Object as PropType< ITercero > }
   })
   const { tercero     } = toRefs( props )
   const colorFondo      = tercero.value.color

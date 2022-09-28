@@ -2,7 +2,7 @@ import {  exportFile,
           useQuasar,
           QNotifyAction,
                                   } from "quasar"
-
+import {  IColumna                } from "src/models/Tabla"
 import {  LocationQueryValue      } from "vue-router"
 import {  ILabelValue,
           labelValueNulo,         } from "src/models/TiposVarios"
@@ -96,18 +96,38 @@ export const formatoMilesInt  = new Intl.NumberFormat("es-CO",
 }
 )
 
-export function generarCSVDesdeTabla( nombre :string = "", columnas : string[], tabla : any[] ) : boolean
+export function generarCSVDesdeTabla( nombre :string = "", columnsTabla : IColumna[], tabla : any[] ) : boolean
 {
   let arrayCSV              = []
-      arrayCSV.push( columnas.map( c => c ) )
+      arrayCSV.push( columnsTabla.map( c => c.label )  )
 
   for (const item of tabla)
   {
     let arrayFila           = []
-    for (const columna of columnas)
+    for (const columna of columnsTabla)
     {
-      let fila              = item as any
-      arrayFila.push( fila[columna] )
+      const fila            = item as any
+      let   celda : string  = ""
+      const tipo            = typeof fila[columna.name]
+
+            if(tipo === "string") 
+        celda               = fila[columna.name]
+      else  if(tipo === "boolean") 
+        celda               = siNo( fila[columna.name], false )
+      else  if(tipo === "number") 
+        celda               = fila[columna.name].toString().replace(".", ",")
+      else  if(tipo === "object")
+      {
+              if(fila[columna.name].hasOwnProperty("nombre") && !!fila[columna.name].nombre )
+          celda             = fila[columna.name].nombre
+        else  if(fila[columna.name].hasOwnProperty("nombreCompleto") && !!fila[columna.name].nombreCompleto )
+          celda             = fila[columna.name].nombreCompleto
+        else  if(fila[columna.name].hasOwnProperty("nombreCompleto") && !!fila[columna.name].nombreCompleto )
+          celda             = fila[columna.name].nombreCompleto
+      }
+        
+      
+      arrayFila.push( celda )
     }
     arrayCSV.push( arrayFila )
   }
