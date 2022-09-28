@@ -6,6 +6,7 @@
       class                   ="text-caption"
       popup-content-class     ="panel-blur"
       :label                  ="label"
+      :label-color            ="!!modelo && !!modelo.label ? 'primary' : 'grey-6'"
       :class                  ="{ 'campo-hundido' : hundido }"
       :filled                 ="!hundido"
       :options                ="opciones"

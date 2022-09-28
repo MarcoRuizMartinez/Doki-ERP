@@ -1,6 +1,6 @@
 <template>
   <div>
-    <fieldset >
+    <fieldset class="full-height">
     <legend>{{titulo}}:</legend>
       <div  :class          ="classConenido">
         <slot></slot>

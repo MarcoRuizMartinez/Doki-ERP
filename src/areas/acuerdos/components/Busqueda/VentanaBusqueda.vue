@@ -4,18 +4,17 @@
     class-contenido           ="column items-center"
     height                    ="100%"
     size-icon-carga           ="22em"
+    :modo                     ="modo"
     :icono                    ="icono"
-    :mensaje-sin-resultados   ="'No se encontraron ' + tipo" 
     :titulo                   ="titulo"
     :padding-contenido        ="modo === 'normal' ? '0' : '12px' "
-    :modo                     ="modo"
+    :mensaje-sin-resultados   ="'No se encontraron ' + tipo" 
     >
     <template                 #barra>
       <tabs-busqueda />
     </template>
     <template                 #menu>
       <barra-busqueda
-        :total-resultados     ="acuerdos.length"
         @buscar               ="buscar"
         @limpiar              ="limpiarBusqueda"
         >
@@ -31,7 +30,6 @@
     <q-table                    borbordered dense flat
       class                     ="fit tabla-maco"
       row-key                   ="id"
-      :filter                   ="busqueda.filtroTexto"
       :rows                     ="acuerdos"
       :columns                  ="columnas"
       :visible-columns          ="columnasVisibles"
@@ -40,10 +38,7 @@
       <!-- //* ///////////////  Columna Ref  -->
       <template #body-cell-ref  ="props">
         <q-td   :props          ="props">
-          <ref-acuerdo
-            :acuerdo            ="props.row"
-            :tipo               ="tipo"
-          />
+          <ref-acuerdo :acuerdo ="props.row"/>
         </q-td>
       </template>
       <!-- //* ///////////////  Columna Tercero  -->
@@ -64,13 +59,7 @@
       <!-- //* ///////////////  Columna Estado  -->
       <template #body-cell-estado="props">
         <q-td   :props          ="props">
-          <span
-            class               ="q-px-xs text-white"
-            style               ="border-radius: 6px;"
-            :style              ="'background-color: ' + props.row.estadoColor"
-            >
-            {{ props.row.estadoLabel }}
-          </span>
+          <estado :acuerdo      ="props.row"/>
         </q-td>
       </template> 
     </q-table>
@@ -111,7 +100,9 @@
   import    tooltipContacto       from "src/areas/terceros/components/contactos/TooltipContacto.vue"
   import    tabsBusqueda          from "./TabsBusqueda.vue"
   import    barraBusqueda         from "./BarraBusqueda.vue"
+  // * ////////////////////////// Columnas
   import    refAcuerdo            from "./Columnas/RefAcuerdo.vue"
+  import    estado                from "./Columnas/Estado.vue"
 
   
   const props                     = defineProps({
@@ -135,12 +126,15 @@
   
   
   onMounted(()=>{
+    acuerdos.value                = []
     busqueda.value                = new BusquedaAcuerdo( tipo.value )
   })
 
   onUnmounted(()=>{
-    //console.log("Desmontando Ventana busqueda acuerdo")
+    acuerdos.value                = []
+    busqueda.value                = new BusquedaAcuerdo()
   })
+
   
 
   async function buscar( query : IQueryAcuerdo )
@@ -165,8 +159,14 @@
     new Columna({ name: "estado"    }),
     new Columna({ name: "tercero"   }),
     new Columna({ name: "contacto"  }),
-    new Columna({ name: "fechaCreacionCorta", label: "Fecha"    }),
+    new Columna({ name: "fechaCreacionCorta",       label: "Creado"    }),
+    new Columna({ name: "fechaValidacionCorta",     label: "Validado"    }),
+    new Columna({ name: "condicionPagoLabel",       label: "Condiciones" }), 
+    new Columna({ name: "formaPagoLabel",           label: "Forma de pago" }), 
+    new Columna({ name: "metodoEntregaLabel",       label: "Entrega" }), 
+    new Columna({ name: "origenContactoLabel",      label: "Origen" }),  
     Columna.ColumnaPrecio ({ name: "totalConDescu", label: "Subtotal",    clase: "text-bold"    }),
+
 /* 
     new Columna({name: "nombre",            iterable: false       }),
     new Columna({name: "responsablesLista", label: "Responsables" }),

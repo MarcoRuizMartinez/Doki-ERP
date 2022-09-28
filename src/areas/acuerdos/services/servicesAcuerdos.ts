@@ -38,7 +38,7 @@ export function servicesAcuerdos()
       if(ok && Array.isArray( data ))
       {
         for (const item of data){
-          let quote : IAcuerdo = await Acuerdo.convertirDataApiToAcuerdo( item )
+          let quote : IAcuerdo = await Acuerdo.convertirDataApiToAcuerdo( item, query.acuerdo )
           acuerdos.push( quote )
         }
         resolver( acuerdos )

@@ -14,34 +14,23 @@ import {  BusquedaAcuerdo,
           IBusquedaAcuerdo  } from "src/areas/acuerdos/models/BusquedaAcuerdos"
 
 export interface iAcuerdoState {
-  acuerdo         : IAcuerdo,
-  loading         : ILoading,  
-  grupoElegido    : IGrupoLineas,
-  lineaElegida    : ILineaAcuerdo,
-  modales         : IModales,
-  acuerdos        : IAcuerdo[],
-  busqueda        : IBusquedaAcuerdo,
+  acuerdo             : IAcuerdo,
+  loading             : ILoading,  
+  grupoElegido        : IGrupoLineas,
+  lineaElegida        : ILineaAcuerdo,
+  modales             : IModales,
+  acuerdos            : IAcuerdo[],
+  busqueda            : IBusquedaAcuerdo,
 }
 
 export const useStoreAcuerdo = defineStore('acuerdo', {
-
-
   state: () : iAcuerdoState => ({
-    acuerdo       : new Acuerdo(),
-    loading       : LoadingDefault,
-    grupoElegido  : new GrupoLineas(),
-    lineaElegida  : new LineaAcuerdo(),
-    modales       : ModalesDefault,
-    acuerdos      : [],
-    busqueda      : new BusquedaAcuerdo(),
+    acuerdo           : new Acuerdo(),
+    loading           : LoadingDefault,
+    grupoElegido      : new GrupoLineas(),
+    lineaElegida      : new LineaAcuerdo(),
+    modales           : ModalesDefault,
+    acuerdos          : [],
+    busqueda          : new BusquedaAcuerdo(),
   }),
-
-
-  getters: {
-
-  },
-
-  actions: {
-
-  }
 });

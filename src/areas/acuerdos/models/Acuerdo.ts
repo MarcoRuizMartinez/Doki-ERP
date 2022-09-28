@@ -8,7 +8,7 @@ import {  TIPO_ACUERDO,
           estadoPedToColor,
           estadosPed,
                                             } from "./ConstantesAcuerdos"
-import {  X100                              } from "../../../useSimpleOk/useTools"
+import {  X100, fechaCorta                  } from "../../../useSimpleOk/useTools"
 import {  ILineaAcuerdo,    LineaAcuerdo    } from "../../../areas/acuerdos/models/LineaAcuerdo"
 import {  ITercero,         Tercero         } from "../../../areas/terceros/models/Tercero"
 import {  IUsuario,         Usuario         } from "../../../areas/usuarios/models/Usuario"
@@ -72,18 +72,23 @@ export interface IAcuerdo
 
   condicionPagoId:            number
   condicionPago:              ICondicionPago
+  condicionPagoLabel:         string  
 
   formaPagoId:                number
   formaPago:                  IFormaPago
+  formaPagoLabel:             string
 
   metodoEntregaId:            number
   metodoEntrega:              IMetodoEntrega
-
+  metodoEntregaLabel:         string
+  
   tiempoEntregaId:            number
   tiempoEntrega:              ITiempoEntrega
+  tiempoEntregaLabel:         string
 
   origenContactoId:           number
   origenContacto:             IOrigenContacto
+  origenContactoLabel:        string
 
   aiuOn:                      boolean
   aiuAdmin:                   number
@@ -244,7 +249,9 @@ export class Acuerdo implements IAcuerdo
     }
   } */
 
-  get esCotizacion() : boolean { return this.tipo === TIPO_ACUERDO.COTIZACION }
+  get esCotizacion()  : boolean { return this.tipo === TIPO_ACUERDO.COTIZACION }
+  get esPedido()      : boolean { return this.tipo === TIPO_ACUERDO.PEDIDO     }
+  get esFactura()     : boolean { return this.tipo === TIPO_ACUERDO.FACTURA    }
 
   // * /////////////////////////////////////////////////////////////////////////////// Total sin descuento
   get totalSinDescu() :number {
@@ -339,11 +346,11 @@ export class Acuerdo implements IAcuerdo
     return total
   }
 
-  get esEstadoBoceto      ():boolean { return this.estado === ESTADO_CTZ.NO_GUARDADO }
+  get esEstadoBoceto      ():boolean { return this.estado === ESTADO_CTZ.NO_GUARDADO  }
   get esEstadoNoValidado  ():boolean { return this.estado === ESTADO_CTZ.NO_GUARDADO || this.estado === ESTADO_CTZ.BORRADOR}
-  get esEstadoValidado    ():boolean { return this.estado > ESTADO_CTZ.BORRADOR }
-  get esEstadoCotizado    ():boolean { return this.estado > ESTADO_CTZ.COTIZADO }
-  get esEstadoFacturado   ():boolean { return this.estado > ESTADO_CTZ.FACTURADO }
+  get esEstadoValidado    ():boolean { return this.estado   > ESTADO_CTZ.BORRADOR     }
+  get esEstadoCotizado    ():boolean { return this.estado === ESTADO_CTZ.COTIZADO     }
+  get esEstadoFacturado   ():boolean { return this.estado === ESTADO_CTZ.FACTURADO    }
   // * ///////////////////////////////////////////////////////////////////////////////  Icono
   get estadoIcono(): string {
     let valor :string         =   this.estado == ESTADO_CTZ.NO_GUARDADO ? "mdi-eraser-variant"
@@ -365,11 +372,36 @@ export class Acuerdo implements IAcuerdo
     return i < 0 ? true : this.proGrupos[i].productos.length > 0
   }
 
+  get condicionPagoLabel()  : string{
+    return this.condicionPago.label
+  }
+  get formaPagoLabel()      : string{
+    return   this.formaPago.label    
+  }
+  get metodoEntregaLabel()  : string{
+    return   this.metodoEntrega.label
+  }
+  get origenContactoLabel() : string{
+    return   this.origenContacto.label
+  }
+  get tiempoEntregaLabel()  : string{
+    return   this.tiempoEntrega.label
+  }
+
+
   // * /////////////////////////////////////////////////////////////////////////////// Color
-  get estadoColor(): string { return estadoCtzToColor(this.estado) }
+  get estadoColor(): string {
+    return    this.esCotizacion ? estadoCtzToColor(this.estado) 
+            : this.esPedido     ? estadoPedToColor(this.estado)
+            : ""
+  }
 
   // * /////////////////////////////////////////////////////////////////////////////// Status o Estado
-  get estadoLabel(): string { return estadoCtzToName(this.estado) }
+  get estadoLabel(): string {
+    return    this.esCotizacion ? estadoCtzToName(this.estado) 
+            : this.esPedido     ? estadoPedToName(this.estado)
+            : ""
+  }
 
   // * /////////////////////////////////////////////////////////////////////////////// Dias de validez
   get diasValidez(): number {
@@ -378,11 +410,11 @@ export class Acuerdo implements IAcuerdo
     return  dias
   }
 
-  get refCorta()              : string {
-    return this.ref.length > 10 ? this.ref.slice( 5 , 20 ) : this.ref
+  get refCorta(): string {
+    let inicio            = this.esCotizacion ? 6   : 7
+    let final             = this.esCotizacion ? 19  : 20
+    return this.ref.length > 10 ? this.ref.slice( inicio, final ) : this.ref
   }
-
-  get fechaFinValidezCorta()  : string { return this.fechaFinValidez  .toLocaleDateString('sv-SE') }
 
   // * ///////////////////////////////////////////////////////////////////////////////
   get pdfNombre() :  string {
@@ -449,10 +481,11 @@ export class Acuerdo implements IAcuerdo
     return titulo
   }
 
-  get fechaCreacionCorta()    : string { return this.fechaCreacion    .toLocaleDateString('sv-SE') }
-  get fechaValidacionCorta()  : string { return this.fechaValidacion  .toLocaleDateString('sv-SE') }
-  get fechaCierreCorta()      : string { return this.fechaCierre      .toLocaleDateString('sv-SE') }
-  get fechaEntregaCorta()     : string { return this.fechaEntrega     .toLocaleDateString('sv-SE') }
+  get fechaFinValidezCorta()  : string { return fechaCorta( this.fechaFinValidez  ) }
+  get fechaCreacionCorta()    : string { return fechaCorta( this.fechaCreacion    ) }
+  get fechaValidacionCorta()  : string { return fechaCorta( this.fechaValidacion  ) }
+  get fechaCierreCorta()      : string { return fechaCorta( this.fechaCierre      ) }
+  get fechaEntregaCorta()     : string { return fechaCorta( this.fechaEntrega     ) }
 
   getCotizacionForApi( usuarioId : number ) : any {
     let ctzForApi : any = {
@@ -501,7 +534,7 @@ export class Acuerdo implements IAcuerdo
 
 
   // * ///////////////////////////////////////////////////// static convertir data de API en new Cotizacion
-  static async convertirDataApiToAcuerdo( ctzApi : any ) : Promise < IAcuerdo >
+  static async convertirDataApiToAcuerdo( ctzApi : any, tipo : TIPO_ACUERDO = TIPO_ACUERDO.COTIZACION ) : Promise < IAcuerdo >
   {
     ctzApi.id                 = +ctzApi.id
     ctzApi.terceroId          = +ctzApi.terceroId
@@ -532,7 +565,7 @@ export class Acuerdo implements IAcuerdo
 
     let ctz                   = Object.assign( new Acuerdo(), ctzApi ) as IAcuerdo
         ctz.esNuevo           = false
-        ctz.tipo              = TIPO_ACUERDO.COTIZACION
+        ctz.tipo              = tipo 
         ctz.comercial         = await getUsuarioDB          ( ctz.comercialId )
         ctz.tercero           = await Tercero.convertirDataApiATercero( ctzApi.tercero )
         ctz.contacto          = await Contacto.getContactoFromAPIMaco( ctzApi.contacto )

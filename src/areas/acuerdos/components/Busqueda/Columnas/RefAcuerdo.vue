@@ -8,10 +8,20 @@
       :lineas     ="acuerdo.productos"
     />
   </q-icon>
-  <router-link :to="`/${tipo}/${acuerdo.id}`">
+  <router-link
+    v-if          ="acuerdo.esCotizacion"
+    :to           ="`/${acuerdo.tipo}/${acuerdo.id}`"
+  >
     {{ acuerdo.refCorta }}
-    <tooltip-acuerdo    :acuerdo="acuerdo"/>
   </router-link>
+  <a
+    v-else
+    :href         ="urlDolibarr + '/commande/card.php?id=' + acuerdo.id"
+    target        ="_blank"
+    >
+    {{ acuerdo.refCorta }}
+  </a>
+  <tooltip-acuerdo    :acuerdo="acuerdo"/>
 </template>
 <script lang="ts" setup>
   import {  PropType        } from "vue"    
@@ -22,6 +32,6 @@
 
   const props               = defineProps({
     acuerdo:  { required: true, type: Object as PropType< IAcuerdo > },
-    tipo:     { required: true, type: String as PropType< TTipoAcuerdo > },
   })
+  const   urlDolibarr       = process.env.URL_DOLIBARR
 </script>

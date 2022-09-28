@@ -379,7 +379,10 @@ export function limpiarHTML (html : string ) : string
       
   return tmp.textContent || tmp.innerText;
 }
-export const fechaCorta = ( fecha : Date ) : string => fecha.toLocaleDateString('sv-SE')
+export const fechaCorta = ( fecha : Date ) : string => { 
+  return !!fecha.valueOf() ? fecha.toLocaleDateString('sv-SE') : ""
+}
+
 export const fechaLarga = ( fecha : Date ) : string => fecha.toLocaleDateString('es-CO', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
 export const esValorOk  = ( valor : number | string ) : boolean => {
   let ok                = true 
@@ -480,7 +483,7 @@ export function getQueryRouterLabelValueArray
 (
     paramQuery  : LocationQueryValue  | LocationQueryValue[],
     lista       : ILabelValue[],
-    separador   : string                                      = "-",
+    separador   : string                                      = "_",
     tipoKey     : "string"            | "number"              = "number"
 )               : ILabelValue[]
 {

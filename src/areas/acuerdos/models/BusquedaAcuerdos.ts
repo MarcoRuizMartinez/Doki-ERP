@@ -11,7 +11,6 @@ export interface IQueryAcuerdo {
   acuerdo              ?:  TIPO_ACUERDO
   comercial            ?:  string | number
   creador              ?:  string | number
-  filtroTexto          ?:  string
   tercero              ?:  string
   contacto             ?:  string
   estados              ?:  string
@@ -57,12 +56,10 @@ export interface IBusquedaAcuerdo {
   creador              ?: IUsuario
   resultadosXPage       : number
   pagina                : number
-  filtroTexto           : string
   esCotizacion          : boolean
   esPedido              : boolean
+  busquedaVacia         : boolean
 }
-
-
 export class BusquedaAcuerdo implements IBusquedaAcuerdo
 {
   acuerdo               : TIPO_ACUERDO
@@ -86,7 +83,7 @@ export class BusquedaAcuerdo implements IBusquedaAcuerdo
   creador              ?: IUsuario
   resultadosXPage       : number
   pagina                : number
-  filtroTexto           : string
+  busquedaVacia         : boolean
 
   constructor( acuerdoTipo : TIPO_ACUERDO = TIPO_ACUERDO.NULO )
   {
@@ -109,15 +106,11 @@ export class BusquedaAcuerdo implements IBusquedaAcuerdo
     this.municipio        = new Municipio()
     this.resultadosXPage  = 25
     this.pagina           = 1
-    this.filtroTexto      = ""
+    this.busquedaVacia    = true
   }
 
-  get esCotizacion() : boolean{
-    return this.acuerdo === TIPO_ACUERDO.COTIZACION
-  }
-  get esPedido() : boolean  {
-    return this.acuerdo === TIPO_ACUERDO.PEDIDO
-  }
+  get esCotizacion()  : boolean { return this.acuerdo === TIPO_ACUERDO.COTIZACION }
+  get esPedido()      : boolean { return this.acuerdo === TIPO_ACUERDO.PEDIDO     }
 
   get query() : IQueryAcuerdo
   {
@@ -129,11 +122,11 @@ export class BusquedaAcuerdo implements IBusquedaAcuerdo
     if(!!this.precioMinimo)       q.subtotalMin   = this.precioMinimo
     if(!!this.precioMaximo)       q.subtotalMax   = this.precioMaximo
 
-    if(!!this.estados.length)     q.estados       = this.estados      .map( e => e.value ).join("-")
-    if(!!this.origenes.length)    q.origenes      = this.origenes     .map( e => e.value ).join("-")
-    if(!!this.condiciones.length) q.condiciones   = this.condiciones  .map( e => e.value ).join("-")
-    if(!!this.formaPago.length)   q.formaPago     = this.formaPago    .map( e => e.value ).join("-")
-    if(!!this.entrega.length)     q.entrega       = this.entrega      .map( e => e.value ).join("-")    
+    if(!!this.estados.length)     q.estados       = this.estados      .map( e => e.value ).join("_")
+    if(!!this.origenes.length)    q.origenes      = this.origenes     .map( e => e.value ).join("_")
+    if(!!this.condiciones.length) q.condiciones   = this.condiciones  .map( e => e.value ).join("_")
+    if(!!this.formaPago.length)   q.formaPago     = this.formaPago    .map( e => e.value ).join("_")
+    if(!!this.entrega.length)     q.entrega       = this.entrega      .map( e => e.value ).join("_")    
 
     if(!!this.area.label)         q.area          = this.area.value
     if(!!this.facturado.label)    q.facturado     = this.facturado.value
@@ -141,16 +134,13 @@ export class BusquedaAcuerdo implements IBusquedaAcuerdo
     if(!!this.totalizado.label)   q.conTotal      = this.totalizado.value
     if(!!this.municipio.id)       q.municipio     = this.municipio.id
 
-
-
     if(!!this.comercial)          q.comercial     = this.comercial.id
     if(!!this.creador)            q.creador       = this.creador.id
 
     if(this.desde instanceof Date && !isNaN(this.desde.valueOf()))  q.fechaDesde  = this.desde.toLocaleDateString('sv-SE')
     if(this.hasta instanceof Date && !isNaN(this.hasta.valueOf()))  q.fechaHasta  = this.hasta.toLocaleDateString('sv-SE')
 
-    
+    this.busquedaVacia            = !Object.keys(q).length
     return q
   }
-
 } 

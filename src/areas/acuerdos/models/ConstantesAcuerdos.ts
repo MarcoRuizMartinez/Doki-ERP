@@ -55,7 +55,7 @@ export function estadoCtzToName( estado : number ): string {
 export function estadoPedToName( estado : number ): string {
   let valor :string         =   estado == ESTADO_PED.NO_GUARDADO  ? "Boceto"
                               : estado == ESTADO_PED.CANCELADO    ? "Cancelado"
-                              : estado == ESTADO_PED.BORRADOR     ? "Edición"
+                              : estado == ESTADO_PED.BORRADOR     ? "Borrador"
                               : estado == ESTADO_PED.VALIDADO     ? "Validado"
                               : estado == ESTADO_PED.PROCESO      ? "Entregando"
                               : estado == ESTADO_PED.ENTREGADO    ? "Entregado"
@@ -78,11 +78,11 @@ export function estadoCtzToColor( estado : number ): string
 export function estadoPedToColor( estado : number ): string
 {
   let color :string           = estado == ESTADO_PED.NO_GUARDADO  ? "#1A1A1A"
-                              : estado == ESTADO_PED.CANCELADO    ? "#BCBABA"
-                              : estado == ESTADO_PED.BORRADOR     ? "#0f61dd"
-                              : estado == ESTADO_PED.VALIDADO     ? "#06c700"
-                              : estado == ESTADO_PED.PROCESO      ? "#832362"
-                              : estado == ESTADO_PED.ENTREGADO    ? "#FF6805"
+                              : estado == ESTADO_PED.CANCELADO    ? "#832362"
+                              : estado == ESTADO_PED.BORRADOR     ? "#BCBABA"
+                              : estado == ESTADO_PED.VALIDADO     ? "#FF6805"
+                              : estado == ESTADO_PED.PROCESO      ? "#0f61dd"
+                              : estado == ESTADO_PED.ENTREGADO    ? "#06c700"
                               : "transparent"
   return color
 }

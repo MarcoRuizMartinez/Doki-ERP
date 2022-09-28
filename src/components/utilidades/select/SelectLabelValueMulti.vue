@@ -3,21 +3,16 @@
                                 multiple 
     v-model                     ="modelo"
     class                       ="campo-hundido"
-    popup-content-class         ="panel-blur"    
-    :display-value              ="label"
+    popup-content-class         ="panel-blur"
     :options                    ="options"
     @popup-show                 ="abrir" 
     @popup-hide                 ="cerrar"
-    
     >
-    <!-- 
-    @update:model-value         ="cambio"
-      emit-value  map-options 
-    :class                      ="{ 'width60' : !label }"      
-    option-value                ="name"
-    :display-value              ="label"
-    
-    -->
+    <template                   #selected>
+      <span
+        :class                  ="!!modelo.length ? 'text-primary' : 'text-grey-6'"
+      >{{label}}</span>
+    </template>
     <template                   #option="{ itemProps, opt, selected, toggleOption }">
       <q-item v-bind            ="itemProps">
         <q-item-section>
