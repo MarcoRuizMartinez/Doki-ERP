@@ -15,7 +15,7 @@ type AccionDolibarr           = "crear"         | "editar"        | "ver"       
                                 "close"         | "setinvoiced"   | "settodraft"    | "validate"
 //  | "crear-lineas"  |  |
 
-type ModuloDolibarr           = "tercero" | "contacto" | "documento" | "cotizacion"
+type ModuloDolibarr           = "tercero" | "contacto" | "documento" | "cotizacion" | "saber"
 type Metodo                   = "post" | "put" | "get" | "delete"
 
 export function useApiDolibarr()
@@ -46,10 +46,11 @@ export function useApiDolibarr()
   {
     let endPoint = ""
     switch (modulo) {
-      case "tercero":           endPoint = "thirdparties";  break;
-      case "contacto":          endPoint = "contacts";      break;
-      case "documento":         endPoint = "documents";     break;
-      case "cotizacion":        endPoint = "proposals";     break;
+      case "tercero":           endPoint = "thirdparties";        break;
+      case "contacto":          endPoint = "contacts";            break;
+      case "documento":         endPoint = "documents";           break;
+      case "cotizacion":        endPoint = "proposals";           break;
+      case "saber":             endPoint = "knowledgemanagement"; break;
       default: break;
     }
 
@@ -60,7 +61,7 @@ export function useApiDolibarr()
   (
     accion  : AccionDolibarr,
     tipo    : ModuloDolibarr,
-    objeto  : any,
+    objeto  : any             = "",
     id      : number          = 0
   ) : Promise <IResultado>
   {
@@ -97,7 +98,13 @@ export function useApiDolibarr()
     else if(accion            === "buscar" && typeof objeto === "string")
     {
       metodo                  = "get"
-      endPoint                += "/?" + objeto
+
+      // Horrible
+      if(tipo                 !== "saber")
+        endPoint              += "/?" + objeto
+      else
+      if(tipo                 === "saber")
+        endPoint              += "/knowledgerecords"
     }
     else if(accion.includes("borrar") && ( typeof objeto === "string" || typeof objeto === "number") )
     {
@@ -160,8 +167,8 @@ export function useApiDolibarr()
         else
           resultado           = await apiDolibarrAxios[metodo](endPoint, objeto, { headers: getHeadersAxios(), cancelToken: cancelTokenSource.token })
 
-        //console.log({metodo}, {endPoint}, {objeto} )
-        //console.log("useApiDoliabrr Resultado: ", resultado);
+        console.log({metodo}, {endPoint}, {objeto} )
+        console.log("useApiDoliabrr Resultado: ", resultado);
 
         if(!!resultado.data)
         {
