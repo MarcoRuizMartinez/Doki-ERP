@@ -30,8 +30,9 @@
                             } from "vue"
   import {  useApiDolibarr  } from "src/services/useApiDolibarr"
 
-  import {  useTools,
-            FileToBase64    } from "src/useSimpleOk/useTools"
+  import {  useTools        } from "src/useSimpleOk/useTools"
+  import {  FileToBase64    } from "src/useSimpleOk/UtilFiles"
+
   import {  format          } from 'quasar'
 
   const { apiDolibarr       } = useApiDolibarr()

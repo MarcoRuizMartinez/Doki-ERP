@@ -173,18 +173,3 @@ export async function crearImageHTML( src : string ) : Promise<HTMLImageElement>
     img.src         = src
   })
 }
-
-export function PDF_B64_ToBlob( pdf64 : string ) :string 
-{
-  let base64str           = pdf64.replace("UTF-8", "")
-  let binary              = atob(base64str.replace(/\s/g, ''))
-  let len                 = binary.length
-  let buffer              = new ArrayBuffer (len)
-  let view                = new Uint8Array  (buffer)
-  for (let i = 0; i < len; i++) 
-    view[i] = binary.charCodeAt(i)
-  
-  let blob                = new Blob( [view], { type: "application/pdf" })
-  let url                 = URL.createObjectURL(blob)
-  return url
-}

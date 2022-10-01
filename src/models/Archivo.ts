@@ -1,6 +1,9 @@
 import { format } from 'quasar'
 const { humanStorageSize } = format
 
+export type TFamiliaArchivos   = "PDF" | "Excel" | "Word" | "Texto" | "Calculo" | "PowerP" | "Imagen"
+
+
 export interface IArchivo
 {
   date:                     number
@@ -14,12 +17,16 @@ export interface IArchivo
   type:                     string
   sizeFile:                 string
   extension:                string
-  tipo:                     string
+  tipo:                     TFamiliaArchivos
   icono:                    string
+  iconoColor:               string
   modulepart:               string 
   original_file:            string
   endPoint:                 string
   loading:                  boolean
+  esVisualizable:           boolean
+  fileType:                 string
+  nombreCorto:              string  
 }
 
 export class Archivo implements IArchivo
@@ -31,7 +38,7 @@ export class Archivo implements IArchivo
   relativename:             string
   size:                     number 
   type:                     string
-  loading:                  boolean
+  loading:                  boolean  
 
   constructor()
   {
@@ -50,7 +57,7 @@ export class Archivo implements IArchivo
   }
 
   get extension() : string {
-    return this.relativename.slice( this.relativename.lastIndexOf('.') ).replace(".", "")
+    return this.relativename.slice( this.relativename.lastIndexOf('.') ).replace(".", "").toLowerCase()
   }
 
   get modulepart() : string {
@@ -70,8 +77,8 @@ export class Archivo implements IArchivo
     return arrayPath[arrayPath.length - 1] + "/" + this.relativename
   }
 
-  get tipo() : string {
-    let tipo = ""
+  get tipo() : TFamiliaArchivos {
+    let tipo : TFamiliaArchivos = "PDF"
 
     switch (this.extension) {
       case "pdf":   tipo  = "PDF";      break;
@@ -84,6 +91,26 @@ export class Archivo implements IArchivo
       case "ods":   tipo  = "Calculo";  break;
       case "ppt":   tipo  = "PowerP";   break;
       case "pptx":  tipo  = "PowerP";   break;
+      case "jpg":   tipo  = "Imagen";   break;
+      case "jpeg":  tipo  = "Imagen";   break;
+      case "png":   tipo  = "Imagen";   break;
+      case "gif":   tipo  = "Imagen";   break;
+      case "webp":  tipo  = "Imagen";   break;
+      default: break;
+    }
+    return tipo
+  }
+
+  get fileType() : string {
+    let tipo  =  ""
+
+    switch (this.extension) {
+      case "pdf":   tipo  = "application/pdf";  break;
+      case "jpg":   tipo  = "image/jpeg";       break;
+      case "jpeg":  tipo  = "image/jpeg";       break;
+      case "png":   tipo  = "image/png";        break;
+      case "gif":   tipo  = "image/gif";        break;
+      case "webp":  tipo  = "image/webp";       break;
       default: break;
     }
     return tipo
@@ -99,9 +126,26 @@ export class Archivo implements IArchivo
       case "Texto":   icono = "mdi-file-document";          break;
       case "Word":    icono = "mdi-microsoft-word";         break;
       case "PowerP":  icono = "mdi-microsoft-powerpoint";   break;
+      case "Imagen":  icono = "mdi-file-image";             break;
       default: break;
     }
     return icono
+  }
+
+  get iconoColor() : string {
+    let color = "black"
+
+    switch (this.tipo) {
+      case "PDF":     color = "red";          break;
+      case "Calculo": color = "green";        break;
+      case "Excel":   color = "green";        break;
+      case "Texto":   color = "indigo-10";    break;
+      case "Word":    color = "indigo-10";    break;
+      case "PowerP":  color = "deep-orange";  break;
+      case "Imagen":  color = "light-blue-9"; break;
+      default: break;
+    }
+    return color
   }
 
   get endPoint() :string  {
@@ -113,6 +157,16 @@ export class Archivo implements IArchivo
   }
   get fechaCorta() : string {
     return this.fecha.toLocaleDateString('sv-SE') 
+  }
+  get esVisualizable() : boolean { 
+    return this.tipo === "PDF" || this.tipo === "Imagen"
+  }
+
+  get nombreCorto() : string {
+    const i = this.name.indexOf("-") + 1
+    const l = this.name.length
+    const n = this.name.slice(i, l)
+    return n
   }
 /* 
 date: 1638982064

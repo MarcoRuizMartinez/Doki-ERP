@@ -31,7 +31,7 @@
       <div
         v-if                ="!!acuerdo.id || acuerdo.esNuevo"
         key                 ="key1"
-        class               ="row items-center  justify-between q-mr-sm"
+        class               ="row items-center justify-between q-mr-sm"
         >
         <!-- //* ////////////////////////////////////////////////////// Boton 3D Cotizacion -->
         <q-btn              push no-caps

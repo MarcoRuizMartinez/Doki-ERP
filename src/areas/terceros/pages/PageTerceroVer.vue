@@ -84,7 +84,6 @@
   import  formularioTercero     from "src/areas/terceros/components/formularioTercero/FormularioTercero.vue"
   import  cotizaciones          from "src/areas/acuerdos/cotizaciones/components/modules/ModuloCotizacionesTercero.vue"  
 
- 
   const { usuario, permisos } = storeToRefs( useStoreUser() )
   const { acuerdo           } = storeToRefs( useStoreAcuerdo() )
   const router                = useRouter()

@@ -189,10 +189,10 @@
             IBusquedaTercero} from "src/areas/terceros/services/servicesTerceros"
   import {  ModosVentana,
             Areas,
-            ALMACEN_LOCAL    } from "src/models/TiposVarios"
-  import {  useTools,
-            generarCSVDesdeTabla
-                            } from "src/useSimpleOk/useTools"
+            ALMACEN_LOCAL   } from "src/models/TiposVarios"
+  import {  useTools        } from "src/useSimpleOk/useTools"
+  import {  generarCSVDesdeTabla
+                            } from "src/useSimpleOk/UtilFiles"
   import {  Columna         } from "src/models/Tabla"
   import {  useTitle        } from "@vueuse/core"
   import    linkTercero       from "src/areas/terceros/components/LinkTercero.vue"
@@ -273,10 +273,10 @@
 
   function descargarTerceros( )
   {
-    let ok = generarCSVDesdeTabla( "Terceros",  columnasVisibles.value, terceros.value )
+/*     let ok = generarCSVDesdeTabla( "Terceros",  columnasVisibles.value, terceros.value )
 
     if (ok) aviso("positive", "Archivo generado", "file")
-    else    aviso("negative", "Error al generar el archivo...", "file")
+    else    aviso("negative", "Error al generar el archivo...", "file") */
   }
 
   watch( [ responsable, municipio, esFavorito, esFamoso, area ], buscar )

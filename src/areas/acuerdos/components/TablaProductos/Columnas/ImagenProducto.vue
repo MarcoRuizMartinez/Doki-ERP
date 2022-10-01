@@ -18,14 +18,17 @@
       />
     </q-tooltip>
   </div>
-  <q-dialog v-model       ="ventanaImagen">
-    <visor-imagen v-bind  ="imagenBig"/>
-  </q-dialog>
+  <visor-imagen
+    :visible              ="ventanaImagen"
+    :titulo               ="imagenBig.titulo"
+    :src                  ="imagenBig.src"
+  />
 </template>
 <script lang="ts" setup>
   import {  ref, PropType } from "vue"
   import {  ILineaAcuerdo } from "src/areas/acuerdos/models/LineaAcuerdo"
   import    visorImagen     from "components/utilidades/VisorImagen.vue"
+
   const ventanaImagen       = ref< boolean >( false )
   type  TImagenBig          = { src : string, titulo: string }
   const imagenBig           = ref< TImagenBig >( { titulo: "", src: "" } )
@@ -33,7 +36,7 @@
     linea: { required: true, type: Object as PropType< ILineaAcuerdo > },
   })
   function clickImagen( linea : ILineaAcuerdo ){
-    imagenBig.value             = { titulo: linea.nombre, src: linea.imagenFull }
-    ventanaImagen.value         = true
+    imagenBig.value         = { titulo: linea.nombre, src: linea.imagenFull }
+    ventanaImagen.value     = true
   }
 </script>

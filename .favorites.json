@@ -7,5 +7,23 @@
         "workspaceRoot": null,
         "workspacePath": null,
         "id": "1MfBtZVohplYIiEx"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\estad\\Apps\\SimpleOk-ERP\\src\\areas\\acuerdos\\components\\Busqueda\\BarraBusqueda.vue",
+        "parent_id": null,
+        "fsPath": "c:\\Users\\estad\\Apps\\SimpleOk-ERP\\src\\areas\\acuerdos\\components\\Busqueda\\BarraBusqueda.vue",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "opvtKTbPje6rkiH0"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\estad\\Apps\\SimpleOk-ERP\\src\\services\\useApiDolibarr.ts",
+        "parent_id": null,
+        "fsPath": "c:\\Users\\estad\\Apps\\SimpleOk-ERP\\src\\services\\useApiDolibarr.ts",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "buIdSm0rjkJKp9ox"
     }
 ]

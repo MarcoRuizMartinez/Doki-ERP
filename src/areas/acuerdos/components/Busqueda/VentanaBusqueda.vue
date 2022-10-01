@@ -90,8 +90,8 @@
   // * /////////////////////////////////////////////////////////////////////// Componibles
   import {  useTitle            } from "@vueuse/core"
   import {  servicesAcuerdos    } from "src/areas/acuerdos/services/servicesAcuerdos"
-  import {  useTools,
-            generarCSVDesdeTabla} from "src/useSimpleOk/useTools"  
+  import {  useTools            } from "src/useSimpleOk/useTools"
+  import {  generarCSVDesdeTabla} from "src/useSimpleOk/UtilFiles"  
   // * /////////////////////////////////////////////////////////////////////// Modelos
   import {  BusquedaAcuerdo,
             IQueryAcuerdo       } from "src/areas/acuerdos/models/BusquedaAcuerdos"

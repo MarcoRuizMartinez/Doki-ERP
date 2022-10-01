@@ -31,6 +31,12 @@
     <productos
       class                   ="col-12"
     />
+    <documentos
+      class                   ="col-md-4 col-12 full-height"
+      modulo                  ="proposal"
+      :ref-modulo             ="acuerdo.id ?? 0"
+      :puede-editar           ="true"      
+    />
     <!-- //* /////////////////  Visor PDF  -->
     <visor-pdf                descargar
       v-model:src             ="srcPDF"
@@ -38,6 +44,7 @@
       nombre-pdf              ="cotizacion"
       @click-descargar        ="guardarPDF"
     />
+
   </q-page>
 </template>
 
@@ -53,12 +60,12 @@
                                   } from "vue"
   import {  useRouter             } from 'vue-router'
   import {  useTitle              } from "@vueuse/core"
-  import {  GrupoLineas,
-                      } from "src/areas/acuerdos/models/GrupoLineasAcuerdo"
   //* ///////////////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs           } from 'pinia'
   import {  useStoreUser          } from 'src/stores/user'
   import {  useStoreAcuerdo       } from 'src/stores/acuerdo'
+  //* ///////////////////////////////////////////////////////////////////////////////// Modelos
+  import {  Acuerdo               } from "../../models/Acuerdo"  
   //* ///////////////////////////////////////////////////////////////////////////////// Componibles
   import {  useControlCotizacion  } from "src/areas/acuerdos/controllers/ControlCotizaciones"
   import {  useControlProductos   } from "src/areas/acuerdos/controllers/ControlLineasProductos"
@@ -71,7 +78,7 @@
   import    terceroYContacto        from "src/areas/acuerdos/components/TerceroYcontacto.vue"
   import    condiciones             from "src/areas/acuerdos/components/CondicionesCotizacion.vue"
   import    productos               from "src/areas/acuerdos/components/ProductosAcuerdo.vue"
-import { Acuerdo } from "../../models/Acuerdo"
+  import    documentos              from "components/archivos/ModuloArchivos.vue"
 
   const { acuerdo,
           loading           } = storeToRefs( useStoreAcuerdo() )

@@ -1,7 +1,7 @@
 <template>
   <ventana                      minimizar
     class-contenido             ="column items-center"
-    titulo                      ="Documentos"
+    :titulo                     ="`Documentos (${archivos.length})`"
     icono                       ="mdi-file-document-multiple"
     size-icon-carga             ="6em"
     mensaje-sin-resultados      ="Sin documentos"
@@ -15,19 +15,28 @@
       v-if                      ="!!archivos.length"
       class                     ="fit tabla-maco"
       row-key                   ="id"
+      :rows-per-page-options    ="[10, 20, 50]"
+      :hide-bottom              ="archivos.length <= 10"
       :rows                     ="archivos"
       :columns                  ="columnas"
       > 
       <template #body           ="props">
         <q-tr   :props          ="props">
-          <q-td :props          ="props"  key="name" >
+          <q-td
+            key                 ="name"
+            style               ="padding-left: 4px;"
+            :props              ="props" 
+            >
             <!-- //* /////////  Icono Extencion  -->
             <q-icon
               v-if              ="!props.row.loading"
               class             ="iconos-doc op90"
               size              ="sm"
+              :color            ="props.row.iconoColor"
               :name             ="props.row.icono"
-            />
+              >
+              <Tooltip :label   ="props.row.extension.toUpperCase()"/>
+            </q-icon>
             <!-- //* /////////  Spinner  -->
             <q-spinner 
               v-else
@@ -38,51 +47,77 @@
             <!-- //* /////////  Nombre archivo de descarga  -->
             <q-btn              flat dense no-caps rounded
               padding           ="0px 6px"
-              :label            ="props.row.name"
+              class             ="ellipsis btn-max"
+              align             ="left"
+              :label            ="props.row.nombreCorto"
               :disable          ="props.row.loading"
               @click            ="descargarArchivo(props.row as Archivo)"
-            />
-            <tooltip-documento :archivo="( props.row as Archivo )" />
+              >
+              <tooltip-documento  :archivo="( props.row as Archivo )" />
+            </q-btn>
+            
           </q-td>
-          <q-td :props          ="props"  key="tipo" >
+          <q-td
+            :props              ="props"
+            key                 ="tipo"
+            style               ="padding-right: 4px;"
+            >
             <!-- //* /////////  Borrar archivo -->
             <q-btn              flat dense round
               v-if              ="puedeEditar"
               icon              ="mdi-delete"
               class             ="op40 op100-hover"
               padding           ="none"
-              size              ="sm"
-              @click            ="borrarArchivoAks( props.row as Archivo )"
-            />
+              size              ="md"
+              >
+              <confirmar  @ok   ="borrarArchivoOk( props.row )"/>
+              <Tooltip    :label="'Borrar archivo ' + props.row.name"/>
+            </q-btn>            
             <!-- //* /////////  Lupa ver PDF  -->
             <q-btn              flat dense round
-              v-if              ="props.row.tipo == 'PDF'"
+              v-if              ="props.row.esVisualizable"
               icon              ="mdi-magnify-plus"
               class             ="op40 op100-hover"
               padding           ="none"
-              size              ="sm"
-              @click            ="verPDF( props.row as Archivo )"
+              size              ="md"
+              @click            ="verArchivo( props.row )"
             />
           </q-td>
         </q-tr>
       </template>
     </q-table>
     <!-- //* /////////////////  Visor PDF  -->
-    <visor-pdf
+    <visor-pdf                  en-base-64
       v-model:src               ="srcPDF"
       v-model:visible           ="ventanaPDF"
       :nombre-pdf               ="fileNameSelect"
     />
-    <template #barra  v-if="!puedeSubir && puedeEditar">
-      <!-- //* ///////////////  Boton subir  -->
+    <visor-imagen               en-base-64
+      v-model:src               ="imagenAver.src"
+      v-model:visible           ="ventanaImagen"
+      :ratio                    ="''"
+      :titulo                   ="imagenAver.titulo"
+      :fileType                 ="imagenAver.fileType"
+    />
+    <template                   #barra>
       <q-btn                    round dense flat
+        icon                    ="mdi-refresh"
+        class                   ="op60 op100-hover"
+        @click                  ="buscarArchivos()"
+        >
+        <Tooltip label          ="Recargar"/>
+      </q-btn>
+      <!-- //* ///////////////  Boton subir  -->
+      <!-- v-if                    ="!puedeSubir && puedeEditar" -->
+      <q-btn                    round dense flat        
         icon                    ="mdi-cloud-upload"
         class                   ="op60 op100-hover"
         type                    ="a"
         target                  ="_blank"
         :href                   ="urlDolibarr + '/societe/document.php?socid=' + refModulo"
-      />
-      <Tooltip label            ="Subir archivos en Dolibarr"/>      
+        >
+        <Tooltip label          ="Subir archivos en Dolibarr"/>      
+      </q-btn>
     </template>
     <template #menu v-if        ="puedeSubir">
       <!-- //* ///////////////  Subir archivo  -->
@@ -96,30 +131,34 @@
   import {  ref,
             toRefs,
             watch,
-            //onMounted,
+            onMounted,
             PropType
                             } from "vue"
   import {  useApiDolibarr  } from "src/services/useApiDolibarr"
   import {  ModosVentana    } from "src/models/TiposVarios"
-  import {  useQuasar       } from 'quasar'
-  import {  useTools,
-            DownloadFile_B64} from "src/useSimpleOk/useTools"
+  import {  useTools        } from "src/useSimpleOk/useTools"
+  import {  DownloadFile_B64} from "src/useSimpleOk/UtilFiles"
   import {  IColumna,
             Columna         } from "src/models/Tabla"
   import {  IArchivo,
             Archivo         } from "src/models/Archivo"
   import    ventana           from "components/utilidades/Ventana.vue"
-  import    visorPdf          from "components/utilidades/VisorPDF.vue"
+  import    visorPdf          from "components/utilidades/VisorPDF.vue"  
+  import    visorImagen       from "components/utilidades/VisorImagen.vue"
   import    subirArchivo      from "./SubirArchivo.vue"
   import    tooltipDocumento  from "./TooltipArchivo.vue"
-  const { apiDolibarr    } = useApiDolibarr()
+  import    confirmar         from "components/utilidades/MenuConfirmar.vue"
+
+  const { apiDolibarr       } = useApiDolibarr()
   const { aviso             } = useTools()
-  const { dialog            } = useQuasar()
   const modo                  = ref< ModosVentana >("buscando")
   const archivos              = ref< IArchivo[] >([])
   const fileNameSelect        = ref< string     >( "" )
   const ventanaPDF            = ref< boolean    >(false)
+  const ventanaImagen         = ref< boolean    >(false)
   const srcPDF                = ref< string     >("")
+  type  TImagenAver           = { src : string, titulo: string, fileType: string }
+  const imagenAver            = ref< TImagenAver >( { titulo: "", src: "", fileType: "" } )
   type  Modulos               = "thirdparty" | "proposal" | "invoice" | "supplier_invoice" | "shipment" | "project"
   const props                 = defineProps({
     refModulo:    { required: true,   type: Number, default: 0          },
@@ -132,22 +171,24 @@
           modulo,
           puedeEditar
                             } = toRefs( props )
-  let puedeSubir              = false//modulo.value === "thirdparty" || !puedeEditar.value ? false : true //computed(()=>{ modulo.value === "thirdparty" })
+  let puedeSubir              = true//modulo.value === "thirdparty" || !puedeEditar.value ? false : true //computed(()=>{ modulo.value === "thirdparty" })
   const urlDolibarr           = process.env.URL_DOLIBARR
 
   const columnas: IColumna[]  = [
     new Columna({ name: "name",     label: "Archivo"  }),
-    new Columna({ name: "tipo",     label: "."  })
+    new Columna({ name: "tipo",     label: "."        })
   ]
 
 
-  //onMounted( buscarArchivos )
+  onMounted( buscarArchivos )
+
   watch(refModulo, (newId, oldId) => {
     buscarArchivos(newId)
   })
 
   async function buscarArchivos( id : number = refModulo.value )  
   {
+    if(id                     <= 0) return 
     modo.value                = "buscando"
     let { data, ok }          = await apiDolibarr( "buscar", "documento", "modulepart=" + modulo.value + "&id=" + id )
     
@@ -180,34 +221,30 @@
   }
 
 
-  async function verPDF( archivo : IArchivo )
+  async function verArchivo( archivo : IArchivo )
   {
-    ventanaPDF.value          = true
-    fileNameSelect.value      = archivo.name
+    fileNameSelect.value      = archivo.nombreCorto
+    archivo.loading           = true
     let { data, ok }          = await apiDolibarr( "descargar", "documento", archivo.endPoint )
+    archivo.loading           = false
 
-    if(ok)
-    {
+    if(ok){
       let descarga            = data as any
-      srcPDF.value            = descarga.content
+      //console.log("descarga: ", descarga);
+
+      if(archivo.tipo         === "PDF"){        
+        srcPDF.value          = descarga.content
+        ventanaPDF.value      = true
+      }
+      else
+      if(archivo.tipo         === "Imagen"){
+        imagenAver.value      = { titulo: archivo.nombreCorto, src: descarga.content, fileType: archivo.fileType }
+        ventanaImagen.value   = true
+      }
     }
     else
       aviso("negative", "Error descargando el archivo", "file")
   }
-
-  function borrarArchivoAks( archivo : IArchivo )
-  {
-    dialog({
-      title:    'Confirmar borrar archivo',
-      message:  'Realmente deseas eliminar este documento? <br/><b>' + archivo.name + '</b>',
-      class:    "text-center",
-      cancel:   true,
-      html:     true,
-    }).onOk(() => {
-      borrarArchivoOk( archivo )
-    })
-  }
-
 
   async function borrarArchivoOk( archivo : IArchivo )
   {
@@ -232,5 +269,8 @@
 <style>
 .iconos-doc{
   width: 30px;
+}
+.btn-max{
+  max-width: 280px;
 }
 </style>

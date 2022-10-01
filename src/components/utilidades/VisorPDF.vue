@@ -44,7 +44,7 @@
                             } from "vue"
   import {  ModosVentana    } from "src/models/TiposVarios"
   import    ventana           from "components/utilidades/Ventana.vue"
-  import {  PDF_B64_ToBlob  } from "src/useSimpleOk/UtilPDF"
+  import {  File_B64_ToBlob } from "src/useSimpleOk/UtilFiles"
   import {  useTools        } from "src/useSimpleOk/useTools"
   import {  btnBaseSm       } from "src/useSimpleOk/useEstilos"
   import    efecto            from "components/utilidades/Efecto.vue"
@@ -54,7 +54,7 @@
     src:          { required: true,       type: String  },
     visible:      { required: true,       type: Boolean },
     nombrePdf:    { default:  "archivo",  type: String  },
-    toBase64:     { required: false,      type: Boolean },
+    enBase64:     { required: false,      type: Boolean },
     descargar:    { default:  false,      type: Boolean }
   })
   const { aviso               } = useTools()
@@ -62,15 +62,15 @@
   const modo                  = ref< ModosVentana >("buscando")
   const { src,
           visible,
-          toBase64          } = toRefs( props )
+          enBase64          } = toRefs( props )
   const visibleModel          = ref< boolean  >(false)
   const srcModel              = ref< string   >("")
 
   watch(src, (newSRC) =>{
     if(!!newSRC.length)
     {
-      if(toBase64.value)
-        srcModel.value       = PDF_B64_ToBlob( newSRC )
+      if(enBase64.value)
+        srcModel.value       = File_B64_ToBlob( newSRC )
       else
         srcModel.value       = newSRC
 
