@@ -46,6 +46,7 @@ export interface IAcuerdo
   tercero:                    ITercero
   terceroNombre:              string
   area:                       string
+  enlaces:                    string
   municipioTercero:           string
   fechaCreacion:              Date
   fechaCreacionCorta:         string
@@ -139,6 +140,8 @@ export interface IAcuerdo
 
   /* Solo para pediso */
   facturado:                  boolean
+
+  subTotalLimpio:     number
 }
 
 export class Acuerdo implements IAcuerdo
@@ -150,6 +153,7 @@ export class Acuerdo implements IAcuerdo
   refCliente:                 string
   terceroId:                  number
   tercero:                    ITercero
+  enlaces:                    string
   fechaCreacion:              Date
   fechaValidacion:            Date
   fechaCierre:                Date
@@ -179,7 +183,6 @@ export class Acuerdo implements IAcuerdo
   origenContacto:             IOrigenContacto
   tiempoEntrega:              ITiempoEntrega
   conIVA:                     boolean
-  vinculado:                  boolean
 
   /* Solo para cotizaciones */
   titulo:                     string
@@ -198,6 +201,7 @@ export class Acuerdo implements IAcuerdo
     this.refCliente           = ""
     this.terceroId            = 0
     this.tercero              = new Tercero()
+    this.enlaces              = ""
     this.fechaCreacion        = new Date()
     this.fechaValidacion      = new Date()
     this.fechaCierre          = new Date(0)
@@ -226,8 +230,7 @@ export class Acuerdo implements IAcuerdo
     this.metodoEntrega        = new MetodoEntrega()
     this.origenContacto       = new OrigenContacto()
     this.tiempoEntrega        = new TiempoEntrega()
-    this.conIVA               = true
-    this.vinculado            = false
+    this.conIVA               = true    
 
     /* Solo para cotizaciones */
     this.titulo               = ""
@@ -254,11 +257,20 @@ export class Acuerdo implements IAcuerdo
     }
   } */
 
+  get subTotalLimpio() : number {
+    let suma                = 0
+    const productosLimpios  = this.productos.filter( p => !p.ref.includes("TRAN-") && !p.ref.includes("EMBA-") )
+    if(!!productosLimpios.length)
+      suma                  = productosLimpios.map( p => p.totalConDescu ).reduce((acu, now) => acu + now)
+    return suma
+  }
+
   get esCotizacion()      : boolean { return this.tipo === TIPO_ACUERDO.COTIZACION  }
   get esPedido()          : boolean { return this.tipo === TIPO_ACUERDO.PEDIDO      }
   get esFactura()         : boolean { return this.tipo === TIPO_ACUERDO.FACTURA     }
   get municipioTercero()  : string  { return this.tercero.municipio.label           }
   get area()              : string  { return this.tercero.areaNombre                }
+  get vinculado()         : boolean { return !!this.enlaces                         }
 
   get comercialNombre() : string {
     return this.comercial.nombreCompleto
@@ -351,8 +363,8 @@ export class Acuerdo implements IAcuerdo
   }
 
   // * /////////////////////////////////////////////////////////////////////////////// TOTAL
-  get totalConIva() :number {
-    let total               = this.totalConDescu + this.ivaValor
+  get totalConIva() :number {    
+    let total               = (this.totalConDescu ?? 0 ) + (this.ivaValor ?? 0)
 
     if(this.aiuOn)
       total                 += this.aiuAdminValor + this.aiuImpreValor + this.aiuUtiliValor
@@ -559,7 +571,6 @@ export class Acuerdo implements IAcuerdo
     ctzApi.facturado          = Boolean( +ctzApi.facturado )
     ctzApi.conTotal           = Boolean( +ctzApi.conTotal )
     ctzApi.conIVA             = Boolean( +ctzApi.conIVA )
-    ctzApi.vinculado          = Boolean( +ctzApi.vinculado )
     ctzApi.aiuOn              = Boolean( +ctzApi.aiu )
     ctzApi.aiuAdmin           = +ctzApi.aiuAdmin
     ctzApi.aiuImpre           = +ctzApi.aiuImpre

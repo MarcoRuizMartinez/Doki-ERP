@@ -11,7 +11,13 @@
     <template                   #selected>
       <span
         :class                  ="!!modelo.length ? 'text-primary' : 'text-grey-6'"
-      >{{label}}</span>
+      >
+        {{label}}
+      </span>
+      <Tooltip
+        v-if                    ="!!modelo.length"
+        :label                  ="modelo.map( (i) => i.label ).join(', ')"
+      />
     </template>
     <template                   #option="{ itemProps, opt, selected, toggleOption }">
       <q-item v-bind            ="itemProps">
@@ -31,7 +37,6 @@
         :name                   ="icon"
         :color                  ="!!modelo.length ? 'primary' : 'grey-6'"
       />
-      <Tooltip label            ="Seleccionar xxx"/>
     </template>        
   </q-select>
 </template>
@@ -45,6 +50,9 @@
                             } from 'vue'
   import {  ILabelValue     } from "src/models/TiposVarios"
 
+  const modelo                = ref< ILabelValue[] > ( [] )
+  let   copiaModelo : string  = ""
+
   const emit                  = defineEmits(["update:modelValue"])
   const props                 = defineProps(
   {
@@ -55,13 +63,18 @@
   })
   const { modelValue        } = toRefs( props )
 
-  watch(modelValue, ()=>{
-    modelo.value              = modelValue.value
-  })
+  watch(modelValue, ()=>
+    {
+      modelo.value            = !!modelValue.value ? modelValue.value : []
+    }
+    ,{ immediate: true }
+  )
 
-  const modelo                = ref< ILabelValue[] > ( [] )
-  let   copiaModelo : string  = ""
-  //onMounted() 
+  
+  
+  onMounted(()=>{
+
+  })
 
   function abrir(){
     copiaModelo               = JSON.stringify(modelo.value)

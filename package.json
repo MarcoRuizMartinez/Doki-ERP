@@ -1,15 +1,15 @@
 {
-  "name": "simpleok-erp",
+  "name": "doki-erp",
   "version": "0.0.1",
-  "description": "SiempleOK ERP",
-  "productName": "SimpleOk ERP",
+  "description": "Doki ERP",
+  "productName": "Doki ERP",
   "author": "MarcoRuizMartinez <estados@gmail.com>",
   "private": true,
   "scripts": {
     "test": "echo \"No test specified\" && exit 0"
   },
   "dependencies": {
-    "@quasar/extras": "^1.0.0",
+    "@quasar/extras": "^1.15.4",
     "@types/canvas-confetti": "^1.4.3",
     "@vueuse/core": "^9.1.1",
     "@vueuse/math": "^9.1.1",
@@ -21,13 +21,13 @@
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.5.25",
     "pinia": "^2.0.11",
-    "quasar": "^2.6.0",
+    "quasar": "^2.8.4",
     "vue": "^3.0.0",
     "vue-router": "^4.0.0",
     "vue3-apexcharts": "^1.4.1"
   },
   "devDependencies": {
-    "@quasar/app-webpack": "^3.0.0",
+    "@quasar/app-webpack": "^3.6.1",
     "@quasar/quasar-app-extension-qpdfviewer": "^2.0.0-alpha.6",
     "@types/node": "^12.20.21"
   },

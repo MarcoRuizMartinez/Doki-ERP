@@ -17,8 +17,11 @@
       height-card         ="260px"
       size-icon-carga     ="12em"
       />
-    <template v-if        ="storeUser.usuario.esDev">    
-      <modulo-enlaces             class="col-md-4 col-12" height-card="260px"/>
+      <modulo-enlaces
+        class             ="col-md-4 col-12"
+        
+      />
+    <template v-if        ="storeUser.usuario.esDev">      
       <modulo-usuarios            class="col-md-4 col-12" height-card="260px"/>
       <modulo-municipios          class="col-md-4 col-12" height-card="260px"/>
       <modulo-condiciones         class="col-md-4 col-12" height-card="260px"/>

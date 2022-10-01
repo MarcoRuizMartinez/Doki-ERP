@@ -7,7 +7,7 @@
       :style                  ="estiloAncho"
       class                   ="clase-ventana"
       > <!-- //?* class ="miCard shadow-5" :class="clase"  --> 
-      <!-- //?* //////////////////////////////////////////////////////////////// Barra superior --> 
+      <!-- //?* //////////////////////////////////////////////////////////////// Barra superior justify-between --> 
       <q-card-section         
         class                 ="row justify-between items-center text-white q-py-sm bg-primary"
         :style                ="fondoBarra"

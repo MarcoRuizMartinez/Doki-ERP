@@ -99,6 +99,7 @@
             text-color          ="grey-8"
             toggle-color        ="primary"
             :options            ="[{label: '25', value: 25},{label: '50', value: 50},{label: '100', value: 100}]"
+            @update:model-value ="busqueda.pagina = 1"
           />
           <Tooltip label        ="Resultados por pagina"/>
         </div>
@@ -135,7 +136,7 @@
               icon                ="mdi-refresh"
               padding             ="xs"
               color               ="primary"
-              @click              ="buscar"
+              @click              ="buscar('btnRecargar')"
               >
               <Tooltip label      ="Recargar"/>
             </q-btn>
@@ -282,6 +283,33 @@
           :maximo               ="999_999_999"
         />
       </fieldset-filtro>
+      <fieldset-filtro
+        titulo                  ="Totales"
+        class-conenido          ="column q-gutter-xs"
+        >
+        <table>
+          <tbody>
+            <tr>
+              <td>Subtotal:</td>
+              <td class         ="text-bold fuente-mono">
+                {{formatoPrecio(acuerdos.map( a => a.totalConDescu ).reduce((acu, now) => acu + now))}}
+              </td>
+            </tr>
+            <tr>
+              <td>Sin fletes:</td>
+              <td class         ="text-bold fuente-mono">
+                {{formatoPrecio(acuerdos.map( a => a.subTotalLimpio ).reduce((acu, now) => acu + now))}}
+              </td>
+            </tr>     
+            <tr>
+              <td>Total:</td>
+              <td class         ="text-bold fuente-mono">
+                {{formatoPrecio(acuerdos.map( a => a.totalConIva ).reduce((acu, now) => acu + now))}}
+              </td>
+            </tr>
+          </tbody>
+      </table>
+      </fieldset-filtro>
     </q-tab-panel>
   </q-tab-panels>
 </template>
@@ -304,11 +332,12 @@
             getMunicipioDB
                                 } from "src/services/useDexie"
   import {  fechaValida,
+            formatoPrecio,
             getQueryRouterDate,
             getQueryRouterString,
             getQueryRouterNumber,
             getQueryRouterLabelValue,
-            getQueryRouterLabelValueArray            
+            getQueryRouterLabelValueArray,
                                 } from "src/useSimpleOk/useTools"
   // * /////////////////////////////////////////////////////////////////////// Modelos
   import {  Areas               } from "src/models/TiposVarios"
@@ -338,6 +367,7 @@
   const { usuario, permisos     } = storeToRefs( useStoreUser() )
   const { busqueda, acuerdos    } = storeToRefs( useStoreAcuerdo() )
   const { tabs                  } = storeToRefs( useStoreApp() )
+
   const opcionesFacturado         = [{value:0, label:'No facturado'},   {value:1, label:'Facturado'   }]
   const opcionesTotales           = [{value:0, label:'Sin totalizar'},  {value:1, label:'Totalizado'  }]
   const opcionesIVA               = [{value:0, label:'Sin IVA'},        {value:1, label:'Con IVA'     }]
@@ -350,7 +380,8 @@
   const autoSelectUsuario         = computed(()=> Object.keys(queryURL).length === 0 ? true : getQueryRouterNumber( queryURL.comercial ) ?? false )
   const siguientePagina           = computed(()=> busqueda.value.pagina + (acuerdos.value.length >= busqueda.value.resultadosXPage ? 1 : 0) )
   const haySiguientePagina        = computed(()=> busqueda.value.pagina !== siguientePagina.value )
-
+  let   copiaQ                    = ""
+  let   bloqueoInicio             = true
 
   onMounted(()=>{
     tabs.value                    = { activa : "tab_1", alerts: [ false, true]}
@@ -385,8 +416,9 @@
     busqueda.value.origenes       = getQueryRouterLabelValueArray ( queryURL.origenes,    origenes.value        )
     if(!!queryURL.municipio)
       busqueda.value.municipio    = await getMunicipioDB( Array.isArray(queryURL.municipio) ? 0 : +queryURL.municipio ) 
+    
+      bloqueoInicio                 = false
   }
-
 
   const emit = defineEmits<{
     (e: 'buscar',   value: IQueryAcuerdo  ): void
@@ -396,6 +428,7 @@
 
   watch(busqueda, (b)=>
     {
+      if(bloqueoInicio) return
       checkAlertTabs(b)
       //if( !permisos.value.acceso_total )
         //query.idComercial         = usuario.value.id
@@ -415,14 +448,18 @@
   }
 
 
-  function buscar()
+  function buscar( origen : string = "" )
   {
     const query         = busqueda.value.query
+    const qString       = JSON.stringify(query)
+    if(copiaQ           !== qString)
+      copiaQ            = qString
+    else if(origen      === "")
+      return
+
     if(!!Object.keys(query).length)
     {
       router.replace({ query: {...query }  })
-      query.limite      = busqueda.value.resultadosXPage
-      query.offset      = query.limite * (busqueda.value.pagina - 1)
       query.acuerdo     = busqueda.value.acuerdo
       query.tipo        = "busqueda"
       emit("buscar", query)
@@ -430,11 +467,9 @@
     else{
       router.replace({ query: {} })
     }
-
   }
 
-  function limpiarBusqueda()
-  {
+  function limpiarBusqueda(){
     queryURL = {}
     asignarQueryRouterACampos()
     emit("limpiar")

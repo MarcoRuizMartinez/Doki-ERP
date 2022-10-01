@@ -169,8 +169,8 @@ module.exports = configure(function (ctx) {
       // chainWebpackCustomSW (/* chain */) {},
 
       manifest: {
-        name: `SimpleOk ERP`,
-        short_name: `SimpleOk ERP`,
+        name: `Doki ERP`,
+        short_name: `Doki ERP`,
         description: ``,
         display: 'standalone',
         orientation: 'portrait',
@@ -235,8 +235,7 @@ module.exports = configure(function (ctx) {
 
       builder: {
         // https://www.electron.build/configuration/configuration
-
-        appId: 'simpleok-erp'
+        appId: 'doki-erp'
       },
 
       // "chain" is a webpack-chain object https://github.com/neutrinojs/webpack-chain

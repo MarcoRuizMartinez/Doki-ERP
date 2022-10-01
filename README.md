@@ -1,4 +1,4 @@
-# SimpleOk ERP (simpleok-erp)
+# Doki ERP (doki-erp)
 
 SiempleOK ERP
 

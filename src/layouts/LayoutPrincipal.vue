@@ -14,12 +14,18 @@
           icon          ="mdi-menu"
           @click        ="toggleLeftDrawer"
         />
-        <q-toolbar-title>
-          Grupo Escom
+        <q-toolbar-title >
+          <img
+          class         ="row"          
+          src           ="images/logos/doki.png"
+          >
         </q-toolbar-title>
-
         <menu-top class ="gt-sm desktop-only"/>
-        <q-space />        
+        <q-space />
+        <img
+          class         ="row q-pr-md op20"
+          src           ="images/logos/logosEscomMublex.png"
+          >        
         <online />
         <menu-usuario />
       </q-toolbar>

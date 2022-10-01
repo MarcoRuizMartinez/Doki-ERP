@@ -151,6 +151,11 @@ export class BusquedaAcuerdo implements IBusquedaAcuerdo
     if(this.hasta instanceof Date && !isNaN(this.hasta.valueOf()))  q.fechaHasta  = this.hasta.toLocaleDateString('sv-SE')
 
     this.busquedaVacia            = !Object.keys(q).length
+
+    if(!this.busquedaVacia){
+      q.limite                    = this.resultadosXPage
+      q.offset                    = q.limite * (this.pagina - 1)
+    }
     return q
   }
 } 

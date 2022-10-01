@@ -134,7 +134,7 @@
                                     : `Buscando ${tipo.value}...`
   })
   const columnas                  = ref< IColumna[] >([])
-  const columnasVisibles          = ref< string[]   >( columnas.value.filter(c => c.visible ).map( c => c.name ) )
+  const columnasVisibles          = ref< string[]   >([])
   
   onMounted(()=>{
     acuerdos.value                = []
@@ -145,17 +145,13 @@
   onUnmounted(()=>{
     acuerdos.value                = []
     busqueda.value                = new BusquedaAcuerdo()
-  })
-
-  
+  })  
 
   async function buscar( query : IQueryAcuerdo )
   {
-    console.log("query: ", query);
     acuerdos.value                = []            
     modo.value                    = "buscando"
     acuerdos.value                = await getAcuerdos( query )
-
     modo.value                    = !!acuerdos.value.length ? "normal" : "sin-resultados"
   }
 
@@ -182,12 +178,15 @@
       new Columna({ name: "origenContactoLabel",      label: "Origen"             }),
       new Columna({ name: "area",                     label: "Área"               }),
       Columna.ColumnaPrecio ({ name: "totalConDescu", label: "Subtotal",          clase: "text-bold" }),
+      Columna.ColumnaPrecio ({ name: "subTotalLimpio",label: "Subtotal comisión", clase: "text-bold" }),
       Columna.ColumnaPrecio ({ name: "ivaValor",      label: "IVA",               clase: "text-bold" }),
       Columna.ColumnaPrecio ({ name: "totalConIva",   label: "Total",             clase: "text-bold" }),
     ]
     
     if(busqueda.value.esPedido)
       columnas.value.push( Columna.ColumnaSiNo({ name: "facturado",         label: "Facturado"      }) )    
+
+    columnasVisibles.value  = columnas.value.filter(c => c.visible ).map( c => c.name )       
   } 
 
   function descargarAcuerdos()
