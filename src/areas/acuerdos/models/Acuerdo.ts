@@ -29,13 +29,13 @@ import {  getCondicionesPagoDB,
 import {  date                              } from "quasar"
 import {  getDateToStr,
           getMilisecShortForApiDolibarr     } from "src/useSimpleOk/useTools"
-
+import {  TModulosDolibarr                  } from "src/useSimpleOk/UtilFiles"
 
 export interface IAcuerdo
 {
   tipo:                       TIPO_ACUERDO
-  esCotizacion:               boolean  
-
+  modulo:                     TModulosDolibarr
+  esCotizacion:               boolean
   esNuevo:                    boolean
   id:                         number
   ref:                        string
@@ -256,6 +256,17 @@ export class Acuerdo implements IAcuerdo
       if(grupo.totalCreado)   orden++
     }
   } */
+
+  get modulo() : TModulosDolibarr
+  {
+    let modulo  : TModulosDolibarr
+        modulo  =   this.tipo === TIPO_ACUERDO.COTIZACION ? "proposal"
+                  : this.tipo === TIPO_ACUERDO.PEDIDO     ? "order"
+                  : this.tipo === TIPO_ACUERDO.ENTREGA    ? "shipment"
+                  : this.tipo === TIPO_ACUERDO.FACTURA    ? "invoice"
+                  : "proposal"
+    return modulo
+  }
 
   get subTotalLimpio() : number {
     let suma                = 0

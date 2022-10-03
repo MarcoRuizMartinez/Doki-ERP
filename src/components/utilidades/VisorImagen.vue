@@ -3,22 +3,39 @@
     v-model                   ="visibleModel"
     transition-show           ="slide-up"
     transition-hide           ="slide-down"
-    @hide                     ="cerrarVentana"
-    
+    :maximized                ="fullScreen"
+    @hide                     ="cerrarVentana"    
     >  
     <ventana                  cerrar
-      :titulo                 ="titulo"
       icono                   ="mdi-image"    
       padding-contenido       ="0"
       class-contenido         =""
+      :titulo                 ="titulo"
+      :full-screen            ="fullScreen"      
       @cerrar                 ="cerrarVentana"
       >
+      <template               #barra>
+        <q-btn                dense round glossy push unelevated
+          class               ="boton-ventana"          
+          color               ="positive"
+          size                ="sm"
+          :icon               ="fullScreen ? 'mdi-arrow-collapse-all' : 'mdi-arrow-expand-all'"
+          @click              ="fullScreen = !fullScreen"
+          >
+          <Tooltip :label     ="fullScreen ? 'Reducir' : 'Ampliar'"/>
+        </q-btn>        
+      </template>
       <!-- :modo                   ="modo" -->
-      <q-img
-        class                 ="imagen-visor"
-        :src                  ="srcModel"
-        :ratio                ="ratio"
-      />
+      <div class              ="row flex-center fit">
+        <q-img        
+          class               ="cursor-pointer"
+          :src                ="srcModel"
+          :class              ="{'imagen-visor' : !fullScreen}"
+          @click              ="fullScreen = !fullScreen"
+          >
+          <Tooltip :label     ="fullScreen ? 'Reducir' : 'Ampliar'"/>
+        </q-img>
+      </div>
     </ventana>
   </q-dialog>    
 </template>
@@ -34,6 +51,7 @@
   const visibleModel            = ref< boolean  >(false)
   const srcModel                = ref< string   >("")
   const cargando                = ref< boolean >(true)
+  const fullScreen              = ref< boolean >(false)  
   const modo                    = ref< ModosVentana >("buscando")
   const emit                    = defineEmits(["update:visible", "update:src"])
   const props                   = defineProps({
@@ -42,7 +60,7 @@
     enBase64:   { default:  false,  type: Boolean },
     visible:    { required: true,   type: Boolean },
     fileType:   { default:  "",     type: String  },
-    ratio:      { default:  1,      type: [String, Number]},
+    ratio:      { default:  "",     type: [String, Number]},
   })
   const { src,
           visible,
@@ -56,7 +74,6 @@
   {
     if(!!newSRC.length)
     {
-      console.log("enBase64.value): ", enBase64.value);
       if(enBase64.value)
         srcModel.value        = File_B64_ToBlob( newSRC, fileType.value )
       else
@@ -72,8 +89,9 @@
     emit("update:visible", false)
     emit("update:src", "")
     modo.value                = "buscando"
-    visibleModel.value        = false
     srcModel.value            = ""
+    visibleModel.value        = false
+    fullScreen.value          = false
   }
 
 </script>

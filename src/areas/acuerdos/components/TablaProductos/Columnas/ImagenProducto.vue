@@ -19,9 +19,9 @@
     </q-tooltip>
   </div>
   <visor-imagen
-    :visible              ="ventanaImagen"
-    :titulo               ="imagenBig.titulo"
-    :src                  ="imagenBig.src"
+    v-model:visible       ="ventanaImagen"
+    v-model:src           ="imagenBig.src"
+    :titulo               ="imagenBig.titulo"    
   />
 </template>
 <script lang="ts" setup>

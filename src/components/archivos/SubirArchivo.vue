@@ -26,12 +26,16 @@
 
 <script setup lang="ts">
   //accept                  =".xlsx,.xls,image/*,.doc, .docx,.ppt, .pptx, .txt, .pdf, .ods, .odt" pdfjs
-  import {  ref
+  import {  ref, 
+            toRefs,
+            PropType
                             } from "vue"
   import {  useApiDolibarr  } from "src/services/useApiDolibarr"
+  import {  TModulosDolibarr} from "src/useSimpleOk/UtilFiles"
 
   import {  useTools        } from "src/useSimpleOk/useTools"
-  import {  FileToBase64    } from "src/useSimpleOk/UtilFiles"
+  import {  FileToBase64,
+            DownloadFile_B64    } from "src/useSimpleOk/UtilFiles"
 
   import {  format          } from 'quasar'
 
@@ -43,6 +47,15 @@
   let   maxSize               = 10_240_000
 
   const archivosSubir         = ref<File[]>( [] )
+
+  const props                 = defineProps({
+    modulo:       { required: true,   type: String as PropType < TModulosDolibarr > },
+    moduloRef:    { required: true,   type: String                                  },
+  })
+
+  const { modulo,
+          moduloRef,
+                            } = toRefs( props )
 
   function rechazarArchivos( archivos : any[] )
   {
@@ -57,35 +70,26 @@
     aviso("negative", mensaje, "file", 2400)
   }
 
-  function subirArchivos()
+  async function subirArchivos()
   {
     cargandoArchivos.value    = true
     archivosSubir.value.forEach( async ( file : File ) =>
     {
-      //console.log('%c⧭', 'color: #917399', file)
       let b64                 = await FileToBase64(file)
+      //DownloadFile_B64( b64, "ssdsd.pdf",  "application/pdf" )
+      
+      // console.log("b64: ", b64);      
       
       let objSubir            = {
-                                  //"filename":          file.name,
-                                  "filename":          "texto.txt",
-                                  "modulepart":        "proposal", //   societethirdparty
-                                  //"ref":               "Cotiz 22.06.07-1317",//idTercero.value.toString(),
-                                  "ref":                1479,
-                                  "subdir":            "",
-                                  //"filecontent":       "SG9sYSBtdW5kbw==",
-                                  "filecontent":       "Hola Mundo",
+                                  "filename":          file.name,
+                                  "modulepart":        modulo.value,
+                                  "ref":               moduloRef.value,
+                                  "filecontent":        b64,
                                   //"fileencoding":      "base64",
-                                  "overwriteifexists": 1
+                                  "fileencoding":      "",
+                                  "overwriteifexists": "0",
+                                  //"subdir":            "",
                                 } 
-/* { 
-"filename": "mynewfile.txt",
-"modulepart": "invoice",
-"ref": "FA1701-001",
-"subdir": "",
-"filecontent": "content text",
-"fileencoding": "",
-"overwriteifexists": "0"
-} */
       //console.log('%c⧭', 'FileToBase64: #00bf00', objSubir)
 
       let { data, ok }        = await apiDolibarr( "subir", "documento", objSubir )

@@ -33,9 +33,10 @@
     />
     <documentos
       class                   ="col-md-4 col-12 full-height"
-      modulo                  ="proposal"
-      :ref-modulo             ="acuerdo.id ?? 0"
-      :puede-editar           ="true"      
+      :modulo                 ="acuerdo.modulo"
+      :modulo-id              ="acuerdo.id ?? 0"
+      :modulo-ref             ="acuerdo.ref"
+      :puede-editar           ="true"
     />
     <!-- //* /////////////////  Visor PDF  -->
     <visor-pdf                descargar
@@ -44,7 +45,6 @@
       nombre-pdf              ="cotizacion"
       @click-descargar        ="guardarPDF"
     />
-
   </q-page>
 </template>
 

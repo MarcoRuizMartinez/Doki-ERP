@@ -114,14 +114,17 @@
         class                   ="op60 op100-hover"
         type                    ="a"
         target                  ="_blank"
-        :href                   ="urlDolibarr + '/societe/document.php?socid=' + refModulo"
+        :href                   ="urlDolibarr + '/societe/document.php?socid=' + moduloId"
         >
         <Tooltip label          ="Subir archivos en Dolibarr"/>      
       </q-btn>
     </template>
     <template #menu v-if        ="puedeSubir">
       <!-- //* ///////////////  Subir archivo  -->
-      <subir-archivo />
+      <subir-archivo
+        :modulo                 ="modulo"
+        :modulo-ref             ="moduloRef"
+      />
     </template>    
   </ventana>
 </template>
@@ -138,6 +141,7 @@
   import {  ModosVentana    } from "src/models/TiposVarios"
   import {  useTools        } from "src/useSimpleOk/useTools"
   import {  DownloadFile_B64} from "src/useSimpleOk/UtilFiles"
+  import {  TModulosDolibarr} from "src/useSimpleOk/UtilFiles"
   import {  IColumna,
             Columna         } from "src/models/Tabla"
   import {  IArchivo,
@@ -159,16 +163,18 @@
   const srcPDF                = ref< string     >("")
   type  TImagenAver           = { src : string, titulo: string, fileType: string }
   const imagenAver            = ref< TImagenAver >( { titulo: "", src: "", fileType: "" } )
-  type  Modulos               = "thirdparty" | "proposal" | "invoice" | "supplier_invoice" | "shipment" | "project"
+  
   const props                 = defineProps({
-    refModulo:    { required: true,   type: Number, default: 0          },
-    modulo:       { required: true,   type: String as PropType<Modulos> },
-    puedeEditar:  { default:  false,  type: Boolean                     },
+    modulo:       { required: true,   type: String as PropType < TModulosDolibarr > },
+    moduloId:     { required: true,   type: Number                                  },
+    moduloRef:    { required: true,   type: String                                  },
+    puedeEditar:  { default:  false,  type: Boolean                                 },
   })
 
 
-  const { refModulo,
-          modulo,
+  const { modulo,
+          moduloId,
+          moduloRef,
           puedeEditar
                             } = toRefs( props )
   let puedeSubir              = true//modulo.value === "thirdparty" || !puedeEditar.value ? false : true //computed(()=>{ modulo.value === "thirdparty" })
@@ -182,11 +188,11 @@
 
   onMounted( buscarArchivos )
 
-  watch(refModulo, (newId, oldId) => {
+  watch(moduloId, (newId, oldId) => {
     buscarArchivos(newId)
   })
 
-  async function buscarArchivos( id : number = refModulo.value )  
+  async function buscarArchivos( id : number = moduloId.value )  
   {
     if(id                     <= 0) return 
     modo.value                = "buscando"
