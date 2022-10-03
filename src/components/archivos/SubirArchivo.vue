@@ -42,7 +42,7 @@
   const { apiDolibarr       } = useApiDolibarr()
   const { aviso             } = useTools()
   const { humanStorageSize  } = format
-  const cargandoArchivos      = ref< boolean    >(false)
+  const cargandoArchivos      = ref< boolean >(false)
   let   maxFiles              = 5
   let   maxSize               = 10_240_000
 
@@ -53,6 +53,10 @@
     moduloRef:    { required: true,   type: String                                  },
   })
 
+  const emit = defineEmits<{
+    (e: 'limpiar',                        ): void
+    (e: 'subidaOk',                       ): void    
+  }>()
   const { modulo,
           moduloRef,
                             } = toRefs( props )
@@ -73,28 +77,33 @@
   async function subirArchivos()
   {
     cargandoArchivos.value    = true
-    archivosSubir.value.forEach( async ( file : File ) =>
+    let ref_o_dir             = modulo.value === "thirdparty" ? "subdir" : "ref"
+    for (const file  of archivosSubir.value)
     {
-      let b64                 = await FileToBase64(file)
-      //DownloadFile_B64( b64, "ssdsd.pdf",  "application/pdf" )
-      
-      // console.log("b64: ", b64);      
-      
+      let file_B64            = await FileToBase64(file)
       let objSubir            = {
-                                  "filename":          file.name,
-                                  "modulepart":        modulo.value,
-                                  "ref":               moduloRef.value,
-                                  "filecontent":        b64,
-                                  //"fileencoding":      "base64",
-                                  "fileencoding":      "",
-                                  "overwriteifexists": "0",
-                                  //"subdir":            "",
-                                } 
-      //console.log('%c⧭', 'FileToBase64: #00bf00', objSubir)
-
+                                  "filename":           file.name,
+                                  "modulepart":         modulo.value,
+                                  [ref_o_dir]:          moduloRef.value,
+                                  "filecontent":        file_B64,
+                                  "fileencoding":       "base64",
+                                  "overwriteifexists":  "1",
+                                }
       let { data, ok }        = await apiDolibarr( "subir", "documento", objSubir )
-      //console.log('%c⧭', 'color: #0088cc', ok, data)
-    })
-    cargandoArchivos.value    = false
+      if(!ok){
+        aviso("negative", "Error al subir " + file.name, "file", 2400)
+        terminar()
+        return 
+      }
+    }
+
+    emit("subidaOk")
+    aviso("positive", archivosSubir.value.length == 1 ? "Archivo subido" : "Archivos subidos",  "file", 2400)
+    terminar()
+
+    function terminar(){
+      cargandoArchivos.value    = false
+      archivosSubir.value       = []
+    }
   }
 </script>

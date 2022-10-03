@@ -35,7 +35,8 @@
           class               ="col-12 col-md-7"
           modulo              ="thirdparty"
           height-card         ="180px"
-          :ref-modulo         ="tercero.id ?? 0"
+          :modulo-id          ="tercero.id ?? 0"
+          :modulo-ref         ="(tercero.id ?? 0).toString()"
           :puede-editar       ="puedeModificar"
         />
       </efecto>

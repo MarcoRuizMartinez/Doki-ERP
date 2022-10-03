@@ -109,21 +109,13 @@
       </q-btn>
       <!-- //* ///////////////  Boton subir  -->
       <!-- v-if                    ="!puedeSubir && puedeEditar" -->
-      <q-btn                    round dense flat        
-        icon                    ="mdi-cloud-upload"
-        class                   ="op60 op100-hover"
-        type                    ="a"
-        target                  ="_blank"
-        :href                   ="urlDolibarr + '/societe/document.php?socid=' + moduloId"
-        >
-        <Tooltip label          ="Subir archivos en Dolibarr"/>      
-      </q-btn>
     </template>
     <template #menu v-if        ="puedeSubir">
       <!-- //* ///////////////  Subir archivo  -->
       <subir-archivo
         :modulo                 ="modulo"
         :modulo-ref             ="moduloRef"
+        @subida-ok              ="buscarArchivos"
       />
     </template>    
   </ventana>

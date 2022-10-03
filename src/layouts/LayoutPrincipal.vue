@@ -14,7 +14,9 @@
           icon          ="mdi-menu"
           @click        ="toggleLeftDrawer"
         />
-        <q-toolbar-title >
+        <q-toolbar-title
+          class         ="col-auto"
+          >
           <img
           class         ="row"          
           src           ="images/logos/doki.png"

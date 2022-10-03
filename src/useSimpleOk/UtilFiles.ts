@@ -93,27 +93,16 @@ export function FileToBase64(file : File) : Promise <string>
     let lector              = new FileReader()
     
     lector.onload           = () => {
-      //console.log("AAAAA", lector.result );
-      //console.log('iamge as blob: ', new Blob([lector.result ]))      
-      //console.log("lector: ", lector);
-      resolver(lector.result as string)
+      let fileB64 : string  = ""
+
+      if(!!lector.result && typeof lector.result === "string" && !!lector.result.length)
+      {
+        const i = lector.result.indexOf("base64,") + 7
+        fileB64 = lector.result.slice(i, lector.result.length)
+      }
+      resolver(fileB64)
     }
-
-    //https://developer.mozilla.org/en-US/docs/Web/API/TextEncoder
-    //https://stackoverflow.com/questions/51841946/filereader-how-to-change-the-character-encoding-from-utf-8-to-ansi
-    //https://stackoverflow.com/questions/18839916/character-encoding-when-reading-writing-a-file-with-javascript
-    //https://stackoverflow.com/questions/70595446/why-binary-string-data-not-show-as-pdf-in-iframe
-
-    const encodings = ["ISO-8859-1",  "ISO-8859-2", "ISO-8859-3",  "ISO-8859-4", "ISO-8859-5", "ISO-8859-6", "ISO-8859-7",  "ISO-8859-8", "ISO-8859-8-I", "ISO-8859-10", "ISO-8859-13", "ISO-8859-14", "ISO-8859-15", "ISO-8859-16", "KOI8-R",  "KOI8-U", "UTF-16", "ANSI", "windows-1252",  "windows-1250",  "windows-1251",  "windows-1253", "windows-1254", "windows-1255", "windows-1256",  "windows-1257", "windows-1258", "windows-874", "UTF-16LE", "UTF-16BE" , "CP1251" , "latin1", "IBM866"]
-
-    const enco      =  encodings[ 5 ]
-    console.log("enco: ", enco);
-
-    //lector.readAsArrayBuffer(file);
-    //lector.readAsBinaryString(file);
-    lector.readAsText(file, enco);
-    //lector.readAsDataURL(file)
-
+    lector.readAsDataURL(file)
     lector.onerror          = error => rechazar(error);
   })
 }
