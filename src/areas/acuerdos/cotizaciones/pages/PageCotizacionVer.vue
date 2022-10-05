@@ -11,10 +11,10 @@
       class                   ="col-12"
       @clickPDF               ="generarPDFCotizacion"
       @clickAprobar           ="aprobarCotizacion"
-      @clickAnular            ="anularCotizacion"
-      @clickValidar           ="validarCotizacion"
-      @clickEditar            ="editarCotizacion"
-      @clickBorrar            ="eliminarCotizacion"
+      @clickAnular            ="anularAcuerdo"
+      @clickValidar           ="validarAcuerdo"
+      @clickEditar            ="editarAcuerdo"
+      @clickBorrar            ="eliminarAcuerdo"  
     />
     <tercero-y-contacto
       class                   ="col-md-4 col-12 full-height"
@@ -42,7 +42,7 @@
     <visor-pdf                descargar
       v-model:src             ="srcPDF"
       v-model:visible         ="ventanaPDF"
-      nombre-pdf              ="cotizacion"
+      nombre-pdf              ="Cotizacion"
       @click-descargar        ="guardarPDF"
     />
   </q-page>
@@ -65,9 +65,9 @@
   import {  useStoreUser          } from 'src/stores/user'
   import {  useStoreAcuerdo       } from 'src/stores/acuerdo'
   //* ///////////////////////////////////////////////////////////////////////////////// Modelos
-  import {  Acuerdo               } from "../../models/Acuerdo"  
+  import {  Acuerdo, TIPO_ACUERDO } from "../../models/Acuerdo"  
   //* ///////////////////////////////////////////////////////////////////////////////// Componibles
-  import {  useControlCotizacion  } from "src/areas/acuerdos/controllers/ControlCotizaciones"
+  import {  useControlAcuerdo  } from "src/areas/acuerdos/controllers/ControlAcuerdos"
   import {  useControlProductos   } from "src/areas/acuerdos/controllers/ControlLineasProductos"
   import {  useCotizacionPDF      } from "src/areas/acuerdos/cotizaciones/composables/useCotizacionPDF"
   //* ///////////////////////////////////////////////////////////////////////////////// Componentes
@@ -89,18 +89,19 @@
 
   const router                = useRouter()
 
-  const { buscarCotizacion,
+  const { buscarAcuerdo,
           aprobarCotizacion,
-          anularCotizacion,
-          editarCotizacion,
-          eliminarCotizacion,
-          validarCotizacion,
-                            } = useControlCotizacion()
+          anularAcuerdo,
+          editarAcuerdo,
+          eliminarAcuerdo,
+          validarAcuerdo,
+                            } = useControlAcuerdo()
   const { copiarProductos,
           deGruposAProductos } = useControlProductos()
   const minimizadoTodo        = ref< boolean  >(false)
   const srcPDF                = ref< string   >("")
   const ventanaPDF            = ref< boolean  >(false)
+  const tipo                  = ref< TIPO_ACUERDO >( TIPO_ACUERDO.COTIZACION )
   const title                 = useTitle()
   provide('superminimizado', minimizadoTodo)
 
@@ -128,13 +129,15 @@
 
   watch(acuerdo, ()=>  title.value =  `📜 ${acuerdo.value.title}`,{ deep: true } )
 
-  onMounted( iniciar )
-  onUnmounted( finalizar )
+  onMounted   ( iniciar )
+  onUnmounted ( finalizar )
 
   async function iniciar()
   {
     const gruposBoceto              = Object.assign( acuerdo.value.proGrupos, {} )
-    await buscarCotizacion( id.value )
+    console.log("id.value: ", id.value);
+
+    await buscarAcuerdo( tipo.value, id.value )
     copiarProductosDeBoceto()
 
     async function copiarProductosDeBoceto()
@@ -144,7 +147,7 @@
         await deGruposAProductos()
         const ok                    = await copiarProductos( acuerdo.value.productos )
         if(ok)
-          await buscarCotizacion( id.value )
+          await buscarAcuerdo( tipo.value, id.value )
       }
     }
   }

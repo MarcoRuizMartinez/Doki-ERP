@@ -81,7 +81,7 @@
   import {  useStoreAcuerdo       } from 'stores/acuerdo'  
   //* ///////////////////////////////////////////////////////////////////////////// Componibles
   import {  dexieOrigenesContacto } from "../../../services/useDexie"
-  import {  useControlCotizacion  } from "src/areas/acuerdos/controllers/ControlCotizaciones"
+  import {  useControlAcuerdo  } from "src/areas/acuerdos/controllers/ControlAcuerdos"
   //* ///////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana                 from "components/utilidades/Ventana.vue"
   import    inputText               from "components/utilidades/input/InputFormText.vue"
@@ -98,7 +98,7 @@
           editarComercial,
           cambiarContactoAcuerdo,
           vincularContactoAcuerdo,
-                                  } = useControlCotizacion()
+                                  } = useControlAcuerdo()
                     
   const origenNego                  = dexieOrigenesContacto() 
 </script>

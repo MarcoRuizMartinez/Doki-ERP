@@ -12,7 +12,7 @@
     <router-link
       v-if          ="acuerdo.esCotizacion"
       class         ="fuente-mono"
-      :to           ="`/${acuerdo.tipo}/${acuerdo.id}`"
+      :to           ="`/${acuerdo.tipoPlural}/${acuerdo.id}`"
     >
       {{ acuerdo.refCorta }}
     </router-link>
@@ -32,7 +32,6 @@
   import {  IAcuerdo        } from "src/areas/acuerdos/models/Acuerdo"
   import    tooltipLineas     from "src/areas/acuerdos/components/Tooltips/TooltipLineas.vue"
   import    tooltipAcuerdo    from "src/areas/acuerdos/components/Tooltips/TooltipAcuerdo.vue"
-  import {  TTipoAcuerdo    } from "src/areas/acuerdos/models/ConstantesAcuerdos"
 
   const props               = defineProps({
     acuerdo:  { required: true, type: Object as PropType< IAcuerdo > },

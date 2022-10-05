@@ -59,7 +59,7 @@
   import {  Acuerdo               } from "src/areas/acuerdos/models/Acuerdo"
   // * /////////////////////////////////////////////////////////////////////////////////// Componibles
   import {  btnBaseMd             } from "src/useSimpleOk/useEstilos"
-  import {  useControlCotizacion  } from "src/areas/acuerdos/controllers/ControlCotizaciones"
+  import {  useControlAcuerdo  } from "src/areas/acuerdos/controllers/ControlAcuerdos"
   import {  useControlProductos   } from "src/areas/acuerdos/controllers/ControlLineasProductos"
   import {  useCotizacionPDF      } from "src/areas/acuerdos/cotizaciones/composables/useCotizacionPDF"
   // * /////////////////////////////////////////////////////////////////////////////////// Componentes
@@ -74,7 +74,7 @@
   const { acuerdo,
           loading           } = storeToRefs( useStoreAcuerdo() )
   const { generarPDF        } = useCotizacionPDF()
-  const { crearCotizacion   } = useControlCotizacion()
+  const { crearAcuerdo      } = useControlAcuerdo()
   const { crearNuevoGrupo   } = useControlProductos()
   const { usuario           } = storeToRefs( useStoreUser() )
   const ventanaPDF            = ref< boolean  >(false)
@@ -134,6 +134,6 @@
 
   async function crearCotizacionEnControl()
   {
-    cotizacionCreada          = await crearCotizacion( usuario.value.id )
+    cotizacionCreada          = await crearAcuerdo( usuario.value.id )
   }
 </script>

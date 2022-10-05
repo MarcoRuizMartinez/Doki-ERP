@@ -39,6 +39,7 @@
                                     new Columna({ name: "id"}),
                                     new Columna({ name: "municipio"}),
                                     new Columna({ name: "departamento"}),
+                                    new Columna({ name: "indicativo"}),
                                   ]
 
 //[TABLAS.MUNICIPIOS]:        "++id, municipio, departamento 

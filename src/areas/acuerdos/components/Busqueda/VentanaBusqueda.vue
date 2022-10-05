@@ -99,7 +99,7 @@
   import {  ModosVentana,
             ALMACEN_LOCAL       } from "src/models/TiposVarios"  
   import {  TTipoAcuerdo,
-            getTipoAcuerdoSingular 
+            getTipoAcuerdoPlural
                                 } from "src/areas/acuerdos/models/ConstantesAcuerdos"            
   // * /////////////////////////////////////////////////////////////////////// Componentes
   import    ventana               from "components/utilidades/Ventana.vue"  
@@ -130,7 +130,7 @@
   const titulo                    = computed(()=>
   {
     return acuerdos.value.length > 0 ? `Resultado: ${acuerdos.value.length} ` +
-                                      ( acuerdos.value.length === 1 ? getTipoAcuerdoSingular(tipo.value) : tipo.value )
+                                      ( acuerdos.value.length === 1 ? tipo.value : getTipoAcuerdoPlural(tipo.value) )
                                     : `Buscando ${tipo.value}...`
   })
   const columnas                  = ref< IColumna[] >([])

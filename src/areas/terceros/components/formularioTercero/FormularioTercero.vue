@@ -85,7 +85,7 @@
         :class                  ="tercero.esEmpresa ? 'col-md-9' : 'col-md-8'"
         :icon                   ="tercero.esEmpresa ? 'mdi-office-building-outline' : 'mdi-account'"
         :label                  ="tercero.esEmpresa ? 'Razón social' : 'Nombre completo'"
-        :readonly               ="readonly"
+        :readonly               ="readonly"        
       />
       <!-- //* //////////////   ALIAS -->
       <input-text               clearable
@@ -103,12 +103,14 @@
         v-model                 ="tercero.documento"
         class                   ="col-12"
         :readonly               ="readonly"
+        @verifik-ok             ="cargarNombreToVerifik"
       />
       <!-- //* //////////////   Municipio o Ciudad  -->
       <municipios               requerido
         v-model                 ="tercero.municipio"
         class                   ="col-12"
         :readonly               ="readonly"
+        @update:modelValue      ="cambiarMunicipio"
       />
       <!-- //* //////////////   Direccion  -->
       <direccion
@@ -272,6 +274,8 @@
   import    favorito          from "src/components/utilidades/StarFavorito.vue"
   import    documento         from "./Documento.vue"
   import    direccion         from "./DireccionDian.vue"
+  import {  IMunicipio      } from "src/models/Municipio"
+
 
   const { notify }            = useQuasar()
   const { apiDolibarr       } = useApiDolibarr()
@@ -460,5 +464,15 @@
     }
 
     return  valido || mensaje
+  }
+
+  function cambiarMunicipio( municipio : IMunicipio ){
+    if(!tercero.value || tercero.value.telefono.length <= 3) 
+      tercero.value.telefono  = municipio.indicativo
+  }
+
+  function cargarNombreToVerifik( nombre : string ){
+    console.log("cargarNombreToVerifik nombre: ", nombre);
+    tercero.value.nombre = nombre
   }
 </script>

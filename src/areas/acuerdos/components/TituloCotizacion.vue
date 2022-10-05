@@ -134,7 +134,7 @@
   </titulo>
 </template>
 <script setup lang="ts">
-  import {  servicesCotizaciones  } from "src/areas/acuerdos/cotizaciones/services/servicesCotizaciones"
+  import {  servicesAcuerdos  } from "src/areas/acuerdos/services/servicesAcuerdos"
   import {  useTools              } from "src/useSimpleOk/useTools"
   import    titulo                  from "components/utilidades/Titulo.vue"
   import    efecto                  from "components/utilidades/Efecto.vue"
@@ -143,7 +143,7 @@
 
   const { acuerdo           } = storeToRefs( useStoreAcuerdo() )  
   const { esMobil, aviso    } = useTools()
-  const { setTitulo         } = servicesCotizaciones()
+  const { setTitulo         } = servicesAcuerdos()
   const   urlDolibarr         = process.env.URL_DOLIBARR
 
   const emit                  = defineEmits(["click", "recargar"])

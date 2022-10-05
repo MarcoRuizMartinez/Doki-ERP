@@ -118,7 +118,7 @@
   import {  storeToRefs           } from 'pinia'                            
   import {  useStoreAcuerdo       } from 'src/stores/acuerdo'  
   import {  formatoPrecio         } from "src/useSimpleOk/useTools" 
-  import {  useControlCotizacion  } from "src/areas/acuerdos/controllers/ControlCotizaciones"
+  import {  useControlAcuerdo  } from "src/areas/acuerdos/controllers/ControlAcuerdos"
   import    ventana                 from "components/utilidades/Ventana.vue"
   import    inputNumber             from "src/components/utilidades/input/InputFormNumber.vue"
 
@@ -127,5 +127,5 @@
           editarValorAIU,
           editarConTotal,
           editarConIVA,
-                              } = useControlCotizacion()
+                              } = useControlAcuerdo()
 </script>

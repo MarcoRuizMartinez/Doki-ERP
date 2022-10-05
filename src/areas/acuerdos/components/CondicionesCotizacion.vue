@@ -85,7 +85,7 @@
   import {  storeToRefs           } from 'pinia'                            
   import {  useStoreAcuerdo       } from 'src/stores/acuerdo'  
   // * ///////////////////////////////////////////////////////////////////////////////// Componibles
-  import {  useControlCotizacion  } from "src/areas/acuerdos/controllers/ControlCotizaciones"
+  import {  useControlAcuerdo  } from "src/areas/acuerdos/controllers/ControlAcuerdos"
   import {  dexieCondicionesPago,
             dexieFormasPago,
             dexieMetodosEntrega,
@@ -108,5 +108,5 @@
           editarCondicionPago,
           editarFechaEntrega,
           editarFechaFinValidez
-                                  } = useControlCotizacion()
+                                  } = useControlAcuerdo()
 </script>

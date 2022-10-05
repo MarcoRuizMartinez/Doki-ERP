@@ -3,7 +3,7 @@ import {  storeToRefs           } from 'pinia'
 import {  useStoreAcuerdo       } from 'src/stores/acuerdo'
 // * //////////////////////////////////////////////////////////////////////////////// Componibles
 import {  useApiDolibarr        } from "src/services/useApiDolibarr"
-import {  servicesCotizaciones  } from "src/areas/acuerdos/cotizaciones/services/servicesCotizaciones"
+import {  servicesAcuerdos  } from "src/areas/acuerdos/services/servicesAcuerdos"
 // * //////////////////////////////////////////////////////////////////////////////// Modelos
 import {  IProductoDoli         } from "src/areas/productos/models/ProductoDolibarr"
 import {  IGrupoLineas,
@@ -17,7 +17,7 @@ import {  useTools,
 export function useControlProductos()
 {
   const { aviso               } = useTools()
-  const { ordenarLineas       } = servicesCotizaciones()
+  const { ordenarLineas       } = servicesAcuerdos()
   const { apiDolibarr         } = useApiDolibarr()
   const { acuerdo,
           grupoElegido,
@@ -132,7 +132,7 @@ export function useControlProductos()
     if(acuerdo.value.esEstadoBoceto) return 0
 
     let lineaAPI          = LineaAcuerdo.lineaToLineaApi( nuevaLinea )
-    let { data, ok }      = await apiDolibarr("crear-linea", "cotizacion", lineaAPI, acuerdo.value.id)
+    let { data, ok }      = await apiDolibarr("crear-linea", acuerdo.value.tipo, lineaAPI, acuerdo.value.id)
     if(ok){
       const newId : number= !!data ? +data : 0
       return newId
@@ -147,7 +147,7 @@ export function useControlProductos()
     let lineaForAPI             = LineaAcuerdo.lineaToLineaApi( linea )
     let seguir                  = true
     if(!acuerdo.value.esEstadoBoceto){
-      let {ok, data}            = await apiDolibarr("editar-linea", "cotizacion", lineaForAPI, acuerdo.value.id )
+      let {ok, data}            = await apiDolibarr("editar-linea", acuerdo.value.tipo, lineaForAPI, acuerdo.value.id )
       seguir                    = ok
       if(!ok){
         modalYLoadingOff()
@@ -220,7 +220,7 @@ export function useControlProductos()
     let info  : any
 
     if(!acuerdo.value.esEstadoBoceto){
-      let {ok, data}            = await apiDolibarr("borrar-lineas", "cotizacion", lineaBorrar.lineaId, acuerdo.value.id )
+      let {ok, data}            = await apiDolibarr("borrar-lineas", acuerdo.value.tipo, lineaBorrar.lineaId, acuerdo.value.id )
       seguir                    = ok
       info                      = data
 
@@ -280,7 +280,7 @@ export function useControlProductos()
     }      
 
     const objecto               = { qty: linea.qty, id: linea.lineaId }
-    let {ok}                    = await apiDolibarr("editar-linea", "cotizacion", objecto, acuerdo.value.id )
+    let {ok}                    = await apiDolibarr("editar-linea", acuerdo.value.tipo, objecto, acuerdo.value.id )
     if  (ok) edicionOk()
 
     function edicionOk(){
@@ -297,7 +297,7 @@ export function useControlProductos()
     }
 
     const objecto               = { remise_percent: linea.descuentoX100, id: linea.lineaId }
-    let {ok}                    = await apiDolibarr("editar-linea", "cotizacion", objecto, acuerdo.value.id )
+    let {ok}                    = await apiDolibarr("editar-linea", acuerdo.value.tipo, objecto, acuerdo.value.id )
     if  (ok) edicionOk()
 
     function edicionOk(){
@@ -334,7 +334,7 @@ export function useControlProductos()
   }
 
   async function borrarSubtotal( grupo : IGrupoLineas ) {
-    let {ok}                    = await apiDolibarr("borrar-lineas", "cotizacion", grupo.lineaIdSubtotal, acuerdo.value.id )
+    let {ok}                    = await apiDolibarr("borrar-lineas", acuerdo.value.tipo, grupo.lineaIdSubtotal, acuerdo.value.id )
     if(ok){
       grupo.lineaIdSubtotal     = 0
       grupo.totalCreado         = false
@@ -345,7 +345,7 @@ export function useControlProductos()
   }
 
   async function borrarTitulo( grupo : IGrupoLineas ) {
-    let {ok}                    = await apiDolibarr("borrar-lineas", "cotizacion", grupo.lineaIdTitulo, acuerdo.value.id )
+    let {ok}                    = await apiDolibarr("borrar-lineas", acuerdo.value.tipo, grupo.lineaIdTitulo, acuerdo.value.id )
     if(ok){
       grupo.lineaIdTitulo       = 0
       grupo.tituloCreado        = false
@@ -378,7 +378,7 @@ export function useControlProductos()
       if(descuento !== undefined || !!cantidad)
       {
         let lineaAPI          = LineaAcuerdo.lineaToLineaApi( linea )
-        let {ok, data}        = await apiDolibarr("editar-linea", "cotizacion", lineaAPI, acuerdo.value.id )
+        let {ok, data}        = await apiDolibarr("editar-linea", acuerdo.value.tipo, lineaAPI, acuerdo.value.id )
 
         if(ok)
           linea.destacar( "guardar", "ocultar" )
@@ -419,7 +419,7 @@ export function useControlProductos()
     else
     {
       let lineaEdit             = { id: grupo.lineaIdTitulo, label: grupo.titulo }
-      let {ok, data}            = await apiDolibarr("editar-linea", "cotizacion", lineaEdit, acuerdo.value.id)
+      let {ok, data}            = await apiDolibarr("editar-linea", acuerdo.value.tipo, lineaEdit, acuerdo.value.id)
       if(!ok) aviso("negative", "Error al cambiar nombre de grupo")
     }
 

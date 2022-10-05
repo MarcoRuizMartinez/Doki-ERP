@@ -7,6 +7,7 @@ import {  TIPO_ACUERDO,
           estadoPedToName,
           estadoPedToColor,
           estadosPed,
+          getTipoAcuerdoPlural
                                             } from "./ConstantesAcuerdos"
 import {  X100, fechaCorta                  } from "../../../useSimpleOk/useTools"
 import {  ILineaAcuerdo,    LineaAcuerdo    } from "../../../areas/acuerdos/models/LineaAcuerdo"
@@ -31,9 +32,12 @@ import {  getDateToStr,
           getMilisecShortForApiDolibarr     } from "src/useSimpleOk/useTools"
 import {  TModulosDolibarr                  } from "src/useSimpleOk/UtilFiles"
 
+export {  TIPO_ACUERDO                      }
+
 export interface IAcuerdo
 {
   tipo:                       TIPO_ACUERDO
+  tipoPlural:                 string
   modulo:                     TModulosDolibarr
   esCotizacion:               boolean
   esNuevo:                    boolean
@@ -134,7 +138,7 @@ export interface IAcuerdo
   pdfCorreo:                  string
   pdfCiudad:                  string
   esTerceroCtz:               boolean
-  getCotizacionForApi:        ( usuarioId : number ) => any
+  getAcuerdoForApi:        ( usuarioId : number ) => any
   //reorganizarProductosGrupos: () => void
 
 
@@ -257,6 +261,10 @@ export class Acuerdo implements IAcuerdo
     }
   } */
 
+  get tipoPlural() : string{
+    return getTipoAcuerdoPlural( this.tipo )
+  }
+
   get modulo() : TModulosDolibarr
   {
     let modulo  : TModulosDolibarr
@@ -281,7 +289,7 @@ export class Acuerdo implements IAcuerdo
   get esFactura()         : boolean { return this.tipo === TIPO_ACUERDO.FACTURA     }
   get municipioTercero()  : string  { return this.tercero.municipio.label           }
   get area()              : string  { return this.tercero.areaNombre                }
-  get vinculado()         : boolean { return !!this.enlaces                         }
+  get vinculado()         : boolean { return !!this.enlaces.length                  }
 
   get comercialNombre() : string {
     return this.comercial.nombreCompleto
@@ -524,7 +532,7 @@ export class Acuerdo implements IAcuerdo
   get fechaCierreCorta()      : string { return fechaCorta( this.fechaCierre      ) }
   get fechaEntregaCorta()     : string { return fechaCorta( this.fechaEntrega     ) }
 
-  getCotizacionForApi( usuarioId : number ) : any {
+  getAcuerdoForApi( usuarioId : number ) : any {
     let ctzForApi : any = {
       socid:                  this.tercero.id,
       ref_client:             this.refCliente,
@@ -579,6 +587,7 @@ export class Acuerdo implements IAcuerdo
     ctzApi.usuariId           = +ctzApi.usuariId
     ctzApi.estado             = +ctzApi.estado
     ctzApi.descuento          = +ctzApi.descuento
+    ctzApi.enlaces            = ctzApi.enlaces ?? ""
     ctzApi.facturado          = Boolean( +ctzApi.facturado )
     ctzApi.conTotal           = Boolean( +ctzApi.conTotal )
     ctzApi.conIVA             = Boolean( +ctzApi.conIVA )

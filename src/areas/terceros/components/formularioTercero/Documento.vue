@@ -24,7 +24,7 @@
     :rules                  ="[ validarNumero, validarExisteNumero ]"
     :disable                ="modelTipo.length == 0"
     :readonly               ="readonly"
-    @blur                   ="vericarNumeroEnDolibarr"
+    @blur                   ="vericarNumero"
     @update:model-value     ="inputNumero"
   />
   <input-text               clearable copy uppercase sinEspacios alerta
@@ -37,7 +37,7 @@
     :rules                  ="[ validarExisteNumero ]"
     :disable                ="modelTipo.length == 0"
     :readonly               ="readonly"
-    @blur                   ="vericarNumeroEnDolibarr"
+    @blur                   ="vericarNumero"
   />
   <input-number             solo-positivo
     v-model                 ="modelo.digito"
@@ -69,6 +69,7 @@
             TIPOS_DOCUMENTO
                               } from "src/areas/terceros/models/TiposDocumento"
   import {  EstadoVerificar   } from "src/models/TiposVarios"
+  import {  useTools          } from "src/useSimpleOk/useTools"
   import {  useRouter         } from 'vue-router'
   import {  dexieTiposDocumentos
                               } from "src/services/useDexie"
@@ -77,7 +78,7 @@
             getFormData       } from "src/services/APIMaco"
   import    inputNumber         from "components/utilidades/input/InputFormNumber.vue"
   import    inputText           from "components/utilidades/input/InputFormText.vue"
-
+  const { aviso               } = useTools()
   const { miFetch             } = useFetch()
   const { notify              } = useQuasar()
   const lista                   = dexieTiposDocumentos()
@@ -92,7 +93,11 @@
     }
   )
 
-  const emit                    = defineEmits(["update:modelValue"])
+  const emit                    = defineEmits<{
+    (e: 'update:modelValue',  value: IDocumento   ): void
+    (e: 'verifikOk',          value: string       ): void
+  }>()
+
 
   const { modelValue }          = toRefs( props )
   const modelo                  = ref<IDocumento>( modelValue.value )
@@ -267,7 +272,86 @@
     return  valido || mensaje
   }
 
-  async function vericarNumeroEnDolibarr()
+  async function vericarNumero()
+  {
+    const existe = await vericarNumeroEnDolibarr()
+
+    if(!existe){
+      await vericarNumeroVerifik()
+    }
+  }
+
+  async function vericarNumeroVerifik() :Promise< boolean >
+  {
+    if((!modelo.value.tipo.esCedula && !modelo.value.tipo.esNIT) || !modelo.value.numero)
+      return false
+
+    let tipoDoc        = modelo.value.tipo.esCedula ? "CC" : "NIT"
+    
+
+    let { ok, data}    = await miFetch(  getURL( "listas", "verifik"),
+                                                  {
+                                                    method: "POST",
+                                                    body:   getFormData( tipoDoc, { numero: modelo.value.numero } )
+                                                  },
+                                                  { mensaje: "buscar si existe numero de documento" }
+                                                )
+    console.log("data Verifik: ", data);
+
+    if(!ok){
+      aviso("negative", `Error al consultar datos en Verifik`)
+      return false
+    }
+
+    if(typeof data !== "object" && !Array.isArray(data)) return
+
+    if( "code" in data && typeof data.code === "string" && data.code == "NotFound")
+      aviso("negative", "No se encontraron datos en la Dian como ciudadano", "shield", 4000)
+    else
+    if( "data" in data && typeof data.data === "object"){
+
+      if( modelo.value.tipo.esCedula
+          &&
+          "fullName" in data.data && typeof data.data.fullName === "string"
+      )
+      {
+        emit("verifikOk", data.data.fullName)
+        aviso("positive", "Si se encontro documento en la DIAN como ciudadano", "shield", 7000)
+      }
+      else
+      if( modelo.value.tipo.esNIT
+          &&
+          "mensaje_error" in data.data && !data.data.mensaje_error // cuando > mensaje_error: ""
+          &&
+          "rows"          in data.data && Array.isArray( data.data.rows ) && !!data.data.rows.length
+      )
+      {
+        const largo = data.data.rows.length
+        if(largo === 1)
+        {
+          const empresa = data.data.rows[0]
+          if
+          (
+            typeof empresa === "object"
+            &&  "estadoRM"      in empresa && typeof empresa.estadoRM     === "string"
+            &&  "municipio"     in empresa && typeof empresa.municipio    === "string"
+            &&  "razon_social"  in empresa && typeof empresa.razon_social === "string"
+          )
+          {            
+            emit("verifikOk", empresa.razon_social)
+            aviso("positive", `Se encontró la empresa ${empresa.razon_social} en la DIAN. Estado: ${empresa.estadoRM}`,  "shield", 4000)
+          }
+        }
+        else
+        {
+          aviso("negative", "Hay varios NIT que concuerdan con esta busqueda. Avisar a Marco", "shield", 7000)
+        }
+      }
+    }
+    return ok
+  }
+  
+  async function vericarNumeroEnDolibarr() :Promise< boolean >
   {
     if( !modelo.value.numero
         ||
@@ -307,6 +391,8 @@
     }
     else
       estadoVerificar.value   = "check"
+
+    return existe
   }
 </script>
 

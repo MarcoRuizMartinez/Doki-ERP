@@ -15,6 +15,8 @@ export interface ITipoDocumento {
   nombre:   string
   value:    TIPOS_DOCUMENTO | ""
   label:    string
+  esCedula: boolean
+  esNIT:    boolean
 }
 
 export class TipoDocumento implements ITipoDocumento
@@ -35,10 +37,18 @@ export class TipoDocumento implements ITipoDocumento
     return this.codigo
   }
 
-  get label() : string
-  {
+  get label() : string {
     return this.nombre
   }
+
+  get esCedula() : boolean {
+    return this.codigo === TIPOS_DOCUMENTO.CEDULA_CIUDADANIA
+  }  
+
+  get esNIT() : boolean {
+    return this.codigo === TIPOS_DOCUMENTO.NIT
+  }  
+  
 }
 
 //export const  = Object.values(TIPOS_DOCUMENTO); //[ 'WHITE', 'BLACK', 'BLUE', 0, 1, 3 ]

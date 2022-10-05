@@ -5,14 +5,17 @@ import {  storeToRefs           } from 'pinia'
 import {  useStoreAcuerdo       } from 'src/stores/acuerdo'
 //* ////////////////////////////////////////////////////////////////// Componibles
 import {  useControlProductos   } from "src/areas/acuerdos/controllers/ControlLineasProductos"
-import {  servicesCotizaciones  } from "src/areas/acuerdos/cotizaciones/services/servicesCotizaciones"
+import {  servicesAcuerdos      } from "src/areas/acuerdos/services/servicesAcuerdos"
 import {  servicesTerceros      } from "src/areas/terceros/services/servicesTerceros"
 import {  useApiDolibarr        } from "src/services/useApiDolibarr"  
 import {  useTools,
           ID_URL_Ok,
           confeti               } from "src/useSimpleOk/useTools"
 //* ////////////////////////////////////////////////////////////////// Modelos
-import {  ESTADO_CTZ            } from "../../../areas/acuerdos/models/ConstantesAcuerdos"
+import {  ESTADO_CTZ,
+          ESTADO_PED,
+          ESTADO_ACU,
+          TIPO_ACUERDO          } from "../../../areas/acuerdos/models/ConstantesAcuerdos"
 import {  IOrigenContacto       } from "../../../models/Diccionarios/OrigenContacto"
 import {  IUsuario              } from "../../../areas/usuarios/models/Usuario"
 import {  ITercero              } from "../../../areas/terceros/models/Tercero"
@@ -26,7 +29,7 @@ import {  IContacto,
                                 } from "../../../areas/terceros/models/Contacto"
 
 
-export function useControlCotizacion() 
+export function useControlAcuerdo() 
 {
   const router                  = useRouter()
   const { aviso               } = useTools()  
@@ -37,7 +40,7 @@ export function useControlCotizacion()
           setFormaPago,
           setMetodoEntrega,
           setTiempoEntrega,    
-          getCotizacion,
+          getAcuerdo,
           setOrigenContacto,
           setRefCliente,
           setComercial,
@@ -45,7 +48,7 @@ export function useControlCotizacion()
           setAiu,
           setTotal,
           setConIVA,
-                              } = servicesCotizaciones()
+                              } = servicesAcuerdos()
 
   const { crearNuevoGrupo     } = useControlProductos()
   const { buscarTercero,
@@ -55,14 +58,14 @@ export function useControlCotizacion()
   const { acuerdo,
           loading             } = storeToRefs( useStoreAcuerdo() )  
 
-  //* /////////////////////////////////////////////////////////////// Crear Cotizacion
-  async function crearCotizacion( idUsuario : number ) : Promise<boolean>
+  //* /////////////////////////////////////////////////////////////// Crear Acuerdo
+  async function crearAcuerdo( idUsuario : number ) : Promise<boolean>
   {
     loading.value.crear       = true
-    const ctzForApi           = acuerdo.value.getCotizacionForApi( idUsuario )    
-    const { ok, data }        = await apiDolibarr("crear", "cotizacion", ctzForApi )
+    const acuForApi           = acuerdo.value.getAcuerdoForApi( idUsuario )    
+    const { ok, data }        = await apiDolibarr("crear", acuerdo.value.tipo, acuForApi )
     if(!ok || !data) {
-      aviso("negative", "Error al crear al tercero", "file")      
+      aviso("negative", `Error al crear al ${acuerdo.value.tipo}`)
       loading.value.crear     = false
       return false
     }
@@ -70,33 +73,34 @@ export function useControlCotizacion()
     //* ////////////////////  Creando Contacto si corresponde
     if(!!acuerdo.value.contacto.id)
     {
-      const { ok : vinculado  } = await apiDolibarr("contacto-vincular", "cotizacion",
+      const { ok : vinculado  } = await apiDolibarr("contacto-vincular", acuerdo.value.tipo,
                                           {
                                             id:   acuerdo.value.contacto.id,
                                             tipo: TIPOS_CONTACTO.CTZ_CUSTOMER
                                           },
                                           id
                                           )
-        if(!vinculado){
-          aviso("negative", "Error al asignar contacto", "file")
-        }                                        
+      if(!vinculado){
+        aviso("negative", "Error al asignar contacto")
+      }
     }
     //* ////////////////////  Notificando y redireccionando
-    aviso("positive", "Cotización creada", "file")
+    aviso("positive", `Creación de ${acuerdo.value.tipo} 👌🏼`)
     loading.value.crear       = false
-    router.push( "/cotizaciones/" + id )
+    router.push( `/${acuerdo.value.tipoPlural}/${id}` )
     return true
   }          
 
-  //* ////////////////////////////////////////////////////////////////////// Buscar cotizacion 
-  async function buscarCotizacion( id_ : string )
+  //* ////////////////////////////////////////////////////////////////////// Buscar Acuerdo 
+  async function buscarAcuerdo( tipo : TIPO_ACUERDO, id_ : string )
   {
     let idOk                    = ID_URL_Ok( id_ )
+    console.log("idOk: ", idOk);
     if(!idOk) router.push("/error") 
 
     loading.value.carga         = true
     acuerdo.value.productos     = []
-    acuerdo.value               = await getCotizacion( idOk )
+    acuerdo.value               = await getAcuerdo( tipo, idOk )
 
     if(!acuerdo.value.proGrupos.length) crearNuevoGrupo()
 
@@ -119,9 +123,7 @@ export function useControlCotizacion()
   async function buscarTerceroDolibarr( id_ : number )
   {
     acuerdo.value.tercero       = await buscarTercero( id_ )
-    if(!!acuerdo.value.tercero.id)
-    {
-      //console.log('%c⧭', 'color: #917399', "Tercero", cotizacion.value.tercero)
+    if(!!acuerdo.value.tercero.id){
     }
     else
     {
@@ -142,8 +144,8 @@ export function useControlCotizacion()
   //* ////////////////////////////////////////////////////////////////////// Asignar nuevo contacto
   async function vincularContactoAcuerdo( contacto : IContacto )
   {
-    //* ///////////////////////////////// Vincular contacto a cotizacion
-    const { ok : vinculado      } = await apiDolibarr("contacto-vincular", "cotizacion",
+    //* ///////////////////////////////// Vincular contacto a acuerdo
+    const { ok : vinculado      } = await apiDolibarr("contacto-vincular", acuerdo.value.tipo,
                                                         { id:   contacto.id,
                                                           tipo: TIPOS_CONTACTO.CTZ_CUSTOMER
                                                         },
@@ -160,7 +162,7 @@ export function useControlCotizacion()
   //* ////////////////////////////////////////////////////////////////////// Asignar nuevo contacto
   async function desvincularContactoAcuerdo( id : number ) : Promise<boolean>
   {
-    const { ok : desvinculado } = await apiDolibarr("contacto-desvincular",  "cotizacion",
+    const { ok : desvinculado } = await apiDolibarr("contacto-desvincular",  acuerdo.value.tipo,
                                                       { id,
                                                         tipo: TIPOS_CONTACTO.CTZ_CUSTOMER
                                                       },
@@ -187,7 +189,7 @@ export function useControlCotizacion()
     const idEditado               = await setTerceroId( acuerdo.value.id, terceroNew.id )
     if(idEditado){
       acuerdo.value.tercero       = terceroNew
-      aviso("positive", "Tercero de cotizacion cambiado" )
+      aviso("positive", `Tercero de ${acuerdo.value.tipo} cambiado` )
     }
       
     // Si se ha cambiado el tercero, y tiene un contacto, entonces...
@@ -242,89 +244,89 @@ export function useControlCotizacion()
     loading.value.ref           = false
   }  
 
-  //* ////////////////////////////////////////////////////////////////////// Editar cotizacion
-  async function editarCotizacion()
+  //* ////////////////////////////////////////////////////////////////////// Editar acuerdo
+  async function editarAcuerdo()
   {
     loading.value.editar      = true
-    const { ok, data }        = await apiDolibarr("settodraft", "cotizacion", { idwarehouse: 0 }, acuerdo.value.id)
+    const { ok, data }        = await apiDolibarr("settodraft", acuerdo.value.tipo, { idwarehouse: 0 }, acuerdo.value.id)
 
     if(ok){
-      aviso("positive", "Cotización desbloqueada")
-      acuerdo.value.estado    = ESTADO_CTZ.BORRADOR
+      aviso("positive", `Desbloqueo de ${acuerdo.value.tipo} 👌🏼`)
+      acuerdo.value.estado    = ESTADO_ACU.BORRADOR
     }
     else
-      aviso("negative", "Error al desbloquear cotización")
+      aviso("negative", `Error al desbloquear ${acuerdo.value.tipo}`)
 
     loading.value.editar      = false
   }
 
-  //* ////////////////////////////////////////////////////////////////////// Aprobar cotizacion
+  //* ////////////////////////////////////////////////////////////////////// Aprobar Cotizacion
   async function aprobarCotizacion()
   {
     loading.value.aprobar     = true
     const estado              = { status: 2, note_private: "", notrigger: 0 }
-    const { ok, data }        = await apiDolibarr("close", "cotizacion", estado, acuerdo.value.id)
+    const { ok, data }        = await apiDolibarr("close", acuerdo.value.tipo, estado, acuerdo.value.id)
 
     if(ok){
-      aviso("positive", "Cotización aprobada")
+      aviso("positive", `Aprobación de ${acuerdo.value.tipo} 👌🏼`)
       confeti(6)
-      acuerdo.value.estado = ESTADO_CTZ.APROBADO
+      acuerdo.value.estado    = ESTADO_CTZ.APROBADO
     }
     else
-      aviso("negative", "Error al aprobar cotización")
+      aviso("negative", `"Error al aprobar ${acuerdo.value.tipo}`)
 
     loading.value.aprobar     = false
   }
 
 
 
-  //* ////////////////////////////////////////////////////////////////////// Anular cotizacion
-  async function anularCotizacion()
+  //* ////////////////////////////////////////////////////////////////////// Anular acuerdo
+  async function anularAcuerdo()
   {
     loading.value.anular      = true
     const estado              = { status: 3, note_private: "", notrigger: 0 }
-    const { ok, data }        = await apiDolibarr("close", "cotizacion", estado, acuerdo.value.id)
+    const { ok, data }        = await apiDolibarr("close", acuerdo.value.tipo, estado, acuerdo.value.id)
 
     if(ok){
-      aviso("positive", "Cotización anulada")
-      acuerdo.value.estado    = ESTADO_CTZ.RECHAZADO
+      aviso("positive", `Anulación de ${acuerdo.value.tipo} 👌🏼`)
+      acuerdo.value.estado    = acuerdo.value.esCotizacion ? ESTADO_CTZ.RECHAZADO : ESTADO_PED.CANCELADO
     }
     else
-      aviso("negative", "Error al anular cotización")
+      aviso("negative", `"Error al anular ${acuerdo.value.tipo}`)
 
     loading.value.anular      = false
   }
 
-  //* ////////////////////////////////////////////////////////////////////// Validar cotizacion
-  async function validarCotizacion()
+  //* ////////////////////////////////////////////////////////////////////// Validar acuerdo
+  async function validarAcuerdo()
   {
     loading.value.validar     = true
-    const { ok, data }        = await apiDolibarr("validate", "cotizacion", { notrigger: 0 }, acuerdo.value.id)
+    const { ok, data }        = await apiDolibarr("validate", acuerdo.value.tipo, { notrigger: 0 }, acuerdo.value.id)
     const newCtz : any        = data
     if(ok){
-      aviso("positive", "Cotización validada")
-      acuerdo.value.estado    = ESTADO_CTZ.COTIZADO
+      aviso("positive", `Validación de ${acuerdo.value.tipo} 👌🏼`)
+      acuerdo.value.estado    = ESTADO_ACU.VALIDADO
       if(!!newCtz && newCtz.hasOwnProperty("ref") && typeof newCtz.ref === "string")
       acuerdo.value.ref  = newCtz.ref
     }
     else
-      aviso("negative", "Error al validar cotización")
+      aviso("negative", `Error al validar ${acuerdo.value.tipo}`)
 
     loading.value.validar     = false
   }
 
 
-  //* ////////////////////////////////////////////////////////////////////// Eliminar cotizacion
-  async function eliminarCotizacion()
+  //* ////////////////////////////////////////////////////////////////////// Eliminar acuerdo
+  async function eliminarAcuerdo()
   {
     loading.value.borrar  = true
-    const { ok }          = await apiDolibarr("borrar", "cotizacion", acuerdo.value.id)
+    const { ok }          = await apiDolibarr("borrar", acuerdo.value.tipo, acuerdo.value.id)
     if(ok){
-      aviso("positive", "Cotización eliminada")
+      aviso("positive", `Eliminación de ${acuerdo.value.tipo} 👌🏼`)
       router.push("/tercero/" + acuerdo.value.terceroId)
     }
     else
-      aviso("negative", "Error al eliminar cotización")
+      aviso("negative", `Error al eliminar ${acuerdo.value.tipo}`)
     loading.value.borrar  = false
   }
 
@@ -432,7 +434,7 @@ export function useControlCotizacion()
       const iva                 = parseInt( process.env.IVA ?? "0" )
       linea.iva                 =  on ? iva : 0
       let lineaEdit             = { id: linea.lineaId, tva_tx: linea.iva }
-      let {ok}                  = await apiDolibarr("editar-linea", "cotizacion", lineaEdit, acuerdo.value.id )
+      let {ok}                  = await apiDolibarr("editar-linea", acuerdo.value.tipo, lineaEdit, acuerdo.value.id )
       if (!ok){ 
         const error             = "Error al cambiar el IVA del producto"
         console.trace()
@@ -449,13 +451,13 @@ export function useControlCotizacion()
 
   //* /////////////////////////////////////////////////////////////// Return
   return {
-    crearCotizacion,
+    crearAcuerdo,
     actualizarTercero,
     aprobarCotizacion,
-    anularCotizacion,
-    buscarCotizacion,
+    anularAcuerdo,
+    buscarAcuerdo,
     editarComercial,
-    editarCotizacion,
+    editarAcuerdo,
     editarOrigen,
     editarRefCliente,
     editarTiempoEntrega,
@@ -468,8 +470,8 @@ export function useControlCotizacion()
     editarValorAIU,
     editarConTotal,
     editarConIVA,
-    eliminarCotizacion,
-    validarCotizacion,
+    eliminarAcuerdo,
+    validarAcuerdo,
     cambiarContactoAcuerdo,
     vincularContactoAcuerdo,
     desvincularContactoAcuerdo,

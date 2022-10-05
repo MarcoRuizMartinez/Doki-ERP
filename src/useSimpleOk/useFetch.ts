@@ -51,6 +51,7 @@ export function useFetch()
         loadingBar.stop()
 
         cargando              = false
+        //console.log("data: ", data);
         if(!!data)
         {
           if(Array.isArray(data) && data.length == 1 && !dataEsArray)

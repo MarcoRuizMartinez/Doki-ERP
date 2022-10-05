@@ -1,3 +1,23 @@
+export interface IBusquedaCotizacion {
+  idTercero?:     number
+  idComercial?:   string | number
+  tercero?:       string
+  contacto?:      string
+  estado?:        number
+  origen?:        number
+  fechaDesde?:    string
+  fechaHasta?:    string
+  subtotalMin?:   number
+  subtotalMax?:   number
+  conIva?:        number
+  conTotal?:      number
+  limite?:        number
+  offset?:        number
+  //idEspecial?:  number
+  area?:          string
+  orden?:       "ASC" | "DESC"
+  municipio?:     string
+}
 
 import {  useApiDolibarr    } from "src/services/useApiDolibarr"
 import {  getURL,
@@ -6,9 +26,12 @@ import {  useFetch          } from "src/useSimpleOk/useFetch"
 import {  date              } from "quasar"
 import {  ILineaApi         } from "src/areas/acuerdos/models/LineaAcuerdo"
 import {  TIPOS_CONTACTO_ID } from "src/areas/terceros/models/Contacto"
+import {  ISerieCtz,
+          SerieCtz          } from "src/areas/acuerdos/cotizaciones/models/SeriesCotizacion"
 import {  IQueryAcuerdo     } from "src/areas/acuerdos/models/BusquedaAcuerdos"
 import {  Acuerdo,
-          IAcuerdo,       } from "src/areas/acuerdos/models/Acuerdo"
+          IAcuerdo,
+          TIPO_ACUERDO      } from "src/areas/acuerdos/models/Acuerdo"
 import {  pausa,
           valuesObjectArrayToNumber,
                             } from "src/useSimpleOk/useTools"
@@ -17,6 +40,56 @@ export function servicesAcuerdos()
 {
   const { miFetch           } = useFetch()
   const { apiDolibarr       } = useApiDolibarr()
+
+
+  async function postLinea( linea : ILineaApi ) : Promise< number >
+  {
+    return new Promise( async (resolver, rechazar) => {
+      let { data, ok }        = await apiDolibarr( "crear-lineas", "cotización", linea )
+
+      if(ok)
+      {
+        let newId : number    = 0
+        if(typeof data        == "string")
+          newId               = parseInt(data)
+        else
+        if(typeof data        == "number")
+          newId               = data
+
+        resolver(newId)
+      }
+      else
+      {
+        resolver(0)
+      }
+    })
+  }
+
+  async function getAcuerdo( tipo : TIPO_ACUERDO, id : number ) : Promise< IAcuerdo >
+  {
+    return new Promise( async (resolver, rechazar ) =>
+    {
+      let { data, ok            } = await miFetch( getURL("listas", "acuerdos"),
+                                                    {
+                                                      body: getFormData(  "acuerdo",  { id: id, acuerdo: tipo } ),
+                                                      method: "POST"
+                                                    },
+                                                    {
+                                                      mensaje:      "cargar cotización",
+                                                      tiempoEspera: 10000
+                                                    }
+                                                  )
+      if(ok && typeof data == "object" )
+      {
+        let cotizacion    = await Acuerdo.convertirDataApiToAcuerdo( data, tipo )
+        resolver( cotizacion )
+      }
+      else
+      {
+        resolver( new Acuerdo() )
+      }
+    })
+  }
 
   async function getAcuerdos( query : IQueryAcuerdo ) : Promise< IAcuerdo[] >
   {
@@ -49,55 +122,40 @@ export function servicesAcuerdos()
     })
   }
 
-/*   async function postLinea( linea : ILineaApi ) : Promise< number >
-  {
-    return new Promise( async (resolver, rechazar) => {
-      let { data, ok }        = await apiDolibarr( "crear-lineas", "cotizacion", linea )
-
-      if(ok){
-        let newId : number    = 0
-        if(typeof data        == "string")
-          newId               = parseInt(data)
-        else
-        if(typeof data        == "number")
-          newId               = data
-
-        resolver(newId)
-      }
-      else{
-        resolver(0)
-      }
-    })
-  } */
-/* 
-  async function getCotizacion( id : number ) : Promise< IAcuerdo >
+    
+/*   async function getAcuerdos( query : IBusquedaCotizacion, tipo :  TIPO_ACUERDO ) : Promise< IAcuerdo[] >
   {
     return new Promise( async (resolver, rechazar ) =>
     {
-      let { data, ok            } = await miFetch( getURL("listas", "cotizaciones"),
+      let { data, ok            } = await miFetch(  getURL("listas", tipo),
                                                     {
-                                                      body: getFormData(  "cotizacion",  { id: id } ),
+                                                      body:   getFormData(  "busqueda", query ),
                                                       method: "POST"
                                                     },
                                                     {
-                                                      mensaje:      "cargar cotizacion",
-                                                      tiempoEspera: 10000
+                                                      mensaje:      "buscar " + tipo,
+                                                      tiempoEspera: 10000,
+                                                      dataEsArray:  true
                                                     }
                                                   )
-      if(ok && typeof data == "object" )
+      let acuerdos : IAcuerdo[]   = []
+
+      if(ok && Array.isArray( data ))
       {
-        let cotizacion    = await Acuerdo.convertirDataApiToAcuerdo( data )
-        resolver( cotizacion )
+        for (const item of data)
+        {
+          let quote : IAcuerdo = await Acuerdo.convertirDataApiToAcuerdo( item )
+          acuerdos.push( quote )
+        }
+        resolver( acuerdos )
       }
-      else
-      {
-        resolver( new Acuerdo() )
+      else {
+        resolver( [] )
       }
     })
   } */
 
-
-  /* async function getCotizaciones( query : IBusquedaAcuerdo ) : Promise< IAcuerdo[] >
+  async function getCotizaciones( query : IBusquedaCotizacion ) : Promise< IAcuerdo[] >
   {
     return new Promise( async (resolver, rechazar ) =>
     {
@@ -127,10 +185,20 @@ export function servicesAcuerdos()
       {
         resolver( [] )
       }
+      /*
+      if(ok && typeof data == "object" )
+      {
+        let cotizacion    = await Cotizacion.convertirDataApiToAcuerdo( data )
+        resolver( cotizacion )
+      }
+      else
+      {
+        resolver( new Cotizacion() )
+      } */
     })
-  } */
+  }
 
-  /* async function setFechaFinValidez( ctz_id : number, fecha : Date  ) : Promise< boolean >
+  async function setFechaFinValidez( ctz_id : number, fecha : Date  ) : Promise< boolean >
   {
     let fechaMas12H   = date.addToDate  (fecha, { hours: 12 })
     let fechaToApi    = date.formatDate (fechaMas12H, 'YYYY-MM-DD HH:mm:ss')
@@ -147,9 +215,9 @@ export function servicesAcuerdos()
                                                   )
       resolver( ok )
     })
-  } */
+  }
 
-  /* async function setFechaEntrega( ctz_id : number, fecha : Date  ) : Promise< boolean >
+  async function setFechaEntrega( ctz_id : number, fecha : Date  ) : Promise< boolean >
   {
     let fechaToApi    = date.formatDate (fecha, 'YYYY-MM-DD')
     let obj           = { id: ctz_id, fecha:  fechaToApi }
@@ -165,9 +233,9 @@ export function servicesAcuerdos()
                                                   )
       resolver( ok )
     })
-  } */
+  }
 
-/*   async function setCondicionPago( ctz_id : number, valor : number  ) : Promise< boolean >
+  async function setCondicionPago( ctz_id : number, valor : number  ) : Promise< boolean >
   {
     let obj           = { id: ctz_id, valor: valor }
 
@@ -183,8 +251,8 @@ export function servicesAcuerdos()
       resolver( ok )
     })
   }
- */
-  /* async function setFormaPago( ctz_id : number, valor : number  ) : Promise< boolean >
+
+  async function setFormaPago( ctz_id : number, valor : number  ) : Promise< boolean >
   {
     let obj           = { id: ctz_id, valor: valor }
 
@@ -199,9 +267,9 @@ export function servicesAcuerdos()
                                                   )
       resolver( ok )
     })
-  } */
+  }
 
-/*   async function setTerceroId( ctz_id : number, id : number  ) : Promise< boolean >
+  async function setTerceroId( ctz_id : number, id : number  ) : Promise< boolean >
   {
     let obj           = { id: ctz_id, valor: id }
 
@@ -212,13 +280,13 @@ export function servicesAcuerdos()
                                                       body: getFormData( "editarTerceroId", obj ),
                                                       method: "POST"
                                                     },
-                                                    { mensaje: "editar tercero de cotizacion" }
+                                                    { mensaje: "editar tercero de cotización" }
                                                   )
       resolver( ok )
     })
   }
- */
-/*   async function setRefCliente( ctz_id : number, ref : string  ) : Promise< boolean >
+
+  async function setRefCliente( ctz_id : number, ref : string  ) : Promise< boolean >
   {
     let obj           = { id: ctz_id, ref: ref }
 
@@ -233,9 +301,9 @@ export function servicesAcuerdos()
                                                   )
       resolver( ok )
     })
-  } */
+  }
 
-/*   async function setTitulo( ctz_id : number, titulo : string  ) : Promise< boolean >
+  async function setTitulo( ctz_id : number, titulo : string  ) : Promise< boolean >
   {
     let obj           = { id: ctz_id, titulo: titulo }
 
@@ -246,13 +314,13 @@ export function servicesAcuerdos()
                                                       body: getFormData( "editarTitulo", obj ),
                                                       method: "POST"
                                                     },
-                                                    { mensaje: "editar titulo de cotizacion" }
+                                                    { mensaje: "editar titulo de cotización" }
                                                   )
       resolver( ok )
     })
-  } */
+  }
 
-/*   async function setAiu( ctz_id : number, valor : number, tipo : "aiu" | "aiuAdmin" | "aiuImpre" | "aiuUtili" ) : Promise< boolean >
+  async function setAiu( ctz_id : number, valor : number, tipo : "aiu" | "aiuAdmin" | "aiuImpre" | "aiuUtili" ) : Promise< boolean >
   {
     let obj           = { id: ctz_id, valor: valor }
 
@@ -267,9 +335,9 @@ export function servicesAcuerdos()
                                                   )
       resolver( ok )
     })
-  } */
+  }
 
-/*   async function setTotal( ctz_id : number, on : boolean) : Promise< boolean >
+  async function setTotal( ctz_id : number, on : boolean) : Promise< boolean >
   {
     let obj           = { id: ctz_id, valor: +on }
 
@@ -284,9 +352,9 @@ export function servicesAcuerdos()
                                                   )
       resolver( ok )
     })
-  } */
+  }
 
-/*   async function setConIVA( ctz_id : number, on : boolean) : Promise< boolean >
+  async function setConIVA( ctz_id : number, on : boolean) : Promise< boolean >
   {
     let obj           = { id: ctz_id, valor: +on }
 
@@ -301,9 +369,9 @@ export function servicesAcuerdos()
                                                   )
       resolver( ok )
     })
-  } */
+  }
 
-/*   async function setMetodoEntrega( ctz_id : number, valor : number  ) : Promise< boolean >
+  async function setMetodoEntrega( ctz_id : number, valor : number  ) : Promise< boolean >
   {
     let obj           = { id: ctz_id, valor: valor }
 
@@ -318,10 +386,10 @@ export function servicesAcuerdos()
                                                   )
       resolver( ok )
     })
-  } */
+  }
 
 
-/*   async function ordenarLineas( ids : string, padreId : number  ) : Promise< boolean >
+  async function ordenarLineas( ids : string, padreId : number  ) : Promise< boolean >
   {
     if(!ids) return true
     let obj           = { ids: ids, padreId: padreId }
@@ -337,10 +405,10 @@ export function servicesAcuerdos()
                                                   )
       resolver( ok )
     })
-  } */
+  }
 
 
-/*   async function setTiempoEntrega( ctz_id : number, valor : number  ) : Promise< boolean >
+  async function setTiempoEntrega( ctz_id : number, valor : number  ) : Promise< boolean >
   {
         let obj           = { id: ctz_id, valor: valor }
 
@@ -355,10 +423,10 @@ export function servicesAcuerdos()
                                                   )
       resolver( ok )
     })
-  } */
+  }
 
 
-/*   async function setOrigenContacto( ctz_id : number, valor : number  ) : Promise< boolean >
+  async function setOrigenContacto( ctz_id : number, valor : number  ) : Promise< boolean >
   {
         let obj           = { id: ctz_id, valor: valor }
 
@@ -373,9 +441,9 @@ export function servicesAcuerdos()
                                                   )
       resolver( ok )
     })
-  } */
+  }
 
-/*   async function setComercial( ctz_id : number, comercial_id : number  ) : Promise< boolean >
+  async function setComercial( ctz_id : number, comercial_id : number  ) : Promise< boolean >
   {
     let obj           = { id: ctz_id, valor: comercial_id }
 
@@ -390,9 +458,9 @@ export function servicesAcuerdos()
                                                   )
       resolver( ok )
     })
-  } */
+  }
 
-/*   async function getIdEnlaceContacto( idCotizacion : number, idContacto : number  ) : Promise< number >
+  async function getIdEnlaceContacto( idCotizacion : number, idContacto : number  ) : Promise< number >
   {
     let obj           = {
                           idElemento:   idCotizacion,
@@ -413,29 +481,97 @@ export function servicesAcuerdos()
                           : 0
       resolver( id )
     })
-  } */
+  }
+
+  async function getInforme(
+    tipo    : "totales" | "estados",
+    tiempo  : "year"    | "month"   | "week" | "day",
+  ) : Promise< ISerieCtz[] >
+  {
+    return new Promise
+    ( async (resolver, rechazar ) =>
+      {
+        const url               = getURL("informes", "cotizaciones") + `?tipo=${tipo}&tiempo=${tiempo}`
+
+        let { ok, data  }       = await miFetch(url,  { method: "GET" }, { mensaje: "Cargar informe de cotizaciones" })
+
+        let seriesRaw           = []
+        if(!!data && Array.isArray(data) && data.length > 0)
+          seriesRaw             = valuesObjectArrayToNumber(data)
+
+        const series:ISerieCtz[]= []
+
+        for (const serieRaw of seriesRaw) {
+          const serie           = Object.assign(new SerieCtz(), serieRaw) as ISerieCtz
+          serie.tiempo          = tiempo
+          series.push( serie )
+        }
+
+        if(tiempo               === "week") corregirDiasSemana()
+
+
+        function corregirDiasSemana()
+        {
+          const YMWs            = [ ...new Set(
+                                      series.map((s) =>
+                                          s.año.toString()
+                                        + (s.semana < 10 ? "0" + s.semana.toString()  : s.semana.toString())
+                                        + (s.mes    < 10 ? "0" + s.mes.toString()     : s.mes.toString())
+                                      )
+                                    )
+                                  ].sort()
+
+          for (const ymw of YMWs)
+          {
+            const año           = parseInt( ymw.slice(0,4) )
+            const semana        = parseInt( ymw.slice(4,6) )
+            const mes           = parseInt( ymw.slice(6,8) )
+
+            const seriesSemana  = series.filter( s=> s.semana === semana)
+            const listaDias     = seriesSemana.map( s => s.dia)
+            const menorDia      = Math.min(...listaDias)
+            const mayorDia      = Math.max(...listaDias)
+            const diferencia    = mayorDia - menorDia
+            if(diferencia       >= 7){
+              console.error("Un problema con la diferencia de dias en corregirDiasSemana.", diferencia)
+              console.trace()
+            }
+            else
+            if(diferencia       > 0){
+              for (const s of seriesSemana)
+                s.dia           = menorDia
+            }
+          }
+        }
+
+        resolver( series )
+      }
+    )
+
+  }
 
 
   return {
-    //getCotizacion,
+    getAcuerdo,
     getAcuerdos,
-    //getCotizaciones,
-    //setFechaFinValidez,
-    //setFechaEntrega,
-    //setCondicionPago,
-    //setFormaPago,
-    //setMetodoEntrega,
-    //setTiempoEntrega,
-    //setOrigenContacto,
-    //setRefCliente,
-    //setTerceroId,
-    //postLinea,
-    //ordenarLineas,
-    //setTitulo,
-    //setAiu,
-    //setTotal,
-    //setConIVA,
-    //getIdEnlaceContacto,
-    //setComercial,
+    getCotizaciones,
+    setFechaFinValidez,
+    setFechaEntrega,
+    setCondicionPago,
+    setFormaPago,
+    setMetodoEntrega,
+    setTiempoEntrega,
+    setOrigenContacto,
+    setRefCliente,
+    setTerceroId,
+    postLinea,
+    ordenarLineas,
+    setTitulo,
+    setAiu,
+    setTotal,
+    setConIVA,
+    getIdEnlaceContacto,
+    setComercial,
+    getInforme,
   }
 }

@@ -7,6 +7,7 @@ export interface IMunicipio
   departamentoId:           string  // fk_departement
   label:                    string
   value:                    number
+  indicativo:               string
 }
 
 export class Municipio implements IMunicipio
@@ -16,6 +17,7 @@ export class Municipio implements IMunicipio
   departamento:             string
   departamentoSigla:        string
   departamentoId:           string
+  indicativo:               string
 
   constructor()
   {
@@ -24,6 +26,7 @@ export class Municipio implements IMunicipio
     this.departamento       = ""
     this.departamentoSigla  = ""
     this.departamentoId     = ""
+    this.indicativo         = ""
   }
 
   get departamentoIdInt():number

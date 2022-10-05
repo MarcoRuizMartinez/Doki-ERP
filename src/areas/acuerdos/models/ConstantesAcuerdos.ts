@@ -1,16 +1,23 @@
 export enum TIPO_ACUERDO
 {
   NULO                        = "",
-  COTIZACION                  = "cotizaciones", // Igual que el END POINT del servicio
-  PEDIDO                      = "pedidos",
-  ENTREGA                     = "entregas",
-  FACTURA                     = "facturas",
+  COTIZACION                  = "cotización", // Igual que el END POINT del servicio
+  PEDIDO                      = "pedido",
+  ENTREGA                     = "entrega",
+  FACTURA                     = "factura",
 }
 
 export type TTipoAcuerdo      =   TIPO_ACUERDO.COTIZACION
                                 | TIPO_ACUERDO.PEDIDO
                                 | TIPO_ACUERDO.ENTREGA
                                 | TIPO_ACUERDO.FACTURA
+
+export enum ESTADO_ACU
+{
+  NO_GUARDADO                 = -2,
+  BORRADOR                    = 0,
+  VALIDADO                    = 1,
+}
 
 export enum ESTADO_CTZ
 {
@@ -32,11 +39,11 @@ export enum ESTADO_PED
   ENTREGADO                   = 3,
 }
 
-export function getTipoAcuerdoSingular( tipo : TIPO_ACUERDO ) : string {
-  const singular              =   tipo === TIPO_ACUERDO.COTIZACION  ? "cotizacion"
-                                : tipo === TIPO_ACUERDO.PEDIDO      ? "pedido"
-                                : tipo === TIPO_ACUERDO.ENTREGA     ? "entrega"
-                                : tipo === TIPO_ACUERDO.FACTURA     ? "factura"
+export function getTipoAcuerdoPlural( tipo : TIPO_ACUERDO ) : string {
+  const singular              =   tipo === TIPO_ACUERDO.COTIZACION  ? "cotizaciones"
+                                : tipo === TIPO_ACUERDO.PEDIDO      ? "pedidos"
+                                : tipo === TIPO_ACUERDO.ENTREGA     ? "entregas"
+                                : tipo === TIPO_ACUERDO.FACTURA     ? "facturas"
                                 : ""
   return singular
 }

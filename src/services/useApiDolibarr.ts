@@ -15,7 +15,7 @@ type AccionDolibarr           = "crear"         | "editar"        | "ver"       
                                 "close"         | "setinvoiced"   | "settodraft"    | "validate"
 //  | "crear-lineas"  |  |
 
-type ModuloDolibarr           = "tercero" | "contacto" | "documento" | "cotizacion" | "saber"
+type ModuloDolibarr           = "" | "tercero" | "contacto" | "documento" | "cotización" | "pedido" | "entrega" | "factura" | "saber"
 type Metodo                   = "post" | "put" | "get" | "delete"
 
 export function useApiDolibarr()
@@ -49,7 +49,7 @@ export function useApiDolibarr()
       case "tercero":           endPoint = "thirdparties";        break;
       case "contacto":          endPoint = "contacts";            break;
       case "documento":         endPoint = "documents";           break;
-      case "cotizacion":        endPoint = "proposals";           break;
+      case "cotización":        endPoint = "proposals";           break;
       case "saber":             endPoint = "knowledgemanagement"; break;
       default: break;
     }
@@ -65,6 +65,7 @@ export function useApiDolibarr()
     id      : number          = 0
   ) : Promise <IResultado>
   {
+    if(!tipo) return
     mensajeGlobal             = "crear " + tipo
     let endPoint  : string    = getEndPoint( tipo )
     let esLinea               = accion.includes("linea")

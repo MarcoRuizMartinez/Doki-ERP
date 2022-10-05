@@ -2,7 +2,7 @@
 import {  Tiempo,
           IApexSerie          } from "src/models/TiposInformes"
 import {  ISerieCtz           } from "src/areas/acuerdos/cotizaciones/models/SeriesCotizacion"          
-import {  servicesCotizaciones     } from "src/areas/acuerdos/cotizaciones/services/servicesCotizaciones"
+import {  servicesAcuerdos     } from "src/areas/acuerdos/services/servicesAcuerdos"
 import {  ref
                               } from "vue"
 import {  sortArray           } from "src/useSimpleOk/useTools"
@@ -11,7 +11,7 @@ import {  estadoStrCtzToColor } from "src/areas/acuerdos/models/ConstantesAcuerd
 
 export function useInformesCtz()
 {
-  const { getInforme            } = servicesCotizaciones()
+  const { getInforme            } = servicesAcuerdos()
   const   seriesTotales           = ref< IApexSerie[] >([])
   const cuentaCtzSerie            = ref< IApexSerie[] >([])
   const totalesCtzConTotalSerie   = ref< IApexSerie[] >([])

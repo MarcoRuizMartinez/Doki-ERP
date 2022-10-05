@@ -85,7 +85,7 @@
             Columna               } from "src/models/Tabla"
   import {  IAcuerdo              } from "src/areas/acuerdos/models/Acuerdo"  
   //* /////////////////////////////////////////////////////////////////////////////////// Componibles
-  import {  servicesCotizaciones  } from "src/areas/acuerdos/cotizaciones/services/servicesCotizaciones"
+  import {  servicesAcuerdos      } from "src/areas/acuerdos/services/servicesAcuerdos"
   import {  btnBaseSm             } from "src/useSimpleOk/useEstilos"
   //* /////////////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana                 from "components/utilidades/Ventana.vue"
@@ -93,7 +93,7 @@
   import    tooltipAcuerdo          from "src/areas/acuerdos/components/Tooltips/TooltipAcuerdo.vue"
     
   const urlDolibarr           = process.env.URL_DOLIBARR
-  const { getCotizaciones   } = servicesCotizaciones()
+  const { getCotizaciones   } = servicesAcuerdos()
   const router                = useRouter()
   const modo                  = ref< ModosVentana >("esperando-busqueda")
   const columnas: IColumna[]  = [
