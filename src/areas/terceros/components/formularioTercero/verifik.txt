@@ -1,0 +1,18 @@
+{
+    "data": {
+        "client": "6272cdf0d7bd9cd580ad656c",
+        "phoneOTPSentAt": "2022-10-05 19:35:45"
+    }
+}
+
+Tu código de acceso es 275518.
+
+
+
+{
+    "accessToken": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJjbGllbnRJZCI6IjYyNzJjZGYwZDdiZDljZDU4MGFkNjU2YyIsImRvY3VtZW50VHlwZSI6Ik5JVCIsImRvY3VtZW50TnVtYmVyIjoiOTAwNDE5OTEyIiwidiI6MSwicm9sZSI6ImNsaWVudCIsImlhdCI6MTY2NDk5ODY3N30.VVF62leC7UFZnfWaekEHVu6o_iU6LzzTyb-ywyCfZrk",
+    "tokenType": "bearer"
+}
+
+
+

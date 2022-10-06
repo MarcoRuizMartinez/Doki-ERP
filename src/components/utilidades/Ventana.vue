@@ -42,14 +42,14 @@
           <div v-if           ="minimizar">
             <q-btn            v-close-popup dense round glossy push unelevated
               class           ="boton-ventana"
-              :icon           ="minimizado ? 'mdi-arrow-expand' : 'mdi-window-minimize'"
+              :icon           ="minimizadoModel ? 'mdi-arrow-expand' : 'mdi-window-minimize'"
               color           ="positive"
               size            ="sm"
-              @click          ="minimizado = !minimizado; $emit('minimizar')"
+              @click          ="minimizadoModel = !minimizadoModel; $emit('minimizar')"
               v-touch-hold.mouse="clickLargoMinMax"
               >
               <Tooltip label  ="Subir archivos">
-                {{minimizado ?  'Restaurar' : 'Minimizar'}}
+                {{minimizadoModel ?  'Restaurar' : 'Minimizar'}}
               </Tooltip>
             </q-btn>
           </div>
@@ -83,7 +83,7 @@
       <q-card-actions
         v-if                  ="hayMenu || menuVisible"
         class                 ="row menu-ventana menu-gris no-wrap overflow-auto"
-        :class                ="classMenu, { 'minimizado' : minimizado }"
+        :class                ="classMenu, { 'minimizado' : minimizadoModel }"
         >
         <slot                 name="menu">
         </slot>
@@ -91,7 +91,7 @@
       <!-- //?* ////////////////////////////////////////////////////////////// SLOT Default --> 
       <q-card-actions
         class                 ="items-start ventana-contenido transi"
-        :class                ="classContenido, { 'minimizado' : minimizado }, {'full-screen' : fullScreen}"
+        :class                ="classContenido, { 'minimizado' : minimizadoModel }, {'full-screen' : fullScreen}"
         :style                ="estiloCard"
         >  <!-- //?* /   :style                ="estiloAlto" :style="estiloCard" --> 
         <slot v-if            ="modo == 'normal' ">
@@ -161,6 +161,7 @@
       cargando:             { type: Boolean,  default: false                      },
       icono:                { type: String,   default: undefined                  },
       minimizar:            { type: Boolean,  default: false                      },
+      minimizado:           { type: Boolean,  default: false                      },
       maximizar:            { type: Boolean,  default: false                      },
       cerrar:               { type: Boolean,  default: false                      },
       fullScreen:           { type: Boolean,  default: false                      },
@@ -200,6 +201,7 @@
   const { modo,
           width,
           height,
+          minimizado,
           heightCard,
           classContenido,
           backgroundColor,
@@ -217,14 +219,14 @@
 
   //* ///////////////////////////////////////////////////////// Funcionalidad de minimizado
   const maximizado            = ref<boolean>(false)
-  const minimizado            = ref<boolean>(false)
+  const minimizadoModel       = ref<boolean>(minimizado.value)
   let minimizadoRoot          = inject('superminimizado', false)
   const miniRootLocal         = ref<boolean>(minimizadoRoot)
 
-  watch(miniRootLocal, (newValor, oldValor) => minimizado.value = !!newValor )
+  watch(miniRootLocal, (newValor, oldValor) => minimizadoModel.value = !!newValor )
 
   function clickLargoMinMax(){
-    miniRootLocal.value = !minimizado.value
+    miniRootLocal.value = !minimizadoModel.value
   }
 
   //* /////////////////////////////////////////////////////////

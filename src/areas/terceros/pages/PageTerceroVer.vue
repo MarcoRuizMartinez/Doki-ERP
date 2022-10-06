@@ -83,7 +83,7 @@
   import  contactos             from "src/areas/terceros/components/contactos/ModuloContactos.vue"
   import  notas                 from "src/areas/terceros/components/helper/ModuloNotasTercero.vue"
   import  formularioTercero     from "src/areas/terceros/components/formularioTercero/FormularioTercero.vue"
-  import  cotizaciones          from "src/areas/acuerdos/cotizaciones/components/modules/ModuloCotizacionesTercero.vue"  
+  import  cotizaciones          from "src/areas/acuerdos/components/modules/ModuloCotizacionesTercero.vue"  
 
   const { usuario, permisos } = storeToRefs( useStoreUser() )
   const { acuerdo           } = storeToRefs( useStoreAcuerdo() )

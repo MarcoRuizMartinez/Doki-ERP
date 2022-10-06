@@ -6,6 +6,7 @@
     size-icon-carga             ="6em"
     mensaje-sin-resultados      ="Sin documentos"
     icono-sin-resultados        ="mdi-file-document-multiple"
+    :minimizado                 ="minimizado"
     :padding-contenido          ="modo == 'normal' ? '0' : '12px' "
     :modo                       ="modo"
     :menu-visible               ="puedeSubir"
@@ -161,8 +162,8 @@
     moduloId:     { required: true,   type: Number                                  },
     moduloRef:    { required: true,   type: String                                  },
     puedeEditar:  { default:  false,  type: Boolean                                 },
+    minimizado:   { default:  false,  type: Boolean                                 },
   })
-
 
   const { modulo,
           moduloId,

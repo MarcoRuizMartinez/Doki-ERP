@@ -75,25 +75,25 @@ const routes: RouteRecordRaw[] = [
       {
         path: '',
         name: 'cotizaciones',
-        component: () => import('src/areas/acuerdos/cotizaciones/pages/PageCotizacionesBuscar.vue'),
+        component: () => import('src/areas/acuerdos/pages/cotizaciones/PageCotizacionesBuscar.vue'),
       },
       {
         path: '/cotizaciones/:id',
         name: 'cotizacion',
         props: true,
-        component: () => import('src/areas/acuerdos/cotizaciones/pages/PageCotizacionVer.vue')
+        component: () => import('src/areas/acuerdos/pages/cotizaciones/PageCotizacionVer.vue')
       },
       {
         path: '/cotizaciones/crear',
         name: 'crearCotizacion',
         props:  true,
-        component: () => import('src/areas/acuerdos/cotizaciones/pages/PageCotizacionCrear.vue'),
+        component: () => import('src/areas/acuerdos/pages/cotizaciones/PageCotizacionCrear.vue'),
       },
       {
         path: '/cotizaciones/informes',
         name: 'cotizacionInformes',
         props:  true,
-        component: () => import('src/areas/acuerdos/cotizaciones/pages/PageCotizacionesInformes.vue'),
+        component: () => import('src/areas/acuerdos/pages/cotizaciones/PageCotizacionesInformes.vue'),
       },
     ],
   },

@@ -139,8 +139,8 @@
     virgen.value              = false
     cargando.value            = true
 
-    let url                   = "thirdparty_ids=" + tercero.value.id + "&search_status=1"
-    if(!!busqueda) url        += `&sqlfilters=(t.firstname%20like%20'%25${busqueda}%25'%20OR%20t.lastname%20like%20'%25${busqueda}%25'%20OR%20t.note_public%20like%20'%25${busqueda}%25')`
+    let url                   = "thirdparty_ids=" + tercero.value.id + "&search_status=1&limit=10"
+    if(!!busqueda) url        += `&sqlfilters=(t.firstname:like:'%${busqueda}%')||(t.lastname:like:'%${busqueda}%')||(t.note_public:like:'%${busqueda}%')` // %25'%20OR%20t.note_public%20like%20'%25
     const { data, ok }        = await apiDolibarr( "buscar", "contacto", url)
     let contacts :IContacto[] = []
 

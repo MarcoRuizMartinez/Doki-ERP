@@ -56,11 +56,11 @@
                                 } from "vue"
   import {  useTitle            } from "@vueuse/core"
   // * /////////////////////////////////////////////////////////////////////////////////// Store
-  import {  storeToRefs           } from 'pinia'
-  import {  useStoreUser          } from 'src/stores/user'  
+  import {  storeToRefs         } from 'pinia'
+  import {  useStoreUser        } from 'src/stores/user'  
   // * ///////////////////////////////////////////////////////////////////////// Componibles
   import {  useTools            } from "src/useSimpleOk/useTools"
-  import {  useInformesCtz      } from "src/areas/acuerdos/cotizaciones/composables/useInformesCtz"
+  import {  useInformesCtz      } from "src/areas/acuerdos/composables/useInformesCtz"
   // * ///////////////////////////////////////////////////////////////////////// Modelos
   import {  Tiempo,             } from "src/models/TiposInformes"
   import {  ILabelValue         } from "src/models/TiposVarios"

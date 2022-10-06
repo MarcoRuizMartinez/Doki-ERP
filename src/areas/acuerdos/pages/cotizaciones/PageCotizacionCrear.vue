@@ -61,15 +61,15 @@
   import {  btnBaseMd             } from "src/useSimpleOk/useEstilos"
   import {  useControlAcuerdo  } from "src/areas/acuerdos/controllers/ControlAcuerdos"
   import {  useControlProductos   } from "src/areas/acuerdos/controllers/ControlLineasProductos"
-  import {  useCotizacionPDF      } from "src/areas/acuerdos/cotizaciones/composables/useCotizacionPDF"
+  import {  useCotizacionPDF      } from "src/areas/acuerdos/composables/useCotizacionPDF"
   // * /////////////////////////////////////////////////////////////////////////////////// Componentes
   import    barra                   from "components/utilidades/Barra.vue"
   import    visorPdf                from "components/utilidades/VisorPDF.vue"
-  import    tituloCtz               from "src/areas/acuerdos/components/TituloCotizacion.vue"
+  import    tituloCtz               from "src/areas/acuerdos/components/Titulo.vue"
   import    productos               from "src/areas/acuerdos/components/ProductosAcuerdo.vue"
   import    terceroYContacto        from "src/areas/acuerdos/components/TerceroYcontacto.vue"
-  import    totales                 from "src/areas/acuerdos/components/TotalesCotizacion.vue"
-  import    condiciones             from "src/areas/acuerdos/components/CondicionesCotizacion.vue"
+  import    totales                 from "src/areas/acuerdos/components/Totales.vue"
+  import    condiciones             from "src/areas/acuerdos/components/Condiciones.vue"
 
   const { acuerdo,
           loading           } = storeToRefs( useStoreAcuerdo() )

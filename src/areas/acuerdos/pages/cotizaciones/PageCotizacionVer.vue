@@ -28,15 +28,15 @@
       class                   ="col-md-4 col-12 full-height"
       height-card             ="220px"
     />
-    <productos
-      class                   ="col-12"
-    />
-    <documentos
+    <documentos               minimizado
       class                   ="col-md-4 col-12 full-height"
       :modulo                 ="acuerdo.modulo"
       :modulo-id              ="acuerdo.id ?? 0"
       :modulo-ref             ="acuerdo.ref"
       :puede-editar           ="true"
+    />    
+    <productos
+      class                   ="col-12"
     />
     <!-- //* /////////////////  Visor PDF  -->
     <visor-pdf                descargar
@@ -67,16 +67,16 @@
   //* ///////////////////////////////////////////////////////////////////////////////// Modelos
   import {  Acuerdo, TIPO_ACUERDO } from "../../models/Acuerdo"  
   //* ///////////////////////////////////////////////////////////////////////////////// Componibles
-  import {  useControlAcuerdo  } from "src/areas/acuerdos/controllers/ControlAcuerdos"
+  import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"
   import {  useControlProductos   } from "src/areas/acuerdos/controllers/ControlLineasProductos"
-  import {  useCotizacionPDF      } from "src/areas/acuerdos/cotizaciones/composables/useCotizacionPDF"
+  import {  useCotizacionPDF      } from "src/areas/acuerdos/composables/useCotizacionPDF"
   //* ///////////////////////////////////////////////////////////////////////////////// Componentes
   import    visorPdf                from "components/utilidades/VisorPDF.vue"
-  import    tituloCtz               from "src/areas/acuerdos/components/TituloCotizacion.vue"
-  import    totales                 from "src/areas/acuerdos/components/TotalesCotizacion.vue"
-  import    botonera                from "src/areas/acuerdos/components/BotoneraCotizacion.vue"
+  import    tituloCtz               from "src/areas/acuerdos/components/Titulo.vue"
+  import    totales                 from "src/areas/acuerdos/components/Totales.vue"
+  import    botonera                from "src/areas/acuerdos/components/Botonera.vue"
   import    terceroYContacto        from "src/areas/acuerdos/components/TerceroYcontacto.vue"
-  import    condiciones             from "src/areas/acuerdos/components/CondicionesCotizacion.vue"
+  import    condiciones             from "src/areas/acuerdos/components/Condiciones.vue"
   import    productos               from "src/areas/acuerdos/components/ProductosAcuerdo.vue"
   import    documentos              from "components/archivos/ModuloArchivos.vue"
 

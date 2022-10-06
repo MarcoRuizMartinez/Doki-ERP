@@ -27,7 +27,7 @@ import {  date              } from "quasar"
 import {  ILineaApi         } from "src/areas/acuerdos/models/LineaAcuerdo"
 import {  TIPOS_CONTACTO_ID } from "src/areas/terceros/models/Contacto"
 import {  ISerieCtz,
-          SerieCtz          } from "src/areas/acuerdos/cotizaciones/models/SeriesCotizacion"
+          SerieCtz          } from "src/areas/acuerdos/models/SeriesCotizacion"
 import {  IQueryAcuerdo     } from "src/areas/acuerdos/models/BusquedaAcuerdos"
 import {  Acuerdo,
           IAcuerdo,

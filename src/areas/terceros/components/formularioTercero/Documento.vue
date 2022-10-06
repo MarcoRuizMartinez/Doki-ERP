@@ -306,7 +306,7 @@
     if(typeof data !== "object" && !Array.isArray(data)) return
 
     if( "code" in data && typeof data.code === "string" && data.code == "NotFound")
-      aviso("negative", "No se encontraron datos en la Dian como ciudadano", "shield", 4000)
+      aviso("negative", "No se encontraron datos en la Dian como ciudadano", "shield", 7000)
     else
     if( "data" in data && typeof data.data === "object"){
 
@@ -339,7 +339,7 @@
           )
           {            
             emit("verifikOk", empresa.razon_social)
-            aviso("positive", `Se encontró la empresa ${empresa.razon_social} en la DIAN. Estado: ${empresa.estadoRM}`,  "shield", 4000)
+            aviso("positive", `Se encontró la empresa ${empresa.razon_social} en la DIAN. Estado: ${empresa.estadoRM} - Municipio: ${empresa.municipio}`,  "shield", 7000)
           }
         }
         else

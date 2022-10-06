@@ -136,6 +136,7 @@ export function useControlAcuerdo()
   //* ////////////////////////////////////////////////////////////////////// Cambiar contacto
   async function cambiarContactoAcuerdo( contacto : IContacto, idOld : number )
   {
+    if(!acuerdo.value.id) return
     await desvincularContactoAcuerdo( idOld )
     await vincularContactoAcuerdo   ( contacto )
   }
@@ -144,6 +145,7 @@ export function useControlAcuerdo()
   //* ////////////////////////////////////////////////////////////////////// Asignar nuevo contacto
   async function vincularContactoAcuerdo( contacto : IContacto )
   {
+    if(!acuerdo.value.id) return
     //* ///////////////////////////////// Vincular contacto a acuerdo
     const { ok : vinculado      } = await apiDolibarr("contacto-vincular", acuerdo.value.tipo,
                                                         { id:   contacto.id,

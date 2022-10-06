@@ -1,7 +1,7 @@
 
 import {  Tiempo,
           IApexSerie          } from "src/models/TiposInformes"
-import {  ISerieCtz           } from "src/areas/acuerdos/cotizaciones/models/SeriesCotizacion"          
+import {  ISerieCtz           } from "src/areas/acuerdos/models/SeriesCotizacion"          
 import {  servicesAcuerdos     } from "src/areas/acuerdos/services/servicesAcuerdos"
 import {  ref
                               } from "vue"
