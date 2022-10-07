@@ -1,6 +1,6 @@
 <template>
   <q-page                     padding
-    class                     ="row item-stretch content-start justify-left q-col-gutter-lg"
+    class                     ="row item-stretch content-start justify-start q-col-gutter-lg"
     >
     <div class                ="col-12">
       <panel titulo           ="Informes de cotizaciones">

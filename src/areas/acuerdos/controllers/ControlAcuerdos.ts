@@ -95,7 +95,6 @@ export function useControlAcuerdo()
   async function buscarAcuerdo( tipo : TIPO_ACUERDO, id_ : string )
   {
     let idOk                    = ID_URL_Ok( id_ )
-    console.log("idOk: ", idOk);
     if(!idOk) router.push("/error") 
 
     loading.value.carga         = true
@@ -458,6 +457,7 @@ export function useControlAcuerdo()
     aprobarCotizacion,
     anularAcuerdo,
     buscarAcuerdo,
+    buscarTerceroDolibarr,
     editarComercial,
     editarAcuerdo,
     editarOrigen,

@@ -103,10 +103,13 @@
 
   const ventanaOk             = ref<boolean>(false)
 
-  watch(contacto, (newValue, oldValue)=>{
-    //if(!!newValue.id)
+  watch(contacto, (newValue, oldValue)=>
+  {
+      if(!newValue) return
       modelo.value            = newValue
-  })
+    }
+    ,{ immediate: true }
+  )
 
   watch( modelo, (newContacto, oldContacto)=>
   {
@@ -121,7 +124,7 @@
     }
     else
     // New y Old son validos entonces es un cambio de contacto 
-    if(!!newContacto && !!oldContacto && !!oldContacto.id) {      
+    if(!!newContacto && !!oldContacto && !!oldContacto.id && oldContacto.terceroId === newContacto.terceroId) {
       emit('contactoCambio', newContacto, oldContacto.id )
     }
   })

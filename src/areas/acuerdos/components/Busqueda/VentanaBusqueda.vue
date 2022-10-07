@@ -39,7 +39,10 @@
       <!-- //* ///////////////  Columna Ref  -->
       <template #body-cell-ref  ="props">
         <q-td   :props          ="props">
-          <ref-acuerdo :acuerdo ="props.row"/>
+          <ref-acuerdo
+            :acuerdo            ="props.row"
+            @vista-rapida       ="vistaRapida(props.rowIndex)"
+          />
         </q-td>
       </template>
       <!-- //* ///////////////  Columna Tercero  -->
@@ -55,8 +58,7 @@
         <q-td   :props          ="props">
           <chip-usuario         :usuario="props.value"/>
         </q-td>
-      </template>
-      chipUsuario
+      </template>      
       <!-- //* ///////////////  Columna contacto  -->
       <template
         #body-cell-contacto     ="props">
@@ -72,11 +74,47 @@
         </q-td>
       </template> 
     </q-table>
+    <!-- //* ///////////////////////////////////////////////////////////// Modal Buscar productos -->
+    <q-dialog                   maximized
+      v-model                   ="ventanaVistaRapida"
+      :persistent               ="false"
+      transition-show           ="slide-up"
+      transition-hide           ="slide-down"
+      >
+      <ventana                  cerrar scroll full-screen
+        titulo                  ="Vista rapida"
+        class                   ="panel-blur"
+        icono                   ="mdi-eye"
+        backgroundColor         ="rgb(0 0 0 / 0%)"
+        class-contenido         ="row items-start content-start justify-start q-col-gutter-md q-mt-none"
+        >
+        <vista-acuerdo/>
+        <template               #barra>
+          <q-btn                dense flat unelevated  
+            icon                ="mdi-chevron-left"
+            class               ="op40 op100-hover"
+            :disable            ="!puedeAnterior"
+            @click              ="anteriorAcuerdo"
+            >
+            <tooltip label      ="Anterior"/>
+          </q-btn>
+          <q-btn                dense flat unelevated  
+            icon                ="mdi-chevron-right"
+            class               ="op40 op100-hover"
+            :disable            ="!puedeSiguiente"
+            @click              ="siguienteAcuerdo"
+            >
+            <tooltip label      ="Siguiente"/>
+          </q-btn>
+        </template>
+      </ventana>
+    </q-dialog>    
   </ventana>
 </template>
   
 <script setup lang="ts">
   // * /////////////////////////////////////////////////////////////////////// Core
+  /* class                ="" */
   import {  ref,
             toRefs,
             PropType,
@@ -90,9 +128,11 @@
   // * /////////////////////////////////////////////////////////////////////// Componibles
   import {  useTitle            } from "@vueuse/core"
   import {  servicesAcuerdos    } from "src/areas/acuerdos/services/servicesAcuerdos"
+  import {  useControlAcuerdo   } from "src/areas/acuerdos/controllers/ControlAcuerdos"
   import {  useTools            } from "src/useSimpleOk/useTools"
-  import {  generarCSVDesdeTabla} from "src/useSimpleOk/UtilFiles"  
+  import {  generarCSVDesdeTabla} from "src/useSimpleOk/UtilFiles"
   // * /////////////////////////////////////////////////////////////////////// Modelos
+  import {  IAcuerdo            } from "src/areas/acuerdos/models/Acuerdo"
   import {  BusquedaAcuerdo,
             IQueryAcuerdo       } from "src/areas/acuerdos/models/BusquedaAcuerdos"
   import {  Columna, IColumna   } from "src/models/Tabla"
@@ -108,6 +148,7 @@
   import    tooltipContacto       from "src/areas/terceros/components/contactos/TooltipContacto.vue"
   import    tabsBusqueda          from "./TabsBusqueda.vue"
   import    barraBusqueda         from "./BarraBusqueda.vue"
+  import    vistaAcuerdo          from "src/areas/acuerdos/components/Views/VistaCotizacion.vue"  
   // * ////////////////////////// Columnas
   import    refAcuerdo            from "./Columnas/RefAcuerdo.vue"
   import    estado                from "./Columnas/Estado.vue"
@@ -121,11 +162,16 @@
   const { tipo }                  = toRefs(props) 
   const title                     = useTitle("🔍 Buscar " + tipo.value)
   const { usuario, permisos     } = storeToRefs( useStoreUser() )  
-  const { acuerdos, busqueda    } = storeToRefs( useStoreAcuerdo() )  
+  const { acuerdo,
+          acuerdos,
+          busqueda              } = storeToRefs( useStoreAcuerdo() )  
   const { getAcuerdos           } = servicesAcuerdos()
+  const { buscarTerceroDolibarr } = useControlAcuerdo()  
   const { esMobil, aviso        } = useTools()
   
   const modo                      = ref< ModosVentana >("esperando-busqueda")  
+  const indexSelect               = ref< number >(-1)
+  const ventanaVistaRapida        = ref< boolean >(false)  
   //const filtroMovil               = ref< boolean >(false)
   const titulo                    = computed(()=>
   {
@@ -135,7 +181,9 @@
   })
   const columnas                  = ref< IColumna[] >([])
   const columnasVisibles          = ref< string[]   >([])
-  
+  const puedeAnterior             = computed(()=> indexSelect.value > 0 )
+  const puedeSiguiente            = computed(()=> indexSelect.value < acuerdos.value.length - 1)
+
   onMounted(()=>{
     acuerdos.value                = []
     busqueda.value                = new BusquedaAcuerdo( tipo.value )
@@ -159,6 +207,31 @@
   {
     modo.value                    = "esperando-busqueda"
     acuerdos.value                = []
+  }
+
+  function vistaRapida(index : number)
+  {
+    seleccionarAcuerdo(index)
+    ventanaVistaRapida.value      = true    
+  }
+
+  function anteriorAcuerdo()
+  {
+    if(!puedeAnterior.value) return 
+    seleccionarAcuerdo( indexSelect.value - 1)
+  }
+
+  function siguienteAcuerdo()
+  {
+    if(!puedeSiguiente.value) return 
+    seleccionarAcuerdo( indexSelect.value + 1)
+  }
+
+  function seleccionarAcuerdo( index : number )
+  {    
+    indexSelect.value             = index
+    acuerdo.value                 = acuerdos.value[index]
+    buscarTerceroDolibarr( acuerdo.value.terceroId )
   }
 
   function crearColumnas(){

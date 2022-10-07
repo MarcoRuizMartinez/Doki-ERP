@@ -40,7 +40,7 @@
           <!-- //?* ////////////////////////////////////////////////////////////// Botones --> 
           <!-- <q-btn label="Prueba" @click="test()"/> -->
           <div v-if           ="minimizar">
-            <q-btn            v-close-popup dense round glossy push unelevated
+            <q-btn            dense round glossy push unelevated
               class           ="boton-ventana"
               :icon           ="minimizadoModel ? 'mdi-arrow-expand' : 'mdi-window-minimize'"
               color           ="positive"
@@ -48,22 +48,18 @@
               @click          ="minimizadoModel = !minimizadoModel; $emit('minimizar')"
               v-touch-hold.mouse="clickLargoMinMax"
               >
-              <Tooltip label  ="Subir archivos">
-                {{minimizadoModel ?  'Restaurar' : 'Minimizar'}}
-              </Tooltip>
+              <Tooltip :label ="minimizadoModel ?  'Restaurar' : 'Minimizar'"/>
             </q-btn>
           </div>
           <div v-if           ="maximizar">
-            <q-btn            v-close-popup dense round glossy push unelevated              
+            <q-btn            dense round glossy push unelevated              
               class           ="boton-ventana"
               :icon           ="maximizado ? 'mdi-window-restore' : 'mdi-window-maximize'"
               color           ="warning"
               size            ="sm"
               @click          ="maximizado = !maximizado; $emit('maximizar')"
               >
-              <Tooltip label  ="Subir archivos">
-                {{maximizado ?  'Restaurar' : 'Expandir'}}
-              </Tooltip>
+              <Tooltip :label ="maximizado ?  'Restaurar' : 'Expandir'"/>
             </q-btn>
           </div>
           <div v-if           ="cerrar">
@@ -89,9 +85,13 @@
         </slot>
       </q-card-actions>
       <!-- //?* ////////////////////////////////////////////////////////////// SLOT Default --> 
-      <q-card-actions
-        class                 ="items-start ventana-contenido transi"
-        :class                ="classContenido, { 'minimizado' : minimizadoModel }, {'full-screen' : fullScreen}"
+      <q-card-section
+        class                 ="row items-start ventana-contenido transi"
+        :class                ="  classContenido,
+                                  { 'minimizado'  : minimizadoModel },
+                                  { 'full-screen' : fullScreen      },
+                                  { 'scroll'      : scroll          }
+                                "
         :style                ="estiloCard"
         >  <!-- //?* /   :style                ="estiloAlto" :style="estiloCard" --> 
         <slot v-if            ="modo == 'normal' ">
@@ -129,7 +129,7 @@
             {{mensajeSinResultados}}
           </div>
         </div>
-      </q-card-actions>
+      </q-card-section>
       <!-- //?* ////////////////////////////////////////////////////////////// Cargando... spinner --> 
       <q-inner-loading
         :showing              ="cargando"
@@ -177,6 +177,7 @@
       iconoSinResultados:   { type: String,   default: "mdi-emoticon-sad-outline" },
       backgroundColor:      { type: String,   default: "rgb(255 255 255 / 94%)"   },
       menuVisible:          { type: Boolean,  default: false                      },
+      scroll:               { type: Boolean,  default: false                      },
       heightCard:
       {
         default:            'auto',

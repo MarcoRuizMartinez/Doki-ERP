@@ -2,7 +2,7 @@
   <ventana                    cerrar
     :titulo                   ="linea.ref + ' - ' + linea.nombre"
     icono                     ="mdi-package-variant-closed"
-    class-contenido           ="row ancho-ventana q-col-gutter-sm justify-left"
+    class-contenido           ="row ancho-ventana q-col-gutter-sm justify-start"
     :cargando                 ="loading.editarLinea || loading.borrarLinea"
     >
     <!-- //* ///////////////////////////////////////////////////////////// Referencia y nombre -->

@@ -1,6 +1,6 @@
 <template>
   <q-page               padding
-    class               ="column item-stretch content-start justify-left gap-md"
+    class               ="column item-stretch content-start justify-start gap-md"
     >
     <panel
       :titulo           ="titulo"

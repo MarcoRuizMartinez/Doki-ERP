@@ -1,5 +1,5 @@
 <template>
-  <q-page padding class           ="row item-stretch content-start justify-left">
+  <q-page padding class           ="row item-stretch content-start justify-start">
     <ventana
       class                       ="col-12"
       class-contenido             ="column items-center"

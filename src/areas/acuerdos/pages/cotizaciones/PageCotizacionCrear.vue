@@ -1,6 +1,6 @@
 <template>
   <q-page                     padding
-    class                     ="row items-stretch content-start justify-left q-col-gutter-md"
+    class                     ="row items-stretch content-start justify-start q-col-gutter-md"
     >
     <titulo-ctz
       class                   ="col-12"

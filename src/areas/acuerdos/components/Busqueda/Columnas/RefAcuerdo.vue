@@ -9,11 +9,19 @@
     />
   </q-icon>
   <span>
+    <!-- //* //////// Vista Rapida -->
+    <q-btn            flat dense round
+      icon            ="mdi-eye"
+      class           ="op40 op100-hover q-ml-sm"
+      padding         ="none"
+      size            ="md"
+      @click          ="emit('vistaRapida')"
+    />    
     <router-link
       v-if          ="acuerdo.esCotizacion"
       class         ="fuente-mono"
       :to           ="`/${acuerdo.tipoPlural}/${acuerdo.id}`"
-    >
+      >
       {{ acuerdo.refCorta }}
     </router-link>
     <a
@@ -36,5 +44,7 @@
   const props               = defineProps({
     acuerdo:  { required: true, type: Object as PropType< IAcuerdo > },
   })
+  const emit                = defineEmits(["vistaRapida"])
+
   const   urlDolibarr       = process.env.URL_DOLIBARR
 </script>

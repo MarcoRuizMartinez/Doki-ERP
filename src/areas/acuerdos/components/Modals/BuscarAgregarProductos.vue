@@ -2,7 +2,7 @@
   <ventana                    cerrar full-screen
     titulo                    ="Buscar"
     icono                     ="mdi-magnify"
-    class-contenido           ="row justify-left"
+    class-contenido           ="row justify-start"
     mensaje-sin-resultados    ="No se encontraron productos o servicios"
     padding-contenido         ="0"
     size-icon-carga           ="28vw"

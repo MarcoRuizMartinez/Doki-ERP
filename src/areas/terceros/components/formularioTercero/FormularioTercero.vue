@@ -472,7 +472,6 @@
   }
 
   function cargarNombreToVerifik( nombre : string ){
-    console.log("cargarNombreToVerifik nombre: ", nombre);
     tercero.value.nombre = nombre
   }
 </script>

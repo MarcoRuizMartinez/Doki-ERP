@@ -259,6 +259,7 @@ export class ProductoDoli implements IProductoDoli
             this.ref.includes("INST-") ||
             this.ref.includes("LUZ-")  ||
             this.ref.includes("MANT-") ||
+            this.ref.includes("META-") ||
             this.ref.includes("MURO-") ||
             this.ref.includes("OBRA-") ||
             this.ref.includes("PANE-") ||

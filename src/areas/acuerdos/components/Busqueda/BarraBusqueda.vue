@@ -6,7 +6,7 @@
     <!-- //* /////////////////////////////////////////////////////// Tab 1 -->
     <q-tab-panel
       name                      ="tab_1"
-      class                     ="row q-pa-none"
+      class                     ="row q-pa-none no-wrap scroll"
       >
       <fieldset-filtro
         titulo                  ="Búsqueda"
@@ -172,7 +172,7 @@
     <!-- //* ///////////////////////////////////////////////////// Tab 2 -->
     <q-tab-panel
       name                      ="tab_2"
-      class                     ="row q-pa-none"
+      class                     ="row q-pa-none no-wrap scroll"
       >
       <fieldset-filtro
         titulo                  ="Opciones"

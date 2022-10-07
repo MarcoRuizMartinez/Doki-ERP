@@ -1,6 +1,6 @@
 <template>
   <q-page                 padding
-    class                 ="row item-stretch content-start justify-left q-col-gutter-lg">
+    class                 ="row item-stretch content-start justify-start q-col-gutter-lg">
     <buscar-terceros
       v-if                ="storeUser.permisos.terceros_ver"
       class               ="col-md-4 col-12"
