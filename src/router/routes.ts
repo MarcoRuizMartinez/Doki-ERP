@@ -1,4 +1,5 @@
 import {  RouteRecordRaw  } from 'vue-router'
+import {  TIPO_ACUERDO    } from "src/areas/acuerdos/models/ConstantesAcuerdos"
 
 const routes: RouteRecordRaw[] = [
   {
@@ -73,40 +74,52 @@ const routes: RouteRecordRaw[] = [
     children:
     [
       {
-        path: '',
-        name: 'cotizaciones',
-        component: () => import('src/areas/acuerdos/pages/cotizaciones/PageCotizacionesBuscar.vue'),
+        path:       '',
+        name:       'cotizaciones',
+        component:  () => import('src/areas/acuerdos/pages/cotizaciones/PageCotizacionesBuscar.vue'),
       },
       {
-        path: '/cotizaciones/:id',
-        name: 'cotizacion',
-        props: true,
-        component: () => import('src/areas/acuerdos/pages/cotizaciones/PageCotizacionVer.vue')
+        path:       '/cotizaciones/:id',
+        name:       'cotizacion',
+        props:      route => ({ id: route.params.id, tipo: TIPO_ACUERDO.COTIZACION}),
+        component:  () => import('src/areas/acuerdos/pages/PageAcuerdoVer.vue')
       },
       {
-        path: '/cotizaciones/crear',
-        name: 'crearCotizacion',
-        props:  true,
-        component: () => import('src/areas/acuerdos/pages/cotizaciones/PageCotizacionCrear.vue'),
+        path:       '/cotizaciones/crear',
+        name:       'crearCotizacion',
+        props:      { tipo: TIPO_ACUERDO.COTIZACION },
+        component:  () => import('src/areas/acuerdos/pages/PageAcuerdoCrear.vue'),
       },
       {
-        path: '/cotizaciones/informes',
-        name: 'cotizacionInformes',
-        props:  true,
-        component: () => import('src/areas/acuerdos/pages/cotizaciones/PageCotizacionesInformes.vue'),
+        path:       '/cotizaciones/informes',
+        name:       'cotizacionInformes',
+        props:      true,
+        component:  () => import('src/areas/acuerdos/pages/cotizaciones/PageCotizacionesInformes.vue'),
       },
     ],
   },
   {
-    path: '/pedidos',
-    component: () => import('layouts/LayoutPrincipal.vue'),
+    path:           '/pedidos',
+    component:      () => import('layouts/LayoutPrincipal.vue'),
     children:
     [
       {
-        path: '',
-        name: 'pedidos',
-        component: () => import('src/areas/acuerdos/pedidos/pages/PagePedidosBuscar.vue'),
+        path:       '',
+        name:       'pedidos',
+        component:  () => import('src/areas/acuerdos/pedidos/pages/PagePedidosBuscar.vue'),
       },
+      {
+        path:       '/pedidos/:id',
+        name:       'pedido',
+        props:      route => ({ id: route.params.id, tipo: TIPO_ACUERDO.PEDIDO }),
+        component:  () => import('src/areas/acuerdos/pages/PageAcuerdoVer.vue')
+      },      
+      {
+        path:       '/pedidos/crear',
+        name:       'crearPedido',
+        props:      { tipo: TIPO_ACUERDO.PEDIDO },
+        component:  () => import('src/areas/acuerdos/pages/PageAcuerdoCrear.vue'),
+      },      
     ],
   },
   /*

@@ -1,4 +1,5 @@
-import {  TIPO_ACUERDO    } from "src/areas/acuerdos/models/ConstantesAcuerdos"
+import {  TIPO_ACUERDO,
+          TTipoAcuerdo    } from "src/areas/acuerdos/models/ConstantesAcuerdos"
 import {  ILabelValue,
           labelValueNulo  } from "src/models/TiposVarios"
 import {  IUsuario            } from "src/areas/usuarios/models/Usuario"
@@ -8,7 +9,7 @@ import {  IMunicipio,
 
 export interface IQueryAcuerdo {
   tipo                 ?:  string
-  acuerdo              ?:  TIPO_ACUERDO
+  acuerdo              ?:  TTipoAcuerdo
   comercial            ?:  string | number
   creador              ?:  string | number
   tercero              ?:  string
@@ -37,7 +38,7 @@ export interface IQueryAcuerdo {
 
 export interface IBusquedaAcuerdo {
   query                 : IQueryAcuerdo
-  acuerdo               : TIPO_ACUERDO
+  acuerdo               : TTipoAcuerdo
   tercero               : string
   contacto              : string  
   desde                 : Date | string
@@ -66,7 +67,7 @@ export interface IBusquedaAcuerdo {
 }
 export class BusquedaAcuerdo implements IBusquedaAcuerdo
 {
-  acuerdo               : TIPO_ACUERDO
+  acuerdo               : TTipoAcuerdo
   tercero               : string
   contacto              : string  
   desde                 : Date | string
@@ -91,7 +92,7 @@ export class BusquedaAcuerdo implements IBusquedaAcuerdo
   pagina                : number
   busquedaVacia         : boolean
 
-  constructor( acuerdoTipo : TIPO_ACUERDO = TIPO_ACUERDO.NULO )
+  constructor( acuerdoTipo : TTipoAcuerdo )
   {
     this.acuerdo          = acuerdoTipo
     this.tercero          = ""

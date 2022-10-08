@@ -14,6 +14,7 @@ import {  useTools,
 //* ////////////////////////////////////////////////////////////////// Modelos
 import {  ESTADO_CTZ,
           ESTADO_PED,
+          TTipoAcuerdo,
           ESTADO_ACU,
           TIPO_ACUERDO          } from "../../../areas/acuerdos/models/ConstantesAcuerdos"
 import {  IOrigenContacto       } from "../../../models/Diccionarios/OrigenContacto"
@@ -92,7 +93,7 @@ export function useControlAcuerdo()
   }          
 
   //* ////////////////////////////////////////////////////////////////////// Buscar Acuerdo 
-  async function buscarAcuerdo( tipo : TIPO_ACUERDO, id_ : string )
+  async function buscarAcuerdo( tipo : TTipoAcuerdo, id_ : string )
   {
     let idOk                    = ID_URL_Ok( id_ )
     if(!idOk) router.push("/error") 

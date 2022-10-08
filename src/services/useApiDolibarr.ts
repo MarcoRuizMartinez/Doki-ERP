@@ -50,6 +50,7 @@ export function useApiDolibarr()
       case "contacto":          endPoint = "contacts";            break;
       case "documento":         endPoint = "documents";           break;
       case "cotización":        endPoint = "proposals";           break;
+      case "pedido":            endPoint = "orders";              break;
       case "saber":             endPoint = "knowledgemanagement"; break;
       default: break;
     }

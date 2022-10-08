@@ -1,6 +1,7 @@
 import {  defineStore       } from 'pinia';
 import {  Acuerdo,
-          IAcuerdo,         } from "src/areas/acuerdos/models/Acuerdo"
+          IAcuerdo,
+          TIPO_ACUERDO      } from "src/areas/acuerdos/models/Acuerdo"
 import {  ILoading,
           LoadingDefault,
           IModales,
@@ -25,12 +26,12 @@ export interface iAcuerdoState {
 
 export const useStoreAcuerdo = defineStore('acuerdo', {
   state: () : iAcuerdoState => ({
-    acuerdo           : new Acuerdo(),
+    acuerdo           : new Acuerdo( TIPO_ACUERDO.COTIZACION ),
     loading           : LoadingDefault,
     grupoElegido      : new GrupoLineas(),
     lineaElegida      : new LineaAcuerdo(),
     modales           : ModalesDefault,
     acuerdos          : [],
-    busqueda          : new BusquedaAcuerdo(),
+    busqueda          : new BusquedaAcuerdo( TIPO_ACUERDO.COTIZACION ),
   }),
 });

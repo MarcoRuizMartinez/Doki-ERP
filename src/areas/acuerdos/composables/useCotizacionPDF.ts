@@ -5,7 +5,8 @@ import {  UtilPDF,
           crearImageHTML,
           GRISES            } from 'src/useSimpleOk/UtilPDF';
 import {  Acuerdo,
-          IAcuerdo          } from "src/areas/acuerdos/models/Acuerdo"          
+          IAcuerdo,
+          TIPO_ACUERDO      } from "src/areas/acuerdos/models/Acuerdo"          
 import {  useQuasar,
           QSpinnerGears     } from "quasar"
 import {  fechaLarga,
@@ -19,7 +20,7 @@ export function useCotizacionPDF()
 {
   const { notify          } = useQuasar()
   let aviso   : Function
-  let quote   : IAcuerdo    = new Acuerdo()
+  let quote   : IAcuerdo    = new Acuerdo( TIPO_ACUERDO.COTIZACION )
   let algunGrupoConSubTotal = false
   const pdf   : jsPDF       = new jsPDF('p','px')
   const setup : IInicioPDF  = { ancho:      447,

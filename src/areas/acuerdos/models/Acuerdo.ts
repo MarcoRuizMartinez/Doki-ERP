@@ -7,6 +7,7 @@ import {  TIPO_ACUERDO,
           estadoPedToName,
           estadoPedToColor,
           estadosPed,
+          TTipoAcuerdo,
           getTipoAcuerdoPlural
                                             } from "./ConstantesAcuerdos"
 import {  X100, fechaCorta                  } from "../../../useSimpleOk/useTools"
@@ -32,14 +33,16 @@ import {  getDateToStr,
           getMilisecShortForApiDolibarr     } from "src/useSimpleOk/useTools"
 import {  TModulosDolibarr                  } from "src/useSimpleOk/UtilFiles"
 
-export {  TIPO_ACUERDO                      }
+export {  TIPO_ACUERDO, TTipoAcuerdo }
 
 export interface IAcuerdo
 {
   tipo:                       TIPO_ACUERDO
   tipoPlural:                 string
+  emoji:                      string
   modulo:                     TModulosDolibarr
   esCotizacion:               boolean
+  esPedido:                   boolean
   esNuevo:                    boolean
   id:                         number
   ref:                        string
@@ -196,9 +199,9 @@ export class Acuerdo implements IAcuerdo
   /* Solo para pedidos */
   facturado:                  boolean
 
-  constructor()
+  constructor( tipo : TTipoAcuerdo )
   {
-    this.tipo                 = TIPO_ACUERDO.COTIZACION
+    this.tipo                 = tipo
     this.esNuevo              = true
     this.id                   = 0
     this.ref                  = ""
@@ -260,6 +263,15 @@ export class Acuerdo implements IAcuerdo
       if(grupo.totalCreado)   orden++
     }
   } */
+
+  get emoji() :  string {
+    let emoji     = this.tipo === TIPO_ACUERDO.COTIZACION ? "📜"
+                  : this.tipo === TIPO_ACUERDO.PEDIDO     ? "🛒"
+                  : this.tipo === TIPO_ACUERDO.ENTREGA    ? "🚛"
+                  : this.tipo === TIPO_ACUERDO.FACTURA    ? "📄"
+                  : "✅"
+    return emoji
+  }
 
   get tipoPlural() : string{
     return getTipoAcuerdoPlural( this.tipo )
@@ -579,7 +591,7 @@ export class Acuerdo implements IAcuerdo
 
 
   // * ///////////////////////////////////////////////////// static convertir data de API en new Cotizacion
-  static async convertirDataApiToAcuerdo( ctzApi : any, tipo : TIPO_ACUERDO = TIPO_ACUERDO.COTIZACION ) : Promise < IAcuerdo >
+  static async convertirDataApiToAcuerdo( ctzApi : any, tipo : TTipoAcuerdo ) : Promise < IAcuerdo >
   {
     ctzApi.id                 = +ctzApi.id
     ctzApi.terceroId          = +ctzApi.terceroId
@@ -608,7 +620,7 @@ export class Acuerdo implements IAcuerdo
     ctzApi.fechaFinValidez    = getDateToStr( ctzApi.fechaFinValidez  )
     ctzApi.fechaEntrega       = getDateToStr( ctzApi.fechaEntrega, "UTC")
 
-    let ctz                   = Object.assign( new Acuerdo(), ctzApi ) as IAcuerdo
+    let ctz                   = Object.assign( new Acuerdo( tipo ), ctzApi ) as IAcuerdo
         ctz.esNuevo           = false
         ctz.tipo              = tipo 
         ctz.comercial         = await getUsuarioDB          ( ctz.comercialId )

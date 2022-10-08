@@ -44,10 +44,12 @@
 
   const emit                  = defineEmits(["update:tercero"])
   const props                 = defineProps({
-    tercero:    { required: true,   type: Object as PropType< ITercero >    },
-    readonly:   { default:  false,  type: Boolean                           }
+    tercero:            { required: true,   type: Object as PropType< ITercero >    },
+    readonly:           { default:  false,  type: Boolean                           },
+    conTerceroEspecial: { default:  false,  type: Boolean                           },
   })
-  const { tercero }           = toRefs(props)
+  const { tercero,
+          conTerceroEspecial } = toRefs(props)
 
   watch(tercero, (newValue)=>{
     //if(!!newValue.id)
@@ -74,7 +76,7 @@
     else
     if(virgen.value)
     {
-      if(!!storeUser.usuario.terceroIdCtz)
+      if(!!storeUser.usuario.terceroIdCtz && conTerceroEspecial.value)
         terce.push( await buscarTercero( storeUser.usuario.terceroIdCtz ) )
 
       query                   = { idUsuarios: storeUser.usuario.id, limite: 10, orden: "DESC", esCliente: 1 }
@@ -97,7 +99,7 @@
     {
       if(!!storeUser.usuario.terceroIdCtz){ // Es posible que cargue dos veces el mismo tercero, hay que borrarlo
         let duplicados        = terce.filter( (t) => t.id == storeUser.usuario.terceroIdCtz )
-        if( duplicados.length > 1)  // Si hay terceros duplicados
+        if( duplicados.length > 1 || (!conTerceroEspecial.value && duplicados.length === 1 ))  // Si hay terceros duplicados
         {
           let indiceBorrar    = terce.findIndex( (t, index) => t.id == storeUser.usuario.terceroIdCtz && index > 0)
           terce.splice(indiceBorrar, 1)

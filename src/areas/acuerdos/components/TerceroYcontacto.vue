@@ -30,6 +30,7 @@
     <!-- No deja editar el tercero, si ya esta vinculado con otro objeto o no es un borrador -->
     <select-tercero
       class                   ="col-12"
+      :con-tercero-especial   ="acuerdo.esCotizacion"
       v-model:tercero         ="acuerdo.tercero"
       :readonly               ="acuerdo.esEstadoValidado || acuerdo.vinculado"
       @update:tercero         ="actualizarTercero"

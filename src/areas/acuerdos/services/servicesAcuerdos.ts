@@ -31,6 +31,7 @@ import {  ISerieCtz,
 import {  IQueryAcuerdo     } from "src/areas/acuerdos/models/BusquedaAcuerdos"
 import {  Acuerdo,
           IAcuerdo,
+          TTipoAcuerdo,
           TIPO_ACUERDO      } from "src/areas/acuerdos/models/Acuerdo"
 import {  pausa,
           valuesObjectArrayToNumber,
@@ -65,7 +66,7 @@ export function servicesAcuerdos()
     })
   }
 
-  async function getAcuerdo( tipo : TIPO_ACUERDO, id : number ) : Promise< IAcuerdo >
+  async function getAcuerdo( tipo : TTipoAcuerdo, id : number ) : Promise< IAcuerdo >
   {
     return new Promise( async (resolver, rechazar ) =>
     {
@@ -86,7 +87,7 @@ export function servicesAcuerdos()
       }
       else
       {
-        resolver( new Acuerdo() )
+        resolver( new Acuerdo( tipo ) )
       }
     })
   }
@@ -176,7 +177,7 @@ export function servicesAcuerdos()
       {
         for (const item of data)
         {
-          let quote : IAcuerdo = await Acuerdo.convertirDataApiToAcuerdo( item )
+          let quote : IAcuerdo = await Acuerdo.convertirDataApiToAcuerdo( item, TIPO_ACUERDO.COTIZACION )
           quotes.push( quote )
         }
         resolver( quotes )

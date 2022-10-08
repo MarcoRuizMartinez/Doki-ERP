@@ -69,7 +69,7 @@ export function useMenu()
                         submenu:
                         [
                             { ...new ItemMenu({
-                                                label:      "Buscar cotizaciones",
+                                                label:      "Cotizaciones",
                                                 icon:       "mdi-table-search",
                                                 to:         "/cotizaciones",
                                                 visible:    permisos.value.terceros_ver
@@ -129,6 +129,13 @@ export function useMenu()
                                                 visible:    permisos.value.terceros_ver
                                               }),
                             }, 
+                            { ...new ItemMenu({
+                                                label:      "Crear pedido",
+                                                icon:       "mdi-cart-plus",
+                                                to:         "/pedidos/crear",
+                                                visible:    permisos.value.terceros_ver
+                                              }),
+                            },                                
                         ]
       },        
 /*       {

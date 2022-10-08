@@ -88,7 +88,10 @@
         backgroundColor         ="rgb(0 0 0 / 0%)"
         class-contenido         ="row items-start content-start justify-start q-col-gutter-md q-mt-none"
         >
-        <vista-acuerdo/>
+        <vista-acuerdo
+          :id                   ="acuerdo.id.toString()"
+          :tipo                 ="tipo"
+        />        
         <template               #barra>
           <q-btn                dense flat unelevated  
             icon                ="mdi-chevron-left"
@@ -114,7 +117,6 @@
   
 <script setup lang="ts">
   // * /////////////////////////////////////////////////////////////////////// Core
-  /* class                ="" */
   import {  ref,
             toRefs,
             PropType,
@@ -148,7 +150,7 @@
   import    tooltipContacto       from "src/areas/terceros/components/contactos/TooltipContacto.vue"
   import    tabsBusqueda          from "./TabsBusqueda.vue"
   import    barraBusqueda         from "./BarraBusqueda.vue"
-  import    vistaAcuerdo          from "src/areas/acuerdos/components/Views/VistaCotizacion.vue"  
+  import    vistaAcuerdo          from "src/areas/acuerdos/components/Views/VistaAcuerdoVer.vue"  
   // * ////////////////////////// Columnas
   import    refAcuerdo            from "./Columnas/RefAcuerdo.vue"
   import    estado                from "./Columnas/Estado.vue"
@@ -192,7 +194,7 @@
 
   onUnmounted(()=>{
     acuerdos.value                = []
-    busqueda.value                = new BusquedaAcuerdo()
+    busqueda.value                = new BusquedaAcuerdo( tipo.value )
   })  
 
   async function buscar( query : IQueryAcuerdo )

@@ -11,14 +11,15 @@
         padding               ="0"
         @click                ="emit('click')"
         >
-        <q-img
+<!--         <q-img
           position            ="0"
           fit                 ="contain"
           spinner-color       ="white"
           width               ="51px"
           height              ="63px"
-          src                 ="images/iconos/iconoCotizacion.webp"
-        />
+          
+        /> -->        
+        <img :src             ="`images/iconos/${imgIcono}`" />
         <Tooltip
           v-if                ="!acuerdo.esNuevo"
           label               ="Generar PDF"
@@ -38,8 +39,8 @@
           padding           ="0"
           @click            ="emit('click')"
           >
-          <span class       ="titulo-xl sombra-3d fuente-gruesa">
-            Cotizacíon
+          <span class       ="titulo-xl sombra-3d fuente-gruesa text-capitalize">
+            {{acuerdo.tipo}}
           </span>
         </q-btn>
         <!-- //* ////////////////////////////////////////////////////// Titulo Cotizacion -->
@@ -134,17 +135,20 @@
   </titulo>
 </template>
 <script setup lang="ts">
-  import {  servicesAcuerdos  } from "src/areas/acuerdos/services/servicesAcuerdos"
+  import {  computed              } from "vue"
+  import {  servicesAcuerdos      } from "src/areas/acuerdos/services/servicesAcuerdos"
   import {  useTools              } from "src/useSimpleOk/useTools"
   import    titulo                  from "components/utilidades/Titulo.vue"
   import    efecto                  from "components/utilidades/Efecto.vue"
-  import {  storeToRefs           } from 'pinia'                            
+  import {  storeToRefs           } from 'pinia'
   import {  useStoreAcuerdo       } from 'src/stores/acuerdo'  
-
   const { acuerdo           } = storeToRefs( useStoreAcuerdo() )  
   const { esMobil, aviso    } = useTools()
   const { setTitulo         } = servicesAcuerdos()
   const   urlDolibarr         = process.env.URL_DOLIBARR
+  const   imgIcono            = computed(()=>   acuerdo.value.esCotizacion  ? "iconoCotizacion.webp"
+                                              : acuerdo.value.esPedido      ? "iconoPedido.webp"
+                                              : "")
 
   const emit                  = defineEmits(["click", "recargar"])
 
