@@ -11,6 +11,7 @@ export type TTipoAcuerdo      =   TIPO_ACUERDO.COTIZACION
                                 | TIPO_ACUERDO.PEDIDO
                                 | TIPO_ACUERDO.ENTREGA
                                 | TIPO_ACUERDO.FACTURA
+                                | TIPO_ACUERDO.NULO
 
 export enum ESTADO_ACU
 {
@@ -39,7 +40,7 @@ export enum ESTADO_PED
   ENTREGADO                   = 3,
 }
 
-export function getTipoAcuerdoPlural( tipo : TIPO_ACUERDO ) : string {
+export function getTipoAcuerdoPlural( tipo : TTipoAcuerdo ) : string {
   const singular              =   tipo === TIPO_ACUERDO.COTIZACION  ? "cotizaciones"
                                 : tipo === TIPO_ACUERDO.PEDIDO      ? "pedidos"
                                 : tipo === TIPO_ACUERDO.ENTREGA     ? "entregas"

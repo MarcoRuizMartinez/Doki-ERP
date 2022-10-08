@@ -107,7 +107,7 @@
   
 
   onMounted   ( iniciar )
-  onUnmounted ( ()=> acuerdo.value  = new Acuerdo( tipo.value ) )   
+  //onUnmounted ( ()=>{ console.log("c"); acuerdo.value  = new Acuerdo() })   
   
 
   async function iniciar()

@@ -33,6 +33,7 @@
   onUnmounted(()=>{
     console.log("onUnmounted Page crear")
     //if(acuerdoCreado) return
+    console.log("F")
     acuerdo.value             = new Acuerdo( tipo.value )
   })
 

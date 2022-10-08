@@ -91,6 +91,7 @@
   
   
   watch(tipo, (newTipo)=> {
+      console.log("A")
       acuerdo.value           = new Acuerdo( tipo.value )
       console.log("acuerdo.value.tipo: ", acuerdo.value.tipo);
       crearGrupoSiNoHay()
@@ -110,6 +111,7 @@
   onUnmounted(()=>{
     console.log("onUnmounted vista crear")
     if(acuerdoCreado) return
+    console.log("B")
     acuerdo.value             = new Acuerdo( tipo.value  )
   })
 

@@ -33,7 +33,7 @@ import {  getDateToStr,
           getMilisecShortForApiDolibarr     } from "src/useSimpleOk/useTools"
 import {  TModulosDolibarr                  } from "src/useSimpleOk/UtilFiles"
 
-export {  TIPO_ACUERDO, TTipoAcuerdo }
+export {  TIPO_ACUERDO }
 
 export interface IAcuerdo
 {
@@ -153,7 +153,7 @@ export interface IAcuerdo
 
 export class Acuerdo implements IAcuerdo
 {
-  tipo:                       TIPO_ACUERDO
+  tipo:                       TTipoAcuerdo
   esNuevo:                    boolean
   id:                         number
   ref:                        string
@@ -199,7 +199,7 @@ export class Acuerdo implements IAcuerdo
   /* Solo para pedidos */
   facturado:                  boolean
 
-  constructor( tipo : TTipoAcuerdo )
+  constructor( tipo : TTipoAcuerdo = TIPO_ACUERDO.NULO )
   {
     this.tipo                 = tipo
     this.esNuevo              = true
@@ -620,6 +620,7 @@ export class Acuerdo implements IAcuerdo
     ctzApi.fechaFinValidez    = getDateToStr( ctzApi.fechaFinValidez  )
     ctzApi.fechaEntrega       = getDateToStr( ctzApi.fechaEntrega, "UTC")
 
+    console.log("E")
     let ctz                   = Object.assign( new Acuerdo( tipo ), ctzApi ) as IAcuerdo
         ctz.esNuevo           = false
         ctz.tipo              = tipo 

@@ -26,12 +26,12 @@ export interface iAcuerdoState {
 
 export const useStoreAcuerdo = defineStore('acuerdo', {
   state: () : iAcuerdoState => ({
-    acuerdo           : new Acuerdo( TIPO_ACUERDO.COTIZACION ),
+    acuerdo           : new Acuerdo( TIPO_ACUERDO.NULO ),
     loading           : LoadingDefault,
     grupoElegido      : new GrupoLineas(),
     lineaElegida      : new LineaAcuerdo(),
     modales           : ModalesDefault,
     acuerdos          : [],
-    busqueda          : new BusquedaAcuerdo( TIPO_ACUERDO.COTIZACION ),
+    busqueda          : new BusquedaAcuerdo( TIPO_ACUERDO.NULO ),
   }),
 });

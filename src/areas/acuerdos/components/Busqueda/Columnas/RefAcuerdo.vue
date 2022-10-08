@@ -18,20 +18,19 @@
       @click          ="emit('vistaRapida')"
     />    
     <router-link
-      v-if          ="acuerdo.esCotizacion"
+
       class         ="fuente-mono"
       :to           ="`/${acuerdo.tipoPlural}/${acuerdo.id}`"
       >
       {{ acuerdo.refCorta }}
     </router-link>
-    <a
-      v-else
+<!--     <a
       class         ="fuente-mono"
       :href         ="urlDolibarr + '/commande/card.php?id=' + acuerdo.id"
       target        ="_blank"
       >
       {{ acuerdo.refCorta }}
-    </a>
+    </a> -->
     <tooltip-acuerdo    :acuerdo="acuerdo"/>
   </span>
 </template>
