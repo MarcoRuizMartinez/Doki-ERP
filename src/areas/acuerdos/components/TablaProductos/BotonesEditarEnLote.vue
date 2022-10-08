@@ -7,6 +7,7 @@
         color               ="positive"
         size                ="14px"
         label               ="Editar"
+        padding             ="0px 6px"
         :loading            ="loading.editarLote"
         @click              ="emit('clickEditar')"
         >
@@ -17,6 +18,7 @@
         color               ="negative"
         size                ="14px"
         label               ="Borrar"
+        padding             ="0px 6px"
         :loading            ="loading.borrarLote"
         >
         <confirmar  @ok     ="emit('clickBorrar')" />

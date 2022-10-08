@@ -81,13 +81,13 @@ const routes: RouteRecordRaw[] = [
       {
         path:       '/cotizaciones/:id',
         name:       'cotizacion',
-        props:      route => ({ id: route.params.id, tipo: TIPO_ACUERDO.COTIZACION}),
+        props:      route => ({ tipo: TIPO_ACUERDO.COTIZACION, id:        route.params.id }),
         component:  () => import('src/areas/acuerdos/pages/PageAcuerdoVer.vue')
       },
       {
         path:       '/cotizaciones/crear',
-        name:       'crearCotizacion',
-        props:      { tipo: TIPO_ACUERDO.COTIZACION },
+        name:       'crearCotizacion', 
+        props:      route => ({ tipo: TIPO_ACUERDO.COTIZACION, terceroId: route.params.terceroId }),
         component:  () => import('src/areas/acuerdos/pages/PageAcuerdoCrear.vue'),
       },
       {
@@ -111,13 +111,13 @@ const routes: RouteRecordRaw[] = [
       {
         path:       '/pedidos/:id',
         name:       'pedido',
-        props:      route => ({ id: route.params.id, tipo: TIPO_ACUERDO.PEDIDO }),
+        props:      route => ({ tipo: TIPO_ACUERDO.PEDIDO, id:        route.params.id }),
         component:  () => import('src/areas/acuerdos/pages/PageAcuerdoVer.vue')
       },      
       {
         path:       '/pedidos/crear',
         name:       'crearPedido',
-        props:      { tipo: TIPO_ACUERDO.PEDIDO },
+        props:      route => ({ tipo: TIPO_ACUERDO.PEDIDO, terceroId: route.params.terceroId }),
         component:  () => import('src/areas/acuerdos/pages/PageAcuerdoCrear.vue'),
       },      
     ],

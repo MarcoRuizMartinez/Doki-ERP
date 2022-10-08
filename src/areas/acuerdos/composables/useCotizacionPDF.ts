@@ -20,7 +20,6 @@ export function useCotizacionPDF()
 {
   const { notify          } = useQuasar()
   let aviso   : Function
-  console.log("D")
   let quote   : IAcuerdo    = new Acuerdo( TIPO_ACUERDO.COTIZACION )
   let algunGrupoConSubTotal = false
   const pdf   : jsPDF       = new jsPDF('p','px')

@@ -78,10 +78,14 @@ export function useApiDolibarr()
     {
       metodo                  = "post"
       if(accion               === "crear-lineas")
-        endPoint              += "/" + id + "/lines" 
+        endPoint              += "/" + id + "/lines"
       else 
-      if(accion               === "crear-linea")
-        endPoint              += "/" + id + "/line"               
+      if(accion               === "crear-linea"){
+        if(tipo               === "cotización")
+          endPoint            += "/" + id + "/line"
+        if(tipo               === "pedido")
+          endPoint            += "/" + id + "/lines"          
+      }
     }
     else if(accion.includes("editar"))
     {

@@ -410,14 +410,28 @@ export class Acuerdo implements IAcuerdo
   get esEstadoFacturado   ():boolean { return this.estado === ESTADO_CTZ.FACTURADO    }
   // * ///////////////////////////////////////////////////////////////////////////////  Icono
   get estadoIcono(): string {
-    let valor :string         =   this.estado == ESTADO_CTZ.NO_GUARDADO ? "mdi-eraser-variant"
+    let icono : string        = ""
+    if( this.esCotizacion ){
+      icono                   =   this.estado == ESTADO_CTZ.NO_GUARDADO ? "mdi-eraser-variant"
                                 : this.estado == ESTADO_CTZ.BORRADOR    ? "mdi-circle-edit-outline"
                                 : this.estado == ESTADO_CTZ.COTIZADO    ? "mdi-notebook-check"
                                 : this.estado == ESTADO_CTZ.APROBADO    ? "mdi-check-decagram"
                                 : this.estado == ESTADO_CTZ.RECHAZADO   ? "mdi-close-circle"
                                 : this.estado == ESTADO_CTZ.FACTURADO   ? "mdi-lock-check"
                                 : ""
-    return valor
+    }
+    else
+    if( this.esPedido ){
+      icono                   =   this.estado == ESTADO_PED.NO_GUARDADO ? "mdi-eraser-variant"
+                                : this.estado == ESTADO_PED.CANCELADO   ? "mdi-close-circle"
+                                : this.estado == ESTADO_PED.BORRADOR    ? "mdi-circle-edit-outline"
+                                : this.estado == ESTADO_PED.VALIDADO    ? "mdi-check-bold"
+                                : this.estado == ESTADO_PED.PROCESO     ? "mdi-airplane-takeoff"
+                                : this.estado == ESTADO_PED.ENTREGADO   ? "mdi-truck-check"
+                                : ""
+    }
+    
+    return icono
   }
 
   get puedeCrearSubtotal():boolean{
@@ -620,7 +634,6 @@ export class Acuerdo implements IAcuerdo
     ctzApi.fechaFinValidez    = getDateToStr( ctzApi.fechaFinValidez  )
     ctzApi.fechaEntrega       = getDateToStr( ctzApi.fechaEntrega, "UTC")
 
-    console.log("E")
     let ctz                   = Object.assign( new Acuerdo( tipo ), ctzApi ) as IAcuerdo
         ctz.esNuevo           = false
         ctz.tipo              = tipo 

@@ -21,6 +21,7 @@
     />           
     <!-- //* ///////////////////////////////////////////////// Fecha Fin de validez -->
     <fecha-vencimiento
+      v-if                    ="acuerdo.esCotizacion"
       v-model                 ="acuerdo.fechaFinValidez"
       class                   ="col-md-6 col-12"
       :dias                   ="acuerdo.diasValidez"

@@ -87,7 +87,6 @@ export function servicesAcuerdos()
       }
       else
       {
-        console.log("G")
         resolver( new Acuerdo( tipo ) )
       }
     })

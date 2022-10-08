@@ -180,6 +180,7 @@ export function useControlProductos()
 
     if(!!index)
       aviso("positive", "Nuevo grupo creado")
+    if(!acuerdo.value.id) return
     await pausa(200) // Para darle tiempo que el virtual DOM genere el nuevo espacio y calcule el nuevo alto del documento
     //console.log(Maco"window.scrollTo")
     window.scrollTo({ top: document.body.scrollHeight,  behavior: 'smooth'})

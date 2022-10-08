@@ -50,7 +50,7 @@
           >
           <span class       ="q-ma-none q-pa-none op20 titulo-lg">
             {{ !!acuerdo.titulo ? acuerdo.titulo : '. . . .'}}
-            <Tooltip label  ="Titulo cotizacion"/>
+            <Tooltip :label ="`Titulo de ${acuerdo.tipo}`"/>
           </span>
           <q-popup-edit     auto-save fit
             v-model         ="acuerdo.titulo"
@@ -62,8 +62,8 @@
             <!-- //* ////////////////////////////////////////////////// Editar Titulo Cotizacion -->
             <q-input        dense filled
               v-model       ="scope.value"
-              label         ="Títulos de cotizacion"
               class         ="col-12"
+              :label        ="`Titulo de ${acuerdo.tipo}`"
               @keyup.enter  ="scope.set"
             />
           </q-popup-edit> 
@@ -75,7 +75,7 @@
           :class            ="esMobil ? 'q-ma-none q-pa-none' : 'q-mt-sm'"
           >
           <a
-            :href           ="urlDolibarr + '/comm/propal/card.php?id=' + acuerdo.id"
+            :href           ="urlDolibarr + acuerdo.id"
             target          ="_blank"
             >
             {{acuerdo.ref}}
@@ -145,10 +145,14 @@
   const { acuerdo           } = storeToRefs( useStoreAcuerdo() )  
   const { esMobil, aviso    } = useTools()
   const { setTitulo         } = servicesAcuerdos()
-  const   urlDolibarr         = process.env.URL_DOLIBARR
   const   imgIcono            = computed(()=>   acuerdo.value.esCotizacion  ? "iconoCotizacion.webp"
                                               : acuerdo.value.esPedido      ? "iconoPedido.webp"
                                               : "")
+  const   urlDolibarr         = computed(()=> process.env.URL_DOLIBARR +
+                                              ( acuerdo.value.esCotizacion   ? "/comm/propal/card.php?id="
+                                              : acuerdo.value.esPedido      ? "/commande/card.php?id="
+                                              : "")
+                                        )
 
   const emit                  = defineEmits(["click", "recargar"])
 

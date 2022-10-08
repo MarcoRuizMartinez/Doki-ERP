@@ -4,12 +4,11 @@
     @click                  ="generarPDFAcuerdo"
   />
   <barra  class             ="row col-12 justify-end gap-sm">
-    {{tipo}} {{acuerdo.tipo}}
     <q-btn
       v-bind                ="btnBaseMd"
-      :label                ="`Crear ${acuerdo.tipo}`"
       color                 ="positive"
       icon                  ="mdi-plus"
+      :label                ="`Crear ${acuerdo.tipo}`"
       :loading              ="loading.crear"
       :disable              ="!formularioOk"
       @click                ="crearAcuerdoEnControl"
@@ -88,38 +87,37 @@
     tipo:       { required: true, type: String as PropType< TTipoAcuerdo > },
   })
   const { terceroId, tipo }   = toRefs(props)
-  
-  
-  watch(tipo, (newTipo)=> {
-      console.log("A")
-      acuerdo.value           = new Acuerdo( tipo.value )
-      console.log("acuerdo.value.tipo: ", acuerdo.value.tipo);
-      crearGrupoSiNoHay()
-      useTitle(`${acuerdo.value.emoji} Crear ${acuerdo.value.tipo}`)
-    }
-    ,{ immediate: true }
-  )
 
-  onMounted(()=>{    
-    const terceroTem        = Object.assign( acuerdo.value.tercero, {} )
-    //acuerdo.value           = new Acuerdo( tipo.value )    
-    if(!!terceroId.value)
-      acuerdo.value.tercero = terceroTem
-    crearGrupoSiNoHay()
-  })
+  onMounted(  iniciar)  
+  watch(tipo, iniciar, { immediate: true })
+  
+  function iniciar()
+  {
+    asignarDatosAcuerdoTercero()
+    crearGrupoSiNoHay()    
+    useTitle(`${acuerdo.value.emoji} Crear ${acuerdo.value.tipo}`) // Titulo HTML
+
+    function asignarDatosAcuerdoTercero() {
+      const terceroTem          = Object.assign( acuerdo.value.tercero, {} )
+      acuerdo.value             = new Acuerdo( tipo.value )
+      if(!!terceroId.value)
+          acuerdo.value.tercero = terceroTem
+    }
+
+    function crearGrupoSiNoHay() {
+      if(!acuerdo.value.proGrupos.length)
+      crearNuevoGrupo()
+    }    
+  }
 
   onUnmounted(()=>{
-    console.log("onUnmounted vista crear")
-    if(acuerdoCreado) return
-    console.log("B")
-    acuerdo.value             = new Acuerdo( tipo.value  )
+    //if(acuerdoCreado) return
+    //console.log("B")
+    //acuerdo.value             = new Acuerdo( tipo.value  )
   })
 
 
-  function crearGrupoSiNoHay(){
-    if(!acuerdo.value.proGrupos.length)
-      crearNuevoGrupo()
-  }
+
   
 
   //* /////////////////////////////////////////////////////////////// Provide Super minimizado
@@ -143,7 +141,7 @@
     const comercialOk         = acuerdo.value.comercial.id > 0
     const origenOk            = !!acuerdo.value.origenContacto.id
     const pagoOk              = !!acuerdo.value.condicionPago.id
-    const vencimientoOk       = !!acuerdo.value.fechaFinValidezCorta
+    const vencimientoOk       = !!acuerdo.value.fechaFinValidezCorta || !acuerdo.value.esCotizacion
 
     return terceroOk && ( contactoOk || ( esPersona && !esEspecial ) ) && comercialOk && origenOk && vencimientoOk && pagoOk
   })
@@ -155,8 +153,7 @@
     }
   }
 
-  async function crearAcuerdoEnControl()
-  {
-    acuerdoCreado             = await crearAcuerdo( usuario.value.id )
+  async function crearAcuerdoEnControl(){
+    acuerdoCreado               = await crearAcuerdo( usuario.value.id )
   }
 </script>

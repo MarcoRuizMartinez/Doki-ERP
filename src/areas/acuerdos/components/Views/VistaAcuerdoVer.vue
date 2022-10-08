@@ -19,7 +19,7 @@
   <condiciones
     class                   ="col-md-4 col-12"
     height-card             ="220px"
-  />
+  /> 
   <totales
     class                   ="col-md-4 col-12"
     height-card             ="220px"
@@ -48,22 +48,20 @@
   //* ///////////////////////////////////////////////////////////////////////////////// Core
   import {  ref,
             watch,
-            toRefs,
+            //toRefs,
             provide,
             PropType,
-            onMounted,
-            onUnmounted,
                                   } from "vue"
   import {  useTitle              } from "@vueuse/core"                                  
   //* ///////////////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs           } from 'pinia'    
   import {  useStoreAcuerdo       } from 'src/stores/acuerdo'
   //* ///////////////////////////////////////////////////////////////////////////////// Modelos
-  import {  Acuerdo, TIPO_ACUERDO } from "../../models/Acuerdo"  
+  //import {  Acuerdo, TIPO_ACUERDO } from "../../models/Acuerdo"  
   //* ///////////////////////////////////////////////////////////////////////////////// Componibles
   import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"
   import {  useCotizacionPDF      } from "src/areas/acuerdos/composables/useCotizacionPDF"
-  import {  useControlProductos   } from "src/areas/acuerdos/controllers/ControlLineasProductos"  
+  //import {  useControlProductos   } from "src/areas/acuerdos/controllers/ControlLineasProductos"  
   import {  TTipoAcuerdo          } from "src/areas/acuerdos/models/ConstantesAcuerdos"
   //* ///////////////////////////////////////////////////////////////////////////////// Componentes
   import    visorPdf                from "components/utilidades/VisorPDF.vue"
@@ -74,7 +72,6 @@
   import    condiciones             from "src/areas/acuerdos/components/Condiciones.vue"
   import    productos               from "src/areas/acuerdos/components/ProductosAcuerdo.vue"
   import    documentos              from "components/archivos/ModuloArchivos.vue"
-  
 
   const { acuerdo,
           loading           } = storeToRefs( useStoreAcuerdo() )
@@ -90,44 +87,21 @@
   const minimizadoTodo        = ref< boolean  >(false)
   const srcPDF                = ref< string   >("")
   const ventanaPDF            = ref< boolean  >(false)
-  const { buscarAcuerdo     } = useControlAcuerdo()
-  const { copiarProductos,
-          deGruposAProductos }= useControlProductos()
+
   const props                 = defineProps({
     id:   { required: true, type: String },
     tipo: { required: true, type: String as PropType< TTipoAcuerdo > },
   })
 
-  const { id, tipo }          = toRefs( props )
-  
+  //const { id, tipo }          = toRefs( props )  
 
-  watch(()=>acuerdo.value.id, ()=> useTitle(`${acuerdo.value.emoji} ${acuerdo.value.title}`) )
+  watch ( [()=>acuerdo.value.id, ()=>acuerdo.value.tipo],
+          ()=> useTitle(`${acuerdo.value.emoji} ${acuerdo.value.title}`)
+        )
 
   provide('superminimizado', minimizadoTodo)
   
 
-  onMounted   ( iniciar )
-  //onUnmounted ( ()=>{ console.log("c"); acuerdo.value  = new Acuerdo() })   
-  
-
-  async function iniciar()
-  {
-    const gruposBoceto              = Object.assign( acuerdo.value.proGrupos, {} )
-    await buscarAcuerdo( tipo.value, id.value )
-    copiarProductosDeBoceto()
-
-    async function copiarProductosDeBoceto()
-    {
-      if(!!gruposBoceto.length){
-        acuerdo.value.proGrupos     = gruposBoceto
-        await deGruposAProductos()
-        const ok                    = await copiarProductos( acuerdo.value.productos )
-        if(ok)
-          await buscarAcuerdo( tipo.value, id.value )
-      }
-    }
-  }
-  
   async function generarPDFCotizacion()
   {
     if(acuerdo.value.esCotizacion){

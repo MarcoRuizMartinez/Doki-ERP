@@ -71,6 +71,8 @@ export function useControlAcuerdo()
       return false
     }
     const id                  = typeof data === "number" ? data : 0
+    acuerdo.value.id          = id
+
     //* ////////////////////  Creando Contacto si corresponde
     if(!!acuerdo.value.contacto.id)
     {
@@ -85,6 +87,7 @@ export function useControlAcuerdo()
         aviso("negative", "Error al asignar contacto")
       }
     }
+    
     //* ////////////////////  Notificando y redireccionando
     aviso("positive", `Creación de ${acuerdo.value.tipo} 👌🏼`)
     loading.value.crear       = false

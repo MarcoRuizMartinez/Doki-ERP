@@ -10,26 +10,28 @@
     >
     <template                   #barra>
       <!-- //* ///////////////  Crear Pedido  -->
-      <q-btn
-        v-if                    ="true"
+      <q-btn        
         v-bind                  ="btnBaseSm"
         label                   ="Pedido"
         color                   ="positive"
-        icon                    ="mdi-plus"
-        target                  ="_blank"
+        icon                    ="mdi-cart-plus"        
         :disable                ="modo == 'buscando'"
-        :href                   ="urlDolibarr + `/commande/card.php?socid=${terceroId}&action=create`"
+        @click                  ="crearAcuerdo('crearPedido')"        
         >
+        <!--
+          target                  ="_blank"
+          :href                   ="urlDolibarr + `/commande/card.php?socid=${terceroId}&action=create`"
+        -->
         <Tooltip label          ="Crear pedido"/>
       </q-btn>
       <!-- //* ///////////////  Boton crear cotizacion  -->
       <q-btn
         v-bind                  ="btnBaseSm"
-        label                   ="Crear"
+        label                   ="Cotización"
         color                   ="positive"
-        icon                    ="mdi-format-list-text"
+        icon                    ="mdi-plus"
         :disable                ="modo == 'buscando'"
-        @click                  ="crearCotizacion"
+        @click                  ="crearAcuerdo('crearCotizacion')"        
       />
     </template>
     <q-table                    borbordered dense flat
@@ -62,13 +64,15 @@
           </span>
         </q-td>
       </template>
-<!--       <template #body="props">
+<!--
+      <template #body="props">
         <q-tr :props="props">
           <q-td key="nombre"    :props="props">
             <link-tercero       :tercero="( props.row as Tercero ) "/>
           </q-td>
         </q-tr>
-      </template> -->
+      </template>
+-->
     </q-table>
   </ventana>
 </template>
@@ -90,9 +94,8 @@
   //* /////////////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana                 from "components/utilidades/Ventana.vue"
   import    tooltipLineas           from "src/areas/acuerdos/components/Tooltips/TooltipLineas.vue"
-  import    tooltipAcuerdo          from "src/areas/acuerdos/components/Tooltips/TooltipAcuerdo.vue"
-    
-  const urlDolibarr           = process.env.URL_DOLIBARR
+  import    tooltipAcuerdo          from "src/areas/acuerdos/components/Tooltips/TooltipAcuerdo.vue"    
+
   const { getCotizaciones   } = servicesAcuerdos()
   const router                = useRouter()
   const modo                  = ref< ModosVentana >("esperando-busqueda")
@@ -111,15 +114,14 @@
 
   async function buscar()
   {
-    modo.value            = "buscando"
-    acuerdos.value        = await getCotizaciones( { idTercero: terceroId.value } )
-    modo.value            = !!acuerdos.value.length ? "normal" : "sin-resultados"
+    modo.value                = "buscando"
+    acuerdos.value            = await getCotizaciones( { idTercero: terceroId.value } )
+    modo.value                = !!acuerdos.value.length ? "normal" : "sin-resultados"
   }
 
-  function crearCotizacion(){
-    router.push({name: "crearCotizacion" , params: { terceroId: +terceroId.value }}  )
-  } 
-
+  function crearAcuerdo( ruta : string ){
+    router.push({name: ruta , params: { terceroId: +terceroId.value }}  )
+  }
 </script>
 <style>
 .fecha{
