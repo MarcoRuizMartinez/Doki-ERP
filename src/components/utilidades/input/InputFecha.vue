@@ -72,7 +72,8 @@
             watch
                             } from "vue"
   import {  date, debounce  } from 'quasar'         
-  import {  useTools        } from "src/useSimpleOk/useTools"                   
+  import {  useTools,
+            fechaValida     } from "src/useSimpleOk/useTools"
 
   const hoy                   = date.formatDate(Date.now(), 'YYYY/MM/DD')
   const desdeConFormato       = ref<string>("") // 'YYYY/MM/DD' 
@@ -108,7 +109,10 @@
   let   fechaTem        : Date 
   const input           = ref<any>({})
   const avisoRangoOut   = debounce (()=>aviso("negative", "Fecha fuera de rango","clock"), 300)
-  const emitir          = ()=> emit("update:model-value", fechaTem)
+  const emitir          = ()=> {
+    if(fechaValida(fechaTem))
+      emit("update:model-value", fechaTem)
+  }
   const getFechaLimpia  = ()=> typeof modelo.value === "string" ? modelo.value : ""
   
 

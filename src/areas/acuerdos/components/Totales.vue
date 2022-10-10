@@ -9,6 +9,7 @@
       class                 ="col-12 row">
       <!-- //* /////////////////////////////////////////////////////////////  Con Total -->
       <q-toggle             dense
+        v-if                ="acuerdo.esCotizacion"
         v-model             ="acuerdo.conTotal"
         label               ="Con Total"
         class               ="col-4"

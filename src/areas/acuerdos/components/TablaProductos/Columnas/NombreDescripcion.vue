@@ -1,6 +1,5 @@
 <template>
   <div
-    class               ="cursor-pointer"
     @click              ="emit('click')"
     >
     <span class         ="text-bold">{{linea.ref}}</span> -

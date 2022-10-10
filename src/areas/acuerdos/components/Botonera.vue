@@ -3,7 +3,7 @@
     <efecto-grupo efecto    ="Down">
       <!-- //* //////////////////////////////////////////////////////////  Boton PDF -->
       <q-btn
-        v-if                ="acuerdo.esEstadoValidado"
+        v-if                ="acuerdo.esEstadoValidado && acuerdo.esCotizacion"
         v-bind              ="btnBaseMd"
         color               ="primary"
         icon                ="mdi-pdf-box"

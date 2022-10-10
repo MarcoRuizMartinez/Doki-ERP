@@ -97,7 +97,7 @@
                               valor         = valor ?? ""
                               valor         = type.value === "tel" ? parseInt( valor.replace(/[ ]+/g, "") ).toString() : valor
                               valor         = valor == "NaN" ? "" : valor
-                              emit("update:modelValue", valor)
+                              emit("update:modelValue", formatear(valor))
                             }
                           })
 
@@ -198,9 +198,9 @@
     Notify.create({ type: "positive", message: label.value +  " copiado", position: "bottom" })
   }
 
-  function formatear()
+  function formatear( txt : string)
   {
-    let texto               = modelo.value
+    let texto               = txt
         texto               = uppercase.value               ? texto.toUpperCase()                         : texto
         texto               = uppercase.value && AZ09.value ? texto.replace(/[^A-Z ÑÁÉÍÓÚ&./0-9]+/g, "")  : texto
         texto               = uppercase.value && AZ.value   ? texto.replace(/[^A-Z ÑÁÉÍÓÚ]+/g, "")        : texto
@@ -209,8 +209,7 @@
         
         texto               = texto.replace(/\s+/g,' ')
         texto               = texto.trim()
-
-    modelo.value            = texto
+    return(texto)    
   }
 
   function validarEmail( email : string ) : boolean
@@ -221,7 +220,7 @@
 
   function onBlur()
   {
-    formatear()
+    modelo.value            = formatear(modelo.value)
     campoEnfocado.value     = false
     if(copiaModelo          !== modelo.value)
       emit('blur', modelo.value)

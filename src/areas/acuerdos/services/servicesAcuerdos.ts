@@ -199,15 +199,15 @@ export function servicesAcuerdos()
     })
   }
 
-  async function setFechaFinValidez( ctz_id : number, fecha : Date  ) : Promise< boolean >
+  async function setFechaFinValidez( ctz_id : number, fecha : Date, acuerdo : TTipoAcuerdo ) : Promise< boolean > // Solo para coctizaciones
   {
     let fechaMas12H   = date.addToDate  (fecha, { hours: 12 })
     let fechaToApi    = date.formatDate (fechaMas12H, 'YYYY-MM-DD HH:mm:ss')
-    let obj           = { id: ctz_id, fecha:  fechaToApi }
+    let obj           = { id: ctz_id, fecha:  fechaToApi, acuerdo:  acuerdo}
 
     return new Promise( async (resolver, rechazar ) =>
     {
-      let { ok      } = await miFetch( getURL("servicios", "cotizaciones"),
+      let { ok      } = await miFetch( getURL("servicios", "acuerdos"),
                                                     {
                                                       body:   getFormData(  "editarFechaValidez", obj ),
                                                       method: "POST"
@@ -218,14 +218,14 @@ export function servicesAcuerdos()
     })
   }
 
-  async function setFechaEntrega( ctz_id : number, fecha : Date  ) : Promise< boolean >
+  async function setFechaEntrega( acu_id : number, fecha : Date, acuerdo : TTipoAcuerdo ) : Promise< boolean >
   {
     let fechaToApi    = date.formatDate (fecha, 'YYYY-MM-DD')
-    let obj           = { id: ctz_id, fecha:  fechaToApi }
+    let obj           = { id: acu_id, fecha:  fechaToApi, acuerdo: acuerdo  }
 
     return new Promise( async (resolver, rechazar ) =>
     {
-      let { ok      } = await miFetch( getURL("servicios", "cotizaciones"),
+      let { ok      } = await miFetch( getURL("servicios", "acuerdos"),
                                                     {
                                                       body: getFormData(  "editarFechaEntrega", obj ),
                                                       method: "POST"
@@ -236,13 +236,13 @@ export function servicesAcuerdos()
     })
   }
 
-  async function setCondicionPago( ctz_id : number, valor : number  ) : Promise< boolean >
+  async function setCondicionPago( ctz_id : number, valor : number, acuerdo : TTipoAcuerdo ) : Promise< boolean >
   {
-    let obj           = { id: ctz_id, valor: valor }
+    let obj           = { id: ctz_id, valor: valor, acuerdo: acuerdo }
 
     return new Promise( async (resolver, rechazar ) =>
     {
-      let { ok      } = await miFetch( getURL("servicios", "cotizaciones"),
+      let { ok      } = await miFetch( getURL("servicios", "acuerdos"),
                                                     {
                                                       body: getFormData(  "editarCondicionPago", obj ),
                                                       method: "POST"
@@ -253,13 +253,13 @@ export function servicesAcuerdos()
     })
   }
 
-  async function setFormaPago( ctz_id : number, valor : number  ) : Promise< boolean >
+  async function setFormaPago( ctz_id : number, valor : number, acuerdo : TTipoAcuerdo ) : Promise< boolean >
   {
-    let obj           = { id: ctz_id, valor: valor }
+    let obj           = { id: ctz_id, valor: valor, acuerdo: acuerdo }
 
     return new Promise( async (resolver, rechazar ) =>
     {
-      let { ok      } = await miFetch( getURL("servicios", "cotizaciones"),
+      let { ok      } = await miFetch( getURL("servicios", "acuerdos"),
                                                     {
                                                       body: getFormData( "editarFormaPago", obj ),
                                                       method: "POST"
@@ -270,13 +270,13 @@ export function servicesAcuerdos()
     })
   }
 
-  async function setTerceroId( ctz_id : number, id : number  ) : Promise< boolean >
+  async function setTerceroId( ctz_id : number, id : number, acuerdo : TTipoAcuerdo ) : Promise< boolean >
   {
-    let obj           = { id: ctz_id, valor: id }
+    let obj           = { id: ctz_id, valor: id, acuerdo: acuerdo }
 
     return new Promise( async (resolver, rechazar ) =>
     {
-      let { ok      } = await miFetch( getURL("servicios", "cotizaciones"),
+      let { ok      } = await miFetch( getURL("servicios", "acuerdos"),
                                                     {
                                                       body: getFormData( "editarTerceroId", obj ),
                                                       method: "POST"
@@ -287,13 +287,13 @@ export function servicesAcuerdos()
     })
   }
 
-  async function setRefCliente( ctz_id : number, ref : string  ) : Promise< boolean >
+  async function setRefCliente( ctz_id : number, ref : string, acuerdo : TTipoAcuerdo ) : Promise< boolean >
   {
-    let obj           = { id: ctz_id, ref: ref }
+    let obj           = { id: ctz_id, ref: ref, acuerdo: acuerdo }
 
     return new Promise( async (resolver, rechazar ) =>
     {
-      let { ok      } = await miFetch( getURL("servicios", "cotizaciones"),
+      let { ok      } = await miFetch( getURL("servicios", "acuerdos"),
                                                     {
                                                       body: getFormData( "editarRefCliente", obj ),
                                                       method: "POST"
@@ -304,13 +304,13 @@ export function servicesAcuerdos()
     })
   }
 
-  async function setTitulo( ctz_id : number, titulo : string  ) : Promise< boolean >
+  async function setTitulo( ctz_id : number, titulo : string, acuerdo : TTipoAcuerdo ) : Promise< boolean >
   {
-    let obj           = { id: ctz_id, titulo: titulo }
+    let obj           = { id: ctz_id, titulo: titulo, acuerdo: acuerdo }
 
     return new Promise( async (resolver, rechazar ) =>
     {
-      let { ok      } = await miFetch( getURL("servicios", "cotizaciones"),
+      let { ok      } = await miFetch( getURL("servicios", "acuerdos"),
                                                     {
                                                       body: getFormData( "editarTitulo", obj ),
                                                       method: "POST"
@@ -321,13 +321,13 @@ export function servicesAcuerdos()
     })
   }
 
-  async function setAiu( ctz_id : number, valor : number, tipo : "aiu" | "aiuAdmin" | "aiuImpre" | "aiuUtili" ) : Promise< boolean >
+  async function setAiu( ctz_id : number, valor : number, tipo : "aiu" | "aiuAdmin" | "aiuImpre" | "aiuUtili", acuerdo : TTipoAcuerdo ) : Promise< boolean >
   {
-    let obj           = { id: ctz_id, valor: valor }
+    let obj           = { id: ctz_id, valor: valor, acuerdo: acuerdo }
 
     return new Promise( async (resolver, rechazar ) =>
     {
-      let { ok      } = await miFetch( getURL("servicios", "cotizaciones"),
+      let { ok      } = await miFetch( getURL("servicios", "acuerdos"),
                                                     {
                                                       body: getFormData( tipo, obj ),
                                                       method: "POST"
@@ -338,13 +338,13 @@ export function servicesAcuerdos()
     })
   }
 
-  async function setTotal( ctz_id : number, on : boolean) : Promise< boolean >
+  async function setTotal( ctz_id : number, on : boolean, acuerdo : TTipoAcuerdo ) : Promise< boolean >
   {
-    let obj           = { id: ctz_id, valor: +on }
+    let obj           = { id: ctz_id, valor: +on, acuerdo: acuerdo }
 
     return new Promise( async (resolver, rechazar ) =>
     {
-      let { ok      } = await miFetch( getURL("servicios", "cotizaciones"),
+      let { ok      } = await miFetch( getURL("servicios", "acuerdos"),
                                                     {
                                                       body: getFormData( "conTotal", obj ),
                                                       method: "POST"
@@ -355,13 +355,13 @@ export function servicesAcuerdos()
     })
   }
 
-  async function setConIVA( ctz_id : number, on : boolean) : Promise< boolean >
+  async function setConIVA( ctz_id : number, on : boolean, acuerdo : TTipoAcuerdo ) : Promise< boolean >
   {
-    let obj           = { id: ctz_id, valor: +on }
+    let obj           = { id: ctz_id, valor: +on, acuerdo: acuerdo }
 
     return new Promise( async (resolver, rechazar ) =>
     {
-      let { ok      } = await miFetch( getURL("servicios", "cotizaciones"),
+      let { ok      } = await miFetch( getURL("servicios", "acuerdos"),
                                                     {
                                                       body: getFormData( "conIVA", obj ),
                                                       method: "POST"
@@ -372,13 +372,13 @@ export function servicesAcuerdos()
     })
   }
 
-  async function setMetodoEntrega( ctz_id : number, valor : number  ) : Promise< boolean >
+  async function setMetodoEntrega( ctz_id : number, valor : number, acuerdo : TTipoAcuerdo ) : Promise< boolean >
   {
-    let obj           = { id: ctz_id, valor: valor }
+    let obj           = { id: ctz_id, valor: valor, acuerdo: acuerdo }
 
     return new Promise( async (resolver, rechazar ) =>
     {
-      let { ok      } = await miFetch( getURL("servicios", "cotizaciones"),
+      let { ok      } = await miFetch( getURL("servicios", "acuerdos"),
                                                     {
                                                       body: getFormData( "editarMetodoEntrega", obj ),
                                                       method: "POST"
@@ -390,14 +390,14 @@ export function servicesAcuerdos()
   }
 
 
-  async function ordenarLineas( ids : string, padreId : number  ) : Promise< boolean >
+  async function ordenarLineas( ids : string, padreId : number, acuerdo : TTipoAcuerdo ) : Promise< boolean >
   {
     if(!ids) return true
-    let obj           = { ids: ids, padreId: padreId }
+    let obj           = { ids: ids, padreId: padreId, acuerdo: acuerdo }
 
     return new Promise( async (resolver, rechazar ) =>
     {
-      let { ok      } = await miFetch( getURL("servicios", "cotizaciones"),
+      let { ok      } = await miFetch( getURL("servicios", "acuerdos"),
                                                     {
                                                       body:   getFormData( "ordenarLineas", obj ),
                                                       method: "POST"
@@ -409,13 +409,13 @@ export function servicesAcuerdos()
   }
 
 
-  async function setTiempoEntrega( ctz_id : number, valor : number  ) : Promise< boolean >
+  async function setTiempoEntrega( ctz_id : number, valor : number, acuerdo : TTipoAcuerdo ) : Promise< boolean >
   {
-        let obj           = { id: ctz_id, valor: valor }
+        let obj           = { id: ctz_id, valor: valor, acuerdo: acuerdo }
 
     return new Promise( async (resolver, rechazar ) =>
     {
-      let { ok      } = await miFetch( getURL("servicios", "cotizaciones"),
+      let { ok      } = await miFetch( getURL("servicios", "acuerdos"),
                                                     {
                                                       body:   getFormData( "editarTiempoEntrega", obj ),
                                                       method: "POST"
@@ -427,13 +427,13 @@ export function servicesAcuerdos()
   }
 
 
-  async function setOrigenContacto( ctz_id : number, valor : number  ) : Promise< boolean >
+  async function setOrigenContacto( ctz_id : number, valor : number, acuerdo : TTipoAcuerdo ) : Promise< boolean >
   {
-        let obj           = { id: ctz_id, valor: valor }
+        let obj           = { id: ctz_id, valor: valor, acuerdo: acuerdo }
 
     return new Promise( async (resolver, rechazar ) =>
     {
-      let { ok      } = await miFetch( getURL("servicios", "cotizaciones"),
+      let { ok      } = await miFetch( getURL("servicios", "acuerdos"),
                                                     {
                                                       body: getFormData( "editarOrigenContacto", obj ),
                                                       method: "POST"
@@ -444,13 +444,13 @@ export function servicesAcuerdos()
     })
   }
 
-  async function setComercial( ctz_id : number, comercial_id : number  ) : Promise< boolean >
+  async function setComercial( ctz_id : number, comercial_id : number, acuerdo : TTipoAcuerdo ) : Promise< boolean >
   {
-    let obj           = { id: ctz_id, valor: comercial_id }
+    let obj           = { id: ctz_id, valor: comercial_id, acuerdo: acuerdo }
 
     return new Promise( async (resolver, rechazar ) =>
     {
-      let { ok      } = await miFetch( getURL("servicios", "cotizaciones"),
+      let { ok      } = await miFetch( getURL("servicios", "acuerdos"),
                                                     {
                                                       body: getFormData( "editarComercial", obj ),
                                                       method: "POST"

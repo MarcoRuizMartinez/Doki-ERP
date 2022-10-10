@@ -54,9 +54,10 @@ export function useControlProductos()
 
   async function ordenarLineasEnDolibarr()
   {
+    if(acuerdo.value.productos.length < 2) return
     let ids = acuerdo.value.productos.map( p => p.lineaId ).join()
     if(!ids) return
-    let ok  = await ordenarLineas(ids, acuerdo.value.id )
+    let ok  = await ordenarLineas(ids, acuerdo.value.id, acuerdo.value.tipo)
     if(!ok && acuerdo.value.productos.length >= 1)
       aviso("negative", "Error al ordenar")
   }

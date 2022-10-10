@@ -178,11 +178,8 @@
       backgroundColor:      { type: String,   default: "rgb(255 255 255 / 94%)"   },
       menuVisible:          { type: Boolean,  default: false                      },
       scroll:               { type: Boolean,  default: false                      },
-      heightCard:
-      {
-        default:            'auto',
-        type:               [Number, String] as PropType<number | string>
-      },
+      heightCard:           { default: 'auto', type: [Number, String] as PropType<number | string>},
+      minHeightCard:        { default: 'auto', type: [Number, String] as PropType<number | string>},
       width:            
       {
         default:            0,
@@ -204,6 +201,7 @@
           height,
           minimizado,
           heightCard,
+          minHeightCard,
           classContenido,
           backgroundColor,
           paddingContenido,
@@ -215,7 +213,8 @@
   const altoFullScreen        = computed(() => hayMenu.value ? "87vh" : height.value )
   const backgroundColorVentana= computed(() => modo.value != "normal" ? "#FFF" : backgroundColor.value)
   const {  esMobil          } = useTools()
-  const estiloCard            = computed(() => !esMobil ? "height: " + heightCard.value + ";" : "")
+  const estiloCard            = computed(() =>  esMobil ? "" :
+                                                `height: ${heightCard.value}; min-height: ${minHeightCard.value};`)
   const alturaSpiner          = ref<number>(500)
 
   //* ///////////////////////////////////////////////////////// Funcionalidad de minimizado

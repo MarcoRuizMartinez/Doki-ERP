@@ -90,8 +90,10 @@
     modelo.value = modelValue.value
   //let   esVirgen                = true
 
-  watch( options,   ()=>
+  watch( options,   (n, o)=>
   {
+    if(!!n.length && n.length === o.length) return
+
     copiarOptionsToOpciones()
     setDefecto()
   })
@@ -133,7 +135,7 @@
 
   function setDefecto()
   {
-    if(!defecto.value) return
+    if(!defecto.value || (!!modelo.value && !!modelo.value.label )) return
     const opcionDefecto   = options.value.find( i => i.label == defecto.value)
     if(!!opcionDefecto)
       modelo.value        = opcionDefecto

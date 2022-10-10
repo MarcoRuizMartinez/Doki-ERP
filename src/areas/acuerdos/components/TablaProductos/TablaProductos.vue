@@ -34,6 +34,7 @@
           <!-- //* //////////////////////////////////////////////////////// Nombre-->
           <nombre-descripcion
             class               ="col"
+            :class              ="{'cursor-pointer' : acuerdo.esEstadoNoValidado}"
             :linea              ="(props.row as LineaAcuerdo)"
             @click              ="mostrarFormulario( props.row as LineaAcuerdo )"
           />
@@ -139,6 +140,7 @@
   ]
 
   function mostrarFormulario( linea : ILineaAcuerdo ){
+    if(acuerdo.value.esEstadoValidado) return
     mostrarFormularioLinea( linea, grupo.value )
   }
 

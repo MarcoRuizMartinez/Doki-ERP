@@ -158,7 +158,7 @@
 
   async function editarTitulo( titulo : string )
   {
-    let ok                    = await setTitulo( acuerdo.value.id, titulo )
+    let ok                    = await setTitulo( acuerdo.value.id, titulo, acuerdo.value.tipo )
     aviso("positive", "Titulo editado", "comment")
   }
 </script>

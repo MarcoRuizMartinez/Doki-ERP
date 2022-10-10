@@ -47,6 +47,8 @@
     async function copiarProductosDeBoceto()
     {
       if(
+        !acuerdo.value.proGrupos.length
+        &&
         !!gruposBoceto.length
         &&
         idCopiaAcuerdo              === acuerdo.value.id

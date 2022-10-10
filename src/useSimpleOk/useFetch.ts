@@ -50,8 +50,7 @@ export function useFetch()
                                   : await resultado.text()
         loadingBar.stop()
 
-        cargando              = false
-        //console.log("data: ", data);
+        cargando              = false        
         if(!!data)
         {
           if(Array.isArray(data) && data.length == 1 && !dataEsArray)
