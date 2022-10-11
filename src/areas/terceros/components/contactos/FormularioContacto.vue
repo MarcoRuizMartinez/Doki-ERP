@@ -183,6 +183,7 @@
 
 <script setup lang="ts">
   import {  ref,
+            Ref,
             toRefs,
             computed,
             PropType,
@@ -394,37 +395,34 @@
 
   async function vericarExisteEmpresa()
   {
-    estaCheckEmpresa.value      = "verificando"
-    let { ok : existe, data}    = await miFetch(  getURL( "listas", "varios"),
-                                                  {
-                                                    method: "POST",
-                                                    //body:   getFormData( "documentoExiste", { numero: modelo.value.numero } )
-                                                  },
-                                                  { mensaje: "buscar si existe numero de documento" }
-                                                )
-    let resultado : any         = data
-    if(existe && !!resultado && resultado.hasOwnProperty("vendedor") && !Array.isArray(resultado))
-    {
-      estaCheckEmpresa.value    = "alert"
-      let vendedor              = JSON.parse(resultado.vendedor)[0].name      
-    }
-    else
-      estaCheckEmpresa.value   = "check"
-
-    return existe
+    loco("nombreTerceroExiste", contacto.value.empresa, estaCheckEmpresa)
   }
 
-  async function loco( consulta : string, valor : string )
+  async function loco( consulta : string, valor : string, estado : Ref<EstadoVerificar> )
   {
+    estado.value                = "verificando"
     let { ok : existe, data}    = await miFetch(  getURL( "listas", "varios"),
                                                   {
                                                     method: "POST",
                                                     body:   getFormData( consulta, { valor } )
                                                   },
-                                                  { mensaje: "buscar si existe numero de documento" }
+                                                  { mensaje: "buscar si existe este cliente" }
                                                 )
+
     let resultado : any         = data
-    //if(existe && !!resultado && resultado.hasOwnProperty("vendedor") && !Array.isArray(resultado))
+    console.log("resultado: ", resultado, "existe", existe);
+    if(existe)
+    {
+      estaCheckEmpresa.value    = "alert"
+      //const vendedor              = JSON.parse(resultado.vendedor)[0].name      
+      //console.log("vendedor: ", vendedor);
+      //&& !!resultado && resultado.hasOwnProperty("vendedor")
+      // && !Array.isArray(resultado)
+    }
+    else
+      estaCheckEmpresa.value   = "check"
+
+    return existe
   }
   
   //* ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
