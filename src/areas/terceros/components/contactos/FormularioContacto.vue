@@ -205,11 +205,15 @@
   import    municipios        from "components/utilidades/select/SelectMunicipios.vue"
   import    inputText         from "src/components/utilidades/input/InputFormText.vue"
   import {  EstadoVerificar } from "src/models/TiposVarios"
+  import {  useFetch        } from "src/useSimpleOk/useFetch"
+  import {  getURL,
+            getFormData     } from "src/services/APIMaco"
 
   const { dialog            } = useQuasar()
   const { apiDolibarr       } = useApiDolibarr()
   const { permisos          } = storeToRefs( useStoreUser() )
   const { aviso             } = useTools()
+  const { miFetch           } = useFetch()
   const contacto              = ref<IContacto>(new Contacto())
   const cargando              = ref< boolean >(false)
   const formulario            = ref< any >()
@@ -390,7 +394,37 @@
 
   async function vericarExisteEmpresa()
   {
-    
+    estaCheckEmpresa.value      = "verificando"
+    let { ok : existe, data}    = await miFetch(  getURL( "listas", "varios"),
+                                                  {
+                                                    method: "POST",
+                                                    //body:   getFormData( "documentoExiste", { numero: modelo.value.numero } )
+                                                  },
+                                                  { mensaje: "buscar si existe numero de documento" }
+                                                )
+    let resultado : any         = data
+    if(existe && !!resultado && resultado.hasOwnProperty("vendedor") && !Array.isArray(resultado))
+    {
+      estaCheckEmpresa.value    = "alert"
+      let vendedor              = JSON.parse(resultado.vendedor)[0].name      
+    }
+    else
+      estaCheckEmpresa.value   = "check"
+
+    return existe
+  }
+
+  async function loco( consulta : string, valor : string )
+  {
+    let { ok : existe, data}    = await miFetch(  getURL( "listas", "varios"),
+                                                  {
+                                                    method: "POST",
+                                                    body:   getFormData( consulta, { valor } )
+                                                  },
+                                                  { mensaje: "buscar si existe numero de documento" }
+                                                )
+    let resultado : any         = data
+    //if(existe && !!resultado && resultado.hasOwnProperty("vendedor") && !Array.isArray(resultado))
   }
   
   //* ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
