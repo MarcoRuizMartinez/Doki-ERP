@@ -22,7 +22,7 @@
   /> 
   <totales
     class                   ="col-md-4 col-12"
-    min-height-card         ="220px"
+    height-card-min         ="220px"
   />
   <documentos               minimizado
     class                   ="col-md-4 col-12"

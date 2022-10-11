@@ -106,7 +106,7 @@
   const esNumero                = computed( () => modelo.value.tipo.codigo == TIPOS_DOCUMENTO.CEDULA_CIUDADANIA ||
                                                   modelo.value.tipo.codigo == TIPOS_DOCUMENTO.NIT               ||
                                                   modelo.value.tipo.codigo == TIPOS_DOCUMENTO.TARJETA_IDENTIDAD )
-  const estadoVerificar         = ref<EstadoVerificar>("off")  
+  const estadoVerificar         = ref<EstadoVerificar>("off")
 
   const modelTipo               = ref< ITipoDocumento[] >( [  ] )
   let   copiaNumero             : string
@@ -191,7 +191,7 @@
     return  !!tipoDocumento.value || "Por favor seleccione el tipo de documento"
   }
 
-  function validarNumero( numeroTxt : string )
+  function validarNumero( numeroTxt : string ) : boolean | string
   {
     let numero                  = parseInt( numeroTxt.replace(/[^/0-9]+/g, "") )
     let valido                  = true
@@ -252,7 +252,7 @@
     return  valido || mensaje
   }
 
-  function validarExisteNumero( numeroTxt : string )
+  function validarExisteNumero( numeroTxt : string ) : boolean | string
   {
     let valido                  = true
     let mensaje                 = ""

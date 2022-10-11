@@ -1,6 +1,6 @@
 <template>
   <div
-    class                     ="ventana transi"
+    class                     ="ventana transi no-scroll"
     :class                    ="maximizado ? classMaximizado : classRestaurado"
     >
     <q-card
@@ -90,7 +90,8 @@
         :class                ="  classContenido,
                                   { 'minimizado'  : minimizadoModel },
                                   { 'full-screen' : fullScreen      },
-                                  { 'scroll'      : scroll          }
+                                  { 'scroll'      : scroll          },
+                                  { 'q-mt-none'   : hayAcciones     }
                                 "
         :style                ="estiloCard"
         >  <!-- //?* /   :style                ="estiloAlto" :style="estiloCard" --> 
@@ -130,6 +131,15 @@
           </div>
         </div>
       </q-card-section>
+      <!-- //?* ////////////////////////////////////////////////////////////// SLOT Menu --> 
+      <q-card-actions
+        v-if                  ="hayAcciones"
+        class                 ="row no-wrap overflow-auto"        
+        align                 ="right"
+        >
+        <slot                 name="acciones">
+        </slot>
+      </q-card-actions>
       <!-- //?* ////////////////////////////////////////////////////////////// Cargando... spinner --> 
       <q-inner-loading
         :showing              ="cargando"
@@ -178,8 +188,9 @@
       backgroundColor:      { type: String,   default: "rgb(255 255 255 / 94%)"   },
       menuVisible:          { type: Boolean,  default: false                      },
       scroll:               { type: Boolean,  default: false                      },
-      heightCard:           { default: 'auto', type: [Number, String] as PropType<number | string>},
-      minHeightCard:        { default: 'auto', type: [Number, String] as PropType<number | string>},
+      heightCard:           { default: 'auto',  type: [Number, String] as PropType<number | string>},
+      heightCardMin:        { default: 'auto',  type: [Number, String] as PropType<number | string>},
+      heightCardMax:        { default: '',      type: [Number, String] as PropType<number | string>},
       width:            
       {
         default:            0,
@@ -201,7 +212,8 @@
           height,
           minimizado,
           heightCard,
-          minHeightCard,
+          heightCardMin,
+          heightCardMax,
           classContenido,
           backgroundColor,
           paddingContenido,
@@ -210,11 +222,16 @@
   const storeUser             = useStoreUser()
   const fondoBarra            = computed(() => "background-image: url('images/patrones/"  + storeUser.patron + "') !important;")
   const hayMenu               = computed(() => slots.hasOwnProperty('menu'))
+  const hayAcciones           = computed(() => slots.hasOwnProperty('acciones'))
   const altoFullScreen        = computed(() => hayMenu.value ? "87vh" : height.value )
   const backgroundColorVentana= computed(() => modo.value != "normal" ? "#FFF" : backgroundColor.value)
   const {  esMobil          } = useTools()
-  const estiloCard            = computed(() =>  esMobil ? "" :
-                                                `height: ${heightCard.value}; min-height: ${minHeightCard.value};`)
+  const estiloCard            = computed(() =>  esMobil ? "" : `
+                                                height:     ${heightCard.value};
+                                                min-height: ${heightCardMin.value};
+                                                max-height: ${heightCardMax.value};
+                                                `
+                                        )
   const alturaSpiner          = ref<number>(500)
 
   //* ///////////////////////////////////////////////////////// Funcionalidad de minimizado

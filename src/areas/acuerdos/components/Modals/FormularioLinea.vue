@@ -1,8 +1,9 @@
 <template>
-  <ventana                    cerrar
+  <ventana                    cerrar scroll
     :titulo                   ="`${linea.ref} - ${linea.nombre}`"
     icono                     ="mdi-package-variant-closed"
     class-contenido           ="row ancho-ventana q-col-gutter-sm justify-start"
+    height-card-max           ="75vh"
     :cargando                 ="loading.editarLinea || loading.borrarLinea"
     >
     <!-- //* ///////////////////////////////////////////////////////////// Referencia y nombre -->
@@ -135,33 +136,35 @@
         :readonly             ="acuerdo.esEstadoValidado"
       />
     </div>
-    <!-- //* ///////////////////////////////////////////////////////////// Boton Borrar -->
-    <!-- v-if                    ="acuerdo.esEstadoNoValidado" -->
-    <div
-      class                   ="col-6"
-      >
-      <q-btn                  flat
-        label                 ="Borrar"
-        class                 ="full-width"
-        color                 ="negative"
-        icon                  ="mdi-trash-can"
-        @click                ="confirmarBorrar"
-      />
-    </div>
-    <!-- //* ///////////////////////////////////////////////////////////// Boton Guardar -->
-    <!-- v-if                    ="acuerdo.estado <= ESTADO_CTZ.BORRADOR" -->
-    <div
-      class                   ="col-6"
-      >
-      <q-btn                  flat
-        label                 ="Guardar"
-        class                 ="full-width"
-        color                 ="positive"
-        icon                  ="mdi-content-save"
-        :disable              ="lineaVirgen"
-        @click                ="editarLinea( linea )"
-      />
-    </div>
+    <template #acciones>
+      <!-- //* ///////////////////////////////////////////////////////////// Boton Borrar -->
+      <!-- v-if                    ="acuerdo.esEstadoNoValidado" -->
+      <div
+        class                   ="col-6"
+        >
+        <q-btn                  flat
+          label                 ="Borrar"
+          class                 ="full-width"
+          color                 ="negative"
+          icon                  ="mdi-trash-can"
+          @click                ="confirmarBorrar"
+        />
+      </div>
+      <!-- //* ///////////////////////////////////////////////////////////// Boton Guardar -->
+      <!-- v-if                    ="acuerdo.estado <= ESTADO_CTZ.BORRADOR" -->
+      <div
+        class                   ="col-6"
+        >
+        <q-btn                  flat
+          label                 ="Guardar"
+          class                 ="full-width"
+          color                 ="positive"
+          icon                  ="mdi-content-save"
+          :disable              ="lineaVirgen"
+          @click                ="editarLinea( linea )"
+        />
+      </div>
+    </template>
   </ventana>
 </template>
 <script setup lang="ts">

@@ -62,6 +62,9 @@
         v-model                 ="contacto.empresa"
         class                   ="col-12"
         icon                    ="mdi-office-building"
+        :rules                  ="[ validarExisteEmpresa ]"
+        :estadoCheck            ="estaCheckEmpresa"
+        @blur                   ="vericarExisteEmpresa"
         :readonly               ="readonly"
       />
       <!-- //* //////////////   Cargo  -->
@@ -80,6 +83,7 @@
         type                    ="email"
         icon                    ="mdi-at"
         class                   ="col-md-8 col-12"
+        :estadoCheck            ="estaCheckEmail"
         :readonly               ="readonly"
       />
       <!-- //* //////////////   Telefono 1  -->
@@ -88,6 +92,7 @@
         label                   ="Celular"
         type                    ="tel"
         class                   ="col-md-4 col-12"
+        :estadoCheck            ="estaCheckCel"
         :readonly               ="readonly"
       />      
       <!-- //* //////////////   Telefono 2  -->
@@ -96,6 +101,7 @@
         label                   ="Teléfono"
         type                    ="tel"
         class                   ="col-md-4 col-7"
+        :estadoCheck            ="estaCheckTel"
         :readonly               ="readonly"
       />
       <!-- //* //////////////   Extensión  -->
@@ -198,6 +204,7 @@
   import    ventana           from "components/utilidades/Ventana.vue"
   import    municipios        from "components/utilidades/select/SelectMunicipios.vue"
   import    inputText         from "src/components/utilidades/input/InputFormText.vue"
+  import {  EstadoVerificar } from "src/models/TiposVarios"
 
   const { dialog            } = useQuasar()
   const { apiDolibarr       } = useApiDolibarr()
@@ -227,6 +234,10 @@
           esTerceroCtz      } = toRefs( props )
   const tipo                  = ref< "crear" | "ver" > ("ver")
   const readonly              = ref< boolean >( tipo.value == "ver" && !editando.value ? true : false )  
+  const estaCheckEmpresa      = ref<EstadoVerificar>("off")
+  const estaCheckCel          = ref<EstadoVerificar>("off")
+  const estaCheckTel          = ref<EstadoVerificar>("off")
+  const estaCheckEmail        = ref<EstadoVerificar>("off")
   const btnDisable            = computed(()=>{
     return  (
               tipo.value      == 'ver'
@@ -251,7 +262,7 @@
   //* ////////////////////////////////////////////////////////////////////////////////////// Validar
   async function validar()
   {
-    let validacionOk          = await formulario.value.validate()
+    const  validacionOk        = await formulario.value.validate()
     if(validacionOk)          onSubmit()  
   }
 
@@ -356,6 +367,31 @@
     { immediate: true }
   ) 
 
+
+  function validarExisteEmpresa( nombre : string ) : boolean | string
+  {
+    let valido                  = true
+    let mensaje                 = ""
+
+    if(estaCheckEmpresa.value   == "alert")
+    {
+      valido                    = false
+      mensaje                   = "El empresa ya existe"
+    }
+    else
+    if(estaCheckEmpresa.value   == "verificando" )
+    {
+      valido                    = false
+      mensaje                   = "Verificando si empresa ya existe"
+    }
+
+    return  valido || mensaje
+  }
+
+  async function vericarExisteEmpresa()
+  {
+    
+  }
   
   //* ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //* /////////////////////////////////////////////////////////////////////////////////////////////////// FUNCTION VARIAS
