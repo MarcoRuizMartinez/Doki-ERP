@@ -66,8 +66,8 @@ export const WYSIWYG_Limpio  = {
                       'size-5',
                     ]
                   },
-                  'removeFormat', 'viewsource'
-                ]           
+                  'removeFormat', 'viewsource', 'save'
+                ],                
               ]
 }
 

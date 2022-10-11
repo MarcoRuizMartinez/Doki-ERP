@@ -15,7 +15,7 @@ type AccionDolibarr           = "crear"         | "editar"        | "ver"       
                                 "close"         | "setinvoiced"   | "settodraft"    | "validate"
 //  | "crear-lineas"  |  |
 
-type ModuloDolibarr           = "" | "tercero" | "contacto" | "documento" | "cotización" | "pedido" | "entrega" | "factura" | "saber"
+type ModuloDolibarr           = "" | "tercero" | "contacto" | "documento" | "cotización" | "pedido" | "entrega" | "factura" | "saber" | "producto"
 type Metodo                   = "post" | "put" | "get" | "delete"
 
 export function useApiDolibarr()
@@ -52,6 +52,7 @@ export function useApiDolibarr()
       case "cotización":        endPoint = "proposals";           break;
       case "pedido":            endPoint = "orders";              break;
       case "saber":             endPoint = "knowledgemanagement"; break;
+      case "producto":          endPoint = "products";            break;
       default: break;
     }
 

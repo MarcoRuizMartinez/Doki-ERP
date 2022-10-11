@@ -1,6 +1,6 @@
 <template>
   <ventana                    cerrar
-    :titulo                   ="linea.ref + ' - ' + linea.nombre"
+    :titulo                   ="`${linea.ref} - ${linea.nombre}`"
     icono                     ="mdi-package-variant-closed"
     class-contenido           ="row ancho-ventana q-col-gutter-sm justify-start"
     :cargando                 ="loading.editarLinea || loading.borrarLinea"
@@ -106,7 +106,7 @@
             <td>{{ formatoPrecio(  aTotal )}}</td>
           </tr>
         </table>
-      </div>
+      </div> 
     </div>
     <!-- //* ///////////////////////////////////////////////////////////// Unidad -->
     <select-label-value       no-inmediato use-input
@@ -124,6 +124,14 @@
       <q-editor
         v-model               ="linea.descripcion"
         v-bind                ="WYSIWYG_Limpio"
+        :definitions          ="{
+          save: {
+            tip:              'Guardar descripción',
+            icon:             'mdi-content-save',
+            label:            'Guardar',
+            handler:          guardarDescripcion
+          }
+        }"        
         :readonly             ="acuerdo.esEstadoValidado"
       />
     </div>
@@ -171,7 +179,9 @@
   import {  WYSIWYG_Limpio      } from "src/useSimpleOk/useEstilos"
   import {  dexieUnidades       } from "src/services/useDexie"  
   import {  useControlProductos } from "src/areas/acuerdos/controllers/ControlLineasProductos"
-  import {  formatoPrecio       } from "src/useSimpleOk/useTools"
+  import {  useTools, 
+            formatoPrecio       } from "src/useSimpleOk/useTools"
+  import {  useApiDolibarr      } from "src/services/useApiDolibarr"  
   //* ////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana               from "components/utilidades/Ventana.vue"
   import    selectLabelValue      from "components/utilidades/select/SelectLabelValue.vue"
@@ -179,6 +189,7 @@
   import    inputNumber           from "components/utilidades/input/InputFormNumber.vue"
 
   const { dialog              } = useQuasar()
+  const { aviso               } = useTools()  
   const unidades                = dexieUnidades()
   /* const emit                    = defineEmits<{
     (e: 'update:model-value',   value: ILineaAcuerdo        ): void
@@ -196,7 +207,7 @@
   const { editarLinea,
           borrarLinea
                               } = useControlProductos()
-
+  const { apiDolibarr         } = useApiDolibarr()
   const duracion                = { duration: 300 }
   const aTotalConDescu          = useTransition( computed(()=> linea.value.totalConDescu  ),   )
   const aTotalSinDescu          = useTransition( computed(()=> linea.value.totalSinDescu  ),  duracion )
@@ -224,6 +235,12 @@
       //emit("cerrar")
       //emit("borrar", linea.value)
     //}
+  }
+
+  async function guardarDescripcion(){
+    if(linea.value.descripcion.length < 10 ) return
+    const { ok, data }        = await apiDolibarr("editar", "producto", { description: linea.value.descripcion }, linea.value.id )
+    if(ok)  aviso( "positive", "Descripción de producto modificada" )
   }
 
 

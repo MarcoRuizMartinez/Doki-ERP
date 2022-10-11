@@ -37,7 +37,8 @@
   onMounted   ( iniciar )  
 
   async function iniciar()
-  {
+  {    
+    console.log("iniciar: ", acuerdo.value.productos);  
     const gruposBoceto              = Object.assign( acuerdo.value.proGrupos, {} )
     const idCopiaAcuerdo            = acuerdo.value.id
     const tipoCopiaAcuerdo          = acuerdo.value.tipo
@@ -47,21 +48,21 @@
     async function copiarProductosDeBoceto()
     {
       if(
-        !acuerdo.value.proGrupos.length
-        &&
-        !!gruposBoceto.length
-        &&
-        idCopiaAcuerdo              === acuerdo.value.id
-        &&
-        tipoCopiaAcuerdo            === acuerdo.value.tipo
-      )
-      {
-        acuerdo.value.proGrupos     = gruposBoceto
-        await deGruposAProductos()
-        const ok                    = await copiarProductos( acuerdo.value.productos )
-        if(ok)
-          await buscarAcuerdo( tipo.value, id.value )
+          !acuerdo.value.productos.length
+          &&
+          !!gruposBoceto.length
+          &&
+          idCopiaAcuerdo              === acuerdo.value.id
+          &&
+          tipoCopiaAcuerdo            === acuerdo.value.tipo
+        )
+        {
+          acuerdo.value.proGrupos     = gruposBoceto
+          await deGruposAProductos()
+          const ok                    = await copiarProductos( acuerdo.value.productos )
+          if(ok)
+            await buscarAcuerdo( tipo.value, id.value )
+        }
       }
     }
-  }
-</script>
+  </script>
