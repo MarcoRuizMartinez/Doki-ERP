@@ -2,7 +2,7 @@
   <ventana                      minimizar
     class-contenido             ="column items-center"
     :titulo                     ="`Documentos (${archivos.length})`"
-    icono                       ="mdi-file-document-multiple"
+    icono                       ="mdi-attachment"
     size-icon-carga             ="6em"
     mensaje-sin-resultados      ="Sin documentos"
     icono-sin-resultados        ="mdi-file-document-multiple"
