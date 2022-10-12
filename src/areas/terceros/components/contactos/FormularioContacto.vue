@@ -62,10 +62,11 @@
         v-model                 ="contacto.empresa"
         class                   ="col-12"
         icon                    ="mdi-office-building"
-        :rules                  ="[ validarExisteEmpresa ]"
+        :rules                  ="[ validarExiste(estaCheckEmpresa) ]"
         :estadoCheck            ="estaCheckEmpresa"
-        @blur                   ="vericarExisteEmpresa"
         :readonly               ="readonly"
+        @alert                  ="mostrarClientesExistentes"
+        @blur                   ="vericarExisteEmpresa"
       />
       <!-- //* //////////////   Cargo  -->
       <input-text               AZ 
@@ -83,8 +84,10 @@
         type                    ="email"
         icon                    ="mdi-at"
         class                   ="col-md-8 col-12"
+        :rules                  ="[ validarExisteEmpresa ]"
         :estadoCheck            ="estaCheckEmail"
         :readonly               ="readonly"
+        @blur                   ="vericarExisteCorreo"
       />
       <!-- //* //////////////   Telefono 1  -->
       <input-text               copy
@@ -281,7 +284,7 @@
   }
 
   //* ////////////////////////////////////////////////////////////////////////////////////// Crear Contacto
-  async function crearContacto ()
+  async function crearContacto()
   {
     cargando.value            = true
   
@@ -373,32 +376,42 @@
   ) 
 
 
-  function validarExisteEmpresa( nombre : string ) : boolean | string
+  function validarExiste(estado : string ) : ( dd : any )=>boolean | string
   {
-    let valido                  = true
-    let mensaje                 = ""
+    return funcionValidar
 
-    if(estaCheckEmpresa.value   == "alert")
+    function funcionValidar( nombre : string ) : boolean | string
     {
-      valido                    = false
-      mensaje                   = "El empresa ya existe"
-    }
-    else
-    if(estaCheckEmpresa.value   == "verificando" )
-    {
-      valido                    = false
-      mensaje                   = "Verificando si empresa ya existe"
-    }
+      let valido                  = true
+      let mensaje                 = ""
 
-    return  valido || mensaje
+      if(estado   == "alert"){
+        valido                    = false
+        mensaje                   = "El empresa ya existe"
+      }
+      else
+      if(estado   == "verificando"){
+        valido                    = false
+        mensaje                   = "Verificando si empresa ya existe"
+      }
+
+      return  valido || mensaje
+    }
   }
 
-  async function vericarExisteEmpresa()
-  {
-    loco("nombreTerceroExiste", contacto.value.empresa, estaCheckEmpresa)
+
+
+  async function vericarExisteEmpresa(){
+    await vericarExiste("nombreTerceroExiste",      contacto.value.empresa, estaCheckEmpresa)
+    await vericarExiste("empresaExisteEnContacto",  contacto.value.empresa, estaCheckEmpresa)
   }
 
-  async function loco( consulta : string, valor : string, estado : Ref<EstadoVerificar> )
+  async function vericarExisteCorreo(){
+    await vericarExiste("emailTerceroExiste",       contacto.value.correo,  estaCheckEmail)
+    await vericarExiste("emailContactoExiste",      contacto.value.correo,  estaCheckEmail)
+  }
+
+  async function vericarExiste( consulta : string, valor : string, estado : Ref<EstadoVerificar> ) : Promise<boolean>
   {
     estado.value                = "verificando"
     let { ok : existe, data}    = await miFetch(  getURL( "listas", "varios"),
@@ -406,14 +419,19 @@
                                                     method: "POST",
                                                     body:   getFormData( consulta, { valor } )
                                                   },
-                                                  { mensaje: "buscar si existe este cliente" }
+                                                  { mensaje: "buscar si existe este cliente", dataEsArray: true }
                                                 )
 
-    let resultado : any         = data
-    console.log("resultado: ", resultado, "existe", existe);
-    if(existe)
+    const resultado : any[]     = Array.isArray(data) ? data : [] 
+    if(existe && !!resultado.length)
     {
+      console.log("resultado: ", resultado);
       estaCheckEmpresa.value    = "alert"
+      const msj =   resultado.length === 1
+                  ? "Hay un cliente con estos datos"
+                  : `Hay ${resultado.length} clientes con estos datos`
+      aviso( "negative", msj, "account", 3000, [ { label: 'Ver detalles', color: 'white', handler:  mostrarClientesExistentes } ] )
+
       //const vendedor              = JSON.parse(resultado.vendedor)[0].name      
       //console.log("vendedor: ", vendedor);
       //&& !!resultado && resultado.hasOwnProperty("vendedor")
@@ -423,6 +441,11 @@
       estaCheckEmpresa.value   = "check"
 
     return existe
+  }
+
+  function mostrarClientesExistentes()
+  {
+    aviso( "positive", "Alerta brutal", "account" )
   }
   
   //* ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

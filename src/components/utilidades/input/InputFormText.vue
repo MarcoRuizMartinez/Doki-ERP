@@ -25,11 +25,14 @@
       <q-icon :name ="icon" />
     </template>
     <template #after >
-      <q-icon
+      <q-btn        dense flat 
         v-if        ="estadoCheck == 'check' || estadoCheck == 'alert' && !readonly && !campoEnfocado"
         class       ="transi"
-        :name       ="estadoCheck == 'check' ? 'mdi-check-circle'   : 'mdi-alert' "
+        padding     ="2px"
+        :class      ="{'cursor-inherit' : !(estadoCheck == 'alert')}"
         :color      ="estadoCheck == 'check' ? 'positive'           : 'warning'"
+        :icon       ="estadoCheck == 'check' ? 'mdi-check-circle'   : 'mdi-alert'"
+        @click      ="()=>{if(estadoCheck == 'alert') emit('alert')}"
       />
       <q-btn        round dense flat
         v-else-if   ="readonly && copy"
@@ -67,17 +70,18 @@
       sinEspacios:{ default:  false,  type: Boolean             },
       copy:       { default:  false,  type: Boolean             },
       alerta:     { default:  false,  type: [Boolean, String]   },
+      fnAlert:    { default:  ()=>{}, type: Function            },
       AZ09:       { default:  false,  type: Boolean             },
       AZ:         { default:  false,  type: Boolean             },
       loading:    { default:  false,  type: Boolean             },
       maxlength:  {                   type: [String, Number]    },
       rules:      { default:  [],     type: Array  as PropType< ValidationRule[] > },
       estadoCheck:{ default:  "off",  type: String as PropType< EstadoVerificar > },
-      type:       { default:  "text", type: String as PropType < "text" | "email" | "tel" >}
+      type:       { default:  "text", type: String as PropType < "text" | "email" | "tel" >},
     }
   )
 
-  const emit            = defineEmits(["update:modelValue", "blur", "clear"])
+  const emit            = defineEmits(["update:modelValue", "blur", "clear", "alert"])
 
   const {
           modelValue,

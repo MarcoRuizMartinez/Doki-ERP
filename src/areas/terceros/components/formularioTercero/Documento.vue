@@ -384,9 +384,9 @@
         position:               "top",
         timeout:                5000,
         message:                "Este tercero ya ha sido creado por " + vendedor,
-          actions: [
-            { label: 'Ir a tercero', color: 'white', handler: () => { router.push("/tercero/" + resultado.id ) } }
-          ]
+        actions: [
+          { label: 'Ir a tercero', color: 'white', handler: () => { router.push("/tercero/" + resultado.id ) } }
+        ]
       })
     }
     else
