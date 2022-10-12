@@ -52,7 +52,7 @@
   </q-select>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" inherit-attrs="true">
   import {  computed,
             ref,
             toRefs,
@@ -349,12 +349,4 @@
     emit("clear")
   }
 
-</script>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-
-export default defineComponent({
-  inheritAttrs: true,
-})
 </script>

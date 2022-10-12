@@ -37,8 +37,7 @@
   onMounted   ( iniciar )  
 
   async function iniciar()
-  {    
-    console.log("iniciar: ", acuerdo.value.productos);  
+  {
     const gruposBoceto              = Object.assign( acuerdo.value.proGrupos, {} )
     const idCopiaAcuerdo            = acuerdo.value.id
     const tipoCopiaAcuerdo          = acuerdo.value.tipo

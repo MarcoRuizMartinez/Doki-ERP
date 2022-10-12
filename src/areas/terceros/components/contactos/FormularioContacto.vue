@@ -62,7 +62,7 @@
         v-model                 ="contacto.empresa"
         class                   ="col-12"
         icon                    ="mdi-office-building"
-        :rules                  ="[ validarExiste(estaCheckEmpresa) ]"
+        :rules                  ="[ validarExisteEmpresa ]"
         :estadoCheck            ="estaCheckEmpresa"
         :readonly               ="readonly"
         @alert                  ="mostrarClientesExistentes"
@@ -84,9 +84,10 @@
         type                    ="email"
         icon                    ="mdi-at"
         class                   ="col-md-8 col-12"
-        :rules                  ="[ validarExiste(estaCheckEmail) ]"
+        :rules                  ="[ validarExisteEmail ]"
         :estadoCheck            ="estaCheckEmail"
         :readonly               ="readonly"
+        @alert                  ="mostrarClientesExistentes"
         @blur                   ="vericarExisteCorreo"
       />
       <!-- //* //////////////   Telefono 1  -->
@@ -95,8 +96,11 @@
         label                   ="Celular"
         type                    ="tel"
         class                   ="col-md-4 col-12"
+        :rules                  ="[ validarExisteCel ]"
         :estadoCheck            ="estaCheckCel"
         :readonly               ="readonly"
+        @alert                  ="mostrarClientesExistentes"
+        @blur                   ="vericarExisteCel"        
       />      
       <!-- //* //////////////   Telefono 2  -->
       <input-text               copy
@@ -104,8 +108,11 @@
         label                   ="Teléfono"
         type                    ="tel"
         class                   ="col-md-4 col-7"
+        :rules                  ="[ validarExisteTel ]"
         :estadoCheck            ="estaCheckTel"
         :readonly               ="readonly"
+        @alert                  ="mostrarClientesExistentes"
+        @blur                   ="vericarExisteTel"                
       />
       <!-- //* //////////////   Extensión  -->
       <input-text
@@ -181,10 +188,32 @@
         type                    ="submit"
       />
     </q-form>
+    <!-- //* ///////////////////////////////////////////////////////////// Modal Buscar productos -->
+    <q-dialog
+      v-model                   ="ventanaClienteExiste"      
+      transition-show           ="slide-up"
+      transition-hide           ="slide-down"
+      >
+      <ventana                  cerrar scroll
+        titulo                  ="Terceros registrados"
+        icono                   ="mdi-account-remove"
+        padding-contenido       ="0"
+        width                   ="380px"
+        >
+        <q-table                borbordered dense flat
+          class                 ="fit tabla-maco"
+          row-key               ="id"
+          :rows                 ="clientesExistentes"
+          :columns              ="[ { name: 'nombre', label: 'Tercero', field: 'nombre', align: 'left' }, { name: 'vendedores', label: 'Asesores', field: 'vendedores'}]"
+          >
+      </q-table>        
+      </ventana>    
+    </q-dialog>
   </ventana>
 </template>
-
 <script setup lang="ts">
+//class-contenido         ="row items-start content-start justify-start q-col-gutter-md q-mt-none"
+
   import {  ref,
             Ref,
             toRefs,
@@ -198,6 +227,7 @@
   import {  useApiDolibarr  } from "src/services/useApiDolibarr"
   import {  useStoreUser    } from 'src/stores/user'
   import {  useTools,
+            esCorreoFamoso,
             mayusculasPrimeraLetraAll
                             } from "src/useSimpleOk/useTools"
   import {  IMunicipio,
@@ -220,7 +250,9 @@
   const { miFetch           } = useFetch()
   const contacto              = ref<IContacto>(new Contacto())
   const cargando              = ref< boolean >(false)
+  const ventanaClienteExiste  = ref< boolean >(false)  
   const formulario            = ref< any >()
+  const clientesExistentes    = ref< any[] >()
   const urlDolibarr           = process.env.URL_DOLIBARR
   let   copiaContacto         = ""
 
@@ -242,10 +274,6 @@
           esTerceroCtz      } = toRefs( props )
   const tipo                  = ref< "crear" | "ver" > ("ver")
   const readonly              = ref< boolean >( tipo.value == "ver" && !editando.value ? true : false )  
-  const estaCheckEmpresa      = ref<EstadoVerificar>("off")
-  const estaCheckCel          = ref<EstadoVerificar>("off")
-  const estaCheckTel          = ref<EstadoVerificar>("off")
-  const estaCheckEmail        = ref<EstadoVerificar>("off")
   const btnDisable            = computed(()=>{
     return  (
               tipo.value      == 'ver'
@@ -376,76 +404,107 @@
   ) 
 
 
-  function validarExiste(estado : string ) : ( dd : any )=>boolean | string
+
+  const estaCheckEmpresa      = ref<EstadoVerificar>("off")
+  const estaCheckEmail        = ref<EstadoVerificar>("off")  
+  const estaCheckCel          = ref<EstadoVerificar>("off")
+  const estaCheckTel          = ref<EstadoVerificar>("off")
+
+  const validarExisteEmpresa  = () => validarExiste(estaCheckEmpresa)
+  const validarExisteEmail    = () => validarExiste(estaCheckEmail)
+  const validarExisteCel      = () => validarExiste(estaCheckCel)
+  const validarExisteTel      = () => validarExiste(estaCheckTel)
+
+  function validarExiste( estado : Ref< EstadoVerificar >) : boolean | string
   {
-    return funcionValidar
+    if(!esTerceroCtz.value) return true
+    let valido                  = true
+    let mensaje                 = ""
 
-    function funcionValidar( nombre : string ) : boolean | string
-    {
-      let valido                  = true
-      let mensaje                 = ""
-
-      if(estado   == "alert"){
-        valido                    = false
-        mensaje                   = "El empresa ya existe"
-      }
-      else
-      if(estado   == "verificando"){
-        valido                    = false
-        mensaje                   = "Verificando si empresa ya existe"
-      }
-
-      return  valido || mensaje
+    if(estado.value             == "alert"){
+      valido                    = false
+      mensaje                   = "El empresa ya existe"
     }
+    else
+    if(estado.value             == "verificando"){
+      valido                    = false
+      mensaje                   = "Verificando si empresa ya existe"
+    }
+
+    return  valido || mensaje
   }
 
-
-
   async function vericarExisteEmpresa(){
-    await vericarExiste("nombreTerceroExiste",      contacto.value.empresa, estaCheckEmpresa)
-    await vericarExiste("empresaExisteEnContacto",  contacto.value.empresa, estaCheckEmpresa)
+    let existe    = await vericarExiste("nombreTerceroExiste",        contacto.value.empresa, estaCheckEmpresa)
+    if(existe)    return
+    existe        = await vericarExiste("empresaExisteEnContacto",    contacto.value.empresa, estaCheckEmpresa)
+  }
+  async function vericarExisteCel(){
+    let existe    = await vericarExiste("telefonoTerceroExiste",      contacto.value.telefono, estaCheckCel)
+    if(existe)    return
+    existe        = await vericarExiste("telefonoContactoExiste",     contacto.value.telefono, estaCheckCel)
+  }  
+  async function vericarExisteTel(){
+    let existe    = await vericarExiste("telefonoTerceroExiste",      contacto.value.telefono_2, estaCheckTel)
+    if(existe)    return
+    existe        = await vericarExiste("telefonoContactoExiste",     contacto.value.telefono_2, estaCheckTel)
   }
 
   async function vericarExisteCorreo(){
-    await vericarExiste("emailTerceroExiste",       contacto.value.correo,  estaCheckEmail)
-    await vericarExiste("emailContactoExiste",      contacto.value.correo,  estaCheckEmail)
+    let existe      = await vericarExiste("emailTerceroExiste",       contacto.value.correo,  estaCheckEmail)
+    if(existe)      return
+    existe          = await vericarExiste("emailContactoExiste",      contacto.value.correo,  estaCheckEmail)
+    if(existe)      return
+    const esFamoso  = esCorreoFamoso(contacto.value.correo)
+    if(esFamoso)    return
+    const dominio   = contacto.value.correo.match(/(?<=@)[^.]+(?=\.)/)[0]
+    existe          = await vericarExiste("emailTerceroExiste",       dominio,  estaCheckEmail)
+    if(existe)      return
+    existe          = await vericarExiste("emailContactoExiste",      dominio,  estaCheckEmail)
+    
   }
 
   async function vericarExiste( consulta : string, valor : string, estado : Ref<EstadoVerificar> ) : Promise<boolean>
   {
+    if(!esTerceroCtz.value)     return false
     estado.value                = "verificando"
+    clientesExistentes.value    = []
     let { ok : existe, data}    = await miFetch(  getURL( "listas", "varios"),
                                                   {
                                                     method: "POST",
                                                     body:   getFormData( consulta, { valor } )
                                                   },
-                                                  { mensaje: "buscar si existe este cliente", dataEsArray: true }
+                                                    { mensaje: "buscar si existe este cliente", dataEsArray: true }
                                                 )
 
-    const resultado : any[]     = Array.isArray(data) ? data : [] 
-    if(existe && !!resultado.length)
+    const resultado : any[]     = Array.isArray(data) ? data : []     
+    if(existe && !!resultado.length && "id" in resultado[0] && !!resultado[0].id)
     {
-      console.log("resultado: ", resultado);
-      estaCheckEmpresa.value    = "alert"
+      estado.value              = "alert"
       const msj =   resultado.length === 1
                   ? "Hay un cliente con estos datos"
                   : `Hay ${resultado.length} clientes con estos datos`
+      
       aviso( "negative", msj, "account", 3000, [ { label: 'Ver detalles', color: 'white', handler:  mostrarClientesExistentes } ] )
-
-      //const vendedor              = JSON.parse(resultado.vendedor)[0].name      
-      //console.log("vendedor: ", vendedor);
-      //&& !!resultado && resultado.hasOwnProperty("vendedor")
-      // && !Array.isArray(resultado)
+      
+      for (const cliente of resultado) {
+        if("vendedor" in cliente)
+        {
+          cliente.vendedores = JSON.parse(cliente.vendedor).map( (v : any)=> v.name ).join(", ")
+          clientesExistentes.value.push(cliente)
+        }
+      }
     }
     else
-      estaCheckEmpresa.value   = "check"
+      estado.value              = "check"
 
     return existe
   }
 
   function mostrarClientesExistentes()
   {
-    aviso( "positive", "Alerta brutal", "account" )
+    if(!clientesExistentes.value.length) return
+    ventanaClienteExiste.value  = true    
   }
   
   //* ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

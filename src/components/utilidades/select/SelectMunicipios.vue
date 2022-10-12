@@ -38,7 +38,7 @@
   </q-select>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" inherit-attrs="true">
   //lazy-rules              ="ondemand"
   import {  ref,
             toRefs,
@@ -111,15 +111,4 @@
       municipios.value        = lista.value.filter( v => v.label.toLowerCase().indexOf(ciudadMin) > -1)
     })
   }
-    
-
-
 </script>
-<!-- 
-<script lang="ts">
-import { defineComponent } from 'vue'
-
-export default defineComponent({
-  inheritAttrs: true,
-})
-</script> -->

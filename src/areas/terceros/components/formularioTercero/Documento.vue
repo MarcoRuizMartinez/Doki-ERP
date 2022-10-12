@@ -51,7 +51,7 @@
   />
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" inherit-attrs="false">
   import {  computed,
             ref,
             toRefs,
@@ -394,12 +394,4 @@
 
     return existe
   }
-</script>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-
-export default defineComponent({
-  inheritAttrs: false,
-})
 </script>

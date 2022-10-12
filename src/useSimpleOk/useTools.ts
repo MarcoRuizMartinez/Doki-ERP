@@ -489,3 +489,14 @@ export function getQueryRouterDate(paramQuery  : LocationQueryValue  | LocationQ
 export function fechaMasMedioDia( fechaStr : string ) : Date | "" { return !!fechaStr ? new Date( new Date( fechaStr ).valueOf() + 43200000  ) : "" }
   
 
+export function esCorreoFamoso( correo : string ) : boolean {
+  let esFamoso        = false
+  const emailFamosos  = ["@gmail","@gmx","@hotmail","@icloud","@live","@me","@outlook","@protonmail","@yahoo"]
+  for (const dominio of emailFamosos) {
+    if(correo.includes(dominio)) {
+      esFamoso        = true
+      break
+    }            
+  }
+  return esFamoso
+}
