@@ -31,6 +31,10 @@
   <productos
     class                   ="col-12"
   />
+  <notas
+    class                   ="col-md-4 col-12"
+    height-card             ="220px"  
+  />    
   <!-- //* /////////////////  Visor PDF  -->
   <visor-pdf
     v-if                    ="acuerdo.esCotizacion"
@@ -65,6 +69,7 @@
   // * /////////////////////////////////////////////////////////////////////////////////// Componentes
   import    barra                   from "components/utilidades/Barra.vue"
   import    visorPdf                from "components/utilidades/VisorPDF.vue"
+  import    notas                   from "src/areas/acuerdos/components/Notas.vue"
   import    tituloCtz               from "src/areas/acuerdos/components/Titulo.vue"
   import    productos               from "src/areas/acuerdos/components/ProductosAcuerdo.vue"
   import    terceroYContacto        from "src/areas/acuerdos/components/TerceroYcontacto.vue"

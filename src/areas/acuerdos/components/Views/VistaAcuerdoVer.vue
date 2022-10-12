@@ -24,13 +24,18 @@
     class                   ="col-md-4 col-12"
     height-card-min         ="220px"
   />
-  <documentos               minimizado
+  <documentos
     class                   ="col-md-4 col-12"
+    height-card-min         ="164px"
     :modulo                 ="acuerdo.modulo"
     :modulo-id              ="acuerdo.id ?? 0"
     :modulo-ref             ="acuerdo.ref"
     :puede-editar           ="true"
-  />    
+  />
+  <notas
+    class                   ="col-md-4 col-12"
+    height-card             ="220px"  
+  />
   <productos
     class                   ="col-12"
   />
@@ -65,6 +70,7 @@
   import {  TTipoAcuerdo          } from "src/areas/acuerdos/models/ConstantesAcuerdos"
   //* ///////////////////////////////////////////////////////////////////////////////// Componentes
   import    visorPdf                from "components/utilidades/VisorPDF.vue"
+  import    notas                   from "src/areas/acuerdos/components/Notas.vue"
   import    tituloCtz               from "src/areas/acuerdos/components/Titulo.vue"
   import    totales                 from "src/areas/acuerdos/components/Totales.vue"
   import    botonera                from "src/areas/acuerdos/components/Botonera.vue"

@@ -466,7 +466,11 @@
 
   async function vericarExiste( consulta : string, valor : string, estado : Ref<EstadoVerificar> ) : Promise<boolean>
   {
-    if(!esTerceroCtz.value)     return false
+    if(!esTerceroCtz.value || !valor){
+      estado.value              = "off"
+      return false
+    }     
+
     estado.value                = "verificando"
     clientesExistentes.value    = []
     let { ok : existe, data}    = await miFetch(  getURL( "listas", "varios"),

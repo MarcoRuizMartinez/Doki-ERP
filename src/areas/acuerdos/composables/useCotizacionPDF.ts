@@ -45,6 +45,7 @@ export function useCotizacionPDF()
     await generarCuerpo()
           generarSubTotales()
           generarTotales()
+          generarNota()
     await generarCondiciones()
           ocultarAviso()
     
@@ -338,6 +339,21 @@ export function useCotizacionPDF()
     posY                        += 16
     pdf.text                    ( nombreValores, doc.margenDerX - 5, posY, { align: "right", lineHeightFactor: 1.4, renderingMode: 'fillThenStroke' })
     
+    // * //////////////////////////////////////////////// Nombre de Valores
+    const nombreCondiciones     = "Forma de pago:\nValidez de la oferta:" +( !!quote.tiempoEntrega.id  ? "\n\nTiempo de entrega:" : "")
+    doc.setFont                 ( 11, 90 )
+    pdf.text                    ( nombreCondiciones, doc.margenIzq, posY, { align: "right", lineHeightFactor: 1.4, renderingMode: 'fillThenStroke' })
+
+    doc.setFont                 ( 10, 20 )
+    //let condiciones             = 
+    pdf.text                    ( quote.condicionPago.descripcion, doc.margenIzq + 4, posY, { align: "left", lineHeightFactor: 1.4 })
+    const validez               = `Nuestra propuesta de precios es válida hasta el ${quote.fechaFinValidezCorta}.\nLuego de esta fecha deberá ser reconfirmada.`
+    pdf.text                    ( validez, doc.margenIzq + 4, posY + 12, { align: "left", lineHeightFactor: 1.4 })
+    const tiempo                = `Condicionado con los horarios a programar con el supervisor\ndesignado por el cliente;se requieren ${quote.tiempoEntrega.label} para producción y entrega, proyectados \ndespués de recibido y legalizado el anticipo.`
+    pdf.text                    ( tiempo, doc.margenIzq + 4, posY + 30, { align: "left", lineHeightFactor: 0.8 })
+    
+    
+
     // * //////////////////////////////////////////////// Valores totales
     let valores                 =  formatoPrecio(quote.totalSinDescu,   "decimales-si") + "\n"
     valores                     += formatoPrecio(quote.descuentoValor,  "decimales-si") + "\n"
@@ -348,6 +364,27 @@ export function useCotizacionPDF()
     doc.setFont                 ( 11, 20 )
     pdf.text                    ( valores, doc.margenDerX + 70, posY, { align: "right", lineHeightFactor: 1.4 })
   }
+
+  function generarNota()
+  {
+    if(!quote.notaPublica) return
+    const copia = doc.y
+    const notaSplit             = pdf.splitTextToSize(quote.notaPublica, doc.ancho - 30  ) as Array<string>    
+    const altoNota              = notaSplit.length * 15
+    const hayNuevaPagina        = doc.seNecesitaNuevaHoja( doc.y, altoNota )
+    if( hayNuevaPagina )
+      doc.y                     = crearNuevaHoja() + 10
+
+    // * //////////////////////////////////////////////// OBSERVACIONES y nota
+    doc.setFont                 ( 12, 55 )
+    doc.y                       += 11
+    pdf.text                    ("OBSERVACIONES", doc.anchoMitad, doc.y, { align: "center", renderingMode: 'fillThenStroke' })
+    doc.y                       += 10
+    doc.setFont                 ( 10, 30)
+    
+    pdf.text                    (notaSplit, doc.anchoMitad, doc.y, { align: "center" })
+    doc.y                       +=10
+  }  
 
   function fondosGrisesLinea( alto : number ) : number
   {

@@ -564,6 +564,8 @@ export class Acuerdo implements IAcuerdo
       ref_client:             this.refCliente,
       date:                   getMilisecShortForApiDolibarr( new Date() ),
       user_author_id:         usuarioId,
+      note_private:           this.notaPrivada,
+      note_public:            this.notaPublica,
       array_options:
       {
         options_descuento:    0,

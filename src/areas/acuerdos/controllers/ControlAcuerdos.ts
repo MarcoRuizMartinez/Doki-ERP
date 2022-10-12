@@ -98,7 +98,7 @@ export function useControlAcuerdo()
   //* ////////////////////////////////////////////////////////////////////// Buscar Acuerdo 
   async function buscarAcuerdo( tipo : TTipoAcuerdo, id_ : string )
   {
-    let idOk                    = ID_URL_Ok( id_ )
+    const idOk                  = ID_URL_Ok( id_ )
     if(!idOk) router.push("/error") 
 
     loading.value.carga         = true
@@ -321,6 +321,35 @@ export function useControlAcuerdo()
   }
 
 
+  //* ////////////////////////////////////////////////////////////////////// Editar Nota Privada
+  async function editarNotaPrivada( nota : string )
+  {
+    if(acuerdo.value.esNuevo) return
+    loading.value.notaPrivada   = true
+    const {ok}                  = await apiDolibarr("editar", acuerdo.value.tipo, { note_private: nota }, acuerdo.value.id )       
+    if(ok){
+      aviso("positive", `Nota privada editada 👌🏼`)
+    }
+    else
+      aviso("negative", `Error editar nota privada de ${acuerdo.value.tipo}`)
+    loading.value.notaPrivada   = false
+  }
+
+  //* ////////////////////////////////////////////////////////////////////// Editar Nota Privada
+  async function editarNotaPublica( nota : string )
+  {
+    if(acuerdo.value.esNuevo) return
+    loading.value.notaPublica   = true
+    const {ok}                  = await apiDolibarr("editar", acuerdo.value.tipo, { note_public: nota }, acuerdo.value.id )       
+    if(ok){
+      aviso("positive", `Nota publica editada 👌🏼`)
+    }
+    else
+      aviso("negative", `Error editar nota publica de ${acuerdo.value.tipo}`)
+    loading.value.notaPublica   = false
+  }
+
+
   //* ////////////////////////////////////////////////////////////////////// Eliminar acuerdo
   async function eliminarAcuerdo()
   {
@@ -342,7 +371,7 @@ export function useControlAcuerdo()
     if(acuerdo.value.esNuevo) return
     
     loading.value.fechaFinValidez = true
-    let ok                      = await setFechaFinValidez( acuerdo.value.id, acuerdo.value.fechaFinValidez, acuerdo.value.tipo )
+    const ok                      = await setFechaFinValidez( acuerdo.value.id, acuerdo.value.fechaFinValidez, acuerdo.value.tipo )
     if (ok) aviso("positive", "Fecha cambiada", "clock" )
     loading.value.fechaFinValidez = false
   }
@@ -353,7 +382,7 @@ export function useControlAcuerdo()
     if(acuerdo.value.esNuevo) return
 
     loading.value.fechaEntrega  = true
-    let ok                      = await setFechaEntrega( acuerdo.value.id, acuerdo.value.fechaEntrega, acuerdo.value.tipo )
+    const ok                    = await setFechaEntrega( acuerdo.value.id, acuerdo.value.fechaEntrega, acuerdo.value.tipo )
     if (ok) aviso("positive", "Fecha de entrega cambiada", "clock" )
     loading.value.fechaEntrega  = false
   }
@@ -364,7 +393,7 @@ export function useControlAcuerdo()
     if(acuerdo.value.esNuevo) return
 
     loading.value.condicionPago = true
-    let ok                      = await setCondicionPago( acuerdo.value.id, condicion.id, acuerdo.value.tipo )
+    const ok                    = await setCondicionPago( acuerdo.value.id, condicion.id, acuerdo.value.tipo )
     if (ok) aviso("positive", "Condición de pago cambiada" )
     loading.value.condicionPago = false
   }
@@ -375,7 +404,7 @@ export function useControlAcuerdo()
     if(acuerdo.value.esNuevo) return
 
     loading.value.formaPago     = true
-    let ok                      = await setFormaPago( acuerdo.value.id, forma.id, acuerdo.value.tipo)
+    const ok                    = await setFormaPago( acuerdo.value.id, forma.id, acuerdo.value.tipo)
     if (ok) aviso("positive", "Forma de pago cambiada" )
     loading.value.formaPago     = false
   }    
@@ -386,7 +415,7 @@ export function useControlAcuerdo()
     if(acuerdo.value.esNuevo) return
 
     loading.value.metodoEntrega     = true
-    let ok                          = await setMetodoEntrega( acuerdo.value.id, metodo.id, acuerdo.value.tipo)
+    const ok                        = await setMetodoEntrega( acuerdo.value.id, metodo.id, acuerdo.value.tipo)
     if (ok) aviso("positive", "Método de entrega cambiado" )
     loading.value.metodoEntrega     = false
   }    
@@ -397,7 +426,7 @@ export function useControlAcuerdo()
     if(acuerdo.value.esNuevo) return
 
     loading.value.tiempoEntrega     = true
-    let ok                          = await setTiempoEntrega( acuerdo.value.id, tiempo.id, acuerdo.value.tipo)
+    const ok                        = await setTiempoEntrega( acuerdo.value.id, tiempo.id, acuerdo.value.tipo)
     if (ok) aviso("positive", "Tiempo de entrega cambiado" )
     loading.value.tiempoEntrega     = false
   }
@@ -406,7 +435,7 @@ export function useControlAcuerdo()
   async function editarConAIU( on : boolean )
   {
     loading.value.conAIU        = true
-    let ok                      = await setAiu( acuerdo.value.id, +on, "aiu", acuerdo.value.tipo)
+    const ok                    = await setAiu( acuerdo.value.id, +on, "aiu", acuerdo.value.tipo)
     if(ok) aviso("positive", "AIU " + ( on ? "activado" : "desactivado" ))
     loading.value.conAIU        = false
   }
@@ -414,7 +443,7 @@ export function useControlAcuerdo()
   //* /////////////////////////////////////////////////////////////// Editar valores AIU
   async function editarValorAIU( valor : number, tipo : "aiuAdmin" | "aiuImpre" | "aiuUtili" )  {
     loading.value.valoresAIU    = true
-    let ok                      = await setAiu( acuerdo.value.id, valor, tipo, acuerdo.value.tipo)
+    const ok                    = await setAiu( acuerdo.value.id, valor, tipo, acuerdo.value.tipo)
     loading.value.valoresAIU    = false
     //if(!ok) aviso("positive", "AIU modificado")
   }
@@ -423,7 +452,7 @@ export function useControlAcuerdo()
   async function editarConTotal( on : boolean )
   {
     loading.value.conTotal      = true
-    let ok                      = await setTotal( acuerdo.value.id, on, acuerdo.value.tipo)
+    const ok                    = await setTotal( acuerdo.value.id, on, acuerdo.value.tipo)
     if(ok) aviso("positive", "Total " + ( on ? "activado" : "desactivado" ))
     loading.value.conTotal      = false
   }
@@ -432,14 +461,14 @@ export function useControlAcuerdo()
   async function editarConIVA( on : boolean )
   {
     loading.value.conIVA        = true
-    let conIVAEditado           = await setConIVA( acuerdo.value.id, on, acuerdo.value.tipo)
+    const conIVAEditado         = await setConIVA( acuerdo.value.id, on, acuerdo.value.tipo)
     
     for (const linea of acuerdo.value.productos)
     {
       const iva                 = parseInt( process.env.IVA ?? "0" )
       linea.iva                 =  on ? iva : 0
-      let lineaEdit             = { id: linea.lineaId, tva_tx: linea.iva }
-      let {ok}                  = await apiDolibarr("editar-linea", acuerdo.value.tipo, lineaEdit, acuerdo.value.id )
+      const lineaEdit           = { id: linea.lineaId, tva_tx: linea.iva }
+      const {ok}                = await apiDolibarr("editar-linea", acuerdo.value.tipo, lineaEdit, acuerdo.value.id )
       if (!ok){ 
         const error             = "Error al cambiar el IVA del producto"
         console.trace()
@@ -478,6 +507,8 @@ export function useControlAcuerdo()
     editarConIVA,
     eliminarAcuerdo,
     validarAcuerdo,
+    editarNotaPrivada,
+    editarNotaPublica,
     cambiarContactoAcuerdo,
     vincularContactoAcuerdo,
     desvincularContactoAcuerdo,
