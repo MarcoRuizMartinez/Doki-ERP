@@ -67,12 +67,10 @@
   const { modelValue,
           requerido         } = toRefs( props )
 
-  watch(
-    modelValue,
-    (newModel, oldModel) => {
+  watch(modelValue, (newModel) => {
       model.value             = newModel as any
     },
-    { immediate: true}
+    { immediate: true }
   )
 
   function cambiarMunicipio( municipio : IMunicipio )
@@ -117,11 +115,11 @@
 
 
 </script>
-
+<!-- 
 <script lang="ts">
 import { defineComponent } from 'vue'
 
 export default defineComponent({
   inheritAttrs: true,
 })
-</script>
+</script> -->

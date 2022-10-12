@@ -84,7 +84,7 @@
         type                    ="email"
         icon                    ="mdi-at"
         class                   ="col-md-8 col-12"
-        :rules                  ="[ validarExisteEmpresa ]"
+        :rules                  ="[ validarExiste(estaCheckEmail) ]"
         :estadoCheck            ="estaCheckEmail"
         :readonly               ="readonly"
         @blur                   ="vericarExisteCorreo"
@@ -119,7 +119,7 @@
         v-model                 ="contacto.municipio"
         class                   ="col-12"
         :readonly               ="readonly"
-      />      
+      />
       <!-- //* //////////////   Notas  -->
       <q-input                  filled autogrow 
         v-model                 ="contacto.nota"
