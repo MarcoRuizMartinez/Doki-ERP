@@ -1,6 +1,6 @@
 <template>
   <q-page padding class         ="row item-stretch content-start justify-start">
-    <ventana-busqueda
+    <vista-busqueda
       icono                     ="mdi-format-list-checks"
       :tipo                     ="TIPO_ACUERDO.COTIZACION "
     />
@@ -9,8 +9,8 @@
 
 <script setup lang="ts">
   import {  useTitle            } from "@vueuse/core"
-  import    ventanaBusqueda       from "src/areas/acuerdos/components/Busqueda/VentanaBusqueda.vue"
+  import    vistaBusqueda         from "src/areas/acuerdos/components/Views/VistaBusqueda.vue" 
   import {  TIPO_ACUERDO        } from "src/areas/acuerdos/models/ConstantesAcuerdos"
 
-  const title                     = useTitle("🔍 Buscar cotizaciones")
+  useTitle("🔍 Buscar cotizaciones")
 </script>

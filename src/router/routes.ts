@@ -122,6 +122,29 @@ const routes: RouteRecordRaw[] = [
       },      
     ],
   },
+  {
+    path:           '/productos',
+    component:      () => import('layouts/LayoutPrincipal.vue'),
+    children:
+    [
+      {
+        path:       '',
+        name:       'productos',
+        component:  () => import('src/areas/productos/pages/PageProductosBuscar.vue'),
+      },
+      {
+        path:       '/productos/:id',
+        name:       'producto',
+        props:      true,
+        component:  () => import('src/areas/productos/pages/PageProductosVer.vue')
+      },      
+      {
+        path:       '/productos/crear',
+        name:       'crearProducto',
+        component:  () => import('src/areas/productos/pages/PageProductosCrear.vue'),
+      },      
+    ],
+  },
   /*
   {
     path: '/empresa',

@@ -25,6 +25,7 @@
       class                   ="col-7 col-md-6"
       colores                 ="verde-rojo"
       iconos                  ="suma"
+      debounce                ="2500"
       :minimo                 ="linea.precioMinimo"
       :alerta                 ="false"
       :con-decimales          ="conDecimales"
@@ -50,6 +51,7 @@
       tipo                    ="precio"
       colores                 ="verde-rojo"
       iconos                  ="suma"
+      debounce                ="2500"
       :maximo                 ="linea.precioBase"
       :minimo                 ="linea.precioMinimo"
       :alerta                 ="false"
@@ -125,6 +127,7 @@
       <q-editor
         v-model               ="linea.descripcion"
         v-bind                ="WYSIWYG_Limpio"
+        :readonly             ="acuerdo.esEstadoValidado"
         :definitions          ="{
           save: {
             tip:              'Guardar descripción',
@@ -132,8 +135,8 @@
             label:            'Guardar',
             handler:          guardarDescripcion
           }
-        }"        
-        :readonly             ="acuerdo.esEstadoValidado"
+        }"
+        @update:model-value   ="limpiarDescripcion"        
       />
     </div>
     <template #acciones>
@@ -203,7 +206,6 @@
           loading,          
           lineaElegida        } = storeToRefs( useStoreAcuerdo() )
 
-
   const linea                   = ref< ILineaAcuerdo >( Object.assign( new LineaAcuerdo(), lineaElegida.value ) )
   const copiaLinea              = JSON.stringify(linea.value)
   let conDecimales              = Boolean(!!process.env.CON_DECIMALES)
@@ -217,7 +219,6 @@
   const aDescuento              = useTransition( computed(()=> linea.value.totalDescuento ),  duracion )
   const aIVA                    = useTransition( computed(()=> linea.value.ivaValorTotal  ),  duracion )
   const aTotal                  = useTransition( computed(()=> linea.value.totalConIva    ),  duracion )
-
 
   function confirmarBorrar()
   {
@@ -240,17 +241,25 @@
     //}
   }
 
-  async function guardarDescripcion(){
+  async function guardarDescripcion()
+  {
+    limpiarDescripcion()
     if(linea.value.descripcion.length < 10 ) return
     const { ok, data }        = await apiDolibarr("editar", "producto", { description: linea.value.descripcion }, linea.value.id )
     if(ok)  aviso( "positive", "Descripción de producto modificada" )
   }
-
-
 
   const lineaVirgen             = computed(() : boolean =>{
     let lineaActual             = JSON.stringify( linea.value )
     return lineaActual === copiaLinea
   })
 
+  function limpiarDescripcion()
+  {    
+    linea.value.descripcion     = linea.value.descripcion .replaceAll('"', "")
+                                                          .replaceAll("'", "")
+                                                          .replaceAll("&nbsp;", " ")
+                                                          .replaceAll("  ", " ")                                                          
+                                                          .trim()
+  }
 </script>

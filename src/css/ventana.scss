@@ -1,6 +1,6 @@
 .ventana, .ventana-contenido{
     transition: all 0.6s cubic-bezier(0.165, 0.840, 0.440, 1.000);
-    max-height: 1000px;
+    /* max-height: 1000px; */
     opacity: 1;
 /*     transition:
                 overflow .5s .25s,
@@ -10,7 +10,9 @@
     /* transition: max-height 0.8s linear; */
     /*  width 0.6s, height 0.4s, visibility 0s, opacity 0.5s, padding 0.5s, flex-grow 1000ms */
 }
-
+.ventana{
+    filter: drop-shadow(4px 4px 4px #00000040);
+}
 .minimizado{
     //height: 0px !important;
     padding-top: 0px !important;

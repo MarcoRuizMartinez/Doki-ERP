@@ -5,7 +5,7 @@ import {  IPermisos,
                               } from "src/areas/usuarios/models/Permisos"
 
 
-export interface iUserState {
+interface IUserState {
   fondo:      string,
   patron:     string,
   logueado:   boolean,
@@ -15,7 +15,7 @@ export interface iUserState {
 }
                               
 export const  useStoreUser = defineStore('user', {
-  state: () : iUserState => ({
+  state: () : IUserState => ({
     fondo:      "Dream.webp",
     patron:     "Abstracto.png",
     logueado:   false,

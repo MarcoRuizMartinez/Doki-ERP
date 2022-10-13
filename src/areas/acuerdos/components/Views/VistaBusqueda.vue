@@ -8,7 +8,7 @@
     :icono                    ="icono"
     :titulo                   ="titulo"
     :padding-contenido        ="modo === 'normal' ? '0' : '12px' "
-    :mensaje-sin-resultados   ="'No se encontraron ' + tipo" 
+    :mensaje-sin-resultados   ="'No se encontraron ' + tipo"
     >
     <template                 #barra>
       <tabs-busqueda />
@@ -134,7 +134,6 @@
   import {  useTools            } from "src/useSimpleOk/useTools"
   import {  generarCSVDesdeTabla} from "src/useSimpleOk/UtilFiles"
   // * /////////////////////////////////////////////////////////////////////// Modelos
-  import {  IAcuerdo            } from "src/areas/acuerdos/models/Acuerdo"
   import {  BusquedaAcuerdo,
             IQueryAcuerdo       } from "src/areas/acuerdos/models/BusquedaAcuerdos"
   import {  Columna, IColumna   } from "src/models/Tabla"
@@ -148,14 +147,13 @@
   import    selectColumnas        from "components/utilidades/select/SelectColumnas.vue"
   import    linkTercero           from "src/areas/terceros/components/LinkTercero.vue"
   import    tooltipContacto       from "src/areas/terceros/components/contactos/TooltipContacto.vue"
-  import    tabsBusqueda          from "./TabsBusqueda.vue"
-  import    barraBusqueda         from "./BarraBusqueda.vue"
+  import    tabsBusqueda          from "src/areas/acuerdos/components/Busqueda/TabsBusqueda.vue"
+  import    barraBusqueda         from "src/areas/acuerdos/components/Busqueda/BarraBusqueda.vue"
   import    vistaAcuerdo          from "src/areas/acuerdos/components/Views/VistaAcuerdoVer.vue"  
   // * ////////////////////////// Columnas
-  import    refAcuerdo            from "./Columnas/RefAcuerdo.vue"
-  import    estado                from "./Columnas/Estado.vue"
+  import    refAcuerdo            from "src/areas/acuerdos/components/Busqueda/Columnas/RefAcuerdo.vue"
+  import    estado                from "src/areas/acuerdos/components/Busqueda/Columnas/Estado.vue"
   import    chipUsuario           from "src/areas/usuarios/components/ChipUsuario.vue"
-
   
   const props                     = defineProps({
     tipo:   { required: true, type: String as PropType< TTipoAcuerdo >  },

@@ -1,4 +1,6 @@
 export interface IBusquedaProducto {
+  tipo?:        string
+  id?:          number
   completa?:    number
   recientes?:   number
   busqueda?:    string

@@ -5,7 +5,7 @@
     transition-hide           ="slide-down"
     @escape-key               ="cerrarVentana"
     >
-    <ventana                  cerrar full-screen
+    <ventana                  cerrar full-screen scroll
       v-touch-swipe.mouse.down="cerrarVentana"
       :titulo                 ="nombrePdf"
       icono                   ="mdi-pdf-box"

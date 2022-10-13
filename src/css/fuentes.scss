@@ -44,6 +44,10 @@
   font-size: 1.8em;
 }
 
+.titulo-md{
+  font-size: 1.3em;
+}
+
 @media (max-width: 600px) {
   .titulo-xl{
     font-size: 1.8em;
@@ -51,6 +55,9 @@
   .titulo-lg{
     font-size: 1.1em  ;
   }
+  .titulo-md{
+    font-size: 0.7em;
+  }  
 }
 
 .link-limpio {

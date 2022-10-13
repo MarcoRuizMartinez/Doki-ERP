@@ -1,11 +1,11 @@
 <template>
-  <ventana                      minimizar
+  <ventana
     class-contenido             ="column items-center"
     :titulo                     ="`Documentos (${archivos.length})`"
     icono                       ="mdi-attachment"
     size-icon-carga             ="6em"
     mensaje-sin-resultados      ="Sin documentos"
-    icono-sin-resultados        ="mdi-file-document-multiple"    
+    icono-sin-resultados        ="mdi-file-document-multiple"
     :padding-contenido          ="modo == 'normal' ? '0' : '12px' "
     :modo                       ="modo"
     :menu-visible               ="puedeSubir"

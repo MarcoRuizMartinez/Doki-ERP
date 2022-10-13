@@ -6,7 +6,7 @@
     :maximized                ="fullScreen"
     @hide                     ="cerrarVentana"    
     >  
-    <ventana                  cerrar
+    <ventana                  cerrar scroll
       icono                   ="mdi-image"    
       padding-contenido       ="0"
       class-contenido         =""

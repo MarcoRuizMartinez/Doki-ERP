@@ -14,7 +14,7 @@ import {  ILineaAcuerdo,
 import {  BusquedaAcuerdo,
           IBusquedaAcuerdo  } from "src/areas/acuerdos/models/BusquedaAcuerdos"
 
-export interface iAcuerdoState {
+interface IAcuerdoState {
   acuerdo             : IAcuerdo,
   loading             : ILoading,  
   grupoElegido        : IGrupoLineas,
@@ -25,7 +25,7 @@ export interface iAcuerdoState {
 }
 
 export const useStoreAcuerdo = defineStore('acuerdo', {
-  state: () : iAcuerdoState => ({
+  state: () : IAcuerdoState => ({
     acuerdo           : new Acuerdo( TIPO_ACUERDO.NULO ),
     loading           : LoadingDefault,
     grupoElegido      : new GrupoLineas(),

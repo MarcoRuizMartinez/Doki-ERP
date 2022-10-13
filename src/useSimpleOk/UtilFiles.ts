@@ -2,7 +2,7 @@ import {  exportFile              } from "quasar"
 import {  IColumna                } from "src/models/Tabla"
 import {  siNo                    } from "src/useSimpleOk/useTools"
 
-export type TModulosDolibarr  =   "thirdparty" | "project"  | "proposal"  | "order" | "shipment"  | "invoice" | "supplier_proposal" | "supplier_order"  | "supplier_invoice"
+export type TModulosDolibarr  =   "thirdparty" | "project"  | "proposal"  | "order" | "shipment"  | "invoice" | "supplier_proposal" | "supplier_order"  | "supplier_invoice" | "product"
 
 export function File_B64_ToBlob( file64 : string, typeFile : string = "application/pdf" ) :string 
 {

@@ -580,6 +580,7 @@
     if(!!precioMaxQuery.value       ) q.maximo    = precioMaxQuery.value
     if(soloConImagen.value          ) q.soloConImg= 1
 
+    q.tipo                    = "busqueda"
     return q
   }
 

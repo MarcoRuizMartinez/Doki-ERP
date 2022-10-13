@@ -1,5 +1,5 @@
 <template>
-  <titulo-ctz
+  <titulo
     class                   ="col-12"
     @click                  ="generarPDFAcuerdo"
   />
@@ -70,7 +70,7 @@
   import    barra                   from "components/utilidades/Barra.vue"
   import    visorPdf                from "components/utilidades/VisorPDF.vue"
   import    notas                   from "src/areas/acuerdos/components/Notas.vue"
-  import    tituloCtz               from "src/areas/acuerdos/components/Titulo.vue"
+  import    titulo                  from "src/areas/acuerdos/components/Titulo.vue"
   import    productos               from "src/areas/acuerdos/components/ProductosAcuerdo.vue"
   import    terceroYContacto        from "src/areas/acuerdos/components/TerceroYcontacto.vue"
   import    totales                 from "src/areas/acuerdos/components/Totales.vue"

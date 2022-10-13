@@ -1,5 +1,5 @@
 <template>
-  <titulo-ctz
+  <titulo
     class                   ="col-12"
     @click                  ="generarPDFCotizacion"
   />
@@ -63,6 +63,7 @@
   import {  useStoreAcuerdo       } from 'src/stores/acuerdo'
   //* ///////////////////////////////////////////////////////////////////////////////// Modelos
   //import {  Acuerdo, TIPO_ACUERDO } from "../../models/Acuerdo"  
+  import {  LineaAcuerdo          } from "src/areas/acuerdos/models/LineaAcuerdo"  
   //* ///////////////////////////////////////////////////////////////////////////////// Componibles
   import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"
   import {  useCotizacionPDF      } from "src/areas/acuerdos/composables/useCotizacionPDF"
@@ -71,7 +72,7 @@
   //* ///////////////////////////////////////////////////////////////////////////////// Componentes
   import    visorPdf                from "components/utilidades/VisorPDF.vue"
   import    notas                   from "src/areas/acuerdos/components/Notas.vue"
-  import    tituloCtz               from "src/areas/acuerdos/components/Titulo.vue"
+  import    titulo                  from "src/areas/acuerdos/components/Titulo.vue"
   import    totales                 from "src/areas/acuerdos/components/Totales.vue"
   import    botonera                from "src/areas/acuerdos/components/Botonera.vue"
   import    terceroYContacto        from "src/areas/acuerdos/components/TerceroYcontacto.vue"
@@ -80,6 +81,7 @@
   import    documentos              from "components/archivos/ModuloArchivos.vue"
 
   const { acuerdo,
+          lineaElegida,
           loading           } = storeToRefs( useStoreAcuerdo() )
 
   const { generarPDF,
@@ -102,7 +104,10 @@
   //const { id, tipo }          = toRefs( props )  
 
   watch ( [()=>acuerdo.value.id, ()=>acuerdo.value.tipo],
-          ()=> useTitle(`${acuerdo.value.emoji} ${acuerdo.value.title}`)
+          ()=> {
+            useTitle(`${acuerdo.value.emoji} ${acuerdo.value.title}`)
+            lineaElegida.value  = new LineaAcuerdo()
+          }
         )
 
   provide('superminimizado', minimizadoTodo)

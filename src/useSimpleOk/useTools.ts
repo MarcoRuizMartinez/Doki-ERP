@@ -491,7 +491,7 @@ export function fechaMasMedioDia( fechaStr : string ) : Date | "" { return !!fec
 
 export function esCorreoFamoso( correo : string ) : boolean {
   let esFamoso        = false
-  const emailFamosos  = ["@gmail","@gmx","@hotmail","@icloud","@live","@me","@outlook","@protonmail","@yahoo"]
+  const emailFamosos  = ["@gmail","@gmx","@hotmail","@icloud","@live","@me","@outlook","@protonmail","@yahoo","@sena"]
   for (const dominio of emailFamosos) {
     if(correo.includes(dominio)) {
       esFamoso        = true

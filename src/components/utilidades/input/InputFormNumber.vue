@@ -6,7 +6,7 @@
       input-class         ="fuente-mono"
       lazy-rules          ="ondemand"
       type                ="text"
-      debounce            ="1200"
+      :debounce           ="debounce"
       :class              ="{'campo-hundido' : hundido}"
       :filled             ="!hundido"
       :borderless         ="!hundido"
@@ -97,6 +97,7 @@
       readonly:     { default:  false,        type: Boolean             },
       soloPositivo: { default:  false,        type: Boolean             },
       paso:         { default:  0,            type: Number              },
+      debounce:     { default:  1200,         type: [String, Number]    },
       maximo:       { default:  9999999999,   type: [String, Number]    },
       minimo:       { default:  -999999999,   type: [String, Number]    },
       maxEnteros:   { default:  0,            type: [String, Number]    },

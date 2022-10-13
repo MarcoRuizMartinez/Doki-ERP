@@ -19,7 +19,9 @@
           height              ="63px"
           
         /> -->        
-        <img :src             ="`images/iconos/${imgIcono}`" />
+        <img
+          v-if                ="!!imgIcono"
+          :src                ="`images/iconos/${imgIcono}`" />
         <Tooltip
           v-if                ="!acuerdo.esNuevo"
           label               ="Generar PDF"
@@ -34,7 +36,7 @@
         key                 ="key1"
         class               ="row items-center justify-between q-mr-sm"
         >
-        <!-- //* ////////////////////////////////////////////////////// Boton 3D Cotizacion -->
+        <!-- //* ////////////////////////////////////////////////////// Boton 3D -->
         <q-btn              push no-caps
           padding           ="0"
           @click            ="emit('click')"
@@ -43,7 +45,7 @@
             {{acuerdo.tipo}}
           </span>
         </q-btn>
-        <!-- //* ////////////////////////////////////////////////////// Titulo Cotizacion -->
+        <!-- //* ////////////////////////////////////////////////////// Titulo  -->
         <div
           v-if              ="!acuerdo.esNuevo"
           :style            ="esMobil ? 'order: 3;' : ''"
@@ -59,7 +61,7 @@
             max-width       ="500px"
             @update:model-value ="editarTitulo"
             >
-            <!-- //* ////////////////////////////////////////////////// Editar Titulo Cotizacion -->
+            <!-- //* ////////////////////////////////////////////////// Editar Titulo -->
             <q-input        dense filled
               v-model       ="scope.value"
               class         ="col-12"
@@ -68,7 +70,7 @@
             />
           </q-popup-edit> 
         </div>
-        <!-- //* ////////////////////////////////////////////////////// Ref Cotizacion -->
+        <!-- //* ////////////////////////////////////////////////////// Ref  -->
         <span
           v-if              ="!acuerdo.esNuevo"
           class             ="fuente-delicada titulo-lg"
