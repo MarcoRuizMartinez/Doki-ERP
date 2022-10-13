@@ -1,5 +1,5 @@
 <template>
-  <ventana                    minimizar
+  <ventana                    minimizar scroll
     titulo                    ="Condiciones"
     icono                     ="mdi-handshake"
     :cargando                 ="!acuerdo.tercero.id && !acuerdo.esNuevo"
@@ -50,7 +50,7 @@
       @select                 ="editarCondicionPago"
     />
     <!-- //* ///////////////////////////////////////////////// Forma de pago -->
-    <select-label-value
+    <select-label-value       clearable
       v-model                 ="acuerdo.formaPago"
       label                   ="Forma de pago"
       icon                    ="mdi-cash-refund"
@@ -60,7 +60,7 @@
       @select                 ="editarFormaPago"
     />
     <!-- //* ///////////////////////////////////////////////// Metodo entrega -->
-    <select-label-value
+    <select-label-value       clearable
       v-model                 ="acuerdo.metodoEntrega"
       label                   ="Método de entrega"
       icon                    ="mdi-truck-delivery"
@@ -70,7 +70,7 @@
       @select                 ="editarMetodoEntrega"
     />
     <!-- //* ///////////////////////////////////////////////// Tiempo entrega -->
-    <select-label-value
+    <select-label-value       clearable
       v-model                 ="acuerdo.tiempoEntrega"
       label                   ="Tiempo de entrega"
       icon                    ="mdi-calendar-check"

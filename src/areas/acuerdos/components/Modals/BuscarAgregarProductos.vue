@@ -1,5 +1,5 @@
 <template>
-  <ventana                    cerrar full-screen
+  <ventana                    cerrar full-screen scroll
     titulo                    ="Buscar"
     icono                     ="mdi-magnify"
     class-contenido           ="row justify-start"

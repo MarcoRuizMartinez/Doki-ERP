@@ -130,7 +130,10 @@
   function seleccionar()
   {
     if( valorValido(modelo.value) )
-      emit("select", modelo.value)    
+      emit("select", modelo.value) 
+    else
+      emit("select", labelValueNulo) 
+    
   }
 
   function setDefecto()

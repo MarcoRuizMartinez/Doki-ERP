@@ -88,10 +88,10 @@
       <q-card-section
         class                 ="row items-start ventana-contenido transi"
         :class                ="  classContenido,
-                                  { 'minimizado'  : minimizadoModel },
-                                  { 'full-screen' : fullScreen      },
-                                  { 'scroll'      : scroll          },
-                                  { 'q-mt-none'   : hayAcciones     }
+                                  { 'minimizado'        : minimizadoModel },
+                                  { 'full-screen'       : fullScreen      },
+                                  { 'scroll q-mt-none'  : scroll          },
+                                  { 'q-mt-none'         : hayAcciones     }
                                 "
         :style                ="estiloCard"
         >  <!-- //?* /   :style                ="estiloAlto" :style="estiloCard" --> 

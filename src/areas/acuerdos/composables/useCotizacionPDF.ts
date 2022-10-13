@@ -340,19 +340,25 @@ export function useCotizacionPDF()
     pdf.text                    ( nombreValores, doc.margenDerX - 5, posY, { align: "right", lineHeightFactor: 1.4, renderingMode: 'fillThenStroke' })
     
     // * //////////////////////////////////////////////// Nombre de Valores
-    const nombreCondiciones     = "Forma de pago:\nValidez de la oferta:" +( !!quote.tiempoEntrega.id  ? "\n\nTiempo de entrega:" : "")
-    doc.setFont                 ( 11, 90 )
-    pdf.text                    ( nombreCondiciones, doc.margenIzq, posY, { align: "right", lineHeightFactor: 1.4, renderingMode: 'fillThenStroke' })
+    doc.setFont                 ( 8, 70 )
+    const nombreCondiciones     = "Condiciones de pago:\n"
+                                  + ( !!quote.formaPago.id        ? "Forma de pago:\n"      : "")
+                                  + ( !!quote.metodoEntrega.id    ? "Método de entrega:\n"  : "")                                  
+                                  + "Precios validos hasta:\n" 
+                                  + ( !!quote.tiempoEntrega.id    ? "Tiempo de entrega:"    : "")    
+    pdf.text                    ( nombreCondiciones, doc.margenIzq - 4, posY, { align: "right", lineHeightFactor: 1.4, renderingMode: 'fillThenStroke' })
 
-    doc.setFont                 ( 10, 20 )
-    //let condiciones             = 
-    pdf.text                    ( quote.condicionPago.descripcion, doc.margenIzq + 4, posY, { align: "left", lineHeightFactor: 1.4 })
-    const validez               = `Nuestra propuesta de precios es válida hasta el ${quote.fechaFinValidezCorta}.\nLuego de esta fecha deberá ser reconfirmada.`
-    pdf.text                    ( validez, doc.margenIzq + 4, posY + 12, { align: "left", lineHeightFactor: 1.4 })
-    const tiempo                = `Condicionado con los horarios a programar con el supervisor\ndesignado por el cliente;se requieren ${quote.tiempoEntrega.label} para producción y entrega, proyectados \ndespués de recibido y legalizado el anticipo.`
-    pdf.text                    ( tiempo, doc.margenIzq + 4, posY + 30, { align: "left", lineHeightFactor: 0.8 })
-    
-    
+    const condiciones             = quote.condicionPago.descripcion + "\n"
+                                    + ( !!quote.formaPago.id      ? `${quote.formaPago.label}\n`      : "")
+                                    + ( !!quote.metodoEntrega.id  ? `${quote.metodoEntrega.label}\n`  : "")
+                                    + `${quote.fechaFinValidezCorta}. Después de esta fecha deberán re-confirmarse.\n`
+                                    + ( !!quote.tiempoEntrega.id
+                                        ? `${quote.tiempoEntrega.label} para producción y entrega, proyectados después de recibido y legalizado el anticipo. Condicionado con los horarios a programar con el supervisor designado por el cliente.`
+                                        : ''
+                                      )
+    const condicionesSplit      = pdf.splitTextToSize(condiciones, 210  ) as Array<string>            
+    pdf.text                    ( condicionesSplit, doc.margenIzq + 4, posY, { align: "left", lineHeightFactor: 1.4 })
+
 
     // * //////////////////////////////////////////////// Valores totales
     let valores                 =  formatoPrecio(quote.totalSinDescu,   "decimales-si") + "\n"
