@@ -34,8 +34,7 @@
   import {  TModulosDolibarr} from "src/useSimpleOk/UtilFiles"
 
   import {  useTools        } from "src/useSimpleOk/useTools"
-  import {  FileToBase64,
-            DownloadFile_B64    } from "src/useSimpleOk/UtilFiles"
+  import {  FileToBase64    } from "src/useSimpleOk/UtilFiles"
 
   import {  format          } from 'quasar'
 

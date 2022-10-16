@@ -22,7 +22,7 @@
         <select-columnas
           v-model             ="columnasVisibles"
           label               ="Columnas"
-          :almacen            ="ALMACEN_LOCAL.COL_TERCEROS"
+          :almacen            ="ALMACEN_LOCAL.COL_ACUERDOS"
           :options            ="columnas"
         />
       </barra-busqueda>
@@ -74,7 +74,7 @@
         </q-td>
       </template> 
     </q-table>
-    <!-- //* ///////////////////////////////////////////////////////////// Modal Buscar productos -->
+    <!-- //* ///////////////////////////////////////////////////////////// Modal vista rapida -->
     <q-dialog                   maximized
       v-model                   ="ventanaVistaRapida"
       :persistent               ="false"

@@ -115,7 +115,7 @@
       <subir-archivo
         :modulo                 ="modulo"
         :modulo-ref             ="moduloRef"
-        @subida-ok              ="buscarArchivos"
+        @subida-ok              ="buscarArchivos('subida')"
       />
     </template>    
   </ventana>
@@ -162,6 +162,9 @@
     moduloRef:    { required: true,   type: String                                  },
     puedeEditar:  { default:  false,  type: Boolean                                 },
   })
+  const emit = defineEmits<{
+    (e: 'load',   value: IArchivo[]  ): void    
+  }>()
 
   const { modulo,
           moduloId,
@@ -176,14 +179,13 @@
     new Columna({ name: "tipo",     label: "."        })
   ]
 
-
   onMounted( buscarArchivos )
 
   watch(moduloId, (newId, oldId) => {
-    buscarArchivos(newId)
+    buscarArchivos("watch", newId)
   })
 
-  async function buscarArchivos( id : number = moduloId.value )  
+  async function buscarArchivos( origen : string = "desconocido", id : number = moduloId.value )
   {
     if(id                     <= 0) return 
     modo.value                = "buscando"
@@ -195,6 +197,8 @@
       for (const documento of data)
         archivos.value.push( Object.assign( new Archivo(), documento ) )        
       
+      if(origen === "subida")
+        emit("load", archivos.value)
       modo.value              = "normal"
     }
     else

@@ -33,8 +33,6 @@ export function useControlProductos()
     loading.value.carga         = true
     const busqueda              = { tipo: "producto", completa: 1, id: idOk }
     const productos             = await buscarProductos( busqueda )
-    console.log("productos: ", productos);
-
 
     if(!!productos.length)
     {
@@ -49,8 +47,24 @@ export function useControlProductos()
     loading.value.carga         = false
   }
 
+    //* ////////////////////////////////////////////////////////////////////// Editar URL de imagen
+    async function editarURL( url : string ) : Promise <boolean>
+    {      
+      loading.value.url           = true
+      const {ok}                  = await apiDolibarr("editar", "producto", { url }, producto.value.id )       
+      if(ok){
+        aviso("positive", `Imagen actualizada 👌🏼`)
+      }
+      else
+        aviso("negative", `Error actualizando imagen`)
+      loading.value.url           = false
+
+      return ok
+    }
+
   //* /////////////////////////////////////////////////////////////// Return
   return {
-    buscarProducto
+    buscarProducto,
+    editarURL,
   }
 }

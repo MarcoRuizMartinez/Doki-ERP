@@ -175,12 +175,21 @@ export class ProductoDoli implements IProductoDoli
     let urlImagen           = ""
     if( !!this.imagen )
     {
+      if( this.imagen.includes( process.env.URL_DOLIBARR ))
+      {
+        const url = this.imagen.replace( process.env.URL_DOLIBARR, '' )
+        urlImagen = `${process.env.URL_DOLIBARR}/resizer/resizer.php?file=..${url}&width=100&height=100&action=resize&crop_pos=center&quality=90`
+      }
+      else
+      {        
         if( this.imagen.includes( ".jpg" ) || this.imagen.includes( ".jpeg" ))
-            urlImagen       = this.imagen.replace(".j", "-100x100.j")
+          urlImagen       = this.imagen.replace(".j", "-100x100.j")
         if( this.imagen.includes( ".webp" ) )
-            urlImagen       = this.imagen.replace(".webp", "-100x100.webp")
+          urlImagen       = this.imagen.replace(".webp", "-100x100.webp")
 
-        urlImagen           = this.imagen.replace("http:", "https:")
+        urlImagen           = this.imagen.replace("http:", "https:")        
+      }
+
     }
 
     return  urlImagen
@@ -191,12 +200,20 @@ export class ProductoDoli implements IProductoDoli
     let urlImagen           = ""
     if( !!this.imagen )
     {
-      if( this.imagen.includes( ".jpg" ) || this.imagen.includes( ".jpeg" ))
-          urlImagen         = this.imagen.replace(".j", "-300x300.j")
-      if( this.imagen.includes( ".webp" ) )
-          urlImagen         = this.imagen.replace(".webp", "-300x300.webp")                
+      if( this.imagen.includes( process.env.URL_DOLIBARR ))
+      {
+        const url = this.imagen.replace( process.env.URL_DOLIBARR, '' )
+        urlImagen = `${process.env.URL_DOLIBARR}/resizer/resizer.php?file=..${url}&width=300&height=300&action=resize&crop_pos=center&quality=90`
+      }
+      else
+      {      
+        if( this.imagen.includes( ".jpg" ) || this.imagen.includes( ".jpeg" ))
+            urlImagen         = this.imagen.replace(".j", "-300x300.j")
+        if( this.imagen.includes( ".webp" ) )
+            urlImagen         = this.imagen.replace(".webp", "-300x300.webp")                
 
-      urlImagen             = this.imagen.replace("http:", "https:")
+        urlImagen             = this.imagen.replace("http:", "https:")
+      }
     }
 
     return  urlImagen

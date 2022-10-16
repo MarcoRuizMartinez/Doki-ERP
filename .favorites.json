@@ -70,5 +70,41 @@
         "workspaceRoot": null,
         "workspacePath": null,
         "id": "Y624IyQ9U1sGC3Fx"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\estad\\Apps\\SimpleOk-ERP\\src\\areas\\productos\\models\\ProductoDolibarr.ts",
+        "parent_id": null,
+        "fsPath": "c:\\Users\\estad\\Apps\\SimpleOk-ERP\\src\\areas\\productos\\models\\ProductoDolibarr.ts",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "VweMZgBuLxQc8Iqa"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\estad\\Apps\\SimpleOk-ERP\\src\\models\\TiposVarios.ts",
+        "parent_id": null,
+        "fsPath": "c:\\Users\\estad\\Apps\\SimpleOk-ERP\\src\\models\\TiposVarios.ts",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "Pa9VA8BhkbZzMRwQ"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\estad\\Apps\\SimpleOk-ERP\\src\\areas\\productos\\components\\Views\\VistaProductoBusqueda.vue",
+        "parent_id": null,
+        "fsPath": "c:\\Users\\estad\\Apps\\SimpleOk-ERP\\src\\areas\\productos\\components\\Views\\VistaProductoBusqueda.vue",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "p4kF0Ke9Hgx7rdb6"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\estad\\Apps\\SimpleOk-ERP\\src\\areas\\acuerdos\\components\\Modals\\BuscarAgregarProductos.vue",
+        "parent_id": null,
+        "fsPath": "c:\\Users\\estad\\Apps\\SimpleOk-ERP\\src\\areas\\acuerdos\\components\\Modals\\BuscarAgregarProductos.vue",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "kFzQUmCPenTfhtac"
     }
 ]

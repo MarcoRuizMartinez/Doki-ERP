@@ -61,10 +61,12 @@
     visible:    { required: true,   type: Boolean },
     fileType:   { default:  "",     type: String  },
     ratio:      { default:  "",     type: [String, Number]},
+    emitirSrc:  { default:  false,  type: Boolean },
   })
   const { src,
           visible,
           fileType,
+          emitirSrc,
           enBase64          } = toRefs( props )  
 
   watch(visible, (v) => visibleModel.value = v)
@@ -87,9 +89,11 @@
   function cerrarVentana()
   {
     emit("update:visible", false)
-    emit("update:src", "")
     modo.value                = "buscando"
-    srcModel.value            = ""
+    if(emitirSrc.value || enBase64.value){
+      emit("update:src", "")
+      srcModel.value          = ""
+    }
     visibleModel.value        = false
     fullScreen.value          = false
   }

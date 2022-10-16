@@ -15,6 +15,7 @@
     :modulo-id          ="producto.id ?? 0"
     :modulo-ref         ="producto.ref"
     :puede-editar       ="true"
+    @load               ="cargarProductos"
   />
 </template>
 
@@ -31,20 +32,23 @@
   import {  storeToRefs           } from 'pinia'    
   import {  useStoreProducto      } from 'src/stores/producto'
   //* ///////////////////////////////////////////////////////////////////////////////// Modelos
-
+  import {  IArchivo,
+            Archivo               } from "src/models/Archivo"
   //* ///////////////////////////////////////////////////////////////////////////////// Componibles
-  
+  import {  useControlProductos   } from "src/areas/productos/controllers/ControlProductosDolibarr"
   //* ///////////////////////////////////////////////////////////////////////////////// Componentes
   import    titulo                  from "src/areas/productos/components/Titulo.vue"
   import    imagen                  from "src/areas/productos/components/ImagenProducto.vue"
   import    formulario              from "src/areas/productos/components/FormularioProducto.vue"
   import    documentos              from "components/archivos/ModuloArchivos.vue"
 
+  const { editarURL         
+                            } = useControlProductos()  
   const { producto,
           loading
                             } = storeToRefs( useStoreProducto() )                                
   const minimizadoTodo        = ref< boolean  >(false)
-
+  
   const props                 = defineProps({
     id:   { required: true, type: String }
   })
@@ -54,4 +58,17 @@
         ) */
 
   provide('superminimizado', minimizadoTodo)
+
+  async function cargarProductos( archivos : IArchivo[] )
+  {
+    if(archivos[0].tipo       === "Imagen")
+    {
+      const url               = archivos[0].url
+      const ok                = await editarURL( url )
+      if(ok)
+        producto.value.imagen = url
+    }
+
+    
+  }
 </script>

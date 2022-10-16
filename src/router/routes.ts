@@ -106,7 +106,7 @@ const routes: RouteRecordRaw[] = [
       {
         path:       '',
         name:       'pedidos',
-        component:  () => import('src/areas/acuerdos/pedidos/pages/PagePedidosBuscar.vue'),
+        component:  () => import('src/areas/acuerdos/pages/pedidos/PagePedidosBuscar.vue'),
       },
       {
         path:       '/pedidos/:id',

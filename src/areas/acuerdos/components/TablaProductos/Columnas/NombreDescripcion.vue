@@ -19,7 +19,7 @@
       type              ="a"
       label             ="Ir a producto"
       target            ="_blank"
-      :href             ="`/productos/${linea.id}`"
+      :to               ="`/productos/${linea.id}`"
     />
   </q-menu>  
 </template>

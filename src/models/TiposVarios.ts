@@ -31,6 +31,8 @@ export const enum ALMACEN_LOCAL {
   PERMISOS        = "v3-permisos",
   MENU_IZQUIERDO  = "v3-menuIzquierdo",
   COL_TERCEROS    = "v3-colTerceros",
+  COL_ACUERDOS    = "v3-colAcuerdos",
+  COL_PRODUCTOS   = "v3-colProductos",
   FECHA_LISTAS    = "v3-fechaListas",
 }
 
@@ -110,6 +112,7 @@ export interface ILoading {
   subtotal        ?: boolean
   notaPublica     ?: boolean
   notaPrivada     ?: boolean
+  url             ?: boolean
 }
 
 export const LoadingDefault = {
@@ -143,6 +146,7 @@ export const LoadingDefault = {
   subtotal        : false,
   notaPublica     : false,
   notaPrivada     : false,
+  url             : false,
 }
 
 

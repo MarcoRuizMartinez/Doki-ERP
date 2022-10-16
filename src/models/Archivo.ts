@@ -11,6 +11,7 @@ export interface IArchivo
   fechaCorta:               string
   fullname:                 string
   name:                     string
+  level1name:               string
   path:                     string
   relativename:             string
   size:                     number 
@@ -26,7 +27,8 @@ export interface IArchivo
   loading:                  boolean
   esVisualizable:           boolean
   fileType:                 string
-  nombreCorto:              string  
+  nombreCorto:              string
+  url:                      string
 }
 
 export class Archivo implements IArchivo
@@ -34,6 +36,7 @@ export class Archivo implements IArchivo
   date:                     number
   fullname:                 string
   name:                     string
+  level1name:               string
   path:                     string
   relativename:             string
   size:                     number 
@@ -45,11 +48,17 @@ export class Archivo implements IArchivo
     this.date               = 0
     this.fullname           = ""
     this.name               = ""
+    this.level1name         = ""
     this.path               = ""
     this.relativename       = ""
     this.size               = 0
     this.type               = ""
     this.loading            = false
+  }
+
+  get url() : string {
+    return this.fullname.replace("/home/mublexco/_dolibarr", process.env.URL_DOLIBARR )
+    // "/home/mublexco/_dolibarr/documents/societe/4/RUT Ergo ACTUALIZADO 2015.pdf"
   }
 
   get sizeFile() : string {
