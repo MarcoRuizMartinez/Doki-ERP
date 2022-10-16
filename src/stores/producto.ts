@@ -15,6 +15,7 @@ import {  BusquedaProducto,
 interface IProductoState {
   producto            : IProductoDoli,
   productos           : IProductoDoli[],
+  productosFil        : IProductoDoli[],
   seleccion           : IProductoDoli[],  
   loading             : ILoading,  
   modales             : IModales,
@@ -25,6 +26,7 @@ export const useStoreProducto = defineStore('producto', {
   state: () : IProductoState => ({
     producto          : new ProductoDoli(),
     productos         : [],
+    productosFil      : [],
     seleccion         : [],
     busqueda          : new BusquedaProducto(),
     loading           : LoadingDefault,

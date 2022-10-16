@@ -24,17 +24,14 @@
 
   const { producto,
           productos,
+          productosFil,
           seleccion,
           //busqueda,
                                 } = storeToRefs( useStoreProducto() )  
   
-  const productosOriginal     = ref< IProductoDoli[] >([])  
-  
-  
   const props                 = defineProps({      
       tipoVista:  { required: true,     type: String },  
   })
-
   
   const filtro                = ref < string >("")
   const popupOn               = ref < boolean >(false)
@@ -62,7 +59,7 @@
   }
 
   watch([precioMinFiltro, precioMaxFiltro], ([newMin, newMax]) =>{
-    productos.value = filterArrayMaxMin< IProductoDoli >(productosOriginal.value, newMin, newMax, "precio")
+    productos.value = filterArrayMaxMin< IProductoDoli >(productos.value, newMin, newMax, "precio")
   })
 
   function mouseLargo( producto : IProductoDoli )
