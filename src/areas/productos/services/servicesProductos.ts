@@ -1,40 +1,31 @@
-export interface IBusquedaProducto {
-  tipo?:        string
-  id?:          number
-  completa?:    number
-  recientes?:   number
-  busqueda?:    string
-  sigla?:       string
-  proveedor?:   number
-  creador?:     number
-  minimo?:      number
-  maximo?:      number
-  soloConImg?:  number
-//limite?:      number
-//idUsuarios?:  string | number
-//favorito?:    number
-//esCliente?:   number
-//esProveedor?: number
-//municipio?:   string
-//area?:        string
-//orden?:       "ASC" | "DESC"  
-}
-//import {  storeToRefs     } from 'pinia'
+import {  IQueryProducto    } from "src/areas/productos/models/BusquedaProductos"
 import {  getURL,
           getFormData     } from "src/services/APIMaco"
 import {  useFetch        } from "src/useSimpleOk/useFetch"
-//import {  useStoreUser    } from 'src/stores/user'
 import {  IProductoDoli,
           ProductoDoli    } from "src/areas/productos/models/ProductoDolibarr"
-
+import {  ID_URL_Ok       } from "src/useSimpleOk/useTools"
 
 export function servicesProductos() 
 {
   const { miFetch           } = useFetch()
   //const { permisos          } = storeToRefs( useStoreUser() )  
-  
-  async function buscarProductos( query : IBusquedaProducto ) : Promise< IProductoDoli[] >
+ 
+  //* ////////////////////////////////////////////////////////////////////// Buscar Acuerdo 
+  async function buscarProducto(  id : string ) : Promise< IProductoDoli | false >
   {
+    const idOk                  = ID_URL_Ok( id )
+    if(  !idOk)                 return false    
+    const busqueda              = { tipo: "producto", completa: 1, id: idOk }
+    const productos             = await buscarProductos( busqueda )
+
+    if(!!productos.length)      return( productos[0] ) 
+    else                        return false
+  }
+  
+  async function buscarProductos( query : IQueryProducto ) : Promise< IProductoDoli[] >
+  {
+    console.log("query: ", query);
     return new Promise( async (resolver, rechazar ) =>
     {
       let { data, ok            } = await miFetch( getURL("listas", "productos-dolibarr"),
@@ -68,6 +59,7 @@ export function servicesProductos()
 
 
   return {
+    buscarProducto,
     buscarProductos,
   }
 }

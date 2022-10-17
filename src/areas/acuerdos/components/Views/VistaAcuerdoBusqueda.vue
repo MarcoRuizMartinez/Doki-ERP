@@ -63,7 +63,10 @@
       <template
         #body-cell-contacto     ="props">
         <q-td   :props          ="props">
-          <span class="ellipsis" v-html="props.value.empresaYnombre"></span>
+          <span
+            class               ="ellipsis"
+            v-html              ="props.value.empresaYnombre"
+          ></span>
           <tooltip-contacto :contacto="props.value" />
         </q-td>
       </template>

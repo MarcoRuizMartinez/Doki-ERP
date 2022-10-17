@@ -42,8 +42,7 @@
   import    formulario              from "src/areas/productos/components/FormularioProducto.vue"
   import    documentos              from "components/archivos/ModuloArchivos.vue"
 
-  const { editarURL         
-                            } = useControlProductos()  
+  const { editarURL         } = useControlProductos()  
   const { producto,
           loading
                             } = storeToRefs( useStoreProducto() )                                

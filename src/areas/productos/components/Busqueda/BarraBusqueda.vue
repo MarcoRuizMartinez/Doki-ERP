@@ -14,7 +14,7 @@
         >
         <!-- //* ///////////////////////////////////////////////// Busqueda general -->
         <input-buscar           clearable hundido
-          v-model               ="busqueda.tercero"
+          v-model               ="busqueda.nombre"
           label                 ="Búsqueda"
           class                 ="width220"
           icon                  ="mdi-layers-search"
@@ -24,12 +24,11 @@
         titulo                  ="Estado"
         class-conenido          ="grilla-ribom"
         >
-        <!-- //* ///////////////////////////////////////////////// Comercial Acuerdo -->
+        <!-- //* ///////////////////////////////////////////////// Creador -->
         <select-usuario         hundido clearable
-          v-model               ="busqueda.comercial"
+          v-model               ="busqueda.creador"
           class                 ="width160"
-          label                 ="Asesor"
-          :autoselect           ="autoSelectUsuario"
+          label                 ="Creador"
           :area                 ="usuario.area"
           :readonly             ="!permisos.acceso_total"
         />
@@ -140,14 +139,9 @@
   import {  storeToRefs         } from 'pinia'
   import {  useStoreApp         } from 'src/stores/app'
   import {  useStoreUser        } from 'src/stores/user'
-  import {  useStoreAcuerdo     } from 'src/stores/acuerdo'
+  import {  useStoreProducto    } from 'src/stores/producto'
   // * /////////////////////////////////////////////////////////////////////// Componibles
-  import {  dexieOrigenesContacto,
-            dexieCondicionesPago,
-            dexieFormasPago,
-            dexieMetodosEntrega,
-            getMunicipioDB
-                                } from "src/services/useDexie"
+  //import {                      } from "src/services/useDexie"
   import {  fechaValida,
             formatoPrecio,
             getQueryRouterDate,
@@ -158,93 +152,57 @@
                                 } from "src/useSimpleOk/useTools"
   // * /////////////////////////////////////////////////////////////////////// Modelos
   import {  Areas               } from "src/models/TiposVarios"
-  import {  IQueryAcuerdo,
-            IBusquedaAcuerdo    } from "src/areas/acuerdos/models/BusquedaAcuerdos"
-  import {  estadosCtz,
-            estadosPed          } from "src/areas/acuerdos/models/ConstantesAcuerdos"
-
+  import {  IQueryProducto,
+            IBusquedaProducto   } from "src/areas/productos/models/BusquedaProductos"
   // * /////////////////////////////////////////////////////////////////////// Componentes
   import    fieldsetFiltro        from "components/utilidades/Fieldset.vue"
   import    inputNumber           from "components/utilidades/input/InputFormNumber.vue"
   import    selectLabelValue      from "components/utilidades/select/SelectLabelValue.vue"
-  import    municipios            from "components/utilidades/select/SelectMunicipios.vue"
   import    multiLabelValue       from "components/utilidades/select/SelectLabelValueMulti.vue"
-  import    inputFecha            from "src/components/utilidades/input/InputFecha.vue"
   import    selectUsuario         from "src/areas/usuarios/components/SelectUsuario.vue"
   import    inputBuscar           from "src/components/utilidades/input/InputSimple.vue"
 
   const router                    = useRouter()
   let queryURL                    = router.currentRoute.value.query
 
-  const origenes                  = dexieOrigenesContacto()
-  const condicionesPago           = dexieCondicionesPago()
-  const formasPago                = dexieFormasPago()
-  const metodosEntrega            = dexieMetodosEntrega()
-
   const { usuario, permisos     } = storeToRefs( useStoreUser() )
-  const { busqueda, acuerdos    } = storeToRefs( useStoreAcuerdo() )
+  const { busqueda, productos   } = storeToRefs( useStoreProducto() )
   const { tabs                  } = storeToRefs( useStoreApp() )
-
-  const opcionesFacturado         = [{value:0, label:'No facturado'},   {value:1, label:'Facturado'   }]
-  const opcionesTotales           = [{value:0, label:'Sin totalizar'},  {value:1, label:'Totalizado'  }]
-  const opcionesIVA               = [{value:0, label:'Sin IVA'},        {value:1, label:'Con IVA'     }]
-  const opcionesTerceroTipo       = [{value:0, label:'Externo'},        {value:1, label:'Interno'     }]
-  const opcionesOrdenesProv       = [{value:0, label:'Sin ordenes'},    {value:1, label:'Con ordenes' }]
-  const estados                   = computed(()=>   busqueda.value.esCotizacion ? estadosCtz.filter(e => e.value >= -1)
-                                                  : busqueda.value.esPedido     ? estadosPed.filter(e => e.value >= -1)
-                                                  : [] )
-  
-  const autoSelectUsuario         = computed(()=> Object.keys(queryURL).length === 0 ? true : getQueryRouterNumber( queryURL.comercial ) ?? false )
-  const siguientePagina           = computed(()=> busqueda.value.pagina + (acuerdos.value.length >= busqueda.value.resultadosXPage ? 1 : 0) )
+  const siguientePagina           = computed(()=> busqueda.value.pagina + (productos.value.length >= busqueda.value.resultadosXPage ? 1 : 0) )
   const haySiguientePagina        = computed(()=> busqueda.value.pagina !== siguientePagina.value )
   let   copiaQ                    = ""
   let   bloqueoInicio             = true
 
   onMounted(()=>{
     tabs.value                    = { activa : "tab_1", alerts: [ false, true]}
+    asignarQueryRouterACampos()
   })
 
-  watch([estados, origenes, condicionesPago, formasPago], ([es,or,co,fp])=>{
+  /* watch([estados, origenes, condicionesPago, formasPago], ([es,or,co,fp])=>{
     // Estan cargados las opciones, para que estas se puedan asignar desde la query de la URL
     if(!!es.length && !!or.length && !!co.length && !!fp.length ){
       asignarQueryRouterACampos()
     }
-  })
+  }) */
 
   async function asignarQueryRouterACampos()
   {
-    busqueda.value.tercero        = getQueryRouterString    ( queryURL.tercero      )
-    busqueda.value.contacto       = getQueryRouterString    ( queryURL.contacto     )
-    busqueda.value.desde          = getQueryRouterDate      ( queryURL.fechaDesde   )
-    busqueda.value.hasta          = getQueryRouterDate      ( queryURL.fechaHasta   )
+    busqueda.value.nombre         = getQueryRouterString    ( queryURL.nombre       )
     busqueda.value.precioMinimo   = getQueryRouterNumber    ( queryURL.subtotalMin  )
     busqueda.value.precioMaximo   = getQueryRouterNumber    ( queryURL.subtotalMax  )
     //busqueda.value.creador        = getQueryRouterNumber    ( queryURL.creador      )
-    busqueda.value.area           = getQueryRouterLabelValue( queryURL.area,              Areas                 )
-    busqueda.value.facturado      = getQueryRouterLabelValue( queryURL.facturado,         opcionesFacturado     )
-    busqueda.value.conIva         = getQueryRouterLabelValue( queryURL.conIva,            opcionesIVA           )
-    busqueda.value.totalizado     = getQueryRouterLabelValue( queryURL.conTotal,          opcionesTotales       )
-    busqueda.value.tipoTercero    = getQueryRouterLabelValue( queryURL.interno,           opcionesTerceroTipo   )
-    busqueda.value.conOrdenes     = getQueryRouterLabelValue( queryURL.conOrdenes,        opcionesOrdenesProv   )
-    busqueda.value.estados        = getQueryRouterLabelValueArray ( queryURL.estados,     estados.value         )    
-    busqueda.value.formaPago      = getQueryRouterLabelValueArray ( queryURL.formaPago,   formasPago.value      )
-    busqueda.value.entrega        = getQueryRouterLabelValueArray ( queryURL.entrega,     metodosEntrega.value  )
-    busqueda.value.condiciones    = getQueryRouterLabelValueArray ( queryURL.condiciones, condicionesPago.value )
-    busqueda.value.origenes       = getQueryRouterLabelValueArray ( queryURL.origenes,    origenes.value        )
-    if(!!queryURL.municipio)
-      busqueda.value.municipio    = await getMunicipioDB( Array.isArray(queryURL.municipio) ? 0 : +queryURL.municipio ) 
-    
-      bloqueoInicio                 = false
+    bloqueoInicio                 = false
   }
 
   const emit = defineEmits<{
-    (e: 'buscar',   value: IQueryAcuerdo  ): void
+    (e: 'buscar',   value: IQueryProducto ): void
     (e: 'limpiar',                        ): void
     (e: 'exportar',                       ): void    
   }>()
 
   watch(busqueda, (b)=>
     {
+      console.log("watch busqueda: ", busqueda);
       if(bloqueoInicio) return
       checkAlertTabs(b)
       //if( !permisos.value.acceso_total )
@@ -254,21 +212,24 @@
     { deep: true }
   )
 
-  function checkAlertTabs( b : IBusquedaAcuerdo ){
-    tabs.value.alerts[0]  = ( !!b.tercero           || !!b.contacto           || fechaValida( b.desde ) || fechaValida( b.hasta ) ||
+  function checkAlertTabs( b : IBusquedaProducto ){
+/*     tabs.value.alerts[0]  = ( !!b.tercero           || !!b.contacto           || fechaValida( b.desde ) || fechaValida( b.hasta ) ||
                               !!b.estados.length    || !!b.condiciones.length || !!b.facturado.label    || !!b.comercial
                             )
     tabs.value.alerts[1]  = ( !!b.formaPago.length  || !!b.entrega.length     || !!b.origenes.length    || !!b.conIva.label       ||  
                               !!b.area.label        || !!b.creador            || !!b.municipio.id       || !!b.totalizado.label   ||  
                               !!b.tipoTercero.label ||!!b.conOrdenes.label    ||!!b.precioMinimo        || !!b.precioMaximo
-                            )
+                            ) */
   }
 
 
   function buscar( origen : string = "" )
   {
     const query         = busqueda.value.query
+    console.log("buscar: ", buscar);
+    console.log("query: ", query);
     const qString       = JSON.stringify(query)
+    console.log("qString: ", qString);
     if(copiaQ           !== qString)
       copiaQ            = qString
     else if(origen      === "")
@@ -277,7 +238,6 @@
     if(!!Object.keys(query).length)
     {
       router.replace({ query: {...query }  })
-      query.acuerdo     = busqueda.value.acuerdo
       query.tipo        = "busqueda"
       emit("buscar", query)
     }

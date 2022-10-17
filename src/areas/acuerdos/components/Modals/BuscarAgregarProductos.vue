@@ -149,13 +149,12 @@
   import {  IProductoCategoria,
             ProductoCategoria   } from "src/areas/productos/models/ProductoCategoria"
   import {  IProductoDoli       } from "src/areas/productos/models/ProductoDolibarr"
+  import {  IQueryProducto      } from "src/areas/productos/models/BusquedaProductos"
 // * /////////////////////////////////////////////////////////////////////////////////// Componibles
   import {  useControlProductos } from "src/areas/acuerdos/controllers/ControlLineasProductos"
-  import {  servicesProductos,
-            IBusquedaProducto   } from "src/areas/productos/services/servicesProductos"
-
+  import {  servicesProductos   } from "src/areas/productos/services/servicesProductos"
   import {  dexieCategoriasProducto
-                              } from "src/services/useDexie"
+                                } from "src/services/useDexie"
   import {  
             sortArray,
             useTools,
@@ -212,6 +211,10 @@
     buscarSiProductosEstanEnGrupo()
   }
 
+  function busquedaVacia() : boolean {
+    return  !categoria.value.value && busquedaTxt.value.length < 3
+  }
+
   function procesarProductosDeBusqueda( productosProcesar : IProductoDoli[] ) : IProductoDoli[]
   {
     if(usuario.value.areaEsEscom)
@@ -250,7 +253,7 @@
             [{ label: 'Cerrar', color: 'white', handler: cerrar }]
         )
   }
-
+ 
   function cerrar(){
     emit("cerrar")
     modales.value.añadirProductos  = false
@@ -293,9 +296,9 @@
     }
   }
 
-  function getQuery() : IBusquedaProducto
+  function getQuery() : IQueryProducto
   {
-    let q : IBusquedaProducto = { completa: +true }
+    let q : IQueryProducto = { completa: +true }
 
     if(busquedaTxt.value.length  >= 3  ) {
       busquedaTxt.value       = busquedaTxt.value.trim()
@@ -310,7 +313,5 @@
     return q
   }
 
-  function busquedaVacia() : boolean {
-    return  !categoria.value.value && busquedaTxt.value.length < 3
-  }
+
 </script>

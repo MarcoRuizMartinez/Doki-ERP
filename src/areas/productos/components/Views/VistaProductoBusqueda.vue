@@ -28,15 +28,11 @@
       </barra-busqueda>
     </template>
     <!-- //* //////////////////////////////////////////////////////// Tabla resultados-->
-    <q-table                    borbordered dense flat
-      class                     ="fit tabla-maco"
-      row-key                   ="id"
-      :rows                     ="productos"
-      :columns                  ="columnas"
-      :visible-columns          ="columnasVisibles"
-      :rows-per-page-options    ="[100]"
-      >
-    </q-table>
+    <div  class               ="bg-grey-3 fit">
+      <tabla
+        tipo-vista            ="grilla"
+      />
+    </div>
   </ventana>
 </template>
   
@@ -59,7 +55,7 @@
   import {  generarCSVDesdeTabla} from "src/useSimpleOk/UtilFiles"
   // * /////////////////////////////////////////////////////////////////////// Modelos
   import {  BusquedaProducto,
-            IQueryProducto       } from "src/areas/productos/models/BusquedaProductos"
+            IQueryProducto      } from "src/areas/productos/models/BusquedaProductos"
   import {  Columna, IColumna   } from "src/models/Tabla"
   import {  ModosVentana,
             ALMACEN_LOCAL       } from "src/models/TiposVarios"  
@@ -68,15 +64,15 @@
   import    selectColumnas        from "components/utilidades/select/SelectColumnas.vue"
   import    tabsBusqueda          from "src/areas/productos/components/Busqueda/TabsBusqueda.vue"
   import    barraBusqueda         from "src/areas/productos/components/Busqueda/BarraBusqueda.vue"
-  // * ////////////////////////// Columnas
+  import    tabla                 from "src/areas/productos/components/TablaProductos/TablaProductos.vue"
   
+  // * ////////////////////////// Columnas
+  const { buscarProductos       } = servicesProductos()
   const { usuario, permisos     } = storeToRefs( useStoreUser() )  
   const { producto,
           productos,
           busqueda,              
                                 } = storeToRefs( useStoreProducto() )  
-  //const { getProductos          } = servicesProductos()
-  const { buscarProducto        } = useControlProductos()  
   const { esMobil, aviso        } = useTools()
   
   const modo                      = ref< ModosVentana >("esperando-busqueda")  
@@ -101,15 +97,16 @@
   })
 
   onUnmounted(()=>{
-    productos.value                = []
+    productos.value               = []
     busqueda.value                = new BusquedaProducto()
   })  
 
   async function buscar( query : IQueryProducto )
   {
+    console.log("vista buscar query: ", query);
     productos.value               = []            
     modo.value                    = "buscando"
-    //productos.value               = await getProductos( query )
+    productos.value               = await buscarProductos( query )
     modo.value                    = !!productos.value.length ? "normal" : "sin-resultados"
   }
 
@@ -119,29 +116,29 @@
     productos.value               = []
   }
 
-  function vistaRapida(index : number)
+  /* function vistaRapida(index : number)
   {
     seleccionarProducto(index)
     ventanaVistaRapida.value      = true    
-  }
+  } */
 
-  function anteriorProducto()
+  /* function anteriorProducto()
   {
     if(!puedeAnterior.value) return 
     seleccionarProducto( indexSelect.value - 1)
-  }
+  } */
 
-  function siguienteProducto()
+  /* function siguienteProducto()
   {
     if(!puedeSiguiente.value) return 
     seleccionarProducto( indexSelect.value + 1)
-  }
+  } */
 
-  function seleccionarProducto( index : number )
+  /* function seleccionarProducto( index : number )
   {    
     indexSelect.value             = index
     producto.value                = productos.value[index]
-  }
+  } */
 
   function crearColumnas(){
     columnas.value                = [
