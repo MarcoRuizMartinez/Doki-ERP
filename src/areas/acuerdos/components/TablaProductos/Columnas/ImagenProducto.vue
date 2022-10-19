@@ -9,13 +9,21 @@
       class               ="imagen-woo-sm cursor-pointer"
       spinner-color       ="white"
       @click              ="clickImagen( linea )"
-    />
+      >
+      <template v-slot:loading>
+        <q-spinner-dots color="white" />
+      </template>
+    </q-img>
     <q-tooltip            class="bg-black">
       <q-img
         :src              ="linea.imagen300px"
         class             ="imagen-woo-lg"
         spinner-color     ="white"
-      />
+        >
+        <template v-slot:loading>
+          <q-spinner-dots color="white" />
+        </template>
+      </q-img>
     </q-tooltip>
   </div>
   <visor-imagen

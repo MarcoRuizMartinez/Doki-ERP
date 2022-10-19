@@ -2,6 +2,7 @@
   <titulo
     class                   ="col-12"
     @click                  ="generarPDFCotizacion"
+    @recargar               ="recargar"
   />
   <botonera
     class                   ="col-12"
@@ -53,7 +54,7 @@
   //* ///////////////////////////////////////////////////////////////////////////////// Core
   import {  ref,
             watch,
-            //toRefs,
+            toRefs,
             provide,
             PropType,
                                   } from "vue"
@@ -89,6 +90,7 @@
   const { aprobarCotizacion,
           anularAcuerdo,
           editarAcuerdo,
+          buscarAcuerdo,
           eliminarAcuerdo,
           validarAcuerdo,
                             } = useControlAcuerdo()
@@ -101,7 +103,7 @@
     tipo: { required: true, type: String as PropType< TTipoAcuerdo > },
   })
 
-  //const { id, tipo }          = toRefs( props )  
+  const { id, tipo }          = toRefs( props )  
 
   watch ( [()=>acuerdo.value.id, ()=>acuerdo.value.tipo],
           ()=> {
@@ -111,7 +113,6 @@
         )
 
   provide('superminimizado', minimizadoTodo)
-  
 
   async function generarPDFCotizacion()
   {
@@ -121,8 +122,11 @@
       srcPDF.value              = await generarPDF( acuerdo.value )
       loading.value.pdf         = false
     }
-  } 
+  }
 
+  async function recargar(){
+    await buscarAcuerdo( tipo.value, id.value )
+  }
 /*
 import {  useRouter             } from 'vue-router'
 const router                = useRouter()

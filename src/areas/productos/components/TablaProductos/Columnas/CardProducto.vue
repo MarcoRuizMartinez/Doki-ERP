@@ -57,7 +57,11 @@
         <q-img
           :src            ="producto.imagen300px"
           ratio           ="1"
-        />
+          >
+          <template v-slot:loading>
+            <q-spinner-dots color="white" />
+          </template>
+        </q-img>
         <Tooltip v-if     ="!producto.activo">
           <div class      ="text-h6 text-center">Producto inactivo</div>
           <table    class ="text-1_2em">

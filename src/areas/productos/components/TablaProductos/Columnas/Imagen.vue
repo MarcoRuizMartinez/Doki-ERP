@@ -5,12 +5,19 @@
     ratio               ="1"
     :class              ="{ 'op40' : !producto.activo  }"
     >
+    <template v-slot:loading>
+      <q-spinner-dots color="white" />
+    </template>
     <Tooltip>
     <q-img
-        :src            ="producto.imagen300px"
-        class           ="imagen-woo-lg"
-        ratio           ="1"
-    /> 
+      :src              ="producto.imagen300px"
+      class             ="imagen-woo-lg"
+      ratio             ="1"
+      >
+      <template v-slot:loading>
+        <q-spinner-dots color="white" />
+      </template>
+    </q-img>
     </Tooltip>
   </q-img>    
 </template>

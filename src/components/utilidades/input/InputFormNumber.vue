@@ -330,9 +330,7 @@
     if(retorno.value      == "StringFormat")
       retorno_            = modelo.value
 
-    console.log("valor: B", retorno_);
     emit("update:modelValue", retorno_ )
-    
   }
 
   function regla( valor : string | number )

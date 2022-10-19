@@ -110,7 +110,6 @@
 
   function mouseLargo( producto : IProductoDoli )
   {
-    console.log("producto: ", producto);
     if( !producto.activo ) return
 
     if( producto.elegido )

@@ -41,7 +41,7 @@ export function useControlProductos()
   }
 
   async function deGruposAProductos()
-  {
+  {    
     await borrarGruposSinProductos()
     acuerdo.value.productos         = GrupoLineas.getProductosDesdeGrupos( acuerdo.value.proGrupos )
     if(!acuerdo.value.esEstadoBoceto){
@@ -61,7 +61,6 @@ export function useControlProductos()
     if(!ok && acuerdo.value.productos.length >= 1)
       aviso("negative", "Error al ordenar")
   }
-
 
 
   async function agregarProductos( productosAdd : IProductoDoli[] = [],  cantidad : number = 1 ) : Promise<boolean>
@@ -246,9 +245,9 @@ export function useControlProductos()
       {
         grupoElegido.value.productos.splice(index, 1)
         if(!enLote){
-          grupoElegido.value.seleccion = []          
-        }
-        deGruposAProductos()
+          grupoElegido.value.seleccion = []
+          deGruposAProductos()
+        }        
       }, retrasoBorrar )
     }
 
@@ -267,7 +266,7 @@ export function useControlProductos()
     {
       await borrarLinea( linea, true, retrasoEntreLineas )
       linea.destacar( "borrar", "ocultar")
-      await pausa(retrasoEntreLineas)
+      await pausa( retrasoEntreLineas )
     }
     loading.value.borrarLote      = false
     aviso("positive", grupoElegido.value.seleccion.length === 1 ? "Producto borrado" : "Productos borrados")
@@ -390,8 +389,7 @@ export function useControlProductos()
     loading.value.editarLote    = false
     modales.value.editarEnLote  = false
     aviso("positive", grupoElegido.value.seleccion.length === 1 ? "Producto editado" : "Productos editados")
-    deGruposAProductos()
-  }
+    deGruposAProductos()  }
 
 
   function destacarLineaElegida( mostrarForm : boolean )

@@ -185,7 +185,7 @@
       mensajeSinResultados: { type: String,   default: "Sin resultados"           },
       mensajeCargando:      { type: String,   default: ""                         },
       iconoSinResultados:   { type: String,   default: "mdi-emoticon-sad-outline" },
-      backgroundColor:      { type: String,   default: "rgb(255 255 255 / 94%)"   },
+      backgroundColor:      { type: String,   default: "rgb(255 255 255 / 100%)"   },
       menuVisible:          { type: Boolean,  default: false                      },
       scroll:               { type: Boolean,  default: false                      },
       heightCard:           { default: 'auto',  type: [Number, String] as PropType<number | string>},

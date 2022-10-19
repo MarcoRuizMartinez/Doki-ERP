@@ -123,8 +123,13 @@
       emit('contactoNuevo', newContacto )
     }
     else
-    // New y Old son validos entonces es un cambio de contacto 
-    if(!!newContacto && !!oldContacto && !!oldContacto.id && oldContacto.terceroId === newContacto.terceroId) {
+    // New y Old son validos entonces es un cambio de contacto, y IDs son diferentes
+    if
+    (     !!newContacto     && !!oldContacto  &&  !!oldContacto.id
+      &&  oldContacto.terceroId === newContacto.terceroId
+      &&  oldContacto.id        !== newContacto.id
+    )
+    {
       emit('contactoCambio', newContacto, oldContacto.id )
     }
   })

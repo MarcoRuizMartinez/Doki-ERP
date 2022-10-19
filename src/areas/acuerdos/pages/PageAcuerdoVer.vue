@@ -54,14 +54,14 @@
           idCopiaAcuerdo              === acuerdo.value.id
           &&
           tipoCopiaAcuerdo            === acuerdo.value.tipo
-        )
-        {
-          acuerdo.value.proGrupos     = gruposBoceto
-          await deGruposAProductos()
-          const ok                    = await copiarProductos( acuerdo.value.productos )
-          if(ok)
-            await buscarAcuerdo( tipo.value, id.value )
-        }
+      )
+      {
+        acuerdo.value.proGrupos       = gruposBoceto
+        await deGruposAProductos()
+        const ok                      = await copiarProductos( acuerdo.value.productos )
+        if(ok)
+          await buscarAcuerdo( tipo.value, id.value )
       }
     }
+  }
   </script>

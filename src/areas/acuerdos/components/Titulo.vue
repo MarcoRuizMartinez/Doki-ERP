@@ -119,11 +119,15 @@
           class             ="column items-center q-pt-sm q-pl-sm"
           >
           <!-- //* ///////////////////////////////////////////////////// Icono Estado -->
-          <q-icon
+          <q-btn            flat dense
+            :icon           ="acuerdo.estadoIcono"
             size            ="lg"
-            class           ="op90"
-            :name           ="acuerdo.estadoIcono"
-          />
+            class           ="op90 cursor-pointer"
+            padding         ="0"
+            @click          ="emit('recargar')"
+            >
+            <Tooltip label  ="Recargar"/>
+          </q-btn>
           <!-- //* ///////////////////////////////////////////////////// Label Estado -->
           <span
             class           ="text-sombra-suave"

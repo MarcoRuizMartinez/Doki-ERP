@@ -135,7 +135,6 @@ export function useControlAcuerdo()
     }
   }
 
-
   //* ////////////////////////////////////////////////////////////////////// Cambiar contacto
   async function cambiarContactoAcuerdo( contacto : IContacto, idOld : number )
   {
@@ -143,7 +142,6 @@ export function useControlAcuerdo()
     await desvincularContactoAcuerdo( idOld )
     await vincularContactoAcuerdo   ( contacto )
   }
-
 
   //* ////////////////////////////////////////////////////////////////////// Asignar nuevo contacto
   async function vincularContactoAcuerdo( contacto : IContacto )
