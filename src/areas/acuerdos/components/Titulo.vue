@@ -77,7 +77,7 @@
           :class            ="esMobil ? 'q-ma-none q-pa-none' : 'q-mt-sm'"
           >
           <a
-            :href           ="urlDolibarr + acuerdo.id"
+            :href           ="acuerdo.urlDolibarr"
             target          ="_blank"
             >
             {{acuerdo.ref}}
@@ -154,11 +154,6 @@
   const   imgIcono            = computed(()=>   acuerdo.value.esCotizacion  ? "iconoCotizacion.webp"
                                               : acuerdo.value.esPedido      ? "iconoPedido.webp"
                                               : "")
-  const   urlDolibarr         = computed(()=> process.env.URL_DOLIBARR +
-                                              ( acuerdo.value.esCotizacion   ? "/comm/propal/card.php?id="
-                                              : acuerdo.value.esPedido      ? "/commande/card.php?id="
-                                              : "")
-                                        )
 
   const emit                  = defineEmits(["click", "recargar"])
 

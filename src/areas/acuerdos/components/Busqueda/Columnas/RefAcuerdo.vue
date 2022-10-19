@@ -16,7 +16,15 @@
       padding         ="none"
       size            ="md"
       @click          ="emit('vistaRapida')"
-    />    
+    />
+    <q-btn            flat dense round
+      icon            ="mdi-alpha-d-circle"
+      class           ="op40 op100-hover q-ml-sm"
+      padding         ="none"
+      size            ="md"
+      target          ="_blank"
+      :href           ="acuerdo.urlDolibarr"
+    />       
     <router-link
 
       class         ="fuente-mono"
@@ -43,7 +51,5 @@
   const props               = defineProps({
     acuerdo:  { required: true, type: Object as PropType< IAcuerdo > },
   })
-  const emit                = defineEmits(["vistaRapida"])
-
-  const   urlDolibarr       = process.env.URL_DOLIBARR
+  const emit                = defineEmits(["vistaRapida"])  
 </script>

@@ -82,7 +82,6 @@
   const usuario                   = computed( () => storeUser.usuario)
   const urlPerfil                 = computed( () => process.env.URL_DOLIBARR + "/user/card.php?id=" + storeUser.usuario.id + "&action=edit") 
 
-
   function salir()
   {
     //store.commit('usuario/setLogueado', false)

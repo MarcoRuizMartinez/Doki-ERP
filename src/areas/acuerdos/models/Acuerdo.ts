@@ -10,17 +10,17 @@ import {  TIPO_ACUERDO,
           TTipoAcuerdo,
           getTipoAcuerdoPlural
                                             } from "./ConstantesAcuerdos"
-import {  X100, fechaCorta                  } from "../../../useSimpleOk/useTools"
-import {  ILineaAcuerdo,    LineaAcuerdo    } from "../../../areas/acuerdos/models/LineaAcuerdo"
-import {  ITercero,         Tercero         } from "../../../areas/terceros/models/Tercero"
-import {  IUsuario,         Usuario         } from "../../../areas/usuarios/models/Usuario"
-import {  IContacto,        Contacto        } from "../../../areas/terceros/models/Contacto"
-import {  ICondicionPago,   CondicionPago   } from "../../../models/Diccionarios/CondicionPago"
-import {  IFormaPago,       FormaPago       } from "../../../models/Diccionarios/FormaPago"
-import {  IMetodoEntrega,   MetodoEntrega   } from "../../../models/Diccionarios/MetodoEntrega"
-import {  IOrigenContacto,  OrigenContacto  } from "../../../models/Diccionarios/OrigenContacto"
-import {  IGrupoLineas,     GrupoLineas     } from "../../../areas/acuerdos/models/GrupoLineasAcuerdo"
-import {  ITiempoEntrega,   TiempoEntrega   } from "../../../models/Diccionarios/TiempoEntrega"
+import {  X100, fechaCorta                  } from "src/useSimpleOk/useTools"
+import {  ILineaAcuerdo,    LineaAcuerdo    } from "src/areas/acuerdos/models/LineaAcuerdo"
+import {  ITercero,         Tercero         } from "src/areas/terceros/models/Tercero"
+import {  IUsuario,         Usuario         } from "src/areas/usuarios/models/Usuario"
+import {  IContacto,        Contacto        } from "src/areas/terceros/models/Contacto"
+import {  ICondicionPago,   CondicionPago   } from "src/models/Diccionarios/CondicionPago"
+import {  IFormaPago,       FormaPago       } from "src/models/Diccionarios/FormaPago"
+import {  IMetodoEntrega,   MetodoEntrega   } from "src/models/Diccionarios/MetodoEntrega"
+import {  IOrigenContacto,  OrigenContacto  } from "src/models/Diccionarios/OrigenContacto"
+import {  IGrupoLineas,     GrupoLineas     } from "src/areas/acuerdos/models/GrupoLineasAcuerdo"
+import {  ITiempoEntrega,   TiempoEntrega   } from "src/models/Diccionarios/TiempoEntrega"
 import {  getCondicionesPagoDB,
           getFormasPagoDB,
           getMetodosEntregaDB,
@@ -48,6 +48,7 @@ export interface IAcuerdo
   ref:                        string
   refCorta:                   string
   refCliente:                 string
+  urlDolibarr:                string
   title:                      string // Titulo HTML
   terceroId:                  number
   tercero:                    ITercero
@@ -264,6 +265,13 @@ export class Acuerdo implements IAcuerdo
     }
   } */
 
+  get urlDolibarr() : string {
+    return process.env.URL_DOLIBARR + (   this.esCotizacion ? "/comm/propal/card.php?id="
+                                        : this.esPedido      ? "/commande/card.php?id="
+                                        : ""
+                                      ) + this.id
+  }
+  
   get emoji() :  string {
     let emoji     = this.tipo === TIPO_ACUERDO.COTIZACION ? "📜"
                   : this.tipo === TIPO_ACUERDO.PEDIDO     ? "🛒"

@@ -44,6 +44,4 @@
     acuerdo:  { required: true, type: Object as PropType< IAcuerdo > },
   })
   const emit                = defineEmits(["vistaRapida"])
-
-  const   urlDolibarr       = process.env.URL_DOLIBARR
 </script>
