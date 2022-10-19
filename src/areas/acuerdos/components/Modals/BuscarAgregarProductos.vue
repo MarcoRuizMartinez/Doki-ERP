@@ -190,6 +190,7 @@
 
   const { 
           productos,
+          productosFil,
           seleccion,
           //busqueda,
                             } = storeToRefs( useStoreProducto() )  
@@ -197,8 +198,7 @@
   const precioMinQuery        = ref < number >()
   const precioMaxQuery        = ref < number >()
   const cantidad              = ref < number >()
-  const soloConImagen         = ref < boolean>(false)
-
+  const soloConImagen         = ref < boolean>( false )
 
   async function buscar()
   {
@@ -207,6 +207,7 @@
     modo.value                = "buscando"
     productos.value           = await buscarProductos( getQuery() )
     productos.value           = procesarProductosDeBusqueda( productos.value )    
+    productosFil.value        = productos.value
     modo.value                = !!productos.value.length ? "normal" : "sin-resultados"
     buscarSiProductosEstanEnGrupo()
   }

@@ -112,7 +112,12 @@
               >
               <Tooltip label      ="Descargar"/>
             </q-btn>
-          </div>          
+          </div>
+          <grilla-lista
+            v-model               ="tipoVista"
+            color                 ="white"
+            por-defecto           ="lista"
+          />          
         </div>
       </fieldset-filtro>      
     </q-tab-panel>
@@ -161,12 +166,15 @@
   import    multiLabelValue       from "components/utilidades/select/SelectLabelValueMulti.vue"
   import    selectUsuario         from "src/areas/usuarios/components/SelectUsuario.vue"
   import    inputBuscar           from "src/components/utilidades/input/InputSimple.vue"
+  import    grillaLista           from "components/utilidades/ToggleGrillaLista.vue"
 
   const router                    = useRouter()
   let queryURL                    = router.currentRoute.value.query
 
   const { usuario, permisos     } = storeToRefs( useStoreUser() )
-  const { busqueda, productos   } = storeToRefs( useStoreProducto() )
+  const { busqueda,
+          tipoVista,
+          productos,            } = storeToRefs( useStoreProducto() )
   const { tabs                  } = storeToRefs( useStoreApp() )
   const siguientePagina           = computed(()=> busqueda.value.pagina + (productos.value.length >= busqueda.value.resultadosXPage ? 1 : 0) )
   const haySiguientePagina        = computed(()=> busqueda.value.pagina !== siguientePagina.value )
@@ -202,7 +210,7 @@
 
   watch(busqueda, (b)=>
     {
-      console.log("watch busqueda: ", busqueda);
+      //console.log("watch busqueda: ", busqueda);
       if(bloqueoInicio) return
       checkAlertTabs(b)
       //if( !permisos.value.acceso_total )
@@ -226,10 +234,10 @@
   function buscar( origen : string = "" )
   {
     const query         = busqueda.value.query
-    console.log("buscar: ", buscar);
-    console.log("query: ", query);
+    //console.log("buscar: ", buscar);
+    //console.log("query: ", query);
     const qString       = JSON.stringify(query)
-    console.log("qString: ", qString);
+    //console.log("qString: ", qString);
     if(copiaQ           !== qString)
       copiaQ            = qString
     else if(origen      === "")

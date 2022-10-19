@@ -52,14 +52,14 @@
           <q-btn
             v-bind        ="estiloBotones('arriba')"
             v-touch-repeat:0:100.mouse  ="sumar"
-            :disable      ="( numero ?? 0 ) + paso > maximo || readonly"
+            :disable      ="btnSumarDisable"
           />
           <q-btn
             v-bind        ="estiloBotones('abajo')"
             v-touch-repeat:0:100.mouse  ="restar"
-            :disable      ="( numero ?? 0 ) - paso < minimo || readonly"
+            :disable      ="btnRestarDisable"
           />      
-        </div>    
+        </div>
       </template>
     </q-input>
   </div>
@@ -70,6 +70,7 @@
   import {  
             ref,
             toRefs,
+            computed,
             PropType,
             onMounted,
             watch
@@ -79,35 +80,37 @@
   import {  EstadoVerificar       } from "src/models/TiposVarios"
   import {  btnNumeroPaso         } from "src/useSimpleOk/useEstilos"
   import {  ValidationRule        } from "quasar"
-  import {  esValorOk             } from "src/useSimpleOk/useTools"
+  import {  valorValido,  
+            strOrNumToNum         } from "src/useSimpleOk/useTools"
 
+  const NUM_MAX           = 9_999_999_999
   const props             = defineProps(
     {
-      modelValue:   { required: true,         type: [Number,  String  ],  default: ""  },
-      alerta:       { default:  false,        type: [Boolean, String  ] },
-      autofocus:    { default:  false,        type: Boolean             },
-      conDecimales: { default:  false,        type: Boolean             },
-      copy:         { default:  false,        type: Boolean             },
-      disable:      { default:  false,        type: Boolean             },
-      hundido:      { default:  false,        type: Boolean             },
-      icon:         { default:  "",           type: String              },
-      label:        { default:  "",           type: String              },
-      clearable:    { default:  false,        type: Boolean             },
-      noUndefined:  { default:  false,        type: Boolean             },
-      readonly:     { default:  false,        type: Boolean             },
-      soloPositivo: { default:  false,        type: Boolean             },
-      paso:         { default:  0,            type: Number              },
-      debounce:     { default:  1200,         type: [String, Number]    },
-      maximo:       { default:  9999999999,   type: [String, Number]    },
-      minimo:       { default:  -999999999,   type: [String, Number]    },
-      maxEnteros:   { default:  0,            type: [String, Number]    },
-      estadoCheck:  { default:  "off",        type: String as PropType< EstadoVerificar > },
-      retorno:      { default:  "Number",     type: String as PropType< "Number"  | "String" | "StringFormat" > },
-      rules:        { default:  [],           type: Array  as PropType< ValidationRule[] > },
-      separadorMil: { default:  "coma",       type: String as PropType< "coma"    | "punto" > },
-      tipo:         { default:  "numero",     type: String as PropType< "precio"  | "porcentaje" | "numero" > },
-      colores:      { default:  "gris-flat",  type: String as PropType< "gris"  | "verde-rojo" | "gris-flat" >  },
-      iconos:       { default:  "flecha",     type: String as PropType< "suma"  | "flecha" >            },
+      modelValue:   { required: true,           type: [Number,  String  ],  default: ""  },
+      alerta:       { default:  false,          type: [Boolean, String  ] },
+      autofocus:    { default:  false,          type: Boolean             },
+      conDecimales: { default:  false,          type: Boolean             },
+      copy:         { default:  false,          type: Boolean             },
+      disable:      { default:  false,          type: Boolean             },
+      hundido:      { default:  false,          type: Boolean             },
+      icon:         { default:  "",             type: String              },
+      label:        { default:  "",             type: String              },
+      clearable:    { default:  false,          type: Boolean             },
+      noUndefined:  { default:  false,          type: Boolean             },
+      readonly:     { default:  false,          type: Boolean             },
+      soloPositivo: { default:  false,          type: Boolean             },
+      paso:         { default:  0,              type: Number              },
+      debounce:     { default:  1200,           type: [String, Number]    },
+      maximo:       { default:   9_999_999_999, type: [String, Number]    },
+      minimo:       { default:  -9_999_999_999, type: [String, Number]    },
+      maxEnteros:   { default:  0,              type: [String, Number]    },
+      estadoCheck:  { default:  "off",          type: String as PropType< EstadoVerificar > },
+      retorno:      { default:  "Number",       type: String as PropType< "Number"  | "String" | "StringFormat" > },
+      rules:        { default:  [],             type: Array  as PropType< ValidationRule[] > },
+      separadorMil: { default:  "coma",         type: String as PropType< "coma"    | "punto" > },
+      tipo:         { default:  "numero",       type: String as PropType< "precio"  | "porcentaje" | "numero" > },
+      colores:      { default:  "gris-flat",    type: String as PropType< "gris"  | "verde-rojo" | "gris-flat" >  },
+      iconos:       { default:  "flecha",       type: String as PropType< "suma"  | "flecha" >            },
     } 
   )
 
@@ -123,6 +126,7 @@
           separadorMil,
           maxEnteros,
           retorno,
+          readonly,
           maximo,
           minimo,
           paso,
@@ -142,6 +146,17 @@
 
   const modelo            = ref< string >( "" ) // typeof modelValue.value == "string" ? modelValue.value : modelValue.value.toString()
   const maxlength         = ref< number >( -1 )
+
+  const valorMaxModelo    = ref< number >( NUM_MAX )
+  watch(maximo, (newMax)=>{ valorMaxModelo.value  = strOrNumToNum( newMax, NUM_MAX ) } )
+
+  const valorMinModelo    = ref< number >( -NUM_MAX )
+  watch(minimo, (newMin)=>{ valorMinModelo.value  = strOrNumToNum( newMin, -NUM_MAX ) } )
+
+
+  const btnSumarDisable   = computed( ()=> ( numero.value ?? 0 ) + paso.value > valorMaxModelo.value || readonly.value )
+  const btnRestarDisable  = computed( ()=> ( numero.value ?? 0 ) - paso.value < ( minimo.value ?? -NUM_MAX )  || readonly.value )
+
   let   regex             = new RegExp("",  "")
 
   onMounted ( ()=> {
@@ -167,7 +182,7 @@
           (
             noUndefined.value
             &&
-            esValorOk(nuevoModelo)
+            valorValido(nuevoModelo)
           )
           ||
           (
@@ -194,7 +209,7 @@
     if(!numero.value) 
       numero.value        = 0
 
-    numero.value          = +Number( numero.value + paso.value ).toFixed(2)    
+    numero.value          = +Number( numero.value + paso.value ).toFixed(2)
     formatear()
   }
 
@@ -279,8 +294,8 @@
         numero.value      = parseInt ( numero.value.toString() )        
       }
 
-      numero.value        =+( numero.value > maximo.value ? maximo.value
-                            : numero.value < minimo.value ? minimo.value
+      numero.value        =+( numero.value > valorMaxModelo.value ? valorMaxModelo.value
+                            : numero.value < valorMinModelo.value ? valorMinModelo.value
                             : numero.value )
 
       modelo.value        = formato.format( numero.value )
@@ -296,9 +311,9 @@
     if(numero.value === undefined)
     {
       if(!!modelValue){
-        const valor = typeof modelValue.value == "string" ? "" : undefined
-        emit("update:modelValue", valor )
-        
+        //const valor = typeof modelValue.value == "string" ? "" : undefined
+        const valor = retorno.value === "Number" ? undefined : ""
+        emit("update:modelValue", valor )        
       }
 
       return
@@ -315,6 +330,7 @@
     if(retorno.value      == "StringFormat")
       retorno_            = modelo.value
 
+    console.log("valor: B", retorno_);
     emit("update:modelValue", retorno_ )
     
   }

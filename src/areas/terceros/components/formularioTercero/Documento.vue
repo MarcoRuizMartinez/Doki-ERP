@@ -286,10 +286,10 @@
     if((!modelo.value.tipo.esCedula && !modelo.value.tipo.esNIT) || !modelo.value.numero)
       return false
 
-    let tipoDoc        = modelo.value.tipo.esCedula ? "CC" : "NIT"
-    
+    const numero        = parseInt( modelo.value.numero )  
+    const tipoDoc       = numero >= 800_000_000 && numero <= 999_999_999 ? "NIT" : "CC" //modelo.value.tipo.esCedula ? "CC" : "NIT"
 
-    let { ok, data}    = await miFetch(  getURL( "listas", "verifik"),
+    const { ok, data }  = await miFetch(  getURL( "listas", "verifik"),
                                                   {
                                                     method: "POST",
                                                     body:   getFormData( tipoDoc, { numero: modelo.value.numero } )

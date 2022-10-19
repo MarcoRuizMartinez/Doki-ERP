@@ -162,6 +162,14 @@ export function ID_URL_Ok( id : string ) : number
   return idEvaluar
 }
 
+export function strOrNumToNum( numero : string | number, defecto : number  ) : number 
+{
+    if(typeof numero      === "number") 
+      return valorValido(numero) ? numero : defecto 
+    else
+      return !!numero ? parseFloat(numero) : defecto
+}
+
 
 export function valuesObjectArrayToNumber( array : any[] ) : any[]
 {
@@ -326,15 +334,16 @@ export const fechaCorta = ( fecha : Date ) : string => {
 }
 
 export const fechaLarga = ( fecha : Date ) : string => fecha.toLocaleDateString('es-CO', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
-export const esValorOk  = ( valor : number | string ) : boolean => {
-  let ok                = true 
-  if( valor             == undefined  ||
-      valor             == null       ||
-      ( typeof valor    == "number" && isNaN( valor ) )
-  )
-    ok                  = false
 
-  return ok
+export const valorValido  = ( valor : any ) : boolean => {
+  let valido              = true
+  if( valor               === undefined ||
+      valor               === null      ||
+      ( typeof valor      === "number" && isNaN( valor ) )
+  )
+    valido                = false
+
+  return valido
 }
 
 export const siNo       = ( boleano : boolean, conIconos : boolean = true ) : string => {
@@ -386,19 +395,7 @@ function siNoLargo( verdaderoFalso : boolean ) : string {
 }
 
 
-export const valorValido = ( valor : any ) : boolean => {
-  let valido = true
 
-  if
-  (
-    valor === undefined ||
-    valor === null      ||
-    (typeof valor === "number" && isNaN(valor))
-  )
-    valido = false
-
-  return valido
-}
 
 export function getQueryRouterLabelValue
 (

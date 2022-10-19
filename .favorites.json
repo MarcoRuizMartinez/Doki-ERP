@@ -115,5 +115,14 @@
         "workspaceRoot": null,
         "workspacePath": null,
         "id": "TjnbkgL51va6mEPD"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\estad\\Apps\\SimpleOk-ERP\\src\\stores\\producto.ts",
+        "parent_id": null,
+        "fsPath": "c:\\Users\\estad\\Apps\\SimpleOk-ERP\\src\\stores\\producto.ts",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "ezOP2oJgIxTYFQH1"
     }
 ]

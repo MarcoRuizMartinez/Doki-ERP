@@ -1,0 +1,25 @@
+<template>
+  <q-img
+    :src                ="producto.imagen100px"
+    class               ="imagen-woo-xs q-mr-md"
+    ratio               ="1"
+    :class              ="{ 'op40' : !producto.activo  }"
+    >
+    <Tooltip>
+    <q-img
+        :src            ="producto.imagen300px"
+        class           ="imagen-woo-lg"
+        ratio           ="1"
+    /> 
+    </Tooltip>
+  </q-img>    
+</template>
+<script setup lang="ts">
+  // * /////////////////////////////////////////////////////////////////////////////////// Core
+  import {  PropType            } from "vue"
+  import {  IProductoDoli       } from "src/areas/productos/models/ProductoDolibarr"
+  
+  const props                 = defineProps({      
+    producto:         { required: true,  type: Object as PropType< IProductoDoli >  },
+  })
+</script>

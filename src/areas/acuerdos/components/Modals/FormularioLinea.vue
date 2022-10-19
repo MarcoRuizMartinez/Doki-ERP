@@ -259,7 +259,7 @@
     linea.value.descripcion     = linea.value.descripcion .replaceAll('"', "")
                                                           .replaceAll("'", "")
                                                           .replaceAll("&nbsp;", " ")
-                                                          .replaceAll("  ", " ")                                                          
+                                                          //.replaceAll("  ", " ")                                                          
                                                           .trim()
   }
 </script>

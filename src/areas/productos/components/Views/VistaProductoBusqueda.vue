@@ -19,6 +19,7 @@
         @limpiar              ="limpiarBusqueda"
         @exportar             ="descargarProductos"
         >
+
         <select-columnas
           v-model             ="columnasVisibles"
           label               ="Columnas"
@@ -29,8 +30,8 @@
     </template>
     <!-- //* //////////////////////////////////////////////////////// Tabla resultados-->
     <div  class               ="bg-grey-3 fit">
-      <tabla
-        tipo-vista            ="grilla"
+      <tabla                  modo-busqueda
+        :tipo-vista           ="tipoVista"
       />
     </div>
   </ventana>
@@ -61,24 +62,25 @@
             ALMACEN_LOCAL       } from "src/models/TiposVarios"  
   // * /////////////////////////////////////////////////////////////////////// Componentes
   import    ventana               from "components/utilidades/Ventana.vue"  
-  import    selectColumnas        from "components/utilidades/select/SelectColumnas.vue"
+  import    selectColumnas        from "components/utilidades/select/SelectColumnas.vue"  
   import    tabsBusqueda          from "src/areas/productos/components/Busqueda/TabsBusqueda.vue"
   import    barraBusqueda         from "src/areas/productos/components/Busqueda/BarraBusqueda.vue"
   import    tabla                 from "src/areas/productos/components/TablaProductos/TablaProductos.vue"
-  
+
   // * ////////////////////////// Columnas
   const { buscarProductos       } = servicesProductos()
   const { usuario, permisos     } = storeToRefs( useStoreUser() )  
   const { producto,
           productos,
-          busqueda,              
+          productosFil,
+          busqueda,
+          tipoVista
                                 } = storeToRefs( useStoreProducto() )  
   const { esMobil, aviso        } = useTools()
   
   const modo                      = ref< ModosVentana >("esperando-busqueda")  
   const indexSelect               = ref< number >(-1)
-  const ventanaVistaRapida        = ref< boolean >(false)  
-  //const filtroMovil               = ref< boolean >(false)
+  const ventanaVistaRapida        = ref< boolean >(false)    
   const titulo                    = computed(()=>
   {
     return productos.value.length > 0 ? `Resultado: ${productos.value.length} ` +
@@ -103,10 +105,10 @@
 
   async function buscar( query : IQueryProducto )
   {
-    console.log("vista buscar query: ", query);
     productos.value               = []            
     modo.value                    = "buscando"
     productos.value               = await buscarProductos( query )
+    productosFil.value            = productos.value
     modo.value                    = !!productos.value.length ? "normal" : "sin-resultados"
   }
 

@@ -11,7 +11,8 @@
 
   const props                 = defineProps({
       modelValue: { required: true,     type: String                            },
-      porDefecto: { default:  "grilla", type: String as PropType< TTipoLista >  },  
+      color:      { default:  "grey-3", type: String                            },  
+      porDefecto: { default:  "grilla", type: String as PropType< TTipoLista >  },
   })
 
   const emit = defineEmits<{
@@ -32,6 +33,7 @@
   <q-btn-toggle
     v-model               ="tipoVista"
     v-bind                ="toggleGris"
+    :color                ="color"
     :options              ="[
                               { value: 'grilla', slot: 'grilla' },
                               { value: 'lista',  slot: 'lista' }

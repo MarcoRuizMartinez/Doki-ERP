@@ -25,7 +25,6 @@ export function servicesProductos()
   
   async function buscarProductos( query : IQueryProducto ) : Promise< IProductoDoli[] >
   {
-    console.log("query: ", query);
     return new Promise( async (resolver, rechazar ) =>
     {
       let { data, ok            } = await miFetch( getURL("listas", "productos-dolibarr"),
