@@ -1,8 +1,9 @@
 <template>
-  <q-table                    dense
+  <q-table                    dense borbordered flat
     v-model:selected          ="seleccion"    
     row-key                   ="id"
     selection                 ="multiple"
+    class                     ="fit tabla-maco"
     table-header-class        ="q-my-md bg-gris text-bold shadow-1"
     :grid                     ="tipoVista === 'grilla'"
     :grid-header              ="tipoVista === 'grilla'"
