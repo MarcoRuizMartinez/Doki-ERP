@@ -150,8 +150,8 @@
   import    selectColumnas        from "components/utilidades/select/SelectColumnas.vue"
   import    linkTercero           from "src/areas/terceros/components/LinkTercero.vue"
   import    tooltipContacto       from "src/areas/terceros/components/contactos/TooltipContacto.vue"
-  import    tabsBusqueda          from "src/areas/acuerdos/components/Busqueda/TabsBusqueda.vue"
-  import    barraBusqueda         from "src/areas/acuerdos/components/Busqueda/BarraBusqueda.vue"
+  import    tabsBusqueda          from "src/areas/acuerdos/components/Busqueda/TabsBusquedaAcuerdos.vue"
+  import    barraBusqueda         from "src/areas/acuerdos/components/Busqueda/BarraBusquedaAcuerdos.vue"
   import    vistaAcuerdo          from "src/areas/acuerdos/components/Views/VistaAcuerdoVer.vue"  
   // * ////////////////////////// Columnas
   import    refAcuerdo            from "src/areas/acuerdos/components/Busqueda/Columnas/RefAcuerdo.vue"
@@ -163,7 +163,7 @@
     icono:  { required: true, type: String                              },
   })
   const { tipo }                  = toRefs(props) 
-  const title                     = useTitle("🔍 Buscar " + tipo.value)
+  //const title                     = useTitle("🔍 Buscar " + tipo.value)
   const { usuario, permisos     } = storeToRefs( useStoreUser() )  
   const { acuerdo,
           acuerdos,
@@ -191,6 +191,7 @@
     acuerdos.value                = []
     busqueda.value                = new BusquedaAcuerdo( tipo.value )
     crearColumnas()
+    useTitle("🔍 Buscar " + tipo.value)
   })
 
   onUnmounted(()=>{

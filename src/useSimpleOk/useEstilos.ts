@@ -35,6 +35,15 @@ export const btnRedondo = {
   padding:    "2px"
 }
 
+export const btnRedondoFlat = {
+  dense:      true,
+  flat:       true,
+  round:      true,
+  size:       "md",
+  padding:    "none",
+  class:      "op40 op100-hover q-ml-sm"
+}
+
 export const toggleGris = {
   dense:            true,
   push:             true,

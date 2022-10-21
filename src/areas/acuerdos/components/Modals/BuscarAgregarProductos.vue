@@ -106,6 +106,7 @@
     <div  class               ="bg-grey-3 fit">
       <tabla
         :tipo-vista           ="tipoVista"
+        :columnas             ="columnas"
         @agregar              ="agregarProductosAControl"
         @mouse-largo-nuevo    ="agregarProductosAControl"
         @mouse-largo-elegido  ="eliminarLineaDesdeBusqueda"
@@ -150,6 +151,7 @@
             ProductoCategoria   } from "src/areas/productos/models/ProductoCategoria"
   import {  IProductoDoli       } from "src/areas/productos/models/ProductoDolibarr"
   import {  IQueryProducto      } from "src/areas/productos/models/BusquedaProductos"
+  import {  IColumna, Columna   } from "src/models/Tabla"
 // * /////////////////////////////////////////////////////////////////////////////////// Componibles
   import {  useControlProductos } from "src/areas/acuerdos/controllers/ControlLineasProductos"
   import {  servicesProductos   } from "src/areas/productos/services/servicesProductos"
@@ -171,6 +173,14 @@
     (e: 'cerrar',         value: void           ): void
     (e: 'addLineas',      value: ILineaAcuerdo[]): void
   }>()
+
+  const columnas: IColumna[]  = [
+    new Columna           ({ name: "sigla",   sortable: false, label: "Producto",  visible: false }),
+    new Columna           ({ name: "ref",     sortable: false, label: "Filtrar",  clase: "text-bold" }),
+    new Columna           ({ name: "nombre"                                     }),
+    new Columna           ({ name: "precio",  sortable: false                   }),
+  ]
+
 
   const tipoVista             = ref<"grilla" | "lista">("grilla")
 

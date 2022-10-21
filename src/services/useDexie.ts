@@ -161,7 +161,7 @@ function useDexie( tabla : TABLAS, { cargarSiempre = false, demora = 0 } = param
   async function motorTabla()
   {
                                     await pausa( demora )
-    let largoDBTabla              = await db[ tabla ].count()
+    const largoDBTabla             = await db[ tabla ].count()
 
     if(largoDBTabla               == 0 && online.value )
     {
@@ -198,7 +198,7 @@ function useDexie( tabla : TABLAS, { cargarSiempre = false, demora = 0 } = param
   { 
     return db.transaction('r', db[ tabla ], async () =>
       {
-        let arrayResultado        = await db[ tabla ].toArray() 
+        const arrayResultado      = await db[ tabla ].toArray() 
         return arrayResultado 
       }
     )
@@ -208,14 +208,14 @@ function useDexie( tabla : TABLAS, { cargarSiempre = false, demora = 0 } = param
   {
     return new Promise( async (resolver, rechazar) =>
     {
-      let totalEnCloud            = await countEnCloud( tabla )
+      const totalEnCloud          = await countEnCloud( tabla )
       resolver( totalEnCloud      == largoLocal )
     })
   }
 
   async function pedirYguardarTabla()
   {
-    let     miBody                = new FormData()
+    const   miBody                = new FormData()
             miBody.append("tipo", tabla )
     const   url                   = process.env.URL_WEBSERVICES + "/listas/diccionarios.php"
 
@@ -223,11 +223,11 @@ function useDexie( tabla : TABLAS, { cargarSiempre = false, demora = 0 } = param
     {
         const resultado           = await fetch( url, { method: 'POST', body:   miBody })
         const resultadoJson       = await resultado.json()
-        let   listaCarga  :any    = []
+        const listaCarga  :any    = []
 
         if(!!resultadoJson)
         {
-          for( let item of resultadoJson )
+          for( const item of resultadoJson )
           {
             if
             (
@@ -311,7 +311,7 @@ function useDexie( tabla : TABLAS, { cargarSiempre = false, demora = 0 } = param
   {
     return new Promise( async (resolve, reject) =>
     {
-      let   miBody                = new FormData()
+      const miBody                = new FormData()
             miBody.append("tipo", tipo)
       const url                   = process.env.URL_WEBSERVICES + "/listas/diccionarios-count.php"
   
@@ -339,7 +339,7 @@ export async function getMunicipioDB( id : number ) : Promise < IMunicipio >
 {
   return db.transaction('r', db[ TABLAS.MUNICIPIOS ], async () =>
     {
-      let municipio         = await db[ TABLAS.MUNICIPIOS ].where("id").equals(id).toArray()
+      const municipio        = await db[ TABLAS.MUNICIPIOS ].where("id").equals( id ).toArray()
       if(municipio.length   == 1)
         return municipio[0]
       else
@@ -348,11 +348,24 @@ export async function getMunicipioDB( id : number ) : Promise < IMunicipio >
   )
 }
 
+export async function getCategoriaDB( sigla : string ) : Promise < IProductoCategoria >
+{
+  return db.transaction('r', db[ TABLAS.PRODUCTO_CATE ], async () =>
+    {
+      const categ           = await db[ TABLAS.PRODUCTO_CATE ].where("sigla").equals( sigla ).toArray()
+      if(categ.length   == 1)
+        return categ[0]
+      else
+        return new ProductoCategoria()
+    }
+  )
+}
+
 export async function getTipoDocumentoDB( id : number ) : Promise < ITipoDocumento >
 { 
   return db.transaction('r', db[ TABLAS.TIPOS_DOCUMENTOS ], async () =>
     {
-      let tipo              = await db[ TABLAS.TIPOS_DOCUMENTOS ].where("id").equals(id).toArray()
+      const tipo            = await db[ TABLAS.TIPOS_DOCUMENTOS ].where("id").equals(id).toArray()
       if(tipo.length        == 1)
         return tipo[0]
       else
@@ -365,7 +378,7 @@ export async function getUsuariosDB( ids : number[] ) : Promise < IUsuario[] >
 { 
   return db.transaction('r', db[ TABLAS.USUARIOS ], async () =>
     {
-      let usuarios          = await db[ TABLAS.USUARIOS ].where("id").anyOf( ...ids ).toArray()
+      const usuarios        = await db[ TABLAS.USUARIOS ].where("id").anyOf( ...ids ).toArray()
       if(usuarios.length    > 0)
         return usuarios
       else
@@ -378,7 +391,7 @@ export async function getUsuarioDB( id : number ) : Promise < IUsuario >
 {
   return db.transaction('r', db[ TABLAS.USUARIOS ], async () =>
     {
-      let usuario           = await db[ TABLAS.USUARIOS ].where("id").equals(id).toArray()
+      const usuario         = await db[ TABLAS.USUARIOS ].where("id").equals(id).toArray()
       if(usuario.length     == 1){
         usuario[0].terceroIdCtz = +usuario[0].terceroIdCtz
         return usuario[0]
@@ -393,7 +406,7 @@ export async function getCondicionesPagoDB( id : number ) : Promise < ICondicion
 { 
   return db.transaction('r', db[ TABLAS.CONDICION_PAGO ], async () =>
     {
-      let listaDB           = await db[ TABLAS.CONDICION_PAGO ].where("id").equals(id).toArray()
+      const listaDB         = await db[ TABLAS.CONDICION_PAGO ].where("id").equals(id).toArray()
       if(listaDB.length     == 1)
         return listaDB[0]
       else
@@ -406,7 +419,7 @@ export async function getFormasPagoDB( id : number ) : Promise < IFormaPago >
 { 
   return db.transaction('r', db[ TABLAS.FORMA_PAGO ], async () =>
     {
-      let listaDB           = await db[ TABLAS.FORMA_PAGO ].where("id").equals(id).toArray()
+      const listaDB         = await db[ TABLAS.FORMA_PAGO ].where("id").equals(id).toArray()
       if(listaDB.length     == 1)
         return listaDB[0]
       else
@@ -419,7 +432,7 @@ export async function getMetodosEntregaDB( id : number ) : Promise < IMetodoEntr
 { 
   return db.transaction('r', db[ TABLAS.METODO_ENTREGA ], async () =>
     {
-      let listaDB           = await db[ TABLAS.METODO_ENTREGA ].where("id").equals(id).toArray()
+      const listaDB          = await db[ TABLAS.METODO_ENTREGA ].where("id").equals(id).toArray()
       if(listaDB.length     == 1)
         return listaDB[0]
       else
@@ -432,7 +445,7 @@ export async function getOrigenContactoDB( id : number ) : Promise < IOrigenCont
 { 
   return db.transaction('r', db[ TABLAS.ORIGEN_CONTACTO ], async () =>
     {
-      let listaDB           = await db[ TABLAS.ORIGEN_CONTACTO ].where("id").equals(id).toArray()
+      const listaDB          = await db[ TABLAS.ORIGEN_CONTACTO ].where("id").equals(id).toArray()
       if(listaDB.length     == 1)
         return listaDB[0]
       else
@@ -445,7 +458,7 @@ export async function getUnidadDB( id : number ) : Promise < IUnidad >
 { 
   return db.transaction('r', db[ TABLAS.UNIDAD ], async () =>
     {
-      let listaDB           = await db[ TABLAS.UNIDAD ].where("id").equals(id).toArray()
+      const listaDB          = await db[ TABLAS.UNIDAD ].where("id").equals(id).toArray()
       if(listaDB.length     == 1)
         return listaDB[0]
       else
@@ -458,7 +471,7 @@ export async function getTiempoEntregaDB( id : number ) : Promise < ITiempoEntre
 { 
   return db.transaction('r', db[ TABLAS.TIEMPO_ENTREGA ], async () =>
     {
-      let listaDB           = await db[ TABLAS.TIEMPO_ENTREGA ].where("id").equals(id).toArray()
+      const listaDB          = await db[ TABLAS.TIEMPO_ENTREGA ].where("id").equals(id).toArray()
       if(listaDB.length     == 1)
         return listaDB[0]
       else
@@ -472,7 +485,7 @@ export async function getConstante( label : string ) : Promise < IConstante >
 { 
   return db.transaction('r', db[ TABLAS.CONSTANTE ], async () =>
     {
-      let listaDB           = await db[ TABLAS.CONSTANTE ].where("label").equals(label).toArray()
+      const listaDB          = await db[ TABLAS.CONSTANTE ].where("label").equals(label).toArray()
       if(listaDB.length     == 1)
         return listaDB[0]
       else
@@ -486,13 +499,13 @@ function checkListasVencidas() : boolean
   const TIEMPO_EXPIRAR  = 86_400_000 * 2 // ( 24 * 120)
 
   let fechaVencida      = false
-  let lastFecha         = LocalStorage.getItem( pre + ALMACEN_LOCAL.FECHA_LISTAS ) as number
+  const lastFecha       = LocalStorage.getItem( pre + ALMACEN_LOCAL.FECHA_LISTAS ) as number
   
   if( !lastFecha )
     fechaVencida        = true
   else
   {
-    let intervalo       = Date.now() - lastFecha
+    const intervalo     = Date.now() - lastFecha
     if( intervalo       > TIEMPO_EXPIRAR )
       fechaVencida      = true
   }

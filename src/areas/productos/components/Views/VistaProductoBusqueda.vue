@@ -5,13 +5,13 @@
     height                    ="100%"
     size-icon-carga           ="22em"
     icono                     ="mdi-package-variant-closed"
+    mensaje-sin-resultados    ="No se encontraron productos"
     :modo                     ="modo"
     :titulo                   ="titulo"
-    :padding-contenido        ="modo === 'normal' ? '0' : '12px' "
-    mensaje-sin-resultados    ="No se encontraron productos"
+    :padding-contenido        ="modo === 'normal' ? '0' : '12px'"
     >
     <template                 #barra>
-      <tabs-busqueda />
+      <!-- <tabs-busqueda /> -->
     </template>
     <template                 #menu>
       <barra-busqueda
@@ -19,19 +19,19 @@
         @limpiar              ="limpiarBusqueda"
         @exportar             ="descargarProductos"
         >
-
-        <select-columnas
+        <!-- <select-columnas
           v-model             ="columnasVisibles"
           label               ="Columnas"
           :almacen            ="ALMACEN_LOCAL.COL_PRODUCTOS"
           :options            ="columnas"
-        />
+        /> -->
       </barra-busqueda>
     </template>
     <!-- //* //////////////////////////////////////////////////////// Tabla resultados-->
     <div  class               ="bg-grey-3 fit">
       <tabla                  modo-busqueda
-        :tipo-vista           ="tipoVista"
+        :tipo-vista           ="busqueda.tipoVista"
+        :columnas             ="columnas"
       />
     </div>
   </ventana>
@@ -63,9 +63,9 @@
   // * /////////////////////////////////////////////////////////////////////// Componentes
   import    ventana               from "components/utilidades/Ventana.vue"  
   import    selectColumnas        from "components/utilidades/select/SelectColumnas.vue"  
-  import    tabsBusqueda          from "src/areas/productos/components/Busqueda/TabsBusqueda.vue"
-  import    barraBusqueda         from "src/areas/productos/components/Busqueda/BarraBusqueda.vue"
-  import    tabla                 from "src/areas/productos/components/TablaProductos/TablaProductos.vue"
+  import    tabsBusqueda          from "src/areas/productos/components/Busqueda/TabsBusquedaProductos.vue"
+  import    barraBusqueda         from "src/areas/productos/components/Busqueda/BarraBusquedaProductos.vue"
+  import    tabla                 from "src/areas/productos/components/TablaProductos/TablaProductos.vue"  
 
   // * ////////////////////////// Columnas
   const { buscarProductos       } = servicesProductos()
@@ -73,8 +73,7 @@
   const { producto,
           productos,
           productosFil,
-          busqueda,
-          tipoVista
+          busqueda,          
                                 } = storeToRefs( useStoreProducto() )  
   const { esMobil, aviso        } = useTools()
   
@@ -94,7 +93,6 @@
 
   onMounted(()=>{
     productos.value               = []
-    busqueda.value                = new BusquedaProducto()
     crearColumnas()
   })
 
@@ -144,7 +142,10 @@
 
   function crearColumnas(){
     columnas.value                = [
-      new Columna({ name: "ref"                                                   }),
+      new Columna           ({ name: "sigla",   sortable: false, label: "Producto", visible: false }),
+      new Columna           ({ name: "ref",     sortable: false,                  clase: "text-bold" }),
+      new Columna           ({ name: "nombre"                                     }),
+      new Columna           ({ name: "precio",  sortable: false                   }),
       /*       
       new Columna({ name: "refCliente",               label: "Ref cliente"        }),
       new Columna({ name: "estado"                                                }),
@@ -165,17 +166,23 @@
       Columna.ColumnaPrecio ({ name: "totalConIva",   label: "Total",             clase: "text-bold" }),
       */
     ]
-    
+
     columnasVisibles.value  = columnas.value.filter(c => c.visible ).map( c => c.name )       
   } 
 
+/*   const columnas: IColumna[]  = [
+    new Columna           ({ name: "sigla",   sortable: false, label: "Producto",  visible: false }),
+    new Columna           ({ name: "ref",     sortable: false, label: modoBusqueda.value ? "REF" : "Filtrar", clase: "text-bold" }),
+    new Columna           ({ name: "nombre"                                     }),
+    new Columna           ({ name: "precio",  sortable: false                   }),
+  ]
+ */
+
   function descargarProductos()
   {
-    /*
-    let ok = generarCSVDesdeTabla(  busqueda.value.producto,  columnas.value, productos.value )
+    let ok = generarCSVDesdeTabla(  "productos",  columnas.value, productos.value )
 
     if (ok) aviso("positive", "Archivo generado", "file")
     else    aviso("negative", "Error al generar el archivo...", "file" )
-    */
   }
 </script>

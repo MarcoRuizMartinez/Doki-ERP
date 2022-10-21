@@ -103,7 +103,10 @@
     if(modeloYvModelSonIguales()) return
       
     if(!!newValue && valorValido( newValue.value )){
-      modelo.value              = seleccionarEntreOpciones( newValue.value )//newValue as ILabelValue
+      if(!!opciones.value.length)
+        modelo.value            = seleccionarEntreOpciones( newValue.value )//newValue as ILabelValue
+      else 
+        modelo.value            = newValue
     }
     else{  
       modelo.value              = labelValueNulo
@@ -132,8 +135,7 @@
     if( valorValido(modelo.value) )
       emit("select", modelo.value) 
     else
-      emit("select", labelValueNulo) 
-    
+      emit("select", labelValueNulo)     
   }
 
   function setDefecto()
@@ -183,7 +185,4 @@
       opciones.value          = options.value.filter( v => v.label.toLowerCase().indexOf( labelMin ) > -1)
     })
   }
-
-
-
 </script>

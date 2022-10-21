@@ -1,7 +1,36 @@
 import {  ILabelValue,
-          labelValueNulo  } from "src/models/TiposVarios"
-import {  IUsuario        } from "src/areas/usuarios/models/Usuario"
+          labelValueNulo      } from "src/models/TiposVarios"
+import {  IUsuario            } from "src/areas/usuarios/models/Usuario"
+import {  valorValido         } from "src/useSimpleOk/useTools"
+import {  IProductoCategoria,
+          ProductoCategoria   } from "src/areas/productos/models/ProductoCategoria"
+/* import {  FiltroProductos,
+  IFiltroProductos      } from "src/areas/productos/models/FiltrosProductos" */
 
+export interface IBusquedaProducto {
+  c                     : ICamposBusqueda
+  f                     : IFiltroProductos
+  query                 : IQueryProducto
+  creador              ?: IUsuario
+  resultadosXPage       : number
+  pagina                : number
+  busquedaVacia         : boolean
+  tipoVista             : "grilla" | "lista"
+}
+
+export interface ICamposBusqueda {
+  nombre                : string
+  precioMinimo          : number | undefined
+  precioMaximo          : number | undefined
+  categoria             : IProductoCategoria
+}
+
+export interface IFiltroProductos {
+  filtroTexto           : string
+  precioMinimo          : number | undefined
+  precioMaximo          : number | undefined
+  preciosMaxOrMinValidos: boolean
+}
 
 export interface IQueryProducto {
   tipo                  ?: string
@@ -20,44 +49,48 @@ export interface IQueryProducto {
   orden                 ?: "ASC" | "DESC"
 }
 
-export interface IBusquedaProducto {
-  query                 : IQueryProducto
-  nombre                : string
-  precioMinimo          : number | undefined
-  precioMaximo          : number | undefined
-  creador              ?: IUsuario
-  resultadosXPage       : number
-  pagina                : number
-  busquedaVacia         : boolean
-}
 export class BusquedaProducto implements IBusquedaProducto
 {
-  nombre                : string  
-  precioMinimo          : number | undefined
-  precioMaximo          : number | undefined 
+  c                     : ICamposBusqueda
+  f                     : IFiltroProductos
   creador              ?: IUsuario
   resultadosXPage       : number
   pagina                : number
   busquedaVacia         : boolean
+  tipoVista             : "grilla" | "lista"
 
   constructor()
   {
-    this.nombre           = ""    
-    this.precioMinimo     = undefined
-    this.precioMaximo     = undefined
+    this.c                = // c de Campos
+    {
+      nombre              : "",
+      categoria           : new ProductoCategoria(),
+      precioMinimo        : undefined,
+      precioMaximo        : undefined,
+    }
+
+    this.f                = // f de Filtros
+    {
+      filtroTexto         : "",
+      precioMinimo        : undefined,
+      precioMaximo        : undefined,
+      get preciosMaxOrMinValidos() { return valorValido( this.precioMinimo ) || valorValido( this.precioMaximo ) }
+    }
+
     this.resultadosXPage  = 25
     this.pagina           = 1
     this.busquedaVacia    = true
+    this.tipoVista        = "lista"
   }
 
   get query() : IQueryProducto
   {
     const q : IQueryProducto       = {}
 
-    if(this.nombre.length  > 3)  q.busqueda       = this.nombre
-    
-    if(!!this.precioMinimo)       q.minimo   = this.precioMinimo
-    if(!!this.precioMaximo)       q.maximo   = this.precioMaximo
+    if(this.c.nombre.length  > 3)   q.busqueda   = this.c.nombre
+    if(!!this.c.categoria.value)    q.sigla      = this.c.categoria.sigla
+    if(!!this.c.precioMinimo)       q.minimo     = this.c.precioMinimo
+    if(!!this.c.precioMaximo)       q.maximo     = this.c.precioMaximo
 
     //if(!!this.area.label)         q.area          = this.area.value
     //if(!!this.facturado.label)    q.facturado     = this.facturado.value
@@ -77,8 +110,6 @@ export class BusquedaProducto implements IBusquedaProducto
     if(!this.busquedaVacia){
     //  q.limite                    = this.resultadosXPage
     //  q.offset                    = q.limite * (this.pagina - 1)
-      q.tipo      = 'busqueda'
-      q.completa  = 1
     }
     return q
   }

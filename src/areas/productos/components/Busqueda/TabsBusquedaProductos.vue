@@ -26,12 +26,5 @@
       >
       <Tooltip label  ="Mas opciones"/>
     </q-tab>
-<!--     <q-tab
-      label           ="Filtros"
-      name            ="tab_3"
-      icon            ="mdi-filter"
-      >
-      <Tooltip label  ="Validar"/>
-    </q-tab>     -->
   </q-tabs>  
 </template>

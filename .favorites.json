@@ -109,20 +109,28 @@
     },
     {
         "type": "File",
-        "name": "c:\\Users\\muble\\Documents\\GitHub\\SimpleOk-ERP\\src\\areas\\productos\\components\\TablaProductos\\TablaProductos.vue",
-        "parent_id": null,
-        "fsPath": "c:\\Users\\muble\\Documents\\GitHub\\SimpleOk-ERP\\src\\areas\\productos\\components\\TablaProductos\\TablaProductos.vue",
-        "workspaceRoot": null,
-        "workspacePath": null,
-        "id": "TjnbkgL51va6mEPD"
-    },
-    {
-        "type": "File",
         "name": "c:\\Users\\estad\\Apps\\SimpleOk-ERP\\src\\stores\\producto.ts",
         "parent_id": null,
         "fsPath": "c:\\Users\\estad\\Apps\\SimpleOk-ERP\\src\\stores\\producto.ts",
         "workspaceRoot": null,
         "workspacePath": null,
         "id": "ezOP2oJgIxTYFQH1"
+    },
+    {
+        "type": "Group",
+        "name": "Productos",
+        "parent_id": null,
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "W2nQEcGvtkMI6zZr"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\estad\\Apps\\SimpleOk-ERP\\src\\stores\\producto.ts",
+        "parent_id": "W2nQEcGvtkMI6zZr",
+        "fsPath": "c:\\Users\\estad\\Apps\\SimpleOk-ERP\\src\\stores\\producto.ts",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "3YvTECk4lNPzMUqR"
     }
 ]

@@ -12,6 +12,7 @@ export interface IProductoDoli {
   id:                       number
   ref:                      string
   nombre:                   string
+  urlDolibarr:              string
   sigla:                    string
   descripcion:              string
   iva:                      number
@@ -164,6 +165,8 @@ export class ProductoDoli implements IProductoDoli
 
     return precio
   }
+
+  get urlDolibarr() : string { return process.env.URL_DOLIBARR + "/product/card.php?id=" + this.id }
 
   get imagenFull() : string
   {

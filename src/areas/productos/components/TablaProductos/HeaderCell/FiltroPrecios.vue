@@ -2,8 +2,8 @@
   <q-th>
     <q-btn                flat dense no-caps
       label               ="Precio"
-      :icon               ="filtro.preciosMaxOrMinValidos ? 'mdi-filter-off'  : 'mdi-filter'"
-      :color              ="filtro.preciosMaxOrMinValidos ? 'info'            : 'grey-9'"
+      :icon               ="busqueda.f.preciosMaxOrMinValidos ? 'mdi-filter-off'  : 'mdi-filter'"
+      :color              ="busqueda.f.preciosMaxOrMinValidos ? 'info'            : 'grey-9'"
       padding             ="0"
       size                ="12px"
       >
@@ -14,22 +14,22 @@
         >
         <div class        ="q-pa-sm filtro-panel bg-gris column items-center shadow-3">                            
           <input-number   hundido clearable
-            v-model       ="filtro.precioMinimo"
+            v-model       ="busqueda.f.precioMinimo"
             label         ="Precio mínimo"
             icon          ="mdi-currency-usd"
             class         ="q-mb-sm"
             style         ="max-width: 200px;"
             :paso         ="10000"
             :minimo       ="0"
-            :maximo       ="filtro.precioMaximo"
+            :maximo       ="busqueda.f.precioMaximo"
           />
           <input-number   hundido clearable
-            v-model       ="filtro.precioMaximo"
+            v-model       ="busqueda.f.precioMaximo"
             label         ="Precio máximo"
             icon          ="mdi-currency-usd"
             style         ="max-width: 200px;"
             :paso         ="10000"
-            :minimo       ="filtro.precioMinimo"
+            :minimo       ="busqueda.f.precioMinimo"
           />
           <q-btn          no-caps rounded flat
             label         ="Ordenar de menor a mayor"
@@ -63,7 +63,7 @@
   // * /////////////////////////////////////////////////////////////////////////////////// Componentes
   import    inputNumber           from "components/utilidades/input/InputFormNumber.vue"
 
-  const { filtro,
+  const { busqueda,
           productos,
           productosFil,
                             } = storeToRefs( useStoreProducto() )
@@ -73,7 +73,7 @@
     productosFil.value        = sortArray(productosFil.value, "precio", tipo)
   }
 
-  watch([ ()=> filtro.value.precioMinimo , ()=> filtro.value.precioMaximo], ([newMin, newMax]) =>{
+  watch([ ()=> busqueda.value.f.precioMinimo , ()=> busqueda.value.f.precioMaximo], ([newMin, newMax]) =>{
     productosFil.value        = filterArrayMaxMin< IProductoDoli >( productos.value, newMin, newMax, "precio" )
   })
 </script>

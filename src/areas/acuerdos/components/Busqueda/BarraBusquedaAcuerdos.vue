@@ -292,23 +292,23 @@
             <tr>
               <td>Subtotal:</td>
               <td class         ="text-bold fuente-mono">
-                {{formatoPrecio(acuerdos.map( a => a.totalConDescu ).reduce((acu, now) => acu + now))}}
+                {{ formatoPrecio( sumaAcuerdosSubtotal ) }}
               </td>
             </tr>
             <tr>
               <td>Sin fletes:</td>
               <td class         ="text-bold fuente-mono">
-                {{formatoPrecio(acuerdos.map( a => a.subTotalLimpio ).reduce((acu, now) => acu + now))}}
+                {{ formatoPrecio( sumaAcuerdosSubtotalLimpio ) }}
               </td>
-            </tr>     
+            </tr>
             <tr>
               <td>Total:</td>
               <td class         ="text-bold fuente-mono">
-                {{formatoPrecio(acuerdos.map( a => a.totalConIva ).reduce((acu, now) => acu + now))}}
+                {{ formatoPrecio( sumaAcuerdosTotal ) }}
               </td>
             </tr>
           </tbody>
-      </table>
+        </table>
       </fieldset-filtro>
     </q-tab-panel>
   </q-tab-panels>
@@ -380,6 +380,25 @@
   const autoSelectUsuario         = computed(()=> Object.keys(queryURL).length === 0 ? true : getQueryRouterNumber( queryURL.comercial ) ?? false )
   const siguientePagina           = computed(()=> busqueda.value.pagina + (acuerdos.value.length >= busqueda.value.resultadosXPage ? 1 : 0) )
   const haySiguientePagina        = computed(()=> busqueda.value.pagina !== siguientePagina.value )
+  const sumaAcuerdosSubtotal      = computed(()=> { 
+    let suma                      = 0
+    if(!!acuerdos.value && !!acuerdos.value.length)
+      suma                        = acuerdos.value.map( a => a.totalConDescu ?? 0 ).reduce((acu, now) => acu ?? 0 + now)
+    return suma
+  })
+  const sumaAcuerdosSubtotalLimpio= computed(()=> { 
+    let suma                      = 0
+    if(!!acuerdos.value && !!acuerdos.value.length)
+      suma                        = acuerdos.value.map( a => a.subTotalLimpio ).reduce((acu, now) => acu ?? 0 + now)
+    return suma
+  })
+  const sumaAcuerdosTotal         = computed(()=> { 
+    let suma                      = 0
+    if(!!acuerdos.value && !!acuerdos.value.length)
+      suma                        = acuerdos.value.map( a => a.totalConIva ).reduce((acu, now) => acu ?? 0 + now)
+    return suma
+  })  
+
   let   copiaQ                    = ""
   let   bloqueoInicio             = true
 

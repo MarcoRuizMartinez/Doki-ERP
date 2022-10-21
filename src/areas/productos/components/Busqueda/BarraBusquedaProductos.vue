@@ -8,19 +8,42 @@
       name                      ="tab_1"
       class                     ="row q-pa-none no-wrap scroll"
       >
+      <!-- //* ///////////////////////////////////////////////////////////// Busqueda y filtro -->
       <fieldset-filtro
         titulo                  ="Búsqueda"
         class-conenido          ="column q-gutter-xs"
         >
         <!-- //* ///////////////////////////////////////////////// Busqueda general -->
         <input-buscar           clearable hundido
-          v-model               ="busqueda.nombre"
+          v-model               ="busqueda.c.nombre"
           label                 ="Búsqueda"
           class                 ="width220"
           icon                  ="mdi-layers-search"
         />
+        <!-- //* ///////////////////////////////////////////////// Filtro texto -->
+        <input-buscar           clearable hundido
+          v-model               ="busqueda.f.filtroTexto"
+          label                 ="Filtro"
+          class                 ="width220"
+          icon                  ="mdi-filter"
+        />
       </fieldset-filtro>
+      <!-- //* ///////////////////////////////////////////////////////////// Busqueda y filtro -->
       <fieldset-filtro
+        titulo                  ="Búsqueda"
+        class-conenido          ="column q-gutter-xs"
+        >
+        <!-- //* ///////////////////////////////////////////////////////////// Campo Categoría -->
+        <select-label-value   use-input hundido clearable flat bordered
+          v-model             ="busqueda.c.categoria"
+          label               ="Categoría"
+          icon                ="mdi-file-tree-outline"
+          options-sort        ="nombre"
+          :options            ="categorias"          
+        />     
+      </fieldset-filtro> 
+      <fieldset-filtro
+        v-if                    ="false"
         titulo                  ="Estado"
         class-conenido          ="grilla-ribom"
         >
@@ -35,6 +58,7 @@
       </fieldset-filtro>
       <!-- //* /////////////////////////////////////////////////// Paginación -->
       <fieldset-filtro
+        v-if                    ="false" 
         titulo                  ="Paginas"
         class-conenido          ="grilla-ribom fit"
         >
@@ -113,16 +137,16 @@
               <Tooltip label      ="Descargar"/>
             </q-btn>
           </div>
-          <grilla-lista
-            v-model               ="tipoVista"
-            color                 ="white"
-            por-defecto           ="lista"
-          />          
         </div>
+        <grilla-lista
+        v-model               ="busqueda.tipoVista"
+        color                 ="white"
+        por-defecto           ="lista"
+      />        
       </fieldset-filtro>      
     </q-tab-panel>
     <!-- //* ///////////////////////////////////////////////////// Tab 2 -->
-    <q-tab-panel
+    <!-- <q-tab-panel
       name                      ="tab_2"
       class                     ="row q-pa-none no-wrap scroll"
       >
@@ -131,7 +155,7 @@
         class-conenido          ="column q-gutter-xs"
         >
       </fieldset-filtro>
-    </q-tab-panel>
+    </q-tab-panel> -->
   </q-tab-panels>
 </template>
 <script lang="ts" setup>
@@ -155,6 +179,9 @@
             getQueryRouterLabelValue,
             getQueryRouterLabelValueArray,
                                 } from "src/useSimpleOk/useTools"
+  import {  dexieCategoriasProducto,
+            getCategoriaDB,
+                                } from "src/services/useDexie"                                
   // * /////////////////////////////////////////////////////////////////////// Modelos
   import {  Areas               } from "src/models/TiposVarios"
   import {  IQueryProducto,
@@ -169,20 +196,26 @@
   import    grillaLista           from "components/utilidades/ToggleGrillaLista.vue"
 
   const router                    = useRouter()
-  let queryURL                    = router.currentRoute.value.query
+  let queryURL                    = router.currentRoute.value.query  
 
   const { usuario, permisos     } = storeToRefs( useStoreUser() )
   const { busqueda,
-          tipoVista,
           productos,            } = storeToRefs( useStoreProducto() )
   const { tabs                  } = storeToRefs( useStoreApp() )
+  const categorias                = dexieCategoriasProducto() 
   const siguientePagina           = computed(()=> busqueda.value.pagina + (productos.value.length >= busqueda.value.resultadosXPage ? 1 : 0) )
   const haySiguientePagina        = computed(()=> busqueda.value.pagina !== siguientePagina.value )
   let   copiaQ                    = ""
   let   bloqueoInicio             = true
 
+  const emit = defineEmits<{
+    (e: 'buscar',   value: IQueryProducto ): void
+    (e: 'limpiar',                        ): void
+    (e: 'exportar',                       ): void    
+  }>()
+
   onMounted(()=>{
-    tabs.value                    = { activa : "tab_1", alerts: [ false, true]}
+    tabs.value                    = { activa : "tab_1", alerts: [ false, true ]}
     asignarQueryRouterACampos()
   })
 
@@ -195,47 +228,38 @@
 
   async function asignarQueryRouterACampos()
   {
-    busqueda.value.nombre         = getQueryRouterString    ( queryURL.nombre       )
-    busqueda.value.precioMinimo   = getQueryRouterNumber    ( queryURL.subtotalMin  )
-    busqueda.value.precioMaximo   = getQueryRouterNumber    ( queryURL.subtotalMax  )
-    //busqueda.value.creador        = getQueryRouterNumber    ( queryURL.creador      )
+    console.log("asignarQueryRouterACampos: ");
+    busqueda.value.c.nombre       = getQueryRouterString    ( queryURL.busqueda     )
+    //busqueda.value.c.precioMinimo = getQueryRouterNumber    ( queryURL.subtotalMin  )
+    //busqueda.value.c.precioMaximo = getQueryRouterNumber    ( queryURL.subtotalMax  )
+    //busqueda.value.creador      = getQueryRouterNumber    ( queryURL.creador      )
+
+    if(!!queryURL.sigla)
+      busqueda.value.c.categoria  = await getCategoriaDB( Array.isArray(queryURL.sigla) ? "" : queryURL.sigla  ) 
+
+    console.log("busqueda.value.c.categoria: ", busqueda.value.c.categoria);
+
     bloqueoInicio                 = false
+    buscar()
   }
 
-  const emit = defineEmits<{
-    (e: 'buscar',   value: IQueryProducto ): void
-    (e: 'limpiar',                        ): void
-    (e: 'exportar',                       ): void    
-  }>()
 
-  watch(busqueda, (b)=>
+  watch(()=> busqueda.value.c, (c)=>
     {
-      //console.log("watch busqueda: ", busqueda);
+      console.log("watch(()=> busqueda.value.c: ", c);
       if(bloqueoInicio) return
-      checkAlertTabs(b)
+      //checkAlertTabs(c)
       //if( !permisos.value.acceso_total )
         //query.idComercial         = usuario.value.id
+      console.log("watch buscar")
       buscar()
     },
     { deep: true }
   )
 
-  function checkAlertTabs( b : IBusquedaProducto ){
-/*     tabs.value.alerts[0]  = ( !!b.tercero           || !!b.contacto           || fechaValida( b.desde ) || fechaValida( b.hasta ) ||
-                              !!b.estados.length    || !!b.condiciones.length || !!b.facturado.label    || !!b.comercial
-                            )
-    tabs.value.alerts[1]  = ( !!b.formaPago.length  || !!b.entrega.length     || !!b.origenes.length    || !!b.conIva.label       ||  
-                              !!b.area.label        || !!b.creador            || !!b.municipio.id       || !!b.totalizado.label   ||  
-                              !!b.tipoTercero.label ||!!b.conOrdenes.label    ||!!b.precioMinimo        || !!b.precioMaximo
-                            ) */
-  }
-
-
   function buscar( origen : string = "" )
   {
     const query         = busqueda.value.query
-    //console.log("buscar: ", buscar);
-    //console.log("query: ", query);
     const qString       = JSON.stringify(query)
     //console.log("qString: ", qString);
     if(copiaQ           !== qString)
@@ -245,8 +269,10 @@
 
     if(!!Object.keys(query).length)
     {
+      console.log("query: ", query);
       router.replace({ query: {...query }  })
       query.tipo        = "busqueda"
+      query.completa    = 1      
       emit("buscar", query)
     }
     else{
@@ -259,4 +285,16 @@
     asignarQueryRouterACampos()
     emit("limpiar")
   }
+
+
+  function checkAlertTabs( b : IBusquedaProducto ){
+    /*
+    tabs.value.alerts[0]  = ( !!b.tercero           || !!b.contacto           || fechaValida( b.desde ) || fechaValida( b.hasta ) ||
+                              !!b.estados.length    || !!b.condiciones.length || !!b.facturado.label    || !!b.comercial
+                            )
+    tabs.value.alerts[1]  = ( !!b.formaPago.length  || !!b.entrega.length     || !!b.origenes.length    || !!b.conIva.label       ||  
+                              !!b.area.label        || !!b.creador            || !!b.municipio.id       || !!b.totalizado.label   ||  
+                              !!b.tipoTercero.label ||!!b.conOrdenes.label    ||!!b.precioMinimo        || !!b.precioMaximo
+                            ) */
+  }  
 </script>

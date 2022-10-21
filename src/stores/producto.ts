@@ -10,8 +10,7 @@ import {  ProductoDoli,
           IProductoDoli         } from "src/areas/productos/models/ProductoDolibarr"
 import {  BusquedaProducto,
           IBusquedaProducto     } from "src/areas/productos/models/BusquedaProductos"
-import {  FiltroProductos,
-          IFiltroProductos      } from "src/areas/productos/models/FiltrosProductos"
+
 
 interface IProductoState {
   producto            : IProductoDoli,
@@ -21,8 +20,6 @@ interface IProductoState {
   loading             : ILoading,  
   modales             : IModales,
   busqueda            : IBusquedaProducto,
-  filtro              : IFiltroProductos,
-  tipoVista           : "grilla" | "lista"
 }
 
 export const useStoreProducto = defineStore('producto', {
@@ -32,9 +29,7 @@ export const useStoreProducto = defineStore('producto', {
     productosFil      : [],
     seleccion         : [],
     busqueda          : new BusquedaProducto(),
-    filtro            : new FiltroProductos(),
     loading           : LoadingDefault,
     modales           : ModalesDefault, 
-    tipoVista         : "lista"
   }),
 });
