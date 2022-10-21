@@ -112,7 +112,7 @@
   // ////////////////////////////////////////////////////////////////////// Componentes
   import    btnEditarLote       from "./BotonesEditarEnLote.vue"
   import    subtotalToggle      from "./SubtotalToggle.vue"
-  import    precioTabla         from "./Columnas/ColumnaPrecioProductos.vue"
+  import    precioTabla         from "src/areas/productos/components/Tools/PrecioProducto.vue"
   import    imagenProducto      from "./Columnas/ImagenProducto.vue"
   import    nombreDescripcion   from "./Columnas/NombreDescripcion.vue"
   import    cantidad            from "./Columnas/Cantidad.vue"

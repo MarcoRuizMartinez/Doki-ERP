@@ -63,8 +63,8 @@
           </template>
         </q-img>
         <Tooltip v-if     ="!producto.activo">
-          <div class      ="text-h6 text-center">Producto inactivo</div>
-          <table    class ="text-1_2em">
+          <div class      ="text-h6 text-center width200">Producto inactivo</div>
+          <table    class ="text-1_1em">
             <tr><td>Activo en Dolibarr:     </td><td>{{ siNo(producto.en_venta)}}         </td></tr>
             <tr><td>Activo en proveedor:    </td><td>{{ siNo(producto.activo_proveedor)}} </td></tr>
             <tr><td>Disponible en proveedor:</td><td>{{ siNo(producto.disponible)}}       </td></tr>

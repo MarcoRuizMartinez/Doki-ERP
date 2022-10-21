@@ -142,7 +142,7 @@ export interface IAcuerdo
   pdfCorreo:                  string
   pdfCiudad:                  string
   esTerceroCtz:               boolean
-  getAcuerdoForApi:        ( usuarioId : number ) => any
+  getAcuerdoForApi:           ( usuarioId : number ) => any
   //reorganizarProductosGrupos: () => void
 
 
@@ -567,7 +567,7 @@ export class Acuerdo implements IAcuerdo
   get fechaEntregaCorta()     : string { return fechaCorta( this.fechaEntrega     ) }
 
   getAcuerdoForApi( usuarioId : number ) : any {
-    let ctzForApi : any = {
+    const acuForApi : any = {
       socid:                  this.tercero.id,
       ref_client:             this.refCliente,
       date:                   getMilisecShortForApiDolibarr( new Date() ),
@@ -590,27 +590,27 @@ export class Acuerdo implements IAcuerdo
     }
 
     if(!!this.tiempoEntrega.id)
-      ctzForApi.availability_id     = this.tiempoEntrega.id
+      acuForApi.availability_id     = this.tiempoEntrega.id
 
     if(!!this.origenContacto.id)
-      ctzForApi.demand_reason_id    = this.origenContacto.id
+      acuForApi.demand_reason_id    = this.origenContacto.id
 
     if(!!this.formaPago.id)
-      ctzForApi.mode_reglement_id   = this.formaPago.id
+      acuForApi.mode_reglement_id   = this.formaPago.id
 
     if(!!this.condicionPago.id)
-      ctzForApi.cond_reglement_id   = this.condicionPago.id
+      acuForApi.cond_reglement_id   = this.condicionPago.id
 
     if(!!this.metodoEntrega.id)
-      ctzForApi.shipping_method_id  = this.metodoEntrega.id
+      acuForApi.shipping_method_id  = this.metodoEntrega.id
 
     if(!!this.fechaEntrega.valueOf())
-      ctzForApi.date_livraison      = getMilisecShortForApiDolibarr( this.fechaEntrega )
+      acuForApi.date_livraison      = getMilisecShortForApiDolibarr( this.fechaEntrega )
 
     if(!!this.fechaFinValidez.valueOf())
-      ctzForApi.fin_validite        = getMilisecShortForApiDolibarr( this.fechaFinValidez )
+      acuForApi.fin_validite        = getMilisecShortForApiDolibarr( this.fechaFinValidez )
 
-    return ctzForApi
+    return acuForApi
   }
 
 

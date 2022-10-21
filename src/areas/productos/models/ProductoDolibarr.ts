@@ -2,6 +2,7 @@ import {  IUnidad,
           Unidad            } from "src/models/Diccionarios/Unidad"
 import {  getUnidadDB       } from "src/services/useDexie"
 import {  roundInt,
+          valorValido,
           X100_Aumento,
           X100_Calcular     } from "src/useSimpleOk/useTools"
 
@@ -35,7 +36,9 @@ export interface IProductoDoli {
   precio_aumento_loco:      number
   precio_escom:             number
   descuentoCalculado:       number
+  costo:                    number        // precio que viene de la tabla llx_product > cost_price
   costo_adicional:          number
+  costoTotal:               number
   creador_id:               number
   disponible:               boolean       // Disponible proveedor
   en_compra:                boolean
@@ -46,8 +49,7 @@ export interface IProductoDoli {
   hecho_en:                 string        // "colombia"
   id_extra:                 number        // ID extra field 
   id_producto_pro:          number        // ID producto proveedor 
-  id_proveedor:             number
-  costo:                    number        // precio que viene de la tabla llx_product > cost_price
+  id_proveedor:             number  
   precio_proveedor:         number        // precio que es el minimo de la tabla productos_proveedor > precio
   precio_publico:           number
   precio_promocion:         number
@@ -60,6 +62,7 @@ export interface IProductoDoli {
   elegido:                  boolean       // Se utiliza para indicar que el producto a sido agregado a lista
   esRefEspecial:            boolean
   activo:                   boolean
+  productoForApi:           any
 }
 
 export class ProductoDoli implements IProductoDoli
@@ -79,7 +82,8 @@ export class ProductoDoli implements IProductoDoli
   aumento_escom:            number
   aumento_descuento:        number
   aumento_loco:             number
-  costo_adicional:          number
+  costo:                    number
+  costo_adicional:          number  
   creador_id:               number
   disponible:               boolean        
   en_compra:                boolean
@@ -90,8 +94,7 @@ export class ProductoDoli implements IProductoDoli
   hecho_en:                 string        
   id_extra:                 number        
   id_producto_pro:          number        
-  id_proveedor:             number
-  costo:                    number        
+  id_proveedor:             number  
   precio_proveedor:         number        
   precio_publico:           number
   precio_promocion:         number
@@ -137,7 +140,28 @@ export class ProductoDoli implements IProductoDoli
     this.codigo             = 0
     this.competencia        = 0
     this.elegido            = false
+
+    /* 
+    p.ref                                       as ref,
+    p.label                                     as nombre,
+    p.price                                     as precio,
+    p.url                                       as imagen,
+    p.description                               as descripcion,
+
+    IFNULL(p.fk_unit, '')                       as unidadId,
+    IFNULL(p.cost_price,            0)          as costo,
+
+    IFNULL(px.aumento,              0)          as aumento,
+    IFNULL(px.aumento_escom,        0)          as aumento_escom,
+    IFNULL(px.aumento_precio_desc,  0)          as aumento_descuento,
+    IFNULL(px.aumento_precio_loco,  0)          as aumento_loco,
+    
+    IFNULL(px.precio_publico,       0)          as precio_publico,
+    IFNULL(px.precio_promocion,     0)          as precio_promocion,
+    IFNULL(px.costo_adicional,      0)          as costo_adicional,
+    */
   }
+  productoForAp: any
 
   get precio_aumento()          :number { return this.calcularPrecioConAumento( this.aumento            ) } 
   get precio_aumento_escom()    :number { return this.calcularPrecioConAumento( this.aumento_escom      ) } 
@@ -146,7 +170,11 @@ export class ProductoDoli implements IProductoDoli
 
   calcularPrecioConAumento( aumento : number) : number {
     if(!this.costo || !aumento) return 0
-    else                        return roundInt( X100_Aumento( this.costo, aumento), 3 )    
+    else                        return roundInt( X100_Aumento( this.costoTotal, aumento), 3 )    
+  }
+
+  get costoTotal() : number {
+    return ( valorValido( this.costo ) ? this.costo : 0 ) + ( valorValido( this.costo_adicional ) ? this.costo_adicional : 0 )
   }
 
   get precio_escom() : number {
@@ -250,6 +278,10 @@ export class ProductoDoli implements IProductoDoli
     return  (
               this.activo_proveedor && this.disponible && this.en_venta
             )
+            ||
+            (
+              !this.aumento && !this.aumento_descuento && !!this.aumento_escom && this.en_venta && !this.activo_proveedor && !this.disponible
+            )
             || this.esRefEspecial
   }
 
@@ -298,6 +330,30 @@ export class ProductoDoli implements IProductoDoli
             this.ref.includes("VIAT-")
   }  
 
+
+  get productoForApi() : any {
+    const proForApi : any = {
+      ref:                    this.ref,
+      label:                  this.nombre,
+      description:            this.descripcion,
+      price:                  !!this.precio_aumento ? this.precio_aumento : this.precio_aumento_escom,
+      cost_price:             this.costo,
+      array_options:
+      {
+        options_aumento_escom:        this.aumento_escom,
+        options_aumento:              this.aumento,
+        options_aumento_precio_desc:  this.aumento_descuento,
+        options_aumento_precio_loco:  this.aumento_loco,
+        options_costo_adicional:      this.costo_adicional,
+        options_precio_publico:       this.precio_aumento,
+        options_precio_promocion:     this.precio_promocion,
+      },
+    }
+
+    return proForApi
+  }
+
+
   static async productoAPItoProducto( productoApi : any ) : Promise<IProductoDoli>
   {
     if(!productoApi)                return new ProductoDoli()
@@ -325,13 +381,21 @@ export class ProductoDoli implements IProductoDoli
     producto.aumento_descuento      = parseFloat( productoApi.aumento_descuento   )
     producto.aumento_loco           = parseFloat( productoApi.aumento_loco        )
     producto.costo                  = parseFloat( productoApi.costo               )
-    producto.costo_adicional        = parseFloat( productoApi.costo_adicional     )    
+    producto.costo_adicional        = parseFloat( productoApi.costo_adicional     )
     producto.precio                 = parseFloat( productoApi.precio              )
     producto.precio_promocion       = parseFloat( productoApi.precio_promocion    )
     producto.precio_proveedor       = parseFloat( productoApi.precio_proveedor    )
     producto.precio_publico         = parseFloat( productoApi.precio_publico      )
     producto.competencia            = parseFloat( productoApi.competencia         )
     producto.imagen                 = !!producto.imagen ? producto.imagen : imagenDefault
+
+    if(!producto.precio             && !!producto.aumento_escom ){
+      producto.precio               = producto.precio_aumento_escom     
+    }
+
+    if(!producto.precio_publico     && !!producto.aumento_escom ){
+      producto.precio_publico       = producto.precio_aumento_escom     
+    }
     
     producto.unidad                 = await getUnidadDB( producto.unidadId      )
     return producto

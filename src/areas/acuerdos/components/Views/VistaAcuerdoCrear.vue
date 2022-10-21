@@ -117,13 +117,8 @@
 
   onUnmounted(()=>{
     //if(acuerdoCreado) return
-    //console.log("B")
     //acuerdo.value             = new Acuerdo( tipo.value  )
   })
-
-
-
-  
 
   //* /////////////////////////////////////////////////////////////// Provide Super minimizado
   //const minimizadoTodo        = ref< boolean >(false)

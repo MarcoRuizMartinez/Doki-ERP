@@ -16,8 +16,23 @@ export function useControlProductos()
   const { apiDolibarr         } = useApiDolibarr()
   const { producto,
           productos,
-          loading             } = storeToRefs( useStoreProducto() )  
+          loading             } = storeToRefs( useStoreProducto() )
 
+  //* ////////////////////////////////////////////////////////////////////// Editar URL de imagen
+  async function editarProducto() : Promise <boolean>
+  {      
+    loading.value.editar        = true
+
+    const {ok}                  = await apiDolibarr("editar", "producto", producto.value.productoForApi, producto.value.id )       
+    if(ok){
+      aviso("positive", `Producto actualizado 👌🏼`)
+    }
+    else
+      aviso("negative", `Error actualizando producto`)
+    loading.value.editar        = false
+
+    return ok
+  }
 
   //* ////////////////////////////////////////////////////////////////////// Editar URL de imagen
   async function editarURL( url : string ) : Promise <boolean>
@@ -34,8 +49,11 @@ export function useControlProductos()
     return ok
   }
 
+
+
   //* /////////////////////////////////////////////////////////////// Return
   return {
     editarURL,
+    editarProducto,
   }
 }

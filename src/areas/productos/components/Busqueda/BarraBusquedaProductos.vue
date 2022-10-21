@@ -228,7 +228,6 @@
 
   async function asignarQueryRouterACampos()
   {
-    console.log("asignarQueryRouterACampos: ");
     busqueda.value.c.nombre       = getQueryRouterString    ( queryURL.busqueda     )
     //busqueda.value.c.precioMinimo = getQueryRouterNumber    ( queryURL.subtotalMin  )
     //busqueda.value.c.precioMaximo = getQueryRouterNumber    ( queryURL.subtotalMax  )
@@ -237,8 +236,6 @@
     if(!!queryURL.sigla)
       busqueda.value.c.categoria  = await getCategoriaDB( Array.isArray(queryURL.sigla) ? "" : queryURL.sigla  ) 
 
-    console.log("busqueda.value.c.categoria: ", busqueda.value.c.categoria);
-
     bloqueoInicio                 = false
     buscar()
   }
@@ -246,12 +243,10 @@
 
   watch(()=> busqueda.value.c, (c)=>
     {
-      console.log("watch(()=> busqueda.value.c: ", c);
       if(bloqueoInicio) return
       //checkAlertTabs(c)
       //if( !permisos.value.acceso_total )
         //query.idComercial         = usuario.value.id
-      console.log("watch buscar")
       buscar()
     },
     { deep: true }
@@ -269,7 +264,6 @@
 
     if(!!Object.keys(query).length)
     {
-      console.log("query: ", query);
       router.replace({ query: {...query }  })
       query.tipo        = "busqueda"
       query.completa    = 1      

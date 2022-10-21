@@ -53,7 +53,7 @@
   
   const emit                  = defineEmits(["update:modelValue", "clear", "select"])
   
-  /* defineEmits<{
+  /* const emit                  = defineEmits<{
     (e: 'update:modelValue',  value: ILabelValue | undefined ): void
     (e: 'select',             value: ILabelValue             ): void
     (e: 'clear',              value: void                    ): void

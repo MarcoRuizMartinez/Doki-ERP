@@ -67,12 +67,10 @@
     <!-- //* ///////////////////////////////////////////////////// Columna precio  -->
     <template #body-cell-precio="props">
       <q-td :props            ="props">
-        <div class            ="text-right">
-          {{ formatoPrecio(props.row.precio, "decimales-no") }}
-        </div>
-        <tooltip-precios
-          :producto           ="props.row"
-        />
+        <precio-tabla
+          :precio               ="(props.row.precio as number)"
+          :iva                  ="(props.row.iva    as number)"
+        />        
       </q-td>
     </template>
     <!-- //* ///////////////////////////////////////////////////// Vista Card de producto -->
@@ -107,6 +105,7 @@
   import    cardProducto          from "src/areas/productos/components/TablaProductos/Columnas/CardProducto.vue"
   import    imagen                from "src/areas/productos/components/TablaProductos/Columnas/Imagen.vue"
   import    btnAgregar            from "src/areas/productos/components/TablaProductos/Columnas/BotonAgregar.vue"
+  import    precioTabla           from "src/areas/productos/components/Tools/PrecioProducto.vue"
 
   const { 
           busqueda,
@@ -147,3 +146,9 @@
   }
   //class                     ="bg-grey-3"
 </script>
+
+<style>
+.q-table__middle {
+  min-height: auto !important;
+}
+</style>
