@@ -1,8 +1,8 @@
 <template>
-    <q-page padding     class  ="row items-stretch content-start justify-start q-col-gutter-md">
-      <vista-producto  v-bind  ="props" />
-    </q-page>
-  </template>
+  <q-page padding     class  ="row items-stretch content-start justify-start q-col-gutter-md">
+    <vista-producto  v-bind  ="props" />
+  </q-page>
+</template>
   
   <script setup lang="ts">
     // * /////////////////////////////////////////////////////////////////////// Core

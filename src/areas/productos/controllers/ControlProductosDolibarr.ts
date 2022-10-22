@@ -3,10 +3,13 @@ import {  useRouter             } from 'vue-router'
 //* ////////////////////////////////////////////////////////////////// Store
 import {  storeToRefs           } from 'pinia'  
 import {  useStoreProducto      } from 'src/stores/producto'
+//* ////////////////////////////////////////////////////////////////// Modelos
+import {  IProductoDoli,
+          ProductoDoli          } from "src/areas/productos/models/ProductoDolibarr"     
 //* ////////////////////////////////////////////////////////////////// Componibles
+import {  useTools, ID_URL_Ok   } from "src/useSimpleOk/useTools"
 import {  useApiDolibarr        } from "src/services/useApiDolibarr"  
 import {  servicesProductos     } from "src/areas/productos/services/servicesProductos"
-import {  useTools              } from "src/useSimpleOk/useTools"
 //* ////////////////////////////////////////////////////////////////// Modelos
 
 export function useControlProductos() 
@@ -19,11 +22,11 @@ export function useControlProductos()
           loading             } = storeToRefs( useStoreProducto() )
 
   //* ////////////////////////////////////////////////////////////////////// Editar URL de imagen
-  async function editarProducto() : Promise <boolean>
+  async function editarProducto( pro : IProductoDoli ) : Promise <boolean>
   {      
     loading.value.editar        = true
 
-    const {ok}                  = await apiDolibarr("editar", "producto", producto.value.productoForApi, producto.value.id )       
+    const {ok}                  = await apiDolibarr("editar", "producto", pro.productoForApi, pro.id )       
     if(ok){
       aviso("positive", `Producto actualizado 👌🏼`)
     }
@@ -33,6 +36,23 @@ export function useControlProductos()
 
     return ok
   }
+
+  //* ////////////////////////////////////////////////////////////////////// Editar URL de imagen
+  async function crearProducto( pro : IProductoDoli ) : Promise <number>
+  {      
+    loading.value.crear         = true
+
+    const { ok, data }          = await apiDolibarr("crear", "producto", pro.productoForApi )       
+    if(ok){
+      pro.id                    = ID_URL_Ok( data.toString() )
+      aviso("positive", `Producto creado 👌🏼`)
+    }
+    else
+      aviso("negative", `Error crear producto`)
+    loading.value.crear         = false
+
+    return pro.id
+  }  
 
   //* ////////////////////////////////////////////////////////////////////// Editar URL de imagen
   async function editarURL( url : string ) : Promise <boolean>
@@ -48,11 +68,12 @@ export function useControlProductos()
 
     return ok
   }
-
+  
 
 
   //* /////////////////////////////////////////////////////////////// Return
   return {
+    crearProducto,
     editarURL,
     editarProducto,
   }

@@ -1,12 +1,12 @@
 import {  IProductoDoli,
           ProductoDoli,
-          imagenDefault     } from "../../../areas/productos/models/ProductoDolibarr"
+          imagenDefault     } from "src/areas/productos/models/ProductoDolibarr"
 import {  X100_Descuento,
           X100_Aumento,
           X100_Reduccion,
           X100,
-          roundInt          } from "../../../useSimpleOk/useTools"
-import {  getUnidadDB       } from "../../../services/useDexie"
+          roundInt          } from "src/useSimpleOk/useTools"
+import {  getUnidadDB       } from "src/services/useDexie"
 
 export type TipoLinea       = "producto" | "servicio" | "titulo" | "subtotal" | "descripcion"
 

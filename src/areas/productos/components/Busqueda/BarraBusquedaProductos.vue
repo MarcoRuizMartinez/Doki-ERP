@@ -8,6 +8,19 @@
       name                      ="tab_1"
       class                     ="row q-pa-none no-wrap scroll"
       >
+      <!-- //* ///////////////////////////////////////////////////////////// Botones -->
+      <fieldset-filtro
+        titulo                  ="Acciones"
+        class-conenido          ="column q-gutter-xs"
+        >
+        <q-btn
+          v-bind                ="btnBaseMd"
+          label                 ="Crear"
+          icon                  ="mdi-layers-plus"
+          color                 ="positive"
+          @click                ="emit('crear')"
+        />
+      </fieldset-filtro>      
       <!-- //* ///////////////////////////////////////////////////////////// Busqueda y filtro -->
       <fieldset-filtro
         titulo                  ="Búsqueda"
@@ -26,21 +39,22 @@
           label                 ="Filtro"
           class                 ="width220"
           icon                  ="mdi-filter"
+          :disable              ="!productos.length"
         />
       </fieldset-filtro>
-      <!-- //* ///////////////////////////////////////////////////////////// Busqueda y filtro -->
+      <!-- //* ///////////////////////////////////////////////////////////// Categorías-->
       <fieldset-filtro
-        titulo                  ="Búsqueda"
+        titulo                  ="Categorías"
         class-conenido          ="column q-gutter-xs"
         >
         <!-- //* ///////////////////////////////////////////////////////////// Campo Categoría -->
-        <select-label-value   use-input hundido clearable flat bordered
-          v-model             ="busqueda.c.categoria"
-          label               ="Categoría"
-          icon                ="mdi-file-tree-outline"
-          options-sort        ="nombre"
-          :options            ="categorias"          
-        />     
+        <select-label-value     use-input hundido clearable flat bordered
+          v-model               ="busqueda.c.categoria"
+          label                 ="Categoría"
+          icon                  ="mdi-file-tree-outline"
+          options-sort          ="nombre"
+          :options              ="categorias"          
+        />
       </fieldset-filtro> 
       <fieldset-filtro
         v-if                    ="false"
@@ -138,11 +152,16 @@
             </q-btn>
           </div>
         </div>
-        <grilla-lista
-        v-model               ="busqueda.tipoVista"
-        color                 ="white"
-        por-defecto           ="lista"
-      />        
+        <div class                ="row justify-center content-start q-mt-sm">
+          <grilla-lista
+            v-model               ="busqueda.tipoVista"
+            por-defecto           ="lista"
+            color                 ="primary"
+            toggle-color          ="primary"
+            text-color            ="grey-6"
+            toggle-text-color     ="white"            
+          />
+        </div>     
       </fieldset-filtro>      
     </q-tab-panel>
     <!-- //* ///////////////////////////////////////////////////// Tab 2 -->
@@ -186,6 +205,8 @@
   import {  Areas               } from "src/models/TiposVarios"
   import {  IQueryProducto,
             IBusquedaProducto   } from "src/areas/productos/models/BusquedaProductos"
+  // * /////////////////////////////////////////////////////////////////////// Componibles
+  import {  btnBaseMd           } from "src/useSimpleOk/useEstilos"
   // * /////////////////////////////////////////////////////////////////////// Componentes
   import    fieldsetFiltro        from "components/utilidades/Fieldset.vue"
   import    inputNumber           from "components/utilidades/input/InputFormNumber.vue"
@@ -211,7 +232,8 @@
   const emit = defineEmits<{
     (e: 'buscar',   value: IQueryProducto ): void
     (e: 'limpiar',                        ): void
-    (e: 'exportar',                       ): void    
+    (e: 'exportar',                       ): void
+    (e: 'crear',                          ): void
   }>()
 
   onMounted(()=>{

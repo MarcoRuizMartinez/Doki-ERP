@@ -1,5 +1,6 @@
 <template>
   <ventana
+    v-bind                    ="$attrs"
     class                     ="col-12"
     class-contenido           ="column items-center"
     height                    ="100%"
@@ -18,6 +19,7 @@
         @buscar               ="buscar"
         @limpiar              ="limpiarBusqueda"
         @exportar             ="descargarProductos"
+        @crear                ="mostrarCrear"
         >
         <!-- <select-columnas
           v-model             ="columnasVisibles"
@@ -32,12 +34,26 @@
       <tabla                  modo-busqueda
         :tipo-vista           ="busqueda.tipoVista"
         :columnas             ="columnas"
+        @click-editar         ="mostrarVerEditar"
       />
     </div>
   </ventana>
+  <!-- //* ///////////////////////////////////////////////////////////// Modal formulario producto  -->
+  <q-dialog
+    v-model                   ="ventanaProducto"
+    transition-show           ="slide-up"
+    transition-hide           ="slide-down"      
+    :persistent               ="loading.crear || loading.editar"
+    >
+    <formulario               modo-ventana
+      :tipo                   ="tipoFormulario"        
+      @creado                 ="productoCreado"
+      @editado                ="productoEditado"
+    />
+  </q-dialog>  
 </template>
   
-<script setup lang="ts">
+<script setup lang="ts">  
   // * /////////////////////////////////////////////////////////////////////// Core
   import {  ref,
             toRefs,
@@ -54,6 +70,8 @@
   import {  useControlProductos } from "src/areas/productos/controllers/ControlProductosDolibarr"
   import {  useTools            } from "src/useSimpleOk/useTools"
   import {  generarCSVDesdeTabla} from "src/useSimpleOk/UtilFiles"
+  import {  IProductoDoli,
+            ProductoDoli        } from "src/areas/productos/models/ProductoDolibarr"
   // * /////////////////////////////////////////////////////////////////////// Modelos
   import {  BusquedaProducto,
             IQueryProducto      } from "src/areas/productos/models/BusquedaProductos"
@@ -66,25 +84,28 @@
   import    tabsBusqueda          from "src/areas/productos/components/Busqueda/TabsBusquedaProductos.vue"
   import    barraBusqueda         from "src/areas/productos/components/Busqueda/BarraBusquedaProductos.vue"
   import    tabla                 from "src/areas/productos/components/TablaProductos/TablaProductos.vue"  
-
+  import    formulario            from "src/areas/productos/components/FormularioProducto.vue"
+  
   // * ////////////////////////// Columnas
   const { buscarProductos       } = servicesProductos()
   const { usuario, permisos     } = storeToRefs( useStoreUser() )  
   const { producto,
           productos,
           productosFil,
-          busqueda,          
+          busqueda,
+          loading,
                                 } = storeToRefs( useStoreProducto() )  
   const { esMobil, aviso        } = useTools()
   
   const modo                      = ref< ModosVentana >("esperando-busqueda")  
   const indexSelect               = ref< number >(-1)
-  const ventanaVistaRapida        = ref< boolean >(false)    
+  const ventanaProducto           = ref< boolean >(false)
+  const tipoFormulario            = ref< "crear" | "ver" >("ver")
   const titulo                    = computed(()=>
   {
     return productos.value.length > 0 ? `Resultado: ${productos.value.length} ` +
                                       ( productos.value.length === 1 ? "producto" : "productos" )
-                                    : `Buscando productos...`
+                                    : modo.value === "esperando-busqueda" ?  "Buscar productos" : `Buscando productos...`
   })
   const columnas                  = ref< IColumna[] >([])
   const columnasVisibles          = ref< string[]   >([])
@@ -115,6 +136,38 @@
     modo.value                    = "esperando-busqueda"
     productos.value               = []
   }
+
+  function mostrarCrear()
+  {
+    producto.value                = new ProductoDoli()
+    tipoFormulario.value          = "crear"    
+    ventanaProducto.value         = true
+  }
+
+  function productoCreado( prod : IProductoDoli  )
+  {
+    ventanaProducto.value         = false
+    productos.value.unshift( prod )
+    productosFil.value            = productos.value
+    modo.value                    = "normal"
+  }
+
+  function mostrarVerEditar( prod : IProductoDoli )
+  {
+    producto.value                = prod
+    tipoFormulario.value          = "ver"
+    ventanaProducto.value         = true
+  }
+
+  function productoEditado( prod : IProductoDoli )
+  {
+    const index = productos.value.findIndex(( p )=> p.id === prod.id )
+    if(index > -1 )
+      productos.value[index]      = prod
+    
+    ventanaProducto.value         = false
+  }
+    
 
   /* function vistaRapida(index : number)
   {

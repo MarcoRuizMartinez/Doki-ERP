@@ -34,6 +34,7 @@ export interface IProductoDoli {
   precio_aumento_escom:     number
   precio_aumento_descuento: number
   precio_aumento_loco:      number
+  precio_publico_final:     number
   precio_escom:             number
   descuentoCalculado:       number
   costo:                    number        // precio que viene de la tabla llx_product > cost_price
@@ -167,6 +168,14 @@ export class ProductoDoli implements IProductoDoli
   get precio_aumento_escom()    :number { return this.calcularPrecioConAumento( this.aumento_escom      ) } 
   get precio_aumento_descuento():number { return this.calcularPrecioConAumento( this.aumento_descuento  ) } 
   get precio_aumento_loco()     :number { return this.calcularPrecioConAumento( this.aumento_loco       ) } 
+
+
+  get precio_publico_final() : number 
+  {
+    let precio = !!this.precio_aumento ? this.precio_aumento : this.precio_aumento_escom    
+    return precio
+  }
+
 
   calcularPrecioConAumento( aumento : number) : number {
     if(!this.costo || !aumento) return 0
@@ -331,13 +340,16 @@ export class ProductoDoli implements IProductoDoli
   }  
 
 
-  get productoForApi() : any {
+  get productoForApi() : any
+  {
     const proForApi : any = {
       ref:                    this.ref,
       label:                  this.nombre,
       description:            this.descripcion,
       price:                  !!this.precio_aumento ? this.precio_aumento : this.precio_aumento_escom,
       cost_price:             this.costo,
+      status:                 +this.en_venta,
+      status_buy:             +this.en_compra,
       array_options:
       {
         options_aumento_escom:        this.aumento_escom,

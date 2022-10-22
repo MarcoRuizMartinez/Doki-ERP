@@ -2,6 +2,7 @@
   <div>
     <q-input          dense hide-bottom-space
       v-model         ="modelo"
+      v-bind          ="$attrs"
       lazy-rules      ="ondemand"
       class           ="transi"
       debounce        ="400"
@@ -9,8 +10,6 @@
       :filled         ="!hundido"
       :borderless     ="!hundido"      
       :label          ="label"
-      :autofocus      ="autofocus"
-      :clearable      ="clearable"
       @blur           ="onBlur"
       @focus          ="campoEnfocado = true"
       @clear          ="emit('clear')"
@@ -32,8 +31,6 @@
       modelValue: { type: String,   required: true          },
       label:      { type: String,   required: true          },
       icon:       { type: String,   default:  "mdi-magnify" },
-      autofocus:  { type: Boolean,  default:  false         },
-      clearable:  { type: Boolean,  default:  false         },
       hundido:    { type: Boolean,  default:  false         },
     }
   )

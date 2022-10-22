@@ -44,7 +44,12 @@
             target            ="_blank"
             :href             ="props.row.urlDolibarr"
           />
-        </template>        
+          <q-btn              
+            v-bind            ="btnRedondoFlat"
+            icon              ="mdi-lead-pencil"
+            @click            ="emit('clickEditar', props.row)"
+          />
+        </template>
         <!-- //* ///////////////////////////////////////////////// Boton agregar en lista  -->
         <btn-agregar          v-else
           :producto           ="props.row"
@@ -57,7 +62,7 @@
     <template #body-cell-ref  ="props">
       <q-td :props            ="props">        
         <router-link
-          class               ="link-limpio text-bold fuente-mono"
+          class               ="link-limpio text-bold fuente-mono text-1_1em"
           :to                 ="'/productos/' + props.row.id"
           >
           {{props.row.ref}}
@@ -68,8 +73,8 @@
     <template #body-cell-precio="props">
       <q-td :props            ="props">
         <precio-tabla
-          :precio               ="(props.row.precio as number)"
-          :iva                  ="(props.row.iva    as number)"
+          :precio               ="(props.row.precio_publico as number)"
+          :iva                  ="(props.row.iva            as number)"
         />        
       </q-td>
     </template>
@@ -126,6 +131,7 @@
     (e: "mouseLargoElegido",  value: IProductoDoli  ): void
     (e: "mouseLargoNuevo",    value: IProductoDoli[]): void
     (e: "agregar",            value: IProductoDoli[]): void
+    (e: "clickEditar",        value: IProductoDoli): void
   }>()
 
   function mouseLargo( producto : IProductoDoli )

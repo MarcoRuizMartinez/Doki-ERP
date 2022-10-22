@@ -2,20 +2,29 @@
   <ventana
     class-contenido             ="column items-center"
     icono                       ="mdi-package-variant-closed"
+    :cerrar                     ="modoVentana"
     :titulo                     ="titulo"
-    :cargando                   ="loading.carga || loading.editar"
+    :cargando                   ="loading.carga || loading.editar || loading.crear"
     >
     <template                   #barra>
       <efecto efecto            ="Down">
         <!-- //* //////////////////////////////////////////////////////////  Boton PDF -->
         <q-btn
-          v-if                  ="readonly"
+          v-if                  ="tipo === 'crear'"
+          v-bind                ="btnBaseSm"
+          color                 ="positive"
+          icon                  ="mdi-check"
+          label                 ="Crear"
+          @click                ="validar"
+        />        
+        <q-btn
+          v-else-if             ="readonly"
           v-bind                ="btnBaseSm"
           color                 ="positive"
           icon                  ="mdi-lead-pencil"
           label                 ="Editar"
           @click                ="readonly = false"
-          />
+        />
         <q-btn
           v-else
           v-bind                ="btnBaseSm"
@@ -23,7 +32,7 @@
           icon                  ="mdi-content-save"
           label                 ="Guardar"
           @click                ="validar"
-          />          
+        />          
       </efecto>
     </template>   
     <!-- //* ////////////////   FORMULARIO  -->
@@ -34,36 +43,34 @@
       >
       <!-- //* //////////////   Nombre producto  -->
       <input-text               clearable AZ09 copy alerta autofocus
-        v-model                 ="producto.nombre"
+        v-model                 ="proModel.nombre"
         class                   ="col-12"        
         icon                    ="mdi-text"
         label                   ="Nombre"
         :readonly               ="readonly"
       />
       <!-- //* //////////////   Ref producto  -->
-      <input-text               clearable AZ09 copy alerta sin-espacios
-        v-model                 ="producto.ref"
-        class                   ="col-12"        
+      <input-text               clearable copy alerta sin-espacios uppercase
+        v-model                 ="proModel.ref"
         icon                    ="mdi-identifier"
         label                   ="Ref"
+        :class                  ="tipo === 'crear' ? 'col-6' : 'col-12'"
         :readonly               ="readonly"
       />
-      <!-- //* ///////////////////////////////////////////////////////////// Unidad -->
-      <!--<select-label-value       no-inmediato use-input
-        v-model                 ="producto.unidad"
-        label                   ="Tipo de unidad"
-        icon                    ="mdi-tape-measure"
+      <!-- //* //////////////   Campo Categoría -->
+      <select-label-value       use-input flat bordered
+        v-if                    ="tipo === 'crear'"
+        label                   ="Categoría"
+        icon                    ="mdi-file-tree-outline"
         class                   ="col-6"
-        behavior                ="dialog"
-        options-sort            ="orden"
-        :options                ="unidades"
-        :readonly               ="readonly"
-        @select                 ="producto.unidadId = producto.unidad.id"
-      /> -->
-      <!-- //* ///////////////////////////////////////////////////////////// Costo -->
+        options-sort            ="nombre"
+        :options                ="categorias"
+        @select                 ="( c : IProductoCategoria )=> proModel.ref = c.sigla + '-'"
+      /> 
+      <!-- //* //////////////   Costo -->
       <input-number
-        v-model                 ="producto.costo"
-        :label                  ="`Costo: ${ formatoPrecio( producto.costoTotal )}`"
+        v-model                 ="proModel.costo"
+        :label                  ="`Costo: ${ formatoPrecio( proModel.costoTotal )}`"
         class                   ="col-6"
         tipo                    ="precio"
         colores                 ="verde-rojo"
@@ -74,9 +81,9 @@
         :paso                   ="1000"
         :readonly               ="readonly"
       />      
-      <!-- //* ///////////////////////////////////////////////////////////// Costo Adicional -->
+      <!-- //* //////////////   Costo Adicional -->
       <input-number
-        v-model                 ="producto.costo_adicional"
+        v-model                 ="proModel.costo_adicional"
         label                   ="Costo adicional:"
         class                   ="col-6"
         tipo                    ="precio"
@@ -88,71 +95,84 @@
         :paso                   ="1000"
         :readonly               ="readonly"
       />            
-      <!-- //* ///////////////////////////////////////////////////////////// Aumento base -->
+      <!-- //* //////////////   Aumento base -->
       <numero-paso              porcentaje
-        v-model                 ="producto.aumento"
+        v-model                 ="proModel.aumento"
         label                   ="Aumento base"
         modo                    ="right"
         class                   ="col-3"
-        :paso                   ="0.1"
+        :paso                   ="1"
         :maximo                 ="500"
-        :minimo                 ="producto.aumento_descuento"
+        :minimo                 ="proModel.aumento_descuento"
         :readonly               ="readonly"
       />
-      <!-- //* ///////////////////////////////////////////////////////////// Aumento Escom -->
+      <!-- //* //////////////   Aumento Escom -->
       <numero-paso              porcentaje
-        v-model                 ="producto.aumento_escom"
+        v-model                 ="proModel.aumento_escom"
         label                   ="Aumento Escom"
         modo                    ="right"
         class                   ="col-3"
-        :paso                   ="0.1"
+        :paso                   ="1"
         :maximo                 ="500"
-        :minimo                 ="producto.aumento_descuento"
+        :minimo                 ="proModel.aumento_descuento"
         :readonly               ="readonly"
       />
-      <!-- //* ///////////////////////////////////////////////////////////// Aumento Descuento -->
+      <!-- //* //////////////   Aumento Descuento -->
       <numero-paso              porcentaje
-        v-model                 ="producto.aumento_descuento"
+        v-model                 ="proModel.aumento_descuento"
         label                   ="Aumento descuento"
         modo                    ="right"
         class                   ="col-3"
-        :paso                   ="0.1"
-        :maximo                 ="500"        
+        :paso                   ="1"
+        :maximo                 ="500"
+        :minimo                 ="0"
         :readonly               ="readonly"
       />
-      <!-- //* ///////////////////////////////////////////////////////////// Aumento Loco -->
+      <!-- //* //////////////   Aumento Loco -->
       <numero-paso              porcentaje
-        v-model                 ="producto.aumento_loco"
+        v-model                 ="proModel.aumento_loco"
         label                   ="Aumento loco"
         modo                    ="right"
         class                   ="col-3"
-        :paso                   ="0.1"
+        :paso                   ="1"
         :minimo                 ="0"
         :readonly               ="readonly"
       />
       <precio-tabla
         class                   ="col-3"
-        :precio                 ="producto.precio_aumento"
-        :iva                    ="producto.iva"
+        :precio                 ="proModel.precio_aumento"
+        :iva                    ="proModel.iva"
       />
       <precio-tabla
         class                   ="col-3"
-        :precio                 ="producto.precio_aumento_escom"
-        :iva                    ="producto.iva"
+        :precio                 ="proModel.precio_aumento_escom"
+        :iva                    ="proModel.iva"
       />
       <precio-tabla
         class                   ="col-3"
-        :precio                 ="producto.precio_aumento_descuento"
-        :iva                    ="producto.iva"
+        :precio                 ="proModel.precio_aumento_descuento"
+        :iva                    ="proModel.iva"
       />
       <precio-tabla
         class                   ="col-3"
-        :precio                 ="producto.precio_aumento_loco"
-        :iva                    ="producto.iva"
+        :precio                 ="proModel.precio_aumento_loco"
+        :iva                    ="proModel.iva"
       />                  
+      <q-toggle
+        v-model                 ="proModel.en_venta"
+        label                   ="Activo venta"
+        class                   ="col-6"
+        :disable                ="readonly"
+      />            
+      <q-toggle
+        v-model                 ="proModel.en_compra"
+        label                   ="Activo compra"
+        class                   ="col-6"
+        :disable                ="readonly"
+      />           
       <!-- //* //////////////   Descripción  -->
       <q-input                  filled dense
-        v-model                 ="producto.descripcion"
+        v-model                 ="proModel.descripcion"
         label                   ="Descripción"
         type                    ="textarea"
         class                   ="col-12"
@@ -171,6 +191,7 @@
   //* ///////////////////////////////////////////////////////////////////////////////// Core
   import {  ref,
             toRefs,
+            watch,
             computed,
             PropType,
             onMounted
@@ -180,12 +201,17 @@
   import {  useStoreProducto      } from 'src/stores/producto'
   import {  useStoreUser          } from "src/stores/user"
   //* ///////////////////////////////////////////////////////////////////////////////// Modelos
-
+  import {  IProductoCategoria,
+            ProductoCategoria   } from "src/areas/productos/models/ProductoCategoria"
+  import {  IProductoDoli,
+            ProductoDoli        } from "src/areas/productos/models/ProductoDolibarr"            
   //* ///////////////////////////////////////////////////////////////////////////////// Componibles  
-  import {  dexieUnidades         } from "src/services/useDexie"
-  import {  formatoPrecio         } from "src/useSimpleOk/useTools" 
+  import {  formatoPrecio,
+            confeti               } from "src/useSimpleOk/useTools" 
   import {  btnBaseSm             } from "src/useSimpleOk/useEstilos"
   import {  useControlProductos   } from "src/areas/productos/controllers/ControlProductosDolibarr"
+  import {  dexieCategoriasProducto
+                                  } from "src/services/useDexie"
   //* ///////////////////////////////////////////////////////////////////////////////// Componentes
   import    efecto                  from "components/utilidades/Efecto.vue"  
   import    ventana                 from "components/utilidades/Ventana.vue"
@@ -198,17 +224,26 @@
   const { producto,
           loading           } = storeToRefs( useStoreProducto() )  
 
+  const proModel              = ref< IProductoDoli >( new ProductoDoli() )
   const formulario            = ref< any >()
-  const { editarProducto    } = useControlProductos()  
-  const unidades              = dexieUnidades()
+  const categorias            = dexieCategoriasProducto() 
+  const { crearProducto,
+          editarProducto    } = useControlProductos()
   
 
   //* ////////////////////////////////////////////////////////////////////////////////////// Props
   const props                 = defineProps(
   {
+    modoVentana:  { default: false,         type: Boolean                               },
+    puedeEditar:  { default: false,         type: Boolean                               },
     tipo:         { default: "ver",         type: String as PropType< "crear" | "ver" > },
-    puedeEditar:  { default: false,         type: Boolean                                                           },
   })
+
+  const emit                  = defineEmits<{
+    //(e: 'buscar',   value: IQueryAcuerdo  ): void
+    (e: "creado",   value: IProductoDoli  ): void
+    (e: "editado",  value: IProductoDoli  ): void
+  }>()
 
   const { tipo              } = toRefs( props )
   const readonly              = ref< boolean >( tipo.value == "ver" ? true : false )
@@ -218,6 +253,14 @@
 
   //* ///////////////////////////////////////////////////////////////////////////////// Ver cambios en tipo para iniciar
   //watch(tipo, (newTipo, oldTipo) => iniciar())
+
+  watch(producto, (pro)=>
+    {
+      if(!!pro)
+        proModel.value  = Object.assign( new ProductoDoli, pro )
+    }
+    ,{ immediate: true }
+  )
 
   //* ////////////////////////////////////////////////////////////////////////////////////// Inicio
   function iniciar()
@@ -241,19 +284,29 @@
   //* ////////////////////////////////////////////////////////////////////////////////////// Submit
   function onSubmit()
   {
-    //if(tipo.value == "ver")
+    if(tipo.value == "ver")
       modificarProducto()
-    //else
-      //crearProducto()
+    else
+      creacionProducto()
   }
 
   async function modificarProducto(){
-    const ok        = await editarProducto()
-    readonly.value  = true
+    const ok              = await editarProducto( proModel.value )
+    readonly.value        = true
+    if(ok){
+      proModel.value.precio_publico = proModel.value.precio_publico_final
+      emit("editado", proModel.value)
+    }
   }
 
-
-
+  async function creacionProducto(){
+    const id              = await crearProducto( proModel.value )
+    if(!!id){
+      confeti(3)
+      proModel.value.id   = id
+      emit("creado", proModel.value)
+    }
+  }  
 
   //* ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //* /////////////////////////////////////////////////////////////////////////////////////////////////// FUNCTION VARIAS
@@ -267,7 +320,7 @@
     else
     if(tipo.value             == "ver")
     {
-      if(producto.value.nombre.length > 1)
+      if(proModel.value.nombre.length > 1)
         title                 = "Producto"
       else
         title                 = "Cargando..."
