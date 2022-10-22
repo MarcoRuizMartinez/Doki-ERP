@@ -2,7 +2,7 @@
   <q-page padding class         ="row item-stretch content-start justify-center">
     <formulario
       tipo                      ="crear"
-      class                     ="col-6"
+      class                     ="col-12 col-md-6"
       @creado                   ="productoCreado"
     />
   </q-page>

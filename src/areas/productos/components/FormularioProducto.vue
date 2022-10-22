@@ -1,5 +1,5 @@
 <template>
-  <ventana
+  <ventana                      scroll
     class-contenido             ="column items-center"
     icono                       ="mdi-package-variant-closed"
     :cerrar                     ="modoVentana"
@@ -54,7 +54,7 @@
         v-model                 ="proModel.ref"
         icon                    ="mdi-identifier"
         label                   ="Ref"
-        :class                  ="tipo === 'crear' ? 'col-6' : 'col-12'"
+        :class                  ="tipo === 'crear' ? 'col-12 col-md-6' : 'col-12'"
         :readonly               ="readonly"
       />
       <!-- //* //////////////   Campo Categoría -->
@@ -62,7 +62,7 @@
         v-if                    ="tipo === 'crear'"
         label                   ="Categoría"
         icon                    ="mdi-file-tree-outline"
-        class                   ="col-6"
+        class                   ="col-12 col-md-6"
         options-sort            ="nombre"
         :options                ="categorias"
         @select                 ="( c : IProductoCategoria )=> proModel.ref = c.sigla + '-'"
@@ -71,11 +71,11 @@
       <input-number
         v-model                 ="proModel.costo"
         :label                  ="`Costo: ${ formatoPrecio( proModel.costoTotal )}`"
-        class                   ="col-6"
+        class                   ="col-12 col-md-6"
         tipo                    ="precio"
         colores                 ="verde-rojo"
         iconos                  ="suma"
-        debounce                ="2500"        
+        debounce                ="1800"        
         :minimo                 ="0"        
         :con-decimales          ="false"
         :paso                   ="1000"
@@ -85,79 +85,83 @@
       <input-number
         v-model                 ="proModel.costo_adicional"
         label                   ="Costo adicional:"
-        class                   ="col-6"
+        class                   ="col-12 col-md-6"
         tipo                    ="precio"
         colores                 ="verde-rojo"
         iconos                  ="suma"
-        debounce                ="2500"        
+        debounce                ="1800"        
         :minimo                 ="0"        
         :con-decimales          ="false"
         :paso                   ="1000"
         :readonly               ="readonly"
       />            
       <!-- //* //////////////   Aumento base -->
-      <numero-paso              porcentaje
-        v-model                 ="proModel.aumento"
-        label                   ="Aumento base"
-        modo                    ="right"
-        class                   ="col-3"
-        :paso                   ="1"
-        :maximo                 ="500"
-        :minimo                 ="proModel.aumento_descuento"
-        :readonly               ="readonly"
-      />
+      <div class                ="col-6 col-md-3">
+        <numero-paso            porcentaje
+          v-model               ="proModel.aumento"
+          label                 ="Aumento base"
+          modo                  ="right"
+          :paso                 ="1"
+          :maximo               ="500"
+          :minimo               ="proModel.aumento_descuento"
+          :readonly             ="readonly"
+        />
+        <precio-tabla
+          alineado              ="center"
+          :precio               ="proModel.precio_aumento"
+          :iva                  ="proModel.iva"
+        />
+      </div>
       <!-- //* //////////////   Aumento Escom -->
-      <numero-paso              porcentaje
-        v-model                 ="proModel.aumento_escom"
-        label                   ="Aumento Escom"
-        modo                    ="right"
-        class                   ="col-3"
-        :paso                   ="1"
-        :maximo                 ="500"
-        :minimo                 ="proModel.aumento_descuento"
-        :readonly               ="readonly"
-      />
+      <div class                ="col-6 col-md-3">
+        <numero-paso            porcentaje
+          v-model               ="proModel.aumento_escom"
+          label                 ="Aumento Escom"
+          modo                  ="right"
+          :paso                 ="1"
+          :maximo               ="500"
+          :minimo               ="proModel.aumento_descuento"
+          :readonly             ="readonly"
+        />
+        <precio-tabla
+          alineado              ="center"
+          :precio               ="proModel.precio_aumento_escom"
+          :iva                  ="proModel.iva"
+        />
+      </div>
       <!-- //* //////////////   Aumento Descuento -->
-      <numero-paso              porcentaje
-        v-model                 ="proModel.aumento_descuento"
-        label                   ="Aumento descuento"
-        modo                    ="right"
-        class                   ="col-3"
-        :paso                   ="1"
-        :maximo                 ="500"
-        :minimo                 ="0"
-        :readonly               ="readonly"
-      />
+      <div class                ="col-6 col-md-3">        
+        <numero-paso            porcentaje
+          v-model               ="proModel.aumento_descuento"
+          label                 ="Aumento descuento"
+          modo                  ="right"
+          :paso                 ="1"
+          :maximo               ="500"
+          :minimo               ="0"
+          :readonly             ="readonly"
+        />
+        <precio-tabla
+          alineado              ="center"
+          :precio               ="proModel.precio_aumento_descuento"
+          :iva                  ="proModel.iva"
+        />        
+      </div>
       <!-- //* //////////////   Aumento Loco -->
-      <numero-paso              porcentaje
-        v-model                 ="proModel.aumento_loco"
-        label                   ="Aumento loco"
-        modo                    ="right"
-        class                   ="col-3"
-        :paso                   ="1"
-        :minimo                 ="0"
-        :readonly               ="readonly"
-      />
-      <precio-tabla
-        class                   ="col-3"
-        :precio                 ="proModel.precio_aumento"
-        :iva                    ="proModel.iva"
-      />
-      <precio-tabla
-        class                   ="col-3"
-        :precio                 ="proModel.precio_aumento_escom"
-        :iva                    ="proModel.iva"
-      />
-      <precio-tabla
-        class                   ="col-3"
-        :precio                 ="proModel.precio_aumento_descuento"
-        :iva                    ="proModel.iva"
-      />
-      <precio-tabla
-        class                   ="col-3"
-        :precio                 ="proModel.precio_aumento_loco"
-        :iva                    ="proModel.iva"
-      />                  
+      <div class                ="col-6 col-md-3">      
+        <numero-paso            porcentaje
+          v-model               ="proModel.aumento_loco"
+          label                 ="Aumento loco"
+          modo                  ="right"
+          :paso                 ="1"
+          :minimo               ="0"
+          :readonly             ="readonly"
+        />
+        <precio-tabla
+          alineado              ="center"
+          :precio               ="proModel.precio_aumento_loco"
+          :iva                  ="proModel.iva"
+        />            
+      </div>            
       <q-toggle
         v-model                 ="proModel.en_venta"
         label                   ="Activo venta"

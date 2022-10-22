@@ -1,7 +1,7 @@
 <template>
   <div
-    class     ="text-right fuente-mono"
-    :class    ="{ 'text-bold' : negrita }"
+    class     ="fuente-mono"
+    :class    ="'text-' + alineado + ( negrita ? ' text-bold' : '' )"
     >
     <div>
       {{formatoPrecio(precio)}}
@@ -21,8 +21,9 @@
 </template>
 <script lang="ts" setup>
   import {  ref,
+            toRefs,
+            PropType,
             computed,
-            toRefs
                               } from "vue"
   import {  formatoPrecio,
             X100_Aumento     } from "src/useSimpleOk/useTools"
@@ -30,6 +31,7 @@
     precio:   { required: true,   type: Number  },
     iva:      { required: true,   type: Number  },
     negrita:  { default: false,   type: Boolean },
+    alineado: { default: "right", type: String as PropType< "left" | "right" | "justify" | "center" > },
   })
   const { precio, iva }         = toRefs(props)
   const precioConIva            = computed(()=>{
