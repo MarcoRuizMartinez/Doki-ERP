@@ -15,6 +15,7 @@ import {  fechaLarga,
                             } from "src/useSimpleOk/useTools"
 import {  jsPDF             } from "jspdf"
 import    autoTable           from 'jspdf-autotable'
+//import    html2canvas         from 'html2canvas';
 
 export function useCotizacionPDF()
 {
@@ -371,9 +372,10 @@ export function useCotizacionPDF()
     pdf.text                    ( valores, doc.margenDerX + 70, posY, { align: "right", lineHeightFactor: 1.4 })
   }
 
-  function generarNota()
+  async function generarNota() : Promise<boolean>
   {
     if(!quote.notaPublica) return
+
     const copia = doc.y
     const notaSplit             = pdf.splitTextToSize(quote.notaPublica, doc.ancho - 30  ) as Array<string>    
     const altoNota              = notaSplit.length * 15
@@ -387,9 +389,38 @@ export function useCotizacionPDF()
     pdf.text                    ("OBSERVACIONES", doc.anchoMitad, doc.y, { align: "center", renderingMode: 'fillThenStroke' })
     doc.y                       += 10
     doc.setFont                 ( 10, 30)
-    
     pdf.text                    (notaSplit, doc.anchoMitad, doc.y, { align: "center" })
+    //const scale = (pdf.internal.pageSize.width - 10) / 600
+    //console.log("scale: ", scale);
+/*     html2canvas(document.querySelector("#capture")).then(canvas => {
+
+      //document.body.appendChild(canvas)
+			canvas.getContext('2d');
+			
+			
+			
+			var imgData = canvas.toDataURL("image/jpeg", 1.0);
+      //console.log("imgData: ", imgData);
+      pdf.addImage(imgData, 'JPG', 300, 300, 50,50);
+			
+    }); */
+
+    /* pdf.html(, {
+        x: doc.anchoMitad,
+        y: doc.y,
+        //width: 400,
+        html2canvas: {
+          scale: 1,
+          allowTaint: true,
+          useCORS: true,          
+        },
+        callback: (doc) => {
+          console.log("html....!", doc);
+        }        
+
+      }) */
     doc.y                       +=10
+    return true
   }  
 
   function fondosGrisesLinea( alto : number ) : number

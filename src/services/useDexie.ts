@@ -525,7 +525,7 @@ function largoDBTabla(largoDBTabla: any): boolean|PromiseLike<boolean> {
   throw new Error('Function not implemented.')
 }
 
-export async function limpiarDB() 
+export async function limpiarDB() : Promise<void>
 {
   await db.delete()
 }

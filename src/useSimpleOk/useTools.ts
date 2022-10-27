@@ -23,6 +23,7 @@ export function useTools()
     icono     : Iconos          = "",
     duracion  : number          = 1600,   
     acciones  : QNotifyAction[] = [],
+    html      : boolean         = false
   )
   {
     let icon      = !!icono ? icono + "-" : ""
@@ -34,7 +35,8 @@ export function useTools()
       position:   "top",
       timeout:    duracion,
       message:    mensaje,
-      actions:    acciones
+      actions:    acciones,
+      html
     })
   }
 

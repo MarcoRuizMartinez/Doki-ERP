@@ -92,17 +92,29 @@
 </template>
 
 <script setup lang="ts">
-  import {  computed,
-            ref               } from 'vue'
-  import {  useLogin          } from "src/services/useLogin"
+  // * /////////////////////////////////////////////////////////////////////// Core
+  import {  
+            ref,
+            watch,
+            computed               
+                              } from 'vue'
+  import {  useRouter         } from "vue-router"
+  // * /////////////////////////////////////////////////////////////////////// Store
+  import {  storeToRefs       } from 'pinia'
   import {  useStoreUser      } from 'src/stores/user'
-  import {  useStoreApp       } from 'src/stores/app'
-  import {  ORIGEN            } from "src/models/TiposVarios"
+  import {  useStoreApp       } from 'src/stores/app'  
+  // * /////////////////////////////////////////////////////////////////////// Componibles
+  import {  useLogin          } from "src/services/useLogin"
   import {  btnBaseMd         } from "src/useSimpleOk/useEstilos"
+  // * /////////////////////////////////////////////////////////////////////// Modelos
+  import {  ORIGEN, 
+            ALMACEN_LOCAL     } from "src/models/TiposVarios"
+  // * /////////////////////////////////////////////////////////////////////// Componentes
   import    efecto              from "components/utilidades/Efecto.vue"
 
-  const storeUser                 = useStoreUser()
+  const { logueado, fondo }       = storeToRefs( useStoreUser() )
   const storeApp                  = useStoreApp()
+  const router                    = useRouter()
   
   const { iniciarSesionDolibarr,
           abortarIntentoLogin,
@@ -110,10 +122,17 @@
 
   const usuario                   = ref < string  >("")
   const clave                     = ref < string  >("")
-  const cargando                  = ref < boolean >(false)      
+  const cargando                  = ref < boolean >(false) 
+  let   pathOrigen                = ""
+  
+  watch(()=>router.currentRoute,
+    ( ruta ) => pathOrigen        = ruta.value?.redirectedFrom?.fullPath ?? "",
+    { immediate: true }
+  )
+  
   const online                    = computed(() => storeApp.online)
   
-  const fondoApp                  = computed(() => "background-image: url('images/fondos/" + storeUser.fondo + "');" )
+  const fondoApp                  = computed(() => "background-image: url('images/fondos/" + fondo.value + "');" )
   const imagenFondo               = computed(() => "background-image: url('" + imgFormulario.value + "');")
 
   const reglaNombre               = computed(() =>  ( val :any ) => val && val.length > 0 || 'Por favor escribe tu contraseña' )
@@ -129,6 +148,12 @@
     cargando.value                = true      
     const loginOK                 = await iniciarSesionDolibarr({ usuario: usuario.value, clave: clave.value})
     cargando.value                = false
+    if(loginOK){
+      if(pathOrigen.length > 2)
+        router.push(pathOrigen)
+      else
+        router.push("/")
+    }
   }
 
   function abortar()

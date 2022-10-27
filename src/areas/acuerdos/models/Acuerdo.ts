@@ -49,6 +49,7 @@ export interface IAcuerdo
   refCorta:                   string
   refCliente:                 string
   urlDolibarr:                string
+  urlDolibarrOC:              string
   title:                      string // Titulo HTML
   terceroId:                  number
   tercero:                    ITercero
@@ -78,6 +79,7 @@ export interface IAcuerdo
   esEstadoBoceto:             boolean
   esEstadoNoValidado:         boolean
   esEstadoValidado:           boolean
+  esEstadoAbierto:            boolean
   esEstadoCotizado:           boolean
   esEstadoFacturado:          boolean
 
@@ -272,6 +274,13 @@ export class Acuerdo implements IAcuerdo
                                       ) + this.id
   }
   
+  get urlDolibarrOC() : string {
+    return    this.esPedido
+            ? process.env.URL_DOLIBARR + "/supplierorderfromorder/ordercustomer.php?id=" + this.id
+            : ""
+  }
+  
+
   get emoji() :  string {
     let emoji     = this.tipo === TIPO_ACUERDO.COTIZACION ? "📜"
                   : this.tipo === TIPO_ACUERDO.PEDIDO     ? "🛒"
@@ -416,6 +425,20 @@ export class Acuerdo implements IAcuerdo
   get esEstadoValidado    ():boolean { return this.estado   > ESTADO_CTZ.BORRADOR     }
   get esEstadoCotizado    ():boolean { return this.estado === ESTADO_CTZ.COTIZADO     }
   get esEstadoFacturado   ():boolean { return this.estado === ESTADO_CTZ.FACTURADO    }
+  get esEstadoAbierto     ():boolean { 
+    let abierto           = false
+    if
+    (
+      ( this.esCotizacion && this.estado == ESTADO_CTZ.COTIZADO )
+      ||
+      (
+        this.esPedido     &&
+        ( this.estado == ESTADO_PED.VALIDADO || this.estado == ESTADO_PED.PROCESO )
+      )
+    )
+      abierto             = true
+    return abierto
+  }
   // * ///////////////////////////////////////////////////////////////////////////////  Icono
   get estadoIcono(): string {
     let icono : string        = ""

@@ -1,6 +1,21 @@
 <template>
   <barra  class             ="row justify-end gap-sm">
-    <efecto-grupo efecto    ="Down">
+    <efecto efecto          ="Down">
+      <!-- //* //////////////////////////////////////////////////////////  Boton Orden fabricacion -->
+      <q-btn
+        v-if                ="acuerdo.esEstadoAbierto && acuerdo.esPedido"
+        v-bind              ="btnBaseMd"
+        color               ="primary"
+        icon                ="mdi-tools"
+        target              ="_blank"
+        :href               ="acuerdo.urlDolibarrOC"
+        :label              ="esMobil ? '' : 'OC Proveedor'"
+        :disable            ="cargandoAlgo"        
+        >
+        <Tooltip label      ="Generar PDF" :hide="loading.pdf"/>
+      </q-btn>
+    </efecto>    
+    <efecto efecto          ="Down">
       <!-- //* //////////////////////////////////////////////////////////  Boton PDF -->
       <q-btn
         v-if                ="acuerdo.esEstadoValidado && acuerdo.esCotizacion"
@@ -14,7 +29,7 @@
         >
         <Tooltip label      ="Generar PDF" :hide="loading.pdf"/>
       </q-btn>
-    </efecto-grupo>
+    </efecto>
     <!-- <efecto efecto          ="Down"> -->
       <q-btn-group  v-if    ="acuerdo.esEstadoCotizado">
         <!-- //* //////////////////////////////////////////////////////////  Boton Aprobar -->
@@ -100,6 +115,7 @@
   // * /////////////////////////////////////////////////////////////////////// Componentes
   import    barra             from "components/utilidades/Barra.vue"
   import    efectoGrupo       from "components/utilidades/EfectoGrupo.vue"
+  import    efecto            from "components/utilidades/Efecto.vue"
   import    confirmar         from "components/utilidades/MenuConfirmar.vue"
 
   const { acuerdo,

@@ -1,12 +1,12 @@
 import {    
           onMounted,
           computed,
-          watch           }                           from 'vue'
+          watch           } from 'vue'
 import {  useStoreUser    } from 'src/stores/user'
 import {  useStoreApp     } from 'src/stores/app'
 import {  useRouter       } from 'vue-router'
-import {  useQuasar,
-          LocalStorage    } from 'quasar'
+import {  useTools        } from "src/useSimpleOk/useTools"
+import {  LocalStorage    } from 'quasar'
 import {  ALMACEN_LOCAL,
           ORIGEN        
                           } from "src/models/TiposVarios"
@@ -25,12 +25,12 @@ export function useLogin( origen_ : string )
   const storeUser                 = useStoreUser()
   const storeApp                  = useStoreApp()
   const router                    = useRouter()
-  const { notify }                = useQuasar()
   let   controller                = new AbortController()
   const usuario                   = computed( () => storeUser.usuario )
   const logueado                  = computed( () => storeUser.logueado )
   const online                    = computed( () => storeApp.online )
   const pre                       = process.env.PREFIJO
+  const { aviso                 } = useTools()
     
   //* ///////////////////////////////////////////////////////////////////////// On Mounted
   onMounted(() =>
@@ -49,7 +49,7 @@ export function useLogin( origen_ : string )
       const ultimoIngreso         = LocalStorage.getItem( pre + ALMACEN_LOCAL.FECHA_LOGIN ) as number
       if(!logueadoNow && loqueadoOld ) // Solo ocurre cuando se quiere cerrar Sesion
       {
-        cerrarSesion()
+        cerrarSesion("manual")
         return
       }
 
@@ -64,7 +64,7 @@ export function useLogin( origen_ : string )
         origen_                   == ORIGEN.APP
       )
       {
-        cerrarSesion()
+        cerrarSesion("expiro")
       }
     },
     {
@@ -129,7 +129,7 @@ export function useLogin( origen_ : string )
   }
 
   //* ///////////////////////////////////////////////////////////////////////// Iniciar Sesion en Dolibarr
-  async function iniciarSesionDolibarr( login : iLogin ) 
+  async function iniciarSesionDolibarr( login : iLogin ) : Promise < boolean >
   {
     let     miBody              = new FormData()
             miBody.append('login',      login.usuario)
@@ -144,30 +144,18 @@ export function useLogin( origen_ : string )
 
         if(respuesta.hasOwnProperty('success'))
         {
-            notify({
-                color:      'positive',
-                textColor:  'white',
-                icon:       'mdi-card-account-details-star',
-                message:    '👋 Hola <span class="text-capitalize">' + usuario.value.nombre + '</span>',
-                position:   'top',
-                html:       true
-            })                
-            asignarUsuario( respuesta.success.token )
-            // Cambia logueado y esto activa el watch de logueado
+          const msj = '👋 Hola <span class="text-capitalize">' + usuario.value.nombre + '</span>'
+          aviso("positive", msj, "account", 1800, [], true)            
+          asignarUsuario( respuesta.success.token )
+          return true
+          // Cambia logueado y esto activa el watch de logueado
         }
         else if(respuesta.hasOwnProperty('error'))
         {
-            notify({
-                color:      'negative',
-                textColor:  'white',
-                icon:       'mdi-account-cancel',
-                message:    'Datos incorrectos',
-                position:   'top',
-            })    
-        }
-
-        router.push("/")            
-        return respuesta
+          aviso("negative", "Datos incorrectos", "account", 1800)
+          return false
+        }        
+        return false
     } catch(e) {
         console.error(e);
     }
@@ -214,15 +202,11 @@ export function useLogin( origen_ : string )
   }
 
   //* ///////////////////////////////////////////////////////////////////////// Cerrar Sesion
-  function cerrarSesion() : void
+  function cerrarSesion( origen : "manual" | "expiro") : void
   {
-    notify({
-        color:      'positive',
-        textColor:  'white',
-        message:    '👋 Nos vemos pronto  <span class="text-capitalize">' + /* usuario.value.nombre + */ '</span>',
-        position:   'top',
-        html:       true,
-    })
+    if( origen === "manual"){
+      aviso("positive", '👋 Nos vemos pronto', "account")
+    }    
     
     LocalStorage.remove( pre + ALMACEN_LOCAL.FECHA_LOGIN   )
     LocalStorage.remove( pre + ALMACEN_LOCAL.TOKEN         )

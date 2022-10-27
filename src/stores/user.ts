@@ -1,4 +1,4 @@
-import { defineStore          } from 'pinia';
+import {  defineStore         } from 'pinia';
 import {  IUsuario, Usuario   } from 'src/areas/usuarios/models/Usuario'
 import {  IPermisos,
           Permisos
@@ -40,6 +40,7 @@ export const  useStoreUser = defineStore('user', {
       } catch(e) {
         console.warn("Error en setPermisos:", e)
         this.permisos         = new Permisos()
+        console.log("this.permisos: ", this.permisos);
         return
       }      
       

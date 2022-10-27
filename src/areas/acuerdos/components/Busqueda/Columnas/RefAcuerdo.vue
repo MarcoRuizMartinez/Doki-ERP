@@ -18,6 +18,16 @@
       @click          ="emit('vistaRapida')"
     />
     <q-btn            flat dense round
+      v-if            ="acuerdo.esPedido"
+      icon            ="mdi-tools"
+      class           ="op40 op100-hover q-ml-sm"
+      padding         ="none"
+      size            ="md"
+      target          ="_blank"
+      :disable        ="!acuerdo.esEstadoAbierto"
+      :href           ="acuerdo.urlDolibarrOC"
+    />        
+    <q-btn            flat dense round
       icon            ="mdi-alpha-d-circle"
       class           ="op40 op100-hover q-ml-sm"
       padding         ="none"

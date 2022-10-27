@@ -296,7 +296,7 @@
                                                   },
                                                   { mensaje: "buscar si existe numero de documento" }
                                                 )
-    //console.log("data Verifik: ", data);
+    console.log(tipoDoc, "data Verifik: ", data);
 
     if(!ok){
       aviso("negative", `Error al consultar datos en Verifik`)
@@ -306,7 +306,9 @@
     if(typeof data !== "object" && !Array.isArray(data)) return
 
     if( "code" in data && typeof data.code === "string" && data.code == "NotFound")
-      aviso("negative", "No se encontraron datos en la Dian como ciudadano", "shield", 7000)
+    {
+       aviso("negative", `No se encontro ${tipoDoc} en base de datos`, "shield", 7000)
+    }
     else
     if( "data" in data && typeof data.data === "object"){
 
@@ -316,7 +318,7 @@
       )
       {
         emit("verifikOk", data.data.fullName)
-        aviso("positive", "Si se encontro documento en la DIAN como ciudadano", "shield", 7000)
+        aviso("positive", "Se encontro documento en la base de datos", "shield", 7000)
       }
       else
       if( modelo.value.tipo.esNIT

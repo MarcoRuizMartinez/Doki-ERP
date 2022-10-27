@@ -2,7 +2,7 @@
   <q-tab-panels                 animated keep-alive vertical
     v-model                     ="tabs.activa"
     class                       ="transparent fit"
-    >
+    >    
     <!-- //* /////////////////////////////////////////////////////// Tab 1 -->
     <q-tab-panel
       name                      ="tab_1"
@@ -12,7 +12,7 @@
         titulo                  ="Búsqueda"
         class-conenido          ="column q-gutter-xs"
         >
-        <!-- //* ///////////////////////////////////////////////// Busqueda general -->
+        <!-- //* ///////////////////////////////////////////////// Busqueda general -->        
         <input-buscar           clearable hundido
           v-model               ="busqueda.tercero"
           label                 ="Búsqueda"

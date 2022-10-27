@@ -86,9 +86,8 @@
       >
       <ventana                  cerrar scroll full-screen
         titulo                  ="Vista rapida"
-        class                   ="panel-blur"
         icono                   ="mdi-eye"
-        backgroundColor         ="rgb(0 0 0 / 0%)"
+        backgroundColor         ="rgb(255 255 255 / 70%)"
         class-contenido         ="row items-start content-start justify-start q-col-gutter-md q-mt-none"
         >
         <vista-acuerdo

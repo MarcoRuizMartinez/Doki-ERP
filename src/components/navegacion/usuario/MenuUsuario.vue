@@ -74,9 +74,10 @@
   import    apariencia          from "./Apariencia.vue"
   import {  useStoreUser      } from 'src/stores/user'
   import {  limpiarDB         } from "src/services/useDexie"
-  import {  btnBaseMd,
-            btnBaseSm         } from "src/useSimpleOk/useEstilos"
-
+  import {  btnBaseMd         } from "src/useSimpleOk/useEstilos"
+  import {  useRouter         } from 'vue-router'
+  import {  pausa             } from "src/useSimpleOk/useTools"
+  const router                    = useRouter()
   const ventanaApariencia         = ref(false)
   const storeUser                 = useStoreUser()
   const usuario                   = computed( () => storeUser.usuario)
@@ -87,9 +88,12 @@
     //store.commit('usuario/setLogueado', false)
     storeUser.logueado = false
   }
-
-  function limpiar()
+  
+  async function limpiar()
   {
-    limpiarDB()
+    await limpiarDB()
+    router.push("/")
+    await pausa(500)
+    location.reload()
   }  
 </script>
