@@ -36,6 +36,14 @@ export const enum ALMACEN_LOCAL {
   FECHA_LISTAS    = "v3-fechaListas",
 }
 
+export const AlmacenesLimpiar  : string[] = [  
+  ALMACEN_LOCAL.COL_TERCEROS,
+  ALMACEN_LOCAL.COL_ACUERDOS,
+  ALMACEN_LOCAL.COL_PRODUCTOS,
+  ALMACEN_LOCAL.FECHA_LISTAS
+]
+
+
 export const enum ORIGEN {
   APP             = "app",
   LOGIN           = "login",

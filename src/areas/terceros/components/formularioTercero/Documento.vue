@@ -296,7 +296,7 @@
                                                   },
                                                   { mensaje: "buscar si existe numero de documento" }
                                                 )
-    console.log(tipoDoc, "data Verifik: ", data);
+    //console.log(tipoDoc, "data Verifik: ", data);
 
     if(!ok){
       aviso("negative", `Error al consultar datos en Verifik`)

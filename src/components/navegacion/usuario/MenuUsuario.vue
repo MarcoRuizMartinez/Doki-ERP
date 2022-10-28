@@ -77,6 +77,7 @@
   import {  btnBaseMd         } from "src/useSimpleOk/useEstilos"
   import {  useRouter         } from 'vue-router'
   import {  pausa             } from "src/useSimpleOk/useTools"
+  import {  AlmacenesLimpiar  } from "src/models/TiposVarios"
   const router                    = useRouter()
   const ventanaApariencia         = ref(false)
   const storeUser                 = useStoreUser()
@@ -91,9 +92,14 @@
   
   async function limpiar()
   {
+    limpiarLocal()
     await limpiarDB()
     router.push("/")
     await pausa(500)
     location.reload()
   }  
+
+  function limpiarLocal(){
+    AlmacenesLimpiar.forEach( a => localStorage.removeItem( process.env.PREFIJO + a ) )    
+  }
 </script>
