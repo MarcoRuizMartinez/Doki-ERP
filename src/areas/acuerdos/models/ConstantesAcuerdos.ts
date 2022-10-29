@@ -40,6 +40,20 @@ export enum ESTADO_PED
   ENTREGADO                   = 3,
 }
 
+export enum ESTADO_OC
+{
+  NO_GUARDADO                 = -2,
+  CANCELADO                   = -1,
+  BORRADOR                    = 0,
+  VALIDADO                    = 1,
+
+  APROBADO                    = 2,  // Aprobado
+  ENVIADO                     = 3,  // Pedido: recepción en espera
+  RECIBIDO                    = 5,  // Todos los productos recibidos
+
+}
+
+
 export function getTipoAcuerdoPlural( tipo : TTipoAcuerdo ) : string {
   const singular              =   tipo === TIPO_ACUERDO.COTIZACION  ? "cotizaciones"
                                 : tipo === TIPO_ACUERDO.PEDIDO      ? "pedidos"
