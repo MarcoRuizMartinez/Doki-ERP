@@ -123,6 +123,24 @@ const routes: RouteRecordRaw[] = [
     ],
   },
   {
+    path:           '/pedidos_proveedor',
+    component:      () => import('layouts/LayoutPrincipal.vue'),
+    children:
+    [
+      {
+        path:       '',
+        name:       'pedidos_proveedor',
+        component:  () => import('src/areas/acuerdos/pages/pedidos_proveedor/PagePedidoProveedorBuscar.vue'),
+      },
+      {
+        path:       '/pedidos_proveedor/:id',
+        name:       'pedido_proveedor',
+        props:      route => ({ tipo: TIPO_ACUERDO.PEDIDO_PROVEEDOR, id: route.params.id }),
+        component:  () => import('src/areas/acuerdos/pages/PageAcuerdoVer.vue')
+      },
+    ],
+  },  
+  {
     path:           '/productos',
     component:      () => import('layouts/LayoutPrincipal.vue'),
     children:

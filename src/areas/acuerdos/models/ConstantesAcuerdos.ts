@@ -1,17 +1,33 @@
+
 export enum TIPO_ACUERDO
 {
   NULO                        = "",
   COTIZACION                  = "cotización", // Igual que el END POINT del servicio
   PEDIDO                      = "pedido",
   ENTREGA                     = "entrega",
+  PEDIDO_PROVEEDOR            = "pedido_proveedor",
   FACTURA                     = "factura",
 }
 
 export type TTipoAcuerdo      =   TIPO_ACUERDO.COTIZACION
                                 | TIPO_ACUERDO.PEDIDO
                                 | TIPO_ACUERDO.ENTREGA
+                                | TIPO_ACUERDO.PEDIDO_PROVEEDOR
                                 | TIPO_ACUERDO.FACTURA
                                 | TIPO_ACUERDO.NULO
+
+
+export function getTipoAcuerdoPlural( tipo : TTipoAcuerdo ) : string {
+  const singular              =   tipo === TIPO_ACUERDO.COTIZACION        ? "cotizaciones"
+                                : tipo === TIPO_ACUERDO.PEDIDO            ? "pedidos"
+                                : tipo === TIPO_ACUERDO.ENTREGA           ? "entregas"
+                                : tipo === TIPO_ACUERDO.PEDIDO_PROVEEDOR  ? "pedidos_proveedor"
+                                : tipo === TIPO_ACUERDO.FACTURA           ? "facturas"
+                                : ""
+  return singular
+}
+
+
 
 export enum ESTADO_ACU
 {
@@ -50,18 +66,10 @@ export enum ESTADO_OC
   APROBADO                    = 2,  // Aprobado
   ENVIADO                     = 3,  // Pedido: recepción en espera
   RECIBIDO                    = 5,  // Todos los productos recibidos
-
 }
 
 
-export function getTipoAcuerdoPlural( tipo : TTipoAcuerdo ) : string {
-  const singular              =   tipo === TIPO_ACUERDO.COTIZACION  ? "cotizaciones"
-                                : tipo === TIPO_ACUERDO.PEDIDO      ? "pedidos"
-                                : tipo === TIPO_ACUERDO.ENTREGA     ? "entregas"
-                                : tipo === TIPO_ACUERDO.FACTURA     ? "facturas"
-                                : ""
-  return singular
-}
+
 
 export function estadoCtzToName( estado : number ): string {
   let valor :string         =   estado == ESTADO_CTZ.NO_GUARDADO  ? "Boceto"
@@ -109,6 +117,19 @@ export function estadoPedToColor( estado : number ): string
   return color
 }
 
+export function estadoStrCtzToColor( estado : string ): string
+{
+  let color :string           = estado == "Boceto"    ? "#1A1A1A"
+                              : estado == "Edición"   ? "#BCBABA"
+                              : estado == "Cotizado"  ? "#0f61dd"
+                              : estado == "Aprobado"  ? "#06c700"
+                              : estado == "Rechazado" ? "#832362"
+                              : estado == "Facturado" ? "#FF6805"
+                              : "transparent"
+  return color
+}
+
+
 export const estadosCtz       = [
   { value: ESTADO_CTZ.NO_GUARDADO,  label: estadoCtzToName( ESTADO_CTZ.NO_GUARDADO ) },
   { value: ESTADO_CTZ.BORRADOR,     label: estadoCtzToName( ESTADO_CTZ.BORRADOR    ) },
@@ -127,14 +148,3 @@ export const estadosPed       = [
   { value: ESTADO_PED.ENTREGADO,    label: estadoPedToName( ESTADO_PED.ENTREGADO ) },
 ]
 
-export function estadoStrCtzToColor( estado : string ): string
-{
-  let color :string           = estado == "Boceto"    ? "#1A1A1A"
-                              : estado == "Edición"   ? "#BCBABA"
-                              : estado == "Cotizado"  ? "#0f61dd"
-                              : estado == "Aprobado"  ? "#06c700"
-                              : estado == "Rechazado" ? "#832362"
-                              : estado == "Facturado" ? "#FF6805"
-                              : "transparent"
-  return color
-}

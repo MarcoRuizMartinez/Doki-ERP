@@ -113,7 +113,15 @@ export function useMenu()
                             to:         "/pedidos/crear",
                             visible:    permisos.value.terceros_ver
                           }),
-        },                                
+        },
+        { ...new ItemMenu({ separator: true }), },
+        { ...new ItemMenu({
+                            label:      "Pedidos proveedor",
+                            icon:       "mdi-water-well",
+                            to:         "/pedidos_proveedor",
+                            visible:    permisos.value.terceros_ver
+                          }),
+        },                
       ]
     },
     {

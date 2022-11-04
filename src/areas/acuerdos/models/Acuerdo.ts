@@ -38,12 +38,14 @@ export {  TIPO_ACUERDO }
 export interface IAcuerdo
 {
   tipo:                       TIPO_ACUERDO
+  //label:                      string
   tipoPlural:                 string
   emoji:                      string
   modulo:                     TModulosDolibarr
   esCotizacion:               boolean
   esPedido:                   boolean
   esNuevo:                    boolean
+  icono:                      string
   id:                         number
   ref:                        string
   refCorta:                   string
@@ -250,6 +252,7 @@ export class Acuerdo implements IAcuerdo
     /* Solo para pedidos */
     this.facturado            = false
   }
+  label: string
 
 
 /*   reorganizarProductosGrupos()
@@ -304,6 +307,18 @@ export class Acuerdo implements IAcuerdo
                   : "proposal"
     return modulo
   }
+
+
+  get icono() : string
+  {
+    let icono  : string
+    icono  =   this.tipo === TIPO_ACUERDO.COTIZACION      ? "proposal"
+                  : this.tipo === TIPO_ACUERDO.PEDIDO     ? "order"
+                  : this.tipo === TIPO_ACUERDO.ENTREGA    ? "shipment"
+                  : this.tipo === TIPO_ACUERDO.FACTURA    ? "invoice"
+                  : "proposal"
+    return icono
+  }  
 
   get subTotalLimpio() : number {
     let suma                = 0

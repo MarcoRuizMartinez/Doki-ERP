@@ -190,7 +190,7 @@
     acuerdos.value                = []
     busqueda.value                = new BusquedaAcuerdo( tipo.value )
     crearColumnas()
-    useTitle("🔍 Buscar " + tipo.value)
+    //useTitle("🔍 Buscar " + tipo.value)
   })
 
   onUnmounted(()=>{

@@ -415,7 +415,7 @@ export function useCotizacionPDF()
           useCORS: true,          
         },
         callback: (doc) => {
-          console.log("html....!", doc);
+          //console.log("html....!", doc);
         }        
 
       }) */

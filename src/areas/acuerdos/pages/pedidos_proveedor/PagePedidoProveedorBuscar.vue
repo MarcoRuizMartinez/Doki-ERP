@@ -1,8 +1,8 @@
 <template>
   <q-page padding class         ="row item-stretch content-start justify-start">
     <vista-busqueda
-      icono                     ="mdi-cart"
-      :tipo                     ="TIPO_ACUERDO.PEDIDO"
+      icono                     ="mdi-water-well"
+      :tipo                     ="TIPO_ACUERDO.PEDIDO_PROVEEDOR"
     />
   </q-page>
 </template>
@@ -12,5 +12,5 @@
   import    vistaBusqueda         from "src/areas/acuerdos/components/Views/VistaAcuerdoBusqueda.vue" 
   import {  TIPO_ACUERDO        } from "src/areas/acuerdos/models/ConstantesAcuerdos"
 
-  useTitle("🔍 Buscar cotizaciones")
+  useTitle("🏭🏟️🏪💒🏢🏬 Buscar cotizaciones")
 </script>

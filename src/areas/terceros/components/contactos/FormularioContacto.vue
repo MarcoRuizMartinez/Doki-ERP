@@ -44,7 +44,7 @@
         class                   ="col-md-6 col-12"
         icon                    ="mdi-account"
         :readonly               ="readonly"
-        @update:model-value     ="(txt)=> contacto.nombres = mayusculasPrimeraLetraAll(txt)"
+        @update:model-value     ="(txt : string )=> contacto.nombres = mayusculasPrimeraLetraAll(txt)"
       />
       <!-- //* //////////////   Apellidos  -->
       <input-text               AZ alerta
@@ -53,7 +53,7 @@
         class                   ="col-md-6 col-12"
         icon                    ="mdi-account"
         :readonly               ="readonly"
-        @update:model-value     ="(txt)=> contacto.apellidos = mayusculasPrimeraLetraAll(txt)"
+        @update:model-value     ="( txt : string )=> contacto.apellidos = mayusculasPrimeraLetraAll(txt)"
       />
       <!-- //* //////////////   Empresa -->
       <input-text               AZ
@@ -457,7 +457,7 @@
     if(existe)      return
     const esFamoso  = esCorreoFamoso(contacto.value.correo)
     if(esFamoso)    return
-    const dominio   = contacto.value.correo.match(/(?<=@)[^.]+(?=\.)/)[0]
+    const dominio   = contacto.value.correo.split('@').pop()//.match(/(?<=@)[^.]+(?=\.)/)[0]
     existe          = await vericarExiste("emailTerceroExiste",       dominio,  estaCheckEmail)
     if(existe)      return
     existe          = await vericarExiste("emailContactoExiste",      dominio,  estaCheckEmail)

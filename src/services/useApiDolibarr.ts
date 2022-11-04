@@ -15,7 +15,7 @@ type AccionDolibarr           = "crear"         | "editar"        | "ver"       
                                 "close"         | "setinvoiced"   | "settodraft"    | "validate"
 //  | "crear-lineas"  |  |
 
-type ModuloDolibarr           = "" | "tercero" | "contacto" | "documento" | "cotización" | "pedido" | "entrega" | "factura" | "saber" | "producto"
+type ModuloDolibarr           = "" | "tercero" | "contacto" | "documento" | "cotización" | "pedido" | "pedido_proveedor" | "entrega" | "factura" | "saber" | "producto"
 type Metodo                   = "post" | "put" | "get" | "delete"
 
 export function useApiDolibarr()

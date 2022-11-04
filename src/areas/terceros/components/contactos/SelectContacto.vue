@@ -12,7 +12,7 @@
     :option-label             ="(contacto) => !contacto ? '' : contacto.nombreCompleto + ( !!contacto.empresa ? ' - ' + contacto.empresa : '') "
     @filter                   ="buscar"
     @popup-show               ="virgen = true"
-    @update:model-value       ="( conta ) => emit('update:contacto', conta )"
+    @update:model-value       ="( conta : any ) => emit('update:contacto', conta )"
     >
     <template                 #prepend>
       <q-icon name            ="mdi-account" />
@@ -148,8 +148,8 @@
     cargando.value            = true
 
     let url                   = "thirdparty_ids=" + tercero.value.id + "&search_status=1&limit=10"
-    if(!!busqueda) url        += `&sqlfilters=(t.firstname:like:'%${busqueda}%')||(t.lastname:like:'%${busqueda}%')||(t.note_public:like:'%${busqueda}%')` // %25'%20OR%20t.note_public%20like%20'%25
-    const { data, ok }        = await apiDolibarr( "buscar", "contacto", url)
+    if(!!busqueda) url        += `&sqlfilters=(t.firstname%3Alike%3A'%25${busqueda}%25')||(t.lastname%3Alike%3A'%25${busqueda}%25')||(t.note_public%3Alike%3A'%25${busqueda}%25')`.replaceAll(" ", "%20")
+    const { data, ok }        = await apiDolibarr( "buscar", "contacto", url )
     let contacts :IContacto[] = []
 
     if(ok && Array.isArray( data ) && !!data.length)
