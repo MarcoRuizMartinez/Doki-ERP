@@ -240,7 +240,7 @@ export function useControlProductos()
     ocultarLineaBorrada()
 
     function ocultarLineaBorrada(){
-      let i                     = grupoElegido.value.productos.findIndex( (p:any) => p.orden == lineaBorrar.orden )
+      const i                    = grupoElegido.value.productos.findIndex( (p:any) => p.orden == lineaBorrar.orden )
       setTimeout( ( index = i )=>
       {
         grupoElegido.value.productos.splice(index, 1)

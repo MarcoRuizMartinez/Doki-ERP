@@ -36,7 +36,9 @@
             class               ="col"
             :class              ="{'cursor-pointer' : acuerdo.esEstadoNoValidado}"
             :linea              ="(props.row as LineaAcuerdo)"
+            :es-validado        ="acuerdo.esEstadoValidado"
             @click              ="mostrarFormulario( props.row as LineaAcuerdo )"
+            @borrar-linea       ="borrarLineaMenu"
           />
         </div>
       </q-td>
@@ -118,12 +120,15 @@
   import    cantidad            from "./Columnas/Cantidad.vue"
   import    descuento           from "./Columnas/Descuento.vue"
 
-  const { borrarLineas,
+  const { borrarLinea,
+          borrarLineas,
           seleccionarLineas,
+          destacarLineaElegida,
           mostrarFormularioLinea
                               } = useControlProductos()
   const { acuerdo,
           grupoElegido,
+          lineaElegida,
           modales             } = storeToRefs( useStoreAcuerdo() )
   const props                   = defineProps({
     grupo:      { required: true,   type: Object as PropType< IGrupoLineas >  },
@@ -154,6 +159,14 @@
   function activarBorrarEnLote(){
     grupoElegido.value              = grupo.value
     borrarLineas()
+  }
+
+  async function borrarLineaMenu( linea : ILineaAcuerdo )
+  {
+    grupoElegido.value              = grupo.value
+    lineaElegida.value              = linea
+    const ok  = await borrarLinea( linea )    
+    if(ok) destacarLineaElegida(false)
   }
 </script>
 <style>

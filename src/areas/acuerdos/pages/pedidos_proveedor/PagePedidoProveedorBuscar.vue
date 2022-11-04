@@ -1,8 +1,7 @@
 <template>
   <q-page padding class         ="row item-stretch content-start justify-start">
     <vista-busqueda
-      icono                     ="mdi-water-well"
-      :tipo                     ="TIPO_ACUERDO.PEDIDO_PROVEEDOR"
+      :tipo                     ="TIPO_ACUERDO.OC_PROVEEDOR"
     />
   </q-page>
 </template>

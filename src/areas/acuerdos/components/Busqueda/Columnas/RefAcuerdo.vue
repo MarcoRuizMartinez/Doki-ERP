@@ -38,7 +38,7 @@
     <router-link
 
       class         ="fuente-mono"
-      :to           ="`/${acuerdo.tipoPlural}/${acuerdo.id}`"
+      :to           ="`/${acuerdo.ruta}/${acuerdo.id}`"
       >
       {{ acuerdo.refCorta }}
     </router-link>

@@ -119,6 +119,7 @@
       class                   ="col-12"
       behavior                ="dialog"
       options-sort            ="orden"
+      defecto                 ="UND - Unidad"
       :options                ="unidades"
       :readonly               ="acuerdo.esEstadoValidado"
     />

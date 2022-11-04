@@ -91,7 +91,7 @@ export function useControlAcuerdo()
     //* ////////////////////  Notificando y redireccionando
     aviso("positive", `Creación de ${acuerdo.value.tipo} 👌🏼`)
     loading.value.crear       = false
-    router.push( `/${acuerdo.value.tipoPlural}/${id}` )
+    router.push( `/${acuerdo.value.ruta}/${id}` )
     return true
   }          
 

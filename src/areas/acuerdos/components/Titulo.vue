@@ -20,8 +20,8 @@
           
         /> -->        
         <img
-          v-if                ="!!imgIcono"
-          :src                ="`images/iconos/${imgIcono}`" />
+          v-if                ="!!acuerdo.imagen"
+          :src                ="`images/iconos/${acuerdo.imagen}`" />
         <Tooltip
           v-if                ="!acuerdo.esNuevo"
           label               ="Generar PDF"
@@ -148,13 +148,10 @@
   import    efecto                  from "components/utilidades/Efecto.vue"
   import {  storeToRefs           } from 'pinia'
   import {  useStoreAcuerdo       } from 'src/stores/acuerdo'  
+
   const { acuerdo           } = storeToRefs( useStoreAcuerdo() )  
   const { esMobil, aviso    } = useTools()
   const { setTitulo         } = servicesAcuerdos()
-  const   imgIcono            = computed(()=>   acuerdo.value.esCotizacion  ? "iconoCotizacion.webp"
-                                              : acuerdo.value.esPedido      ? "iconoPedido.webp"
-                                              : "")
-
   const emit                  = defineEmits(["click", "recargar"])
 
   async function editarTitulo( titulo : string )

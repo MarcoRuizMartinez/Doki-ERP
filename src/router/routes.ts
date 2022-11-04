@@ -135,7 +135,7 @@ const routes: RouteRecordRaw[] = [
       {
         path:       '/pedidos_proveedor/:id',
         name:       'pedido_proveedor',
-        props:      route => ({ tipo: TIPO_ACUERDO.PEDIDO_PROVEEDOR, id: route.params.id }),
+        props:      route => ({ tipo: TIPO_ACUERDO.OC_PROVEEDOR, id: route.params.id }),
         component:  () => import('src/areas/acuerdos/pages/PageAcuerdoVer.vue')
       },
     ],

@@ -198,15 +198,24 @@
         titulo                  ="Terceros registrados"
         icono                   ="mdi-account-remove"
         padding-contenido       ="0"
-        width                   ="380px"
+        width                   ="440px"
         >
+        <template               #barra>
+          <q-btn
+            v-if                ="esTerceroInternoDeCoti"
+            v-bind              ="btnBaseSm"
+            color               ="positive"
+            :label              ="consentimientoAsesor ? 'Firmado' : 'Firmar'"
+            :icon               ="consentimientoAsesor ? 'mdi-check' : 'mdi-signature'"
+            @click              ="mostrarAvisoConsentimiento"
+          />
+        </template>
         <q-table                borbordered dense flat
           class                 ="fit tabla-maco"
           row-key               ="id"
           :rows                 ="clientesExistentes"
           :columns              ="[ { name: 'nombre', label: 'Tercero', field: 'nombre', align: 'left' }, { name: 'vendedores', label: 'Asesores', field: 'vendedores'}]"
-          >
-      </q-table>        
+        />
       </ventana>    
     </q-dialog>
   </ventana>
@@ -242,6 +251,7 @@
   import {  useFetch        } from "src/useSimpleOk/useFetch"
   import {  getURL,
             getFormData     } from "src/services/APIMaco"
+  import {  btnBaseSm       } from "src/useSimpleOk/useEstilos"            
 
   const { dialog            } = useQuasar()
   const { apiDolibarr       } = useApiDolibarr()
@@ -250,10 +260,11 @@
   const { miFetch           } = useFetch()
   const contacto              = ref<IContacto>(new Contacto())
   const cargando              = ref< boolean >(false)
-  const ventanaClienteExiste  = ref< boolean >(false)  
+  const ventanaClienteExiste  = ref< boolean >(false)
   const formulario            = ref< any >()
   const clientesExistentes    = ref< any[] >()
   const urlDolibarr           = process.env.URL_DOLIBARR
+  const consentimientoAsesor  = ref< boolean >(false)
   let   copiaContacto         = ""
 
   //* ////////////////////////////////////////////////////////////////////////////////////// Props
@@ -274,6 +285,7 @@
           esTerceroCtz      } = toRefs( props )
   const tipo                  = ref< "crear" | "ver" > ("ver")
   const readonly              = ref< boolean >( tipo.value == "ver" && !editando.value ? true : false )  
+  const esTerceroInternoDeCoti= computed(()=> clientesExistentes.value.length === 1 && clientesExistentes.value[0].nombre.indexOf('COTIZACIONES ', 0) != -1)
   const btnDisable            = computed(()=>{
     return  (
               tipo.value      == 'ver'
@@ -439,11 +451,13 @@
     if(existe)    return
     existe        = await vericarExiste("empresaExisteEnContacto",    contacto.value.empresa, estaCheckEmpresa)
   }
+
   async function vericarExisteCel(){
     let existe    = await vericarExiste("telefonoTerceroExiste",      contacto.value.telefono, estaCheckCel)
     if(existe)    return
     existe        = await vericarExiste("telefonoContactoExiste",     contacto.value.telefono, estaCheckCel)
-  }  
+  }
+
   async function vericarExisteTel(){
     let existe    = await vericarExiste("telefonoTerceroExiste",      contacto.value.telefono_2, estaCheckTel)
     if(existe)    return
@@ -461,12 +475,11 @@
     existe          = await vericarExiste("emailTerceroExiste",       dominio,  estaCheckEmail)
     if(existe)      return
     existe          = await vericarExiste("emailContactoExiste",      dominio,  estaCheckEmail)
-    
   }
 
   async function vericarExiste( consulta : string, valor : string, estado : Ref<EstadoVerificar> ) : Promise<boolean>
   {
-    if(!esTerceroCtz.value || !valor){
+    if(!esTerceroCtz.value || !valor || consentimientoAsesor.value ){
       estado.value              = "off"
       return false
     }     
@@ -509,6 +522,23 @@
   {
     if(!clientesExistentes.value.length) return
     ventanaClienteExiste.value  = true    
+  }
+
+  function mostrarAvisoConsentimiento()
+  {
+    dialog({
+      title:    'Pedir consentimiento',
+      message:  'Eres consiente que ya hay un contacto con estos datos?',
+      cancel:   true,
+      class:    "text-center",
+      html:     true,
+    }).onOk(() => {
+      consentimientoAsesor.value = true
+      estaCheckEmpresa.value     = "off"
+      estaCheckEmail.value       = "off" 
+      estaCheckCel.value         = "off"
+      estaCheckTel.value         = "off"     
+    })
   }
   
   //* ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

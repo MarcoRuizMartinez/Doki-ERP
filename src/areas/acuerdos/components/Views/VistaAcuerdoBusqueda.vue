@@ -5,7 +5,7 @@
     height                    ="100%"
     size-icon-carga           ="22em"
     :modo                     ="modo"
-    :icono                    ="icono"
+    :icono                    ="getIconoAcuerdo(tipo)"
     :titulo                   ="titulo"
     :padding-contenido        ="modo === 'normal' ? '0' : '12px' "
     :mensaje-sin-resultados   ="'No se encontraron ' + tipo"
@@ -142,6 +142,7 @@
   import {  ModosVentana,
             ALMACEN_LOCAL       } from "src/models/TiposVarios"  
   import {  TTipoAcuerdo,
+            getIconoAcuerdo,
             getTipoAcuerdoPlural
                                 } from "src/areas/acuerdos/models/ConstantesAcuerdos"            
   // * /////////////////////////////////////////////////////////////////////// Componentes
@@ -159,7 +160,6 @@
   
   const props                     = defineProps({
     tipo:   { required: true, type: String as PropType< TTipoAcuerdo >  },
-    icono:  { required: true, type: String                              },
   })
   const { tipo }                  = toRefs(props) 
   //const title                     = useTitle("🔍 Buscar " + tipo.value)
@@ -178,8 +178,8 @@
   const titulo                    = computed(()=>
   {
     return acuerdos.value.length > 0 ? `Resultado: ${acuerdos.value.length} ` +
-                                      ( acuerdos.value.length === 1 ? tipo.value : getTipoAcuerdoPlural(tipo.value) )
-                                    : `Buscando ${tipo.value}...`
+                                      ( acuerdos.value.length === 1 ? tipo.value : getTipoAcuerdoPlural( tipo.value ) )
+                                    : `Buscando ${getTipoAcuerdoPlural(tipo.value)}...`
   })
   const columnas                  = ref< IColumna[] >([])
   const columnasVisibles          = ref< string[]   >([])

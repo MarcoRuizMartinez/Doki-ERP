@@ -14,24 +14,37 @@
     </span>
   </div>
   <q-menu               touch-position context-menu>
-    <q-btn              v-close-popup flat dense
-      icon              ="mdi-open-in-new"
-      type              ="a"
-      label             ="Ir a producto"
-      target            ="_blank"
-      :to               ="`/productos/${linea.id}`"
-    />
+    <div  class         ="column items-start ">
+      <q-btn            v-close-popup flat dense no-caps
+        icon            ="mdi-open-in-new"
+        type            ="a"
+        label           ="Ver producto"
+        target          ="_blank"
+        :to             ="`/productos/${linea.id}`"
+      />
+      <q-btn            flat dense no-caps
+        v-if            ="!esValidado"
+        icon            ="mdi-trash-can"
+        label           ="Borrar línea"
+        >
+        <confirmar      @ok="emit('borrarLinea', linea)"/>
+      </q-btn>
+    </div>
   </q-menu>  
 </template>
 <script lang="ts" setup>
 //      style             ="min-width: 100px">
   import {  PropType      } from "vue"
   import {  ILineaAcuerdo } from "src/areas/acuerdos/models/LineaAcuerdo"
+  import    confirmar       from "components/utilidades/MenuConfirmar.vue"
+
   const props               = defineProps({
-    linea: { required: true, type: Object as PropType< ILineaAcuerdo > },
+    linea:      { required: true, type: Object as PropType< ILineaAcuerdo > },
+    esValidado: { required: true, type: Boolean },
   })
 
   const emit = defineEmits<{
-    (e: 'click',  value: void ): void
+    (e: 'click',        value: void           ): void
+    (e: 'borrarLinea',  value: ILineaAcuerdo  ): void
   }>()
 </script>

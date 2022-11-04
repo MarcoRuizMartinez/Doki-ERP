@@ -19,12 +19,10 @@
   import {  TTipoAcuerdo          } from "src/areas/acuerdos/models/ConstantesAcuerdos"
   //* ///////////////////////////////////////////////////////////////////////////////// Componentes
   import    vistaAcuerdo            from "src/areas/acuerdos/components/Views/VistaAcuerdoVer.vue"
-
   
   const { buscarAcuerdo     } = useControlAcuerdo()
   const { copiarProductos,
           deGruposAProductos }= useControlProductos()
-
   const { acuerdo           } = storeToRefs( useStoreAcuerdo() )  
 
   const props                 = defineProps({
@@ -33,8 +31,7 @@
   })
 
   const { id, tipo }          = toRefs( props )
-
-  onMounted   ( iniciar )  
+  onMounted   ( iniciar )
 
   async function iniciar()
   {

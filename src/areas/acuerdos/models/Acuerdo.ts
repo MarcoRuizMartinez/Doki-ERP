@@ -8,7 +8,8 @@ import {  TIPO_ACUERDO,
           estadoPedToColor,
           estadosPed,
           TTipoAcuerdo,
-          getTipoAcuerdoPlural
+          getIconoAcuerdo,
+          getTipoAcuerdoPlural,
                                             } from "./ConstantesAcuerdos"
 import {  X100, fechaCorta                  } from "src/useSimpleOk/useTools"
 import {  ILineaAcuerdo,    LineaAcuerdo    } from "src/areas/acuerdos/models/LineaAcuerdo"
@@ -38,14 +39,16 @@ export {  TIPO_ACUERDO }
 export interface IAcuerdo
 {
   tipo:                       TIPO_ACUERDO
-  //label:                      string
-  tipoPlural:                 string
+  label:                      string
+  labelPlural:                string
+  ruta:                       string
   emoji:                      string
+  icono:                      string
+  imagen:                     string
   modulo:                     TModulosDolibarr
   esCotizacion:               boolean
   esPedido:                   boolean
-  esNuevo:                    boolean
-  icono:                      string
+  esNuevo:                    boolean  
   id:                         number
   ref:                        string
   refCorta:                   string
@@ -252,7 +255,7 @@ export class Acuerdo implements IAcuerdo
     /* Solo para pedidos */
     this.facturado            = false
   }
-  label: string
+  
 
 
 /*   reorganizarProductosGrupos()
@@ -269,33 +272,66 @@ export class Acuerdo implements IAcuerdo
       if(grupo.totalCreado)   orden++
     }
   } */
+ 
+  get label() : string {
+    const label   = this.tipo === TIPO_ACUERDO.COTIZACION   ? "cotización"
+                  : this.tipo === TIPO_ACUERDO.PEDIDO       ? "pedido"
+                  : this.tipo === TIPO_ACUERDO.ENTREGA      ? "entrega"
+                  : this.tipo === TIPO_ACUERDO.OC_PROVEEDOR ? "pedido proveedor"
+                  : this.tipo === TIPO_ACUERDO.FACTURA      ? "factura"
+                  : ""
+    return label
+  }
 
+  get labelPlural() : string { return getTipoAcuerdoPlural( this.tipo ) }
+  get icono()       : string { return getIconoAcuerdo     ( this.tipo ) }  
+
+  get ruta() : string{
+    const ruta    = this.tipo === TIPO_ACUERDO.COTIZACION   ? "cotizaciones"
+                  : this.tipo === TIPO_ACUERDO.PEDIDO       ? "pedidos"
+                  : this.tipo === TIPO_ACUERDO.ENTREGA      ? "entregas"
+                  : this.tipo === TIPO_ACUERDO.OC_PROVEEDOR ? "pedidos-proveedor"
+                  : this.tipo === TIPO_ACUERDO.FACTURA      ? "facturas"
+                  : ""
+    return ruta
+  }
+  
   get urlDolibarr() : string {
-    return process.env.URL_DOLIBARR + (   this.esCotizacion ? "/comm/propal/card.php?id="
-                                        : this.esPedido      ? "/commande/card.php?id="
-                                        : ""
-                                      ) + this.id
+    const ruta    = this.tipo === TIPO_ACUERDO.COTIZACION   ? "/comm/propal/card.php?id="
+                  : this.tipo === TIPO_ACUERDO.PEDIDO       ? "/commande/card.php?id="
+                  : this.tipo === TIPO_ACUERDO.ENTREGA      ? ""
+                  : this.tipo === TIPO_ACUERDO.OC_PROVEEDOR ? ""
+                  : this.tipo === TIPO_ACUERDO.FACTURA      ? ""
+                  : ""
+
+    return process.env.URL_DOLIBARR + ruta + this.id
   }
   
   get urlDolibarrOC() : string {
     return    this.esPedido
             ? process.env.URL_DOLIBARR + "/supplierorderfromorder/ordercustomer.php?id=" + this.id
             : ""
-  }
-  
+  }  
 
   get emoji() :  string {
-    let emoji     = this.tipo === TIPO_ACUERDO.COTIZACION ? "📜"
-                  : this.tipo === TIPO_ACUERDO.PEDIDO     ? "🛒"
-                  : this.tipo === TIPO_ACUERDO.ENTREGA    ? "🚛"
-                  : this.tipo === TIPO_ACUERDO.FACTURA    ? "📄"
+    const emoji   = this.tipo === TIPO_ACUERDO.COTIZACION   ? "📜"
+                  : this.tipo === TIPO_ACUERDO.PEDIDO       ? "🛒"
+                  : this.tipo === TIPO_ACUERDO.ENTREGA      ? "🚛"
+                  : this.tipo === TIPO_ACUERDO.OC_PROVEEDOR ? "🚛"
+                  : this.tipo === TIPO_ACUERDO.FACTURA      ? "📄"
                   : "✅"
     return emoji
-  }
+  } 
 
-  get tipoPlural() : string{
-    return getTipoAcuerdoPlural( this.tipo )
-  }
+  get imagen() :  string {
+    const imagen  = this.tipo === TIPO_ACUERDO.COTIZACION   ? "iconoCotizacion.webp"
+                  : this.tipo === TIPO_ACUERDO.PEDIDO       ? "iconoPedido.webp"
+                  : this.tipo === TIPO_ACUERDO.ENTREGA      ? ""
+                  : this.tipo === TIPO_ACUERDO.OC_PROVEEDOR ? "iconoOCProveedor.webp"
+                  : this.tipo === TIPO_ACUERDO.FACTURA      ? ""
+                  : ""
+    return imagen
+  } 
 
   get modulo() : TModulosDolibarr
   {
@@ -309,16 +345,7 @@ export class Acuerdo implements IAcuerdo
   }
 
 
-  get icono() : string
-  {
-    let icono  : string
-    icono  =   this.tipo === TIPO_ACUERDO.COTIZACION      ? "proposal"
-                  : this.tipo === TIPO_ACUERDO.PEDIDO     ? "order"
-                  : this.tipo === TIPO_ACUERDO.ENTREGA    ? "shipment"
-                  : this.tipo === TIPO_ACUERDO.FACTURA    ? "invoice"
-                  : "proposal"
-    return icono
-  }  
+  
 
   get subTotalLimpio() : number {
     let suma                = 0

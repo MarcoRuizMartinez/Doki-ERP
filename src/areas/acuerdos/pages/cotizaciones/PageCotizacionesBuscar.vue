@@ -1,7 +1,6 @@
 <template>
   <q-page padding class         ="row item-stretch content-start justify-start">
     <vista-busqueda
-      icono                     ="mdi-format-list-checks"
       :tipo                     ="TIPO_ACUERDO.COTIZACION "
     />
   </q-page>

@@ -23,7 +23,7 @@ export interface  ILineaApi {
   subprice?:                number
   remise_percent?:          number
   desc?:                    string
-  fk_unit?:                 number
+  fk_unit?:                 number | string
   label?:                   string
   special_code?:            number  
 }
@@ -376,10 +376,10 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
       remise_percent: linea.descuentoX100,
       rang:           linea.orden,
       desc:           linea.descripcion,
-      fk_unit:        linea.unidadId,
+      fk_unit:        linea.unidad.id,
       special_code:   linea.codeX,
       label:          linea.nombre.length > 2 ? linea.nombre : undefined,
-    }    
+    }
     return lineaApi
   }
 
