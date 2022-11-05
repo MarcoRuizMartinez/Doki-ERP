@@ -344,7 +344,7 @@
   import {  IQueryAcuerdo,
             IBusquedaAcuerdo    } from "src/areas/acuerdos/models/BusquedaAcuerdos"
   import {  estadosCtz,
-            estadosPed          } from "src/areas/acuerdos/models/ConstantesAcuerdos"
+            estadosPed          } from "src/areas/acuerdos/models/ConstantesEstados"
 
   // * /////////////////////////////////////////////////////////////////////// Componentes
   import    fieldsetFiltro        from "components/utilidades/Fieldset.vue"

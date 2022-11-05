@@ -1,5 +1,6 @@
-import {  TIPO_ACUERDO,
-          TTipoAcuerdo    } from "src/areas/acuerdos/models/ConstantesAcuerdos"
+import {  Acuerdo,
+          TIPO_ACUERDO,
+          TTipoAcuerdo    } from "src/areas/acuerdos/models/Acuerdo"
 import {  ILabelValue,
           labelValueNulo  } from "src/models/TiposVarios"
 import {  IUsuario            } from "src/areas/usuarios/models/Usuario"

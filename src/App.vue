@@ -5,14 +5,14 @@
   // * /////////////////////////////////////////////////////////////////////// Store
   //import {  storeToRefs           } from 'pinia'
   //import {  useStoreUser          } from 'src/stores/user'  
-  // * /////////////////////////////////////////////////////////////////////// Modelos
+  // * /////////////////////////////////////////////////////////////////////// Modelos  
   import {  ORIGEN                } from "src/models/TiposVarios"
   import {  Permisos              } from "src/areas/usuarios/models/Permisos"
   // * /////////////////////////////////////////////////////////////////////// Componibles
   import {  useLogin              } from "src/services/useLogin"
   import {  useOnline             } from "src/useSimpleOk/useOnline"
   import {  useInciarApariencia   } from "src/useSimpleOk/useIniciarApariencia"  
-  
+  console.log("Inicio")
   //const { logueado }              = storeToRefs( useStoreUser() )
   useLogin( ORIGEN.APP )
   useOnline()

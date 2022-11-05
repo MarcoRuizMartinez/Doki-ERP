@@ -6,13 +6,13 @@
         v-if                ="acuerdo.esEstadoAbierto && acuerdo.esPedido"
         v-bind              ="btnBaseMd"
         color               ="primary"
-        icon                ="mdi-tools"
+        icon                ="mdi-tools"  
         target              ="_blank"
         :href               ="acuerdo.urlDolibarrOC"
         :label              ="esMobil ? '' : 'OC Proveedor'"
         :disable            ="cargandoAlgo"        
         >
-        <Tooltip label      ="Generar PDF" :hide="loading.pdf"/>
+        <Tooltip label      ="Generar pedidos a proveedor"/>
       </q-btn>
     </efecto>    
     <efecto efecto          ="Down">

@@ -5,7 +5,7 @@
     height                    ="100%"
     size-icon-carga           ="22em"
     :modo                     ="modo"
-    :icono                    ="getIconoAcuerdo(tipo)"
+    :icono                    ="Acuerdo.getIconoAcuerdo(tipo)"
     :titulo                   ="titulo"
     :padding-contenido        ="modo === 'normal' ? '0' : '12px' "
     :mensaje-sin-resultados   ="'No se encontraron ' + tipo"
@@ -142,9 +142,8 @@
   import {  ModosVentana,
             ALMACEN_LOCAL       } from "src/models/TiposVarios"  
   import {  TTipoAcuerdo,
-            getIconoAcuerdo,
-            getTipoAcuerdoPlural
-                                } from "src/areas/acuerdos/models/ConstantesAcuerdos"            
+            Acuerdo
+                                } from "src/areas/acuerdos/models/Acuerdo"            
   // * /////////////////////////////////////////////////////////////////////// Componentes
   import    ventana               from "components/utilidades/Ventana.vue"  
   import    selectColumnas        from "components/utilidades/select/SelectColumnas.vue"
@@ -162,7 +161,7 @@
     tipo:   { required: true, type: String as PropType< TTipoAcuerdo >  },
   })
   const { tipo }                  = toRefs(props) 
-  //const title                     = useTitle("🔍 Buscar " + tipo.value)
+  const title                     = useTitle("🔍 Buscar " + Acuerdo.getTipoAcuerdoPlural(tipo.value))
   const { usuario, permisos     } = storeToRefs( useStoreUser() )  
   const { acuerdo,
           acuerdos,
@@ -177,9 +176,21 @@
   //const filtroMovil               = ref< boolean >(false)
   const titulo                    = computed(()=>
   {
-    return acuerdos.value.length > 0 ? `Resultado: ${acuerdos.value.length} ` +
-                                      ( acuerdos.value.length === 1 ? tipo.value : getTipoAcuerdoPlural( tipo.value ) )
-                                    : `Buscando ${getTipoAcuerdoPlural(tipo.value)}...`
+    let   titulo                  = ""
+    const largo                   = acuerdos.value.length
+
+    if(!largo)
+      titulo                      = `Buscando ${Acuerdo.getTipoAcuerdoPlural(tipo.value)}...`
+    else
+    {
+      titulo                      = `Resultado: ${largo} `
+      if(largo                    === 1)
+        titulo                    += Acuerdo.getTipoAcuerdoSingular ( tipo.value )
+      else
+        titulo                    += Acuerdo.getTipoAcuerdoPlural   ( tipo.value )
+    }
+
+    return titulo
   })
   const columnas                  = ref< IColumna[] >([])
   const columnasVisibles          = ref< string[]   >([])

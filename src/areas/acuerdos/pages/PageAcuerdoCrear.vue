@@ -15,7 +15,7 @@
   //import {  useStoreAcuerdo       } from 'src/stores/acuerdo'
   // * /////////////////////////////////////////////////////////////////////////////////// Modelos
   //import {  Acuerdo               } from "src/areas/acuerdos/models/Acuerdo"
-  import {  TTipoAcuerdo          } from "src/areas/acuerdos/models/ConstantesAcuerdos"
+  import {  TTipoAcuerdo          } from "src/areas/acuerdos/models/Acuerdo"
   // * /////////////////////////////////////////////////////////////////////////////////// Componentes
   import    vistaAcuerdoCrear       from "src/areas/acuerdos/components/Views/VistaAcuerdoCrear.vue"
   //const {   acuerdo         } = storeToRefs( useStoreAcuerdo() )

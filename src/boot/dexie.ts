@@ -1,7 +1,7 @@
 
 import {  boot                } from 'quasar/wrappers'
 import    Dexie                 from 'dexie';
-import {  TABLAS,ITabla       } from "src/services/useDexie"
+import {  TABLAS, ITabla      } from "src/services/useDexie"
 import {  IMunicipio,         Municipio         } from "src/models/Municipio"
 import {  IUsuario,           Usuario           } from "src/areas/usuarios/models/Usuario"
 import {  ITipoDocumento,     TipoDocumento     } from "src/areas/terceros/models/TiposDocumento"
@@ -17,8 +17,8 @@ import {  IProductoCategoria, ProductoCategoria } from "src/areas/productos/mode
 
 export class DBSimpleOk extends Dexie
 {
-  [TABLAS.MUNICIPIOS]!:       Dexie.Table< IMunicipio,        number >
   [TABLAS.USUARIOS]!:         Dexie.Table< IUsuario,          number >
+  [TABLAS.MUNICIPIOS]!:       Dexie.Table< IMunicipio,        number >
   [TABLAS.TIPOS_DOCUMENTOS]!: Dexie.Table< ITipoDocumento,    number >
   [TABLAS.CONDICION_PAGO]!:   Dexie.Table< ICondicionPago,    number >
   [TABLAS.FORMA_PAGO]!:       Dexie.Table< IFormaPago,        number >
