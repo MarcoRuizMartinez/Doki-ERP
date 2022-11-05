@@ -14,9 +14,9 @@ import {  useTools,
 //* ////////////////////////////////////////////////////////////////// Modelos
 import {  ESTADO_CTZ,
           ESTADO_PED,
-          TTipoAcuerdo,
-          ESTADO_ACU,
-          TIPO_ACUERDO          } from "../../../areas/acuerdos/models/ConstantesAcuerdos"
+          ESTADO_ACU,         } from "../models/ConstantesEstados"
+import {  TTipoAcuerdo,          
+          TIPO_ACUERDO          } from "../models/Acuerdo"
 import {  IOrigenContacto       } from "../../../models/Diccionarios/OrigenContacto"
 import {  IUsuario              } from "../../../areas/usuarios/models/Usuario"
 import {  ITercero              } from "../../../areas/terceros/models/Tercero"
