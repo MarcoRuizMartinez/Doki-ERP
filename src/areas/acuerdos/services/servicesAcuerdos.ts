@@ -29,7 +29,7 @@ import {  TIPOS_CONTACTO_ID } from "src/areas/terceros/models/Contacto"
 import {  ISerieCtz,
           SerieCtz          } from "src/areas/acuerdos/models/SeriesCotizacion"
 import {  IQueryAcuerdo     } from "src/areas/acuerdos/models/BusquedaAcuerdos"
-import {  TTipoAcuerdo      } from "src/areas/acuerdos/models/ConstantesAcuerdos"  
+import {  TTipoAcuerdo      } from "src/areas/acuerdos/models/Acuerdo"  
 import {  Acuerdo,
           IAcuerdo,
           TIPO_ACUERDO      } from "src/areas/acuerdos/models/Acuerdo"

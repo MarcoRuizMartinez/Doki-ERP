@@ -17,10 +17,9 @@
       height-card         ="260px"
       size-icon-carga     ="12em"
       />
-      <modulo-enlaces
-        class             ="col-md-4 col-12"
-        
-      />
+    <modulo-enlaces
+      class               ="col-md-4 col-12"
+    />
     <template v-if        ="storeUser.usuario.esDev">      
       <modulo-usuarios            class="col-md-4 col-12" height-card="260px"/>
       <modulo-municipios          class="col-md-4 col-12" height-card="260px"/>
@@ -39,12 +38,12 @@
 </template>
 
 <script setup lang="ts">
-  import {  ref,  provide             } from 'vue'  
-  import {  useStoreUser              } from 'src/stores/user'   
+  import {  ref,  provide           } from 'vue'  
+  import {  useStoreUser            } from 'src/stores/user'   
   import    buscarTerceros            from "src/areas/terceros/components/modules/ModuloBuscarTercerosMini.vue"
   import    tercerosFavoritos         from "src/areas/terceros/components/modules/ModuloTercerosFavoritos.vue"
   import    misTerceros               from "src/areas/terceros/components/modules/ModuloMisTerceros.vue"
-  import {  useTitle            }     from "@vueuse/core"
+  import {  useTitle                } from "@vueuse/core"
   
   import    moduloEnlaces             from "src/areas/sistemas/components/ModuloLinks.vue"
   import    moduloUsuarios            from "src/areas/sistemas/components/ModuloUsuarios.vue"
@@ -60,12 +59,11 @@
   import    moduloCategoriasProducto  from "src/areas/sistemas/components/ModuloCategoriasProducto.vue"
   import    moduloConstantes          from "src/areas/sistemas/components/ModuloConstantes.vue"
 
-  import {  cargarListasIndex         } from "src/services/useDexie"
+  import {  cargarListasIndex       } from "src/services/useDexie"
 
   const storeUser                 = useStoreUser()
   const minimizadoTodo            = ref< boolean >(false)
-  const title                     = useTitle("🏠 Inicio Grupo Escom")
+  useTitle("🏠 Inicio Grupo Escom")
   provide('superminimizado', minimizadoTodo)
-
   cargarListasIndex()
 </script>

@@ -22,7 +22,7 @@ import {  ITiempoEntrega,     TiempoEntrega     } from "src/models/Diccionarios/
 import {  ITipoContacto,      TipoContacto      } from "src/models/Diccionarios/TipoContacto"
 import {  IProductoCategoria, ProductoCategoria } from "src/areas/productos/models/ProductoCategoria"
 import {  IConstante,         Constante         } from "src/models/Diccionarios/Constante"
-import {  storeToRefs     } from 'pinia'
+import {  storeToRefs                           } from 'pinia'
 
 //* ///////////////////////////////////////////////////////////// Tipos de documento
 export enum TABLAS

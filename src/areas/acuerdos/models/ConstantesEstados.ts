@@ -1,5 +1,3 @@
-<<<<<<< HEAD:src/areas/acuerdos/models/ConstantesEstados.ts
-=======
 
 export enum TIPO_ACUERDO
 {
@@ -30,8 +28,6 @@ export function getTipoAcuerdoPlural( tipo : TTipoAcuerdo ) : string {
 }
 
 
-
->>>>>>> parent of 972a277 (22-11-04):src/areas/acuerdos/models/ConstantesAcuerdos.ts
 export enum ESTADO_ACU
 {
   NO_GUARDADO                 = -2,

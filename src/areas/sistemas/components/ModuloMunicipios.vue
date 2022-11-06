@@ -25,22 +25,21 @@
     </ventana>
   </template>
   
-  <script setup lang="ts">
-    import {  ref             } from "vue"
-    import {  IColumna,
-              Columna         } from "src/models/Tabla"
-    import    ventana           from "components/utilidades/Ventana.vue"
-    import    inputBuscar       from "src/components/utilidades/input/InputSimple.vue"
-    import {  dexieMunicipios } from "src/services/useDexie"
-  
-    const filtro                = ref< string >("")  
-    const lista                 = dexieMunicipios()
-    const columnas: IColumna[]  = [
-                                    new Columna({ name: "id"}),
-                                    new Columna({ name: "municipio"}),
-                                    new Columna({ name: "departamento"}),
-                                    new Columna({ name: "indicativo"}),
-                                  ]
+<script setup lang="ts">
+  import {  ref             } from "vue"
+  import {  IColumna,
+            Columna         } from "src/models/Tabla"
+  import    ventana           from "components/utilidades/Ventana.vue"
+  import    inputBuscar       from "src/components/utilidades/input/InputSimple.vue"
+  import {  dexieMunicipios } from "src/services/useDexie"
 
-//[TABLAS.MUNICIPIOS]:        "++id, municipio, departamento 
-  </script>
+  const filtro                = ref< string >("")  
+  const lista                 = dexieMunicipios()
+  const columnas: IColumna[]  = [
+                                  new Columna({ name: "id"}),
+                                  new Columna({ name: "municipio"}),
+                                  new Columna({ name: "departamento"}),
+                                  new Columna({ name: "indicativo"}),
+                                ]
+  //[TABLAS.MUNICIPIOS]:        "++id, municipio, departamento
+</script>

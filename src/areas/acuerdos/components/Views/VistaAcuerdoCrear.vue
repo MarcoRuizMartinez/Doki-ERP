@@ -59,8 +59,7 @@
   import {  useStoreUser          } from 'src/stores/user'
   import {  useStoreAcuerdo       } from 'src/stores/acuerdo'
   // * /////////////////////////////////////////////////////////////////////////////////// Modelos
-  import {  Acuerdo               } from "src/areas/acuerdos/models/Acuerdo"
-  import {  TTipoAcuerdo          } from "src/areas/acuerdos/models/ConstantesAcuerdos"
+  import {  Acuerdo, TTipoAcuerdo } from "src/areas/acuerdos/models/Acuerdo"
   // * /////////////////////////////////////////////////////////////////////////////////// Componibles
   import {  btnBaseMd             } from "src/useSimpleOk/useEstilos"
   import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"

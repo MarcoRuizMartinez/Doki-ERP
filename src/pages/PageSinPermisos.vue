@@ -6,10 +6,7 @@
 </template>
 
 <script setup lang="ts">
-
-
   const props = defineProps({
     ruta: { default: "", type: String }
   })
-
 </script>

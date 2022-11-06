@@ -7,7 +7,7 @@ import {  ref
                               } from "vue"
 import {  sortArray           } from "src/useSimpleOk/useTools"
 
-import {  estadoStrCtzToColor } from "src/areas/acuerdos/models/ConstantesAcuerdos"
+import {  estadoStrCtzToColor } from "src/areas/acuerdos/models/ConstantesEstados"
 
 export function useInformesCtz()
 {
