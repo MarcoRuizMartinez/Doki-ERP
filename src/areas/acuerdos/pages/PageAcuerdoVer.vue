@@ -16,7 +16,7 @@
   //* ///////////////////////////////////////////////////////////////////////////////// Componibles
   import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"
   import {  useControlProductos   } from "src/areas/acuerdos/controllers/ControlLineasProductos"  
-  import {  TTipoAcuerdo          } from "src/areas/acuerdos/models/Acuerdo"
+  import {  TTipoAcuerdo          } from "src/areas/acuerdos/models/ConstantesAcuerdos"
   //* ///////////////////////////////////////////////////////////////////////////////// Componentes
   import    vistaAcuerdo            from "src/areas/acuerdos/components/Views/VistaAcuerdoVer.vue"
   

@@ -1,5 +1,5 @@
 import {  RouteRecordRaw  } from 'vue-router'
-import {  TIPO_ACUERDO    } from "src/areas/acuerdos/models/Acuerdo"
+import {  TIPO_ACUERDO    } from "src/areas/acuerdos/models/ConstantesAcuerdos"
 
 const routes: RouteRecordRaw[] = [
   {

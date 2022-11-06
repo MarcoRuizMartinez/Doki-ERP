@@ -1,10 +1,16 @@
-import {  ESTADO_CTZ,
+import {  TIPO_ACUERDO,
+          ESTADO_CTZ,
           estadoCtzToName,
           estadoCtzToColor,
+          estadosCtz,
           ESTADO_PED,
           estadoPedToName,
           estadoPedToColor,
-                                            } from "./ConstantesEstados"
+          estadosPed,
+          TTipoAcuerdo,
+          getIconoAcuerdo,
+          getTipoAcuerdoPlural,
+                                            } from "./ConstantesAcuerdos"
 import {  X100, fechaCorta                  } from "src/useSimpleOk/useTools"
 import {  ILineaAcuerdo,    LineaAcuerdo    } from "src/areas/acuerdos/models/LineaAcuerdo"
 import {  ITercero,         Tercero         } from "src/areas/terceros/models/Tercero"
@@ -28,23 +34,7 @@ import {  getDateToStr,
           getMilisecShortForApiDolibarr     } from "src/useSimpleOk/useTools"
 import {  TModulosDolibarr                  } from "src/useSimpleOk/UtilFiles"
 
-export enum TIPO_ACUERDO
-{
-  NULO                        = "",
-  COTIZACION                  = "cotización", // Igual que el END POINT del servicio
-  PEDIDO                      = "pedido",
-  ENTREGA                     = "entrega",
-  OC_PROVEEDOR                = "oc_proveedor",
-  FACTURA                     = "factura",
-}
-
-export type TTipoAcuerdo      =   TIPO_ACUERDO.COTIZACION
-                                | TIPO_ACUERDO.PEDIDO
-                                | TIPO_ACUERDO.ENTREGA
-                                | TIPO_ACUERDO.OC_PROVEEDOR
-                                | TIPO_ACUERDO.FACTURA
-                                | TIPO_ACUERDO.NULO
-
+export {  TIPO_ACUERDO }
 
 export interface IAcuerdo
 {
@@ -282,10 +272,19 @@ export class Acuerdo implements IAcuerdo
       if(grupo.totalCreado)   orden++
     }
   } */
+ 
+  get label() : string {
+    const label   = this.tipo === TIPO_ACUERDO.COTIZACION   ? "cotización"
+                  : this.tipo === TIPO_ACUERDO.PEDIDO       ? "pedido"
+                  : this.tipo === TIPO_ACUERDO.ENTREGA      ? "entrega"
+                  : this.tipo === TIPO_ACUERDO.OC_PROVEEDOR ? "pedido proveedor"
+                  : this.tipo === TIPO_ACUERDO.FACTURA      ? "factura"
+                  : ""
+    return label
+  }
 
-  get label()       : string { return Acuerdo.getTipoAcuerdoSingular  ( this.tipo ) }
-  get labelPlural() : string { return Acuerdo.getTipoAcuerdoPlural    ( this.tipo ) }
-  get icono()       : string { return Acuerdo.getIconoAcuerdo         ( this.tipo ) }
+  get labelPlural() : string { return getTipoAcuerdoPlural( this.tipo ) }
+  get icono()       : string { return getIconoAcuerdo     ( this.tipo ) }  
 
   get ruta() : string{
     const ruta    = this.tipo === TIPO_ACUERDO.COTIZACION   ? "cotizaciones"
@@ -343,7 +342,10 @@ export class Acuerdo implements IAcuerdo
                   : this.tipo === TIPO_ACUERDO.FACTURA    ? "invoice"
                   : "proposal"
     return modulo
-  }  
+  }
+
+
+  
 
   get subTotalLimpio() : number {
     let suma                = 0
@@ -676,35 +678,6 @@ export class Acuerdo implements IAcuerdo
     return acuForApi
   }
 
-  static getTipoAcuerdoSingular( tipo : TTipoAcuerdo ) : string {
-    const label   = tipo === TIPO_ACUERDO.COTIZACION   ? "cotización"
-                  : tipo === TIPO_ACUERDO.PEDIDO       ? "pedido"
-                  : tipo === TIPO_ACUERDO.ENTREGA      ? "entrega"
-                  : tipo === TIPO_ACUERDO.OC_PROVEEDOR ? "pedido proveedor"
-                  : tipo === TIPO_ACUERDO.FACTURA      ? "factura"
-                  : ""
-    return label
-  }  
-
-  static  getTipoAcuerdoPlural( tipo : TTipoAcuerdo ) : string {
-    const singular              =   tipo === TIPO_ACUERDO.COTIZACION        ? "cotizaciones"
-                                  : tipo === TIPO_ACUERDO.PEDIDO            ? "pedidos"
-                                  : tipo === TIPO_ACUERDO.ENTREGA           ? "entregas"
-                                  : tipo === TIPO_ACUERDO.OC_PROVEEDOR      ? "pedidos proveedor"
-                                  : tipo === TIPO_ACUERDO.FACTURA           ? "facturas"
-                                  : ""
-    return singular
-  }
-  
-  static getIconoAcuerdo( tipo : TTipoAcuerdo ) : string {
-    const singular              =   tipo === TIPO_ACUERDO.COTIZACION        ? "mdi-format-list-checks"
-                                  : tipo === TIPO_ACUERDO.PEDIDO            ? "mdi-cart"
-                                  : tipo === TIPO_ACUERDO.ENTREGA           ? ""
-                                  : tipo === TIPO_ACUERDO.OC_PROVEEDOR      ? "mdi-water-well"
-                                  : tipo === TIPO_ACUERDO.FACTURA           ? ""
-                                  : ""
-    return singular
-  }
 
   // * ///////////////////////////////////////////////////// static convertir data de API en new Cotizacion
   static async convertirDataApiToAcuerdo( ctzApi : any, tipo : TTipoAcuerdo ) : Promise < IAcuerdo >
@@ -760,3 +733,4 @@ export class Acuerdo implements IAcuerdo
     return ctz
   }
 }
+

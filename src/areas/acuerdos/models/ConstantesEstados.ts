@@ -1,3 +1,37 @@
+<<<<<<< HEAD:src/areas/acuerdos/models/ConstantesEstados.ts
+=======
+
+export enum TIPO_ACUERDO
+{
+  NULO                        = "",
+  COTIZACION                  = "cotización", // Igual que el END POINT del servicio
+  PEDIDO                      = "pedido",
+  ENTREGA                     = "entrega",
+  PEDIDO_PROVEEDOR            = "pedido_proveedor",
+  FACTURA                     = "factura",
+}
+
+export type TTipoAcuerdo      =   TIPO_ACUERDO.COTIZACION
+                                | TIPO_ACUERDO.PEDIDO
+                                | TIPO_ACUERDO.ENTREGA
+                                | TIPO_ACUERDO.PEDIDO_PROVEEDOR
+                                | TIPO_ACUERDO.FACTURA
+                                | TIPO_ACUERDO.NULO
+
+
+export function getTipoAcuerdoPlural( tipo : TTipoAcuerdo ) : string {
+  const singular              =   tipo === TIPO_ACUERDO.COTIZACION        ? "cotizaciones"
+                                : tipo === TIPO_ACUERDO.PEDIDO            ? "pedidos"
+                                : tipo === TIPO_ACUERDO.ENTREGA           ? "entregas"
+                                : tipo === TIPO_ACUERDO.PEDIDO_PROVEEDOR  ? "pedidos_proveedor"
+                                : tipo === TIPO_ACUERDO.FACTURA           ? "facturas"
+                                : ""
+  return singular
+}
+
+
+
+>>>>>>> parent of 972a277 (22-11-04):src/areas/acuerdos/models/ConstantesAcuerdos.ts
 export enum ESTADO_ACU
 {
   NO_GUARDADO                 = -2,
