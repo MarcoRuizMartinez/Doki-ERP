@@ -14,12 +14,13 @@ import {  useTools,
 //* ////////////////////////////////////////////////////////////////// Modelos
 import {  ESTADO_CTZ,
           ESTADO_PED,
-          ESTADO_ACU,         } from "../models/ConstantesEstados"
-import {  TTipoAcuerdo,          
-          TIPO_ACUERDO          } from "../models/Acuerdo"
-import {  IOrigenContacto       } from "../../../models/Diccionarios/OrigenContacto"
-import {  IUsuario              } from "../../../areas/usuarios/models/Usuario"
-import {  ITercero              } from "../../../areas/terceros/models/Tercero"
+          ESTADO_ACU,         
+          TTipoAcuerdo,
+          TIPO_ACUERDO
+                                } from "../models/ConstantesAcuerdos"
+import {  IOrigenContacto       } from "src/models/Diccionarios/OrigenContacto"
+import {  IUsuario              } from "src/areas/usuarios/models/Usuario"
+import {  ITercero              } from "src/areas/terceros/models/Tercero"
 import {  ICondicionPago        } from "src/models/Diccionarios/CondicionPago"
 import {  IFormaPago            } from "src/models/Diccionarios/FormaPago"
 import {  IMetodoEntrega        } from "src/models/Diccionarios/MetodoEntrega"
@@ -27,7 +28,7 @@ import {  ITiempoEntrega        } from "src/models/Diccionarios/TiempoEntrega"
 import {  IContacto,
           Contacto,
           TIPOS_CONTACTO
-                                } from "../../../areas/terceros/models/Contacto"
+                                } from "src/areas/terceros/models/Contacto"
 
 
 export function useControlAcuerdo() 

@@ -35,7 +35,6 @@ export function useLogin( origen_ : string )
   //* ///////////////////////////////////////////////////////////////////////// On Mounted
   onMounted(() =>
   {
-    console.log("onMounted Online")
     if(origen_ == ORIGEN.APP ) {
       loginIniciarApp()
     }

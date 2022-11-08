@@ -4,7 +4,6 @@ import {  IPermisos,
           Permisos
                               } from "src/areas/usuarios/models/Permisos"
 
-
 interface IUserState {
   fondo:      string,
   patron:     string,
@@ -40,7 +39,7 @@ export const  useStoreUser = defineStore('user', {
       } catch(e) {
         console.warn("Error en setPermisos:", e)
         this.permisos         = new Permisos()
-        console.log("this.permisos: ", this.permisos);
+        //console.log("this.permisos: ", this.permisos);
         return
       }      
       

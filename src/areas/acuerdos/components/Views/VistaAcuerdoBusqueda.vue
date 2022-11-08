@@ -8,7 +8,7 @@
     :icono                    ="Acuerdo.getIconoAcuerdo(tipo)"
     :titulo                   ="titulo"
     :padding-contenido        ="modo === 'normal' ? '0' : '12px' "
-    :mensaje-sin-resultados   ="'No se encontraron ' + tipo"
+    :mensaje-sin-resultados   ="`No se encontraron ${Acuerdo.getTipoAcuerdoPlural( tipo)}`"
     >
     <template                 #barra>
       <tabs-busqueda />
@@ -85,7 +85,7 @@
       transition-hide           ="slide-down"
       >
       <ventana                  cerrar scroll full-screen
-        titulo                  ="Vista rapida"
+        :titulo                 ="`Vista rapida ${Acuerdo.getTipoAcuerdoSingular(tipo)}`"
         icono                   ="mdi-eye"
         backgroundColor         ="rgb(255 255 255 / 70%)"
         class-contenido         ="row items-start content-start justify-start q-col-gutter-md q-mt-none"
@@ -141,9 +141,8 @@
   import {  Columna, IColumna   } from "src/models/Tabla"
   import {  ModosVentana,
             ALMACEN_LOCAL       } from "src/models/TiposVarios"  
-  import {  TTipoAcuerdo,
-            Acuerdo
-                                } from "src/areas/acuerdos/models/Acuerdo"            
+  import {  Acuerdo             } from "src/areas/acuerdos/models/Acuerdo"
+  import {  TTipoAcuerdo        } from "src/areas/acuerdos/models/ConstantesAcuerdos"
   // * /////////////////////////////////////////////////////////////////////// Componentes
   import    ventana               from "components/utilidades/Ventana.vue"  
   import    selectColumnas        from "components/utilidades/select/SelectColumnas.vue"
@@ -160,8 +159,7 @@
   const props                     = defineProps({
     tipo:   { required: true, type: String as PropType< TTipoAcuerdo >  },
   })
-  const { tipo }                  = toRefs(props) 
-  const title                     = useTitle("🔍 Buscar " + Acuerdo.getTipoAcuerdoPlural(tipo.value))
+  const { tipo }                  = toRefs(props)
   const { usuario, permisos     } = storeToRefs( useStoreUser() )  
   const { acuerdo,
           acuerdos,
@@ -198,10 +196,10 @@
   const puedeSiguiente            = computed(()=> indexSelect.value < acuerdos.value.length - 1)
 
   onMounted(()=>{
+    useTitle(`${Acuerdo.getEmojiAcuerdo(tipo.value)}🔍 Buscar ${Acuerdo.getTipoAcuerdoPlural(tipo.value)}`)
     acuerdos.value                = []
     busqueda.value                = new BusquedaAcuerdo( tipo.value )
     crearColumnas()
-    //useTitle("🔍 Buscar " + tipo.value)
   })
 
   onUnmounted(()=>{

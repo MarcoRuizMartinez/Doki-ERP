@@ -73,7 +73,7 @@
   import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"
   import {  useCotizacionPDF      } from "src/areas/acuerdos/composables/useCotizacionPDF"
   //import {  useControlProductos   } from "src/areas/acuerdos/controllers/ControlLineasProductos"  
-  import {  TTipoAcuerdo          } from "src/areas/acuerdos/models/Acuerdo"
+  import {  TTipoAcuerdo          } from "src/areas/acuerdos/models/ConstantesAcuerdos"
   //* ///////////////////////////////////////////////////////////////////////////////// Componentes
   import    visorPdf                from "components/utilidades/VisorPDF.vue"
   import    notas                   from "src/areas/acuerdos/components/Notas.vue"

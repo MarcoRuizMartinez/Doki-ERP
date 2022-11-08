@@ -9,7 +9,7 @@ import {  ILabelValue,
 
 
 type Iconos = "" | "water" | "account" | "shield" | "clipboard" | "clock" | "cloud" | "sticker" | "comment" | "table" | "head" | "phone" | "timeline" | "bell" | "printer" | "email" | "lock" | "file" | "lock-open" | "map-marker"
- 
+
 export function useTools() 
 {
   const quasar                  = useQuasar()
@@ -498,4 +498,20 @@ export function esCorreoFamoso( correo : string ) : boolean {
     }            
   }
   return esFamoso
+}
+
+export function existeYEsValido( objeto : any, key : string ) : boolean {
+  return key in objeto && !!objeto[key]
+}
+
+export function getNumberValido( objeto : any, key : string ) : number {
+  const numero : number = key in objeto && valorValido( objeto[key] ) && typeof objeto[key] === "number"
+                          ? objeto[key] : 0
+  return numero
+}
+
+export function getStringValido( objeto : any, key : string ) : string {
+  const texto : string  = key in objeto && valorValido( objeto[key] ) && typeof objeto[key] === "string"
+                          ? objeto[key] : ""
+  return texto
 }

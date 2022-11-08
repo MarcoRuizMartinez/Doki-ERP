@@ -4,9 +4,8 @@ import {  UtilPDF,
           IInicioPDF,
           crearImageHTML,
           GRISES            } from 'src/useSimpleOk/UtilPDF';
-import {  Acuerdo,
-          IAcuerdo,
-          TIPO_ACUERDO      } from "src/areas/acuerdos/models/Acuerdo"          
+import {  Acuerdo, IAcuerdo } from "src/areas/acuerdos/models/Acuerdo"
+import {  TIPO_ACUERDO      } from "src/areas/acuerdos/models/ConstantesAcuerdos"          
 import {  useQuasar,
           QSpinnerGears     } from "quasar"
 import {  fechaLarga,

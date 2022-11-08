@@ -1,5 +1,5 @@
-import {  RouteRecordRaw  } from 'vue-router'
-import {  TIPO_ACUERDO    } from "src/areas/acuerdos/models/Acuerdo"
+import {  RouteRecordRaw  } from "vue-router"
+import {  TIPO_ACUERDO    } from "src/areas/acuerdos/models/ConstantesAcuerdos"
 
 const routes: RouteRecordRaw[] = [
   {
@@ -76,7 +76,8 @@ const routes: RouteRecordRaw[] = [
       {
         path:       '',
         name:       'cotizaciones',
-        component:  () => import('src/areas/acuerdos/pages/cotizaciones/PageCotizacionesBuscar.vue'),
+        props:      () => ({ tipo: TIPO_ACUERDO.COTIZACION }),
+        component:  () => import('src/areas/acuerdos/pages/PageAcuerdoBuscar.vue'),
       },
       {
         path:       '/cotizaciones/:id',
@@ -106,7 +107,8 @@ const routes: RouteRecordRaw[] = [
       {
         path:       '',
         name:       'pedidos',
-        component:  () => import('src/areas/acuerdos/pages/pedidos/PagePedidosBuscar.vue'),
+        props:      () => ({ tipo: TIPO_ACUERDO.PEDIDO }),
+        component:  () => import('src/areas/acuerdos/pages/PageAcuerdoBuscar.vue'),
       },
       {
         path:       '/pedidos/:id',
@@ -123,18 +125,19 @@ const routes: RouteRecordRaw[] = [
     ],
   },
   {
-    path:           '/pedidos_proveedor',
+    path:           '/pedidos-proveedor',
     component:      () => import('layouts/LayoutPrincipal.vue'),
     children:
     [
       {
         path:       '',
-        name:       'pedidos_proveedor',
-        component:  () => import('src/areas/acuerdos/pages/pedidos_proveedor/PagePedidoProveedorBuscar.vue'),
+        name:       'pedidosProveedor',
+        props:      () => ({ tipo: TIPO_ACUERDO.OC_PROVEEDOR }),
+        component:  () => import('src/areas/acuerdos/pages/PageAcuerdoBuscar.vue'),
       },
       {
         path:       '/pedidos_proveedor/:id',
-        name:       'pedido_proveedor',
+        name:       'pedidoProveedor',
         props:      route => ({ tipo: TIPO_ACUERDO.OC_PROVEEDOR, id: route.params.id }),
         component:  () => import('src/areas/acuerdos/pages/PageAcuerdoVer.vue')
       },

@@ -49,7 +49,7 @@ export function useFetch()
                                   ? await resultado.json()
                                   : await resultado.text()
         loadingBar.stop()
-
+        
         cargando              = false        
         if(!!data)
         {

@@ -1,21 +1,5 @@
-import {  ESTADO_CTZ,
-          estadoCtzToName,
-          estadoCtzToColor,
-          ESTADO_PED,
-          estadoPedToName,
-          estadoPedToColor,
-                                            } from "./ConstantesEstados"
-import {  X100, fechaCorta                  } from "src/useSimpleOk/useTools"
-import {  ILineaAcuerdo,    LineaAcuerdo    } from "src/areas/acuerdos/models/LineaAcuerdo"
-import {  ITercero,         Tercero         } from "src/areas/terceros/models/Tercero"
-import {  IUsuario,         Usuario         } from "src/areas/usuarios/models/Usuario"
-import {  IContacto,        Contacto        } from "src/areas/terceros/models/Contacto"
-import {  ICondicionPago,   CondicionPago   } from "src/models/Diccionarios/CondicionPago"
-import {  IFormaPago,       FormaPago       } from "src/models/Diccionarios/FormaPago"
-import {  IMetodoEntrega,   MetodoEntrega   } from "src/models/Diccionarios/MetodoEntrega"
-import {  IOrigenContacto,  OrigenContacto  } from "src/models/Diccionarios/OrigenContacto"
-import {  IGrupoLineas,     GrupoLineas     } from "src/areas/acuerdos/models/GrupoLineasAcuerdo"
-import {  ITiempoEntrega,   TiempoEntrega   } from "src/models/Diccionarios/TiempoEntrega"
+//* ///////////////////////////////////////// Core
+import {  date                              } from "quasar"
 import {  getCondicionesPagoDB,
           getFormasPagoDB,
           getMetodosEntregaDB,
@@ -23,28 +7,33 @@ import {  getCondicionesPagoDB,
           getTiempoEntregaDB,
           getUsuarioDB,
                                             } from "src/services/useDexie"
-import {  date                              } from "quasar"
-import {  getDateToStr,
-          getMilisecShortForApiDolibarr     } from "src/useSimpleOk/useTools"
+import {  TTipoAcuerdo,
+          TIPO_ACUERDO,
+          ESTADO_CTZ,
+          estadoCtzToName,
+          estadoCtzToColor,
+          ESTADO_PED,
+          estadoPedToName,
+          estadoPedToColor                  } from "./ConstantesAcuerdos"
+//* ///////////////////////////////////////// Modelos
+import {  ILineaAcuerdo,    LineaAcuerdo    } from "src/areas/acuerdos/models/LineaAcuerdo"
+import {  ITercero,         Tercero         } from "src/areas/terceros/models/Tercero"
+import {  IUsuario,         Usuario         } from "src/areas/usuarios/models/Usuario"
+import {  IContacto,        Contacto        } from "src/areas/terceros/models/Contacto"
+import {  IGrupoLineas,     GrupoLineas     } from "src/areas/acuerdos/models/GrupoLineasAcuerdo"
+
+import {  ICondicionPago,   CondicionPago   } from "src/models/Diccionarios/CondicionPago"
+import {  IFormaPago,       FormaPago       } from "src/models/Diccionarios/FormaPago"
+import {  IMetodoEntrega,   MetodoEntrega   } from "src/models/Diccionarios/MetodoEntrega"
+import {  IOrigenContacto,  OrigenContacto  } from "src/models/Diccionarios/OrigenContacto"
+import {  ITiempoEntrega,   TiempoEntrega   } from "src/models/Diccionarios/TiempoEntrega"
+import {  X100,
+          fechaCorta,
+          getDateToStr,
+          getNumberValido,
+          existeYEsValido,
+          getMilisecShortForApiDolibarr,    } from "src/useSimpleOk/useTools"
 import {  TModulosDolibarr                  } from "src/useSimpleOk/UtilFiles"
-
-export enum TIPO_ACUERDO
-{
-  NULO                        = "",
-  COTIZACION                  = "cotización", // Igual que el END POINT del servicio
-  PEDIDO                      = "pedido",
-  ENTREGA                     = "entrega",
-  OC_PROVEEDOR                = "oc_proveedor",
-  FACTURA                     = "factura",
-}
-
-export type TTipoAcuerdo      =   TIPO_ACUERDO.COTIZACION
-                                | TIPO_ACUERDO.PEDIDO
-                                | TIPO_ACUERDO.ENTREGA
-                                | TIPO_ACUERDO.OC_PROVEEDOR
-                                | TIPO_ACUERDO.FACTURA
-                                | TIPO_ACUERDO.NULO
-
 
 export interface IAcuerdo
 {
@@ -282,10 +271,26 @@ export class Acuerdo implements IAcuerdo
       if(grupo.totalCreado)   orden++
     }
   } */
+ 
+/*   get label() : string {
+    const label   = this.tipo === TIPO_ACUERDO.COTIZACION   ? "cotización"
+                  : this.tipo === TIPO_ACUERDO.PEDIDO       ? "pedido"
+                  : this.tipo === TIPO_ACUERDO.ENTREGA      ? "entrega"
+                  : this.tipo === TIPO_ACUERDO.OC_PROVEEDOR ? "pedido proveedor"
+                  : this.tipo === TIPO_ACUERDO.FACTURA      ? "factura"
+                  : ""
+    return label
+  } */
 
   get label()       : string { return Acuerdo.getTipoAcuerdoSingular  ( this.tipo ) }
   get labelPlural() : string { return Acuerdo.getTipoAcuerdoPlural    ( this.tipo ) }
   get icono()       : string { return Acuerdo.getIconoAcuerdo         ( this.tipo ) }
+  get emoji()       : string { return Acuerdo.getEmojiAcuerdo         ( this.tipo ) }
+
+  //get labelPlural() : string { return getTipoAcuerdoPlural( this.tipo ) }
+  //get icono()       : string { return getIconoAcuerdo     ( this.tipo ) }  
+  //get tipoPlural()  : string { return "" } 
+  
 
   get ruta() : string{
     const ruta    = this.tipo === TIPO_ACUERDO.COTIZACION   ? "cotizaciones"
@@ -314,15 +319,6 @@ export class Acuerdo implements IAcuerdo
             : ""
   }  
 
-  get emoji() :  string {
-    const emoji   = this.tipo === TIPO_ACUERDO.COTIZACION   ? "📜"
-                  : this.tipo === TIPO_ACUERDO.PEDIDO       ? "🛒"
-                  : this.tipo === TIPO_ACUERDO.ENTREGA      ? "🚛"
-                  : this.tipo === TIPO_ACUERDO.OC_PROVEEDOR ? "🚛"
-                  : this.tipo === TIPO_ACUERDO.FACTURA      ? "📄"
-                  : "✅"
-    return emoji
-  } 
 
   get imagen() :  string {
     const imagen  = this.tipo === TIPO_ACUERDO.COTIZACION   ? "iconoCotizacion.webp"
@@ -343,7 +339,10 @@ export class Acuerdo implements IAcuerdo
                   : this.tipo === TIPO_ACUERDO.FACTURA    ? "invoice"
                   : "proposal"
     return modulo
-  }  
+  }
+
+
+  
 
   get subTotalLimpio() : number {
     let suma                = 0
@@ -676,18 +675,19 @@ export class Acuerdo implements IAcuerdo
     return acuForApi
   }
 
+
   static getTipoAcuerdoSingular( tipo : TTipoAcuerdo ) : string {
-    const label   = tipo === TIPO_ACUERDO.COTIZACION   ? "cotización"
-                  : tipo === TIPO_ACUERDO.PEDIDO       ? "pedido"
-                  : tipo === TIPO_ACUERDO.ENTREGA      ? "entrega"
-                  : tipo === TIPO_ACUERDO.OC_PROVEEDOR ? "pedido proveedor"
-                  : tipo === TIPO_ACUERDO.FACTURA      ? "factura"
-                  : ""
+    const label                   = tipo === TIPO_ACUERDO.COTIZACION   ? "cotización"
+                                  : tipo === TIPO_ACUERDO.PEDIDO       ? "pedido"
+                                  : tipo === TIPO_ACUERDO.ENTREGA      ? "entrega"
+                                  : tipo === TIPO_ACUERDO.OC_PROVEEDOR ? "pedido proveedor"
+                                  : tipo === TIPO_ACUERDO.FACTURA      ? "factura"
+                                  : ""
     return label
   }  
 
   static  getTipoAcuerdoPlural( tipo : TTipoAcuerdo ) : string {
-    const singular              =   tipo === TIPO_ACUERDO.COTIZACION        ? "cotizaciones"
+    const singular                = tipo === TIPO_ACUERDO.COTIZACION        ? "cotizaciones"
                                   : tipo === TIPO_ACUERDO.PEDIDO            ? "pedidos"
                                   : tipo === TIPO_ACUERDO.ENTREGA           ? "entregas"
                                   : tipo === TIPO_ACUERDO.OC_PROVEEDOR      ? "pedidos proveedor"
@@ -697,7 +697,7 @@ export class Acuerdo implements IAcuerdo
   }
   
   static getIconoAcuerdo( tipo : TTipoAcuerdo ) : string {
-    const singular              =   tipo === TIPO_ACUERDO.COTIZACION        ? "mdi-format-list-checks"
+    const singular                = tipo === TIPO_ACUERDO.COTIZACION        ? "mdi-format-list-checks"
                                   : tipo === TIPO_ACUERDO.PEDIDO            ? "mdi-cart"
                                   : tipo === TIPO_ACUERDO.ENTREGA           ? ""
                                   : tipo === TIPO_ACUERDO.OC_PROVEEDOR      ? "mdi-water-well"
@@ -706,29 +706,44 @@ export class Acuerdo implements IAcuerdo
     return singular
   }
 
+  static getEmojiAcuerdo( tipo : TTipoAcuerdo ) :  string {
+    const emoji                 = tipo === TIPO_ACUERDO.COTIZACION   ? "📜"
+                                : tipo === TIPO_ACUERDO.PEDIDO       ? "🛒"
+                                : tipo === TIPO_ACUERDO.ENTREGA      ? "🚛"
+                                : tipo === TIPO_ACUERDO.OC_PROVEEDOR ? "🚛"
+                                : tipo === TIPO_ACUERDO.FACTURA      ? "📄"
+                                : "✅"
+    return emoji
+  } 
+
+
   // * ///////////////////////////////////////////////////// static convertir data de API en new Cotizacion
   static async convertirDataApiToAcuerdo( ctzApi : any, tipo : TTipoAcuerdo ) : Promise < IAcuerdo >
   {
     ctzApi.id                 = +ctzApi.id
     ctzApi.terceroId          = +ctzApi.terceroId
-    ctzApi.comercialId        = +ctzApi.comercialId
+    
     ctzApi.usuariId           = +ctzApi.usuariId
     ctzApi.estado             = +ctzApi.estado
-    ctzApi.descuento          = +ctzApi.descuento
+    
     ctzApi.enlaces            = ctzApi.enlaces ?? ""
     ctzApi.facturado          = Boolean( +ctzApi.facturado )
     ctzApi.conTotal           = Boolean( +ctzApi.conTotal )
+
     ctzApi.conIVA             = Boolean( +ctzApi.conIVA )
     ctzApi.aiuOn              = Boolean( +ctzApi.aiu )
-    ctzApi.aiuAdmin           = +ctzApi.aiuAdmin
-    ctzApi.aiuImpre           = +ctzApi.aiuImpre
-    ctzApi.aiuUtili           = +ctzApi.aiuUtili
+
+    ctzApi.aiuAdmin           = getNumberValido( ctzApi, "aiuAdmin" )
+    ctzApi.aiuImpre           = getNumberValido( ctzApi, "aiuImpre" )
+    ctzApi.aiuUtili           = getNumberValido( ctzApi, "aiuUtili" )
+    ctzApi.descuento          = getNumberValido( ctzApi, "descuento" )
+    ctzApi.comercialId        = getNumberValido( ctzApi, "comercialId" )
 
     ctzApi.condicionPagoId    = +ctzApi.condicionPagoId
     ctzApi.formaPagoId        = +ctzApi.formaPagoId
     ctzApi.metodoEntregaId    = +ctzApi.metodoEntregaId
     ctzApi.origenContactoId   = +ctzApi.origenContactoId
-    ctzApi.tiempoEntregaId    = +ctzApi.tiempoEntregaId
+    ctzApi.tiempoEntregaId    = +ctzApi.tiempoEntregaId 
 
     ctzApi.fechaCreacion      = getDateToStr( ctzApi.fechaCreacion    )
     ctzApi.fechaValidacion    = getDateToStr( ctzApi.fechaValidacion  )
@@ -736,10 +751,11 @@ export class Acuerdo implements IAcuerdo
     ctzApi.fechaFinValidez    = getDateToStr( ctzApi.fechaFinValidez  )
     ctzApi.fechaEntrega       = getDateToStr( ctzApi.fechaEntrega, "UTC")
 
-    let ctz                   = Object.assign( new Acuerdo( tipo ), ctzApi ) as IAcuerdo
+    const ctz                 = Object.assign( new Acuerdo( tipo ), ctzApi ) as IAcuerdo
         ctz.esNuevo           = false
-        ctz.tipo              = tipo 
-        ctz.comercial         = await getUsuarioDB          ( ctz.comercialId )
+        ctz.tipo              = tipo
+        if(!!ctz.comercialId)
+          ctz.comercial       = await getUsuarioDB          ( ctz.comercialId )
         ctz.tercero           = await Tercero.convertirDataApiATercero( ctzApi.tercero )
         ctz.contacto          = await Contacto.getContactoFromAPIMaco( ctzApi.contacto )
         ctz.contacto.terceroId= ctzApi.terceroId
@@ -760,3 +776,4 @@ export class Acuerdo implements IAcuerdo
     return ctz
   }
 }
+

@@ -12,7 +12,6 @@
   import {  useLogin              } from "src/services/useLogin"
   import {  useOnline             } from "src/useSimpleOk/useOnline"
   import {  useInciarApariencia   } from "src/useSimpleOk/useIniciarApariencia"  
-  console.log("Inicio")
   //const { logueado }              = storeToRefs( useStoreUser() )
   useLogin( ORIGEN.APP )
   useOnline()

@@ -105,7 +105,7 @@
         </div>
         <!-- //* ///////////////////////////////////////////////// Pagina -->
         <div class              ="row justify-center full-width">
-          <q-pagination         push unelevated dense
+          <q-pagination         dense
             v-model             ="busqueda.pagina"
             :max                ="siguientePagina"
             :max-pages          ="3"
@@ -113,7 +113,6 @@
             :boundary-numbers   ="false"
           />
           <Tooltip label        ="Pagina"/>
-          
           <q-spinner-puff
             v-if                ="haySiguientePagina"
             color               ="primary"
@@ -344,7 +343,7 @@
   import {  IQueryAcuerdo,
             IBusquedaAcuerdo    } from "src/areas/acuerdos/models/BusquedaAcuerdos"
   import {  estadosCtz,
-            estadosPed          } from "src/areas/acuerdos/models/ConstantesEstados"
+            estadosPed          } from "src/areas/acuerdos/models/ConstantesAcuerdos"
 
   // * /////////////////////////////////////////////////////////////////////// Componentes
   import    fieldsetFiltro        from "components/utilidades/Fieldset.vue"
