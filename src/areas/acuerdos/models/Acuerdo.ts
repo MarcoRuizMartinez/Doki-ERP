@@ -738,7 +738,7 @@ export class Acuerdo implements IAcuerdo
     ctzApi.aiuUtili           = getNumberValido( ctzApi, "aiuUtili" )
     ctzApi.descuento          = getNumberValido( ctzApi, "descuento" )
     ctzApi.comercialId        = getNumberValido( ctzApi, "comercialId" )
-
+    
     ctzApi.condicionPagoId    = +ctzApi.condicionPagoId
     ctzApi.formaPagoId        = +ctzApi.formaPagoId
     ctzApi.metodoEntregaId    = +ctzApi.metodoEntregaId

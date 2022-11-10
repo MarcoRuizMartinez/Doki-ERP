@@ -505,8 +505,15 @@ export function existeYEsValido( objeto : any, key : string ) : boolean {
 }
 
 export function getNumberValido( objeto : any, key : string ) : number {
-  const numero : number = key in objeto && valorValido( objeto[key] ) && typeof objeto[key] === "number"
-                          ? objeto[key] : 0
+  let  numero : number = 0
+  if(key in objeto && valorValido( objeto[key] ))
+  {
+    if( typeof objeto[key] === "number" )
+      numero = objeto[key]
+    else
+    if( typeof objeto[key] === "string" )
+      numero = +objeto[key]
+  }
   return numero
 }
 

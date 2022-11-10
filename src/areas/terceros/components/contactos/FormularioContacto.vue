@@ -285,7 +285,7 @@
           esTerceroCtz      } = toRefs( props )
   const tipo                  = ref< "crear" | "ver" > ("ver")
   const readonly              = ref< boolean >( tipo.value == "ver" && !editando.value ? true : false )  
-  const esTerceroInternoDeCoti= computed(()=> clientesExistentes.value.length === 1 && clientesExistentes.value[0].nombre.indexOf('COTIZACIONES ', 0) != -1)
+  const esTerceroInternoDeCoti= computed(()=> clientesExistentes.value.length === 1 /* && clientesExistentes.value[0].nombre.indexOf('COTIZACIONES ', 0) != -1 */)
   const btnDisable            = computed(()=>{
     return  (
               tipo.value      == 'ver'
@@ -465,6 +465,7 @@
   }
 
   async function vericarExisteCorreo(){
+    contacto.value.correo = contacto.value.correo.toLowerCase()
     let existe      = await vericarExiste("emailTerceroExiste",       contacto.value.correo,  estaCheckEmail)
     if(existe)      return
     existe          = await vericarExiste("emailContactoExiste",      contacto.value.correo,  estaCheckEmail)
