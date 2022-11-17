@@ -346,7 +346,7 @@
         }
         else
         {
-          aviso("negative", "Hay varios NIT que concuerdan con esta busqueda. Avisar a Marco", "shield", 7000)
+          aviso("negative", "Hay varios NIT que concuerdan con esta busqueda. Verificar en la DIAN", "shield", 7000)
         }
       }
     }

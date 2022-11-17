@@ -3,8 +3,8 @@
     @click              ="emit('click')"
     :class              ="$attrs.class"
     >
-    <span class         ="text-bold">{{linea.ref}}</span> -
-    <span class         ="text-subtitle1">{{linea.nombre}} </span>
+    <span class         ="text-bold">{{linea.ref}}</span>
+    <span class         ="text-subtitle1">{{linea.nombre}}</span>
     <br/>
     <span
       v-if              ="!!linea.descripcion"

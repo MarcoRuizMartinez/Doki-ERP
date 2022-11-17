@@ -94,7 +94,7 @@
         :con-decimales          ="false"
         :paso                   ="1000"
         :readonly               ="readonly"
-      />            
+      />
       <!-- //* //////////////   Aumento base -->
       <div class                ="col-6 col-md-3">
         <numero-paso            porcentaje
@@ -161,19 +161,37 @@
           :precio               ="proModel.precio_aumento_loco"
           :iva                  ="proModel.iva"
         />            
-      </div>            
+      </div>
+      <q-toggle
+        v-model                 ="proModel.sin_proveedor"
+        label                   ="Sin REF proveedor"
+        class                   ="col-4"
+        :disable                ="readonly"
+      />   
       <q-toggle
         v-model                 ="proModel.en_venta"
         label                   ="Activo venta"
-        class                   ="col-6"
+        class                   ="col-4"
         :disable                ="readonly"
       />            
       <q-toggle
         v-model                 ="proModel.en_compra"
         label                   ="Activo compra"
-        class                   ="col-6"
+        class                   ="col-4"
         :disable                ="readonly"
-      />           
+      />   
+      <!-- //* ///////////////////////////////////////////////////////////// Unidad -->
+      <select-label-value       no-inmediato use-input
+        v-model                 ="proModel.unidad"
+        label                   ="Tipo de unidad"
+        icon                    ="mdi-tape-measure"
+        class                   ="col-12"
+        behavior                ="dialog"
+        options-sort            ="orden"
+        defecto                 ="UND - Unidad"
+        :options                ="unidades"
+        :readonly               ="readonly"
+      />
       <!-- //* //////////////   Descripción  -->
       <q-input                  filled dense
         v-model                 ="proModel.descripcion"
@@ -214,7 +232,8 @@
             confeti               } from "src/useSimpleOk/useTools" 
   import {  btnBaseSm             } from "src/useSimpleOk/useEstilos"
   import {  useControlProductos   } from "src/areas/productos/controllers/ControlProductosDolibarr"
-  import {  dexieCategoriasProducto
+  import {  dexieUnidades,
+            dexieCategoriasProducto
                                   } from "src/services/useDexie"
   //* ///////////////////////////////////////////////////////////////////////////////// Componentes
   import    efecto                  from "components/utilidades/Efecto.vue"  
@@ -231,6 +250,7 @@
   const proModel              = ref< IProductoDoli >( new ProductoDoli() )
   const formulario            = ref< any >()
   const categorias            = dexieCategoriasProducto() 
+  const unidades              = dexieUnidades()
   const { crearProducto,
           editarProducto    } = useControlProductos()
   

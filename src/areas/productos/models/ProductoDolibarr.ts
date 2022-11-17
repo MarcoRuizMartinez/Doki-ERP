@@ -44,6 +44,7 @@ export interface IProductoDoli {
   disponible:               boolean       // Disponible proveedor
   en_compra:                boolean
   en_venta:                 boolean
+  sin_proveedor:            boolean
   fecha_creacion:           string
   fecha_llegada:            string        // Fecha llegada proveedor
   garantia:                 string        // "1_year"
@@ -89,6 +90,7 @@ export class ProductoDoli implements IProductoDoli
   disponible:               boolean        
   en_compra:                boolean
   en_venta:                 boolean
+  sin_proveedor:            boolean
   fecha_creacion:           string
   fecha_llegada:            string        
   garantia:                 string        
@@ -126,6 +128,7 @@ export class ProductoDoli implements IProductoDoli
     this.creador_id         = 0
     this.en_compra          = true
     this.en_venta           = true
+    this.sin_proveedor      = false
     this.fecha_creacion     = ""
     this.fecha_llegada      = ""        
     this.garantia           = ""        
@@ -296,7 +299,8 @@ export class ProductoDoli implements IProductoDoli
 
 
   get esRefEspecial() : boolean {
-    return  this.ref.includes("-ITEM") ||
+    return  this.sin_proveedor         ||
+            this.ref.includes("-ITEM") ||
             this.ref.includes("ARRA-") ||
             this.ref.includes("ARR-")  ||
             this.ref.includes("ARRP-") ||                            
@@ -350,6 +354,7 @@ export class ProductoDoli implements IProductoDoli
       cost_price:             this.costo,
       status:                 +this.en_venta,
       status_buy:             +this.en_compra,
+      fk_unit:                this.unidad.id ?? 28,
       array_options:
       {
         options_aumento_escom:        this.aumento_escom,
@@ -359,6 +364,7 @@ export class ProductoDoli implements IProductoDoli
         options_costo_adicional:      this.costo_adicional,
         options_precio_publico:       this.precio_aumento,
         options_precio_promocion:     this.precio_promocion,
+        options_sin_proveedor:        +this.sin_proveedor,
       },
     }
 
@@ -387,6 +393,7 @@ export class ProductoDoli implements IProductoDoli
     producto.disponible             = Boolean( +productoApi.disponible            )
     producto.en_compra              = Boolean( +productoApi.en_compra             )
     producto.en_venta               = Boolean( +productoApi.en_venta              )
+    producto.sin_proveedor          = Boolean( +productoApi.sin_proveedor         )
     
     producto.aumento                = parseFloat( productoApi.aumento             )
     producto.aumento_escom          = parseFloat( productoApi.aumento_escom       )
