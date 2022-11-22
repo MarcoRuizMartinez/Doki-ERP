@@ -1,11 +1,11 @@
 <template>
   <q-icon
-    name            ="mdi-package-variant-closed"
-    size            ="xs"
-    class           ="op60 op100-hover"
+    name              ="mdi-package-variant-closed"
+    size              ="xs"
+    class             ="op60 op100-hover"
     >
     <tooltip-lineas
-      :lineas       ="acuerdo.productos"
+      :lineas         ="acuerdo.productos"
     />
   </q-icon>
   <span>
@@ -36,9 +36,8 @@
       :href           ="acuerdo.urlDolibarr"
     />       
     <router-link
-
-      class         ="fuente-mono"
-      :to           ="`/${acuerdo.ruta}/${acuerdo.id}`"
+      class           ="fuente-mono"
+      :to             ="`/${acuerdo.ruta}/${acuerdo.id}`"
       >
       {{ acuerdo.refCorta }}
     </router-link>

@@ -7,13 +7,12 @@
           <th>Productos</th>
         </tr>
         <tr
-          v-for="(linea, index) of lineas.filter(( l )=> l.tipo !== 9)"
-          :index="index"
+          v-for   ="(linea, index) of lineas.filter(( l )=> l.tipo !== 9)"
+          :index  ="index"
           >
           <td><div class="qty"  >{{linea.qty}}</div></td>
           <td><div class="ellipsis linea">x {{linea.nombre}}</div></td>
         </tr>
-
         <!--<tr> <td><b>Subtotal :  </b> </td> <td>{{ formatoPrecio( cotizacion.totalConDescu ) }}</td> </tr>
         <tr v-if="!!cotizacion.contacto.correo"       ><td><b>Correo :    </b></td> <td> {{cotizacion.contacto.correo}}  </td></tr>
         <tr> <td><b>Creación :</b> </td> <td>{{ fechaLarga( cotizacion.fechaCreacion )    }}</td> </tr> -->
@@ -33,7 +32,6 @@
 <style>
 
 .qty{
-
   text-align: right;
 }
 
@@ -44,9 +42,5 @@
 .tool-terc{
   max-width: 320px;
 }
-
-/* 
-  min-width: 40px;
-
- */
+/* min-width: 40px; */
 </style>

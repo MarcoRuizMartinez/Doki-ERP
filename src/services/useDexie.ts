@@ -22,6 +22,7 @@ import {  ITiempoEntrega,     TiempoEntrega     } from "src/models/Diccionarios/
 import {  ITipoContacto,      TipoContacto      } from "src/models/Diccionarios/TipoContacto"
 import {  IProductoCategoria, ProductoCategoria } from "src/areas/productos/models/ProductoCategoria"
 import {  IConstante,         Constante         } from "src/models/Diccionarios/Constante"
+import {  IProveedor,         Proveedor         } from "src/models/Diccionarios/Proveedor"
 import {  storeToRefs                           } from 'pinia'
 
 //* ///////////////////////////////////////////////////////////// Tipos de documento
@@ -39,11 +40,12 @@ export enum TABLAS
   TIPO_CONTACTO               = "tipoContacto",
   PRODUCTO_CATE               = "productoCategoria",
   CONSTANTE                   = "constantes",
+  PROVEEDORES                 = "proveedores",
 }
 
 export type ITabla            = IMunicipio      | IUsuario        | ITipoDocumento      | ICondicionPago |
                                 IFormaPago      | IMetodoEntrega  | IOrigenContacto     | IUnidad        |
-                                ITiempoEntrega  | ITipoContacto   | IProductoCategoria  | IConstante
+                                ITiempoEntrega  | ITipoContacto   | IProductoCategoria  | IConstante     | IProveedor
 
 
 const pre                     = process.env.PREFIJO
@@ -52,6 +54,7 @@ const pre                     = process.env.PREFIJO
 export function cargarListasIndex() {
   dexieUsuarios   ({ cargarSiempre : true})
   dexieConstantes ({ cargarSiempre : true})
+  dexieProveedores({ cargarSiempre : true})
   
   const check                     = checkListasVencidas()
   if(check)
@@ -145,6 +148,12 @@ export function dexieCategoriasProducto( { cargarSiempre = false, demora = 0 } =
 export function dexieConstantes         ( { cargarSiempre = false, demora = 0 } = paramDefault ) :Ref< IConstante[] > {
   const { lista } = useDexie( TABLAS.CONSTANTE, { cargarSiempre, demora } )
   return lista as Ref< IConstante[] >
+}
+
+//* ///////////////////////////////////////////////////////////// Proveedores
+export function dexieProveedores        ( { cargarSiempre = false, demora = 0 } = paramDefault ) :Ref< IProveedor[] > {
+  const { lista } = useDexie( TABLAS.PROVEEDORES, { cargarSiempre, demora } )
+  return lista as Ref< IProveedor[] >
 }
 
 
@@ -285,7 +294,10 @@ function useDexie( tabla : TABLAS, { cargarSiempre = false, demora = 0 } = param
                     break;            
                   case TABLAS.CONSTANTE : 
                     await db[ TABLAS.CONSTANTE          ].bulkAdd( listaCarga )
-                    break;    
+                    break;
+                  case TABLAS.PROVEEDORES : 
+                    await db[ TABLAS.PROVEEDORES        ].bulkAdd( listaCarga )
+                    break;                        
                   default:
                     break;
                 }
@@ -480,7 +492,6 @@ export async function getTiempoEntregaDB( id : number ) : Promise < ITiempoEntre
   )
 }
 
-
 export async function getConstante( label : string ) : Promise < IConstante >
 { 
   return db.transaction('r', db[ TABLAS.CONSTANTE ], async () =>
@@ -490,6 +501,19 @@ export async function getConstante( label : string ) : Promise < IConstante >
         return listaDB[0]
       else
         return new Constante()
+    }
+  )
+}
+
+export async function getProveedorDB( id : number ) : Promise < IProveedor >
+{ 
+  return db.transaction('r', db[ TABLAS.PROVEEDORES ], async () =>
+    {
+      const listaDB          = await db[ TABLAS.PROVEEDORES ].where("id").equals(id).toArray()
+      if(listaDB.length     == 1)
+        return listaDB[0]
+      else
+        return new Proveedor()
     }
   )
 }

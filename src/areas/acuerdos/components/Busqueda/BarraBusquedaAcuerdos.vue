@@ -21,11 +21,21 @@
         />
         <!-- //* ///////////////////////////////////////////////// Busqueda contacto -->
         <input-buscar           clearable hundido
+          v-if                  ="!busqueda.esOCProveedor"
           v-model               ="busqueda.contacto"
           label                 ="Contactos"
           icon                  ="mdi-target-account"
           class                 ="width220"
         />
+        <!-- //* ///////////////////////////////////////////////// Proveedores -->
+        <select-label-value     use-input hundido clearable flat bordered
+          v-if                  ="busqueda.esOCProveedor"
+          v-model               ="busqueda.proveedores"
+          label                 ="Proveedores"
+          icon                  ="mdi-storefront"
+          class                 ="width220"
+          :options              ="proveedores"
+        />        
       </fieldset-filtro>
       <!-- //* /////////////////////////////////////////////////// Fecha creacion -->
       <fieldset-filtro
@@ -61,11 +71,33 @@
         />
         <!-- //* ///////////////////////////////////////////////// Condiciones pago -->
         <multi-label-value
+          v-if                  ="!busqueda.esOCProveedor"
           v-model               ="busqueda.condiciones"
           label                 ="Condiciones"
           class                 ="width160"
           icon                  ="mdi-account-cash"
           :options              ="condicionesPago.filter( c => c.esFacturable || !busqueda.esCotizacion )"
+        />
+        <!-- //* ///////////////////////////////////////////////// Comercial Acuerdo -->
+        <select-usuario         hundido clearable
+          v-if                  ="!busqueda.esOCProveedor"
+          v-model               ="busqueda.comercial"
+          class                 ="width160"
+          label                 ="Asesor"
+          :autoselect           ="autoSelectComercial"
+          :area                 ="usuario.area"
+          :grupos               =[GRUPO_USUARIO.COMERCIALES]
+          :readonly             ="!permisos.acceso_total"
+        />
+        <!-- //* ///////////////////////////////////////////////// Creador -->
+        <select-usuario         hundido clearable
+          v-model               ="busqueda.creador"
+          class                 ="width160"
+          label                 ="Creador"
+          :autoselect           ="autoSelectCreador"
+          :area                 ="usuario.area"
+          :grupos               ="busqueda.esOCProveedor ? [GRUPO_USUARIO.PRODUCCION] : []"
+          :readonly             ="!permisos.acceso_total"
         />
         <!-- //* ///////////////////////////////////////////////// Pedido facturado -->
         <select-label-value     use-input hundido clearable flat bordered
@@ -75,16 +107,7 @@
           icon                  ="mdi-file-check"
           class                 ="width160"
           :options              ="opcionesFacturado"
-        />
-        <!-- //* ///////////////////////////////////////////////// Comercial Acuerdo -->
-        <select-usuario         hundido clearable
-          v-model               ="busqueda.comercial"
-          class                 ="width160"
-          label                 ="Asesor"
-          :autoselect           ="autoSelectUsuario"
-          :area                 ="usuario.area"
-          :readonly             ="!permisos.acceso_total"
-        />
+        />        
       </fieldset-filtro>
       <!-- //* /////////////////////////////////////////////////// Paginación -->
       <fieldset-filtro
@@ -143,7 +166,7 @@
           <!-- //* /////////////////////////////////////////////// Boton limpiar -->
           <div>
             <q-btn                round push glossy
-              icon                ="mdi-magnify-close"
+              icon                ="mdi-close"
               padding             ="xs"
               color               ="primary"
               :disable            ="busqueda.busquedaVacia"
@@ -174,6 +197,7 @@
       class                     ="row q-pa-none no-wrap scroll"
       >
       <fieldset-filtro
+        v-if                    ="!busqueda.esOCProveedor"
         titulo                  ="Opciones"
         class-conenido          ="grilla-ribom"
         >
@@ -227,14 +251,6 @@
           class                 ="width160"
           :options              ="Areas"
         />
-        <!-- //* ///////////////////////////////////////////////// Creador -->
-        <select-usuario         hundido clearable todos
-          v-model               ="busqueda.creador"
-          class                 ="width160"
-          label                 ="Creador"
-          :area                 ="usuario.area"
-          :readonly             ="!permisos.acceso_total"
-        />
         <!-- //* ///////////////////////////////////////////////// Municipio -->
         <municipios             hundido
           v-model               ="busqueda.municipio"
@@ -259,7 +275,7 @@
           :options              ="opcionesOrdenesProv"
         />
       </fieldset-filtro>
-      <fieldset-filtro
+      <fieldset-filtro      
         titulo                  ="Subtotal"
         class-conenido          ="column q-gutter-xs"
         >
@@ -294,7 +310,7 @@
                 {{ formatoPrecio( sumaAcuerdosSubtotal ) }}
               </td>
             </tr>
-            <tr>
+            <tr v-if            ="busqueda.esPedido">
               <td>Sin fletes:</td>
               <td class         ="text-bold fuente-mono">
                 {{ formatoPrecio( sumaAcuerdosSubtotalLimpio ) }}
@@ -328,6 +344,7 @@
             dexieCondicionesPago,
             dexieFormasPago,
             dexieMetodosEntrega,
+            dexieProveedores,
             getMunicipioDB
                                 } from "src/services/useDexie"
   import {  fechaValida,
@@ -343,8 +360,9 @@
   import {  IQueryAcuerdo,
             IBusquedaAcuerdo    } from "src/areas/acuerdos/models/BusquedaAcuerdos"
   import {  estadosCtz,
-            estadosPed          } from "src/areas/acuerdos/models/ConstantesAcuerdos"
-
+            estadosPed,
+            estadosOC,          } from "src/areas/acuerdos/models/ConstantesAcuerdos"
+  import {  GRUPO_USUARIO       } from "src/models/TiposVarios"
   // * /////////////////////////////////////////////////////////////////////// Componentes
   import    fieldsetFiltro        from "components/utilidades/Fieldset.vue"
   import    inputNumber           from "components/utilidades/input/InputFormNumber.vue"
@@ -362,6 +380,7 @@
   const condicionesPago           = dexieCondicionesPago()
   const formasPago                = dexieFormasPago()
   const metodosEntrega            = dexieMetodosEntrega()
+  const proveedores               = dexieProveedores()
 
   const { usuario, permisos     } = storeToRefs( useStoreUser() )
   const { busqueda, acuerdos    } = storeToRefs( useStoreAcuerdo() )
@@ -374,27 +393,29 @@
   const opcionesOrdenesProv       = [{value:0, label:'Sin ordenes'},    {value:1, label:'Con ordenes' }]
   const estados                   = computed(()=>   busqueda.value.esCotizacion ? estadosCtz.filter(e => e.value >= -1)
                                                   : busqueda.value.esPedido     ? estadosPed.filter(e => e.value >= -1)
+                                                  : busqueda.value.esOCProveedor? estadosOC .filter(e => e.value >= -1)
                                                   : [] )
   
-  const autoSelectUsuario         = computed(()=> Object.keys(queryURL).length === 0 ? true : getQueryRouterNumber( queryURL.comercial ) ?? false )
+  const autoSelectComercial       = computed(()=> Object.keys(queryURL).length === 0 ? true : getQueryRouterNumber( queryURL.comercial  ) ?? false )
+  const autoSelectCreador         = computed(()=> busqueda.value.esOCProveedor && Object.keys(queryURL).length === 0 ? true : getQueryRouterNumber( queryURL.creador    ) ?? false )
   const siguientePagina           = computed(()=> busqueda.value.pagina + (acuerdos.value.length >= busqueda.value.resultadosXPage ? 1 : 0) )
   const haySiguientePagina        = computed(()=> busqueda.value.pagina !== siguientePagina.value )
   const sumaAcuerdosSubtotal      = computed(()=> { 
     let suma                      = 0
     if(!!acuerdos.value && !!acuerdos.value.length)
-      suma                        = acuerdos.value.map( a => a.totalConDescu ?? 0 ).reduce((acu, now) => acu ?? 0 + now)
+      suma                        = acuerdos.value.map( a => a.totalConDescu ?? 0 ).reduce((acu, now) => (acu ?? 0) + now)
     return suma
   })
   const sumaAcuerdosSubtotalLimpio= computed(()=> { 
     let suma                      = 0
     if(!!acuerdos.value && !!acuerdos.value.length)
-      suma                        = acuerdos.value.map( a => a.subTotalLimpio ).reduce((acu, now) => acu ?? 0 + now)
+      suma                        = acuerdos.value.map( a => a.subTotalLimpio ).reduce((acu, now) => (acu ?? 0) + now)
     return suma
   })
   const sumaAcuerdosTotal         = computed(()=> { 
     let suma                      = 0
     if(!!acuerdos.value && !!acuerdos.value.length)
-      suma                        = acuerdos.value.map( a => a.totalConIva ).reduce((acu, now) => acu ?? 0 + now)
+      suma                        = acuerdos.value.map( a => a.totalConIva ).reduce((acu, now) => (acu ?? 0) + now)
     return suma
   })  
 
@@ -457,10 +478,10 @@
 
   function checkAlertTabs( b : IBusquedaAcuerdo ){
     tabs.value.alerts[0]  = ( !!b.tercero           || !!b.contacto           || fechaValida( b.desde ) || fechaValida( b.hasta ) ||
-                              !!b.estados.length    || !!b.condiciones.length || !!b.facturado.label    || !!b.comercial
+                              !!b.estados.length    || !!b.condiciones.length || !!b.facturado.label    || !!b.comercial          || !!b.creador 
                             )
     tabs.value.alerts[1]  = ( !!b.formaPago.length  || !!b.entrega.length     || !!b.origenes.length    || !!b.conIva.label       ||  
-                              !!b.area.label        || !!b.creador            || !!b.municipio.id       || !!b.totalizado.label   ||  
+                              !!b.area.label        || !!b.municipio.id       || !!b.totalizado.label   ||  
                               !!b.tipoTercero.label ||!!b.conOrdenes.label    ||!!b.precioMinimo        || !!b.precioMaximo
                             )
   }

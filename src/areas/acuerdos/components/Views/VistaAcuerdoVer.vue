@@ -13,17 +13,17 @@
     @clickEditar            ="editarAcuerdo"
     @clickBorrar            ="eliminarAcuerdo"  
   />
-  <tercero-y-contacto
+  <tercero-y-contacto       scroll
     class                   ="col-md-4 col-12"
-    height-card             ="220px"
+    height-card             ="260px"
   />
-  <condiciones
+  <condiciones              scroll
     class                   ="col-md-4 col-12"
-    height-card             ="220px"
+    height-card             ="260px"
   /> 
-  <totales
+  <totales                  scroll
     class                   ="col-md-4 col-12"
-    height-card-min         ="220px"
+    height-card-min         ="260px"
   />
   <documentos
     class                   ="col-md-4 col-12"

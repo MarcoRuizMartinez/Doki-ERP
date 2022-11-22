@@ -15,8 +15,7 @@ import {  useTools,
 import {  ESTADO_CTZ,
           ESTADO_PED,
           ESTADO_ACU,         
-          TTipoAcuerdo,
-          TIPO_ACUERDO
+          TTipoAcuerdo
                                 } from "../models/ConstantesAcuerdos"
 import {  IOrigenContacto       } from "src/models/Diccionarios/OrigenContacto"
 import {  IUsuario              } from "src/areas/usuarios/models/Usuario"
@@ -25,6 +24,7 @@ import {  ICondicionPago        } from "src/models/Diccionarios/CondicionPago"
 import {  IFormaPago            } from "src/models/Diccionarios/FormaPago"
 import {  IMetodoEntrega        } from "src/models/Diccionarios/MetodoEntrega"
 import {  ITiempoEntrega        } from "src/models/Diccionarios/TiempoEntrega"
+import {  IProyecto, Proyecto   } from "src/areas/proyectos/models/Proyecto"
 import {  IContacto,
           Contacto,
           TIPOS_CONTACTO
@@ -111,7 +111,8 @@ export function useControlAcuerdo()
     if(!!acuerdo.value.id)
     {
       //verificarPermisosLectura()
-      buscarTerceroDolibarr( acuerdo.value.terceroId )
+      await buscarTerceroDolibarr( acuerdo.value.terceroId )
+      await buscarProyecto( acuerdo.value.proyectoId )
     }
     else
     {
@@ -135,6 +136,18 @@ export function useControlAcuerdo()
       router.push("/error")
     }
   }
+
+  //* ////////////////////////////////////////////////////////////////////// Buscar proyecto 
+  async function buscarProyecto( id_ : number )
+  {
+    if(!id_) return
+    const { data, ok }         = await apiDolibarr("ver", "proyecto", {}, id_ )
+
+    if(ok && typeof data === "object" && !Array.isArray( data )){
+      acuerdo.value.proyecto    = Proyecto.convertirDataApiToProyecto( data )
+    }
+  }
+
 
   //* ////////////////////////////////////////////////////////////////////// Cambiar contacto
   async function cambiarContactoAcuerdo( contacto : IContacto, idOld : number )
@@ -319,6 +332,21 @@ export function useControlAcuerdo()
     loading.value.validar     = false
   }
 
+  //* ////////////////////////////////////////////////////////////////////// Editar Nota Privada
+  async function cambiarProyecto( proyecto : IProyecto )
+  {
+    if(acuerdo.value.esNuevo || !proyecto) return    
+    const id                    = proyecto.id === 0 ? null : proyecto.id
+
+    loading.value.proyecto      = true
+    const {ok}                  = await apiDolibarr("editar", acuerdo.value.tipo, { fk_project: id }, acuerdo.value.id )
+    if(ok){
+      aviso("positive", !!id ? `Proyecto asignado 👌🏼` : "Proyecto desvinculado")
+    }
+    else
+      aviso("negative", `Error al asignar proyecto en ${acuerdo.value.tipo}`)
+    loading.value.proyecto      = false
+  }  
 
   //* ////////////////////////////////////////////////////////////////////// Editar Nota Privada
   async function editarNotaPrivada( nota : string )
@@ -485,6 +513,7 @@ export function useControlAcuerdo()
   //* /////////////////////////////////////////////////////////////// Return
   return {
     crearAcuerdo,
+    cambiarProyecto,
     actualizarTercero,
     aprobarCotizacion,
     anularAcuerdo,

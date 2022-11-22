@@ -10,12 +10,10 @@ import {  getCondicionesPagoDB,
 import {  TTipoAcuerdo,
           TIPO_ACUERDO,
           ESTADO_CTZ,
-          estadoCtzToName,
-          estadoCtzToColor,
-          ESTADO_PED,
-          estadoPedToName,
-          estadoPedToColor                  } from "./ConstantesAcuerdos"
+          EstadosAcuerdos,          
+          ESTADO_PED                        } from "./ConstantesAcuerdos"
 //* ///////////////////////////////////////// Modelos
+import {  IProyecto,        Proyecto        } from "src/areas/proyectos/models/Proyecto"
 import {  ILineaAcuerdo,    LineaAcuerdo    } from "src/areas/acuerdos/models/LineaAcuerdo"
 import {  ITercero,         Tercero         } from "src/areas/terceros/models/Tercero"
 import {  IUsuario,         Usuario         } from "src/areas/usuarios/models/Usuario"
@@ -47,17 +45,22 @@ export interface IAcuerdo
   modulo:                     TModulosDolibarr
   esCotizacion:               boolean
   esPedido:                   boolean
+  esOCProveedor:              boolean
   esNuevo:                    boolean  
   id:                         number
+  
   ref:                        string
   refCorta:                   string
   refCliente:                 string
+  proyectoId:                 number
+  proyecto:                   IProyecto
+
   urlDolibarr:                string
   urlDolibarrOC:              string
   title:                      string // Titulo HTML
   terceroId:                  number
   tercero:                    ITercero
-  terceroNombre:              string
+  //terceroNombre:              string
   area:                       string
   enlaces:                    string
   municipioTercero:           string
@@ -72,8 +75,9 @@ export interface IAcuerdo
 
   comercialId:                number
   comercial:                  IUsuario
-  comercialNombre:            string
-  usuariId:                   number      // Creador
+  //comercialNombre:            string
+  creadorId:                  number
+  creador:                    IUsuario
 
   estado:                     number
   estadoIcono:                string
@@ -165,6 +169,8 @@ export class Acuerdo implements IAcuerdo
   id:                         number
   ref:                        string
   refCliente:                 string
+  proyectoId:                 number
+  proyecto:                   IProyecto
   terceroId:                  number
   tercero:                    ITercero
   enlaces:                    string
@@ -172,7 +178,8 @@ export class Acuerdo implements IAcuerdo
   fechaValidacion:            Date
   fechaCierre:                Date
   fechaEntrega:               Date
-  usuariId:                   number
+  creadorId:                  number
+  creador:                    IUsuario
   estado:                     number
   notaPrivada:                string
   notaPublica:                string
@@ -215,6 +222,8 @@ export class Acuerdo implements IAcuerdo
     this.refCliente           = ""
     this.terceroId            = 0
     this.tercero              = new Tercero()
+    this.proyectoId           = 0
+    this.proyecto             = new Proyecto()
     this.enlaces              = ""
     this.fechaCreacion        = new Date()
     this.fechaValidacion      = new Date()
@@ -222,7 +231,8 @@ export class Acuerdo implements IAcuerdo
     this.fechaEntrega         = new Date(0)
     this.comercialId          = 0
     this.comercial            = new Usuario()
-    this.usuariId             = 0
+    this.creadorId            = 0
+    this.creador              = new Usuario()
     this.estado               = ESTADO_CTZ.NO_GUARDADO
     this.notaPrivada          = ''
     this.notaPublica          = ''
@@ -306,7 +316,7 @@ export class Acuerdo implements IAcuerdo
     const ruta    = this.tipo === TIPO_ACUERDO.COTIZACION   ? "/comm/propal/card.php?id="
                   : this.tipo === TIPO_ACUERDO.PEDIDO       ? "/commande/card.php?id="
                   : this.tipo === TIPO_ACUERDO.ENTREGA      ? ""
-                  : this.tipo === TIPO_ACUERDO.OC_PROVEEDOR ? ""
+                  : this.tipo === TIPO_ACUERDO.OC_PROVEEDOR ? "/fourn/commande/card.php?id="
                   : this.tipo === TIPO_ACUERDO.FACTURA      ? ""
                   : ""
 
@@ -354,17 +364,14 @@ export class Acuerdo implements IAcuerdo
 
   get esCotizacion()      : boolean { return this.tipo === TIPO_ACUERDO.COTIZACION  }
   get esPedido()          : boolean { return this.tipo === TIPO_ACUERDO.PEDIDO      }
+  get esOCProveedor()     : boolean { return this.tipo === TIPO_ACUERDO.OC_PROVEEDOR}
   get esFactura()         : boolean { return this.tipo === TIPO_ACUERDO.FACTURA     }
   get municipioTercero()  : string  { return this.tercero.municipio.label           }
   get area()              : string  { return this.tercero.areaNombre                }
   get vinculado()         : boolean { return !!this.enlaces.length                  }
 
-  get comercialNombre() : string {
-    return this.comercial.nombreCompleto
-  }
-  get terceroNombre() : string {
-    return this.tercero.nombre
-  }
+  //get comercialNombre() : string { return this.comercial.nombreCompleto }
+  //get terceroNombre() : string { return this.tercero.nombre }
 
   // * /////////////////////////////////////////////////////////////////////////////// Total sin descuento
   get totalSinDescu() :number {
@@ -397,8 +404,6 @@ export class Acuerdo implements IAcuerdo
   get hayDescuento() :boolean {
     return this.descuentoValor > 0
   }
-
-
 
   // * /////////////////////////////////////////////////////////////////////////////// AIU Administracion
   get aiuAdminValor(): number {
@@ -440,7 +445,7 @@ export class Acuerdo implements IAcuerdo
     let ivaTotal            = 0
     let ivaX100             = parseInt( process.env.IVA ?? "0" )
 
-    if(this.conIVA          && !this.aiuOn)
+    if( ( this.conIVA       && !this.aiuOn ) || this.esOCProveedor)
       ivaTotal              = X100( this.totalConDescu, ivaX100 )
     else
     if(this.conIVA          && this.aiuOn)
@@ -478,31 +483,9 @@ export class Acuerdo implements IAcuerdo
       abierto             = true
     return abierto
   }
-  // * ///////////////////////////////////////////////////////////////////////////////  Icono
-  get estadoIcono(): string {
-    let icono : string        = ""
-    if( this.esCotizacion ){
-      icono                   =   this.estado == ESTADO_CTZ.NO_GUARDADO ? "mdi-eraser-variant"
-                                : this.estado == ESTADO_CTZ.BORRADOR    ? "mdi-circle-edit-outline"
-                                : this.estado == ESTADO_CTZ.COTIZADO    ? "mdi-notebook-check"
-                                : this.estado == ESTADO_CTZ.APROBADO    ? "mdi-check-decagram"
-                                : this.estado == ESTADO_CTZ.RECHAZADO   ? "mdi-close-circle"
-                                : this.estado == ESTADO_CTZ.FACTURADO   ? "mdi-lock-check"
-                                : ""
-    }
-    else
-    if( this.esPedido ){
-      icono                   =   this.estado == ESTADO_PED.NO_GUARDADO ? "mdi-eraser-variant"
-                                : this.estado == ESTADO_PED.CANCELADO   ? "mdi-close-circle"
-                                : this.estado == ESTADO_PED.BORRADOR    ? "mdi-circle-edit-outline"
-                                : this.estado == ESTADO_PED.VALIDADO    ? "mdi-check-bold"
-                                : this.estado == ESTADO_PED.PROCESO     ? "mdi-airplane-takeoff"
-                                : this.estado == ESTADO_PED.ENTREGADO   ? "mdi-truck-check"
-                                : ""
-    }
-    
-    return icono
-  }
+  get estadoLabel(): string { return EstadosAcuerdos.estadoToName( this.tipo, this.estado)  }
+  get estadoColor(): string { return EstadosAcuerdos.estadoToColor( this.tipo, this.estado) }
+  get estadoIcono(): string { return EstadosAcuerdos.estadoIcono( this.tipo, this.estado)   }
 
   get puedeCrearSubtotal():boolean{
     return this.proGrupos.length > 1 && !!this.proGrupos[1].productos.length
@@ -529,21 +512,6 @@ export class Acuerdo implements IAcuerdo
     return   this.tiempoEntrega.label
   }
 
-
-  // * /////////////////////////////////////////////////////////////////////////////// Color
-  get estadoColor(): string {
-    return    this.esCotizacion ? estadoCtzToColor(this.estado) 
-            : this.esPedido     ? estadoPedToColor(this.estado)
-            : ""
-  }
-
-  // * /////////////////////////////////////////////////////////////////////////////// Status o Estado
-  get estadoLabel(): string {
-    return    this.esCotizacion ? estadoCtzToName(this.estado) 
-            : this.esPedido     ? estadoPedToName(this.estado)
-            : ""
-  }
-
   // * /////////////////////////////////////////////////////////////////////////////// Dias de validez
   get diasValidez(): number {
     const fechaCalculo    = !!this.fechaValidacion.valueOf() ? this.fechaValidacion : this.fechaCreacion
@@ -552,8 +520,23 @@ export class Acuerdo implements IAcuerdo
   }
 
   get refCorta(): string {
-    let inicio            = this.esCotizacion ? 6   : 7
-    let final             = this.esCotizacion ? 19  : 20
+    let inicio            = 0
+    let final             = 0
+    if(this.esCotizacion){
+      inicio              = 6
+      final               = 19
+    }
+    else
+    if(this.esPedido){
+      inicio              = 7
+      final               = 20
+    }
+    else
+    if(this.esOCProveedor){
+      inicio              = 9
+      final               = 29
+    }
+    
     return this.ref.length > 10 ? this.ref.slice( inicio, final ) : this.ref
   }
 
@@ -677,11 +660,11 @@ export class Acuerdo implements IAcuerdo
 
 
   static getTipoAcuerdoSingular( tipo : TTipoAcuerdo ) : string {
-    const label                   = tipo === TIPO_ACUERDO.COTIZACION   ? "cotización"
-                                  : tipo === TIPO_ACUERDO.PEDIDO       ? "pedido"
-                                  : tipo === TIPO_ACUERDO.ENTREGA      ? "entrega"
-                                  : tipo === TIPO_ACUERDO.OC_PROVEEDOR ? "pedido proveedor"
-                                  : tipo === TIPO_ACUERDO.FACTURA      ? "factura"
+    const label                   = tipo === TIPO_ACUERDO.COTIZACION        ? "cotización"
+                                  : tipo === TIPO_ACUERDO.PEDIDO            ? "pedido"
+                                  : tipo === TIPO_ACUERDO.ENTREGA           ? "entrega"
+                                  : tipo === TIPO_ACUERDO.OC_PROVEEDOR      ? "pedido proveedor"
+                                  : tipo === TIPO_ACUERDO.FACTURA           ? "factura"
                                   : ""
     return label
   }  
@@ -700,80 +683,82 @@ export class Acuerdo implements IAcuerdo
     const singular                = tipo === TIPO_ACUERDO.COTIZACION        ? "mdi-format-list-checks"
                                   : tipo === TIPO_ACUERDO.PEDIDO            ? "mdi-cart"
                                   : tipo === TIPO_ACUERDO.ENTREGA           ? ""
-                                  : tipo === TIPO_ACUERDO.OC_PROVEEDOR      ? "mdi-water-well"
+                                  : tipo === TIPO_ACUERDO.OC_PROVEEDOR      ? "mdi-domain" // mdi-water-well
                                   : tipo === TIPO_ACUERDO.FACTURA           ? ""
                                   : ""
     return singular
   }
 
   static getEmojiAcuerdo( tipo : TTipoAcuerdo ) :  string {
-    const emoji                 = tipo === TIPO_ACUERDO.COTIZACION   ? "📜"
-                                : tipo === TIPO_ACUERDO.PEDIDO       ? "🛒"
-                                : tipo === TIPO_ACUERDO.ENTREGA      ? "🚛"
-                                : tipo === TIPO_ACUERDO.OC_PROVEEDOR ? "🚛"
-                                : tipo === TIPO_ACUERDO.FACTURA      ? "📄"
+    const emoji                 = tipo === TIPO_ACUERDO.COTIZACION          ? "📜"
+                                : tipo === TIPO_ACUERDO.PEDIDO              ? "🛒"
+                                : tipo === TIPO_ACUERDO.ENTREGA             ? "🚛"
+                                : tipo === TIPO_ACUERDO.OC_PROVEEDOR        ? "🚛"
+                                : tipo === TIPO_ACUERDO.FACTURA             ? "📄"
                                 : "✅"
     return emoji
   } 
 
 
   // * ///////////////////////////////////////////////////// static convertir data de API en new Cotizacion
-  static async convertirDataApiToAcuerdo( ctzApi : any, tipo : TTipoAcuerdo ) : Promise < IAcuerdo >
+  static async convertirDataApiToAcuerdo( acuApi : any, tipo : TTipoAcuerdo ) : Promise < IAcuerdo >
   {
-    ctzApi.id                 = +ctzApi.id
-    ctzApi.terceroId          = +ctzApi.terceroId
+    acuApi.id                 = +acuApi.id
+    acuApi.terceroId          = +acuApi.terceroId
+    acuApi.proyectoId         = +acuApi.proyectoId
     
-    ctzApi.usuariId           = +ctzApi.usuariId
-    ctzApi.estado             = +ctzApi.estado
+    acuApi.creadorId          = +acuApi.usuariId
+    acuApi.estado             = +acuApi.estado
     
-    ctzApi.enlaces            = ctzApi.enlaces ?? ""
-    ctzApi.facturado          = Boolean( +ctzApi.facturado )
-    ctzApi.conTotal           = Boolean( +ctzApi.conTotal )
+    acuApi.enlaces            = acuApi.enlaces ?? ""
+    acuApi.facturado          = Boolean( +acuApi.facturado )
+    acuApi.conTotal           = Boolean( +acuApi.conTotal )
 
-    ctzApi.conIVA             = Boolean( +ctzApi.conIVA )
-    ctzApi.aiuOn              = Boolean( +ctzApi.aiu )
+    acuApi.conIVA             = Boolean( +acuApi.conIVA )
+    acuApi.aiuOn              = Boolean( +acuApi.aiu )
 
-    ctzApi.aiuAdmin           = getNumberValido( ctzApi, "aiuAdmin" )
-    ctzApi.aiuImpre           = getNumberValido( ctzApi, "aiuImpre" )
-    ctzApi.aiuUtili           = getNumberValido( ctzApi, "aiuUtili" )
-    ctzApi.descuento          = getNumberValido( ctzApi, "descuento" )
-    ctzApi.comercialId        = getNumberValido( ctzApi, "comercialId" )
+    acuApi.aiuAdmin           = getNumberValido( acuApi, "aiuAdmin" )
+    acuApi.aiuImpre           = getNumberValido( acuApi, "aiuImpre" )
+    acuApi.aiuUtili           = getNumberValido( acuApi, "aiuUtili" )
+    acuApi.descuento          = getNumberValido( acuApi, "descuento" )
+    acuApi.comercialId        = getNumberValido( acuApi, "comercialId" )
     
-    ctzApi.condicionPagoId    = +ctzApi.condicionPagoId
-    ctzApi.formaPagoId        = +ctzApi.formaPagoId
-    ctzApi.metodoEntregaId    = +ctzApi.metodoEntregaId
-    ctzApi.origenContactoId   = +ctzApi.origenContactoId
-    ctzApi.tiempoEntregaId    = +ctzApi.tiempoEntregaId 
+    acuApi.condicionPagoId    = +acuApi.condicionPagoId
+    acuApi.formaPagoId        = +acuApi.formaPagoId
+    acuApi.metodoEntregaId    = +acuApi.metodoEntregaId
+    acuApi.origenContactoId   = +acuApi.origenContactoId
+    acuApi.tiempoEntregaId    = +acuApi.tiempoEntregaId 
 
-    ctzApi.fechaCreacion      = getDateToStr( ctzApi.fechaCreacion    )
-    ctzApi.fechaValidacion    = getDateToStr( ctzApi.fechaValidacion  )
-    ctzApi.fechaCierre        = getDateToStr( ctzApi.fechaCierre      )
-    ctzApi.fechaFinValidez    = getDateToStr( ctzApi.fechaFinValidez  )
-    ctzApi.fechaEntrega       = getDateToStr( ctzApi.fechaEntrega, "UTC")
+    acuApi.fechaCreacion      = getDateToStr( acuApi.fechaCreacion    )
+    acuApi.fechaValidacion    = getDateToStr( acuApi.fechaValidacion  )
+    acuApi.fechaCierre        = getDateToStr( acuApi.fechaCierre      )
+    acuApi.fechaFinValidez    = getDateToStr( acuApi.fechaFinValidez  )
+    acuApi.fechaEntrega       = getDateToStr( acuApi.fechaEntrega, "UTC")
 
-    const ctz                 = Object.assign( new Acuerdo( tipo ), ctzApi ) as IAcuerdo
-        ctz.esNuevo           = false
-        ctz.tipo              = tipo
-        if(!!ctz.comercialId)
-          ctz.comercial       = await getUsuarioDB          ( ctz.comercialId )
-        ctz.tercero           = await Tercero.convertirDataApiATercero( ctzApi.tercero )
-        ctz.contacto          = await Contacto.getContactoFromAPIMaco( ctzApi.contacto )
-        ctz.contacto.terceroId= ctzApi.terceroId
-        ctz.condicionPago     = await getCondicionesPagoDB  ( ctz.condicionPagoId   )
-        ctz.formaPago         = await getFormasPagoDB       ( ctz.formaPagoId       )
-        ctz.metodoEntrega     = await getMetodosEntregaDB   ( ctz.metodoEntregaId   )
-        ctz.origenContacto    = await getOrigenContactoDB   ( ctz.origenContactoId  )
-        ctz.tiempoEntrega     = await getTiempoEntregaDB    ( ctz.tiempoEntregaId   )
-        ctz.productos         = await LineaAcuerdo.getLineaFromAPIMaco( ctz.productos, ctzApi.id )
-        ctz.productos         = ctz.productos.sort ( ( a : ILineaAcuerdo, b : ILineaAcuerdo ) =>
+    const acu                 = Object.assign( new Acuerdo( tipo ), acuApi ) as IAcuerdo
+        acu.esNuevo           = false
+        acu.tipo              = tipo
+        acu.creador           = await getUsuarioDB          ( acu.creadorId )
+        if(!!acu.comercialId)
+          acu.comercial       = await getUsuarioDB          ( acu.comercialId )
+        acu.tercero           = await Tercero.convertirDataApiATercero( acuApi.tercero )
+        acu.contacto          = await Contacto.getContactoFromAPIMaco( acuApi.contacto )
+        acu.contacto.terceroId= acuApi.terceroId
+        acu.condicionPago     = await getCondicionesPagoDB  ( acu.condicionPagoId   )
+        acu.formaPago         = await getFormasPagoDB       ( acu.formaPagoId       )
+        acu.metodoEntrega     = await getMetodosEntregaDB   ( acu.metodoEntregaId   )
+        acu.origenContacto    = await getOrigenContactoDB   ( acu.origenContactoId  )
+        acu.tiempoEntrega     = await getTiempoEntregaDB    ( acu.tiempoEntregaId   )
+        acu.productos         = await LineaAcuerdo.getLineaFromAPIMaco( acu.productos, acuApi.id )
+        acu.productos         = acu.productos.sort ( ( a : ILineaAcuerdo, b : ILineaAcuerdo ) =>
                                 {
                                   if(a.orden < b.orden) return -1
                                   if(a.orden > b.orden) return 1
                                   return 0;
                                 })
-        if(ctz.productos.length > 0)
-          ctz.proGrupos       = GrupoLineas.getGruposDesdeProductos( ctz.productos )
-    return ctz
+        if(acu.productos.length > 0)
+          acu.proGrupos       = GrupoLineas.getGruposDesdeProductos( acu.productos )
+    return acu
   }
 }
 

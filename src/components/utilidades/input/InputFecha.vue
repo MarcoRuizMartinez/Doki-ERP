@@ -10,6 +10,7 @@
     :borderless                 ="!hundido"     
     :clearable                  ="clearable"
     @blur                       ="blurInputText"
+    @clear                      =""
     @update:model-value         ="cambioInputText"
     >
     <template                   #append>
@@ -112,6 +113,8 @@
   const emitir          = ()=> {
     if(fechaValida(fechaTem))
       emit("update:model-value", fechaTem)
+    else 
+      emit("update:model-value", "")
   }
   const getFechaLimpia  = ()=> typeof modelo.value === "string" ? modelo.value : ""
   

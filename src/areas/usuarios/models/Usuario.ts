@@ -31,6 +31,7 @@ export interface IUsuario {
     gruposString:       string
     grupos:             string[]
     esComercial:        boolean
+    esProduccion:       boolean
     esDev:              boolean
     areaEsEscom:        boolean
     areaEsMublex:       boolean
@@ -104,7 +105,7 @@ export class Usuario implements IUsuario
       if(!!this.foto)
       {
         let extencion = this.foto.slice(this.foto.lastIndexOf('.') )
-        foto          = this.urlFoto + "/thumbs/" + this.foto.replace(extencion, '_mini' + extencion)
+        foto          = this.urlFoto + "/photos/thumbs/" + this.foto.replace(extencion, '_mini' + extencion)
       }
 
       return  foto
@@ -116,7 +117,7 @@ export class Usuario implements IUsuario
       if(!!this.foto)
       {
         let extencion = this.foto.slice(this.foto.lastIndexOf('.') )
-        foto          = this.urlFoto + "/thumbs/" + this.foto.replace(extencion, '_small' + extencion)
+        foto          = this.urlFoto + "/photos/thumbs/" + this.foto.replace(extencion, '_small' + extencion)
       }
 
       return foto
@@ -139,6 +140,7 @@ export class Usuario implements IUsuario
     get nombreCompleto():string     { return this.nombre + " " + this.apellido }
 
     get esComercial ():boolean { return this.grupos.length > 0 ? this.grupos.some( g => g == GRUPO_USUARIO.COMERCIALES ) : false }
+    get esProduccion():boolean { return this.grupos.length > 0 ? this.grupos.some( g => g == GRUPO_USUARIO.PRODUCCION  ) : false }
     get esDev       ():boolean { return this.grupos.length > 0 ? this.grupos.some( g => g == GRUPO_USUARIO.DESARROLLO  ) : false }
     get areaEsEscom ():boolean { return this.area === AREA.ESCOM  }
     get areaEsMublex():boolean { return this.area === AREA.MUBLEX }

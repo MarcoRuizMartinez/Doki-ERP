@@ -129,7 +129,7 @@
           <!-- //* /////////////////////////////////////////////// Boton limpiar -->
           <div>
             <q-btn                round push glossy
-              icon                ="mdi-magnify-close"
+              icon                ="mdi-close"
               padding             ="xs"
               color               ="primary"
               :disable            ="busqueda.busquedaVacia"

@@ -12,6 +12,7 @@ const ivaX100                 = parseInt( process.env.IVA ?? "0" )
 export interface IProductoDoli {
   id:                       number
   ref:                      string
+  refProv:                  string
   nombre:                   string
   urlDolibarr:              string
   sigla:                    string
@@ -71,6 +72,7 @@ export class ProductoDoli implements IProductoDoli
 {
   id:                       number
   ref:                      string
+  refProv:                  string
   nombre:                   string
   sigla:                    string
   descripcion:              string
@@ -110,6 +112,7 @@ export class ProductoDoli implements IProductoDoli
   {
     this.id                 = 0
     this.ref                = ""
+    this.refProv            = ""
     this.sigla              = ""
     this.nombre             = ""
     this.descripcion        = ""

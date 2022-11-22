@@ -21,6 +21,7 @@ export interface IQueryAcuerdo {
   entrega              ?:  string
   fechaDesde           ?:  string
   fechaHasta           ?:  string
+  proveedorId          ?:  number
   subtotalMin          ?:  number
   subtotalMax          ?:  number
   facturado            ?:  number
@@ -56,6 +57,7 @@ export interface IBusquedaAcuerdo {
   totalizado            : ILabelValue
   tipoTercero           : ILabelValue
   conOrdenes            : ILabelValue
+  proveedores           : ILabelValue
   municipio             : IMunicipio
   comercial            ?: IUsuario
   creador              ?: IUsuario
@@ -63,6 +65,7 @@ export interface IBusquedaAcuerdo {
   pagina                : number
   esCotizacion          : boolean
   esPedido              : boolean
+  esOCProveedor         : boolean
   busquedaVacia         : boolean
 }
 export class BusquedaAcuerdo implements IBusquedaAcuerdo
@@ -85,6 +88,7 @@ export class BusquedaAcuerdo implements IBusquedaAcuerdo
   totalizado            : ILabelValue
   tipoTercero           : ILabelValue
   conOrdenes            : ILabelValue
+  proveedores           : ILabelValue
   municipio             : IMunicipio
   comercial            ?: IUsuario
   creador              ?: IUsuario
@@ -112,14 +116,16 @@ export class BusquedaAcuerdo implements IBusquedaAcuerdo
     this.tipoTercero      = labelValueNulo
     this.totalizado       = labelValueNulo
     this.conOrdenes       = labelValueNulo
+    this.proveedores      = labelValueNulo
     this.municipio        = new Municipio()
     this.resultadosXPage  = 25
     this.pagina           = 1
     this.busquedaVacia    = true
   }
 
-  get esCotizacion()  : boolean { return this.acuerdo === TIPO_ACUERDO.COTIZACION }
-  get esPedido()      : boolean { return this.acuerdo === TIPO_ACUERDO.PEDIDO     }
+  get esCotizacion()  : boolean { return this.acuerdo === TIPO_ACUERDO.COTIZACION   }
+  get esPedido()      : boolean { return this.acuerdo === TIPO_ACUERDO.PEDIDO       }
+  get esOCProveedor() : boolean { return this.acuerdo === TIPO_ACUERDO.OC_PROVEEDOR }
 
   get query() : IQueryAcuerdo
   {
@@ -143,10 +149,13 @@ export class BusquedaAcuerdo implements IBusquedaAcuerdo
     if(!!this.totalizado.label)   q.conTotal      = this.totalizado.value
     if(!!this.tipoTercero.label)  q.interno       = this.tipoTercero.value
     if(!!this.municipio.id)       q.municipio     = this.municipio.id
-    if(!!this.conOrdenes.label)   q.conOrdenes    = this.conOrdenes.value
-
-    if(!!this.comercial)          q.comercial     = this.comercial.id
+    if(!!this.conOrdenes.label)   q.conOrdenes    = this.conOrdenes.value    
     if(!!this.creador)            q.creador       = this.creador.id
+    if(this.esOCProveedor && !!this.proveedores.label)
+                                  q.proveedorId   = this.proveedores.value
+    if(!this.esOCProveedor && !!this.comercial)
+                                  q.comercial     = this.comercial.id
+    
 
     if(this.desde instanceof Date && !isNaN(this.desde.valueOf()))  q.fechaDesde  = this.desde.toLocaleDateString('sv-SE')
     if(this.hasta instanceof Date && !isNaN(this.hasta.valueOf()))  q.fechaHasta  = this.hasta.toLocaleDateString('sv-SE')

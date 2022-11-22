@@ -1,5 +1,5 @@
 <template>
-  <ventana                    minimizar scroll
+  <ventana                    minimizar
     titulo                    ="Condiciones"
     icono                     ="mdi-handshake"
     :cargando                 ="!acuerdo.tercero.id && !acuerdo.esNuevo"

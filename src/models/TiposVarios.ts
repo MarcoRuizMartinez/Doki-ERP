@@ -32,6 +32,9 @@ export const enum ALMACEN_LOCAL {
   MENU_IZQUIERDO  = "v3-menuIzquierdo",
   COL_TERCEROS    = "v3-colTerceros",
   COL_ACUERDOS    = "v3-colAcuerdos",
+  COL_COTIZACIONES= "v3-colCotizaciones",
+  COL_PEDIDOS     = "v3-colPedidos",
+  COL_OC_PROVEE   = "v3-colOcProveedor",
   COL_PRODUCTOS   = "v3-colProductos",
   FECHA_LISTAS    = "v3-fechaListas",
 }
@@ -39,10 +42,12 @@ export const enum ALMACEN_LOCAL {
 export const AlmacenesLimpiar  : string[] = [  
   ALMACEN_LOCAL.COL_TERCEROS,
   ALMACEN_LOCAL.COL_ACUERDOS,
+  ALMACEN_LOCAL.COL_COTIZACIONES,
+  ALMACEN_LOCAL.COL_PEDIDOS,
+  ALMACEN_LOCAL.COL_OC_PROVEE,  
   ALMACEN_LOCAL.COL_PRODUCTOS,
   ALMACEN_LOCAL.FECHA_LISTAS
 ]
-
 
 export const enum ORIGEN {
   APP             = "app",
@@ -121,6 +126,7 @@ export interface ILoading {
   notaPublica     ?: boolean
   notaPrivada     ?: boolean
   url             ?: boolean
+  proyecto        ?: boolean
 }
 
 export const LoadingDefault = {
@@ -155,6 +161,7 @@ export const LoadingDefault = {
   notaPublica     : false,
   notaPrivada     : false,
   url             : false,
+  proyecto        : false,
 }
 
 

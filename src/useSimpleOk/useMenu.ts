@@ -117,7 +117,7 @@ export function useMenu()
         { ...new ItemMenu({ separator: true }), },
         { ...new ItemMenu({
                             label:      "Pedidos proveedor",
-                            icon:       "mdi-water-well",
+                            icon:       "mdi-domain",
                             to:         "/pedidos-proveedor",
                             visible:    permisos.value.terceros_ver
                           }),

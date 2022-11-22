@@ -22,6 +22,7 @@
     />
     <template v-if        ="storeUser.usuario.esDev">      
       <modulo-usuarios            class="col-md-4 col-12" height-card="260px"/>
+      <modulo-proveedores         class="col-md-4 col-12" height-card="260px"/>
       <modulo-municipios          class="col-md-4 col-12" height-card="260px"/>
       <modulo-condiciones         class="col-md-4 col-12" height-card="260px"/>
       <modulo-formas-pago         class="col-md-4 col-12" height-card="260px"/>
@@ -47,6 +48,7 @@
   
   import    moduloEnlaces             from "src/areas/sistemas/components/ModuloLinks.vue"
   import    moduloUsuarios            from "src/areas/sistemas/components/ModuloUsuarios.vue"
+  import    moduloProveedores         from "src/areas/sistemas/components/ModuloProveedores.vue"
   import    moduloMunicipios          from "src/areas/sistemas/components/ModuloMunicipios.vue"
   import    moduloCondiciones         from "src/areas/sistemas/components/ModuloCondicionesPago.vue"
   import    moduloFormasPago          from "src/areas/sistemas/components/ModuloFormasPago.vue"

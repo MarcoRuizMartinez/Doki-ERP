@@ -11,7 +11,7 @@
     :mensaje-sin-resultados   ="`No se encontraron ${Acuerdo.getTipoAcuerdoPlural( tipo)}`"
     >
     <template                 #barra>
-      <tabs-busqueda />
+      <tabs-busqueda/>
     </template>
     <template                 #menu>
       <barra-busqueda
@@ -22,7 +22,7 @@
         <select-columnas
           v-model             ="columnasVisibles"
           label               ="Columnas"
-          :almacen            ="ALMACEN_LOCAL.COL_ACUERDOS"
+          :almacen            ="almacenColumnas"
           :options            ="columnas"
         />
       </barra-busqueda>
@@ -76,6 +76,13 @@
           <estado :acuerdo      ="props.row"/>
         </q-td>
       </template> 
+      <!-- //* ///////////////  Columna Comercial  -->
+      <template
+        #body-cell-creador      ="props">
+        <q-td   :props          ="props">
+          <chip-usuario         :usuario="props.value"/>
+        </q-td>
+      </template>           
     </q-table>
     <!-- //* ///////////////////////////////////////////////////////////// Modal vista rapida -->
     <q-dialog                   maximized
@@ -121,6 +128,7 @@
   // * /////////////////////////////////////////////////////////////////////// Core
   import {  ref,
             toRefs,
+            watch,
             PropType,
             computed,
             onMounted,
@@ -190,17 +198,29 @@
 
     return titulo
   })
+  const almacenColumnas           = computed(()=>{
+    return    busqueda.value.esCotizacion   ? ALMACEN_LOCAL.COL_COTIZACIONES
+            : busqueda.value.esPedido       ? ALMACEN_LOCAL.COL_PEDIDOS
+            : busqueda.value.esOCProveedor  ? ALMACEN_LOCAL.COL_OC_PROVEE
+            : ""
+  })
   const columnas                  = ref< IColumna[] >([])
   const columnasVisibles          = ref< string[]   >([])
   const puedeAnterior             = computed(()=> indexSelect.value > 0 )
   const puedeSiguiente            = computed(()=> indexSelect.value < acuerdos.value.length - 1)
 
-  onMounted(()=>{
+  watch(tipo, iniciar)
+
+  onMounted(iniciar)
+
+  function iniciar()
+  {
     useTitle(`${Acuerdo.getEmojiAcuerdo(tipo.value)}🔍 Buscar ${Acuerdo.getTipoAcuerdoPlural(tipo.value)}`)
     acuerdos.value                = []
     busqueda.value                = new BusquedaAcuerdo( tipo.value )
+    modo.value                    = "esperando-busqueda"
     crearColumnas()
-  })
+  }
 
   onUnmounted(()=>{
     acuerdos.value                = []
@@ -248,28 +268,31 @@
 
   function crearColumnas(){
     columnas.value                = [
-      new Columna({ name: "ref"                                                   }),
-      new Columna({ name: "refCliente",               label: "Ref cliente"        }),
+      new Columna({ name: "ref"                                                   }),      
       new Columna({ name: "estado"                                                }),
       new Columna({ name: "tercero"                                               }),
       new Columna({ name: "municipioTercero",         label: "Municipio tercero"  }),      
-      new Columna({ name: "comercial",                label: "Asesor"             }),
-      new Columna({ name: "contacto"                                              }),
       new Columna({ name: "fechaCreacionCorta",       label: "Creado"             }),
       new Columna({ name: "fechaValidacionCorta",     label: "Validado"           }),
-      new Columna({ name: "condicionPagoLabel",       label: "Condiciones"        }), 
-      new Columna({ name: "formaPagoLabel",           label: "Forma de pago"      }), 
-      new Columna({ name: "metodoEntregaLabel",       label: "Entrega"            }), 
-      new Columna({ name: "origenContactoLabel",      label: "Origen"             }),
-      new Columna({ name: "area",                     label: "Área"               }),
-      Columna.ColumnaPrecio ({ name: "totalConDescu", label: "Subtotal",          clase: "text-bold" }),
-      Columna.ColumnaPrecio ({ name: "subTotalLimpio",label: "Subtotal comisión", clase: "text-bold" }),
-      Columna.ColumnaPrecio ({ name: "ivaValor",      label: "IVA",               clase: "text-bold" }),
-      Columna.ColumnaPrecio ({ name: "totalConIva",   label: "Total",             clase: "text-bold" }),
+      new Columna({ name: "creador"                                               }),
+      Columna.ColumnaPrecio ({ name: "totalConDescu", label: "Subtotal",          clase: "text-bold"  }),      
+      Columna.ColumnaPrecio ({ name: "ivaValor",      label: "IVA",               clase: "text-bold"  }),
+      Columna.ColumnaPrecio ({ name: "totalConIva",   label: "Total",             clase: "text-bold"  }),
     ]
-    
+    if(!busqueda.value.esOCProveedor){
+      columnas.value.splice(1, 0,  new Columna({ name: "refCliente",          label: "Ref cliente"    }) )
+      columnas.value.splice(4, 0,  new Columna({ name: "comercial",           label: "Asesor"         }) )
+      columnas.value.splice(5, 0,  new Columna({ name: "contacto"                                     }) )
+      columnas.value.splice(7, 0,  new Columna({ name: "condicionPagoLabel",  label: "Condiciones"    }) )
+      columnas.value.splice(8, 0,  new Columna({ name: "formaPagoLabel",      label: "Forma de pago"  }) )
+      columnas.value.splice(9, 0,  new Columna({ name: "metodoEntregaLabel",  label: "Entrega"        }) )
+      columnas.value.splice(10, 0, new Columna({ name: "origenContactoLabel", label: "Origen"         }) )
+      columnas.value.splice(14, 0, Columna.ColumnaPrecio ({ name: "subTotalLimpio",label: "Subtotal comisión", clase: "text-bold"  }) )
+      columnas.value.splice(11, 0, new Columna({ name: "area",                label: "Área"           }) )     
+    }
+
     if(busqueda.value.esPedido)
-      columnas.value.push( Columna.ColumnaSiNo({ name: "facturado",         label: "Facturado"      }) )    
+      columnas.value.push( Columna.ColumnaSiNo({ name: "facturado",         label: "Facturado"      }) )
 
     columnasVisibles.value  = columnas.value.filter(c => c.visible ).map( c => c.name )       
   } 

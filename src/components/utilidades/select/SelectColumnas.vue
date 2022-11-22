@@ -8,7 +8,7 @@
     :class                      ="{ 'width60' : !label }"
     :display-value              ="label"
     :options                    ="options"
-    @update:model-value          ="update"
+    @update:model-value         ="update"
     >
     <template #option     ="{ itemProps, opt, selected, toggleOption }">
       <q-item v-bind            ="itemProps">
@@ -34,6 +34,7 @@
   import {  LocalStorage    } from 'quasar'
   import {  ref,
             toRefs,
+            watch,
             PropType,
             onMounted
                             } from 'vue'
@@ -53,6 +54,7 @@
   const modelo                = ref< string[] > ( modelValue.value )
 
   onMounted( cargarColumnasLocal ) 
+  watch(almacen, cargarColumnasLocal)
 
   function cargarColumnasLocal()
   {

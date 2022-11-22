@@ -15,7 +15,10 @@
     @update:model-value       ="( conta : any ) => emit('update:contacto', conta )"
     >
     <template                 #prepend>
-      <q-icon name            ="mdi-account" />
+      <q-icon
+        name                  ="mdi-account"
+        :color                ="!!modelo && !!modelo.id ? 'primary' : 'grey-6'"
+      />
     </template>
     <template                 #no-option>
       <q-item>

@@ -36,15 +36,17 @@
       </q-chip>
     </template>
     <template               #prepend>
-      <q-icon name          ="mdi-account-supervisor-circle" />
+      <q-icon
+        name                ="mdi-account-supervisor-circle"
+      />
     </template>
   </q-select>
 </template>
 
 <script setup lang="ts">
+//:color              ="!!modelo && !!modelo.id ? 'primary' : 'grey-6'"
 //scope.removeAtIndex(scope.index)
-  import {  computed,
-            ref,
+  import {  ref,
             toRefs,
             PropType,
             watch
@@ -52,21 +54,21 @@
   import {  IUsuario, Usuario } from "src/areas/usuarios/models/Usuario"
   import {  dexieUsuarios     } from "src/services/useDexie"
   import {  useStoreUser      } from 'src/stores/user'
+  import {  storeToRefs       } from 'pinia'
   import {  AREA              } from "src/models/TiposVarios"
 
   interface IScope {
-    index: number
-    opt: IUsuario
-    selected: boolean
-    removeAtIndex: (index: number) => void
-    toggleOption: (opt: any) => void
-    tabindex: number
+    index:          number
+    opt:            IUsuario
+    selected:       boolean
+    removeAtIndex:  (index: number) => void
+    toggleOption:   (opt: any) => void
+    tabindex:       number
   }
 
   const usuariosDB            = dexieUsuarios()
-  const storeUser             = useStoreUser()
+  const { usuario           } = storeToRefs( useStoreUser() )
   const usuarios              = ref< IUsuario [] > ( [] )
-  const usuario               = computed( () => storeUser.usuario )
   const emit                  = defineEmits<{
     (e: 'update:modelValue',  value: IUsuario | undefined ): void
     (e: 'autoselect',         value: IUsuario             ): void
@@ -84,7 +86,7 @@
     useInput:     { default: false,         type: Boolean                         },
     hundido:      { default: false,         type: Boolean                         },
     inactivos:    { default: false,         type: Boolean                         },
-    todos:        { default: false,         type: Boolean                         },
+    grupos:       { default: [],            type: Array as PropType<string[]>     },
     loading:      { default: false,         type: Boolean                         },
     //noInmediato:  { default: false,         type: Boolean                       },
     area:         { default: "",            type: String as PropType< AREA >      },
@@ -94,7 +96,7 @@
           readonly,
           autoselect,
           inactivos,
-          todos,
+          grupos,
           //noInmediato,
           area,
                             } = toRefs( props )
@@ -116,7 +118,9 @@
       &&
       !!modelo.value.id
       &&
-      usuario.value.esComercial
+      !!grupos.value.length
+      &&
+      usuario.value.grupos.some( ( gu : string ) => grupos.value.some( ( g : string )=> g === gu ) )
     )
     {
       if(typeof autoselect.value === "boolean")
@@ -161,19 +165,26 @@
 
   function copiarListaToUsuarios()
   {
-    usuarios.value = usuariosDB.value  .filter ( ( u : IUsuario ) =>
-                                              ( u.activo      || inactivos.value  )
-                                              &&
-                                              ( u.esComercial || todos.value      )
-                                              &&
-                                              ( u.area  == area.value || area.value == AREA.GLOBAL ||  area.value == AREA.NULO )
-                                            )
-                                            .sort   ( ( a : IUsuario, b : IUsuario ) =>
-                                              {
-                                                if(a.label < b.label) return -1
-                                                if(a.label > b.label) return 1
-                                                return 0;
-                                              }) as IUsuario[]
+    usuarios.value    = usuariosDB.value.filter ( ( u : IUsuario ) =>
+                                                  ( u.activo      || inactivos.value  )
+                                                  &&
+                                                  (
+                                                    !grupos.value.length
+                                                    ||
+                                                    (
+                                                      u.grupos.some( ( gu : string ) => grupos.value.some( ( g : string )=> g === gu ) )
+                                                    )
+                                                  )
+                                                  &&
+                                                  ( u.area  == area.value || area.value == AREA.GLOBAL ||  area.value == AREA.NULO )
+                                                )
+                                        .sort   ( ( a : IUsuario, b : IUsuario ) =>
+                                                  {
+                                                    if(a.label < b.label) return -1
+                                                    if(a.label > b.label) return 1
+                                                    return 0;
+                                                  }
+                                                ) as IUsuario[]
   }
 
 

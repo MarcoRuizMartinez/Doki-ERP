@@ -46,7 +46,7 @@
             v-model         ="acuerdo.aiuAdmin"
             label           ="Administración"
             :paso           ="0.1"
-            @update:model-value="(valor)=> editarValorAIU(valor, 'aiuAdmin')"
+            @update:model-value="(valor : number )=> editarValorAIU(valor, 'aiuAdmin')"
           />
           <div  class       ="fuente-mono text-grey-8 text-center"
             >
@@ -59,7 +59,7 @@
             v-model         ="acuerdo.aiuImpre"
             label           ="Imprevistos"
             :paso           ="0.1"
-            @update:model-value="(valor)=> editarValorAIU(valor, 'aiuImpre')"
+            @update:model-value="(valor : number)=> editarValorAIU(valor, 'aiuImpre')"
           />
           <div  class       ="fuente-mono text-grey-8 text-center"
             >
@@ -72,7 +72,7 @@
             v-model         ="acuerdo.aiuUtili"
             label           ="Utilidad"
             :paso           ="0.1"
-            @update:model-value="(valor)=> editarValorAIU(valor, 'aiuUtili')"
+            @update:model-value="(valor : number)=> editarValorAIU(valor, 'aiuUtili')"
           />
           <div  class       ="fuente-mono text-grey-8 text-center"
             >

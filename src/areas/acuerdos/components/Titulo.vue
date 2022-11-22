@@ -42,17 +42,17 @@
           @click            ="emit('click')"
           >
           <span class       ="titulo-xl sombra-3d fuente-gruesa text-capitalize">
-            {{acuerdo.tipo}}
+            {{acuerdo.label}}
           </span>
         </q-btn>
         <!-- //* ////////////////////////////////////////////////////// Titulo  -->
         <div
-          v-if              ="!acuerdo.esNuevo"
+          v-if              ="!acuerdo.esNuevo && !acuerdo.esOCProveedor"
           :style            ="esMobil ? 'order: 3;' : ''"
           >
           <span class       ="q-ma-none q-pa-none op20 titulo-lg">
             {{ !!acuerdo.titulo ? acuerdo.titulo : '. . . .'}}
-            <Tooltip :label ="`Titulo de ${acuerdo.tipo}`"/>
+            <Tooltip :label ="`Titulo de ${acuerdo.label}`"/>
           </span>
           <q-popup-edit     auto-save fit
             v-model         ="acuerdo.titulo"

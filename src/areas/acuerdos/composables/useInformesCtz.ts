@@ -7,7 +7,7 @@ import {  ref
                               } from "vue"
 import {  sortArray           } from "src/useSimpleOk/useTools"
 
-import {  estadoStrCtzToColor } from "src/areas/acuerdos/models/ConstantesAcuerdos"
+import {  EstadosAcuerdos     } from "src/areas/acuerdos/models/ConstantesAcuerdos"
 
 export function useInformesCtz()
 {
@@ -26,7 +26,7 @@ export function useInformesCtz()
     const seriesComercial         = seriesCrudas.filter( s => s.comercial === comercial )
     const listaEstados            = [ ...new Set(seriesComercial.map((s) => s.estado)) ]
     estadosCtzSerie.value         = getSerie("total", seriesComercial, listaEstados, "estado")
-    estadosCtzSerie.value.forEach( s => { if( s.name !== "Total" ) s.color = estadoStrCtzToColor(s.name) })
+    estadosCtzSerie.value.forEach( s => { if( s.name !== "Total" ) s.color = EstadosAcuerdos.estadoStrCtzToColor(s.name) })
 
     //console.table(seriesComercial);
 

@@ -2,8 +2,8 @@ import {  ISerie,
           Serie,
           Tiempo,
           IApexSerie          } from "src/models/TiposInformes"
-import {  estadoCtzToName,
-          estadoCtzToColor    } from "src/areas/acuerdos/models/ConstantesAcuerdos"
+import {  EstadosAcuerdos,
+          TIPO_ACUERDO        } from "src/areas/acuerdos/models/ConstantesAcuerdos"
 
 export interface ISerieCtz extends ISerie
 {
@@ -58,6 +58,6 @@ export class SerieCtz extends Serie implements ISerieCtz
     return this.cuentaCtzConTotal + this.cuentaCtzSinTotal
   }
 
-  get estado()      : string { return estadoCtzToName (this.estadoId) }
-  get estadoColor() : string { return estadoCtzToColor(this.estadoId) }
+  get estado()      : string { return EstadosAcuerdos.estadoToName ( TIPO_ACUERDO.COTIZACION, this.estadoId ) }
+  get estadoColor() : string { return EstadosAcuerdos.estadoToColor( TIPO_ACUERDO.COTIZACION, this.estadoId ) }
 }      

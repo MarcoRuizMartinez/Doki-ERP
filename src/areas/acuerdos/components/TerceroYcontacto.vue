@@ -46,11 +46,22 @@
       @contacto-nuevo         ="vincularContactoAcuerdo"
       @contacto-cambio        ="cambiarContactoAcuerdo"
     />
+    <!-- //* ///////////////////////////////////////////////// Proyecto -->
+    <select-proyecto
+      v-if                    ="!acuerdo.esNuevo"
+      class                   ="col-12"
+      v-model:proyecto        ="acuerdo.proyecto"
+      :tercero                ="acuerdo.tercero"
+      :loading                ="loading.proyecto"
+      :readonly               ="loading.proyecto"
+      @update:proyecto        ="cambiarProyecto"
+    /> 
     <!-- //* ///////////////////////////////////////////////// Comercial -->
     <comercial
       class                   ="col-12"
       label                   ="Comercial"
       v-model                 ="acuerdo.comercial"
+      :grupos                 ="[GRUPO_USUARIO.COMERCIALES]"
       :autoselect             ="acuerdo.esNuevo"
       :loading                ="loading.comercial"
       @select                 ="editarComercial"
@@ -81,8 +92,9 @@
   import {  storeToRefs           } from 'pinia'                            
   import {  useStoreAcuerdo       } from 'stores/acuerdo'  
   //* ///////////////////////////////////////////////////////////////////////////// Componibles
-  import {  dexieOrigenesContacto } from "../../../services/useDexie"
-  import {  useControlAcuerdo  } from "src/areas/acuerdos/controllers/ControlAcuerdos"
+  import {  dexieOrigenesContacto } from "src/services/useDexie"
+  import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"
+  import {  GRUPO_USUARIO         } from "src/models/TiposVarios"
   //* ///////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana                 from "components/utilidades/Ventana.vue"
   import    inputText               from "components/utilidades/input/InputFormText.vue"
@@ -91,9 +103,11 @@
   import    comercial               from "src/areas/usuarios/components/SelectUsuario.vue"
   import    tooltipTercero          from "src/areas/terceros/components/TooltipTerceros.vue"
   import    selectContacto          from "src/areas/terceros/components/contactos/SelectContacto.vue"
+  import    selectProyecto          from "src/areas/proyectos/components/SelectProyecto.vue"
 
   const { acuerdo, loading        } = storeToRefs( useStoreAcuerdo() )  
   const { actualizarTercero,
+          cambiarProyecto,
           editarOrigen,
           editarRefCliente,
           editarComercial,
