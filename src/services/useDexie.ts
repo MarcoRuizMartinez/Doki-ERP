@@ -23,6 +23,7 @@ import {  ITipoContacto,      TipoContacto      } from "src/models/Diccionarios/
 import {  IProductoCategoria, ProductoCategoria } from "src/areas/productos/models/ProductoCategoria"
 import {  IConstante,         Constante         } from "src/models/Diccionarios/Constante"
 import {  IProveedor,         Proveedor         } from "src/models/Diccionarios/Proveedor"
+import {  ICuentaDinero,      CuentaDinero      } from "src/models/Diccionarios/CuentaDinero"
 import {  storeToRefs                           } from 'pinia'
 
 //* ///////////////////////////////////////////////////////////// Tipos de documento
@@ -41,10 +42,11 @@ export enum TABLAS
   PRODUCTO_CATE               = "productoCategoria",
   CONSTANTE                   = "constantes",
   PROVEEDORES                 = "proveedores",
+  CUENTA_DINERO               = "cuentasDinero",
 }
 
 export type ITabla            = IMunicipio      | IUsuario        | ITipoDocumento      | ICondicionPago |
-                                IFormaPago      | IMetodoEntrega  | IOrigenContacto     | IUnidad        |
+                                IFormaPago      | IMetodoEntrega  | IOrigenContacto     | IUnidad        | ICuentaDinero |
                                 ITiempoEntrega  | ITipoContacto   | IProductoCategoria  | IConstante     | IProveedor
 
 
@@ -69,6 +71,7 @@ export function cargarListasIndex() {
     /* origenesContacto              = */ dexieOrigenesContacto(param)
     /* tiposDocumentos               = */ dexieTiposDocumentos(param)
     /* unidades                      = */ dexieUnidades(param)
+                                          dexieCuentasDinero(param)
   }
 }
 
@@ -155,6 +158,13 @@ export function dexieProveedores        ( { cargarSiempre = false, demora = 0 } 
   const { lista } = useDexie( TABLAS.PROVEEDORES, { cargarSiempre, demora } )
   return lista as Ref< IProveedor[] >
 }
+
+//* ///////////////////////////////////////////////////////////// Unidades
+export function dexieCuentasDinero      ( { cargarSiempre = false, demora = 0 } = paramDefault ) :Ref< ICuentaDinero[] > {
+  const { lista } = useDexie( TABLAS.CUENTA_DINERO, { cargarSiempre, demora } )
+  return lista as Ref< ICuentaDinero[] >
+}
+
 
 
 function useDexie( tabla : TABLAS, { cargarSiempre = false, demora = 0 } = paramDefault )
@@ -297,7 +307,10 @@ function useDexie( tabla : TABLAS, { cargarSiempre = false, demora = 0 } = param
                     break;
                   case TABLAS.PROVEEDORES : 
                     await db[ TABLAS.PROVEEDORES        ].bulkAdd( listaCarga )
-                    break;                        
+                    break;
+                  case TABLAS.CUENTA_DINERO :
+                    await db[ TABLAS.CUENTA_DINERO      ].bulkAdd( listaCarga )
+                    break;                                        
                   default:
                     break;
                 }
@@ -514,6 +527,19 @@ export async function getProveedorDB( id : number ) : Promise < IProveedor >
         return listaDB[0]
       else
         return new Proveedor()
+    }
+  )
+}
+
+export async function getCuentasDineroDB( id : number ) : Promise < ICuentaDinero >
+{ 
+  return db.transaction('r', db[ TABLAS.CUENTA_DINERO ], async () =>
+    {
+      const listaDB          = await db[ TABLAS.CUENTA_DINERO ].where("id").equals(id).toArray()
+      if(listaDB.length     == 1)
+        return listaDB[0]
+      else
+        return new CuentaDinero()
     }
   )
 }

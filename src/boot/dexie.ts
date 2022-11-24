@@ -14,6 +14,7 @@ import {  ITiempoEntrega,     TiempoEntrega     } from "src/models/Diccionarios/
 import {  ITipoContacto,      TipoContacto      } from "src/models/Diccionarios/TipoContacto"
 import {  IConstante,         Constante         } from "src/models/Diccionarios/Constante"
 import {  IProveedor,         Proveedor         } from "src/models/Diccionarios/Proveedor"
+import {  ICuentaDinero,      CuentaDinero      } from "src/models/Diccionarios/CuentaDinero"
 import {  IProductoCategoria, ProductoCategoria } from "src/areas/productos/models/ProductoCategoria"
 
 export class DBSimpleOk extends Dexie
@@ -31,6 +32,7 @@ export class DBSimpleOk extends Dexie
   [TABLAS.PRODUCTO_CATE]!:    Dexie.Table< IProductoCategoria,number >
   [TABLAS.CONSTANTE]!:        Dexie.Table< IConstante,        number >
   [TABLAS.PROVEEDORES]!:      Dexie.Table< IProveedor,        number >
+  [TABLAS.CUENTA_DINERO]!:    Dexie.Table< ICuentaDinero,     number >
 
   constructor()
   {  
@@ -51,6 +53,7 @@ export class DBSimpleOk extends Dexie
       [TABLAS.PRODUCTO_CATE]:     "++id, nombre, sigla, grupo",
       [TABLAS.CONSTANTE]:         "++id, label, value",
       [TABLAS.PROVEEDORES]:       "++id, nombre, alias, codigo",
+      [TABLAS.CUENTA_DINERO]:     "++id, ref, label, tipoId, logoUrl, virtual",
     })
 
     this[TABLAS.MUNICIPIOS]       = this.table( TABLAS.MUNICIPIOS )
@@ -90,7 +93,10 @@ export class DBSimpleOk extends Dexie
     this[TABLAS.CONSTANTE]        .mapToClass( Constante )
 
     this[TABLAS.PROVEEDORES]      = this.table( TABLAS.PROVEEDORES )
-    this[TABLAS.PROVEEDORES]      .mapToClass( Proveedor )    
+    this[TABLAS.PROVEEDORES]      .mapToClass( Proveedor )
+
+    this[TABLAS.CUENTA_DINERO]    = this.table( TABLAS.CUENTA_DINERO )
+    this[TABLAS.CUENTA_DINERO]    .mapToClass( CuentaDinero )      
   }
 }
 

@@ -5,6 +5,8 @@
       options-selected-class  ="text-weight-bold"
       class                   ="text-caption"
       popup-content-class     ="panel-blur"
+      lazy-rules              ="ondemand"
+      :rules                  ="[ ...rules, regla ]"
       :label                  ="label"
       :label-color            ="!!modelo && !!modelo.label ? 'primary' : 'grey-6'"
       :class                  ="{ 'campo-hundido' : hundido }"
@@ -48,7 +50,7 @@
             valorValido     } from "src/useSimpleOk/useTools"                            
   import {  ILabelValue,
             labelValueNulo  } from "src/models/TiposVarios"
-  
+  import {  ValidationRule  } from "quasar"
 
   
   const emit                  = defineEmits(["update:modelValue", "clear", "select"])
@@ -64,6 +66,7 @@
   const props                 = defineProps(
   {
     modelValue:   { default: labelValueNulo,  type: Object   as PropType<ILabelValue>   },
+    alerta:       { default:  false,          type: [Boolean, String  ]                 },
     label:        { required: true,           type: String,                             },
     readonly:     { default: false,           type: Boolean                             },
     useInput:     { default: false,           type: Boolean                             },
@@ -75,6 +78,7 @@
     defecto:      { default: "",              type: String,                             },
     optionsSort:  { default: "",              type: String                              },
     behavior:     { default: "default",       type: String  as PropType< "default" | "menu" | "dialog" > },
+    rules:        { default:  [],             type: Array  as PropType< ValidationRule[] > },
     //noInmediato:  { default: false,     type: Boolean                             },
   })
   const { modelValue,
@@ -83,6 +87,8 @@
           //noInmediato,
           defecto,
           optionsSort,
+          alerta,
+          label
                               } = toRefs( props )
   const opciones                = ref< ILabelValue[] > ( options.value )
   const modelo                  = ref< ILabelValue >( )
@@ -185,4 +191,21 @@
       opciones.value          = options.value.filter( v => v.label.toLowerCase().indexOf( labelMin ) > -1)
     })
   }
+
+  function regla( valor : string | number )
+  {
+    let largo             = typeof valor == "string" ? valor.length : valor.toString().length
+
+    return  (
+              (
+                !!valor
+                &&
+                largo     > 0
+              )
+              ||
+              !alerta.value
+            )
+            ||
+            ( typeof alerta.value == "string" ? alerta.value : `El campo '${label.value}' no puede estar vació` )
+  }  
 </script>

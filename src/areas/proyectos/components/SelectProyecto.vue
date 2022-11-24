@@ -104,7 +104,7 @@
   //import    formProyecto      from "src/areas/proyectos/components/FormularioProyecto.vue"
   import    confirmar         from "components/utilidades/MenuConfirmar.vue"
 
-  const { acuerdo           } = storeToRefs( useStoreAcuerdo() )  
+  const { acuerdo           } = storeToRefs( useStoreAcuerdo() )
   const proyectos             = ref< IProyecto[] > ([])
   const modelo                = ref< IProyecto >()
   const proyectoEditar        = ref< IProyecto >()

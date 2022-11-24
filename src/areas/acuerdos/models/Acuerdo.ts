@@ -13,13 +13,14 @@ import {  TTipoAcuerdo,
           EstadosAcuerdos,          
           ESTADO_PED                        } from "./ConstantesAcuerdos"
 //* ///////////////////////////////////////// Modelos
+import {  IAnticipo,        Anticipo        } from "./Anticipo"
 import {  IProyecto,        Proyecto        } from "src/areas/proyectos/models/Proyecto"
 import {  ILineaAcuerdo,    LineaAcuerdo    } from "src/areas/acuerdos/models/LineaAcuerdo"
 import {  ITercero,         Tercero         } from "src/areas/terceros/models/Tercero"
 import {  IUsuario,         Usuario         } from "src/areas/usuarios/models/Usuario"
 import {  IContacto,        Contacto        } from "src/areas/terceros/models/Contacto"
 import {  IGrupoLineas,     GrupoLineas     } from "src/areas/acuerdos/models/GrupoLineasAcuerdo"
-
+import {  IArchivo,         Archivo         } from "src/models/Archivo"
 import {  ICondicionPago,   CondicionPago   } from "src/models/Diccionarios/CondicionPago"
 import {  IFormaPago,       FormaPago       } from "src/models/Diccionarios/FormaPago"
 import {  IMetodoEntrega,   MetodoEntrega   } from "src/models/Diccionarios/MetodoEntrega"
@@ -43,6 +44,8 @@ export interface IAcuerdo
   icono:                      string
   imagen:                     string
   modulo:                     TModulosDolibarr
+  anticipos:                  IAnticipo[]
+  archivos:                   IArchivo[]
   esCotizacion:               boolean
   esPedido:                   boolean
   esOCProveedor:              boolean
@@ -173,6 +176,8 @@ export class Acuerdo implements IAcuerdo
   proyecto:                   IProyecto
   terceroId:                  number
   tercero:                    ITercero
+  anticipos:                  IAnticipo[]
+  archivos:                   IArchivo[]
   enlaces:                    string
   fechaCreacion:              Date
   fechaValidacion:            Date
@@ -222,6 +227,8 @@ export class Acuerdo implements IAcuerdo
     this.refCliente           = ""
     this.terceroId            = 0
     this.tercero              = new Tercero()
+    this.anticipos            = []
+    this.archivos             = []
     this.proyectoId           = 0
     this.proyecto             = new Proyecto()
     this.enlaces              = ""

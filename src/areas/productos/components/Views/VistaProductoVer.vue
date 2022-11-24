@@ -15,7 +15,7 @@
     :modulo-id          ="producto.id ?? 0"
     :modulo-ref         ="producto.ref"
     :puede-editar       ="true"
-    @load               ="cargarProductos"
+    @subida-ok          ="cargarProductos"
   />
 </template>
 

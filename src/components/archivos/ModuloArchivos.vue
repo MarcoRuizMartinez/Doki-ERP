@@ -163,7 +163,9 @@
     puedeEditar:  { default:  false,  type: Boolean                                 },
   })
   const emit = defineEmits<{
-    (e: 'load',   value: IArchivo[]  ): void    
+    (e: "subidaOk",   value: IArchivo[]  ): void
+    (e: "descargaOk", value: IArchivo[]  ): void
+    (e: "borradoOk",  value: IArchivo[]  ): void
   }>()
 
   const { modulo,
@@ -198,7 +200,10 @@
         archivos.value.push( Object.assign( new Archivo(), documento ) )        
       
       if(origen === "subida")
-        emit("load", archivos.value)
+        emit("subidaOk", archivos.value)
+      if(!!archivos.value.length)
+        emit("descargaOk", archivos.value)
+
       modo.value              = "normal"
     }
     else
@@ -226,13 +231,12 @@
   {
     fileNameSelect.value      = archivo.nombreCorto
     archivo.loading           = true
+
     let { data, ok }          = await apiDolibarr( "descargar", "documento", archivo.endPoint )
     archivo.loading           = false
 
     if(ok){
       let descarga            = data as any
-      //console.log("descarga: ", descarga);
-
       if(archivo.tipo         === "PDF"){        
         srcPDF.value          = descarga.content
         ventanaPDF.value      = true
@@ -258,7 +262,7 @@
       let index               = archivos.value.findIndex( a => a.relativename == archivo.name ) 
       archivos.value.splice(index, 1)
       aviso("positive", "Archivo borrado", "file")
-
+      emit("borradoOk", archivos.value)
       if(!archivos.value.length)
         modo.value            = "sin-resultados"
     }

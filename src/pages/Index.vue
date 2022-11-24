@@ -34,6 +34,7 @@
       <modulo-unidades            class="col-md-4 col-12" height-card="260px"/>
       <modulo-categorias-producto class="col-md-4 col-12" height-card="260px"/>
       <modulo-constantes          class="col-md-4 col-12" height-card="260px"/>
+      <modulo-cuentas-dinero      class="col-md-4 col-12" height-card="260px"/>      
     </template>
   </q-page>
 </template>
@@ -60,6 +61,7 @@
   import    moduloUnidades            from "src/areas/sistemas/components/ModuloUnidades.vue"
   import    moduloCategoriasProducto  from "src/areas/sistemas/components/ModuloCategoriasProducto.vue"
   import    moduloConstantes          from "src/areas/sistemas/components/ModuloConstantes.vue"
+  import    moduloCuentasDinero       from "src/areas/sistemas/components/ModuloCuentasDinero.vue"
 
   import {  cargarListasIndex       } from "src/services/useDexie"
 

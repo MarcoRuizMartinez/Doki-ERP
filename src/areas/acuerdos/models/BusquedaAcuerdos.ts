@@ -2,7 +2,7 @@ import {  TIPO_ACUERDO,
           TTipoAcuerdo    } from "src/areas/acuerdos/models/ConstantesAcuerdos"
 import {  ILabelValue,
           labelValueNulo  } from "src/models/TiposVarios"
-import {  IUsuario            } from "src/areas/usuarios/models/Usuario"
+import {  IUsuario        } from "src/areas/usuarios/models/Usuario"
 import {  IMunicipio,
           Municipio
                           } from "src/models/Municipio"

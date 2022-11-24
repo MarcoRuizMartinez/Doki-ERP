@@ -25,6 +25,11 @@
     class                   ="col-md-4 col-12"
     height-card-min         ="260px"
   />
+  <anticipos                scroll
+    v-if                    ="acuerdo.esPedido"
+    class                   ="col-md-4 col-12"
+    height-card-min         ="182px"
+  />
   <documentos
     class                   ="col-md-4 col-12"
     height-card-min         ="164px"
@@ -32,6 +37,8 @@
     :modulo-id              ="acuerdo.id ?? 0"
     :modulo-ref             ="acuerdo.ref"
     :puede-editar           ="true"
+    @descarga-ok            ="cargarArchivos"
+    @borrado-ok             ="cargarArchivos"
   />
   <notas
     class                   ="col-md-4 col-12"
@@ -69,11 +76,13 @@
   //* ///////////////////////////////////////////////////////////////////////////////// Modelos
   //import {  Acuerdo, TIPO_ACUERDO } from "../../models/Acuerdo"  
   import {  LineaAcuerdo          } from "src/areas/acuerdos/models/LineaAcuerdo"  
+  import {  IArchivo, Archivo     } from "src/models/Archivo"  
   //* ///////////////////////////////////////////////////////////////////////////////// Componibles
   import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"
   import {  useCotizacionPDF      } from "src/areas/acuerdos/composables/useCotizacionPDF"
   //import {  useControlProductos   } from "src/areas/acuerdos/controllers/ControlLineasProductos"  
   import {  TTipoAcuerdo          } from "src/areas/acuerdos/models/ConstantesAcuerdos"
+  import {  useApiDolibarr        } from "src/services/useApiDolibarr"
   //* ///////////////////////////////////////////////////////////////////////////////// Componentes
   import    visorPdf                from "components/utilidades/VisorPDF.vue"
   import    notas                   from "src/areas/acuerdos/components/Notas.vue"
@@ -83,12 +92,13 @@
   import    terceroYContacto        from "src/areas/acuerdos/components/TerceroYcontacto.vue"
   import    condiciones             from "src/areas/acuerdos/components/Condiciones.vue"
   import    productos               from "src/areas/acuerdos/components/ProductosAcuerdo.vue"
+  import    anticipos               from "src/areas/acuerdos/components/Anticipos/ModuloAnticipos.vue"
   import    documentos              from "components/archivos/ModuloArchivos.vue"
 
   const { acuerdo,
           lineaElegida,
           loading           } = storeToRefs( useStoreAcuerdo() )
-
+  const { apiDolibarr       } = useApiDolibarr()
   const { generarPDF,
           guardarPDF        } = useCotizacionPDF()
   const { aprobarCotizacion,
@@ -131,6 +141,8 @@
   async function recargar(){
     await buscarAcuerdo( tipo.value, id.value )
   }
+
+  function cargarArchivos( files : IArchivo[] ) { acuerdo.value.archivos = files }
 /*
 import {  useRouter             } from 'vue-router'
 const router                = useRouter()
