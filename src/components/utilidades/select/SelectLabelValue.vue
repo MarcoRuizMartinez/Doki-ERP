@@ -43,8 +43,9 @@
 */
   import {  ref,
             toRefs,
+            watch,
             PropType,
-            watch
+            onMounted,
                             } from 'vue'
   import {  sortArray,
             valorValido     } from "src/useSimpleOk/useTools"                            
@@ -102,6 +103,10 @@
 
     copiarOptionsToOpciones()
     setDefecto()
+  })
+
+  onMounted(()=>{
+    if(!!defecto.value)  setDefecto()
   })
 
   watch( modelValue, ( newValue )  =>
@@ -192,19 +197,8 @@
     })
   }
 
-  function regla( valor : string | number )
-  {
-    let largo             = typeof valor == "string" ? valor.length : valor.toString().length
-
-    return  (
-              (
-                !!valor
-                &&
-                largo     > 0
-              )
-              ||
-              !alerta.value
-            )
+  function regla( item : ILabelValue | undefined ) : boolean | string {    
+    return  ( !!item || !alerta.value)
             ||
             ( typeof alerta.value == "string" ? alerta.value : `El campo '${label.value}' no puede estar vació` )
   }  

@@ -11,7 +11,7 @@
       :filled             ="!hundido"
       :borderless         ="!hundido"
       :label              =" !!alerta && !readonly ? label + ' *' : label"
-      :rules              ="[ ...rules, regla ]"
+      :rules              ="[ ...rules, regla, reglaCero ]"
       :autofocus          ="autofocus"
       :readonly           ="readonly"
       :clearable          ="clearable"
@@ -99,6 +99,7 @@
       noUndefined:  { default:  false,          type: Boolean             },
       readonly:     { default:  false,          type: Boolean             },
       soloPositivo: { default:  false,          type: Boolean             },
+      noCero:       { default:  false,          type: Boolean             },
       paso:         { default:  0,              type: Number              },
       debounce:     { default:  1200,           type: [String, Number]    },
       maximo:       { default:   9_999_999_999, type: [String, Number]    },
@@ -123,6 +124,7 @@
           conDecimales,
           tipo,
           soloPositivo,
+          noCero,
           separadorMil,
           maxEnteros,
           retorno,
@@ -333,7 +335,7 @@
     emit("update:modelValue", retorno_ )
   }
 
-  function regla( valor : string | number )
+  function regla( valor : string | number ) : boolean | string
   {
     let largo             = typeof valor == "string" ? valor.length : valor.toString().length
 
@@ -349,6 +351,10 @@
             ||
             ( typeof alerta.value == "string" ? alerta.value : `El campo '${label.value}' no puede estar vació` )
   }
+
+  function reglaCero( valor : string | number ) : boolean | string {
+    return  ( Number(valor) !== 0 || !noCero.value || !alerta.value ) || "Valor no puede ser cero"
+  }  
 
   async function copiar()
   {

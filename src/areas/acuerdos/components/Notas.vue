@@ -14,7 +14,7 @@
       debounce              ="800"
       :loading              ="loading.notaPrivada"
       :disable              ="loading.notaPrivada"      
-      @update:model-value   ="(n)=>editarNotaPublica(n.toString())"
+      @update:model-value   ="( n : string )=>editarNotaPublica(n.toString())"
     />
     <q-input                filled dense
       v-model               ="acuerdo.notaPrivada"
@@ -24,7 +24,7 @@
       debounce              ="800"
       :loading              ="loading.notaPrivada"
       :disable              ="loading.notaPrivada"
-      @update:model-value   ="(n)=>editarNotaPrivada(n.toString())"      
+      @update:model-value   ="( n : string )=>editarNotaPrivada(n.toString())"      
     />
   </ventana>
 </template>

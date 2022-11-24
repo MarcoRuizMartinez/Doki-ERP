@@ -20,7 +20,7 @@
         </div> 
         <div class        ="col-2">
           <img :src       ="anticipo.cuenta.imagenUrl" width="32" height="32"/>
-          <Tooltip :label ="anticipo.cuentaLabel"/>
+          <Tooltip :label ="anticipo.cuenta.label"/>
         </div>
         <div class        ="col-8 text-right fuente-mono text-bold">
           <div
@@ -46,8 +46,7 @@
             </div>
             {{anticipo.tipoLabel}} por {{anticipo.valorLabel}}<br/>
             Estado: {{anticipo.estadoLabel}}<br/>
-            {{anticipo.cuentaLabel}}<br/>
-            
+            {{anticipo.cuenta.label}}<br/>
           </Tooltip>
         </div>
       </q-card-section>
@@ -57,45 +56,49 @@
         style                 ="min-height: 40px;"
         >
           <q-btn              flat dense rounded no-caps
-            v-if              ="!!anticipo.fileCliente.size"
-            icon              ="mdi-file-document-multiple"
+            :icon             ="!anticipo.fileCliente.size ? 'mdi-file-upload' : 'mdi-file-eye'"
             label             ="👤"
             padding           ="none"
             class             ="op60 op100-hover col-4"
-            @click.stop       ="emit('clickVerArchivo', anticipo.fileCliente )"
+            @click.stop       ="  !anticipo.fileInterno.size
+                                    ? emit('clickSubir',      'cliente')
+                                    : emit('clickVerArchivo', anticipo.fileInterno )
+                                "
             >
-            <Tooltip label    ="Ver comprobante de cliente"/>
+            <Tooltip :label   ="(!anticipo.fileInterno.size ? 'Subir' : 'Ver') + ' comprobante de cliente'"/>
           </q-btn>
           <q-btn              flat dense rounded no-caps
-            v-if              ="!!anticipo.fileInterno.size"
             label             ="Soporte"
-            icon              ="mdi-file-document-multiple-outline"
+            :icon             ="!anticipo.fileInterno.size ? 'mdi-file-upload' : 'mdi-file-eye'"
             padding           ="none"
-            class             ="op60 op100-hover"
-            :class            ="!!anticipo.fileCliente.size ? 'col-8' : 'col-12'"
-            @click.stop       ="emit('clickVerArchivo', anticipo.fileInterno )"
+            class             ="op60 op100-hover col-8"
+            @click.stop       ="  !anticipo.fileInterno.size
+                                    ? emit('clickSubir',     'interno')
+                                    : emit('clickVerArchivo', anticipo.fileInterno )
+                                "
             >
-            <Tooltip label    ="Ver comprobante de interno"/>
+            <Tooltip :label   ="(!anticipo.fileInterno.size ? 'Subir' : 'Ver') + ' comprobante de interno'"/>
           </q-btn>
       </div>
     </q-card>
-  </div>    
+  </div>
 </template>
 <script setup lang="ts">
   // * /////////////////////////////////////////////////////////////////////////////////// Core
   import {  PropType            } from "vue"
   // * /////////////////////////////////////////////////////////////////////////////////// Modelos
-  import {  IAnticipo           } from "src/areas/acuerdos/models/Anticipo"  
-  import {  IArchivo            } from "src/models/Archivo"  
-  
+  import {  IAnticipo,
+            TTipoFileAnticipo   } from "src/areas/acuerdos/models/Anticipo"  
+  import {  IArchivo            } from "src/models/Archivo"
+
   const props                 = defineProps({      
-    anticipo: { required: true,  type: Object as PropType< IAnticipo >  },  
-    loading:  { default:  false, type: Boolean                          },  
+    anticipo: { required: true,  type: Object as PropType< IAnticipo >  },
   })
 
   const emit                  = defineEmits<{
-    (e: "clickVerArchivo",  value: IArchivo  ): void
-    (e: "clickAnticipo",    value: IAnticipo ): void
+    (e: "clickVerArchivo",  value: IArchivo           ): void
+    (e: "clickAnticipo",    value: IAnticipo          ): void
+    (e: "clickSubir",       value: TTipoFileAnticipo  ): void
   }>()
 
 </script>

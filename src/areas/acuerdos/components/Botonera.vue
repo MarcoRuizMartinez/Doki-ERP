@@ -114,7 +114,6 @@
   import {  btnBaseMd       } from "src/useSimpleOk/useEstilos"
   // * /////////////////////////////////////////////////////////////////////// Componentes
   import    barra             from "components/utilidades/Barra.vue"
-  import    efectoGrupo       from "components/utilidades/EfectoGrupo.vue"
   import    efecto            from "components/utilidades/Efecto.vue"
   import    confirmar         from "components/utilidades/MenuConfirmar.vue"
 

@@ -6,6 +6,8 @@ import {  ICuentaDinero,
 import {  formatoPrecio       } from "src/useSimpleOk/useTools"  
 import {  IArchivo, Archivo   } from "src/models/Archivo"
 import {  ILabelValue,  labelValueNulo  } from "src/models/TiposVarios"
+import {  fechaCorta          } from "src/useSimpleOk/useTools"
+
 export enum ESTADO_ANTICIPO
 {
   ANULADO                     = 0,
@@ -19,13 +21,28 @@ export enum TIPO_ANTICIPO
   DEVOLUCION                  = 2,
 }
 
+export enum ESTADO_ANTICIPO_LABEL
+{
+  ANULADO                     = "❌Anulado",
+  PENDIENTE                   = "✋🏼Pendiente",
+  VERIFICADO                  = "✅Verificado'",
+}
+
+export enum TIPO_ANTICIPO_LABEL
+{
+  PAGO                        = "💵Pago",
+  DEVOLUCION                  = "💸Devolución",
+}
+
+export type TTipoFileAnticipo = "cliente" | "interno" 
+
 export interface IAnticipo
 { 
   id                  : number
   fechaPago           : string
+  fechaPagoApi        : string
   cuenta              : ICuentaDinero
   cuentaId            : number
-  cuentaLabel         : string
   pedidoId            : number  
   verificador         : IUsuario
   verificadorId       : number
@@ -45,6 +62,7 @@ export interface IAnticipo
   estadoLabel         : string
   estadoColor         : string
   estadoIcono         : string
+  anticipoToApi       : any
 }
 
 export class Anticipo implements IAnticipo
@@ -53,7 +71,6 @@ export class Anticipo implements IAnticipo
   fechaPago           : string
   cuenta              : ICuentaDinero
   cuentaId            : number
-  cuentaLabel         : string
   pedidoId            : number  
   verificador         : IUsuario
   verificadorId       : number
@@ -69,14 +86,13 @@ export class Anticipo implements IAnticipo
   estado              : ESTADO_ANTICIPO  
   estadoSelect        : ILabelValue
 
-  constructor()
+  constructor( idPedido : number = 0)
   {
     this.id                 = 0
-    this.fechaPago          = ""
+    this.fechaPago          = fechaCorta( new Date() )
     this.cuenta             = new CuentaDinero()
     this.cuentaId           = 0
-    this.cuentaLabel        = ""
-    this.pedidoId           = 0
+    this.pedidoId           = idPedido
     this.verificador        = new Usuario()
     this.verificadorId      = 0
     this.valor              = 0
@@ -91,7 +107,7 @@ export class Anticipo implements IAnticipo
     this.estado             = ESTADO_ANTICIPO.PENDIENTE
     this.estadoSelect       = labelValueNulo
   }
-
+    
   get valorLabel(){ 
     return  ( this.tipo === TIPO_ANTICIPO.DEVOLUCION ? '-' : '' ) + formatoPrecio( this.valor, "decimales-no" ) 
   }
@@ -119,30 +135,60 @@ export class Anticipo implements IAnticipo
             : this.tipo   === TIPO_ANTICIPO.DEVOLUCION    ? "Devolución"
             : ""
   }
+
+  get anticipoToApi() : any {
+    const anti = {
+      id                : this.id,
+      fecha_pago        : this.fechaPagoApi,
+      cuenta_id         : this.cuenta.id,
+      pedido_id         : this.pedidoId,
+      valor             : this.valor,
+      nota              : this.nota,
+      tipo_pago         : this.tipoSelect.value,
+      estado            : this.estadoSelect.value,
+      filename_interno  : this.fileInterno.name,
+      filename_cliente  : this.fileCliente.name,
+    }
+    return anti
+  }
   
+  get fechaPagoApi() {
+    return typeof this.fechaPago === "string" ? this.fechaPago : fechaCorta( new Date( this.fechaPago ) )
+  } 
 
   static async anticipoApiToAnticipo( antApi : any  ) : Promise<IAnticipo>
   {
-    antApi.id               = +antApi.id
-    antApi.cuentaId         = +antApi.cuentaId
-    antApi.pedidoId         = +antApi.pedidoId
-    antApi.valor            = +antApi.valor
-    antApi.verificadorId    = +antApi.verificadorId
-    antApi.tipo             = +antApi.tipo
-    antApi.estado           = +antApi.estado
-    antApi.prueba           = antApi.dfdfd
+    antApi.id                 = +antApi.id
+    antApi.cuentaId           = +antApi.cuentaId
+    antApi.pedidoId           = +antApi.pedidoId
+    antApi.valor              = +antApi.valor
+    antApi.verificadorId      = +antApi.verificadorId
+    antApi.tipo               = +antApi.tipo
+    antApi.estado             = +antApi.estado
     
-    const anti              = Object.assign( new Anticipo(), antApi ) as IAnticipo
-    anti.cuenta             = await getCuentasDineroDB( antApi.cuentaId )
+    const anti                = Object.assign( new Anticipo(), antApi ) as IAnticipo
+    anti.cuenta               = await getCuentasDineroDB( antApi.cuentaId )
     if(!!antApi.verificadorId)
-      anti.verificador      = await getUsuarioDB( antApi.verificadorId )
+      anti.verificador        = await getUsuarioDB( antApi.verificadorId )
+
+    anti.tipoSelect           = Anticipo.tipos  .find( ( t ) => t.value === anti.tipo )
+    anti.estadoSelect         = Anticipo.estados.find( ( e ) => e.value === anti.estado )    
     return anti
   }
+
+  static estados = [
+    {label: ESTADO_ANTICIPO_LABEL.PENDIENTE,  value: 1},
+    {label: ESTADO_ANTICIPO_LABEL.VERIFICADO, value: 2},
+    {label: ESTADO_ANTICIPO_LABEL.ANULADO,    value: 0},
+  ]
+  
+  static tipos = [
+    {label: TIPO_ANTICIPO_LABEL.PAGO,         value: 1},
+    {label: TIPO_ANTICIPO_LABEL.DEVOLUCION,   value: 2},
+  ]
 }
 
 /*
 col-6 Select y Editor  Archivo cliente
 col-6 Select y EditorArchivo interno
-
-col-12 input Nota
 */

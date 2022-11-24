@@ -113,6 +113,8 @@
     <template #menu v-if        ="puedeSubir">
       <!-- //* ///////////////  Subir archivo  -->
       <subir-archivo
+        class                   ="full-width"
+        label                   ="Subir archivos"
         :modulo                 ="modulo"
         :modulo-ref             ="moduloRef"
         @subida-ok              ="buscarArchivos('subida')"

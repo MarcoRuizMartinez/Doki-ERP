@@ -28,7 +28,7 @@
   <anticipos                scroll
     v-if                    ="acuerdo.esPedido"
     class                   ="col-md-4 col-12"
-    height-card-min         ="182px"
+    height-card-min         ="140px"
   />
   <documentos
     class                   ="col-md-4 col-12"

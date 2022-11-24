@@ -9,6 +9,7 @@
     :filled                     ="!hundido"
     :borderless                 ="!hundido"     
     :clearable                  ="clearable"
+    :rules                      ="[ ...rules, regla ]"
     @blur                       ="blurInputText"
     @clear                      =""
     @update:model-value         ="cambioInputText"
@@ -70,10 +71,13 @@
   //:rules                      ="['date']"
   import {  ref,
             toRefs,
-            watch
+            watch,
+            PropType
                             } from "vue"
   import {  date, debounce  } from 'quasar'         
+  import {  ValidationRule  } from "quasar"  
   import {  useTools,
+            fechaCorta,
             fechaValida     } from "src/useSimpleOk/useTools"
 
   const hoy                   = date.formatDate(Date.now(), 'YYYY/MM/DD')
@@ -91,6 +95,8 @@
     loading:    { default: false,     type: Boolean },
     titulo:     { default: "",        type: String  },
     diasValidos:{ default: 0,         type: Number  },
+    alerta:     { default:  false,    type: [Boolean, String  ] },
+    rules:      { default:  [],       type: Array  as PropType< ValidationRule[] > },
     noPasado:   { default: false,     type: Boolean },
     noFuturo:   { default: false,     type: Boolean },
     hundido:    { default: false,     type: Boolean },
@@ -99,6 +105,8 @@
   const { modelValue,
           loading,
           diasValidos,
+          alerta,
+          label,
           noPasado,
           noFuturo,
           desde,
@@ -149,10 +157,14 @@
       fechaTem          = new Date(details.year, details.month-1, details.day)
   }
 
-
-
   function asignarModelValueAModelo() {
-    modelo.value        = !!modelValue.value.valueOf() ? date.formatDate(modelValue.value, 'YYYY/MM/DD') : undefined
+    let fecha : string | Date
+    if(typeof modelValue.value === "string")
+      fecha = new Date( Date.parse( modelValue.value ).valueOf() + 19_000_000 )// 19_000_000 5 horas de diferencia horaria
+    else 
+      fecha = modelValue.value
+
+    modelo.value        = !!modelValue.value.valueOf() ? date.formatDate(fecha, 'YYYY/MM/DD') : undefined
   }
 
   function fechaCumpleCriterios ( fechaI : string ) : boolean
@@ -219,9 +231,7 @@
     {
       limipiarModelo()
     }
-  }
-
-  
+  }  
 
   function limipiarModelo()
   {
@@ -230,5 +240,11 @@
     avisoRangoOut()
     setTimeout(asignarModelValueAModelo, 300)
   }
+
+  function regla( valor : string | undefined ) : boolean | string {
+    return  ( !!valor || !alerta.value)
+            ||
+            ( typeof alerta.value == "string" ? alerta.value : `El campo '${label.value}' no puede estar vació` )
+  }  
 
 </script>

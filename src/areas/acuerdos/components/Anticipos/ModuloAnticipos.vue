@@ -1,11 +1,12 @@
 <template>
   <ventana
+    v-bind                      ="$attrs"
     titulo                      ="Anticipos"
     class-contenido             ="column items-center"
     icono                       ="mdi-cash-check"
     mensaje-sin-resultados      ="Sin anticipos"
     icono-sin-resultados        ="mdi-cash"
-    size-icon-carga             ="14em"
+    size-icon-carga             ="8em"
     :padding-contenido          ="modo == 'normal' ? '0' : '12px' "
     :modo                       ="modo"
     >
@@ -17,6 +18,7 @@
         color                   ="positive"
         icon                    ="mdi-cash-plus"        
         :disable                ="modo == 'buscando'"
+        @click                  ="mostrarFormulario( new Anticipo( acuerdo.id ) )"
         >
         <Tooltip label          ="Subir anticipo"/>
       </q-btn>
@@ -30,7 +32,7 @@
       </q-btn>      
     </template>
     <template                   #menu>
-      menu    
+      menu    {{ventanaFormulario}}
     </template>    
     <q-table                    borbordered dense flat grid hide-header hide-bottom
       class                     ="fit tabla-maco"
@@ -44,6 +46,7 @@
           :anticipo             ="props.row"
           @click-ver-archivo    ="verArchivo"
           @click-anticipo       ="mostrarFormulario"
+          @click-subir          ="mostrarSubirArchivo"
         />
       </template>          
     </q-table>
@@ -60,17 +63,31 @@
       :titulo                   ="imagenAver.titulo"
       :fileType                 ="imagenAver.fileType"
     />
-    <!-- //* ///////////////////////////////////////////////////////////// Modal Buscar productos -->
-    <q-dialog
-      v-model                   ="ventanaFormulario"
-      transition-show           ="slide-up"
-      transition-hide           ="slide-down"
-      >
-      <formulario
-        v-model:anticipo        ="anticipoSelect"
-      />
-    </q-dialog>    
   </ventana>
+  <!-- //* ///////////////////////////////////////////////////////////// Modal Buscar Formulario anticipo -->
+  <q-dialog
+    v-model                   ="ventanaFormulario"
+    transition-show           ="slide-up"
+    transition-hide           ="slide-down"
+    >
+    <formulario
+      v-model                 ="anticipoSelect"
+      @update:model-value     ="( ( a : IAnticipo ) => recibirAcuerdo( a, 'editar') )"
+      @creado                 ="( ( a : IAnticipo ) => recibirAcuerdo( a, 'crear') )"
+      @borrado                ="( ( a : IAnticipo ) => recibirAcuerdo( a, 'borrar') )"
+    />
+  </q-dialog>
+    <!-- //* ///////////////////////////////////////////////////////////// Modal Buscar Formulario anticipo -->
+  <q-dialog
+    v-model                   ="ventanaSubirFile"
+    transition-show           ="slide-up"
+    transition-hide           ="slide-down"
+    >
+    <formulario-archivo
+      :pedido-ref             ="acuerdo.ref"
+      :tipo                   ="tipoFileSubir"
+    />
+  </q-dialog>
 </template>
 
 <script setup lang="ts">
@@ -81,7 +98,8 @@
   import {  storeToRefs           } from 'pinia'                            
   import {  useStoreAcuerdo       } from 'stores/acuerdo'
   //* /////////////////////////////////////////////////////////////////////////////////// Modelos
-  import {  IAnticipo, Anticipo   } from "src/areas/acuerdos/models/Anticipo"
+  import {  IAnticipo, Anticipo,
+            TTipoFileAnticipo     } from "src/areas/acuerdos/models/Anticipo"
   import {  ModosVentana          } from "src/models/TiposVarios"
   import {  IColumna, Columna     } from "src/models/Tabla"  
   import {  IArchivo, Archivo     } from "src/models/Archivo"
@@ -96,6 +114,7 @@
   import    ventana                 from "components/utilidades/Ventana.vue"
   import    cardAnticipo            from "./AnticipoCard.vue"
   import    formulario              from "./FormularioAnticipo.vue"
+  import    formularioArchivo       from "./FormularioSubirAnticipo.vue"
   import    visorPdf                from "components/utilidades/VisorPDF.vue"  
   import    visorImagen             from "components/utilidades/VisorImagen.vue"
 
@@ -108,6 +127,8 @@
   const ventanaPDF            = ref< boolean    >(false)
   const ventanaImagen         = ref< boolean    >(false)
   const ventanaFormulario     = ref< boolean    >(false)
+  const ventanaSubirFile      = ref< boolean    >(false)
+  const tipoFileSubir         = ref< TTipoFileAnticipo >("interno")
   const fileNameSelect        = ref< string     >( "" )
   const anticipoSelect        = ref<IAnticipo>(new Anticipo())
   type  TImagenAver           = { src : string, titulo: string, fileType: string }
@@ -199,6 +220,10 @@
     ventanaFormulario.value   = true
   }
 
+  function mostrarSubirArchivo( t : TTipoFileAnticipo ) {
+    tipoFileSubir.value       = t
+    ventanaSubirFile.value    = true
+  } 
 
   async function verArchivo( archivo : IArchivo )
   {
@@ -209,7 +234,7 @@
     archivo.loading           = false
 
     if(ok){
-      let descarga            = data as any
+      const descarga          = data as any
       if(archivo.tipo         === "PDF"){        
         srcPDF.value          = descarga.content
         ventanaPDF.value      = true
@@ -223,4 +248,27 @@
     else
       aviso("negative", "Error descargando el archivo", "file")
   }  
+
+  function recibirAcuerdo( anticipo : IAnticipo, accion : "crear" | "editar" | "borrar" )
+  {
+    if(accion === "editar" || accion === "borrar")
+    {
+      const index                 = anticipos.value.findIndex( a => a.id === anticipo.id )
+      if(index >= 0){
+        if(accion === "editar")
+          anticipos.value[index]  = anticipo
+        else{
+          anticipos.value.splice(index, 1)
+          if(!anticipos.value.length)
+            modo.value            = "sin-resultados"
+        }
+      }
+    }
+    else{ // Nuevo
+      anticipos.value.push( anticipo )
+      modo.value                  = "normal"
+    }
+    
+    ventanaFormulario.value       = false
+  }
 </script>

@@ -79,6 +79,15 @@ export const WYSIWYG_Limpio  = {
               ]
 }
 
+export const WYSIWYG_Imagen  = {
+  dense:      true,
+  minHeight: "5rem",
+  toolbar:    [
+                [
+                  'viewsource', 'save'
+                ],                
+              ]
+}
 
 
 

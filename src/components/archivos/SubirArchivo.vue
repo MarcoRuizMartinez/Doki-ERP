@@ -1,12 +1,12 @@
 <template>
-  <q-file                   multiple use-chips append dense hide-bottom-space borderless
-    v-model                 ="archivosSubir"
-    label                   ="Subir archivos"
-    class                   ="full-width campo-hundido transi"
+  <q-file                   use-chips append dense hide-bottom-space borderless multiple
+    v-model                 ="archivosSubir"    
+    class                   ="campo-hundido transi"    
     :disable                ="cargandoArchivos"
     :max-files              ="maxFiles"
     :max-file-size          ="maxSize"
     @rejected               ="rechazarArchivos"
+    @update:model-value     ="seleccionar"
     >
     <template #prepend>
       <q-icon name="mdi-paperclip" class="q-ml-sm"/>
@@ -14,7 +14,7 @@
     <template #after>
       <q-btn                round dense flat
         v-if                ="!!archivosSubir.length"
-        icon                ="mdi-cloud-upload"
+        icon                ="mdi-cl  oud-upload"
         padding             ="none"
         :loading            ="cargandoArchivos"
         @click              ="subirArchivos"
@@ -50,14 +50,16 @@
   const props                 = defineProps({
     modulo:       { required: true,   type: String as PropType < TModulosDolibarr > },
     moduloRef:    { required: true,   type: String                                  },
+    soloUno:      { default:  false,  type: Boolean                                 },
   })
 
   const emit = defineEmits<{
     (e: 'limpiar',                        ): void
-    (e: 'subidaOk',                       ): void    
+    (e: 'subidaOk', value: File[] ): void    
   }>()
   const { modulo,
           moduloRef,
+          soloUno,
                             } = toRefs( props )
 
   function rechazarArchivos( archivos : any[] )
@@ -71,6 +73,11 @@
       mensaje                 = `Archivo muy pesado. Debe pesar menos de ${humanStorageSize(maxSize)} `
 
     aviso("negative", mensaje, "file", 2400)
+  }
+
+  function seleccionar(){
+    if(soloUno.value)
+      archivosSubir.value.splice(1, archivosSubir.value.length-1)
   }
 
   async function subirArchivos()
@@ -96,7 +103,7 @@
       }
     }
 
-    emit("subidaOk")
+    emit("subidaOk", archivosSubir.value)
     aviso("positive", archivosSubir.value.length == 1 ? "Archivo subido" : "Archivos subidos",  "file", 2400)
     terminar()
 
