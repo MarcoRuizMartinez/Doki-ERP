@@ -16,7 +16,7 @@
       modulo                  ="order"
       label                   ="Seleccionar o arrastrar archivo"
       class                   ="col-12"
-      :modulo-ref             ="pedidoRef"
+      :modulo-ref             ="acuerdo.ref"
       @subida-ok              ="archivoSubido"
     />
     <div class                ="col-12 text-center text-grey-8 text-1_2em">O</div>        
@@ -38,6 +38,9 @@
             PropType,
             watch
                                 } from "vue"
+  //* /////////////////////////////////////////////////////////////////////////////////// Store
+  import {  storeToRefs         } from 'pinia'                            
+  import {  useStoreAcuerdo     } from 'stores/acuerdo'
   // * ///////////////////////////////////////////////////////////////////////////////// Modelos
   import {  IAnticipo, Anticipo,
             TIPO_ANTICIPO_LABEL,
@@ -55,11 +58,10 @@
   import    ventana               from "components/utilidades/Ventana.vue"
   import    subirArchivo          from "src/components/archivos/SubirArchivo.vue"
 
-
+  const { anticipo, acuerdo } = storeToRefs( useStoreAcuerdo() )  
   const { aviso             } = useTools()
   const { miFetch           } = useFetch()
   const cuentas               = dexieCuentasDinero()
-  const anticipo              = ref<IAnticipo>(new Anticipo())
   const cargando              = ref< boolean >(false)
   const formulario            = ref< any >()
   const endPoint              = getURL("servicios", "pagos")
@@ -69,9 +71,7 @@
   //* ////////////////////////////////////////////////////////////////////////////////////// Props
   const props                 = defineProps(
   {
-    modelValue:   { default:  new Anticipo(), type: Object as PropType< IAnticipo >   },
-    pedidoRef:    { required: true,           type: String                            },
-    tipo:         { required: true,           type: String as PropType< "cliente" | "interno"  > },
+    tipo:         { required: true,   type: String as PropType< "cliente" | "interno"  > },
   })
   
   const emit                  = defineEmits<{
@@ -81,65 +81,25 @@
   }>()
 
 
-  const { modelValue        } = toRefs( props )
-  const esNuevo               = computed( ()=> !modelValue.value.id )
+  const { tipo }              = toRefs( props )
   const modificado            = computed( ()=>  copiaAnticipo !== JSON.stringify( anticipo.value ) ) 
-  const btnDisable            = computed( ()=> !esNuevo.value && !modificado.value)
+  const btnDisable            = computed( ()=> !anticipo.value.esNuevo && !modificado.value)
   const objetoToFetch         = computed( ()=> { return {
-                                                    body: getFormData( esNuevo.value ? "nuevoAnticipo" : "editarAnticipo", anticipo.value.anticipoToApi ),
+                                                    body: getFormData( anticipo.value.esNuevo ? "nuevoAnticipo" : "editarAnticipo", anticipo.value.anticipoToApi ),
                                                     method: "POST"
                                                   }
                                                 }
                                         )
 
-  function archivoSubido( archivos : File[])
-  {
-    
-  }
-  
-  watch(modelValue, (newAnticipo) =>
-    {
-      anticipo.value              = Object.assign( new Anticipo(), newAnticipo)
-
-      if(!!newAnticipo.id)
-      {
-        copiaAnticipo             = JSON.stringify( anticipo.value )
-        cargando.value            = false
-      }
-    },
-    { immediate: true }
-  ) 
-
-
-
-
-
-
-  //* ////////////////////////////////////////////////////////////////////////////////////// Submit
-  async function onSubmit()
-  {
-    cargando.value            = true
-    const { data, ok  }       = await miFetch( endPoint, objetoToFetch.value, { mensaje: "guardar anticipo" } )
-    console.log("data", data);
-
-    if(ok)
-    {
-      aviso( "positive", "Anticipo guardaro exitosamente" )
-
-      if(esNuevo.value){
-        anticipo.value.id     = parseInt( data as string )
-        emit("creado", anticipo.value)
-      }
-      else{
-        emit("update:modelValue", anticipo.value)
-      }
+  function archivoSubido( archivos : File[]){
+    if(!archivos.length) return
+    if(tipo.value === "cliente"){
+      anticipo.value.filenameCliente  = archivos[0].name
     }
-    else
-      aviso( "negative", "Error al guardar anticipo. Por favor vuelve a intentarlo" )
+    else{
+      anticipo.value.filenameInterno  = archivos[0].name
+    }
 
-    cargando.value            = false
+    emit("update:modelValue", anticipo.value)
   }
-
-
-
 </script>

@@ -63,6 +63,7 @@ export interface IAnticipo
   estadoColor         : string
   estadoIcono         : string
   anticipoToApi       : any
+  esNuevo             : boolean
 }
 
 export class Anticipo implements IAnticipo
@@ -107,7 +108,8 @@ export class Anticipo implements IAnticipo
     this.estado             = ESTADO_ANTICIPO.PENDIENTE
     this.estadoSelect       = labelValueNulo
   }
-    
+ 
+  get esNuevo(){ return !this.id }
   get valorLabel(){ 
     return  ( this.tipo === TIPO_ANTICIPO.DEVOLUCION ? '-' : '' ) + formatoPrecio( this.valor, "decimales-no" ) 
   }

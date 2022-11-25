@@ -12,7 +12,8 @@ import {  ILineaAcuerdo,
           LineaAcuerdo      } from "src/areas/acuerdos/models/LineaAcuerdo"
 import {  BusquedaAcuerdo,
           IBusquedaAcuerdo  } from "src/areas/acuerdos/models/BusquedaAcuerdos"
-
+import {  Anticipo,
+          IAnticipo         } from "src/areas/acuerdos/models/Anticipo"  
 interface IAcuerdoState {
   acuerdo             : IAcuerdo,
   loading             : ILoading,  
@@ -21,6 +22,7 @@ interface IAcuerdoState {
   modales             : IModales,
   acuerdos            : IAcuerdo[],
   busqueda            : IBusquedaAcuerdo,
+  anticipo            : IAnticipo,
 }
 
 export const useStoreAcuerdo = defineStore('acuerdo', {
@@ -32,5 +34,6 @@ export const useStoreAcuerdo = defineStore('acuerdo', {
     modales           : ModalesDefault,
     acuerdos          : [],
     busqueda          : new BusquedaAcuerdo( TIPO_ACUERDO.NULO ),
+    anticipo          : new Anticipo(),
   }),
 });

@@ -26,24 +26,24 @@
         icon                    ="mdi-refresh"
         class                   ="op60 op100-hover"
         :disable                ="!acuerdo.id"
-        @click                  ="buscarAcuerdos(acuerdo.id)"
+        @click                  ="buscarAnticipos(acuerdo.id)"
         >
         <Tooltip label          ="Recargar anticipos"/>
       </q-btn>      
     </template>
     <template                   #menu>
-      menu    {{ventanaFormulario}}
+      Total:
     </template>    
     <q-table                    borbordered dense flat grid hide-header hide-bottom
       class                     ="fit tabla-maco"
       row-key                   ="id"
-      :rows                     ="anticipos"
+      :rows                     ="acuerdo.anticipos"
       :columns                  ="columnas"
       >
       <!-- //* ///////////////////////////////////////////////////// Vista Card de producto -->
       <template                 #item="props">
         <card-anticipo
-          :anticipo             ="props.row"
+          :anticipo-i           ="props.row"
           @click-ver-archivo    ="verArchivo"
           @click-anticipo       ="mostrarFormulario"
           @click-subir          ="mostrarSubirArchivo"
@@ -71,7 +71,6 @@
     transition-hide           ="slide-down"
     >
     <formulario
-      v-model                 ="anticipoSelect"
       @update:model-value     ="( ( a : IAnticipo ) => recibirAcuerdo( a, 'editar') )"
       @creado                 ="( ( a : IAnticipo ) => recibirAcuerdo( a, 'crear') )"
       @borrado                ="( ( a : IAnticipo ) => recibirAcuerdo( a, 'borrar') )"
@@ -118,11 +117,10 @@
   import    visorPdf                from "components/utilidades/VisorPDF.vue"  
   import    visorImagen             from "components/utilidades/VisorImagen.vue"
 
-  const { acuerdo           } = storeToRefs( useStoreAcuerdo() )  
+  const { acuerdo, anticipo } = storeToRefs( useStoreAcuerdo() )  
   const { miFetch           } = useFetch()
   const { aviso             } = useTools()
   const { apiDolibarr       } = useApiDolibarr()
-  const anticipos             = ref< IAnticipo[]  >([])
   const modo                  = ref< ModosVentana >("buscando")
   const ventanaPDF            = ref< boolean    >(false)
   const ventanaImagen         = ref< boolean    >(false)
@@ -130,7 +128,6 @@
   const ventanaSubirFile      = ref< boolean    >(false)
   const tipoFileSubir         = ref< TTipoFileAnticipo >("interno")
   const fileNameSelect        = ref< string     >( "" )
-  const anticipoSelect        = ref<IAnticipo>(new Anticipo())
   type  TImagenAver           = { src : string, titulo: string, fileType: string }
   const imagenAver            = ref< TImagenAver >( { titulo: "", src: "", fileType: "" } )
   const srcPDF                = ref< string     >("")
@@ -142,22 +139,22 @@
 
   function unirAnticiposYFiles()
   {
-    if(!acuerdo.value.archivos.length || !anticipos.value.length) return
+    if(!acuerdo.value.archivos.length || !acuerdo.value.anticipos.length) return
 
-    for (const anticipo of anticipos.value)
+    for (const pago of acuerdo.value.anticipos)
     {
-      anticipo.fileInterno      = new Archivo()
-      anticipo.fileInterno      = new Archivo()      
-      if(!!anticipo.filenameInterno){
-        const fileInterno       = acuerdo.value.archivos.find( ( a : IArchivo ) => a.name === anticipo.filenameInterno )
+      pago.fileInterno      = new Archivo()
+      pago.fileInterno      = new Archivo()      
+      if(!!pago.filenameInterno){
+        const fileInterno       = acuerdo.value.archivos.find( ( a : IArchivo ) => a.name === pago.filenameInterno )
         if(!!fileInterno)
-          anticipo.fileInterno  = fileInterno
+          pago.fileInterno  = fileInterno
       }
 
-      if(!!anticipo.filenameCliente){
-        const fileCliente       = acuerdo.value.archivos.find( ( a : IArchivo ) => a.name === anticipo.filenameCliente )
+      if(!!pago.filenameCliente){
+        const fileCliente       = acuerdo.value.archivos.find( ( a : IArchivo ) => a.name === pago.filenameCliente )
         if(!!fileCliente)
-          anticipo.fileCliente  = fileCliente
+          pago.fileCliente  = fileCliente
       }
     }
   }
@@ -166,7 +163,7 @@
           async ( newId ) =>
             {
               if(!!newId) {                
-                await buscarAcuerdos( newId )
+                await buscarAnticipos( newId )
               }
           },
           { immediate: true }
@@ -180,7 +177,7 @@
             
               // Se da cuando se boran todos los archivos
             if(!newFiles.length && !!oldFiles.length){
-              anticipos.value.forEach( ( a :IAnticipo )=> {
+              acuerdo.value.anticipos.forEach( ( a :IAnticipo )=> {
                 a.filenameCliente = ""
                 a.filenameInterno = ""
                 a.fileCliente     = new Archivo()
@@ -192,20 +189,24 @@
   )
 
 
-  async function buscarAcuerdos( id : number )
+  async function buscarAnticipos( id : number )
   {
     modo.value                = "buscando"
-    anticipos.value           = []
+    acuerdo.value.anticipos   = []
     let { ok, data}           = await miFetch(  endPoint,
                                                 { method: "POST", body: getFormData( "anticipos", { id } ) },
                                                 { dataEsArray: true, mensaje: "buscar anticipos" }
                                               )
+    console.log({data})
     if(ok)
     {
       modo.value              = "normal"
       if(!Array.isArray(data) || !data.length) return
-      for (const item of data) 
-        anticipos.value.push( await Anticipo.anticipoApiToAnticipo( item ) )      
+      for (const item of data){ 
+        const acu             = await Anticipo.anticipoApiToAnticipo( item )
+        console.log("acu: ", acu);
+        acuerdo.value.anticipos.push( acu )
+      }
     }
     else{
       modo.value              = "sin-resultados"
@@ -214,14 +215,15 @@
     unirAnticiposYFiles()
   }
 
-  function mostrarFormulario( anticipo : IAnticipo )
+  function mostrarFormulario( anti : IAnticipo )
   {
-    anticipoSelect.value      = anticipo
+    anticipo.value            = anti
     ventanaFormulario.value   = true
   }
 
-  function mostrarSubirArchivo( t : TTipoFileAnticipo ) {
-    tipoFileSubir.value       = t
+  function mostrarSubirArchivo( item : { tipo : TTipoFileAnticipo, anti : IAnticipo } ) {
+    //anticipo.value            = item.anticipo
+    tipoFileSubir.value       = item.tipo
     ventanaSubirFile.value    = true
   } 
 
@@ -253,19 +255,19 @@
   {
     if(accion === "editar" || accion === "borrar")
     {
-      const index                 = anticipos.value.findIndex( a => a.id === anticipo.id )
+      const index                 = acuerdo.value.anticipos.findIndex( a => a.id === anticipo.id )
       if(index >= 0){
         if(accion === "editar")
-          anticipos.value[index]  = anticipo
+          acuerdo.value.anticipos[index]  = anticipo
         else{
-          anticipos.value.splice(index, 1)
-          if(!anticipos.value.length)
+          acuerdo.value.anticipos.splice(index, 1)
+          if(!acuerdo.value.anticipos.length)
             modo.value            = "sin-resultados"
         }
       }
     }
     else{ // Nuevo
-      anticipos.value.push( anticipo )
+      acuerdo.value.anticipos.push( anticipo )
       modo.value                  = "normal"
     }
     

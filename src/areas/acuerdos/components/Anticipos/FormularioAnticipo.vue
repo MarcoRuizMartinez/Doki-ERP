@@ -11,13 +11,13 @@
         v-bind                  ="btnBaseSm"
         color                   ="positive"
         icon                    ="mdi-cash-plus"
-        :label                  ="esNuevo ? 'Crear' : 'Guardar'"
+        :label                  ="anticipo.esNuevo ? 'Crear' : 'Guardar'"
         :disable                ="btnDisable"
         @click                  ="validar"
       />
       <efecto efecto            ="Down">
         <q-btn
-          v-if                  ="!esNuevo"
+          v-if                  ="!anticipo.esNuevo"
           v-bind                ="btnBaseSm"
           color                 ="grey-10"
           icon                  ="mdi-close"
@@ -103,16 +103,17 @@
 <script setup lang="ts">
   // * ///////////////////////////////////////////////////////////////////////////////// Core
   import {  ref,
-            toRefs,
+            watch,
             computed,
-            PropType,
-            watch
                                 } from "vue"
   // * ///////////////////////////////////////////////////////////////////////////////// Modelos
   import {  IAnticipo, Anticipo,
             TIPO_ANTICIPO_LABEL,
             ESTADO_ANTICIPO_LABEL
                                 } from "src/areas/acuerdos/models/Anticipo"
+  //* /////////////////////////////////////////////////////////////////////////////////// Store
+  import {  storeToRefs           } from 'pinia'                            
+  import {  useStoreAcuerdo       } from 'stores/acuerdo'
   // * ///////////////////////////////////////////////////////////////////////////////// Componibles
   import {  useApiDolibarr      } from "src/services/useApiDolibarr"
   import {  useTools            } from "src/useSimpleOk/useTools"  
@@ -130,49 +131,36 @@
   import    efecto                from "components/utilidades/Efecto.vue"
   import    confirmar             from "components/utilidades/MenuConfirmar.vue"
 
+  const { anticipo          } = storeToRefs( useStoreAcuerdo() )
   const { aviso             } = useTools()
   const { miFetch           } = useFetch()
   const cuentas               = dexieCuentasDinero()
-  const anticipo              = ref<IAnticipo>(new Anticipo())
   const cargando              = ref< boolean >(false)
   const formulario            = ref< any >()
   const endPoint              = getURL("servicios", "pagos")
   let   copiaAnticipo         = ""
 
-  //* ////////////////////////////////////////////////////////////////////////////////////// Props
-  const props                 = defineProps(
-  {
-    modelValue:   { default:  new Anticipo(),   type: Object as PropType< IAnticipo >   },
-    //puedeEditar:  { default:  false,            type: Boolean                           },
-  })
-  
   const emit                  = defineEmits<{
     (e: "update:modelValue",  value: IAnticipo ): void
     (e: "creado",             value: IAnticipo ): void
     (e: "borrado",            value: IAnticipo ): void
   }>()
 
-
-  const { modelValue        } = toRefs( props )
-  const esNuevo               = computed( ()=> !modelValue.value.id )
   const modificado            = computed( ()=>  copiaAnticipo !== JSON.stringify( anticipo.value ) ) 
-  const btnDisable            = computed( ()=> !esNuevo.value && !modificado.value)
+  const btnDisable            = computed( ()=> !anticipo.value.esNuevo && !modificado.value)
   const objetoToFetch         = computed( ()=> { return {
-                                                    body: getFormData( esNuevo.value ? "nuevoAnticipo" : "editarAnticipo", anticipo.value.anticipoToApi ),
+                                                    body: getFormData( anticipo.value.esNuevo ? "nuevoAnticipo" : "editarAnticipo", anticipo.value.anticipoToApi ),
                                                     method: "POST"
                                                   }
                                                 }
                                         )
 
   
-  watch(modelValue, (newAnticipo) =>
+  watch(anticipo, (newAnticipo) =>
     {
-      anticipo.value              = Object.assign( new Anticipo(), newAnticipo)
-
       if(!!newAnticipo.id)
       {
         copiaAnticipo             = JSON.stringify( anticipo.value )
-        cargando.value            = false
       }
     },
     { immediate: true }
@@ -196,7 +184,7 @@
     {
       aviso( "positive", "Anticipo guardaro exitosamente" )
 
-      if(esNuevo.value){
+      if(anticipo.value.esNuevo){
         anticipo.value.id     = parseInt( data as string )
         emit("creado", anticipo.value)
       }

@@ -14,7 +14,7 @@
     <template #after>
       <q-btn                round dense flat
         v-if                ="!!archivosSubir.length"
-        icon                ="mdi-cl  oud-upload"
+        icon                ="mdi-cloud-upload"
         padding             ="none"
         :loading            ="cargandoArchivos"
         @click              ="subirArchivos"
@@ -36,7 +36,7 @@
   import {  useTools        } from "src/useSimpleOk/useTools"
   import {  FileToBase64    } from "src/useSimpleOk/UtilFiles"
 
-  import {  format          } from 'quasar'
+  import {  format          } from "quasar"
 
   const { apiDolibarr       } = useApiDolibarr()
   const { aviso             } = useTools()
