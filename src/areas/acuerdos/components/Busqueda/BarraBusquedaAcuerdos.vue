@@ -274,6 +274,15 @@
           class                 ="width160"
           :options              ="opcionesOrdenesProv"
         />
+        <!-- //* ///////////////////////////////////////////////// Estado Anticipo -->
+        <select-label-value     use-input hundido clearable flat bordered
+          v-if                  ="busqueda.esPedido"
+          v-model               ="busqueda.estadoAnticipo"
+          label                 ="Anticipos"
+          icon                  ="mdi-cash"
+          class                 ="width160"
+          :options              ="Anticipo.estados"
+        />        
       </fieldset-filtro>
       <fieldset-filtro      
         titulo                  ="Subtotal"
@@ -363,6 +372,7 @@
             estadosPed,
             estadosOC,          } from "src/areas/acuerdos/models/ConstantesAcuerdos"
   import {  GRUPO_USUARIO       } from "src/models/TiposVarios"
+  import {  Anticipo            } from "src/areas/acuerdos/models/Anticipo"  
   // * /////////////////////////////////////////////////////////////////////// Componentes
   import    fieldsetFiltro        from "components/utilidades/Fieldset.vue"
   import    inputNumber           from "components/utilidades/input/InputFormNumber.vue"
@@ -448,6 +458,7 @@
     busqueda.value.totalizado     = getQueryRouterLabelValue( queryURL.conTotal,          opcionesTotales       )
     busqueda.value.tipoTercero    = getQueryRouterLabelValue( queryURL.interno,           opcionesTerceroTipo   )
     busqueda.value.conOrdenes     = getQueryRouterLabelValue( queryURL.conOrdenes,        opcionesOrdenesProv   )
+    busqueda.value.estadoAnticipo = getQueryRouterLabelValue( queryURL.estadoAnticipo,    Anticipo.estados      )
     busqueda.value.estados        = getQueryRouterLabelValueArray ( queryURL.estados,     estados.value         )    
     busqueda.value.formaPago      = getQueryRouterLabelValueArray ( queryURL.formaPago,   formasPago.value      )
     busqueda.value.entrega        = getQueryRouterLabelValueArray ( queryURL.entrega,     metodosEntrega.value  )
@@ -480,8 +491,8 @@
     tabs.value.alerts[0]  = ( !!b.tercero           || !!b.contacto           || fechaValida( b.desde ) || fechaValida( b.hasta ) ||
                               !!b.estados.length    || !!b.condiciones.length || !!b.facturado.label    || !!b.comercial          || !!b.creador 
                             )
-    tabs.value.alerts[1]  = ( !!b.formaPago.length  || !!b.entrega.length     || !!b.origenes.length    || !!b.conIva.label       ||  
-                              !!b.area.label        || !!b.municipio.id       || !!b.totalizado.label   ||  
+    tabs.value.alerts[1]  = ( !!b.formaPago.length  || !!b.entrega.length     || !!b.origenes.length    || !!b.conIva.label         ||  
+                              !!b.area.label        || !!b.municipio.id       || !!b.totalizado.label   || !!b.estadoAnticipo.label ||   
                               !!b.tipoTercero.label ||!!b.conOrdenes.label    ||!!b.precioMinimo        || !!b.precioMaximo
                             )
   }

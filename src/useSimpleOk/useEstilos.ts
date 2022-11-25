@@ -84,7 +84,7 @@ export const WYSIWYG_Imagen  = {
   minHeight: "5rem",
   toolbar:    [
                 [
-                  'viewsource', 'save'
+                  'save'
                 ],                
               ]
 }

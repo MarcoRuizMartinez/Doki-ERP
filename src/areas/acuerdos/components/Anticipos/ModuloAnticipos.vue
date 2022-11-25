@@ -1,4 +1,4 @@
-<template>
+po<template>
   <ventana
     v-bind                      ="$attrs"
     titulo                      ="Anticipos"
@@ -32,7 +32,14 @@
       </q-btn>      
     </template>
     <template                   #menu>
-      Total:
+      <div  class               ="text-center full-width text-1_1em">
+        <span class             ="text-grey-10">
+          Total anticipos:
+        </span>
+        <span class             ="fuente-mono text-grey-8 text-bold">
+          {{ formatoPrecio( acuerdo.totalAnticipos, 'decimales-no' )}}
+        </span>
+      </div>
     </template>    
     <q-table                    borbordered dense flat grid hide-header hide-bottom
       class                     ="fit tabla-maco"
@@ -43,12 +50,11 @@
       <!-- //* ///////////////////////////////////////////////////// Vista Card de producto -->
       <template                 #item="props">
         <card-anticipo
-          :anticipo-i           ="props.row"
+          v-model               ="props.row"
           @click-ver-archivo    ="verArchivo"
           @click-anticipo       ="mostrarFormulario"
-          @click-subir          ="mostrarSubirArchivo"
         />
-      </template>          
+      </template>
     </q-table>
     <!-- //* /////////////////  Visor PDF  -->
     <visor-pdf                  en-base-64
@@ -71,20 +77,10 @@
     transition-hide           ="slide-down"
     >
     <formulario
-      @update:model-value     ="( ( a : IAnticipo ) => recibirAcuerdo( a, 'editar') )"
-      @creado                 ="( ( a : IAnticipo ) => recibirAcuerdo( a, 'crear') )"
-      @borrado                ="( ( a : IAnticipo ) => recibirAcuerdo( a, 'borrar') )"
-    />
-  </q-dialog>
-    <!-- //* ///////////////////////////////////////////////////////////// Modal Buscar Formulario anticipo -->
-  <q-dialog
-    v-model                   ="ventanaSubirFile"
-    transition-show           ="slide-up"
-    transition-hide           ="slide-down"
-    >
-    <formulario-archivo
-      :pedido-ref             ="acuerdo.ref"
-      :tipo                   ="tipoFileSubir"
+      v-model                 ="anticipo"
+      @update:model-value     ="( ( a : IAnticipo ) => recibirAnticipo( a, 'editar') )"
+      @creado                 ="( ( a : IAnticipo ) => recibirAnticipo( a, 'crear') )"
+      @borrado                ="( ( a : IAnticipo ) => recibirAnticipo( a, 'borrar') )"
     />
   </q-dialog>
 </template>
@@ -106,14 +102,14 @@
   import {  useFetch              } from "src/useSimpleOk/useFetch"
   import {  getURL,
             getFormData           } from "src/services/APIMaco"
-  import {  useTools              } from "src/useSimpleOk/useTools"
+  import {  useTools, 
+            formatoPrecio         } from "src/useSimpleOk/useTools"
   import {  btnBaseSm             } from "src/useSimpleOk/useEstilos"
   import {  useApiDolibarr        } from "src/services/useApiDolibarr"
   //* /////////////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana                 from "components/utilidades/Ventana.vue"
-  import    cardAnticipo            from "./AnticipoCard.vue"
+  import    cardAnticipo            from "./CardAnticipo.vue"
   import    formulario              from "./FormularioAnticipo.vue"
-  import    formularioArchivo       from "./FormularioSubirAnticipo.vue"
   import    visorPdf                from "components/utilidades/VisorPDF.vue"  
   import    visorImagen             from "components/utilidades/VisorImagen.vue"
 
@@ -125,7 +121,6 @@
   const ventanaPDF            = ref< boolean    >(false)
   const ventanaImagen         = ref< boolean    >(false)
   const ventanaFormulario     = ref< boolean    >(false)
-  const ventanaSubirFile      = ref< boolean    >(false)
   const tipoFileSubir         = ref< TTipoFileAnticipo >("interno")
   const fileNameSelect        = ref< string     >( "" )
   type  TImagenAver           = { src : string, titulo: string, fileType: string }
@@ -197,14 +192,12 @@
                                                 { method: "POST", body: getFormData( "anticipos", { id } ) },
                                                 { dataEsArray: true, mensaje: "buscar anticipos" }
                                               )
-    console.log({data})
     if(ok)
     {
       modo.value              = "normal"
       if(!Array.isArray(data) || !data.length) return
       for (const item of data){ 
         const acu             = await Anticipo.anticipoApiToAnticipo( item )
-        console.log("acu: ", acu);
         acuerdo.value.anticipos.push( acu )
       }
     }
@@ -220,12 +213,6 @@
     anticipo.value            = anti
     ventanaFormulario.value   = true
   }
-
-  function mostrarSubirArchivo( item : { tipo : TTipoFileAnticipo, anti : IAnticipo } ) {
-    //anticipo.value            = item.anticipo
-    tipoFileSubir.value       = item.tipo
-    ventanaSubirFile.value    = true
-  } 
 
   async function verArchivo( archivo : IArchivo )
   {
@@ -251,14 +238,14 @@
       aviso("negative", "Error descargando el archivo", "file")
   }  
 
-  function recibirAcuerdo( anticipo : IAnticipo, accion : "crear" | "editar" | "borrar" )
+  function recibirAnticipo( antici : IAnticipo, accion : "crear" | "editar" | "borrar" )
   {
     if(accion === "editar" || accion === "borrar")
     {
-      const index                 = acuerdo.value.anticipos.findIndex( a => a.id === anticipo.id )
+      const index                 = acuerdo.value.anticipos.findIndex( a => a.id === antici.id )
       if(index >= 0){
         if(accion === "editar")
-          acuerdo.value.anticipos[index]  = anticipo
+          acuerdo.value.anticipos[index]  = antici
         else{
           acuerdo.value.anticipos.splice(index, 1)
           if(!acuerdo.value.anticipos.length)
@@ -267,7 +254,7 @@
       }
     }
     else{ // Nuevo
-      acuerdo.value.anticipos.push( anticipo )
+      acuerdo.value.anticipos.push( antici )
       modo.value                  = "normal"
     }
     

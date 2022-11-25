@@ -14,6 +14,7 @@ import {  TTipoAcuerdo,
           ESTADO_PED                        } from "./ConstantesAcuerdos"
 //* ///////////////////////////////////////// Modelos
 import {  IAnticipo,        Anticipo        } from "./Anticipo"
+import {  IRetenciones,     Retenciones     } from "./Retenciones"
 import {  IProyecto,        Proyecto        } from "src/areas/proyectos/models/Proyecto"
 import {  ILineaAcuerdo,    LineaAcuerdo    } from "src/areas/acuerdos/models/LineaAcuerdo"
 import {  ITercero,         Tercero         } from "src/areas/terceros/models/Tercero"
@@ -159,10 +160,12 @@ export interface IAcuerdo
   //reorganizarProductosGrupos: () => void
 
 
-  /* Solo para pediso */
+  /* Solo para pedidos */
   facturado:                  boolean
-
-  subTotalLimpio:     number
+  totalAnticipos:             number
+  diferenciaPagado:           number
+  subTotalLimpio:             number
+  retenciones:                IRetenciones
 }
 
 export class Acuerdo implements IAcuerdo
@@ -269,7 +272,7 @@ export class Acuerdo implements IAcuerdo
     this.conTotal             = true
 
     /* Solo para pedidos */
-    this.facturado            = false
+    this.facturado            = false    
   }
   
 
@@ -617,6 +620,16 @@ export class Acuerdo implements IAcuerdo
   get fechaValidacionCorta()  : string { return fechaCorta( this.fechaValidacion  ) }
   get fechaCierreCorta()      : string { return fechaCorta( this.fechaCierre      ) }
   get fechaEntregaCorta()     : string { return fechaCorta( this.fechaEntrega     ) }
+
+  get totalAnticipos()        : number {
+    if(!this.anticipos.length) return 0
+    const sumaPagos           = this.anticipos.map    ( ( a : IAnticipo )       : number => a.valorSumar )
+                                              .reduce ( ( v1:number, v2:number) : number => v1 + v2 )
+    return sumaPagos
+  }
+
+  get diferenciaPagado()  : number { return this.totalConIva - this.totalAnticipos }
+  get retenciones()       : IRetenciones { return new  Retenciones( this.totalConDescu, this.totalAnticipos, this.ivaValor ) }
 
   getAcuerdoForApi( usuarioId : number ) : any {
     const acuForApi : any = {

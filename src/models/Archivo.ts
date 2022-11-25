@@ -3,7 +3,6 @@ const { humanStorageSize } = format
 
 export type TFamiliaArchivos   = "PDF" | "Excel" | "Word" | "Texto" | "Calculo" | "PowerP" | "Imagen"
 
-
 export interface IArchivo
 {
   date:                     number
@@ -29,6 +28,8 @@ export interface IArchivo
   fileType:                 string
   nombreCorto:              string
   url:                      string
+  label:                    string
+  value:                    string
 }
 
 export class Archivo implements IArchivo
@@ -54,6 +55,12 @@ export class Archivo implements IArchivo
     this.size               = 0
     this.type               = ""
     this.loading            = false
+  }
+  get label() : string {
+    return this.name
+  }
+  get value() : string {
+    return this.name
   }
 
   get url() : string {

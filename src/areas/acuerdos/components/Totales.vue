@@ -84,7 +84,9 @@
     <!-- //* ///////////////////////////////////////////////////////////// Tabla totales -->
     <div        class       ="col-12">
       <div      class       ="row justify-center bg-grey-3 rounded-borders transi"
-                :class      ="{ 'op40' : !acuerdo.conTotal } ">
+                :class      ="{ 'op40' : !acuerdo.conTotal && acuerdo.esCotizacion} "
+                style       ="min-height: 170px;"
+        >
         <table  class       ="tabla-totales">
           <tr>
             <td>Subtotal bruto:</td>
@@ -109,7 +111,29 @@
           <tr>
             <td>TOTAL:</td>
             <td>{{ formatoPrecio( acuerdo.totalConIva )}}</td>
-          </tr>       
+          </tr>
+          <template v-if="acuerdo.esPedido">
+          <tr>
+            <td></td>
+            <td>_____________</td>
+          </tr>          
+          <tr>
+            <td>Pagado:</td>
+            <td>{{ formatoPrecio( acuerdo.totalAnticipos )}}</td>
+          </tr>
+          <tr :class="    acuerdo.totalAnticipos    === 0 ? 'text-red' 
+                        : acuerdo.diferenciaPagado  === 0 ? 'text-green-8'
+                        : acuerdo.diferenciaPagado    < 0 ? 'text-blue-9'
+                        : 'text-deep-orange-8'">
+            <td>Saldo:</td>
+            <td class="cursor-pointer">
+              <span>{{ formatoPrecio( acuerdo.diferenciaPagado )}}</span>
+              <Tooltip>
+                <retenciones v-model="acuerdo.retenciones"/>
+              </Tooltip>
+            </td>
+          </tr>
+        </template>
         </table>
       </div>
     </div>      
@@ -119,9 +143,10 @@
   import {  storeToRefs           } from 'pinia'                            
   import {  useStoreAcuerdo       } from 'src/stores/acuerdo'  
   import {  formatoPrecio         } from "src/useSimpleOk/useTools" 
-  import {  useControlAcuerdo  } from "src/areas/acuerdos/controllers/ControlAcuerdos"
+  import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"
   import    ventana                 from "components/utilidades/Ventana.vue"
   import    inputNumber             from "src/components/utilidades/input/InputFormNumber.vue"
+  import    retenciones             from "src/areas/acuerdos/components/Anticipos/Retenciones.vue"
 
   const { acuerdo, loading    } = storeToRefs( useStoreAcuerdo() )  
   const { editarConAIU,

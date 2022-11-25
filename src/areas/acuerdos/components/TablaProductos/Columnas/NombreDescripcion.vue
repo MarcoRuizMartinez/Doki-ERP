@@ -1,7 +1,7 @@
 <template>
   <div
     @click              ="emit('click')"
-    :class              ="$attrs.class"
+    v-bind              ="$attrs"
     >
     <span class         ="text-bold q-mr-sm">{{linea.ref}}</span>
     <span class         ="text-subtitle1">{{linea.nombre}}</span>

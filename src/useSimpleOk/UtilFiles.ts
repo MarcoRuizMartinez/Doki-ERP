@@ -96,13 +96,18 @@ export function FileToBase64(file : File) : Promise <string>
       let fileB64 : string  = ""
 
       if(!!lector.result && typeof lector.result === "string" && !!lector.result.length)
-      {
-        const i = lector.result.indexOf("base64,") + 7
-        fileB64 = lector.result.slice(i, lector.result.length)
-      }
+        fileB64 = limpiarStringBase64(lector.result)
+        
       resolver(fileB64)
     }
     lector.readAsDataURL(file)
     lector.onerror          = error => rechazar(error);
   })
 }
+
+export function limpiarStringBase64( fileString : string ) : string
+{
+  const i = fileString.indexOf("base64,") + 7
+  return fileString.slice(i, fileString.length)
+}
+

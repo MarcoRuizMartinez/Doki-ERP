@@ -40,13 +40,14 @@ export interface IAnticipo
 { 
   id                  : number
   fechaPago           : string
-  fechaPagoApi        : string
+  fechaPagoString     : string
   cuenta              : ICuentaDinero
   cuentaId            : number
   pedidoId            : number  
   verificador         : IUsuario
   verificadorId       : number
   valor               : number
+  valorSumar          : number
   valorLabel          : string
   nota                : string
   fechaEdicionNota    : string
@@ -56,10 +57,10 @@ export interface IAnticipo
   fileCliente         : IArchivo
   tipo                : TIPO_ANTICIPO
   tipoSelect          : ILabelValue
-  tipoLabel           : string
+  //tipoLabel           : string
   estado              : ESTADO_ANTICIPO
   estadoSelect        : ILabelValue
-  estadoLabel         : string
+  //estadoLabel         : string
   estadoColor         : string
   estadoIcono         : string
   anticipoToApi       : any
@@ -109,16 +110,17 @@ export class Anticipo implements IAnticipo
     this.estadoSelect       = labelValueNulo
   }
  
-  get esNuevo(){ return !this.id }
-  get valorLabel(){ 
-    return  ( this.tipo === TIPO_ANTICIPO.DEVOLUCION ? '-' : '' ) + formatoPrecio( this.valor, "decimales-no" ) 
+  get esNuevo   () : boolean  { return !this.id }
+  get valorSumar() : number   { return this.tipo === TIPO_ANTICIPO.PAGO ? this.valor : -this.valor }
+  get valorLabel() : string   { 
+    return  ( this.tipoSelect.value === TIPO_ANTICIPO.DEVOLUCION ? '-' : '' ) + formatoPrecio( this.valor, "decimales-no" ) 
   }
-  get estadoLabel(){
+/*   get estadoLabel(){
     return    this.estado === ESTADO_ANTICIPO.PENDIENTE   ? "Pendiente"
             : this.estado === ESTADO_ANTICIPO.VERIFICADO  ? "Verificado"
             : this.estado === ESTADO_ANTICIPO.ANULADO     ? "Anulado"
             : ""
-  }
+  } */
   get estadoColor(){
     return    this.estado === ESTADO_ANTICIPO.PENDIENTE   ? "orange"
             : this.estado === ESTADO_ANTICIPO.VERIFICADO  ? "green-14"
@@ -132,29 +134,30 @@ export class Anticipo implements IAnticipo
             : ""
   }
 
-  get tipoLabel(){
+/*   get tipoLabel(){
     return    this.tipo   === TIPO_ANTICIPO.PAGO          ? "Pago"
             : this.tipo   === TIPO_ANTICIPO.DEVOLUCION    ? "Devolución"
-            : ""
+            : "" 
   }
+*/
 
   get anticipoToApi() : any {
     const anti = {
       id                : this.id,
-      fecha_pago        : this.fechaPagoApi,
+      fecha_pago        : this.fechaPagoString,
       cuenta_id         : this.cuenta.id,
       pedido_id         : this.pedidoId,
       valor             : this.valor,
       nota              : this.nota,
       tipo_pago         : this.tipoSelect.value,
       estado            : this.estadoSelect.value,
-      filename_interno  : this.fileInterno.name,
-      filename_cliente  : this.fileCliente.name,
+      filename_interno  : this.fileInterno.name   ?? "",
+      filename_cliente  : this.fileCliente.name   ?? "",
     }
     return anti
   }
   
-  get fechaPagoApi() {
+  get fechaPagoString() {
     return typeof this.fechaPago === "string" ? this.fechaPago : fechaCorta( new Date( this.fechaPago ) )
   } 
 

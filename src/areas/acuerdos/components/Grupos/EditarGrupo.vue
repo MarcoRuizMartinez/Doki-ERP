@@ -22,7 +22,7 @@
       class               ="row panel-blur70 q-col-gutter-xs"
       max-width           ="320px"
       :persistent         ="loading.editarGrupo"
-      @update:model-value ="(titulo)=> editarTituloGrupo(titulo, grupo)"
+      @update:model-value ="(titulo : string)=> editarTituloGrupo(titulo, grupo)"
       >
       <!-- //* ///////////////////////////////////////////////////// Con titulo  -->
       <!-- <q-toggle

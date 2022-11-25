@@ -117,6 +117,7 @@
         label                   ="Subir archivos"
         :modulo                 ="modulo"
         :modulo-ref             ="moduloRef"
+        :archivos               ="archivos"
         @subida-ok              ="buscarArchivos('subida')"
       />
     </template>    
