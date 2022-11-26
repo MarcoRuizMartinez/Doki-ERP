@@ -1,17 +1,18 @@
 <template>
   <titulo
     class                   ="col-12"
-    @click                  ="generarPDFCotizacion"
+    @click                  ="generarCotizacionPDF"
     @recargar               ="recargar"
   />
   <botonera
     class                   ="col-12"
-    @clickPDF               ="generarPDFCotizacion"
-    @clickAprobar           ="aprobarCotizacion"
-    @clickAnular            ="anularAcuerdo"
-    @clickValidar           ="validarAcuerdo"
-    @clickEditar            ="editarAcuerdo"
-    @clickBorrar            ="eliminarAcuerdo"  
+    @click-pdf              ="generarCotizacionPDF"
+    @click-aprobar          ="aprobarCotizacion"
+    @click-anular           ="anularAcuerdo"
+    @click-validar          ="validarAcuerdo"
+    @click-editar           ="editarAcuerdo"
+    @click-borrar           ="eliminarAcuerdo"
+    @click-remision         ="generarRemisionPDF"
   />
   <tercero-y-contacto       scroll
     class                   ="col-md-4 col-12"
@@ -51,11 +52,11 @@
   <visor-pdf                descargar
     v-if                    ="acuerdo.esCotizacion"
     v-model:src             ="srcPDF"
-    v-model:visible         ="ventanaPDF"
+    v-model:visible         ="modales.pdfCotizacion"
     nombre-pdf              ="Cotizacion"
     @click-descargar        ="guardarPDF"
   />
-
+  <!-- <remision v-model:visible ="modales.pdfRemision"/> -->
 <!--   <div id="capture" style="padding: 10px; background: #f5da55">
     <h4 style="color: #000; ">Hello world!</h4>
   </div> -->
@@ -76,13 +77,12 @@
   //* ///////////////////////////////////////////////////////////////////////////////// Modelos
   //import {  Acuerdo, TIPO_ACUERDO } from "../../models/Acuerdo"  
   import {  LineaAcuerdo          } from "src/areas/acuerdos/models/LineaAcuerdo"  
-  import {  IArchivo, Archivo     } from "src/models/Archivo"  
+  import {  IArchivo              } from "src/models/Archivo"  
   //* ///////////////////////////////////////////////////////////////////////////////// Componibles
   import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"
   import {  useCotizacionPDF      } from "src/areas/acuerdos/composables/useCotizacionPDF"
   //import {  useControlProductos   } from "src/areas/acuerdos/controllers/ControlLineasProductos"  
   import {  TTipoAcuerdo          } from "src/areas/acuerdos/models/ConstantesAcuerdos"
-  import {  useApiDolibarr        } from "src/services/useApiDolibarr"
   //* ///////////////////////////////////////////////////////////////////////////////// Componentes
   import    visorPdf                from "components/utilidades/VisorPDF.vue"
   import    notas                   from "src/areas/acuerdos/components/Notas.vue"
@@ -93,12 +93,13 @@
   import    condiciones             from "src/areas/acuerdos/components/Condiciones.vue"
   import    productos               from "src/areas/acuerdos/components/ProductosAcuerdo.vue"
   import    anticipos               from "src/areas/acuerdos/components/Anticipos/ModuloAnticipos.vue"
+  //import    remision                from "src/areas/acuerdos/components/PDF/RemisionPDF.vue"
   import    documentos              from "components/archivos/ModuloArchivos.vue"
 
   const { acuerdo,
+          modales,
           lineaElegida,
           loading           } = storeToRefs( useStoreAcuerdo() )
-  const { apiDolibarr       } = useApiDolibarr()
   const { generarPDF,
           guardarPDF        } = useCotizacionPDF()
   const { aprobarCotizacion,
@@ -110,7 +111,6 @@
                             } = useControlAcuerdo()
   const minimizadoTodo        = ref< boolean  >(false)
   const srcPDF                = ref< string   >("")
-  const ventanaPDF            = ref< boolean  >(false)
 
   const props                 = defineProps({
     id:   { required: true, type: String },
@@ -128,15 +128,24 @@
 
   provide('superminimizado', minimizadoTodo)
 
-  async function generarPDFCotizacion()
+  async function generarCotizacionPDF()
   {
-    if(acuerdo.value.esCotizacion){
-      loading.value.pdf         = true
-      ventanaPDF.value          = true
-      srcPDF.value              = await generarPDF( acuerdo.value )
-      loading.value.pdf         = false
-    }
+    if(!acuerdo.value.esCotizacion) return
+
+    loading.value.pdf           = true
+    modales.value.pdfCotizacion = true
+    srcPDF.value                = await generarPDF( acuerdo.value )
+    loading.value.pdf           = false
   }
+
+  async function generarRemisionPDF()
+  {
+    if(!acuerdo.value.esPedido) return
+
+    //loading.value.pdf           = true
+    modales.value.pdfRemision   = true
+  }  
+  
 
   async function recargar(){
     await buscarAcuerdo( tipo.value, id.value )

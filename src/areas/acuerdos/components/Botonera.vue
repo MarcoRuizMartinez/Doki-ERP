@@ -18,18 +18,33 @@
     <efecto efecto          ="Down">
       <!-- //* //////////////////////////////////////////////////////////  Boton PDF -->
       <q-btn
-        v-if                ="acuerdo.esEstadoValidado && acuerdo.esCotizacion"
+        v-if                ="acuerdo.esCotizacion && acuerdo.esEstadoValidado"
         v-bind              ="btnBaseMd"
         color               ="primary"
         icon                ="mdi-pdf-box"
         :label              ="esMobil ? '' : 'PDF'"
         :disable            ="cargandoAlgo"
         :loading            ="loading.pdf"
-        @click              ="emit('clickPDF')"
+        @click              ="emit('clickPdf')"
         >
         <Tooltip label      ="Generar PDF" :hide="loading.pdf"/>
       </q-btn>
     </efecto>
+    <!-- //* //////////////////////////////////////////////////////////  Boton Remision -->
+<!--     <efecto efecto          ="Down">      
+      <q-btn
+        v-if                ="acuerdo.esPedido && acuerdo.esEstadoValidado"
+        v-bind              ="btnBaseMd"
+        color               ="primary"
+        icon                ="mdi-format-list-checks"
+        :label              ="esMobil ? '' : 'Remisión'"
+        :disable            ="cargandoAlgo"
+        :loading            ="loading.pdf"
+        @click              ="emit('clickRemision')"
+        >
+        <Tooltip label      ="Generar remisión" :hide="loading.pdf"/>
+      </q-btn>
+    </efecto>     -->
     <!-- <efecto efecto          ="Down"> -->
       <q-btn-group  v-if    ="acuerdo.esEstadoCotizado">
         <!-- //* //////////////////////////////////////////////////////////  Boton Aprobar -->
@@ -121,6 +136,6 @@
           loading           } = storeToRefs( useStoreAcuerdo() )
 
   const { esMobil     } = useTools()
-  const emit            = defineEmits(["clickPDF","clickAprobar", "clickAnular", "clickValidar", "clickEditar", "clickBorrar"])
+  const emit            = defineEmits(["clickPdf","clickAprobar", "clickAnular", "clickValidar", "clickEditar", "clickBorrar", "clickRemision"])
   const cargandoAlgo    = computed(()=> Object.values(loading.value).some( ( estado : boolean )=> !!estado ) )
 </script>

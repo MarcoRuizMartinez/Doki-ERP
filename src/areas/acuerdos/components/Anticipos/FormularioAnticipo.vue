@@ -4,7 +4,6 @@
     titulo                      ="Anticipo"
     icono                       ="mdi-cash"
     :cargando                   ="cargando"
-    width                       ="380px"
     >
     <template                   #barra>
       <efecto efecto            ="Down">
@@ -47,24 +46,32 @@
         v-model                 ="modelo.valor"
         label                   ="Valor"
         tipo                    ="precio"
-        class                   ="col-6"
+        class                   ="col-md-5 col-11"
         icon                    ="mdi-cash-usd"
         debounce                ="2500"
         :rules                  ="[]"
         :minimo                 ="0"
       />
+      <div class                ="col-1">
+        <q-btn
+          v-bind                ="btnRedondoFlat"
+          icon                  ="mdi-account-cash"
+          class                 ="q-mt-sm"
+          @click                ="modelo.valor = acuerdo.saldo"
+        />
+      </div>
       <!-- //* ///////////////////////////////////////////////////////////// Fecha pago -->
       <input-fecha              no-futuro clearable alerta
         v-model                 ="modelo.fechaPago"
         label                   ="Fecha"
-        class                   ="col-6"
+        class                   ="col-md-6 col-12"
       />
       <!-- //* ///////////////////////////////////////////////////////////// Estado -->
       <select-label-value       alerta
         v-model                 ="modelo.estadoSelect"
         label                   ="Estado"
         icon                    ="mdi-cash-check"
-        class                   ="col-6"
+        class                   ="col-md-6 col-12"
         :defecto                ="ESTADO_ANTICIPO_LABEL.PENDIENTE"
         :options                ="Anticipo.estados"
         @update:model-value     ="modelo.estado = modelo.estadoSelect.value"
@@ -74,7 +81,7 @@
         v-model                 ="modelo.tipoSelect"
         label                   ="Tipo"
         icon                    ="mdi-cash-refund"
-        class                   ="col-6"
+        class                   ="col-md-6 col-12"
         :defecto                ="TIPO_ANTICIPO_LABEL.PAGO"
         :options                ="Anticipo.tipos"
         @update:model-value     ="modelo.tipo = modelo.tipoSelect.value"
@@ -128,7 +135,8 @@
   // * ///////////////////////////////////////////////////////////////////////////////// Componibles
   import {  useTools            } from "src/useSimpleOk/useTools"  
   import {  useFetch            } from "src/useSimpleOk/useFetch"
-  import {  btnBaseSm           } from "src/useSimpleOk/useEstilos"
+  import {  btnBaseSm,
+            btnRedondoFlat      } from "src/useSimpleOk/useEstilos"
   import {  dexieCuentasDinero  } from "src/services/useDexie"  
   import {  getURL, getFormData } from "src/services/APIMaco"  
   // * ///////////////////////////////////////////////////////////////////////////////// Componentes

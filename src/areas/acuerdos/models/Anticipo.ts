@@ -88,7 +88,7 @@ export class Anticipo implements IAnticipo
   estado              : ESTADO_ANTICIPO  
   estadoSelect        : ILabelValue
 
-  constructor( idPedido : number = 0)
+  constructor( idPedido : number = 0 )
   {
     this.id                 = 0
     this.fechaPago          = fechaCorta( new Date() )

@@ -44,7 +44,7 @@
         padding               ="0"
         @click.stop           ="true"
         >
-        <confirmar  @ok       ="modelo = new Proyecto(); emitir(modelo)"/>
+        <confirmar  @ok       ="confirmarBorrar"/>
         <Tooltip label        ="Desvincular proyecto"/>
       </q-btn>
       <q-btn                  dense flat
@@ -168,6 +168,11 @@
     }
   })
 
+  function confirmarBorrar()
+  {
+    modelo.value = new Proyecto()
+    emitir(modelo.value)
+  }
   
   async function buscar( busqueda : string, doneFn : Function )
   {

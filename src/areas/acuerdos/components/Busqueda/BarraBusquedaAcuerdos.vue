@@ -451,6 +451,8 @@
     busqueda.value.hasta          = getQueryRouterDate      ( queryURL.fechaHasta   )
     busqueda.value.precioMinimo   = getQueryRouterNumber    ( queryURL.subtotalMin  )
     busqueda.value.precioMaximo   = getQueryRouterNumber    ( queryURL.subtotalMax  )
+    if(!!queryURL.limite)
+      busqueda.value.resultadosXPage= getQueryRouterNumber    ( queryURL.limite       )
     //busqueda.value.creador        = getQueryRouterNumber    ( queryURL.creador      )
     busqueda.value.area           = getQueryRouterLabelValue( queryURL.area,              Areas                 )
     busqueda.value.facturado      = getQueryRouterLabelValue( queryURL.facturado,         opcionesFacturado     )

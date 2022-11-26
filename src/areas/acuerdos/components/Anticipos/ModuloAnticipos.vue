@@ -18,7 +18,7 @@ po<template>
         color                   ="positive"
         icon                    ="mdi-cash-plus"        
         :disable                ="modo == 'buscando'"
-        @click                  ="mostrarFormulario( new Anticipo( acuerdo.id ) )"
+        @click                  ="mostrarFormulario( 'nuevo' )"
         >
         <Tooltip label          ="Subir anticipo"/>
       </q-btn>
@@ -53,15 +53,17 @@ po<template>
           v-model               ="props.row"
           @click-ver-archivo    ="verArchivo"
           @click-anticipo       ="mostrarFormulario"
+          @click-recibo         ="generarReciboCaja"
         />
       </template>
     </q-table>
-    <!-- //* /////////////////  Visor PDF  -->
+    <!-- //* /////////////////  Visor PDF anticipo -->
     <visor-pdf                  en-base-64
       v-model:src               ="srcPDF"
       v-model:visible           ="ventanaPDF"
       :nombre-pdf               ="fileNameSelect"
     />
+    <!-- //* /////////////////  Visor imagen anticipo -->
     <visor-imagen               en-base-64
       v-model:src               ="imagenAver.src"
       v-model:visible           ="ventanaImagen"
@@ -69,6 +71,13 @@ po<template>
       :titulo                   ="imagenAver.titulo"
       :fileType                 ="imagenAver.fileType"
     />
+    <!-- //* /////////////////  Visor recibo caja  -->
+    <visor-pdf                  descargar
+      v-model:src               ="srcPDFRecibo"
+      v-model:visible           ="ventanaPDFRecibo"
+      nombre-pdf                ="ReciboCaja"      
+    />
+    <!-- @click-descargar        ="guardarPDF" -->
   </ventana>
   <!-- //* ///////////////////////////////////////////////////////////// Modal Buscar Formulario anticipo -->
   <q-dialog
@@ -106,6 +115,7 @@ po<template>
             formatoPrecio         } from "src/useSimpleOk/useTools"
   import {  btnBaseSm             } from "src/useSimpleOk/useEstilos"
   import {  useApiDolibarr        } from "src/services/useApiDolibarr"
+  import {  useReciboCajaPDF      } from "src/areas/acuerdos/composables/useReciboCajaPDF"
   //* /////////////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana                 from "components/utilidades/Ventana.vue"
   import    cardAnticipo            from "./CardAnticipo.vue"
@@ -119,6 +129,7 @@ po<template>
   const { apiDolibarr       } = useApiDolibarr()
   const modo                  = ref< ModosVentana >("buscando")
   const ventanaPDF            = ref< boolean    >(false)
+  const ventanaPDFRecibo      = ref< boolean    >(false)
   const ventanaImagen         = ref< boolean    >(false)
   const ventanaFormulario     = ref< boolean    >(false)
   const tipoFileSubir         = ref< TTipoFileAnticipo >("interno")
@@ -126,6 +137,7 @@ po<template>
   type  TImagenAver           = { src : string, titulo: string, fileType: string }
   const imagenAver            = ref< TImagenAver >( { titulo: "", src: "", fileType: "" } )
   const srcPDF                = ref< string     >("")
+  const srcPDFRecibo          = ref< string     >("")
   const endPoint              = getURL("listas", "varios")
 
   const columnas: IColumna[]  = [
@@ -208,9 +220,13 @@ po<template>
     unirAnticiposYFiles()
   }
 
-  function mostrarFormulario( anti : IAnticipo )
+  function mostrarFormulario( anti : IAnticipo | 'nuevo' )
   {
-    anticipo.value            = anti
+    if(anti                   === 'nuevo')
+      anticipo.value          = new Anticipo( acuerdo.value.id )
+    else
+      anticipo.value          = anti
+    console.log("anticipo.value: ", anticipo.value);
     ventanaFormulario.value   = true
   }
 
@@ -259,5 +275,10 @@ po<template>
     }
     
     ventanaFormulario.value       = false
+  }
+
+  async function generarReciboCaja( anti : IAnticipo )
+  {
+    //srcPDFRecibo.value          = await generarPDF( anti, acuerdo.value  )
   }
 </script>

@@ -117,7 +117,6 @@
   const modelEditor           = ref< string>( "" )
   const nombreImagen          = ref< string>( "" )
   
-  const nombreImagenFull      = computed(()=> nombreImagen.value + ".png")
   const props                 = defineProps({
     modulo:       { required: true,   type: String as PropType < TModulosDolibarr > },
     moduloRef:    { required: true,   type: String                                  },
@@ -134,6 +133,9 @@
           soloUno,
           archivos,
                             } = toRefs( props )
+
+  const nombreImagenFull      = computed(()=> nombreImagen.value + ".png")
+  const ref_o_dir             = computed(()=> modulo.value === "thirdparty" ? "subdir" : "ref")
 
   function rechazarArchivos( archivos : any[] )
   {
@@ -156,11 +158,11 @@
   async function subirArchivos()
   {
     cargandoArchivos.value    = true
-    const ref_o_dir           = modulo.value === "thirdparty" ? "subdir" : "ref"
+    
     for (const file  of archivosSubir.value)
     {
       const file_B64          = await FileToBase64(file)
-      const objSubir          = getObjetoSubir( file.name, ref_o_dir,file_B64 )
+      const objSubir          = getObjetoSubir( file.name, file_B64 )
       const ok                = await subirArchivo(objSubir, file.name)
       if(!ok){
         terminar()
@@ -187,12 +189,12 @@
     return ok
   }
 
-  function getObjetoSubir( nombre : string, key : string, file_B64 : string ) : any
+  function getObjetoSubir( nombre : string, file_B64 : string ) : any
   {
     const objSubir          = {
                                   "filename":           nombre,
                                   "modulepart":         modulo.value,
-                                  [key]:                moduloRef.value,
+                                  [ref_o_dir.value]:    moduloRef.value,
                                   "filecontent":        file_B64,
                                   "fileencoding":       "base64",
                                   "overwriteifexists":  "1",
@@ -212,7 +214,7 @@
     const img64               = getImgPegadaBase64()
     if(!!img64)
     {
-      const objSubir          = getObjetoSubir( nombreImagenFull.value, "ref", img64 )
+      const objSubir          = getObjetoSubir( nombreImagenFull.value, img64 )
       cargandoArchivos.value  = true
       const ok                = await subirArchivo(objSubir, nombreImagenFull.value)
       if(ok)

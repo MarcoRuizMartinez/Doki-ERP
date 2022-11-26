@@ -163,7 +163,7 @@ export interface IAcuerdo
   /* Solo para pedidos */
   facturado:                  boolean
   totalAnticipos:             number
-  diferenciaPagado:           number
+  saldo:                      number
   subTotalLimpio:             number
   retenciones:                IRetenciones
 }
@@ -628,7 +628,7 @@ export class Acuerdo implements IAcuerdo
     return sumaPagos
   }
 
-  get diferenciaPagado()  : number { return this.totalConIva - this.totalAnticipos }
+  get saldo()             : number { return this.totalConIva - this.totalAnticipos }
   get retenciones()       : IRetenciones { return new  Retenciones( this.totalConDescu, this.totalAnticipos, this.ivaValor ) }
 
   getAcuerdoForApi( usuarioId : number ) : any {

@@ -122,12 +122,12 @@
             <td>{{ formatoPrecio( acuerdo.totalAnticipos )}}</td>
           </tr>
           <tr :class="    acuerdo.totalAnticipos    === 0 ? 'text-red' 
-                        : acuerdo.diferenciaPagado  === 0 ? 'text-green-8'
-                        : acuerdo.diferenciaPagado    < 0 ? 'text-blue-9'
+                        : acuerdo.saldo             === 0 ? 'text-green-8'
+                        : acuerdo.saldo             < 0 ? 'text-blue-9'
                         : 'text-deep-orange-8'">
             <td>Saldo:</td>
             <td class="cursor-pointer">
-              <span>{{ formatoPrecio( acuerdo.diferenciaPagado )}}</span>
+              <span>{{ formatoPrecio( acuerdo.saldo )}}</span>
               <Tooltip>
                 <retenciones v-model="acuerdo.retenciones"/>
               </Tooltip>

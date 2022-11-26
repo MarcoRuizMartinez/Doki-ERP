@@ -56,8 +56,16 @@
         style                 ="min-height: 40px;"
         >        
           <q-btn              flat dense rounded no-caps
-            v-for             ="(item, tipo) of [ { file: modelValue.fileCliente, tipo: 'cliente', class: 'col-4', label: '👤'          },
-                                                  { file: modelValue.fileInterno, tipo: 'interno', class: 'col-8', label: 'Soporte'     }]"
+            padding           ="none"
+            class             ="col-4 op60 op100-hover"
+            label             ="Recibo"
+            @click.stop       ="emit('clickRecibo',   modelValue)"
+            >
+            <Tooltip label    ="Generar recibo de caja"/>
+          </q-btn>          
+          <q-btn              flat dense rounded no-caps
+            v-for             ="(item, tipo) of [ { file: modelValue.fileCliente, tipo: 'cliente', class: 'col-2', label: ''          },
+                                                  { file: modelValue.fileInterno, tipo: 'interno', class: 'col-6', label: 'Soporte'     }]"
             padding           ="none"
             class             ="op80 op100-hover"            
             :key              ="tipo"
@@ -71,7 +79,7 @@
                                 "
             >
             <Tooltip :label   ="(!item.file.size ? 'Seleccionar' : 'Ver') + ' comprobante de ' + item.tipo"/>
-          </q-btn>
+          </q-btn>        
       </div>
     </q-card>
   </div>
@@ -92,6 +100,7 @@
   const emit                  = defineEmits<{
     (e: "clickVerArchivo",  value: IArchivo           ): void
     (e: "clickAnticipo",    value: IAnticipo          ): void
+    (e: "clickRecibo",      value: IAnticipo          ): void
   }>()
 
 </script>
