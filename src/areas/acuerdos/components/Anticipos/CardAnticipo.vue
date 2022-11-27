@@ -29,7 +29,7 @@
             >
             {{ modelValue.valorLabel }}
           </div>
-          <div class      ="text-0_9em text-grey-9">            
+          <div class      ="text-0_8em text-grey-9">            
             <q-badge      rounded
               v-if        ="!!modelValue.nota"
               color       ="red"

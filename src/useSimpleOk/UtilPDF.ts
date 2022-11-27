@@ -10,6 +10,12 @@ export interface IInicioPDF {
   pie:              number
   pdf:              jsPDF
 }
+type TAlinacion = "center" | "left" | "right"
+export interface    INegrita {
+  align:            TAlinacion
+  renderingMode:    "fillThenStroke"
+  lineHeightFactor: number
+}
 
 export interface IUtilPDF extends IInicioPDF {
   pdf:                  jsPDF
@@ -29,10 +35,13 @@ export interface IUtilPDF extends IInicioPDF {
   fontBase:             string
   fontBold:             string
   anchoMitad:           number
+  altoMitad:            number
   margenDerX:           number
+  posXMargenDerecha:    number
   empresaNit:           string
-  seNecesitaNuevaHoja:  ( posY : number, altura : number ) => boolean
-  setFont:              ( size : number, color  : number ) => void
+  seNecesitaNuevaHoja:  ( posY  : number, altura : number ) => boolean
+  setFont:              ( size  : number, color  : number ) => void
+  negrita:              ( align : TAlinacion, espaciado?: number  ) => INegrita
   setColor:             ( color: number )=> void
   setNewPage:           ()=>void
   limpiarPDF:           ()=>void
@@ -94,12 +103,14 @@ export class UtilPDF implements IUtilPDF {
   }
 
   get anchoMitad  (){ return this.ancho / 2 }
+  get altoMitad   (){ return this.alto  / 2 }
   get color       (){ return this.area === AREA.MUBLEX ? "red"    : "orange"  } //
   get areaNombre  (){ return this.area === AREA.MUBLEX ? "Mublex" : "Escom" }
   get imgLogo     (){ return this.path + "logo" + this.areaNombre + ".png" }
   get imgFondo    (){ return this.path + "fondoGris.png" }
   get imgBar      (){ return this.path + "bar_" + this.color + ".png" }
   get margenDerX  (){ return this.ancho - this.margenDer }
+  get posXMargenDerecha (){ return this.ancho - this.margenDer - this.margenIzq }
   get empresaNit  (){ return EMPRESA + " " + NIT}
   get headText    (){
     return EMPRESA + " " + NIT + "\n" + DIR + "\n" + (this.area === AREA.MUBLEX ? TEL_MUBLEX : TEL_ESCOM) 
@@ -112,6 +123,10 @@ export class UtilPDF implements IUtilPDF {
   {
     this.setColor       ( color )
     this.pdf.setFontSize( size )
+  }
+
+  negrita( alinacion : TAlinacion, espaciado : number = 1 ) : INegrita {
+    return { align: alinacion, renderingMode: 'fillThenStroke', lineHeightFactor :  espaciado}
   }
 
   setColor( color : number )

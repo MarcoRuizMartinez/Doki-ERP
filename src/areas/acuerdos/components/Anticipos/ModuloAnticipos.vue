@@ -140,6 +140,9 @@ po<template>
   const srcPDFRecibo          = ref< string     >("")
   const endPoint              = getURL("listas", "varios")
 
+  const { generarPDF,
+          guardarPDF        } = useReciboCajaPDF()
+
   const columnas: IColumna[]  = [
     new Columna({ name: "ref"       }),
   ]
@@ -279,6 +282,8 @@ po<template>
 
   async function generarReciboCaja( anti : IAnticipo )
   {
-    //srcPDFRecibo.value          = await generarPDF( anti, acuerdo.value  )
+    ventanaPDFRecibo.value        = true
+    anticipo.value                = anti
+    srcPDFRecibo.value            = await generarPDF()
   }
 </script>
