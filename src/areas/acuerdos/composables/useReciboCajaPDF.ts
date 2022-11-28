@@ -25,7 +25,6 @@ export function useReciboCajaPDF()
   const { acuerdo, anticipo } = storeToRefs( useStoreAcuerdo() )
   const { usuario           } = storeToRefs( useStoreUser() )  
   let aviso     : Function
-  const pedido  : IAcuerdo    = new Acuerdo( TIPO_ACUERDO.PEDIDO )
   const pdf     : jsPDF       = new jsPDF('p','px')
   const setup   : IInicioPDF  = { ancho:      447,
                                   alto:       631,
@@ -75,11 +74,8 @@ export function useReciboCajaPDF()
   }
 
   function guardarPDF()
-  {
-    const correo  =   !!pedido.pdfCorreo
-                    ? " " + pedido.pdfCorreo
-                    : "" 
-    const nombre  = `${doc.areaNombre} ${pedido.ref}${correo}.pdf`
+  {    
+    const nombre  = `Recibo de caja ${acuerdo.value.ref}.pdf`
     pdf.save( nombre );
   }
 
@@ -125,7 +121,7 @@ export function useReciboCajaPDF()
     //*                 ////////////////////////////////////////////////////////////////////// Cliente 
     doc.y               += 12
     doc.setFont         ( 11, 0 )
-    let dato            = "RECIBIMOS DE:\nDIRECCIÓN:" + " ".repeat(140) + "ELABORADO POR: " + usuario.value.nombreCompleto
+    let dato            = "RECIBIMOS DE:\nDIRECCIÓN:" + " ".repeat(130) + "ELABORADO POR: " + usuario.value.nombreCompleto
     pdf.text            (dato, doc.margenIzq + 8, doc.y, doc.negrita("left", 1.8))
 
     dato                = `${acuerdo.value.tercero.nombre}\n${acuerdo.value.tercero.municipio.label} - ${acuerdo.value.tercero.direccion}`

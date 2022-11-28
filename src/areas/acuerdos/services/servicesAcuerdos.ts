@@ -82,8 +82,8 @@ export function servicesAcuerdos()
                                                     )
       if(ok && typeof data == "object" )
       {
-        const cotizacion    = await Acuerdo.convertirDataApiToAcuerdo( data, tipo )
-        resolver( cotizacion )
+        const acuerdo    = await Acuerdo.convertirDataApiToAcuerdo( data, tipo )
+        resolver( acuerdo )
       }
       else
       {

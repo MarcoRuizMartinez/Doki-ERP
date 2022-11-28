@@ -10,6 +10,7 @@
     <q-input                    filled 
       v-model                   ="modelo"
       debounce                  ="800"
+      rows                      ="6"
       class                     ="fit"
       type                      ="textarea"
       placeholder               ="Apuntes sobre el tercero..."

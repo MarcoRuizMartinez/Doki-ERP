@@ -185,7 +185,7 @@ export class ProductoDoli implements IProductoDoli
 
   calcularPrecioConAumento( aumento : number) : number {
     if(!this.costo || !aumento) return 0
-    else                        return roundInt( X100_Aumento( this.costoTotal, aumento), 3 )    
+    else                        return roundInt( X100_Aumento( this.costoTotal, aumento), 2 )    
   }
 
   get costoTotal() : number {

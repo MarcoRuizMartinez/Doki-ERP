@@ -259,8 +259,9 @@
   {    
     linea.value.descripcion     = linea.value.descripcion .replaceAll('"', "")
                                                           .replaceAll("'", "")
-                                                          .replaceAll("&nbsp;", " ")
-                                                          //.replaceAll("  ", " ")                                                          
+                                                          .replaceAll("&nbsp;&nbsp;", " ")
+                                                          .replaceAll("  ", " ")
+                                                          .replaceAll("&nbsp; ", " ")                                                          
                                                           .trim()
   }
 </script>

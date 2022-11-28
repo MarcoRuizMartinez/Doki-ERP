@@ -76,8 +76,8 @@ po<template>
       v-model:src               ="srcPDFRecibo"
       v-model:visible           ="ventanaPDFRecibo"
       nombre-pdf                ="ReciboCaja"      
+      @click-descargar          ="guardarPDF"
     />
-    <!-- @click-descargar        ="guardarPDF" -->
   </ventana>
   <!-- //* ///////////////////////////////////////////////////////////// Modal Buscar Formulario anticipo -->
   <q-dialog
@@ -229,7 +229,7 @@ po<template>
       anticipo.value          = new Anticipo( acuerdo.value.id )
     else
       anticipo.value          = anti
-    console.log("anticipo.value: ", anticipo.value);
+      
     ventanaFormulario.value   = true
   }
 

@@ -99,6 +99,7 @@
         label                   ="Comprobante pago"
         icon                    ="mdi-bank"
         class                   ="col-12"
+        :alerta                 ="modelo.estadoSelect.label === ESTADO_ANTICIPO_LABEL.VERIFICADO"
         :options                ="acuerdo.archivos"
       />
       <!-- //* ///////////////////////////////////////////////////////////// Comprobante Cliente -->

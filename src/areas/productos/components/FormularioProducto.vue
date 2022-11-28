@@ -101,9 +101,9 @@
           v-model               ="proModel.aumento"
           label                 ="Aumento base"
           modo                  ="right"
-          :paso                 ="1"
+          :paso                 ="0.1"
           :maximo               ="500"
-          :minimo               ="proModel.aumento_descuento"
+          :minimo               ="proModel.aumento_descuento" 
           :readonly             ="readonly"
         />
         <precio-tabla
@@ -118,7 +118,7 @@
           v-model               ="proModel.aumento_escom"
           label                 ="Aumento Escom"
           modo                  ="right"
-          :paso                 ="1"
+          :paso                 ="0.1"
           :maximo               ="500"
           :minimo               ="proModel.aumento_descuento"
           :readonly             ="readonly"
@@ -135,7 +135,7 @@
           v-model               ="proModel.aumento_descuento"
           label                 ="Aumento descuento"
           modo                  ="right"
-          :paso                 ="1"
+          :paso                 ="0.1"
           :maximo               ="500"
           :minimo               ="0"
           :readonly             ="readonly"
@@ -152,7 +152,7 @@
           v-model               ="proModel.aumento_loco"
           label                 ="Aumento loco"
           modo                  ="right"
-          :paso                 ="1"
+          :paso                 ="0.1"
           :minimo               ="0"
           :readonly             ="readonly"
         />

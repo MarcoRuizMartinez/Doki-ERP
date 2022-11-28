@@ -143,12 +143,13 @@
         :readonly               ="readonly || !storeUser.permisos.acceso_total"
       />
       <!-- //* //////////////   Area o Departamento  -->
-      <q-btn-toggle             push unelevated spread glossy dense
-        v-model                 ="tercero.area"
-        class                   ="col-md-5 col-12"
-        :readonly               ="readonly"
-        :options                ="Areas"
-      />
+      <div class                ="col-md-5 col-12">
+        <q-btn-toggle           push unelevated spread glossy dense
+          v-model               ="tercero.area"
+          :readonly             ="readonly"
+          :options              ="Areas"
+        />
+      </div>
       <!-- //* //////////////   Código proveedor  -->
       <transition               enter-active-class="animated fadeIn" leave-active-class="animated fadeOut" >
         <input-text             clearable alerta uppercase AZ09 sin-espacios

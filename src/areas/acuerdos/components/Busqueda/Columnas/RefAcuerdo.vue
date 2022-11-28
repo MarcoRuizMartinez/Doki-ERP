@@ -11,6 +11,7 @@
   <span>
     <!-- //* //////// Vista Rapida -->
     <q-btn            flat dense round
+      v-if            ="vistaFull"
       icon            ="mdi-eye"
       class           ="op40 op100-hover q-ml-sm"
       padding         ="none"
@@ -18,7 +19,7 @@
       @click          ="emit('vistaRapida')"
     />
     <q-btn            flat dense round
-      v-if            ="acuerdo.esPedido"
+      v-if            ="acuerdo.esPedido && vistaFull"
       icon            ="mdi-tools"
       class           ="op40 op100-hover q-ml-sm"
       padding         ="none"
@@ -58,7 +59,8 @@
   import    tooltipAcuerdo    from "src/areas/acuerdos/components/Tooltips/TooltipAcuerdo.vue"
 
   const props               = defineProps({
-    acuerdo:  { required: true, type: Object as PropType< IAcuerdo > },
+    acuerdo:    { required: true,   type: Object as PropType< IAcuerdo > },
+    vistaFull:  { default:  false,  type: Boolean },
   })
   const emit                = defineEmits(["vistaRapida"])  
 </script>

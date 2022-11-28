@@ -88,7 +88,7 @@ const routes: RouteRecordRaw[] = [
       {
         path:       '/cotizaciones/crear',
         name:       'crearCotizacion', 
-        props:      route => ({ tipo: TIPO_ACUERDO.COTIZACION, terceroId: route.params.terceroId }),
+        props:      route => ({ tipo: TIPO_ACUERDO.COTIZACION }), // , terceroId: route.params.terceroId
         component:  () => import('src/areas/acuerdos/pages/PageAcuerdoCrear.vue'),
       },
       {
@@ -119,7 +119,7 @@ const routes: RouteRecordRaw[] = [
       {
         path:       '/pedidos/crear',
         name:       'crearPedido',
-        props:      route => ({ tipo: TIPO_ACUERDO.PEDIDO, terceroId: route.params.terceroId }),
+        props:      route => ({ tipo: TIPO_ACUERDO.PEDIDO }), // , terceroId: route.params.terceroId
         component:  () => import('src/areas/acuerdos/pages/PageAcuerdoCrear.vue'),
       },      
     ],

@@ -1,6 +1,6 @@
 <template>
   <q-page                     padding
-    class                     ="row justify-between items-start q-col-gutter-md"
+    class                     ="row justify-start items-start q-col-gutter-md"
     >
     <transition               appear
       enter-active-class      ="animated fadeInDown"
@@ -17,44 +17,56 @@
       <contactos
         v-if                  ="permisos.contactos_ver"
         class                 ="col-12"
-        height-card           ="210px"
+        height-card           ="200px"
         :tercero-id           ="tercero.id ?? 0"
         :puede-editar         ="puedeModificar"
       />
-      <efecto efecto          ="Down">
-        <cotizaciones
-          v-if                ="permisos.cotizar_ver && tercero.esCliente"
-          class               ="col-12"
-          height-card         ="210px"
-          :tercero-id         ="tercero.id ?? 0"
-        />
-      </efecto>
-      <efecto>
-        <documentos
-          v-show              ="!!tercero.id"
-          class               ="col-12 col-md-7"
-          modulo              ="thirdparty"
-          height-card         ="180px"
-          :modulo-id          ="tercero.id ?? 0"
-          :modulo-ref         ="(tercero.id ?? 0).toString()"
-          :puede-editar       ="puedeModificar"
-        />
-      </efecto>
       <efecto>
         <notas
           v-show              ="!!tercero.id"
-          class               ="col-12 col-md-5"
-          height-card         ="180px"
+          class               ="col-12"
           :tercero-id         ="tercero.id ?? 0"
           :nota               ="tercero.notaPrivada"
           :puede-editar       ="puedeModificar"
         />
       </efecto>
     </div>
+      <acuerdos
+        v-if                  ="permisos.cotizar_ver && tercero.esCliente"
+        class                 ="col-12 col-md-4"
+        :tipo                 ="TIPO_ACUERDO.COTIZACION"        
+        :tercero              ="tercero"
+      />
+      <acuerdos
+        v-if                  ="permisos.pedido_ver && tercero.esCliente"
+        class                 ="col-12 col-md-4"
+        :tipo                 ="TIPO_ACUERDO.PEDIDO"        
+        :tercero              ="tercero"
+      />
+      <acuerdos
+        v-if                  ="permisos.prove_pedido_ver && tercero.esProveedor"
+        class                 ="col-12 col-md-4"
+        :tipo                 ="TIPO_ACUERDO.OC_PROVEEDOR"        
+        :tercero              ="tercero"
+      />      
+      <efecto>
+        <documentos
+          v-show              ="!!tercero.id"
+          class               ="col-12 col-md-4"
+          modulo              ="thirdparty"
+          height-card         ="180px"
+          :modulo-id          ="tercero.id ?? 0"
+          :modulo-ref         ="(tercero.id ?? 0).toString()"
+          :puede-editar       ="puedeModificar"
+        />
+      </efecto>      
   </q-page>
 </template>
 
 <script setup lang="ts">
+/*
+height-card         ="210px"
+*/
   //* ///////////////////////////////////////////////////////////////////////////////////// Core
   import {  ref,
             toRefs,
@@ -73,6 +85,7 @@
   import {  ITercero,
             Tercero,
                               } from "src/areas/terceros/models/Tercero"  
+  import {  TIPO_ACUERDO      } from "src/areas/acuerdos/models/ConstantesAcuerdos"                              
   //* ///////////////////////////////////////////////////////////////////////////////////// Componibles
   import {  servicesTerceros  } from "src/areas/terceros/services/servicesTerceros"
   import {  useTools,
@@ -83,7 +96,7 @@
   import  contactos             from "src/areas/terceros/components/contactos/ModuloContactos.vue"
   import  notas                 from "src/areas/terceros/components/helper/ModuloNotasTercero.vue"
   import  formularioTercero     from "src/areas/terceros/components/formularioTercero/FormularioTercero.vue"
-  import  cotizaciones          from "src/areas/acuerdos/components/modules/ModuloCotizacionesTercero.vue"  
+  import  acuerdos              from "src/areas/acuerdos/components/modules/ModuloAcuerdosTercero.vue"  
 
   const { usuario, permisos } = storeToRefs( useStoreUser() )
   const { acuerdo           } = storeToRefs( useStoreAcuerdo() )

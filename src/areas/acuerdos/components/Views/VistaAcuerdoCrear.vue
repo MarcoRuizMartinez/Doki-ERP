@@ -105,7 +105,7 @@
     function asignarDatosAcuerdoTercero() {
       const terceroTem          = Object.assign( acuerdo.value.tercero, {} )
       acuerdo.value             = new Acuerdo( tipo.value )
-      if(!!terceroId.value)
+      if(!!terceroId.value || !!terceroTem.id)
           acuerdo.value.tercero = terceroTem
     }
 
@@ -116,8 +116,8 @@
   }
 
   onUnmounted(()=>{
-    //if(acuerdoCreado) return
-    //acuerdo.value             = new Acuerdo( tipo.value  )
+    if(acuerdoCreado) return
+    acuerdo.value             = new Acuerdo()
   })
 
   //* /////////////////////////////////////////////////////////////// Provide Super minimizado

@@ -13,6 +13,7 @@ export interface IQueryAcuerdo {
   comercial            ?: string | number
   creador              ?: string | number
   tercero              ?: string
+  idTercero            ?: number
   contacto             ?: string
   estados              ?: string
   origenes             ?: string

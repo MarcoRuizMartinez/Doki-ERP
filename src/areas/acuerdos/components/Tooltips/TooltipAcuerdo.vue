@@ -10,7 +10,7 @@
           <td>Empresa</td>
           <td> {{acuerdo.contacto.empresa}}</td>
         </tr>
-        <tr>
+        <tr v-if="!!acuerdo.contacto.id">
             <td>Contacto</td>
             <td>{{ acuerdo.contacto.nombreCompleto }}</td>
         </tr>

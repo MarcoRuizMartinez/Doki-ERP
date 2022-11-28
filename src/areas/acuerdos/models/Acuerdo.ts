@@ -306,21 +306,13 @@ export class Acuerdo implements IAcuerdo
   get labelPlural() : string { return Acuerdo.getTipoAcuerdoPlural    ( this.tipo ) }
   get icono()       : string { return Acuerdo.getIconoAcuerdo         ( this.tipo ) }
   get emoji()       : string { return Acuerdo.getEmojiAcuerdo         ( this.tipo ) }
+  get ruta()        : string { return Acuerdo.getRuta                 ( this.tipo ) }
 
   //get labelPlural() : string { return getTipoAcuerdoPlural( this.tipo ) }
   //get icono()       : string { return getIconoAcuerdo     ( this.tipo ) }  
   //get tipoPlural()  : string { return "" } 
   
 
-  get ruta() : string{
-    const ruta    = this.tipo === TIPO_ACUERDO.COTIZACION   ? "cotizaciones"
-                  : this.tipo === TIPO_ACUERDO.PEDIDO       ? "pedidos"
-                  : this.tipo === TIPO_ACUERDO.ENTREGA      ? "entregas"
-                  : this.tipo === TIPO_ACUERDO.OC_PROVEEDOR ? "pedidos-proveedor"
-                  : this.tipo === TIPO_ACUERDO.FACTURA      ? "facturas"
-                  : ""
-    return ruta
-  }
   
   get urlDolibarr() : string {
     const ruta    = this.tipo === TIPO_ACUERDO.COTIZACION   ? "/comm/propal/card.php?id="
@@ -718,6 +710,18 @@ export class Acuerdo implements IAcuerdo
                                 : "✅"
     return emoji
   } 
+
+  static getRuta( tipo : TTipoAcuerdo ) : string{
+    const ruta                  = tipo === TIPO_ACUERDO.COTIZACION          ? "cotizaciones"
+                                : tipo === TIPO_ACUERDO.PEDIDO              ? "pedidos"
+                                : tipo === TIPO_ACUERDO.ENTREGA             ? "entregas"
+                                : tipo === TIPO_ACUERDO.OC_PROVEEDOR        ? "pedidos-proveedor"
+                                : tipo === TIPO_ACUERDO.FACTURA             ? "facturas"
+                                : ""
+    return ruta
+  }
+    
+
 
 
   // * ///////////////////////////////////////////////////// static convertir data de API en new Cotizacion
