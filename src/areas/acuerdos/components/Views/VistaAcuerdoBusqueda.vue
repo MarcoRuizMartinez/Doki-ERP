@@ -29,7 +29,7 @@
     </template>
     <!-- //* //////////////////////////////////////////////////////// Tabla resultados-->
     <q-table                    borbordered dense flat
-      class                     ="fit tabla-maco"
+      class                     ="fit tabla-maco alto-tabla"
       row-key                   ="id"
       :rows                     ="acuerdos"
       :columns                  ="columnas"
@@ -305,3 +305,8 @@
     else    aviso("negative", "Error al generar el archivo...", "file")
   }
 </script>
+<style>
+.alto-tabla{
+  min-height: 360px;
+}
+</style>

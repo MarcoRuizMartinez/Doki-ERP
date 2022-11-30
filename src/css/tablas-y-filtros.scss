@@ -85,6 +85,7 @@ legend{
 .tabla-totales{
     border-radius: 6px;
     min-width: 220px;
+    border-collapse: collapse;
 }
 .tabla-totales td:nth-child(even) {
     text-align: right;

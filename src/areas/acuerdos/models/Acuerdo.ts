@@ -13,7 +13,8 @@ import {  TTipoAcuerdo,
           EstadosAcuerdos,          
           ESTADO_PED                        } from "./ConstantesAcuerdos"
 //* ///////////////////////////////////////// Modelos
-import {  IAnticipo,        Anticipo        } from "./Anticipo"
+import {  IAnticipo,        Anticipo,
+          ESTADO_ANTICIPO                   } from "./Anticipo"
 import {  IRetenciones,     Retenciones     } from "./Retenciones"
 import {  IProyecto,        Proyecto        } from "src/areas/proyectos/models/Proyecto"
 import {  ILineaAcuerdo,    LineaAcuerdo    } from "src/areas/acuerdos/models/LineaAcuerdo"
@@ -615,8 +616,10 @@ export class Acuerdo implements IAcuerdo
 
   get totalAnticipos()        : number {
     if(!this.anticipos.length) return 0
-    const sumaPagos           = this.anticipos.map    ( ( a : IAnticipo )       : number => a.valorSumar )
-                                              .reduce ( ( v1:number, v2:number) : number => v1 + v2 )
+    const anticipos           = this.anticipos.filter ( a => a.estado === 1 || a.estado === 2 )
+    if(!anticipos.length)     return 0
+    const sumaPagos           = anticipos     .map    ( ( a : IAnticipo )       : number  => a.valorSumar )
+                                              .reduce ( ( v1:number, v2:number) : number  => v1 + v2 )
     return sumaPagos
   }
 

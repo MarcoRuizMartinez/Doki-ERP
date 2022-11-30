@@ -177,7 +177,7 @@
       fullScreen:           { type: Boolean,  default: false                      },
       classContenido:       { type: String,   default: "q-pa-none"                },
       classMenu:            { type: String,   default: ""                         },
-      classMaximizado:      { type: String,   default: "col-12"                         },
+      classMaximizado:      { type: String,   default: "col-12"                   },
       classRestaurado:      { type: String,   default: ""                         },
       paddingContenido:     { type: String,   default: "8px"                      },
       sizeIconCarga:        { type: String,   default: "66vh"                     },

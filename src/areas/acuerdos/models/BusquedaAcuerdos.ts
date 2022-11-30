@@ -20,6 +20,7 @@ export interface IQueryAcuerdo {
   condiciones          ?: string
   formaPago            ?: string
   entrega              ?: string
+  estadoAnticipo       ?: string
   fechaDesde           ?: string
   fechaHasta           ?: string
   proveedorId          ?: number
@@ -35,7 +36,6 @@ export interface IQueryAcuerdo {
   area                 ?: string
   orden                ?: "ASC" | "DESC"
   municipio            ?: number  
-  estadoAnticipo       ?: number
   //idEspecial?:       number
 }
 
@@ -53,14 +53,14 @@ export interface IBusquedaAcuerdo {
   condiciones           : ILabelValue[]
   formaPago             : ILabelValue[]
   entrega               : ILabelValue[]
+  estadoAnticipo        : ILabelValue[]
   area                  : ILabelValue
   facturado             : ILabelValue
   conIva                : ILabelValue
   totalizado            : ILabelValue
   tipoTercero           : ILabelValue
   conOrdenes            : ILabelValue
-  proveedores           : ILabelValue
-  estadoAnticipo        : ILabelValue
+  proveedores           : ILabelValue  
   municipio             : IMunicipio
   comercial            ?: IUsuario
   creador              ?: IUsuario
@@ -85,6 +85,7 @@ export class BusquedaAcuerdo implements IBusquedaAcuerdo
   condiciones           : ILabelValue[]
   formaPago             : ILabelValue[]
   entrega               : ILabelValue[]
+  estadoAnticipo        : ILabelValue[]
   area                  : ILabelValue
   facturado             : ILabelValue
   conIva                : ILabelValue
@@ -92,7 +93,6 @@ export class BusquedaAcuerdo implements IBusquedaAcuerdo
   tipoTercero           : ILabelValue
   conOrdenes            : ILabelValue
   proveedores           : ILabelValue
-  estadoAnticipo        : ILabelValue
   municipio             : IMunicipio
   comercial            ?: IUsuario
   creador              ?: IUsuario
@@ -114,6 +114,7 @@ export class BusquedaAcuerdo implements IBusquedaAcuerdo
     this.condiciones      = []
     this.formaPago        = []
     this.entrega          = []
+    this.estadoAnticipo   = []
     this.area             = labelValueNulo
     this.facturado        = labelValueNulo
     this.conIva           = labelValueNulo
@@ -121,7 +122,6 @@ export class BusquedaAcuerdo implements IBusquedaAcuerdo
     this.totalizado       = labelValueNulo
     this.conOrdenes       = labelValueNulo
     this.proveedores      = labelValueNulo
-    this.estadoAnticipo   = labelValueNulo
     this.municipio        = new Municipio()
     this.resultadosXPage  = 25
     this.pagina           = 1
@@ -136,31 +136,31 @@ export class BusquedaAcuerdo implements IBusquedaAcuerdo
   {
     const q : IQueryAcuerdo       = {}
 
-    if(this.tercero.length  > 3)  q.tercero       = this.tercero
-    if(this.contacto.length > 3)  q.contacto      = this.contacto
+    if(this.tercero.length  > 3)      q.tercero         = this.tercero
+    if(this.contacto.length > 3)      q.contacto        = this.contacto
 
-    if(!!this.precioMinimo)       q.subtotalMin   = this.precioMinimo
-    if(!!this.precioMaximo)       q.subtotalMax   = this.precioMaximo
+    if(!!this.precioMinimo)           q.subtotalMin     = this.precioMinimo
+    if(!!this.precioMaximo)           q.subtotalMax     = this.precioMaximo
 
-    if(!!this.estados.length)     q.estados       = this.estados      .map( e => e.value ).join("_")
-    if(!!this.origenes.length)    q.origenes      = this.origenes     .map( e => e.value ).join("_")
-    if(!!this.condiciones.length) q.condiciones   = this.condiciones  .map( e => e.value ).join("_")
-    if(!!this.formaPago.length)   q.formaPago     = this.formaPago    .map( e => e.value ).join("_")
-    if(!!this.entrega.length)     q.entrega       = this.entrega      .map( e => e.value ).join("_")    
+    if(!!this.estados.length)         q.estados         = this.estados        .map( e => e.value ).join("_")
+    if(!!this.origenes.length)        q.origenes        = this.origenes       .map( e => e.value ).join("_")
+    if(!!this.condiciones.length)     q.condiciones     = this.condiciones    .map( e => e.value ).join("_")
+    if(!!this.formaPago.length)       q.formaPago       = this.formaPago      .map( e => e.value ).join("_")
+    if(!!this.entrega.length)         q.entrega         = this.entrega        .map( e => e.value ).join("_")
+    if(!!this.estadoAnticipo.length)  q.estadoAnticipo  = this.estadoAnticipo .map( e => e.value ).join("_")
 
-    if(!!this.area.label)         q.area          = this.area.value
-    if(!!this.facturado.label)    q.facturado     = this.facturado.value
-    if(!!this.conIva.label)       q.conIva        = this.conIva.value
-    if(!!this.totalizado.label)   q.conTotal      = this.totalizado.value
-    if(!!this.tipoTercero.label)  q.interno       = this.tipoTercero.value
-    if(!!this.municipio.id)       q.municipio     = this.municipio.id
-    if(!!this.conOrdenes.label)   q.conOrdenes    = this.conOrdenes.value
-    if(!!this.creador)            q.creador       = this.creador.id
+    if(!!this.area.label)         q.area                = this.area.value
+    if(!!this.facturado.label)    q.facturado           = this.facturado.value
+    if(!!this.conIva.label)       q.conIva              = this.conIva.value
+    if(!!this.totalizado.label)   q.conTotal            = this.totalizado.value
+    if(!!this.tipoTercero.label)  q.interno             = this.tipoTercero.value
+    if(!!this.municipio.id)       q.municipio           = this.municipio.id
+    if(!!this.conOrdenes.label)   q.conOrdenes          = this.conOrdenes.value
+    if(!!this.creador)            q.creador             = this.creador.id
     if(this.esOCProveedor && !!this.proveedores.label)
-                                  q.proveedorId   = this.proveedores.value
+                                  q.proveedorId         = this.proveedores.value
     if(!this.esOCProveedor && !!this.comercial)
-                                  q.comercial     = this.comercial.id
-    if(!!this.estadoAnticipo.label) q.estadoAnticipo  = this.estadoAnticipo.value
+                                  q.comercial           = this.comercial.id
 
     if(this.desde instanceof Date && !isNaN(this.desde.valueOf()))  q.fechaDesde  = this.desde.toLocaleDateString('sv-SE')
     if(this.hasta instanceof Date && !isNaN(this.hasta.valueOf()))  q.fechaHasta  = this.hasta.toLocaleDateString('sv-SE')

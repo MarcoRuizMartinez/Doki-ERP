@@ -13,19 +13,21 @@ export enum ESTADO_ANTICIPO
   ANULADO                     = 0,
   PENDIENTE                   = 1,
   VERIFICADO                  = 2,
-}
-
-export enum TIPO_ANTICIPO
-{
-  PAGO                        = 1,
-  DEVOLUCION                  = 2,
+  CREDITO                     = 3,
 }
 
 export enum ESTADO_ANTICIPO_LABEL
 {
   ANULADO                     = "❌Anulado",
   PENDIENTE                   = "✋🏼Pendiente",
-  VERIFICADO                  = "✅Verificado'",
+  VERIFICADO                  = "✅Verificado",
+  CREDITO                     = "📆Crédito",
+}
+
+export enum TIPO_ANTICIPO
+{
+  PAGO                        = 1,
+  DEVOLUCION                  = 2,
 }
 
 export enum TIPO_ANTICIPO_LABEL
@@ -38,55 +40,55 @@ export type TTipoFileAnticipo = "cliente" | "interno"
 
 export interface IAnticipo
 { 
-  id                  : number
-  fechaPago           : string
-  fechaPagoString     : string
-  cuenta              : ICuentaDinero
-  cuentaId            : number
-  pedidoId            : number  
-  verificador         : IUsuario
-  verificadorId       : number
-  valor               : number
-  valorSumar          : number
-  valorLabel          : string
-  nota                : string
-  fechaEdicionNota    : string
-  filenameInterno     : string
-  fileInterno         : IArchivo
-  filenameCliente     : string
-  fileCliente         : IArchivo
-  tipo                : TIPO_ANTICIPO
-  tipoSelect          : ILabelValue
-  //tipoLabel           : string
-  estado              : ESTADO_ANTICIPO
-  estadoSelect        : ILabelValue
-  //estadoLabel         : string
-  estadoColor         : string
-  estadoIcono         : string
-  anticipoToApi       : any
-  esNuevo             : boolean
+  id                        : number
+  fechaPago                 : string
+  fechaPagoString           : string
+  cuenta                    : ICuentaDinero
+  cuentaId                  : number
+  pedidoId                  : number  
+  verificador               : IUsuario
+  verificadorId             : number
+  valor                     : number
+  valorSumar                : number
+  valorLabel                : string
+  nota                      : string
+  fechaEdicionNota          : string
+  filenameInterno           : string
+  fileInterno               : IArchivo
+  filenameCliente           : string
+  fileCliente               : IArchivo
+  tipo                      : TIPO_ANTICIPO
+  tipoSelect                : ILabelValue
+  //tipoLabel                 : string
+  estado                    : ESTADO_ANTICIPO
+  estadoSelect              : ILabelValue
+  //estadoLabel               : string
+  estadoColor               : string
+  estadoIcono               : string
+  anticipoToApi             : any
+  esNuevo                   : boolean
 }
 
 export class Anticipo implements IAnticipo
 {
-  id                  : number
-  fechaPago           : string
-  cuenta              : ICuentaDinero
-  cuentaId            : number
-  pedidoId            : number  
-  verificador         : IUsuario
-  verificadorId       : number
-  valor               : number  
-  nota                : string
-  fechaEdicionNota    : string
-  filenameInterno     : string
-  fileInterno         : IArchivo
-  filenameCliente     : string
-  fileCliente         : IArchivo
-  tipo                : TIPO_ANTICIPO
-  tipoSelect          : ILabelValue
-  estado              : ESTADO_ANTICIPO  
-  estadoSelect        : ILabelValue
+  id                        : number
+  fechaPago                 : string
+  cuenta                    : ICuentaDinero
+  cuentaId                  : number
+  pedidoId                  : number  
+  verificador               : IUsuario
+  verificadorId             : number
+  valor                     : number  
+  nota                      : string
+  fechaEdicionNota          : string
+  filenameInterno           : string
+  fileInterno               : IArchivo
+  filenameCliente           : string
+  fileCliente               : IArchivo
+  tipo                      : TIPO_ANTICIPO
+  tipoSelect                : ILabelValue
+  estado                    : ESTADO_ANTICIPO  
+  estadoSelect              : ILabelValue
 
   constructor( idPedido : number = 0 )
   {
@@ -125,12 +127,14 @@ export class Anticipo implements IAnticipo
     return    this.estado === ESTADO_ANTICIPO.PENDIENTE   ? "orange"
             : this.estado === ESTADO_ANTICIPO.VERIFICADO  ? "green-14"
             : this.estado === ESTADO_ANTICIPO.ANULADO     ? "red-14"
+            : this.estado === ESTADO_ANTICIPO.CREDITO     ? "blue-9"
             : ""
   }
   get estadoIcono(){
     return    this.estado === ESTADO_ANTICIPO.PENDIENTE   ? "mdi-hand-right"
             : this.estado === ESTADO_ANTICIPO.VERIFICADO  ? "mdi-check-bold"
             : this.estado === ESTADO_ANTICIPO.ANULADO     ? "mdi-close-circle"
+            : this.estado === ESTADO_ANTICIPO.CREDITO     ? "mdi-calendar-month"
             : ""
   }
 
@@ -184,6 +188,7 @@ export class Anticipo implements IAnticipo
   static estados = [
     {label: ESTADO_ANTICIPO_LABEL.PENDIENTE,  value: 1},
     {label: ESTADO_ANTICIPO_LABEL.VERIFICADO, value: 2},
+    {label: ESTADO_ANTICIPO_LABEL.CREDITO,    value: 3},
     {label: ESTADO_ANTICIPO_LABEL.ANULADO,    value: 0},
   ]
   

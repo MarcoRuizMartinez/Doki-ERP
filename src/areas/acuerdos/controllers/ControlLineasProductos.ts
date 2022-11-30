@@ -275,35 +275,37 @@ export function useControlProductos()
   }
 
   async function editarCantidad( linea : ILineaAcuerdo ) {
+    lineaElegida.value            = linea
     if(acuerdo.value.esEstadoBoceto) {
       edicionOk()
       return
-    }      
+    }
 
-    const objecto               = { qty: linea.qty, id: linea.lineaId }
+    const objecto               = { qty: lineaElegida.value.qty, id: lineaElegida.value.lineaId }
     let {ok}                    = await apiDolibarr("editar-linea", acuerdo.value.tipo, objecto, acuerdo.value.id )
     if  (ok) edicionOk()
 
     function edicionOk(){
       aviso("positive", "Cantidad cambiada")
-      linea.destacar("guardar", "ocultar")
+      lineaElegida.value.destacar("guardar", "ocultar")
       deGruposAProductos()      
     }
   }
 
   async function editarDescuento( linea : ILineaAcuerdo ) {
+    lineaElegida.value            = linea
     if(acuerdo.value.esEstadoBoceto) {
       edicionOk()
       return
     }
 
-    const objecto               = { remise_percent: linea.descuentoX100, id: linea.lineaId }
+    const objecto               = { remise_percent: lineaElegida.value.descuentoX100, id: lineaElegida.value.lineaId }
     let {ok}                    = await apiDolibarr("editar-linea", acuerdo.value.tipo, objecto, acuerdo.value.id )
     if  (ok) edicionOk()
 
     function edicionOk(){
       aviso("positive", "Descuento cambiado")
-      linea.destacar("guardar", "ocultar")
+      lineaElegida.value.destacar("guardar", "ocultar")
       deGruposAProductos()
     }
   }

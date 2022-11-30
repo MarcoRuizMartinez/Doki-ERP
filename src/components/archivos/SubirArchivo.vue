@@ -223,13 +223,14 @@
         aviso("positive", "Imagen de portapapeles subida",  "file", 2400)        
       }
       cargandoArchivos.value  = false 
-      menuCopiarPegar.value   = false
-      limpiarCopiaPegar()
+      menuCopiarPegar.value   = false      
     }
     else
     {
       modelEditor.value       = ""
     }
+
+    limpiarCopiaPegar()
   }
 
 
@@ -240,9 +241,12 @@
     const images              = el.getElementsByTagName( "img" )
     let   imagenBase64        = ""
 
-    if(!!images && !!images.length && "src" in images[0] && images[0].src.length > 10)
-      imagenBase64            = limpiarStringBase64( images[0].src )
-    
+    if(!!images && !!images.length && "src" in images[0] && images[0].src.length > 10){
+      const srcCrudo          = images[0].src
+      if(srcCrudo.slice(0,21) === "data:image/png;base64")
+        imagenBase64          = limpiarStringBase64( srcCrudo )
+    }
+
     return imagenBase64
   }
 

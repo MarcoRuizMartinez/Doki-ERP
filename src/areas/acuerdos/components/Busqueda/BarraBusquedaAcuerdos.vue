@@ -275,14 +275,15 @@
           :options              ="opcionesOrdenesProv"
         />
         <!-- //* ///////////////////////////////////////////////// Estado Anticipo -->
-        <select-label-value     use-input hundido clearable flat bordered
+        <!-- //* ///////////////////////////////////////////////// Forma de pago -->
+        <multi-label-value
           v-if                  ="busqueda.esPedido"
           v-model               ="busqueda.estadoAnticipo"
           label                 ="Anticipos"
           icon                  ="mdi-cash"
           class                 ="width160"
           :options              ="Anticipo.estados"
-        />        
+        />
       </fieldset-filtro>
       <fieldset-filtro      
         titulo                  ="Subtotal"
@@ -454,18 +455,18 @@
     if(!!queryURL.limite)
       busqueda.value.resultadosXPage= getQueryRouterNumber    ( queryURL.limite       )
     //busqueda.value.creador        = getQueryRouterNumber    ( queryURL.creador      )
-    busqueda.value.area           = getQueryRouterLabelValue( queryURL.area,              Areas                 )
-    busqueda.value.facturado      = getQueryRouterLabelValue( queryURL.facturado,         opcionesFacturado     )
-    busqueda.value.conIva         = getQueryRouterLabelValue( queryURL.conIva,            opcionesIVA           )
-    busqueda.value.totalizado     = getQueryRouterLabelValue( queryURL.conTotal,          opcionesTotales       )
-    busqueda.value.tipoTercero    = getQueryRouterLabelValue( queryURL.interno,           opcionesTerceroTipo   )
-    busqueda.value.conOrdenes     = getQueryRouterLabelValue( queryURL.conOrdenes,        opcionesOrdenesProv   )
-    busqueda.value.estadoAnticipo = getQueryRouterLabelValue( queryURL.estadoAnticipo,    Anticipo.estados      )
-    busqueda.value.estados        = getQueryRouterLabelValueArray ( queryURL.estados,     estados.value         )    
-    busqueda.value.formaPago      = getQueryRouterLabelValueArray ( queryURL.formaPago,   formasPago.value      )
-    busqueda.value.entrega        = getQueryRouterLabelValueArray ( queryURL.entrega,     metodosEntrega.value  )
-    busqueda.value.condiciones    = getQueryRouterLabelValueArray ( queryURL.condiciones, condicionesPago.value )
-    busqueda.value.origenes       = getQueryRouterLabelValueArray ( queryURL.origenes,    origenes.value        )
+    busqueda.value.area           = getQueryRouterLabelValue( queryURL.area,                  Areas                 )
+    busqueda.value.facturado      = getQueryRouterLabelValue( queryURL.facturado,             opcionesFacturado     )
+    busqueda.value.conIva         = getQueryRouterLabelValue( queryURL.conIva,                opcionesIVA           )
+    busqueda.value.totalizado     = getQueryRouterLabelValue( queryURL.conTotal,              opcionesTotales       )
+    busqueda.value.tipoTercero    = getQueryRouterLabelValue( queryURL.interno,               opcionesTerceroTipo   )
+    busqueda.value.conOrdenes     = getQueryRouterLabelValue( queryURL.conOrdenes,            opcionesOrdenesProv   )
+    busqueda.value.estadoAnticipo = getQueryRouterLabelValueArray ( queryURL.estadoAnticipo,  Anticipo.estados      )
+    busqueda.value.estados        = getQueryRouterLabelValueArray ( queryURL.estados,         estados.value         )    
+    busqueda.value.formaPago      = getQueryRouterLabelValueArray ( queryURL.formaPago,       formasPago.value      )
+    busqueda.value.entrega        = getQueryRouterLabelValueArray ( queryURL.entrega,         metodosEntrega.value  )
+    busqueda.value.condiciones    = getQueryRouterLabelValueArray ( queryURL.condiciones,     condicionesPago.value )
+    busqueda.value.origenes       = getQueryRouterLabelValueArray ( queryURL.origenes,        origenes.value        )
     if(!!queryURL.municipio)
       busqueda.value.municipio    = await getMunicipioDB( Array.isArray(queryURL.municipio) ? 0 : +queryURL.municipio ) 
     
@@ -493,8 +494,8 @@
     tabs.value.alerts[0]  = ( !!b.tercero           || !!b.contacto           || fechaValida( b.desde ) || fechaValida( b.hasta ) ||
                               !!b.estados.length    || !!b.condiciones.length || !!b.facturado.label    || !!b.comercial          || !!b.creador 
                             )
-    tabs.value.alerts[1]  = ( !!b.formaPago.length  || !!b.entrega.length     || !!b.origenes.length    || !!b.conIva.label         ||  
-                              !!b.area.label        || !!b.municipio.id       || !!b.totalizado.label   || !!b.estadoAnticipo.label ||   
+    tabs.value.alerts[1]  = ( !!b.formaPago.length  || !!b.entrega.length     || !!b.origenes.length    || !!b.conIva.label           ||  
+                              !!b.area.label        || !!b.municipio.id       || !!b.totalizado.label   || !!b.estadoAnticipo.length  ||   
                               !!b.tipoTercero.label ||!!b.conOrdenes.label    ||!!b.precioMinimo        || !!b.precioMaximo
                             )
   }

@@ -112,17 +112,13 @@
             <td>TOTAL:</td>
             <td>{{ formatoPrecio( acuerdo.totalConIva )}}</td>
           </tr>
-          <template v-if="acuerdo.esPedido">
-          <tr>
-            <td></td>
-            <td>_____________</td>
-          </tr>          
-          <tr>
-            <td>Pagado:</td>
-            <td>{{ formatoPrecio( acuerdo.totalAnticipos )}}</td>
-          </tr>
-          <tr :class="    acuerdo.totalAnticipos    === 0 ? 'text-red' 
-                        : acuerdo.saldo             === 0 ? 'text-green-8'
+          <template v-if="acuerdo.esPedido">  
+            <tr style="border-top: 1px solid;">
+              <td>Pagado:</td>
+              <td>{{ formatoPrecio( acuerdo.totalAnticipos )}}</td>
+            </tr>
+            <tr :class="  acuerdo.totalAnticipos    === 0 ? 'text-red' 
+                        : acuerdo.saldo             >= 0 && acuerdo.saldo <= 2 ? 'text-green-8'
                         : acuerdo.saldo             < 0 ? 'text-blue-9'
                         : 'text-deep-orange-8'">
             <td>Saldo:</td>

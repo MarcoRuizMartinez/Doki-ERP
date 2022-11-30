@@ -24,32 +24,35 @@
         <q-tr   :props          ="props">
           <q-td
             key                 ="name"
+            class               ="row"
             style               ="padding-left: 4px;"
             :props              ="props" 
             >
             <!-- //* /////////  Icono Extencion  -->
-            <q-icon
-              v-if              ="!props.row.loading"
-              class             ="iconos-doc op90"
-              size              ="sm"
-              :color            ="props.row.iconoColor"
-              :name             ="props.row.icono"
-              >
-              <Tooltip :label   ="props.row.extension.toUpperCase()"/>
-            </q-icon>
-            <!-- //* /////////  Spinner  -->
-            <q-spinner 
-              v-else
-              class             ="iconos-doc op90"
-              size              ="1.2em"
-              :thickness        ="10"
-            />
+            <div class         ="iconos-doc">
+              <q-icon
+                v-if            ="(!props.row.loading && true)"
+                class           ="op90"
+                size            ="sm"
+                :color          ="props.row.iconoColor"
+                :name           ="props.row.icono"
+                >
+                <Tooltip :label ="props.row.extension.toUpperCase()"/>
+              </q-icon>
+              <!-- //* /////////  Spinner  -->
+              <q-spinner 
+                v-else
+                class           ="op90"
+                size            ="xs"
+                :thickness      ="4"
+              />
+            </div>
             <!-- //* /////////  Nombre archivo de descarga  -->
             <q-btn              flat dense no-caps rounded
               padding           ="0px 6px"
               class             ="ellipsis btn-max"
               align             ="left"
-              :label            ="props.row.nombreCorto"
+              :label            ="props.row.name"
               :disable          ="props.row.loading"
               @click            ="descargarArchivo(props.row as Archivo)"
               >
@@ -81,7 +84,7 @@
               padding           ="none"
               size              ="md"
               @click            ="verArchivo( props.row )"
-            />
+            />  
           </q-td>
         </q-tr>
       </template>
@@ -232,7 +235,7 @@
 
   async function verArchivo( archivo : IArchivo )
   {
-    fileNameSelect.value      = archivo.nombreCorto
+    fileNameSelect.value      = archivo.name
     archivo.loading           = true
 
     let { data, ok }          = await apiDolibarr( "descargar", "documento", archivo.endPoint )
@@ -246,7 +249,7 @@
       }
       else
       if(archivo.tipo         === "Imagen"){
-        imagenAver.value      = { titulo: archivo.nombreCorto, src: descarga.content, fileType: archivo.fileType }
+        imagenAver.value      = { titulo: archivo.name, src: descarga.content, fileType: archivo.fileType }
         ventanaImagen.value   = true
       }
     }
@@ -276,7 +279,7 @@
 </script>
 <style>
 .iconos-doc{
-  width: 30px;
+  width: 26px;
 }
 .btn-max{
   max-width: 280px;

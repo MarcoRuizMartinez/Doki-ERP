@@ -57,28 +57,30 @@
         >        
           <q-btn              flat dense rounded no-caps
             padding           ="none"
-            class             ="col-4 op60 op100-hover"
-            label             ="Recibo"
+            class             ="col-2 op60 op100-hover"            
+            icon              ="mdi-printer"
             @click.stop       ="emit('clickRecibo',   modelValue)"
             >
             <Tooltip label    ="Generar recibo de caja"/>
           </q-btn>          
           <q-btn              flat dense rounded no-caps
-            v-for             ="(item, tipo) of [ { file: modelValue.fileCliente, tipo: 'cliente', class: 'col-2', label: ''          },
-                                                  { file: modelValue.fileInterno, tipo: 'interno', class: 'col-6', label: 'Soporte'     }]"
+            v-for             ="(item, index) of [{ file: modelValue.fileCliente, tipo: 'Cliente', class: 'col-5', label: ''          },
+                                                  { file: modelValue.fileInterno, tipo: 'Interno', class: 'col-5', label: 'Soporte'     }]"
             padding           ="none"
             class             ="op80 op100-hover"            
-            :key              ="tipo"
-            :label            ="item.label"
-            :icon             ="!item.file.size ? 'mdi-form-dropdown' : 'mdi-file-eye'"
-            :color            ="!item.file.size ? 'grey-6' : 'primary'"
+            :key              ="index"
+            :label            ="item.tipo"
+            :icon             ="!!item.file.name ? 'mdi-magnify-plus'
+                                  : item.tipo === 'Interno' ? 'mdi-bank'
+                                  : 'mdi-account-cash'"
+            :color            ="!item.file.name ? 'grey-6' : 'primary'"
             :class            ="item.class"
-            @click.stop       ="  !item.file.size
+            @click.stop       ="  !item.file.name
                                     ? emit('clickAnticipo',   modelValue)
-                                    : emit('clickVerArchivo', item.file )
+                                    : enviarArchivoVer(item.file)
                                 "
             >
-            <Tooltip :label   ="(!item.file.size ? 'Seleccionar' : 'Ver') + ' comprobante de ' + item.tipo"/>
+            <Tooltip :label   ="(!item.file.name ? 'Seleccionar' : 'Ver') + ' comprobante de ' + item.tipo"/>
           </q-btn>        
       </div>
     </q-card>
@@ -90,7 +92,7 @@
   // * /////////////////////////////////////////////////////////////////////////////////// Modelos
   import {  IAnticipo,
             TTipoFileAnticipo   } from "src/areas/acuerdos/models/Anticipo"  
-  import {  IArchivo            } from "src/models/Archivo"
+  import {  IArchivo, Archivo   } from "src/models/Archivo"
 
 
   const props                 = defineProps({      
@@ -102,6 +104,11 @@
     (e: "clickAnticipo",    value: IAnticipo          ): void
     (e: "clickRecibo",      value: IAnticipo          ): void
   }>()
+
+  function enviarArchivoVer( file : IArchivo ){
+    const archivoEnviar = Object.assign( new Archivo(), file)
+    emit('clickVerArchivo', archivoEnviar)
+  }
 
 </script>
 <style>

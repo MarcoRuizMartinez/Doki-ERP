@@ -1,4 +1,4 @@
-po<template>
+<template>
   <ventana
     v-bind                      ="$attrs"
     titulo                      ="Anticipos"
@@ -7,6 +7,7 @@ po<template>
     mensaje-sin-resultados      ="Sin anticipos"
     icono-sin-resultados        ="mdi-cash"
     size-icon-carga             ="8em"
+    height-card-min             ="182px"
     :padding-contenido          ="modo == 'normal' ? '0' : '12px' "
     :modo                       ="modo"
     >
@@ -233,9 +234,9 @@ po<template>
     ventanaFormulario.value   = true
   }
 
-  async function verArchivo( archivo : IArchivo )
+  async function verArchivo( archivo : IArchivo )  
   {
-    fileNameSelect.value      = archivo.nombreCorto
+    fileNameSelect.value      = archivo.name
     archivo.loading           = true
 
     let { data, ok }          = await apiDolibarr( "descargar", "documento", archivo.endPoint )
@@ -249,7 +250,7 @@ po<template>
       }
       else
       if(archivo.tipo         === "Imagen"){
-        imagenAver.value      = { titulo: archivo.nombreCorto, src: descarga.content, fileType: archivo.fileType }
+        imagenAver.value      = { titulo: archivo.name, src: descarga.content, fileType: archivo.fileType }
         ventanaImagen.value   = true
       }
     }
