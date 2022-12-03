@@ -6,7 +6,8 @@
 
 <script setup lang="ts">
   // * /////////////////////////////////////////////////////////////////////// Core
-  import {  toRefs,
+  import {  watch,
+            toRefs,            
             PropType,
             onMounted,
                                   } from "vue"
@@ -32,6 +33,13 @@
 
   const { id, tipo }          = toRefs( props )
   onMounted   ( iniciar )
+
+  watch ( [id, tipo],
+          ()=> {
+            if(!!id.value && !!tipo.value)
+              iniciar()
+          }
+        )  
 
   async function iniciar()
   {

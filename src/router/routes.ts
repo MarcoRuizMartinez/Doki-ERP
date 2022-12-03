@@ -82,7 +82,7 @@ const routes: RouteRecordRaw[] = [
       {
         path:       '/cotizaciones/:id',
         name:       'cotizacion',
-        props:      route => ({ tipo: TIPO_ACUERDO.COTIZACION, id:        route.params.id }),
+        props:      route => ({ tipo: TIPO_ACUERDO.COTIZACION, id: route.params.id }),
         component:  () => import('src/areas/acuerdos/pages/PageAcuerdoVer.vue')
       },
       {
@@ -113,7 +113,7 @@ const routes: RouteRecordRaw[] = [
       {
         path:       '/pedidos/:id',
         name:       'pedido',
-        props:      route => ({ tipo: TIPO_ACUERDO.PEDIDO, id:        route.params.id }),
+        props:      route => ({ tipo: TIPO_ACUERDO.PEDIDO, id: route.params.id }),
         component:  () => import('src/areas/acuerdos/pages/PageAcuerdoVer.vue')
       },      
       {

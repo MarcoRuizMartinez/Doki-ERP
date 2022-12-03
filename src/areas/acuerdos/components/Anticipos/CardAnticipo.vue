@@ -64,23 +64,22 @@
             <Tooltip label    ="Generar recibo de caja"/>
           </q-btn>          
           <q-btn              flat dense rounded no-caps
-            v-for             ="(item, index) of [{ file: modelValue.fileCliente, tipo: 'Cliente', class: 'col-5', label: ''          },
-                                                  { file: modelValue.fileInterno, tipo: 'Interno', class: 'col-5', label: 'Soporte'     }]"
+            v-for             ="(item, index) of [{ file: modelValue.fileCliente, tipo: 'cliente' },
+                                                  { file: modelValue.fileInterno, tipo: 'interno' }]"
             padding           ="none"
-            class             ="op80 op100-hover"            
+            class             ="op80 op100-hover col-5' text-capitalize"
             :key              ="index"
             :label            ="item.tipo"
             :icon             ="!!item.file.name ? 'mdi-magnify-plus'
-                                  : item.tipo === 'Interno' ? 'mdi-bank'
+                                  : item.tipo === 'interno' ? 'mdi-bank'
                                   : 'mdi-account-cash'"
             :color            ="!item.file.name ? 'grey-6' : 'primary'"
-            :class            ="item.class"
             @click.stop       ="  !item.file.name
                                     ? emit('clickAnticipo',   modelValue)
                                     : enviarArchivoVer(item.file)
                                 "
             >
-            <Tooltip :label   ="(!item.file.name ? 'Seleccionar' : 'Ver') + ' comprobante de ' + item.tipo"/>
+            <Tooltip :label   ="(!item.file.name ? 'Seleccionar' : 'Ver') + ' comprobante ' + item.tipo"/>
           </q-btn>        
       </div>
     </q-card>

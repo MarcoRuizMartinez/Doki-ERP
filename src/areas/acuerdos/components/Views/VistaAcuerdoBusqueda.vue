@@ -39,7 +39,7 @@
       <!-- //* ///////////////  Columna Ref  -->
       <template #body-cell-ref  ="props">
         <q-td   :props          ="props">
-          <ref-acuerdo          vista-full
+          <ref-acuerdo          vista-rapida
             :acuerdo            ="props.row"
             @vista-rapida       ="vistaRapida(props.rowIndex)"
           />

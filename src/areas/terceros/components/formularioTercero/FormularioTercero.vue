@@ -101,7 +101,6 @@
       <!-- //* //////////////   Documento  -->
       <documento
         v-model                 ="tercero.documento"
-        class                   ="col-12"
         :readonly               ="readonly"
         @verifik-ok             ="cargarNombreToVerifik"
       />

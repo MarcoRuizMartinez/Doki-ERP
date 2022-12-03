@@ -204,7 +204,7 @@
   {
     modo.value                = "buscando"
     acuerdo.value.anticipos   = []
-    let { ok, data}           = await miFetch(  endPoint,
+    const { ok, data }        = await miFetch(  endPoint,
                                                 { method: "POST", body: getFormData( "anticipos", { id } ) },
                                                 { dataEsArray: true, mensaje: "buscar anticipos" }
                                               )
@@ -239,7 +239,7 @@
     fileNameSelect.value      = archivo.name
     archivo.loading           = true
 
-    let { data, ok }          = await apiDolibarr( "descargar", "documento", archivo.endPoint )
+    const { data, ok }        = await apiDolibarr( "descargar", "documento", archivo.endPoint )
     archivo.loading           = false
 
     if(ok){

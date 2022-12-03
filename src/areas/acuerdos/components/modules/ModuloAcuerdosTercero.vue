@@ -26,7 +26,7 @@
         label                   ="Crear"
         color                   ="positive"
         icon                    ="mdi-plus"
-        @click                  ="irAcrearAcuerdo"        
+        @click                  ="irACrearAcuerdo"        
       />
     </template>
     <q-table                    borbordered dense flat hide-bottom
@@ -116,11 +116,14 @@
     modo.value                = !!acuerdos.value.length ? "normal" : "sin-resultados"
   }
 
-  function irAcrearAcuerdo(){
+  function irACrearAcuerdo(){
     acuerdo.value             = new Acuerdo( tipo.value )
     acuerdo.value.terceroId   = tercero.value.id
     acuerdo.value.tercero     = tercero.value
-    router.push(`/${Acuerdo.getTipoAcuerdoPlural(tipo.value)}/crear`)
+    router.push({
+      path:   `/${Acuerdo.getTipoAcuerdoPlural(tipo.value)}/crear`,
+      query: { origen: "tercero"},
+    })
   }
 
 

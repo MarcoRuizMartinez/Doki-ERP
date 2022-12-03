@@ -53,7 +53,8 @@
             onMounted,
             onUnmounted
                                   } from "vue"
-  import {  useTitle              } from "@vueuse/core"                                  
+  import {  useTitle              } from "@vueuse/core"      
+  import {  useRouter             } from "vue-router"
   // * /////////////////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs           } from 'pinia'
   import {  useStoreUser          } from 'src/stores/user'
@@ -82,14 +83,16 @@
   const { crearAcuerdo      } = useControlAcuerdo()
   const { crearNuevoGrupo   } = useControlProductos()
   const { usuario           } = storeToRefs( useStoreUser() )
+  const router                = useRouter()
   const ventanaPDF            = ref< boolean  >(false)
   const srcPDF                = ref< string   >("")
   let acuerdoCreado           = false
+  let queryURL                = router.currentRoute.value.query
 
   //* /////////////////////////////////////////////////////////////// Props
   const props                 = defineProps({
-    terceroId:  { default: 0,     type: [String, Number] },
-    tipo:       { required: true, type: String as PropType< TTipoAcuerdo > },
+    terceroId:  { default: 0,     type: [String, Number]                    },
+    tipo:       { required: true, type: String as PropType< TTipoAcuerdo >  },
   })
   const { terceroId, tipo }   = toRefs(props)
 
@@ -97,7 +100,7 @@
   watch(tipo, iniciar, { immediate: true })
   
   function iniciar()
-  {
+  { 
     asignarDatosAcuerdoTercero()
     crearGrupoSiNoHay()    
     useTitle(`${acuerdo.value.emoji} Crear ${acuerdo.value.tipo}`) // Titulo HTML
@@ -105,7 +108,7 @@
     function asignarDatosAcuerdoTercero() {
       const terceroTem          = Object.assign( acuerdo.value.tercero, {} )
       acuerdo.value             = new Acuerdo( tipo.value )
-      if(!!terceroId.value || !!terceroTem.id)
+      if((!!terceroId.value || !!terceroTem.id) && queryURL.origen === "tercero")
           acuerdo.value.tercero = terceroTem
     }
 

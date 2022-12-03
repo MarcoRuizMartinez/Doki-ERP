@@ -1,7 +1,46 @@
 <template>
   <barra  class             ="row justify-end gap-sm">
-    <efecto efecto          ="Down">
-      <!-- //* //////////////////////////////////////////////////////////  Boton Orden fabricacion -->
+    <!-- //* //////////////////////////////////////////////////////////  Notas acuerdo -->
+    <efecto efecto          ="Down">      
+      <q-btn                dense round flat
+        v-if                ="acuerdo.esPedido"
+        icon                ="mdi-comment-multiple"
+        color               ="white"
+        class               ="q-mr-sm"
+        @click              ="clickEnNotas"
+        >
+        <q-badge            floating transparent
+          v-if              ="!!totalNotas"
+          color             ="red"
+          >
+          {{ totalNotas }}
+        </q-badge>
+        <Tooltip>
+          <div
+            v-if            ="!!totalNotas"
+            class           ="text-center"
+            style           ="max-width: 300px; min-width: 200px;"
+            >
+            <div v-if       ="!!acuerdo.notaPrivada">
+              <div class    ="text-bold text-uppercase">Nota privada</div>
+              {{acuerdo.notaPrivada}}
+            </div>
+            <div v-if       ="!!acuerdo.notaPublica">
+              <div class    ="text-bold text-uppercase">Nota publica</div>
+              {{acuerdo.notaPublica}}
+            </div>
+            <div>
+              🔽
+            </div>            
+          </div>
+          <template v-else>
+            Agregar una nota 📝
+          </template>
+        </Tooltip>
+      </q-btn>
+    </efecto>
+    <!-- //* //////////////////////////////////////////////////////////  Boton Orden fabricacion -->
+    <efecto efecto          ="Down">      
       <q-btn
         v-if                ="acuerdo.esEstadoAbierto && acuerdo.esPedido"
         v-bind              ="btnBaseMd"
@@ -15,8 +54,8 @@
         <Tooltip label      ="Generar pedidos a proveedor"/>
       </q-btn>
     </efecto>    
-    <efecto efecto          ="Down">
-      <!-- //* //////////////////////////////////////////////////////////  Boton PDF -->
+    <!-- //* //////////////////////////////////////////////////////////  Boton PDF -->
+    <efecto efecto          ="Down">      
       <q-btn
         v-if                ="acuerdo.esCotizacion && acuerdo.esEstadoValidado"
         v-bind              ="btnBaseMd"
@@ -46,8 +85,8 @@
       </q-btn>
     </efecto>     -->
     <!-- <efecto efecto          ="Down"> -->
-      <q-btn-group  v-if    ="acuerdo.esEstadoCotizado">
-        <!-- //* //////////////////////////////////////////////////////////  Boton Aprobar -->
+      <!-- //* //////////////////////////////////////////////////////////  Boton Aprobar -->
+      <q-btn-group  v-if    ="acuerdo.esEstadoCotizado">        
         <q-btn 
           v-if              ="!acuerdo.esTerceroCtz"
           v-bind            ="btnBaseMd"
@@ -138,4 +177,10 @@
   const { esMobil     } = useTools()
   const emit            = defineEmits(["clickPdf","clickAprobar", "clickAnular", "clickValidar", "clickEditar", "clickBorrar", "clickRemision"])
   const cargandoAlgo    = computed(()=> Object.values(loading.value).some( ( estado : boolean )=> !!estado ) )
+  const totalNotas      = computed(()=> ( !!acuerdo.value.notaPrivada ? 1 : 0 ) + ( !!acuerdo.value.notaPublica ? 1 : 0 )  )
+
+  function clickEnNotas()
+  {
+    window.scrollTo({ top: document.body.scrollHeight,  behavior: 'smooth'})
+  }
 </script>

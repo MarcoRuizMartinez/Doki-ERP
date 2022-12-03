@@ -7,7 +7,7 @@
   <botonera
     class                   ="col-12"
     @click-pdf              ="generarCotizacionPDF"
-    @click-aprobar          ="aprobarCotizacion"
+    @click-aprobar          ="clickAprobarCotizacion"
     @click-anular           ="anularAcuerdo"
     @click-validar          ="validarAcuerdo"
     @click-editar           ="editarAcuerdo"
@@ -26,11 +26,11 @@
     class                   ="col-md-4 col-12"
     height-card-min         ="260px"
   />
-  <anticipos                scroll
-    v-if                    ="acuerdo.esPedido"
+  <enlaces
+    ref                     ="moduloEnlaces"
     class                   ="col-md-4 col-12"
-    height-card-min         ="140px"
-  />
+    height-card             ="220px"
+  />    
   <documentos
     class                   ="col-md-4 col-12"
     height-card-min         ="164px"
@@ -41,10 +41,16 @@
     @descarga-ok            ="cargarArchivos"
     @borrado-ok             ="cargarArchivos"
   />
+  <anticipos                scroll
+    v-if                    ="acuerdo.esPedido"
+    class                   ="col-md-4 col-12"
+    height-card-min         ="140px"
+  />
   <notas
     class                   ="col-md-4 col-12"
     height-card             ="220px"  
-  />
+    :class                  ="{ 'order-1' : acuerdo.esPedido }"
+  /> 
   <productos
     class                   ="col-12"
   />
@@ -92,6 +98,7 @@
   import    terceroYContacto        from "src/areas/acuerdos/components/TerceroYcontacto.vue"
   import    condiciones             from "src/areas/acuerdos/components/Condiciones.vue"
   import    productos               from "src/areas/acuerdos/components/ProductosAcuerdo.vue"
+  import    enlaces                 from "src/areas/acuerdos/components/EnlacesAcuerdos.vue"
   import    anticipos               from "src/areas/acuerdos/components/Anticipos/ModuloAnticipos.vue"
   //import    remision                from "src/areas/acuerdos/components/PDF/RemisionPDF.vue"
   import    documentos              from "components/archivos/ModuloArchivos.vue"
@@ -111,6 +118,7 @@
                             } = useControlAcuerdo()
   const minimizadoTodo        = ref< boolean  >(false)
   const srcPDF                = ref< string   >("")
+  const moduloEnlaces         = ref<InstanceType<typeof enlaces> | null>(null)
 
   const props                 = defineProps({
     id:   { required: true, type: String },
@@ -149,6 +157,12 @@
 
   async function recargar(){
     await buscarAcuerdo( tipo.value, id.value )
+  }
+
+  async function clickAprobarCotizacion()
+  {
+    await aprobarCotizacion()
+    moduloEnlaces.value?.buscar()
   }
 
   function cargarArchivos( files : IArchivo[] ) { acuerdo.value.archivos = files }

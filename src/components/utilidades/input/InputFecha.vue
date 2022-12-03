@@ -116,6 +116,7 @@
   const popupOk         = ref<boolean>(false)
   const { aviso       } = useTools()
   let   fechaTem        : Date 
+  let   actualizandoMV  = false
   const input           = ref<any>({})
   const avisoRangoOut   = debounce (()=>aviso("negative", "Fecha fuera de rango","clock"), 300)
   const emitir          = ()=> {
@@ -124,11 +125,11 @@
     else 
       emit("update:model-value", "")
   }
-  const getFechaLimpia  = ()=> typeof modelo.value === "string" ? modelo.value : ""
-  
+  const getFechaLimpia  = ()=> typeof modelo.value === "string" ? modelo.value : ""  
 
 
-  watch(modelValue, (newDate) => {
+  watch(modelValue, () => {
+    actualizandoMV      = true    
     asignarModelValueAModelo()
   },
   { immediate: true}
@@ -204,6 +205,11 @@
 
   function cambioInputText()
   {
+    if( actualizandoMV) {
+        actualizandoMV  = false
+        return
+    }
+    
     const dateTxt     = getFechaLimpia()
 
     if(!dateTxt) {

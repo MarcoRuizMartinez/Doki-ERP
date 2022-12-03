@@ -1,17 +1,17 @@
 <template>
-  <q-icon
-    name              ="mdi-package-variant-closed"
-    size              ="xs"
-    class             ="op60 op100-hover"
-    >
-    <tooltip-lineas
-      :lineas         ="acuerdo.productos"
-    />
-  </q-icon>
-  <span>
+  <div class            ="row items-center">
+    <q-icon
+      name              ="mdi-package-variant-closed"
+      size              ="xs"
+      class             ="op60 op100-hover"
+      >
+      <tooltip-lineas
+        :lineas         ="acuerdo.productos"
+      />
+    </q-icon>
     <!-- //* //////// Vista Rapida -->
     <q-btn            flat dense round
-      v-if            ="vistaFull"
+      v-if            ="vistaRapida"
       icon            ="mdi-eye"
       class           ="op40 op100-hover q-ml-sm"
       padding         ="none"
@@ -19,7 +19,7 @@
       @click          ="emit('vistaRapida')"
     />
     <q-btn            flat dense round
-      v-if            ="acuerdo.esPedido && vistaFull"
+      v-if            ="acuerdo.esPedido && vistaRapida"
       icon            ="mdi-tools"
       class           ="op40 op100-hover q-ml-sm"
       padding         ="none"
@@ -35,32 +35,40 @@
       size            ="md"
       target          ="_blank"
       :href           ="acuerdo.urlDolibarr"
-    />       
-    <router-link
-      class           ="fuente-mono"
-      :to             ="`/${acuerdo.ruta}/${acuerdo.id}`"
-      >
-      {{ acuerdo.refCorta }}
-    </router-link>
-<!--     <a
-      class         ="fuente-mono"
-      :href         ="urlDolibarr + '/commande/card.php?id=' + acuerdo.id"
-      target        ="_blank"
-      >
-      {{ acuerdo.refCorta }}
-    </a> -->
-    <tooltip-acuerdo    :acuerdo="acuerdo"/>
-  </span>
+    />
+    <div>
+      <router-link
+        class           ="fuente-mono"
+        :to             ="`/${acuerdo.ruta}/${acuerdo.id}`"
+        @click          ="clickLink"
+        >
+        {{ refLarga ? acuerdo.ref : acuerdo.refCorta }}
+      </router-link>
+      <tooltip-acuerdo    :acuerdo="acuerdo"/>
+    </div>
+  </div>
 </template>
 <script lang="ts" setup>
-  import {  PropType        } from "vue"    
+  import {  PropType, toRefs} from "vue"    
   import {  IAcuerdo        } from "src/areas/acuerdos/models/Acuerdo"
   import    tooltipLineas     from "src/areas/acuerdos/components/Tooltips/TooltipLineas.vue"
   import    tooltipAcuerdo    from "src/areas/acuerdos/components/Tooltips/TooltipAcuerdo.vue"
+  import {  formatoPrecio   } from "src/useSimpleOk/useTools"  
 
   const props               = defineProps({
-    acuerdo:    { required: true,   type: Object as PropType< IAcuerdo > },
-    vistaFull:  { default:  false,  type: Boolean },
+    acuerdo:        { required: true,   type: Object as PropType< IAcuerdo > },
+    vistaFull:      { default:  false,  type: Boolean },
+    vistaRapida:    { default:  false,  type: Boolean },
+    refLarga:       { default:  false,  type: Boolean },
+    conSubTotal:    { default:  false,  type: Boolean },
   })
-  const emit                = defineEmits(["vistaRapida"])  
+  const emit                  = defineEmits<{
+    (e: "vistaRapida",  value: void     ): void
+    (e: "clickAcuerdo", value: IAcuerdo ): void
+  }>()  
+  const { acuerdo        }   = toRefs( props )
+
+  function clickLink(){    
+    emit("clickAcuerdo", acuerdo.value)
+  }
 </script>

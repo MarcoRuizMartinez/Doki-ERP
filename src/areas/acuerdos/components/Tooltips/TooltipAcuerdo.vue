@@ -14,7 +14,15 @@
             <td>Contacto</td>
             <td>{{ acuerdo.contacto.nombreCompleto }}</td>
         </tr>
-        <tr>
+        <tr v-if="acuerdo.esOCProveedor">
+            <td>Creador</td>
+            <td>
+            <chip-usuario
+              :usuario            ="acuerdo.creador"
+            />
+          </td>
+        </tr>        
+        <tr v-if="!acuerdo.esOCProveedor">
           <td>Comercial</td>
           <td>
             <chip-usuario

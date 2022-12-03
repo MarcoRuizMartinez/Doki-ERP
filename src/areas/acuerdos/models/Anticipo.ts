@@ -186,19 +186,14 @@ export class Anticipo implements IAnticipo
   }
 
   static estados = [
-    {label: ESTADO_ANTICIPO_LABEL.PENDIENTE,  value: 1},
-    {label: ESTADO_ANTICIPO_LABEL.VERIFICADO, value: 2},
-    {label: ESTADO_ANTICIPO_LABEL.CREDITO,    value: 3},
-    {label: ESTADO_ANTICIPO_LABEL.ANULADO,    value: 0},
+    {label: ESTADO_ANTICIPO_LABEL.PENDIENTE,  value: ESTADO_ANTICIPO.PENDIENTE },
+    {label: ESTADO_ANTICIPO_LABEL.VERIFICADO, value: ESTADO_ANTICIPO.VERIFICADO },
+    {label: ESTADO_ANTICIPO_LABEL.CREDITO,    value: ESTADO_ANTICIPO.CREDITO },
+    {label: ESTADO_ANTICIPO_LABEL.ANULADO,    value: ESTADO_ANTICIPO.ANULADO },
   ]
   
   static tipos = [
-    {label: TIPO_ANTICIPO_LABEL.PAGO,         value: 1},
-    {label: TIPO_ANTICIPO_LABEL.DEVOLUCION,   value: 2},
+    {label: TIPO_ANTICIPO_LABEL.PAGO,         value: TIPO_ANTICIPO.PAGO },
+    {label: TIPO_ANTICIPO_LABEL.DEVOLUCION,   value: TIPO_ANTICIPO.DEVOLUCION },
   ]
 }
-
-/*
-col-6 Select y Editor  Archivo cliente
-col-6 Select y EditorArchivo interno
-*/

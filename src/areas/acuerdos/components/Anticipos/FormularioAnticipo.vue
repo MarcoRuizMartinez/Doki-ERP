@@ -101,6 +101,7 @@
         class                   ="col-12"
         :alerta                 ="modelo.estadoSelect.label === ESTADO_ANTICIPO_LABEL.VERIFICADO"
         :options                ="acuerdo.archivos"
+        @update:model-value     ="modelo.estadoSelect = {label: ESTADO_ANTICIPO_LABEL.VERIFICADO, value: ESTADO_ANTICIPO.VERIFICADO } "
       />
       <!-- //* ///////////////////////////////////////////////////////////// Comprobante Cliente -->
       <select-label-value       clearable
@@ -128,7 +129,8 @@
   // * ///////////////////////////////////////////////////////////////////////////////// Modelos
   import {  IAnticipo, Anticipo,
             TIPO_ANTICIPO_LABEL,
-            ESTADO_ANTICIPO_LABEL
+            ESTADO_ANTICIPO_LABEL,
+            ESTADO_ANTICIPO
                                 } from "src/areas/acuerdos/models/Anticipo"
   //* /////////////////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs           } from 'pinia'                            
