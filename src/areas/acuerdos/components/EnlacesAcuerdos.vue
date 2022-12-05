@@ -29,7 +29,7 @@
       <!-- //* ///////////////  Columna Ref  -->
       <template #body-cell-ref  ="props">
         <q-td   :props          ="props">
-          <ref-acuerdo          ref-larga vista-full
+          <ref-acuerdo          ref-larga
             :acuerdo            ="props.row"
             @click-acuerdo      ="( a : IAcuerdo )=> acuerdo = a "
           />

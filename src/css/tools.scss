@@ -150,7 +150,7 @@
 //.radius6{ border-radius: 6px; }
 //.radius6{ border-radius: 6px; }
 
- 
+
 .h-20px{
   height: 20px;
 }
@@ -182,4 +182,8 @@
 
 .order-1{
   order: 1;
+}
+
+.min-w-max{
+  min-width: max-content;
 }

@@ -1,5 +1,5 @@
 <template>
-  <div class            ="row items-center">
+  <div class            ="row items-center min-w-max">
     <q-icon
       name              ="mdi-package-variant-closed"
       size              ="xs"
@@ -53,11 +53,9 @@
   import {  IAcuerdo        } from "src/areas/acuerdos/models/Acuerdo"
   import    tooltipLineas     from "src/areas/acuerdos/components/Tooltips/TooltipLineas.vue"
   import    tooltipAcuerdo    from "src/areas/acuerdos/components/Tooltips/TooltipAcuerdo.vue"
-  import {  formatoPrecio   } from "src/useSimpleOk/useTools"  
 
   const props               = defineProps({
     acuerdo:        { required: true,   type: Object as PropType< IAcuerdo > },
-    vistaFull:      { default:  false,  type: Boolean },
     vistaRapida:    { default:  false,  type: Boolean },
     refLarga:       { default:  false,  type: Boolean },
     conSubTotal:    { default:  false,  type: Boolean },
