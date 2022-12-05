@@ -458,12 +458,14 @@ export function useCotizacionPDF()
                                 : "Transferencia bancaria: Cuenta corriente Bancolombia # 691-338482-61" 
     const aNombre             = `A nombre de: ${doc.empresaNit}`
     const mensaje3            = "Somos régimen común - No somos autoretenedores"
-    const arrayMensajeFinal   = [cuenta, aNombre, mensaje3]
-    doc.y                     += 10
+    const datosPersonales     = "Al recibir esta cotizacion, acepta nuestra política de tratamiento de datos personales."
+    const arrayMensajeFinal   = [cuenta, aNombre, mensaje3, datosPersonales]
+    doc.y                     += 10 
     doc.setFont               ( 12, 50 )
     pdf.text                  ( arrayMensajeFinal,   doc.anchoMitad, doc.y, { align: "center" })
-    //doc.y                     += 15
-    //pdf.text                  ( aNombre,  doc.anchoMitad, doc.y, { align: "center" })
+    pdf.setTextColor( "#1a0dab" )
+    doc.y                     += 42 
+    pdf.textWithLink          ('Ver políticas de tratamiento de datos', doc.anchoMitad, doc.y, { url: doc.urlPoliticas, align: "center" })
   }
 
 

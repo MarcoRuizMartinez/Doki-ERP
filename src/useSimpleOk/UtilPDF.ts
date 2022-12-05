@@ -39,6 +39,7 @@ export interface IUtilPDF extends IInicioPDF {
   margenDerX:           number
   posXMargenDerecha:    number
   empresaNit:           string
+  urlPoliticas:         string
   seNecesitaNuevaHoja:  ( posY  : number, altura : number ) => boolean
   setFont:              ( size  : number, color  : number ) => void
   negrita:              ( align : TAlinacion, espaciado?: number  ) => INegrita
@@ -118,6 +119,13 @@ export class UtilPDF implements IUtilPDF {
   get pieText     (){
     return EMPRESA + " " + NIT + " - " + DIR + " - " + (this.area === AREA.MUBLEX ? TEL_MUBLEX : TEL_ESCOM) 
   }
+
+  get urlPoliticas(){
+    return  this.area === AREA.MUBLEX
+          ? "https://www.mublex.com/documentos/Politica_para_el_tratamiento_de_datos_personales.pdf" 
+          : "https://www.escoming.com/documentos/Politica_Proteccion_de_Datos_Personales_Escom.pdf"
+  }
+
 
   setFont( size : number, color : number )
   {
