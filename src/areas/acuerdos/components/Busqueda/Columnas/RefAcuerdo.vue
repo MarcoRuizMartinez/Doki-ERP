@@ -17,7 +17,9 @@
       padding         ="none"
       size            ="md"
       @click          ="emit('vistaRapida')"
-    />
+      >
+      <Tooltip  label ="Vista rápida"/>
+    </q-btn>
     <q-btn            flat dense round
       v-if            ="acuerdo.esPedido && vistaRapida"
       icon            ="mdi-tools"
@@ -27,7 +29,9 @@
       target          ="_blank"
       :disable        ="!acuerdo.esEstadoAbierto"
       :href           ="acuerdo.urlDolibarrOC"
-    />        
+      >
+      <Tooltip  label ="Generar OC a proveedor"/>
+    </q-btn>
     <q-btn            flat dense round
       icon            ="mdi-alpha-d-circle"
       class           ="op40 op100-hover q-ml-sm"
@@ -35,7 +39,9 @@
       size            ="md"
       target          ="_blank"
       :href           ="acuerdo.urlDolibarr"
-    />
+      >
+      <Tooltip  label ="Ver en Dolibarr"/>
+    </q-btn>
     <div>
       <router-link
         class           ="fuente-mono"
