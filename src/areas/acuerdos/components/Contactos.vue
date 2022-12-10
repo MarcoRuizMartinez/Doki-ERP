@@ -17,7 +17,7 @@
       @contacto-cambio        =" ( c, idOld ) => cambiarContactoAcuerdo ( c, idOld, TIPOS_CONTACTO.COMERCIAL )"
     />
     <!-- //* ///////////////////////////////////////////////// Contacto entrega -->
-    <select-contacto          quitar-contacto
+    <select-contacto          quitar-contacto tipo-entrega
       class                   ="col-md-4 col-12"
       v-model:contacto        ="acuerdo.contactoEntrega"
       label                   ="Contacto entrega"

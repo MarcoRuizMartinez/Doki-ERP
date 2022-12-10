@@ -38,7 +38,7 @@ export interface IContacto {
     tipoId:               TIPOS_CONTACTO_ID
     nombres:              string
     apellidos:            string
-    empresa:              string // para cotizaciones
+    empresa:              string // para cotizaciones - nota publica en Dolibarr
     cargo:                string
     correo:               string
     telefono:             string
@@ -50,7 +50,7 @@ export interface IContacto {
     fechaCreadoCorta:     string
     fechaModificadoCorta: string
     terceroId:            number
-    nota:                 string
+    nota:                 string  // nota privada en Dolibarr
     activo:               boolean
     nombreCompleto:       string
     empresaYnombre:       string

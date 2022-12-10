@@ -79,8 +79,7 @@ export function servicesAcuerdos()
                                                       mensaje:      "cargar cotización",
                                                       tiempoEspera: 10000
                                                     }
-                                                    )      
-      console.log("data: ", data);
+                                                    )
       if(ok && typeof data == "object" )
       {
         const acuerdo    = await Acuerdo.convertirDataApiToAcuerdo( data, tipo )

@@ -67,6 +67,7 @@
     <!-- //* /////////////  Formulario Contacto  -->
     <form-contacto
       v-model                 ="contactoEditar"
+      :tipo-entrega           ="tipoEntrega"
       :es-tercero-ctz         ="tercero.esTerceroCtz"
       :municipio              ="tercero.municipio"
       :editando               ="editar"
@@ -106,15 +107,18 @@
 
 
   const props                 = defineProps({
-    icon:           { default:  "mdi-account",  type: String                            },
-    label:          { default:  "Contacto",     type: String                            },
-    disable:        { default:  false,          type: Boolean                           },
-    readonly:       { default:  false,          type: Boolean                           },
-    contacto:       { required: true,           type: Object as PropType< IContacto >   },
-    tercero:        { required: true,           type: Object as PropType< ITercero >    },
-    quitarContacto: { default:  false,          type: Boolean                           },
+    icon:             { default:  "mdi-account",  type: String                          },
+    label:            { default:  "Contacto",     type: String                          },
+    disable:          { default:  false,          type: Boolean                         },
+    readonly:         { default:  false,          type: Boolean                         },
+    contacto:         { required: true,           type: Object as PropType< IContacto > },
+    tercero:          { required: true,           type: Object as PropType< ITercero >  },
+    quitarContacto:   { default:  false,          type: Boolean                         },
+    tipoEntrega:      { default:  false,          type: Boolean                         },
   })
-  const { contacto, tercero } = toRefs(props)
+  const { contacto,
+          tipoEntrega,
+          tercero           } = toRefs(props)
 
   const ventanaOk             = ref<boolean>(false)
 
@@ -165,7 +169,8 @@
     let url                   = "thirdparty_ids=" + tercero.value.id + "&search_status=1&limit=10"
     if(!!busqueda) url        += `&sqlfilters=(t.firstname%3Alike%3A'%25${busqueda}%25')||(t.lastname%3Alike%3A'%25${busqueda}%25')||(t.note_public%3Alike%3A'%25${busqueda}%25')`.replaceAll(" ", "%20")
     const { data, ok }        = await apiDolibarr( "buscar", "contacto", url )
-    let contacts :IContacto[] = []
+    const contacts :IContacto[] = []
+    console.log("contacts: ", contacts);
 
     if(ok && Array.isArray( data ) && !!data.length)
     {      
@@ -175,7 +180,8 @@
         contacts.push( await Contacto.getContactoFromAPIDolibarr( contacto ) )        
       }
     }
-    doneFn( () => contactos.value = contacts )
+    doneFn( () => contactos.value =  contacts )
+    //tipoEntrega.value ? contacts.filter( c => !!c.municipio.id && !!c.direccion) : contacts )
 
     cargando.value            = false
   }

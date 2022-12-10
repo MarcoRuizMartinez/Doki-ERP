@@ -799,12 +799,6 @@ export class Acuerdo implements IAcuerdo
       }
     }
 
-    console.log("acu.contactoComercial: ", acu.contactoComercial);
-    console.log("acu.contactoContable: ", acu.contactoContable);
-    console.log("acu.contactoEntrega: ", acu.contactoEntrega);
-
-    console.log("acu.contactos: ", acu.contactos);
-
     acu.condicionPago     = await getCondicionesPagoDB  ( acu.condicionPagoId   )
     acu.formaPago         = await getFormasPagoDB       ( acu.formaPagoId       )
     acu.metodoEntrega     = await getMetodosEntregaDB   ( acu.metodoEntregaId   )

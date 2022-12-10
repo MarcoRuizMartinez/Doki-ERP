@@ -4,7 +4,7 @@
     icono                     ="mdi-handshake"
     :cargando                 ="!acuerdo.tercero.id && !acuerdo.esNuevo"
     class-contenido           ="q-col-gutter-sm"
-    >    
+    >
     <!-- //* ///////////////////////////////////////////////// Fecha Creacion -->
     <input-fecha              readonly
       v-if                    ="!acuerdo.esNuevo"
@@ -50,7 +50,7 @@
       @select                 ="editarCondicionPago"
     />
     <!-- //* ///////////////////////////////////////////////// Forma de pago -->
-    <select-label-value       clearable
+    <select-label-value       
       v-model                 ="acuerdo.formaPago"
       label                   ="Forma de pago"
       icon                    ="mdi-cash-refund"
@@ -60,7 +60,7 @@
       @select                 ="editarFormaPago"
     />
     <!-- //* ///////////////////////////////////////////////// Metodo entrega -->
-    <select-label-value       clearable
+    <select-label-value       
       v-model                 ="acuerdo.metodoEntrega"
       label                   ="Método de entrega"
       icon                    ="mdi-truck-delivery"

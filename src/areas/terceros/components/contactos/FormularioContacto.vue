@@ -125,12 +125,22 @@
       <municipios
         v-model                 ="contacto.municipio"
         class                   ="col-12"
+        :requerido              ="tipoEntrega"
+        :readonly               ="readonly"
+      />
+      <!-- //* //////////////   Dirección  -->
+      <input-text               alerta
+        v-if                    ="tipoEntrega"
+        v-model                 ="contacto.direccion"
+        label                   ="Dirección"
+        class                   ="col-12"
+        icon                    ="mdi-map-marker-radius"
         :readonly               ="readonly"
       />
       <!-- //* //////////////   Notas  -->
       <q-input                  filled autogrow 
         v-model                 ="contacto.nota"
-        placeholder             ="Notas sobre el contactco..."
+        :placeholder            ="tipoEntrega ? 'Indicaciones' : 'Notas sobre el contacto...'"
         class                   ="col-12"
         type                    ="textarea"
         :readonly               ="readonly"
@@ -173,7 +183,7 @@
           class                 ="col-12 column mobile-only"
           v-show                ="!readonly"
           >
-        <!-- //* /////////////  Cpiar  -->
+        <!-- //* /////////////  Copiar  -->
         <q-btn                  flat
           v-if                  ="(!readonly && !contacto.id)"
           label                 ="Copiar"
@@ -282,6 +292,7 @@
     esTerceroCtz: { default:  false,            type: Boolean                           },
     borrable:     { default:  false,            type: Boolean                           },
     editando:     { default:  false,            type: Boolean                           },
+    tipoEntrega:  { default:  false,            type: Boolean                           },
   })
   const emit                  = defineEmits(["update:modelValue", "crear", "borrar"])
 

@@ -84,7 +84,7 @@
     emit('clear')
   }
 
-  function regla( municipio : IMunicipio )
+  function regla( municipio : IMunicipio ) : boolean | string
   {
     return  ( (!!municipio && !!municipio.id) || !requerido.value )
             ||

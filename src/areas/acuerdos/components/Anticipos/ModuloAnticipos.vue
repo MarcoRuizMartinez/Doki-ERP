@@ -6,8 +6,7 @@
     icono                       ="mdi-cash-check"
     mensaje-sin-resultados      ="Sin anticipos"
     icono-sin-resultados        ="mdi-cash"
-    size-icon-carga             ="8em"
-    height-card-min             ="182px"
+    size-icon-carga             ="6.5em"    
     :padding-contenido          ="modo == 'normal' ? '0' : '12px' "
     :modo                       ="modo"
     >
@@ -33,18 +32,32 @@
       </q-btn>      
     </template>
     <template                   #menu>
-      <div  class               ="text-center full-width text-1_1em">
-        <span class             ="text-grey-10">
-          Total anticipos:
-        </span>
-        <span class             ="fuente-mono text-grey-8 text-bold">
-          {{ formatoPrecio( acuerdo.totalAnticipos, 'decimales-no' )}}
-        </span>
-      </div>
+      <!-- //* ///////////////////////////////////////////////// Condiciones pago -->
+      <select-label-value       hundido
+        v-model                 ="acuerdo.condicionPago"
+        label                   ="Condiciones de pago"
+        icon                    ="mdi-account-cash"
+        class                   ="col-md-6 col-12"
+        defecto                 ="Anticipo 100%"
+        :options                ="condicPago.filter( c => c.esFacturable || !acuerdo.esCotizacion )"
+        :loading                ="loading.condicionPago"
+        @select                 ="editarCondicionPago"
+      />
+      <!-- //* ///////////////////////////////////////////////// Forma de pago -->
+      <select-label-value       hundido
+        v-model                 ="acuerdo.formaPago"
+        label                   ="Forma de pago"
+        icon                    ="mdi-cash-refund"
+        class                   ="col-md-6 col-12"
+        :options                ="formadPago"
+        :loading                ="loading.formaPago"
+        @select                 ="editarFormaPago"
+      />
     </template>    
-    <q-table                    borbordered dense flat grid hide-header hide-bottom
+    <q-table                    borbordered dense flat grid hide-header hide-pagination
       class                     ="fit tabla-maco"
       row-key                   ="id"
+      style                     ="min-height: 160px;"
       :rows                     ="acuerdo.anticipos"
       :columns                  ="columnas"
       >
@@ -56,6 +69,17 @@
           @click-anticipo       ="mostrarFormulario"
           @click-recibo         ="generarReciboCaja"
         />
+      </template>
+      <!-- //* ///////////////////////////////////////////////////// Vista Card de producto -->
+      <template                 #bottom>
+        <div  class             ="text-center full-width text-1_1em">
+          <span class           ="text-grey-10">
+            Total anticipos:
+          </span>
+          <span class           ="fuente-mono text-grey-8 text-bold">
+            {{ formatoPrecio( acuerdo.totalAnticipos, 'decimales-no' )}}
+          </span>
+        </div>
       </template>
     </q-table>
     <!-- //* /////////////////  Visor PDF anticipo -->
@@ -82,15 +106,15 @@
   </ventana>
   <!-- //* ///////////////////////////////////////////////////////////// Modal Buscar Formulario anticipo -->
   <q-dialog
-    v-model                   ="ventanaFormulario"
-    transition-show           ="slide-up"
-    transition-hide           ="slide-down"
+    v-model                     ="ventanaFormulario"
+    transition-show             ="slide-up"
+    transition-hide             ="slide-down"
     >
     <formulario
-      v-model                 ="anticipo"
-      @update:model-value     ="( ( a : IAnticipo ) => recibirAnticipo( a, 'editar') )"
-      @creado                 ="( ( a : IAnticipo ) => recibirAnticipo( a, 'crear') )"
-      @borrado                ="( ( a : IAnticipo ) => recibirAnticipo( a, 'borrar') )"
+      v-model                   ="anticipo"
+      @update:model-value       ="( ( a : IAnticipo ) => recibirAnticipo( a, 'editar') )"
+      @creado                   ="( ( a : IAnticipo ) => recibirAnticipo( a, 'crear') )"
+      @borrado                  ="( ( a : IAnticipo ) => recibirAnticipo( a, 'borrar') )"
     />
   </q-dialog>
 </template>
@@ -117,17 +141,27 @@
   import {  btnBaseSm             } from "src/useSimpleOk/useEstilos"
   import {  useApiDolibarr        } from "src/services/useApiDolibarr"
   import {  useReciboCajaPDF      } from "src/areas/acuerdos/composables/useReciboCajaPDF"
+  import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"
+  import {  dexieCondicionesPago,
+            dexieFormasPago       } from "src/services/useDexie"
   //* /////////////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana                 from "components/utilidades/Ventana.vue"
   import    cardAnticipo            from "./CardAnticipo.vue"
   import    formulario              from "./FormularioAnticipo.vue"
   import    visorPdf                from "components/utilidades/VisorPDF.vue"  
   import    visorImagen             from "components/utilidades/VisorImagen.vue"
+  import    selectLabelValue        from "components/utilidades/select/SelectLabelValue.vue"
 
-  const { acuerdo, anticipo } = storeToRefs( useStoreAcuerdo() )  
+  const { acuerdo,
+          anticipo,
+          loading           } = storeToRefs( useStoreAcuerdo() )  
   const { miFetch           } = useFetch()
   const { aviso             } = useTools()
   const { apiDolibarr       } = useApiDolibarr()
+  const condicPago            = dexieCondicionesPago()
+  const formadPago            = dexieFormasPago()
+  const { editarFormaPago,
+          editarCondicionPago}= useControlAcuerdo()
   const modo                  = ref< ModosVentana >("buscando")
   const ventanaPDF            = ref< boolean    >(false)
   const ventanaPDFRecibo      = ref< boolean    >(false)
@@ -258,7 +292,7 @@
       aviso("negative", "Error descargando el archivo", "file")
   }  
 
-  function recibirAnticipo( antici : IAnticipo, accion : "crear" | "editar" | "borrar" )
+  async function recibirAnticipo( antici : IAnticipo, accion : "crear" | "editar" | "borrar" )
   {
     if(accion === "editar" || accion === "borrar")
     {
@@ -276,9 +310,31 @@
     else{ // Nuevo
       acuerdo.value.anticipos.push( antici )
       modo.value                  = "normal"
+
+      for await (const forma of ["datafono", "banc", "efectivo", "línea"])
+      {
+        const ok = await cambiarFormaPago( forma )
+        if(ok) break
+      }
     }
     
     ventanaFormulario.value       = false
+
+    async function cambiarFormaPago( formaLabel : string ) : Promise<boolean>
+    {
+      const encontro              = antici.cuenta.label.toLowerCase().includes(formaLabel)
+      if(encontro)
+      {
+        const forma               = formadPago.value.find( f => f.label.toLowerCase().includes(formaLabel))
+        if(!!forma){
+          acuerdo.value.formaPago = forma
+          await editarFormaPago(forma)
+          return true
+        }
+      }
+
+      return false
+    }
   }
 
   async function generarReciboCaja( anti : IAnticipo )

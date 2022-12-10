@@ -3,7 +3,7 @@
     <q-select                 dense options-dense hide-bottom-space borderless
       v-model                 ="modelo"
       options-selected-class  ="text-weight-bold"
-      class                   ="text-caption"
+      class                   ="text-caption selector"
       popup-content-class     ="panel-blur"
       lazy-rules              ="ondemand"
       :rules                  ="[ ...rules, regla ]"
@@ -203,3 +203,8 @@
             ( typeof alerta.value == "string" ? alerta.value : `El campo '${label.value}' no puede estar vació` )
   }  
 </script>
+<style>
+.selector span{
+  min-width: max-content;
+}
+</style>
