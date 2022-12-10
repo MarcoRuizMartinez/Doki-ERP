@@ -123,7 +123,7 @@
       :disable              ="cargandoAlgo
                               || !acuerdo.proGrupos.length
                               || !acuerdo.proGrupos[0].productos.length
-                              || (!acuerdo.contacto.id && (acuerdo.tercero.esEmpresa || acuerdo.esTerceroCtz))
+                              || (!acuerdo.contactoComercial.id && (acuerdo.tercero.esEmpresa || acuerdo.esTerceroCtz))
                             "
       :loading              ="loading.validar"
       @click                ="emit('clickValidar')"

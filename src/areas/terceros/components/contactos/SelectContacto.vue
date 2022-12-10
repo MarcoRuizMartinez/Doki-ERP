@@ -1,9 +1,9 @@
 <template>
   <q-select                   filled use-input dense fill-input hide-selected
     v-model                   ="modelo"
-    label                     ="Contacto"
     input-debounce            ="400"
     behavior                  ="dialog"
+    :label                    ="label"
     :class                    ="$attrs.class"
     :loading                  ="cargando"
     :options                  ="contactos"
@@ -16,7 +16,7 @@
     >
     <template                 #prepend>
       <q-icon
-        name                  ="mdi-account"
+        :name                 ="icon"
         :color                ="!!modelo && !!modelo.id ? 'primary' : 'grey-6'"
       />
     </template>
@@ -37,7 +37,15 @@
         <Tooltip label        ="Editar contacto"/>
       </q-btn>
       <q-btn                  dense flat
-        v-if                  ="!readonly"
+        v-if                  ="!readonly && quitarContacto && !!contacto.id"
+        icon                  ="mdi-account-off"
+        padding               ="0"
+        @click.stop           ="emit('quitarContacto', contacto)"
+        >
+        <Tooltip label        ="Quitar contacto"/>
+      </q-btn>      
+      <q-btn                  dense flat
+        v-else-if             ="!readonly"
         icon                  ="mdi-plus"
         padding               ="0"
         @click.stop           ="mostrarVentana('nuevo')"
@@ -91,16 +99,20 @@
     const emit                  = defineEmits<{
     (e: 'update:contacto',  value: IContacto                ): void
     (e: 'contactoInicial',  value: IContacto                ): void
+    (e: 'quitarContacto',   value: IContacto                ): void
     (e: 'contactoNuevo',    value: IContacto                ): void
     (e: 'contactoCambio',   value: IContacto, idOld: number ): void
   }>()
 
 
   const props                 = defineProps({
-    disable:    { default:  false,  type: Boolean                           },
-    readonly:   { default:  false,  type: Boolean                           },
-    contacto:   { required: true,   type: Object as PropType< IContacto >   },
-    tercero:    { required: true,   type: Object as PropType< ITercero >    },
+    icon:           { default:  "mdi-account",  type: String                            },
+    label:          { default:  "Contacto",     type: String                            },
+    disable:        { default:  false,          type: Boolean                           },
+    readonly:       { default:  false,          type: Boolean                           },
+    contacto:       { required: true,           type: Object as PropType< IContacto >   },
+    tercero:        { required: true,           type: Object as PropType< ITercero >    },
+    quitarContacto: { default:  false,          type: Boolean                           },
   })
   const { contacto, tercero } = toRefs(props)
 

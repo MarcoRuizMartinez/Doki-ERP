@@ -2,24 +2,40 @@ import {  IMunicipio,
           Municipio         } from "src/models/Municipio"
 import {  getMunicipioDB    } from "src/services/useDexie"
 
+import {  TTipoAcuerdo, 
+          TIPO_ACUERDO      } from "src/areas/acuerdos/models/ConstantesAcuerdos"
+
 export const enum TIPOS_CONTACTO_ID { // llx_c_type_contact
   NO_ASIGNADO             = 0,
+  
   CTZ_BILLING             = 40,
   CTZ_CUSTOMER            = 41,
   CTZ_SHIPPING            = 42,
+
+  PED_BILLING             = 100, // Contacto factura cliente
+  PED_CUSTOMER            = 101, // Cliente en seguimiento de orden	
+  PED_SHIPPING            = 102, //	Contacto de envío del cliente
+  
+  FAC_BILLING             = 60, // Contactar facturación cliente
+  FAC_SHIPPING            = 61, // Contacto con el cliente de entrega
+  FAC_SERVICE             = 62, // Contactar con la prestación del cliente
 }
 
 export const enum TIPOS_CONTACTO { // llx_c_type_contact
   NO_ASIGNADO             = "",
-  CTZ_BILLING             = "BILLING",
-  CTZ_CUSTOMER            = "CUSTOMER",
-  CTZ_SHIPPING            = "SHIPPING",
+  CONTABLE                = "BILLING",  // Contacto factura cliente
+  COMERCIAL               = "CUSTOMER", // Cliente en seguimiento de orden	
+  ENTREGA                 = "SHIPPING", //	Contacto de envío del cliente
+  SERVICE                 = "SERVICE"
 }
+
+export type TTipoContacto = TIPOS_CONTACTO.NO_ASIGNADO | TIPOS_CONTACTO.CONTABLE | TIPOS_CONTACTO.COMERCIAL | TIPOS_CONTACTO.ENTREGA
 
 export interface IContacto {
     id:                   number
     idRelacion:           number
-    tipo:                 TIPOS_CONTACTO_ID
+    tipo:                 TTipoContacto
+    tipoId:               TIPOS_CONTACTO_ID
     nombres:              string
     apellidos:            string
     empresa:              string // para cotizaciones
@@ -40,6 +56,9 @@ export interface IContacto {
     empresaYnombre:       string
     municipio:            IMunicipio
     municipioId:          number
+    esTipoComercial:      boolean
+    esTipoContable:       boolean
+    esTipoEntrega:        boolean
     getContactoToAPIDolibarr: () => object
 }
 
@@ -47,7 +66,7 @@ export class Contacto implements IContacto
 {
   id:                     number
   idRelacion:             number
-  tipo:                   TIPOS_CONTACTO_ID
+  tipoId:                 TIPOS_CONTACTO_ID
   nombres:                string
   apellidos:              string
   empresa:                string
@@ -68,7 +87,7 @@ export class Contacto implements IContacto
   constructor( terceroId : number = 0 )
   {
     this.id               = 0
-    this.tipo             = 0
+    this.tipoId           = 0
     this.idRelacion       = 0
     this.nombres          = ""
     this.apellidos        = ""
@@ -108,6 +127,14 @@ export class Contacto implements IContacto
     return this.fechaModificado.toLocaleDateString('sv-SE') 
   }
 
+  get tipo() : TTipoContacto {
+    return Contacto.getTipoStringFromTipoId( this.tipoId )
+  }
+
+  get esTipoComercial (): boolean { return  this.tipo === TIPOS_CONTACTO.COMERCIAL  }
+  get esTipoContable  (): boolean { return  this.tipo === TIPOS_CONTACTO.CONTABLE   }
+  get esTipoEntrega   (): boolean { return  this.tipo === TIPOS_CONTACTO.ENTREGA    }
+
   getContactoToAPIDolibarr() : any
   {
     let contacto   = {
@@ -135,7 +162,6 @@ export class Contacto implements IContacto
                   }
     return contacto
   }
-
 
   static async getContactoFromAPIDolibarr( contactoApi : any ) : Promise<IContacto>
   {
@@ -171,311 +197,70 @@ export class Contacto implements IContacto
     return contacto
   }
 
-  static async getContactoFromAPIMaco( contactoApi : string ) : Promise<IContacto>
+  static async getContactoFromAPIMaco( contactoApi : any ) : Promise<IContacto>
   {
-    let contactoJSON          = JSON.parse( contactoApi )
-    contactoJSON.id           = +contactoJSON.id
-    contactoJSON.idRelacion   = +contactoJSON.idRelacion
-    contactoJSON.municipioId  = +contactoJSON.municipioId
+    contactoApi.id            = +contactoApi.id
+    contactoApi.tipoId        = +contactoApi.tipoId
+    contactoApi.idRelacion    = +contactoApi.idRelacion
+    contactoApi.municipioId   = +contactoApi.municipioId
 
-    let contacto              = Object.assign( new Contacto(), contactoJSON ) as IContacto
+    let contacto              = Object.assign( new Contacto(), contactoApi ) as IContacto
         contacto.activo       = true
-        contacto.municipio    = await getMunicipioDB( contactoJSON.municipioId )
+        contacto.municipio    = await getMunicipioDB( contactoApi.municipioId )
     
     return contacto
-/*     
-    contacto.nombres          = contactoApi.nombres 
-    contacto.apellidos        = contactoApi.apellidos
-    contacto.cargo            = contactoApi.cargo 
-    contacto.correo           = contactoApi.correo
-    contacto.telefono         = contactoApi.telefono
-    contacto.telefono_2       = contactoApi.telefono_2
-    contacto.extension        = contactoApi.extension
-    contacto.nota             = contactoApi.nota
-    contacto.empresa          = contactoApi.empresa
-    contacto.direccion        = contactoApi.direccion 
-*/
+  }
+
+  static getTipoStringFromTipoId( id : number ) : TTipoContacto
+  {
+    let tipo    = TIPOS_CONTACTO.NO_ASIGNADO
+    if( id    === TIPOS_CONTACTO_ID.CTZ_BILLING   ||
+        id    === TIPOS_CONTACTO_ID.PED_BILLING   ||
+        id    === TIPOS_CONTACTO_ID.FAC_BILLING
+      )
+      tipo      = TIPOS_CONTACTO.CONTABLE
+    else
+    if( id    === TIPOS_CONTACTO_ID.CTZ_CUSTOMER  ||
+        id    === TIPOS_CONTACTO_ID.PED_CUSTOMER  ||
+        id    === TIPOS_CONTACTO_ID.FAC_SERVICE
+      )
+      tipo      = TIPOS_CONTACTO.COMERCIAL
+    else
+    if( id    === TIPOS_CONTACTO_ID.CTZ_SHIPPING  ||
+        id    === TIPOS_CONTACTO_ID.PED_SHIPPING  ||
+        id    === TIPOS_CONTACTO_ID.FAC_SHIPPING
+      )
+      tipo      = TIPOS_CONTACTO.ENTREGA
+
+      return tipo
+  }
+
+  static getTipoIdFromTipoString( tipo : string, tipoAcuerdo : TTipoAcuerdo  ) : number
+  {
+    let id          = 0
+    if( tipoAcuerdo === TIPO_ACUERDO.COTIZACION)
+    {
+      id            =   tipo === TIPOS_CONTACTO.CONTABLE  ? TIPOS_CONTACTO_ID.CTZ_BILLING
+                      : tipo === TIPOS_CONTACTO.COMERCIAL ? TIPOS_CONTACTO_ID.CTZ_CUSTOMER
+                      : tipo === TIPOS_CONTACTO.ENTREGA   ? TIPOS_CONTACTO_ID.CTZ_SHIPPING
+                      : id
+    }
+    else
+    if( tipoAcuerdo === TIPO_ACUERDO.PEDIDO)
+    {
+      id            =   tipo === TIPOS_CONTACTO.CONTABLE  ? TIPOS_CONTACTO_ID.PED_BILLING
+                      : tipo === TIPOS_CONTACTO.COMERCIAL ? TIPOS_CONTACTO_ID.PED_CUSTOMER
+                      : tipo === TIPOS_CONTACTO.ENTREGA   ? TIPOS_CONTACTO_ID.PED_SHIPPING
+                      : id
+    }
+    else
+    if( tipoAcuerdo === TIPO_ACUERDO.FACTURA)
+    {
+      id            =   tipo === TIPOS_CONTACTO.CONTABLE  ? TIPOS_CONTACTO_ID.FAC_BILLING
+                      : tipo === TIPOS_CONTACTO.COMERCIAL ? TIPOS_CONTACTO_ID.FAC_SERVICE
+                      : tipo === TIPOS_CONTACTO.ENTREGA   ? TIPOS_CONTACTO_ID.FAC_SHIPPING
+                      : id
+    }
+    return id
   }
 }
-
-/*
-  address: "Cra 29A # 27 - 59 sur"
-    // civility: "Se&ntilde;ora"
-    // civility_code: "MME"
-    // country: "Colombia"
-    // country_code: "CO"
-    // country_id: "70"
-  date_creation: 1521584307
-  date_modification: 1639101179
-  email: "ines.diaz@eurointernacional.com"
-    // entity: "1"
-  firstname: "Ines"
-    // gender: "woman"
-  id: "109"
-  lastname: "Diaz"
-  mail: "ines.diaz@eurointernacional.com"
-note_private: ""
-note_public: ""
-  phone_mobile: "3174424430"
-  phone_pro: "2036442"
-  poste: "Nuestra Comercial"
-  ref: "109"
-socid: "1"
-socname: "EURO INTERNACIONAL E.U."
-state: "Bogotá"
-state_code: "BOG"
-state_id: "1083"
-zip: ""
-statut: "1"
-
-roles:
-1:
-code: "SERVICE"
-element: "FACT_"
-id: "62"
-label: "Factura - Contact client prestation"
-source: ""
-[[Prototype]]: Object
-2:
-code: "SHIPPING"
-element: "PRO_FACT__"
-id: "72"
-label: "Factura de proveedor - Contact fournisseur livraison"
-source: ""
-[[Prototype]]: Object
-3:
-code: "SHIPPING"
-element: "PRO_PEDI_"
-id: "145"
-label: "Pedir a proveedor - Contact fournisseur livraison PEDI_"
-source: ""
-[[Prototype]]: Object
-4:
-code: "BILLING"
-element: "PRO_PEDI_"
-id: "142"
-label: "Pedir a proveedor - Contact fournisseur facturation PEDI_"
-source: ""
-
-
-
-
-address: "Cra 29A # 27 - 59 sur"
-array_options: []
-barcode_type: null
-barcode_type_code: null
-barcode_type_coder: null
-barcode_type_label: null
-birthday: ""
-canvas: null
-civility: "Se&ntilde;ora"
-civility_code: "MME"
-civility_id: null
-code: null
-cond_reglement: null
-cond_reglement_id: null
-contact: null
-contact_id: null
-country: "Colombia"
-country_code: "CO"
-country_id: "70"
-date_creation: 1521584307
-date_modification: 1639101179
-date_validation: null
-default_lang: null
-email: "ines.diaz@eurointernacional.com"
-entity: "1"
-facebook: null
-fax: ""
-firstname: "Ines"
-fk_account: null
-fk_incoterms: null
-fk_project: null
-gender: "woman"
-id: "109"
-import_key: null
-jabberid: null
-label_incoterms: null
-last_main_doc: null
-lastname: "Diaz"
-linkedObjectsIds: null
-linkedin: null
-location_incoterms: null
-mail: "ines.diaz@eurointernacional.com"
-mode_reglement_id: null
-modelpdf: null
-name: null
-no_email: null
-note_private: ""
-note_public: ""
-origin: null
-origin_id: null
-phone_mobile: "3174424430"
-phone_perso: ""
-phone_pro: "2036442"
-photo: ""
-poste: "Nuestra Comercial"
-priv: "0"
-ref: "109"
-ref_PEDI_: null
-ref_contrat: null
-ref_ext: ""
-ref_facturation: null
-ref_propal: null
-roles: {1: {…}, 2: {…}, 3: {…}, 4: {…}}
-shipping_method_id: null
-skype: null
-socialnetworks: []
-socid: "1"
-socname: "EURO INTERNACIONAL E.U."
-state: "Bogotá"
-state_code: "BOG"
-state_id: "1083"
-statut: "1"
-town: ""
-twitter: null
-user: null
-user_id: null
-user_login: null
-zip: ""
-
-
-  */
-
-
-/*                    address: "Cra 29A # 27 - 59 sur",
-                      birthday: "",
-                      civility: "Se&ntilde;ora",
-                      civility_code: "MME",
-                      country: "Colombia",
-                      country_code: "CO",
-                      country_id: "70",
-                      email: "ines.diaz@eurointernacional.com",
-                      entity: "1",
-                      fax: "",
-                      firstname: "Ines",
-                      gender: "woman",
-                      id: "109",
-                      lastname: "Diaz",
-                      mail: "ines.diaz@eurointernacional.com",
-                      note_private: "",
-                      note_public: "",
-                      phone_mobile: "3174424430",
-                      phone_perso: "",
-                      phone_pro: "6012036442",
-                      photo: "",
-                      poste: "Nuestra Comercial",
-                      priv: "0",
-                      ref: "109",
-                      ref_ext: "",
-                      socid: "1",
-                      socname: "EURO INTERNACIONAL E.U.",
-                      state: "Bogotá",
-                      state_code: "BOG",
-                      state_id: "1083",
-                      statut: "1",
-
-                      barcode_type: null,
-                      barcode_type_code: null,
-                      barcode_type_coder: null,
-                      barcode_type_label: null,
-                      canvas: null,
-                      civility_id: null,
-                      code: null,
-                      cond_reglement: null,
-                      cond_reglement_id: null,
-                      contact: null,
-                      contact_id: null,
-                      date_validation: null,
-                      default_lang: null,
-                      facebook: null,
-                      fk_account: null,
-                      fk_incoterms: null,
-                      fk_project: null,
-                      import_key: null,
-                      jabberid: null,
-                      label_incoterms: null,
-                      last_main_doc: null,
-                      linkedObjectsIds: null,
-                      linkedin: null,
-                      location_incoterms: null,
-                      mode_reglement_id: null,
-                      modelpdf: null,
-                      name: null,
-                      no_email: null,
-                      origin: null,
-                      origin_id: null,
-                      ref_PEDI_: null,
-                      ref_contrat: null,
-                      ref_facturation: null,
-                      ref_propal: null,
-                      shipping_method_id: null,
-                      skype: null,
-                      twitter: null,
-                      user: null,
-                      user_id: null,
-                      user_login: null,
-                      array_options:          [],
-                      socialnetworks: [],
-                      */
-
-
-
-/*
-
-export const enum TIPOS_CONTACTO_ID { // llx_c_type_contact
-  NO_ASIGNADO             = 0,
-  CTZ_BILLING             = 40,
-  CTZ_CUSTOMER            = 41,
-  CTZ_SHIPPING            = 42,
-	FACT_SALESREPFOLL       = 50,
-	FACT_BILLING            = 60,
-	FACT_SHIPPING           = 61,
-	FACT_SERVICE            = 62,
-	PRO_FACT_SALESREPFOLL   = 70,
-	PRO_FACT_BILLING        = 71,
-	PRO_FACT_SHIPPING       = 72,
-	PRO_FACT_SERVICE        = 73,
-	AGE_ACTOR_INTER         = 80,
-	AGE_GUEST_INTER         = 81,
-	AGE_ACTOR_EXTER         = 85,
-	AGE_GUEST_EXTER         = 86,
-	PEDI_SALESREPFOLL       = 91,
-	PEDI_BILLING            = 100,
-	PEDI_CUSTOMER           = 101,
-	PEDI_SHIPPING           = 102,
-	PRO_PEDI_SALESREPFOLL   = 140,
-	PRO_PEDI_SHIPPING_INTER = 141,
-	PRO_PEDI_BILLING        = 142,
-	PRO_PEDI_CUSTOMER       = 143,
-	PRO_PEDI_SHIPPING_EXTER = 145,
-}
-
-export const enum TIPOS_CONTACTO { // llx_c_type_contact
-  NO_ASIGNADO             = "",
-  CTZ_BILLING             = "BILLING",
-  CTZ_CUSTOMER            = "CUSTOMER",
-  CTZ_SHIPPING            = "SHIPPING",
-	FACT_SALESREPFOLL       = "SALESREPFOLL",
-	FACT_BILLING            = "BILLING",
-	FACT_SHIPPING           = "SHIPPING",
-	FACT_SERVICE            = "SERVICE",
-	PRO_FACT_SALESREPFOLL   = "SALESREPFOLL",
-	PRO_FACT_BILLING        = "BILLING",
-	PRO_FACT_SHIPPING       = "SHIPPING",
-	PRO_FACT_SERVICE        = "SERVICE",
-	AGE_ACTOR_INTER         = "ACTOR",
-	AGE_GUEST_INTER         = "GUEST",
-	AGE_ACTOR_EXTER         = "ACTOR",
-	AGE_GUEST_EXTER         = "GUEST",
-	PEDI_SALESREPFOLL       = "SALESREPFOLL",
-	PEDI_BILLING            = "BILLING",
-	PEDI_CUSTOMER           = "CUSTOMER",
-	PEDI_SHIPPING           = "SHIPPING",
-	PRO_PEDI_SALESREPFOLL   = "SALESREPFOLL",
-	PRO_PEDI_SHIPPING_INTER = "SHIPPING",
-	PRO_PEDI_BILLING        = "BILLING",
-	PRO_PEDI_CUSTOMER       = "CUSTOMER",
-	PRO_PEDI_SHIPPING_EXTER = "SHIPPING",
-}
-*/                      

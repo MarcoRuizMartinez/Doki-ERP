@@ -38,8 +38,9 @@
     <!-- //* ///////////////////////////////////////////////// Contacto -->
     <!-- Es disable cuando no tiene tercero asignado o no es empresa y no es el tercero del comercial -->
     <select-contacto
+      v-if                    ="acuerdo.esCotizacion"
       class                   ="col-12"
-      v-model:contacto        ="acuerdo.contacto"
+      v-model:contacto        ="acuerdo.contactoComercial"
       :tercero                ="acuerdo.tercero"
       :disable                ="!acuerdo.tercero.id || (!acuerdo.tercero.esEmpresa && !acuerdo.esTerceroCtz)"
       :readonly               ="acuerdo.esEstadoValidado"

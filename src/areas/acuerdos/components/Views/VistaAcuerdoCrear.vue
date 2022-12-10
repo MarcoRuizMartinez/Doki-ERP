@@ -138,7 +138,7 @@
   const formularioOk          = computed(()=>
   {
     const terceroOk           = !!acuerdo.value.tercero.id
-    const contactoOk          = !!acuerdo.value.contacto.id
+    const contactoOk          = !!acuerdo.value.contactoComercial.id
     const esPersona           = !acuerdo.value.tercero.esEmpresa
     const esEspecial          = acuerdo.value.esTerceroCtz
     const comercialOk         = acuerdo.value.comercial.id > 0

@@ -129,7 +129,10 @@ export interface IAcuerdo
   aiuTotal:                   number
 
   descuento:                  number
-  contacto:                   IContacto
+  contactos:                  IContacto[]
+  contactoComercial:          IContacto
+  contactoEntrega:            IContacto
+  contactoContable:           IContacto
   productos:                  ILineaAcuerdo[]
   proGrupos:                  IGrupoLineas[]
 
@@ -204,7 +207,10 @@ export class Acuerdo implements IAcuerdo
   aiuImpre:                   number
   aiuUtili:                   number
   descuento:                  number
-  contacto:                   IContacto
+  contactos:                  IContacto[]
+  contactoComercial:          IContacto
+  contactoEntrega:            IContacto
+  contactoContable:           IContacto  
   productos:                  ILineaAcuerdo[]
   proGrupos:                  IGrupoLineas[]
   condicionPago:              ICondicionPago
@@ -257,7 +263,10 @@ export class Acuerdo implements IAcuerdo
     this.aiuImpre             = 0
     this.aiuUtili             = 0
     this.descuento            = 0
-    this.contacto             = new Contacto()
+    this.contactos            = []
+    this.contactoComercial    = new Contacto()
+    this.contactoEntrega      = new Contacto()
+    this.contactoContable     = new Contacto()
     this.productos            = []
     this.proGrupos            = []
     this.condicionPago        = new CondicionPago()
@@ -353,9 +362,6 @@ export class Acuerdo implements IAcuerdo
                   : "proposal"
     return modulo
   }
-
-
-  
 
   get subTotalLimpio() : number {
     let suma                = 0
@@ -547,7 +553,7 @@ export class Acuerdo implements IAcuerdo
   get pdfNombre() :  string {
     let nombre              = ""
     if(this.esTerceroCtz)
-      nombre                = !!this.contacto.empresa ? this.contacto.empresa : this.contacto.nombreCompleto
+      nombre                = !!this.contactoComercial.empresa ? this.contactoComercial.empresa : this.contactoComercial.nombreCompleto
     else
     if(this.tercero.esEmpresa)
       nombre                = this.tercero.nombre
@@ -559,9 +565,9 @@ export class Acuerdo implements IAcuerdo
 
   get pdfContacto() :string {
     let contacto            = ""
-    const nombreYtel        = this.contacto.nombreCompleto + " - Tel: " + this.contacto.telefono
+    const nombreYtel        = this.contactoComercial.nombreCompleto + " - Tel: " + this.contactoComercial.telefono
     if(this.esTerceroCtz)
-      contacto              = !!this.contacto.empresa ? nombreYtel : this.contacto.telefono
+      contacto              = !!this.contactoComercial.empresa ? nombreYtel : this.contactoComercial.telefono
     else
     if(this.tercero.esEmpresa)
       contacto              = nombreYtel
@@ -573,14 +579,14 @@ export class Acuerdo implements IAcuerdo
 
   get pdfCorreo() :string {
     let correo              =   this.esTerceroCtz   || this.tercero.esEmpresa
-                              ? this.contacto.correo
+                              ? this.contactoComercial.correo
                               : this.tercero.correo
     return correo
   }
 
   get pdfCiudad() :string {
     let correo              =   this.esTerceroCtz   || this.tercero.esEmpresa
-                              ? this.contacto.municipio.label
+                              ? this.contactoComercial.municipio.label
                               : this.tercero.municipio.label
     return correo
   }
@@ -596,12 +602,12 @@ export class Acuerdo implements IAcuerdo
       titulo                = this.titulo + " "
 
     if(this.esTerceroCtz)
-      titulo                +=  !!this.contacto.empresa
-                                ? this.contacto.empresa + " " + this.contacto.nombreCompleto
-                                : this.contacto.nombreCompleto
+      titulo                +=  !!this.contactoComercial.empresa
+                                ? this.contactoComercial.empresa + " " + this.contactoComercial.nombreCompleto
+                                : this.contactoComercial.nombreCompleto
     else
     if(this.tercero.esEmpresa)
-      titulo                += this.tercero.nombre + " " + this.contacto.nombreCompleto
+      titulo                += this.tercero.nombre + " " + this.contactoComercial.nombreCompleto
     else
       titulo                += this.tercero.nombre
 
@@ -763,28 +769,56 @@ export class Acuerdo implements IAcuerdo
     acuApi.fechaEntrega       = getDateToStr( acuApi.fechaEntrega, "UTC")
 
     const acu                 = Object.assign( new Acuerdo( tipo ), acuApi ) as IAcuerdo
-        acu.esNuevo           = false
-        acu.tipo              = tipo
-        acu.creador           = await getUsuarioDB          ( acu.creadorId )
-        if(!!acu.comercialId)
-          acu.comercial       = await getUsuarioDB          ( acu.comercialId )
-        acu.tercero           = await Tercero.convertirDataApiATercero( acuApi.tercero )
-        acu.contacto          = await Contacto.getContactoFromAPIMaco( acuApi.contacto )
-        acu.contacto.terceroId= acuApi.terceroId
-        acu.condicionPago     = await getCondicionesPagoDB  ( acu.condicionPagoId   )
-        acu.formaPago         = await getFormasPagoDB       ( acu.formaPagoId       )
-        acu.metodoEntrega     = await getMetodosEntregaDB   ( acu.metodoEntregaId   )
-        acu.origenContacto    = await getOrigenContactoDB   ( acu.origenContactoId  )
-        acu.tiempoEntrega     = await getTiempoEntregaDB    ( acu.tiempoEntregaId   )
-        acu.productos         = await LineaAcuerdo.getLineaFromAPIMaco( acu.productos, acuApi.id )
-        acu.productos         = acu.productos.sort ( ( a : ILineaAcuerdo, b : ILineaAcuerdo ) =>
-                                {
-                                  if(a.orden < b.orden) return -1
-                                  if(a.orden > b.orden) return 1
-                                  return 0;
-                                })
-        if(acu.productos.length > 0)
-          acu.proGrupos       = GrupoLineas.getGruposDesdeProductos( acu.productos )
+    acu.esNuevo               = false
+    acu.tipo                  = tipo
+    acu.creador               = await getUsuarioDB          ( acu.creadorId )
+    if(!!acu.comercialId)
+      acu.comercial           = await getUsuarioDB          ( acu.comercialId )
+    acu.tercero               = await Tercero.convertirDataApiATercero( acuApi.tercero )
+
+    if( "contactosJSON" in acuApi && !!acuApi.contactosJSON && typeof acuApi.contactosJSON === "string" )
+    {
+      const contacJSON    = JSON.parse( acuApi.contactosJSON )
+      if( Array.isArray(contacJSON) )
+      {
+        for await (const item of contacJSON)
+        {
+          const c         = await Contacto.getContactoFromAPIMaco( item )
+          c.terceroId     = acuApi.terceroId
+          acu.contactos.push( c )
+
+          if( c.esTipoComercial   && !acu.contactoComercial.id )
+            acu.contactoComercial = c
+          else
+          if( c.esTipoContable    && !acu.contactoContable.id )
+            acu.contactoContable  = c
+          else
+          if( c.esTipoEntrega     && !acu.contactoEntrega.id )
+            acu.contactoEntrega   = c
+        }
+      }
+    }
+
+    console.log("acu.contactoComercial: ", acu.contactoComercial);
+    console.log("acu.contactoContable: ", acu.contactoContable);
+    console.log("acu.contactoEntrega: ", acu.contactoEntrega);
+
+    console.log("acu.contactos: ", acu.contactos);
+
+    acu.condicionPago     = await getCondicionesPagoDB  ( acu.condicionPagoId   )
+    acu.formaPago         = await getFormasPagoDB       ( acu.formaPagoId       )
+    acu.metodoEntrega     = await getMetodosEntregaDB   ( acu.metodoEntregaId   )
+    acu.origenContacto    = await getOrigenContactoDB   ( acu.origenContactoId  )
+    acu.tiempoEntrega     = await getTiempoEntregaDB    ( acu.tiempoEntregaId   )
+    acu.productos         = await LineaAcuerdo.getLineaFromAPIMaco( acu.productos, acuApi.id )
+    acu.productos         = acu.productos.sort ( ( a : ILineaAcuerdo, b : ILineaAcuerdo ) =>
+                            {
+                              if(a.orden < b.orden) return -1
+                              if(a.orden > b.orden) return 1
+                              return 0;
+                            })
+    if(acu.productos.length > 0)
+      acu.proGrupos       = GrupoLineas.getGruposDesdeProductos( acu.productos )
     return acu
   }
 }

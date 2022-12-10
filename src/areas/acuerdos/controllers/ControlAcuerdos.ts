@@ -27,6 +27,7 @@ import {  ITiempoEntrega        } from "src/models/Diccionarios/TiempoEntrega"
 import {  IProyecto, Proyecto   } from "src/areas/proyectos/models/Proyecto"
 import {  IContacto,
           Contacto,
+          TTipoContacto,
           TIPOS_CONTACTO
                                 } from "src/areas/terceros/models/Contacto"
 
@@ -75,12 +76,12 @@ export function useControlAcuerdo()
     acuerdo.value.id          = id
 
     //* ////////////////////  Creando Contacto si corresponde
-    if(!!acuerdo.value.contacto.id)
+    if(!!acuerdo.value.contactoComercial.id)
     {
       const { ok : vinculado  } = await apiDolibarr("contacto-vincular", acuerdo.value.tipo,
                                           {
-                                            id:   acuerdo.value.contacto.id,
-                                            tipo: TIPOS_CONTACTO.CTZ_CUSTOMER
+                                            id:   acuerdo.value.contactoComercial.id,
+                                            tipo: TIPOS_CONTACTO.COMERCIAL
                                           },
                                           id
                                           )
@@ -150,21 +151,21 @@ export function useControlAcuerdo()
 
 
   //* ////////////////////////////////////////////////////////////////////// Cambiar contacto
-  async function cambiarContactoAcuerdo( contacto : IContacto, idOld : number )
+  async function cambiarContactoAcuerdo( contacto : IContacto, idOld : number, tipo : TTipoContacto )
   {
     if(!acuerdo.value.id) return
-    await desvincularContactoAcuerdo( idOld )
-    await vincularContactoAcuerdo   ( contacto )
+    await desvincularContactoAcuerdo( idOld, tipo )
+    await vincularContactoAcuerdo   ( contacto, tipo )
   }
 
   //* ////////////////////////////////////////////////////////////////////// Asignar nuevo contacto
-  async function vincularContactoAcuerdo( contacto : IContacto )
+  async function vincularContactoAcuerdo( contacto : IContacto, tipo : TTipoContacto )
   {
     if(!acuerdo.value.id) return
     //* ///////////////////////////////// Vincular contacto a acuerdo
     const { ok : vinculado      } = await apiDolibarr("contacto-vincular", acuerdo.value.tipo,
                                                         { id:   contacto.id,
-                                                          tipo: TIPOS_CONTACTO.CTZ_CUSTOMER
+                                                          tipo
                                                         },
                                                         acuerdo.value.id
                                                       )
@@ -177,18 +178,18 @@ export function useControlAcuerdo()
     
 
   //* ////////////////////////////////////////////////////////////////////// Asignar nuevo contacto
-  async function desvincularContactoAcuerdo( id : number ) : Promise<boolean>
+  async function desvincularContactoAcuerdo( id : number, tipo : TTipoContacto, mostrarAviso : boolean = false  ) : Promise<boolean>
   {
     const { ok : desvinculado } = await apiDolibarr("contacto-desvincular",  acuerdo.value.tipo,
-                                                      { id,
-                                                        tipo: TIPOS_CONTACTO.CTZ_CUSTOMER
-                                                      },
+                                                      { id, tipo },
                                                       acuerdo.value.id
                                                     )
     
     if(!desvinculado){
       aviso("negative", "error al desvincular contacto", "account")     
     }
+    else if(mostrarAviso)
+      aviso("positive", "Contacto desvinculado", "account")
 
     return desvinculado
   }
@@ -200,7 +201,7 @@ export function useControlAcuerdo()
     if(acuerdo.value.esNuevo) return
 
     // Parece que no es necesario, solo para que sea mas corto el codigo 
-    const contactoNow             = acuerdo.value.contacto
+    const contactoNow             = acuerdo.value.contactoComercial
 
     // Servicio que cambia el ID del tercero del acuerdo 
     const idEditado               = await setTerceroId( acuerdo.value.id, terceroNew.id, acuerdo.value.tipo)
@@ -220,8 +221,8 @@ export function useControlAcuerdo()
       // Si se mueve el acuerdo a una persona natural, se desvincula el contacto
       else
       {
-        if( desvincularContactoAcuerdo(contactoNow.id) )                    // Se deja listo para si mas adelante se crea un contacto
-          acuerdo.value.contacto  = new Contacto( terceroNew.id )
+        if( desvincularContactoAcuerdo( contactoNow.id, contactoNow.tipo ) )  // Se deja listo para si mas adelante se crea un contacto
+          acuerdo.value.contactoComercial  = new Contacto( terceroNew.id )
       }
     }
   }

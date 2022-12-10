@@ -26,6 +26,9 @@
     class                   ="col-md-4 col-12"
     height-card-min         ="260px"
   />
+  <contactos
+    class                   ="col-12"
+  />
   <enlaces
     ref                     ="moduloEnlaces"
     class                   ="col-md-4 col-12"
@@ -99,6 +102,7 @@
   import    condiciones             from "src/areas/acuerdos/components/Condiciones.vue"
   import    productos               from "src/areas/acuerdos/components/ProductosAcuerdo.vue"
   import    enlaces                 from "src/areas/acuerdos/components/EnlacesAcuerdos.vue"
+  import    contactos               from "src/areas/acuerdos/components/Contactos.vue"
   import    anticipos               from "src/areas/acuerdos/components/Anticipos/ModuloAnticipos.vue"
   //import    remision                from "src/areas/acuerdos/components/PDF/RemisionPDF.vue"
   import    documentos              from "components/archivos/ModuloArchivos.vue"

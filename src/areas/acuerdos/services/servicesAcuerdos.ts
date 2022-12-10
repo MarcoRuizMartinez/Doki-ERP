@@ -70,7 +70,7 @@ export function servicesAcuerdos()
   {
     return new Promise( async (resolver, rechazar ) =>
     {
-      const { data, ok  }   = await miFetch( getURL("listas", "acuerdos"),
+      const { data, ok  }   = await miFetch( getURL("listas", "acuerdosNew"),
                                                     {
                                                       body: getFormData(  "acuerdo",  { id: id, acuerdo: tipo } ),
                                                       method: "POST"
@@ -79,7 +79,8 @@ export function servicesAcuerdos()
                                                       mensaje:      "cargar cotización",
                                                       tiempoEspera: 10000
                                                     }
-                                                    )
+                                                    )      
+      console.log("data: ", data);
       if(ok && typeof data == "object" )
       {
         const acuerdo    = await Acuerdo.convertirDataApiToAcuerdo( data, tipo )
@@ -120,82 +121,6 @@ export function servicesAcuerdos()
       else {
         resolver( [] )
       }
-    })
-  }
-
-    
-/*   async function getAcuerdos( query : IBusquedaCotizacion, tipo :  TIPO_ACUERDO ) : Promise< IAcuerdo[] >
-  {
-    return new Promise( async (resolver, rechazar ) =>
-    {
-      const { data, ok            } = await miFetch(  getURL("listas", tipo),
-                                                    {
-                                                      body:   getFormData(  "busqueda", query ),
-                                                      method: "POST"
-                                                    },
-                                                    {
-                                                      mensaje:      "buscar " + tipo,
-                                                      tiempoEspera: 10000,
-                                                      dataEsArray:  true
-                                                    }
-                                                  )
-      const acuerdos : IAcuerdo[]   = []
-
-      if(ok && Array.isArray( data ))
-      {
-        for (const item of data)
-        {
-          const quote : IAcuerdo = await Acuerdo.convertirDataApiToAcuerdo( item )
-          acuerdos.push( quote )
-        }
-        resolver( acuerdos )
-      }
-      else {
-        resolver( [] )
-      }
-    })
-  } */
-
-  async function getCotizaciones( query : IBusquedaCotizacion ) : Promise< IAcuerdo[] >
-  {
-    return new Promise( async (resolver, rechazar ) =>
-    {
-      const { data, ok  }       = await miFetch(  getURL("listas", "cotizaciones"),
-                                                    {
-                                                      body:   getFormData(  "busqueda", query ),
-                                                      method: "POST"
-                                                    },
-                                                    {
-                                                      mensaje:      "buscar cotizaciones",
-                                                      tiempoEspera: 10000,
-                                                      dataEsArray:  true
-                                                    }
-                                                  )
-      const quotes : IAcuerdo[]  = []
-
-      if(ok && Array.isArray( data ))
-      {
-        for (const item of data)
-        {
-          const quote : IAcuerdo = await Acuerdo.convertirDataApiToAcuerdo( item, TIPO_ACUERDO.COTIZACION )
-          quotes.push( quote )
-        }
-        resolver( quotes )
-      }
-      else
-      {
-        resolver( [] )
-      }
-      /*
-      if(ok && typeof data == "object" )
-      {
-        const cotizacion    = await Cotizacion.convertirDataApiToAcuerdo( data )
-        resolver( cotizacion )
-      }
-      else
-      {
-        resolver( new Cotizacion() )
-      } */
     })
   }
 
@@ -555,7 +480,6 @@ export function servicesAcuerdos()
   return {
     getAcuerdo,
     getAcuerdos,
-    getCotizaciones,
     setFechaFinValidez,
     setFechaEntrega,
     setCondicionPago,

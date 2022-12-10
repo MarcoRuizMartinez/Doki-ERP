@@ -146,7 +146,7 @@
       <div
         v-if                    ="tipo == 'ver'"
         class                   ="col-auto"
-        >
+        >      
         <!-- //* /////////////  Borrar  -->
         <q-btn                  flat
           v-if                  ="readonly && permisos.contactos_borrar && borrable"
@@ -173,6 +173,12 @@
           class                 ="col-12 column mobile-only"
           v-show                ="!readonly"
           >
+        <!-- //* /////////////  Cpiar  -->
+        <q-btn                  flat
+          v-if                  ="(!readonly && !contacto.id)"
+          label                 ="Copiar"
+          color                 ="negative"
+        />            
           <!-- //* ///////////  Guardar Crear  -->
           <q-btn                dark push
             type                ="submit"
@@ -188,7 +194,7 @@
         type                    ="submit"
       />
     </q-form>
-    <!-- //* ///////////////////////////////////////////////////////////// Modal Buscar productos -->
+    <!-- //* ///////////////////////////////////////////////////////////// Modal consentimiento -->
     <q-dialog
       v-model                   ="ventanaClienteExiste"      
       transition-show           ="slide-up"
