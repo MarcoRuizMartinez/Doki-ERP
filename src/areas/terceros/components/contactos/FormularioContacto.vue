@@ -70,15 +70,17 @@
       />
       <!-- //* //////////////   Cargo  -->
       <input-text               AZ 
+        v-if                    ="!tipoEntrega"
         label                   ="Cargo"
         v-model                 ="contacto.cargo"
         class                   ="col-md-4 col-12"
         icon                    ="mdi-account-cowboy-hat"
         :alerta                 ="!esTerceroCtz"
         :readonly               ="readonly"
-      />               
+      />
       <!-- //* //////////////   Correo  -->
       <input-text               sin-espacios copy
+        v-if                    ="!tipoEntrega"
         v-model                 ="contacto.correo"
         label                   ="Correo"
         type                    ="email"
@@ -90,6 +92,7 @@
         @alert                  ="mostrarClientesExistentes"
         @blur                   ="vericarExisteCorreo"
       />
+
       <!-- //* //////////////   Telefono 1  -->
       <input-text               copy
         v-model                 ="contacto.telefono"
@@ -101,7 +104,20 @@
         :readonly               ="readonly"
         @alert                  ="mostrarClientesExistentes"
         @blur                   ="vericarExisteCel"        
-      />      
+        >
+        <q-btn                  round dense flat
+          icon                  ="mdi-content-duplicate"
+          >
+          <q-menu               touch-position>
+            <div  class         ="column items-start ">
+              <q-btn            v-close-popup flat dense no-caps
+                icon            ="mdi-open-in-new"
+                label           ="Ver producto"
+              />
+            </div>
+          </q-menu>            
+        </q-btn>
+      </input-text>
       <!-- //* //////////////   Telefono 2  -->
       <input-text               copy
         v-model                 ="contacto.telefono_2"

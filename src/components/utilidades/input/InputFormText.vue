@@ -24,7 +24,7 @@
     <template #prepend v-if="!!icon">
       <q-icon :name ="icon" />
     </template>
-    <template #after >
+    <template       #after>
       <q-btn        dense flat 
         v-if        ="estadoCheck == 'check' || estadoCheck == 'alert' && !readonly && !campoEnfocado"
         class       ="transi"
@@ -39,7 +39,8 @@
         class       ="transi"
         icon        ="mdi-content-copy"
         @click      ="copiar"
-        />
+      />
+      <slot></slot>
     </template>
   </q-input>
 </template>
