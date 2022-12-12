@@ -27,6 +27,7 @@
     height-card-min         ="260px"
   />
   <contactos
+    v-if                    ="acuerdo.tercero.esEmpresa"
     class                   ="col-12"
   />
   <enlaces

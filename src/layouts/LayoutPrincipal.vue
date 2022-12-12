@@ -22,6 +22,7 @@
           src           ="images/logos/doki.png"
           >
         </q-toolbar-title>
+        <buscador/>
         <menu-top class ="gt-sm desktop-only"/>
         <q-space />
         <img
@@ -91,6 +92,7 @@
   import    menuTop             from "src/components/navegacion/menus/MenuTop.vue";
   import    menuUsuario         from "components/navegacion/usuario/MenuUsuario.vue";
   import    menuExpandible      from "src/components/navegacion/menus/MenuLateralLeft.vue"
+  import    buscador            from "src/components/navegacion/Buscador.vue"
 
 
   useMenu()

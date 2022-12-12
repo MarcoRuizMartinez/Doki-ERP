@@ -86,7 +86,7 @@
     </efecto>     -->
     <!-- <efecto efecto          ="Down"> -->
       <!-- //* //////////////////////////////////////////////////////////  Boton Aprobar -->
-      <q-btn-group  v-if    ="acuerdo.esEstadoCotizado">        
+      <q-btn-group  v-if    ="acuerdo.esEstadoCotizado && acuerdo.esCotizacion">        
         <q-btn 
           v-if              ="!acuerdo.esTerceroCtz"
           v-bind            ="btnBaseMd"
@@ -97,7 +97,7 @@
           :loading          ="loading.aprobar"
           @click            ="emit('clickAprobar')"
           >
-          <Tooltip label    ="Aprobar cotización"/>
+          <Tooltip :label   ="`Aprobar ${acuerdo.label}`"/>
         </q-btn>
         <!-- //* //////////////////////////////////////////////////////////  Boton Anular -->
         <q-btn 
@@ -109,7 +109,7 @@
           :loading          ="loading.anular"
           >
           <confirmar  @ok   ="emit('clickAnular')" :con-label="!esMobil"/>
-          <Tooltip label    ="Anular cotización"/>
+          <Tooltip :label   ="`Anular ${acuerdo.label}`"/>
         </q-btn>
       </q-btn-group>
     <!-- </efecto> -->

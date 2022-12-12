@@ -36,6 +36,7 @@ export interface IContacto {
     idRelacion:           number
     tipo:                 TTipoContacto
     tipoId:               TIPOS_CONTACTO_ID
+    tipoLabel:            string
     nombres:              string
     apellidos:            string
     empresa:              string // para cotizaciones - nota publica en Dolibarr
@@ -134,6 +135,12 @@ export class Contacto implements IContacto
   get esTipoComercial (): boolean { return  this.tipo === TIPOS_CONTACTO.COMERCIAL  }
   get esTipoContable  (): boolean { return  this.tipo === TIPOS_CONTACTO.CONTABLE   }
   get esTipoEntrega   (): boolean { return  this.tipo === TIPOS_CONTACTO.ENTREGA    }
+  get tipoLabel       (): string {
+    return    this.esTipoComercial  ? "comercial"
+            : this.esTipoContable   ? "contable"
+            : this.esTipoEntrega    ? "entrega"
+            : ""
+  }
 
   getContactoToAPIDolibarr() : any
   {

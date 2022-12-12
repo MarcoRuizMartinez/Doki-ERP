@@ -26,7 +26,7 @@
       :disable                ="!acuerdo.tercero.id || (!acuerdo.tercero.esEmpresa && !acuerdo.esTerceroCtz)"
       :readonly               ="acuerdo.esEstadoValidado"
       @contacto-nuevo         =" c => vincularContactoAcuerdo           ( c,        TIPOS_CONTACTO.ENTREGA  )"
-      @quitar-contacto        =" c => desvincular                       ( c.id,     TIPOS_CONTACTO.ENTREGA  )"
+      @quitar-contacto        =" c => desvincularContactoAcuerdo        ( c.id,     TIPOS_CONTACTO.ENTREGA, true  )"
       @contacto-cambio        =" ( c, idOld ) => cambiarContactoAcuerdo ( c, idOld, TIPOS_CONTACTO.ENTREGA  )"
     />
     <!-- //* ///////////////////////////////////////////////// Contacto contable -->
@@ -39,7 +39,7 @@
       :disable                ="!acuerdo.tercero.id || (!acuerdo.tercero.esEmpresa && !acuerdo.esTerceroCtz )"
       :readonly               ="acuerdo.esEstadoValidado"
       @contacto-nuevo         =" c => vincularContactoAcuerdo           ( c,        TIPOS_CONTACTO.CONTABLE )"
-      @quitar-contacto        =" c => desvincular                       ( c.id,     TIPOS_CONTACTO.CONTABLE )"
+      @quitar-contacto        =" c => desvincularContactoAcuerdo        ( c.id,     TIPOS_CONTACTO.CONTABLE, true )"
       @contacto-cambio        =" ( c, idOld ) => cambiarContactoAcuerdo ( c, idOld, TIPOS_CONTACTO.CONTABLE )"
     />   
   </ventana>
@@ -51,24 +51,16 @@
   import {  useStoreAcuerdo       } from 'stores/acuerdo'  
   //* ///////////////////////////////////////////////////////////////////////////// Componibles
   import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"
-  import {  Contacto,
-            TIPOS_CONTACTO, 
-            TTipoContacto         } from "src/areas/terceros/models/Contacto"  
+  import {  TIPOS_CONTACTO        } from "src/areas/terceros/models/Contacto"  
   //* ///////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana                 from "components/utilidades/Ventana.vue"
   import    selectContacto          from "src/areas/terceros/components/contactos/SelectContacto.vue"
 
-  const { acuerdo, loading        } = storeToRefs( useStoreAcuerdo() )  
+  const { acuerdo               } = storeToRefs( useStoreAcuerdo() )  
   const { 
           cambiarContactoAcuerdo,
           vincularContactoAcuerdo,
           desvincularContactoAcuerdo,
                                   } = useControlAcuerdo()
-                                  
-  async function desvincular( id : number, tipo : TTipoContacto)
-  {
-    await desvincularContactoAcuerdo( id, tipo, true  )
-    if(tipo === TIPOS_CONTACTO.ENTREGA  ) acuerdo.value.contactoEntrega   = new Contacto()
-    if(tipo === TIPOS_CONTACTO.CONTABLE ) acuerdo.value.contactoContable  = new Contacto()
-  }
+
 </script>

@@ -185,11 +185,16 @@ export function useControlAcuerdo()
                                                       acuerdo.value.id
                                                     )
     
-    if(!desvinculado){
-      aviso("negative", "error al desvincular contacto", "account")     
+    if(desvinculado){
+      if(mostrarAviso)
+        aviso("positive", "Contacto desvinculado", "account")
+        
+      if(tipo === TIPOS_CONTACTO.ENTREGA  ) acuerdo.value.contactoEntrega   = new Contacto()
+      if(tipo === TIPOS_CONTACTO.CONTABLE ) acuerdo.value.contactoContable  = new Contacto()
     }
-    else if(mostrarAviso)
-      aviso("positive", "Contacto desvinculado", "account")
+    else{
+      aviso("negative", "error al desvincular contacto", "account")
+    }
 
     return desvinculado
   }

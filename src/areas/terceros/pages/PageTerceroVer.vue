@@ -14,7 +14,7 @@
       </div>
     </transition>
     <div class                ="col-md-6 col-12 row q-col-gutter-sm">
-      <contactos
+      <contactos              minimizar
         v-if                  ="permisos.contactos_ver"
         class                 ="col-12"
         height-card           ="200px"

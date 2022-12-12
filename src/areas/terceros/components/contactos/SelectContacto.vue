@@ -207,6 +207,7 @@
     contactos.value[index]    = contac
     modelo.value              = contac
     ventanaOk.value           = false
+    emit('update:contacto', contac )
   }  
 
 </script>

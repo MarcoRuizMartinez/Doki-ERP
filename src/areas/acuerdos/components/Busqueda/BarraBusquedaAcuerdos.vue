@@ -187,9 +187,9 @@
               >
               <Tooltip label      ="Descargar"/>
             </q-btn>
-          </div>          
+          </div>
         </div>
-      </fieldset-filtro>      
+      </fieldset-filtro>
     </q-tab-panel>
     <!-- //* ///////////////////////////////////////////////////// Tab 2 -->
     <q-tab-panel
@@ -386,6 +386,9 @@
 
   const router                    = useRouter()
   let queryURL                    = router.currentRoute.value.query
+  watch( ()=> router.currentRoute.value.query, (q) => {
+    queryURL                      = q
+  })
 
   const origenes                  = dexieOrigenesContacto()
   const condicionesPago           = dexieCondicionesPago()

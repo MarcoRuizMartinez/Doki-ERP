@@ -40,12 +40,14 @@
     <select-contacto
       v-if                    ="acuerdo.esCotizacion"
       class                   ="col-12"
+      label                   ="Contacto comercial"
+      icon                    ="mdi-account-cash"
       v-model:contacto        ="acuerdo.contactoComercial"
       :tercero                ="acuerdo.tercero"
       :disable                ="!acuerdo.tercero.id || (!acuerdo.tercero.esEmpresa && !acuerdo.esTerceroCtz)"
       :readonly               ="acuerdo.esEstadoValidado"
-      @contacto-nuevo         ="vincularContactoAcuerdo"
-      @contacto-cambio        ="cambiarContactoAcuerdo"
+      @contacto-nuevo         =" c => vincularContactoAcuerdo           ( c,        TIPOS_CONTACTO.COMERCIAL )"
+      @contacto-cambio        =" ( c, idOld ) => cambiarContactoAcuerdo ( c, idOld, TIPOS_CONTACTO.COMERCIAL )"
     />
     <!-- //* ///////////////////////////////////////////////// Proyecto -->
     <select-proyecto
@@ -96,6 +98,7 @@
   import {  dexieOrigenesContacto } from "src/services/useDexie"
   import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"
   import {  GRUPO_USUARIO         } from "src/models/TiposVarios"
+  import {  TIPOS_CONTACTO        } from "src/areas/terceros/models/Contacto"  
   //* ///////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana                 from "components/utilidades/Ventana.vue"
   import    inputText               from "components/utilidades/input/InputFormText.vue"

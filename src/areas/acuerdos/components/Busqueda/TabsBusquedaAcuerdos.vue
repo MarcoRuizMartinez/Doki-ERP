@@ -1,5 +1,5 @@
 <template>
-  <q-tabs            dense no-caps inline-label
+  <q-tabs             dense no-caps inline-label
     v-model           ="tabs.activa"
     class             ="q-ma-none"
     >

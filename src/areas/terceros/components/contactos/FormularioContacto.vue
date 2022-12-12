@@ -69,18 +69,16 @@
         @blur                   ="vericarExisteEmpresa"
       />
       <!-- //* //////////////   Cargo  -->
-      <input-text               AZ 
-        v-if                    ="!tipoEntrega"
+      <input-text               AZ
         label                   ="Cargo"
         v-model                 ="contacto.cargo"
         class                   ="col-md-4 col-12"
         icon                    ="mdi-account-cowboy-hat"
-        :alerta                 ="!esTerceroCtz"
+        :alerta                 ="!esTerceroCtz && !tipoEntrega"
         :readonly               ="readonly"
       />
       <!-- //* //////////////   Correo  -->
       <input-text               sin-espacios copy
-        v-if                    ="!tipoEntrega"
         v-model                 ="contacto.correo"
         label                   ="Correo"
         type                    ="email"
@@ -92,7 +90,6 @@
         @alert                  ="mostrarClientesExistentes"
         @blur                   ="vericarExisteCorreo"
       />
-
       <!-- //* //////////////   Telefono 1  -->
       <input-text               copy
         v-model                 ="contacto.telefono"
@@ -104,20 +101,7 @@
         :readonly               ="readonly"
         @alert                  ="mostrarClientesExistentes"
         @blur                   ="vericarExisteCel"        
-        >
-        <q-btn                  round dense flat
-          icon                  ="mdi-content-duplicate"
-          >
-          <q-menu               touch-position>
-            <div  class         ="column items-start ">
-              <q-btn            v-close-popup flat dense no-caps
-                icon            ="mdi-open-in-new"
-                label           ="Ver producto"
-              />
-            </div>
-          </q-menu>            
-        </q-btn>
-      </input-text>
+      />
       <!-- //* //////////////   Telefono 2  -->
       <input-text               copy
         v-model                 ="contacto.telefono_2"
@@ -192,19 +176,40 @@
           label                 ="Cancelar"
           @click                ="readonly = true"
         />
-      </div>      
+      </div>
+      <div                      v-else>
+        <!-- //* /////////////  Copiar  -->
+        <q-btn                  dense flat no-caps
+          label                 ="Copiar datos de..."
+          icon                  ="mdi-content-duplicate"
+          >
+          <q-menu
+            anchor              ="bottom middle"
+            self                ="top middle"
+            >
+            <div  class         ="column items-start ">
+              <q-btn            v-close-popup
+                v-bind          ="btnFlatSm"
+                icon            ="mdi-content-duplicate"
+                label           ="Copiar de tercero"
+                @click          ="copiarDatosTercero"
+              />
+              <q-btn            v-close-popup
+                v-bind          ="btnFlatSm"
+                icon            ="mdi-content-duplicate"
+                label           ="Copiar de otros contactos"
+                @click          ="ventanaCopiarContacto = true"
+              />
+            </div>
+          </q-menu>            
+        </q-btn>
+      </div>
       <!-- //* //////////////   Botones Sumit  -->
       <transition               enter-active-class="animated fadeInDown" leave-active-class="animated fadeOutDown">
         <div
           class                 ="col-12 column mobile-only"
           v-show                ="!readonly"
           >
-        <!-- //* /////////////  Copiar  -->
-        <q-btn                  flat
-          v-if                  ="(!readonly && !contacto.id)"
-          label                 ="Copiar"
-          color                 ="negative"
-        />            
           <!-- //* ///////////  Guardar Crear  -->
           <q-btn                dark push
             type                ="submit"
@@ -250,11 +255,21 @@
         />
       </ventana>    
     </q-dialog>
+    <q-dialog
+      v-model                   ="ventanaCopiarContacto"      
+      transition-show           ="slide-up"
+      transition-hide           ="slide-down"
+      >
+      <contactos                cerrar solo-emitir
+        :tercero-id             ="acuerdo.tercero.id"
+        @clik-contacto          ="copiarContacto"
+      />
+    </q-dialog>
   </ventana>
 </template>
 <script setup lang="ts">
 //class-contenido         ="row items-start content-start justify-start q-col-gutter-md q-mt-none"
-
+  // * /////////////////////////////////////////////////////////////////////////////////// Core
   import {  ref,
             Ref,
             toRefs,
@@ -264,35 +279,43 @@
                             } from "vue"
   import {  useQuasar,
             extend          } from 'quasar'
-  import {  storeToRefs     } from 'pinia'            
-  import {  useApiDolibarr  } from "src/services/useApiDolibarr"
+  //* ///////////////////////////////////////////////////////////////////////////// Store
+  import {  storeToRefs     } from 'pinia'
   import {  useStoreUser    } from 'src/stores/user'
+  import {  useStoreAcuerdo } from 'src/stores/acuerdo'
+  // * /////////////////////////////////////////////////////////////////////////////////// Modelos
+  import {  IMunicipio,
+            Municipio       } from "src/models/Municipio"
+  import {  IContacto,
+            Contacto        } from "src/areas/terceros/models/Contacto"
+  import {  EstadoVerificar } from "src/models/TiposVarios"
+  // * /////////////////////////////////////////////////////////////////////////////////// Componibles
+  import {  useApiDolibarr  } from "src/services/useApiDolibarr"
   import {  useTools,
             esCorreoFamoso,
             mayusculasPrimeraLetraAll
                             } from "src/useSimpleOk/useTools"
-  import {  IMunicipio,
-            Municipio       } from "src/models/Municipio"
-  import {  IContacto,
-            Contacto
-                            } from "src/areas/terceros/models/Contacto"
-  import    ventana           from "components/utilidades/Ventana.vue"
-  import    municipios        from "components/utilidades/select/SelectMunicipios.vue"
-  import    inputText         from "src/components/utilidades/input/InputFormText.vue"
-  import {  EstadoVerificar } from "src/models/TiposVarios"
   import {  useFetch        } from "src/useSimpleOk/useFetch"
   import {  getURL,
             getFormData     } from "src/services/APIMaco"
-  import {  btnBaseSm       } from "src/useSimpleOk/useEstilos"            
+  import {  btnBaseSm,
+            btnFlatSm       } from "src/useSimpleOk/useEstilos"            
+  // * /////////////////////////////////////////////////////////////////////////////////// Componentes
+  import    ventana           from "components/utilidades/Ventana.vue"
+  import    municipios        from "components/utilidades/select/SelectMunicipios.vue"
+  import    inputText         from "src/components/utilidades/input/InputFormText.vue"
+  import    contactos         from "src/areas/terceros/components/contactos/ModuloContactos.vue"
 
   const { dialog            } = useQuasar()
   const { apiDolibarr       } = useApiDolibarr()
   const { permisos          } = storeToRefs( useStoreUser() )
+  const { acuerdo           } = storeToRefs( useStoreAcuerdo() )
   const { aviso             } = useTools()
   const { miFetch           } = useFetch()
   const contacto              = ref<IContacto>(new Contacto())
   const cargando              = ref< boolean >(false)
   const ventanaClienteExiste  = ref< boolean >(false)
+  const ventanaCopiarContacto = ref< boolean >(false)
   const formulario            = ref< any >()
   const clientesExistentes    = ref< any[] >()
   const urlDolibarr           = process.env.URL_DOLIBARR
@@ -311,7 +334,6 @@
     tipoEntrega:  { default:  false,            type: Boolean                           },
   })
   const emit                  = defineEmits(["update:modelValue", "crear", "borrar"])
-
   const { modelValue,
           municipio,
           editando,
@@ -567,12 +589,38 @@
       class:    "text-center",
       html:     true,
     }).onOk(() => {
-      consentimientoAsesor.value = true
-      estaCheckEmpresa.value     = "off"
-      estaCheckEmail.value       = "off" 
-      estaCheckCel.value         = "off"
-      estaCheckTel.value         = "off"     
+      consentimientoAsesor.value  = true
+      estaCheckEmpresa.value      = "off"
+      estaCheckEmail.value        = "off" 
+      estaCheckCel.value          = "off"
+      estaCheckTel.value          = "off"     
     })
+  }
+
+  function copiarContacto( c : IContacto )
+  {
+    ventanaCopiarContacto.value   = false
+    contacto.value.correo         = c.correo    
+    contacto.value.telefono       = c.telefono  
+    contacto.value.telefono_2     = c.telefono_2
+    contacto.value.extension      = c.extension 
+    contacto.value.municipio      = c.municipio
+    contacto.value.municipioId    = c.municipioId
+    contacto.value.direccion      = c.direccion 
+    contacto.value.nota           = c.nota
+    contacto.value.cargo          = c.cargo
+  }
+
+  function copiarDatosTercero()
+  {
+    contacto.value.correo         = acuerdo.value.tercero.correo
+    contacto.value.telefono       = acuerdo.value.tercero.telefono
+    contacto.value.municipio      = acuerdo.value.tercero.municipio
+    contacto.value.municipioId    = acuerdo.value.tercero.municipioId
+    contacto.value.direccion      = acuerdo.value.tercero.direccion
+
+    if(!acuerdo.value.tercero.esEmpresa)
+      contacto.value.apellidos    = acuerdo.value.tercero.nombre
   }
   
   //* ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

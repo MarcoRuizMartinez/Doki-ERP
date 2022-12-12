@@ -1,5 +1,5 @@
 <template>
-  <ventana                      minimizar
+  <ventana
     class-contenido             ="column items-center"
     titulo                      ="Contactos"
     icono                       ="mdi-book-account"
@@ -18,7 +18,7 @@
         color                   ="positive"
         icon                    ="mdi-account-plus"
         :disable                ="modo == 'buscando'"
-        @click                  ="mostrarVentana"
+        @click                  ="clickFila"
       />
       <q-dialog v-model         ="ventanaOk">
         <!-- //* /////////////  Formulario Contacto  -->
@@ -41,7 +41,7 @@
       :rows                     ="contactos"
       :columns                  ="columnas"
       :visible-columns          ="columnasVisibles"
-      @row-click                ="mostrarVentana"
+      @row-click                ="clickFila"
       >
       <template #body-cell-nombreCompleto="props">
         <!-- //* /////////////  Columna Nombre contacto  -->
@@ -61,9 +61,7 @@
 <script setup lang="ts">
   import {  ref,
             toRefs,
-            PropType,
             inject,
-            computed,
             watch           } from "vue"
   import {  useApiDolibarr  } from "src/services/useApiDolibarr"
   import {  IContacto,
@@ -88,34 +86,45 @@
   const tercero               = inject('tercero', ref< ITercero >(new Tercero()) )
 
   const columnas: IColumna[]  = [
-    new Columna({ name: "empresa",        visible: false              }),    
-    new Columna({ name: "nombreCompleto", label: "Nombre"             }),
-    new Columna({ name: "cargo"                                       }),
-    new Columna({ name: "telefono"                                    }),
-    new Columna({ name: "correo"                                      }),
+    new Columna({ name: "empresa",        visible: false  }),    
+    new Columna({ name: "nombreCompleto", label: "Nombre" }),
+    new Columna({ name: "cargo"                           }),
+    new Columna({ name: "telefono"                        }),
+    new Columna({ name: "correo"                          }),
   ]
 
   const columnasVisibles      = ref<string[]>( columnas.filter( c => c.visible ).map( c => c.name ) )
 
   const props                 = defineProps({
-    terceroId:    { required: true,             type: Number,  default: 0             },
-    puedeEditar:  { default:  false,            type: Boolean                         },
+    terceroId:    { required: true,             type: Number,  default: 0  },
+    puedeEditar:  { default:  false,            type: Boolean              },
+    soloEmitir:   { default:  false,            type: Boolean              },
   })
 
-  const { terceroId }         = toRefs( props )
+  const emit                  = defineEmits<{
+    (e: "clikContacto",       value: IContacto ): void
+  }>()
+
+
+  const { terceroId, 
+          soloEmitir }        = toRefs( props )
   
   //onMounted( buscar )
-  watch(terceroId, (idNew, idOld) =>{
-    if(!!idNew)
+  watch(terceroId, (idNew) =>
     {
-      buscarContactos( idNew )
-
-      if(tercero.value.esTerceroCtz)
+      console.log("idNew: ", idNew);
+      if(!!idNew)
       {
-        columnasVisibles.value= columnas.map( c => c.name )
-      }
+        buscarContactos( idNew )
+
+        if(tercero.value.esTerceroCtz)
+        {
+          columnasVisibles.value= columnas.map( c => c.name )
+        }
+      }  
     }
-  })
+    ,{ immediate: true}
+  )
   
 
   async function buscarContactos( id : number )  
@@ -129,8 +138,10 @@
       contactos.value         = []
       for (const contacto of contactosApi)
       {
+        console.log("contacto: ", contacto);
         contactos.value.push( await Contacto.getContactoFromAPIDolibarr( contacto ) )        
       }
+      console.log("contactos.value: ", contactos.value);
       modo.value              = "normal"
     }
     else
@@ -139,9 +150,11 @@
     }
   }
 
-  function mostrarVentana(evt : Object, row? : Object, index? : Number)
+  function clickFila(evt : Object, row? : Object, index? : Number)
   {
     contactoSelect.value      = index != undefined ? row as IContacto : new Contacto( terceroId.value )
+    emit('clikContacto', contactoSelect.value)
+    if(soloEmitir.value) return
     ventanaOk.value           = true
   }
 
