@@ -114,6 +114,12 @@
               </td>
             </tr>
             <tr>
+              <td>Método entrega:</td>
+              <td class         ="text-bold fuente-mono">
+                {{ acuerdo.metodoEntrega.label }}
+              </td>
+            </tr>            
+            <tr>
               <td>Ciudad:</td>
               <td class         ="text-bold fuente-mono">
                 {{ acuerdo.contactoEntrega.municipio.label }}
@@ -122,13 +128,13 @@
             <tr>
               <td>Dirección:</td>
               <td class         ="text-bold fuente-mono">
-                {{ acuerdo.contactoEntrega.direccion }}
+                {{ acuerdo.contactoEntrega.direccion.length > 10 ? acuerdo.contactoEntrega.direccion : '⚠️' }}
               </td>
             </tr>
             <tr>
               <td>Indicaciones:</td>
               <td class         ="text-bold fuente-mono">
-                {{ acuerdo.contactoEntrega.nota }}
+                {{ acuerdo.contactoEntrega.nota.length > 10 ? acuerdo.contactoEntrega.nota : '❕' }}
               </td>
             </tr>
           </tbody>

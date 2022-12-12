@@ -10,6 +10,7 @@ import {  getCondicionesPagoDB,
 import {  TTipoAcuerdo,
           TIPO_ACUERDO,
           ESTADO_CTZ,
+          ESTADO_ACU,
           EstadosAcuerdos,          
           ESTADO_PED                        } from "./ConstantesAcuerdos"
 //* ///////////////////////////////////////// Modelos
@@ -51,6 +52,7 @@ export interface IAcuerdo
   esCotizacion:               boolean
   esPedido:                   boolean
   esOCProveedor:              boolean
+  esFactura:                  boolean
   esNuevo:                    boolean  
   id:                         number
   
@@ -91,10 +93,13 @@ export interface IAcuerdo
 
   esEstadoBoceto:             boolean
   esEstadoNoValidado:         boolean
-  esEstadoValidado:           boolean
+  esEstadoValido:             boolean // Es cualquier estado que no sea borrador o boceto
+  esEstadoValidado:           boolean // Es especificamente estado Validado
   esEstadoAbierto:            boolean
   esEstadoCotizado:           boolean
   esEstadoFacturado:          boolean
+  esEstadoEntregando:         boolean
+  esEstadoAnulado:            boolean
 
   notaPrivada:                string
   notaPublica:                string
@@ -473,11 +478,13 @@ export class Acuerdo implements IAcuerdo
     return total
   }
 
-  get esEstadoBoceto      ():boolean { return this.estado === ESTADO_CTZ.NO_GUARDADO  }
-  get esEstadoNoValidado  ():boolean { return this.estado === ESTADO_CTZ.NO_GUARDADO || this.estado === ESTADO_CTZ.BORRADOR}
-  get esEstadoValidado    ():boolean { return this.estado   > ESTADO_CTZ.BORRADOR     }
+  get esEstadoBoceto      ():boolean { return this.estado === ESTADO_ACU.NO_GUARDADO  }
+  get esEstadoNoValidado  ():boolean { return this.estado === ESTADO_ACU.NO_GUARDADO || this.estado === ESTADO_ACU.BORRADOR}
+  get esEstadoValido      ():boolean { return this.estado   > ESTADO_ACU.BORRADOR     }
+  get esEstadoValidado    ():boolean { return this.estado === ESTADO_ACU.VALIDADO     } 
+  get esEstadoEntregando  ():boolean { return this.estado === ESTADO_PED.ENTREGANDO   } 
   get esEstadoCotizado    ():boolean { return this.estado === ESTADO_CTZ.COTIZADO     }
-  get esEstadoFacturado   ():boolean { return this.estado === ESTADO_CTZ.FACTURADO    }
+  get esEstadoFacturado   ():boolean { return this.estado === ESTADO_CTZ.FACTURADO    }  
   get esEstadoAbierto     ():boolean { 
     let abierto           = false
     if
@@ -486,11 +493,22 @@ export class Acuerdo implements IAcuerdo
       ||
       (
         this.esPedido     &&
-        ( this.estado == ESTADO_PED.VALIDADO || this.estado == ESTADO_PED.PROCESO )
+        ( this.estado == ESTADO_PED.VALIDADO || this.estado == ESTADO_PED.ENTREGANDO )
       )
     )
       abierto             = true
     return abierto
+  }  
+  get esEstadoAnulado     ():boolean { 
+    let anulado           = false
+    if
+    (
+      ( this.esCotizacion && this.estado == ESTADO_CTZ.RECHAZADO )
+      ||
+      ( this.esPedido     && this.estado == ESTADO_PED.CANCELADO  )
+    )
+      anulado             = true
+    return anulado
   }
   get estadoLabel(): string { return EstadosAcuerdos.estadoToName( this.tipo, this.estado)  }
   get estadoColor(): string { return EstadosAcuerdos.estadoToColor( this.tipo, this.estado) }

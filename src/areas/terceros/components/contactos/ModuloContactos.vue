@@ -112,7 +112,6 @@
   //onMounted( buscar )
   watch(terceroId, (idNew) =>
     {
-      console.log("idNew: ", idNew);
       if(!!idNew)
       {
         buscarContactos( idNew )
@@ -138,10 +137,8 @@
       contactos.value         = []
       for (const contacto of contactosApi)
       {
-        console.log("contacto: ", contacto);
         contactos.value.push( await Contacto.getContactoFromAPIDolibarr( contacto ) )        
       }
-      console.log("contactos.value: ", contactos.value);
       modo.value              = "normal"
     }
     else

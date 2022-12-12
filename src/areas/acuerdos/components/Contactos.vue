@@ -12,7 +12,7 @@
       icon                    ="mdi-account-cash"
       :tercero                ="acuerdo.tercero"
       :disable                ="!acuerdo.tercero.id || (!acuerdo.tercero.esEmpresa && !acuerdo.esTerceroCtz)"
-      :readonly               ="acuerdo.esEstadoValidado"
+      :readonly               ="acuerdo.esEstadoValido"
       @contacto-nuevo         =" c => vincularContactoAcuerdo           ( c,        TIPOS_CONTACTO.COMERCIAL )"
       @contacto-cambio        =" ( c, idOld ) => cambiarContactoAcuerdo ( c, idOld, TIPOS_CONTACTO.COMERCIAL )"
     />
@@ -24,11 +24,12 @@
       icon                    ="mdi-truck-delivery"
       :tercero                ="acuerdo.tercero"
       :disable                ="!acuerdo.tercero.id || (!acuerdo.tercero.esEmpresa && !acuerdo.esTerceroCtz)"
-      :readonly               ="acuerdo.esEstadoValidado"
+      
       @contacto-nuevo         =" c => vincularContactoAcuerdo           ( c,        TIPOS_CONTACTO.ENTREGA  )"
       @quitar-contacto        =" c => desvincularContactoAcuerdo        ( c.id,     TIPOS_CONTACTO.ENTREGA, true  )"
       @contacto-cambio        =" ( c, idOld ) => cambiarContactoAcuerdo ( c, idOld, TIPOS_CONTACTO.ENTREGA  )"
     />
+    <!-- :readonly               ="acuerdo.esEstadoValido" -->
     <!-- //* ///////////////////////////////////////////////// Contacto contable -->
     <select-contacto          quitar-contacto
       class                   ="col-md-4 col-12"
@@ -37,7 +38,7 @@
       icon                    ="mdi-file-table"
       :tercero                ="acuerdo.tercero"
       :disable                ="!acuerdo.tercero.id || (!acuerdo.tercero.esEmpresa && !acuerdo.esTerceroCtz )"
-      :readonly               ="acuerdo.esEstadoValidado"
+      :readonly               ="acuerdo.esEstadoValido"
       @contacto-nuevo         =" c => vincularContactoAcuerdo           ( c,        TIPOS_CONTACTO.CONTABLE )"
       @quitar-contacto        =" c => desvincularContactoAcuerdo        ( c.id,     TIPOS_CONTACTO.CONTABLE, true )"
       @contacto-cambio        =" ( c, idOld ) => cambiarContactoAcuerdo ( c, idOld, TIPOS_CONTACTO.CONTABLE )"

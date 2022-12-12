@@ -70,7 +70,7 @@ export function servicesAcuerdos()
   {
     return new Promise( async (resolver, rechazar ) =>
     {
-      const { data, ok  }   = await miFetch( getURL("listas", "acuerdosNew"),
+      const { data, ok  }   = await miFetch( getURL("listas", "acuerdos"),
                                                     {
                                                       body: getFormData(  "acuerdo",  { id: id, acuerdo: tipo } ),
                                                       method: "POST"

@@ -32,20 +32,20 @@
       class                   ="col-12"
       :con-tercero-especial   ="acuerdo.esCotizacion"
       v-model:tercero         ="acuerdo.tercero"
-      :readonly               ="acuerdo.esEstadoValidado || acuerdo.vinculado"
+      :readonly               ="acuerdo.esEstadoValido || acuerdo.vinculado"
       @update:tercero         ="actualizarTercero"
     />
     <!-- //* ///////////////////////////////////////////////// Contacto -->
     <!-- Es disable cuando no tiene tercero asignado o no es empresa y no es el tercero del comercial -->
     <select-contacto
-      v-if                    ="acuerdo.esCotizacion"
+      v-if                    ="acuerdo.esCotizacion || acuerdo.esNuevo"
       class                   ="col-12"
       label                   ="Contacto comercial"
       icon                    ="mdi-account-cash"
       v-model:contacto        ="acuerdo.contactoComercial"
       :tercero                ="acuerdo.tercero"
       :disable                ="!acuerdo.tercero.id || (!acuerdo.tercero.esEmpresa && !acuerdo.esTerceroCtz)"
-      :readonly               ="acuerdo.esEstadoValidado"
+      :readonly               ="acuerdo.esEstadoValido"
       @contacto-nuevo         =" c => vincularContactoAcuerdo           ( c,        TIPOS_CONTACTO.COMERCIAL )"
       @contacto-cambio        =" ( c, idOld ) => cambiarContactoAcuerdo ( c, idOld, TIPOS_CONTACTO.COMERCIAL )"
     />

@@ -19,6 +19,11 @@ export const enum TIPOS_CONTACTO_ID { // llx_c_type_contact
   FAC_BILLING             = 60, // Contactar facturación cliente
   FAC_SHIPPING            = 61, // Contacto con el cliente de entrega
   FAC_SERVICE             = 62, // Contactar con la prestación del cliente
+
+  /* // Intervenciones 
+    BILLING 130
+    CUSTOMER 131  
+  */
 }
 
 export const enum TIPOS_CONTACTO { // llx_c_type_contact

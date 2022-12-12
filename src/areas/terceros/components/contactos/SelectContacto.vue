@@ -170,8 +170,7 @@
     if(!!busqueda) url        += `&sqlfilters=(t.firstname%3Alike%3A'%25${busqueda}%25')||(t.lastname%3Alike%3A'%25${busqueda}%25')||(t.note_public%3Alike%3A'%25${busqueda}%25')`.replaceAll(" ", "%20")
     const { data, ok }        = await apiDolibarr( "buscar", "contacto", url )
     const contacts :IContacto[] = []
-    console.log("contacts: ", contacts);
-
+    
     if(ok && Array.isArray( data ) && !!data.length)
     {      
       for (const contacto of data as any[])

@@ -153,7 +153,7 @@ export function useControlAcuerdo()
   //* ////////////////////////////////////////////////////////////////////// Cambiar contacto
   async function cambiarContactoAcuerdo( contacto : IContacto, idOld : number, tipo : TTipoContacto )
   {
-    if(!acuerdo.value.id) return
+    if(!acuerdo.value.id) cambiarContactoAcuerdo
     await desvincularContactoAcuerdo( idOld, tipo )
     await vincularContactoAcuerdo   ( contacto, tipo )
   }
@@ -173,6 +173,10 @@ export function useControlAcuerdo()
       //const id                    = await getIdEnlaceContacto( acuerdo.value.id, contacto.id )
       //acuerdo.value.contacto.idRelacion  = id
       aviso("positive", "Contacto asignado", "account")
+
+      if(tipo === TIPOS_CONTACTO.ENTREGA  ) acuerdo.value.contactoEntrega   = contacto
+      else
+      if(tipo === TIPOS_CONTACTO.CONTABLE ) acuerdo.value.contactoContable  = contacto
     }    
   }
     
@@ -268,7 +272,7 @@ export function useControlAcuerdo()
   }  
 
   //* ////////////////////////////////////////////////////////////////////// Editar acuerdo
-  async function editarAcuerdo()
+  async function pasarABorradorAcuerdo()
   {
     loading.value.editar      = true
     const { ok, data }        = await apiDolibarr("settodraft", acuerdo.value.tipo, { idwarehouse: 0 }, acuerdo.value.id)
@@ -282,6 +286,22 @@ export function useControlAcuerdo()
 
     loading.value.editar      = false
   }
+
+  //* ////////////////////////////////////////////////////////////////////// Editar acuerdo
+  async function reabrirPedido()
+  {
+    loading.value.editar      = true
+    const { ok, data }        = await apiDolibarr("reopen", acuerdo.value.tipo, {}, acuerdo.value.id)
+
+    if(ok){
+      aviso("positive", `Reapertura de ${acuerdo.value.tipo} 👌🏼`)
+      acuerdo.value.estado    = ESTADO_PED.VALIDADO
+    }
+    else
+      aviso("negative", `Error al reabrir ${acuerdo.value.tipo}`)
+
+    loading.value.editar      = false
+  }  
 
   //* ////////////////////////////////////////////////////////////////////// Aprobar Cotizacion
   async function aprobarCotizacion()
@@ -307,8 +327,19 @@ export function useControlAcuerdo()
   async function anularAcuerdo()
   {
     loading.value.anular      = true
-    const estado              = { status: 3, note_private: "", notrigger: 0 }
-    const { ok, data }        = await apiDolibarr("close", acuerdo.value.tipo, estado, acuerdo.value.id)
+    let estado                = {}
+    let accion : "close" | "editar" = "editar"
+
+    if(acuerdo.value.esCotizacion){
+      estado                  = { status: ESTADO_CTZ.RECHAZADO, note_private: "", notrigger: 0 }
+      accion                  = "close"
+    }
+    else if(acuerdo.value.esPedido)
+    {
+      estado                  = { statut: ESTADO_PED.CANCELADO, notrigger: 0 }
+      accion                  = "editar"
+    }
+    const { ok, data }        = await apiDolibarr(accion, acuerdo.value.tipo, estado, acuerdo.value.id)
 
     if(ok){
       aviso("positive", `Anulación de ${acuerdo.value.tipo} 👌🏼`)
@@ -526,7 +557,8 @@ export function useControlAcuerdo()
     buscarAcuerdo,
     buscarTerceroDolibarr,
     editarComercial,
-    editarAcuerdo,
+    pasarABorradorAcuerdo,
+    reabrirPedido,
     editarOrigen,
     editarRefCliente,
     editarTiempoEntrega,

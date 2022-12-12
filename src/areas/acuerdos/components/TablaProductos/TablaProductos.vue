@@ -36,7 +36,7 @@
             class               ="col"
             :class              ="{'cursor-pointer' : acuerdo.esEstadoNoValidado}"
             :linea              ="(props.row as LineaAcuerdo)"
-            :es-validado        ="acuerdo.esEstadoValidado"
+            :es-validado        ="acuerdo.esEstadoValido"
             @click              ="mostrarFormulario( props.row as LineaAcuerdo )"
             @borrar-linea       ="borrarLineaMenu"
           />
@@ -48,7 +48,7 @@
       <q-td>
         <cantidad
           v-model               ="props.row"
-          :readonly             ="acuerdo.esEstadoValidado"
+          :readonly             ="acuerdo.esEstadoValido"
         />
       </q-td>
     </template>
@@ -57,7 +57,7 @@
       <q-td :props="props">
         <descuento
           v-model               ="props.row"
-          :readonly             ="acuerdo.esEstadoValidado"
+          :readonly             ="acuerdo.esEstadoValido"
         />
       </q-td>
     </template>
@@ -145,7 +145,7 @@
   ]
 
   function mostrarFormulario( linea : ILineaAcuerdo ){
-    if(acuerdo.value.esEstadoValidado) return
+    if(acuerdo.value.esEstadoValido) return
     mostrarFormularioLinea( linea, grupo.value )
   }
 

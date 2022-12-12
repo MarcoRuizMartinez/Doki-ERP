@@ -12,7 +12,7 @@ type AccionDolibarr           = "crear"         | "editar"        | "ver"       
                                 "buscar"        | "borrar"        | "borrar-linea"  |
                                 "crear-linea"   | "crear-lineas"  | "borrar-lineas" | "editar-linea"  |
                                 "descargar"     | "subir"         | "generar"       | 
-                                "close"         | "setinvoiced"   | "settodraft"    | "validate"
+                                "close"         | "setinvoiced"   | "settodraft"    | "validate"      | "reopen"
 //  | "crear-lineas"  |  |
 
 type ModuloDolibarr           = "" | "tercero" | "contacto" | "documento" | "cotización" | "pedido" | "oc_proveedor" | "entrega" | "factura" | "saber" | "producto" | "proyecto"
@@ -153,7 +153,7 @@ export function useApiDolibarr()
       metodo                  = "post"
       endPoint                += `/${id}/contact/${objeto.id}/${objeto.tipo}`
     }
-    else if(accion === "close" || accion === "setinvoiced" || accion === "settodraft" || accion === "validate")
+    else if(accion === "close" || accion === "setinvoiced" || accion === "settodraft" || accion === "validate"  || accion === "reopen")
     {
       metodo                  = "post"
       endPoint                += `/${id}/${accion}`

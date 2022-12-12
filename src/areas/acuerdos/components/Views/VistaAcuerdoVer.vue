@@ -10,9 +10,10 @@
     @click-aprobar          ="clickAprobarCotizacion"
     @click-anular           ="anularAcuerdo"
     @click-validar          ="validarAcuerdo"
-    @click-editar           ="editarAcuerdo"
+    @click-editar           ="pasarABorradorAcuerdo"
     @click-borrar           ="eliminarAcuerdo"
     @click-remision         ="generarRemisionPDF"
+    @click-reabrir          ="reabrirPedido"
   />
   <tercero-y-contacto       scroll
     class                   ="col-md-4 col-12"
@@ -116,7 +117,8 @@
           guardarPDF        } = useCotizacionPDF()
   const { aprobarCotizacion,
           anularAcuerdo,
-          editarAcuerdo,
+          pasarABorradorAcuerdo,
+          reabrirPedido,
           buscarAcuerdo,
           eliminarAcuerdo,
           validarAcuerdo,

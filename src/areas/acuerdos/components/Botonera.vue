@@ -57,7 +57,7 @@
     <!-- //* //////////////////////////////////////////////////////////  Boton PDF -->
     <efecto efecto          ="Down">      
       <q-btn
-        v-if                ="acuerdo.esCotizacion && acuerdo.esEstadoValidado"
+        v-if                ="acuerdo.esCotizacion && acuerdo.esEstadoValido"
         v-bind              ="btnBaseMd"
         color               ="primary"
         icon                ="mdi-pdf-box"
@@ -72,7 +72,7 @@
     <!-- //* //////////////////////////////////////////////////////////  Boton Remision -->
 <!--     <efecto efecto          ="Down">      
       <q-btn
-        v-if                ="acuerdo.esPedido && acuerdo.esEstadoValidado"
+        v-if                ="acuerdo.esPedido && acuerdo.esEstadoValido"
         v-bind              ="btnBaseMd"
         color               ="primary"
         icon                ="mdi-format-list-checks"
@@ -86,9 +86,9 @@
     </efecto>     -->
     <!-- <efecto efecto          ="Down"> -->
       <!-- //* //////////////////////////////////////////////////////////  Boton Aprobar -->
-      <q-btn-group  v-if    ="acuerdo.esEstadoCotizado && acuerdo.esCotizacion">        
+      <q-btn-group  v-if    ="acuerdo.esEstadoValidado">        
         <q-btn 
-          v-if              ="!acuerdo.esTerceroCtz"
+          v-if              ="!acuerdo.esTerceroCtz && acuerdo.esCotizacion"
           v-bind            ="btnBaseMd"
           color             ="positive"
           icon              ="mdi-handshake"
@@ -132,7 +132,7 @@
     </q-btn>
     <!-- //* ////////////////////////////////////////////////////////// Boton Editar -->
     <q-btn
-      v-if                  ="acuerdo.esEstadoValidado && !acuerdo.esEstadoFacturado"
+      v-if                  ="mostrarEditar"
       v-bind                ="btnBaseMd"
       color                 ="positive"
       icon                  ="mdi-square-edit-outline"
@@ -143,6 +143,19 @@
       >
       <Tooltip label        ="Editar"/>
     </q-btn>
+    <!-- //* ////////////////////////////////////////////////////////// Boton Reabrir -->
+    <q-btn
+      v-if                  ="acuerdo.esPedido && acuerdo.esEstadoAnulado"
+      v-bind                ="btnBaseMd"
+      color                 ="positive"
+      icon                  ="mdi-lock-open-check"
+      :label                ="esMobil ? '' : 'Reabrir'"
+      :disable              ="cargandoAlgo"
+      :loading              ="loading.editar"
+      >
+      <confirmar  @ok       ="emit('clickReabrir')" :con-label="!esMobil"/>
+      <Tooltip label        ="Reabrir"/>
+    </q-btn>    
     <!-- //* ////////////////////////////////////////////////////////// Boton borrar -->
     <q-btn
       v-bind                ="btnBaseMd"
@@ -175,10 +188,14 @@
           loading           } = storeToRefs( useStoreAcuerdo() )
 
   const { esMobil     } = useTools()
-  const emit            = defineEmits(["clickPdf","clickAprobar", "clickAnular", "clickValidar", "clickEditar", "clickBorrar", "clickRemision"])
+  const emit            = defineEmits(["clickPdf","clickAprobar", "clickAnular", "clickValidar", "clickEditar", "clickBorrar", "clickRemision", "clickReabrir"])
   const cargandoAlgo    = computed(()=> Object.values(loading.value).some( ( estado : boolean )=> !!estado ) )
   const totalNotas      = computed(()=> ( !!acuerdo.value.notaPrivada ? 1 : 0 ) + ( !!acuerdo.value.notaPublica ? 1 : 0 )  )
+  const mostrarEditar   = computed(()=>   ( acuerdo.value.esCotizacion && !acuerdo.value.esEstadoFacturado )
+                                          ||
+                                          ( acuerdo.value.esPedido && !acuerdo.value.facturado && !acuerdo.value.esEstadoNoValidado  && !acuerdo.value.esEstadoAnulado )
 
+                                  )
   function clickEnNotas()
   {
     window.scrollTo({ top: document.body.scrollHeight,  behavior: 'smooth'})

@@ -15,7 +15,7 @@
       label                   ="Cantidad"
       modo                    ="right"
       :minimo                 ="0.1"
-      :readonly               ="acuerdo.esEstadoValidado"
+      :readonly               ="acuerdo.esEstadoValido"
     />
     <!-- //* ///////////////////////////////////////////////////////////// Precio Base -->
     <input-number             no-undefined
@@ -30,7 +30,7 @@
       :alerta                 ="false"
       :con-decimales          ="conDecimales"
       :paso                   ="conDecimales ? 0.01 : 100"
-      :readonly               ="acuerdo.esEstadoValidado"
+      :readonly               ="acuerdo.esEstadoValido"
     />
     <!-- //* ///////////////////////////////////////////////////////////// Descuento -->
     <numero-paso              porcentaje
@@ -41,7 +41,7 @@
       :paso                   ="0.1"
       :maximo                 ="linea.x100Maximo"
       :minimo                 ="0"
-      :readonly               ="acuerdo.esEstadoValidado"
+      :readonly               ="acuerdo.esEstadoValido"
     />
     <!-- //* ///////////////////////////////////////////////////////////// Precio final -->
     <input-number
@@ -57,7 +57,7 @@
       :alerta                 ="false"
       :con-decimales          ="conDecimales"
       :paso                   ="conDecimales ? 0.01 : 50"
-      :readonly               ="acuerdo.esEstadoValidado"
+      :readonly               ="acuerdo.esEstadoValido"
     />
     <!-- //* ///////////////////////////////////////////////////////////// Descuento valor -->
     <div class                ="col-5 col-md-6">
@@ -82,7 +82,7 @@
       :alerta                 ="false"
       :minimo                 ="linea.precioMinimoConIVA"
       :paso                   ="conDecimales ? 0.01 : 50"
-      :readonly               ="acuerdo.esEstadoValidado"
+      :readonly               ="acuerdo.esEstadoValido"
     />
     <!-- //* ///////////////////////////////////////////////////////////// Tabla totales -->
     <div        class         ="col-12">
@@ -121,14 +121,14 @@
       options-sort            ="orden"
       defecto                 ="UND - Unidad"
       :options                ="unidades"
-      :readonly               ="acuerdo.esEstadoValidado"
+      :readonly               ="acuerdo.esEstadoValido"
     />
     <!-- //* ///////////////////////////////////////////////////////////// Descripcion -->
     <div class                ="col-12">
       <q-editor
         v-model               ="linea.descripcion"
         v-bind                ="WYSIWYG_Limpio"
-        :readonly             ="acuerdo.esEstadoValidado"
+        :readonly             ="acuerdo.esEstadoValido"
         :definitions          ="{
           save: {
             tip:              'Guardar descripción',

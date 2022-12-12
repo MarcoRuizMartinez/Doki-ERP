@@ -49,7 +49,7 @@ export enum ESTADO_PED
   CANCELADO                   = -1,
   BORRADOR                    = 0,
   VALIDADO                    = 1,
-  PROCESO                     = 2,
+  ENTREGANDO                  = 2,
   ENTREGADO                   = 3,
 }
 
@@ -87,7 +87,7 @@ export class EstadosAcuerdos
                                 : estado == ESTADO_PED.CANCELADO        ? "Cancelado"
                                 : estado == ESTADO_PED.BORRADOR         ? "Borrador"
                                 : estado == ESTADO_PED.VALIDADO         ? "Validado"
-                                : estado == ESTADO_PED.PROCESO          ? "Entregando"
+                                : estado == ESTADO_PED.ENTREGANDO       ? "Entregando"
                                 : estado == ESTADO_PED.ENTREGADO        ? "Entregado"
                                 : ""
     }
@@ -127,7 +127,7 @@ export class EstadosAcuerdos
                                 : estado == ESTADO_PED.CANCELADO        ? COLORES.MORADO
                                 : estado == ESTADO_PED.BORRADOR         ? COLORES.GRIS
                                 : estado == ESTADO_PED.VALIDADO         ? COLORES.NARANJA
-                                : estado == ESTADO_PED.PROCESO          ? COLORES.AZUL
+                                : estado == ESTADO_PED.ENTREGANDO          ? COLORES.AZUL
                                 : estado == ESTADO_PED.ENTREGADO        ? COLORES.VERDE
                                 : "transparent"
     }
@@ -167,7 +167,7 @@ export class EstadosAcuerdos
                                 : estado == ESTADO_PED.CANCELADO        ? "mdi-close-circle"
                                 : estado == ESTADO_PED.BORRADOR         ? "mdi-circle-edit-outline"
                                 : estado == ESTADO_PED.VALIDADO         ? "mdi-check-bold"
-                                : estado == ESTADO_PED.PROCESO          ? "mdi-airplane-takeoff"
+                                : estado == ESTADO_PED.ENTREGANDO          ? "mdi-airplane-takeoff"
                                 : estado == ESTADO_PED.ENTREGADO        ? "mdi-truck-check"
                                 : ""
     }
@@ -215,7 +215,7 @@ export const estadosPed       = [
   { value: ESTADO_PED.CANCELADO,        label: EstadosAcuerdos.estadoToName( TIPO_ACUERDO.PEDIDO,       ESTADO_PED.CANCELADO ) },
   { value: ESTADO_PED.BORRADOR,         label: EstadosAcuerdos.estadoToName( TIPO_ACUERDO.PEDIDO,       ESTADO_PED.BORRADOR ) },
   { value: ESTADO_PED.VALIDADO,         label: EstadosAcuerdos.estadoToName( TIPO_ACUERDO.PEDIDO,       ESTADO_PED.VALIDADO ) },
-  { value: ESTADO_PED.PROCESO,          label: EstadosAcuerdos.estadoToName( TIPO_ACUERDO.PEDIDO,       ESTADO_PED.PROCESO ) },
+  { value: ESTADO_PED.ENTREGANDO,       label: EstadosAcuerdos.estadoToName( TIPO_ACUERDO.PEDIDO,       ESTADO_PED.ENTREGANDO ) },
   { value: ESTADO_PED.ENTREGADO,        label: EstadosAcuerdos.estadoToName( TIPO_ACUERDO.PEDIDO,       ESTADO_PED.ENTREGADO ) },
 ]
 
