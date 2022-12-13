@@ -168,6 +168,23 @@
       <confirmar  @ok       ="emit('clickBorrar')" :con-label="!esMobil"/>
       <Tooltip label        ="Borrar"/>
     </q-btn>
+    <q-btn                  round dense flat
+      v-if                  ="!acuerdo.esNuevo"
+      icon                  ="mdi-information-outline"
+      class                 ="op60 op100-hover"
+      color                 ="white"
+      >
+      <tooltip-acuerdo      :acuerdo="acuerdo"/>
+    </q-btn>
+    <q-btn                  round dense flat
+      v-if                  ="!acuerdo.esNuevo"
+      icon                  ="mdi-refresh"
+      class                 ="op60 op100-hover"
+      color                 ="white"
+      @click                ="emit('clickRecargar')"
+      >
+      <Tooltip :label       ="`Recargar ${acuerdo.label}`"/>
+    </q-btn>       
   </barra>    
 </template>
 <script lang="ts" setup>
@@ -183,12 +200,13 @@
   import    barra             from "components/utilidades/Barra.vue"
   import    efecto            from "components/utilidades/Efecto.vue"
   import    confirmar         from "components/utilidades/MenuConfirmar.vue"
+  import    tooltipAcuerdo    from "src/areas/acuerdos/components/Tooltips/TooltipAcuerdo.vue"
 
   const { acuerdo,
           loading           } = storeToRefs( useStoreAcuerdo() )
 
   const { esMobil     } = useTools()
-  const emit            = defineEmits(["clickPdf","clickAprobar", "clickAnular", "clickValidar", "clickEditar", "clickBorrar", "clickRemision", "clickReabrir"])
+  const emit            = defineEmits(["clickPdf","clickAprobar", "clickAnular", "clickValidar", "clickEditar", "clickBorrar", "clickRemision", "clickReabrir", "clickRecargar"])
   const cargandoAlgo    = computed(()=> Object.values(loading.value).some( ( estado : boolean )=> !!estado ) )
   const totalNotas      = computed(()=> ( !!acuerdo.value.notaPrivada ? 1 : 0 ) + ( !!acuerdo.value.notaPublica ? 1 : 0 )  )
   const mostrarEditar   = computed(()=>   ( acuerdo.value.esCotizacion && !acuerdo.value.esEstadoFacturado )

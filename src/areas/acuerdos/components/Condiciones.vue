@@ -7,14 +7,14 @@
     >
     <!-- //* ///////////////////////////////////////////////// Fecha Creacion -->
     <input-fecha              readonly
-      v-if                    ="!acuerdo.esNuevo"
+      v-if                    ="!acuerdo.esNuevo && !acuerdo.esPedido"
       v-model                 ="acuerdo.fechaCreacion"
       label                   ="Fecha creación"
       class                   ="col-md-6 col-12"
     />
     <!-- //* ///////////////////////////////////////////////// Fecha Validacion -->
     <input-fecha              readonly
-      v-if                    ="!acuerdo.esNuevo"
+      v-if                    ="!acuerdo.esNuevo && !acuerdo.esPedido"
       v-model                 ="acuerdo.fechaValidacion"
       label                   ="Fecha validación"
       class                   ="col-md-6 col-12"
@@ -39,8 +39,9 @@
       :tercero                ="acuerdo.tercero"
       :disable                ="!acuerdo.tercero.id"
       @contacto-nuevo         =" c => vincularContactoAcuerdo           ( c,        TIPOS_CONTACTO.ENTREGA  )"
-      @quitar-contacto        =" c => desvincularContactoAcuerdo        ( c.id,     TIPOS_CONTACTO.ENTREGA, true  )"
-      @contacto-cambio        =" ( c, idOld ) => cambiarContactoAcuerdo ( c, idOld, TIPOS_CONTACTO.ENTREGA  )"
+      @quitar-contacto        =" c => desvincularContactoAcuerdo        ( c.id,     TIPOS_CONTACTO.ENTREGA, true)"
+      @contacto-cambio        ="( c, idOld ) => cambiarContactoAcuerdo ( c, idOld, TIPOS_CONTACTO.ENTREGA  )"
+      @update:contacto        ="editarDatosEntregaSistemaViejo"
     />
     <!-- //* ///////////////////////////////////////////////// Fecha entrega -->
     <input-fecha              no-pasado
@@ -99,46 +100,7 @@
       v-if                    ="acuerdo.esPedido && !!acuerdo.contactoEntrega.id"
       class                   ="col-12"
       >
-      <table>
-          <tbody>
-            <tr>
-              <td>Contacto:</td>
-              <td class         ="text-bold fuente-mono">
-                {{ acuerdo.contactoEntrega.nombreCompleto }}
-                <span v-if="!!acuerdo.contactoEntrega.telefono">
-                  - {{ acuerdo.contactoEntrega.telefono }}
-                </span>
-                <span v-if="!!acuerdo.contactoEntrega.telefono_2">
-                  - {{ acuerdo.contactoEntrega.telefono_2 }}
-                </span>
-              </td>
-            </tr>
-            <tr>
-              <td>Método entrega:</td>
-              <td class         ="text-bold fuente-mono">
-                {{ acuerdo.metodoEntrega.label }}
-              </td>
-            </tr>            
-            <tr>
-              <td>Ciudad:</td>
-              <td class         ="text-bold fuente-mono">
-                {{ acuerdo.contactoEntrega.municipio.label }}
-              </td>
-            </tr>
-            <tr>
-              <td>Dirección:</td>
-              <td class         ="text-bold fuente-mono">
-                {{ acuerdo.contactoEntrega.direccion.length > 10 ? acuerdo.contactoEntrega.direccion : '⚠️' }}
-              </td>
-            </tr>
-            <tr>
-              <td>Indicaciones:</td>
-              <td class         ="text-bold fuente-mono">
-                {{ acuerdo.contactoEntrega.nota.length > 10 ? acuerdo.contactoEntrega.nota : '❕' }}
-              </td>
-            </tr>
-          </tbody>
-        </table>
+      <tabla-envio/>
     </div>
   </ventana>
 </template>
@@ -159,6 +121,7 @@
   import    selectLabelValue        from "components/utilidades/select/SelectLabelValue.vue"
   import    fechaVencimiento        from "src/areas/acuerdos/components/tools/FechaValidezCtz.vue"
   import    selectContacto          from "src/areas/terceros/components/contactos/SelectContacto.vue"
+  import    tablaEnvio              from "src/areas/acuerdos/components/tools/TablaEnvio.vue"                                          
 
   const { acuerdo, loading        } = storeToRefs( useStoreAcuerdo() )
   //* //////////////////////      ///////////////////////////////////////// Tablas Dexie
@@ -175,5 +138,6 @@
           cambiarContactoAcuerdo,
           vincularContactoAcuerdo,
           desvincularContactoAcuerdo,
+          editarDatosEntregaSistemaViejo
                                   } = useControlAcuerdo()
 </script>

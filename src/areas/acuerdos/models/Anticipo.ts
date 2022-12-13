@@ -41,6 +41,7 @@ export type TTipoFileAnticipo = "cliente" | "interno"
 export interface IAnticipo
 { 
   id                        : number
+  index                     : number  // El numero del pago, 1, 2 etc
   fechaPago                 : string
   fechaPagoString           : string
   cuenta                    : ICuentaDinero
@@ -72,6 +73,7 @@ export interface IAnticipo
 export class Anticipo implements IAnticipo
 {
   id                        : number
+  index                     : number
   fechaPago                 : string
   cuenta                    : ICuentaDinero
   cuentaId                  : number
@@ -93,6 +95,7 @@ export class Anticipo implements IAnticipo
   constructor( idPedido : number = 0 )
   {
     this.id                 = 0
+    this.index              = 0
     this.fechaPago          = fechaCorta( new Date() )
     this.cuenta             = new CuentaDinero()
     this.cuentaId           = 0
@@ -111,7 +114,7 @@ export class Anticipo implements IAnticipo
     this.estado             = ESTADO_ANTICIPO.PENDIENTE
     this.estadoSelect       = labelValueNulo
   }
- 
+
   get esNuevo   () : boolean  { return !this.id }
   get valorSumar() : number   { return this.tipo === TIPO_ANTICIPO.PAGO ? this.valor : -this.valor }
   get valorLabel() : string   { 
@@ -149,6 +152,7 @@ export class Anticipo implements IAnticipo
     const anti = {
       id                : this.id,
       fecha_pago        : this.fechaPagoString,
+      index             : this.index,
       cuenta_id         : this.cuenta.id,
       pedido_id         : this.pedidoId,
       valor             : this.valor,

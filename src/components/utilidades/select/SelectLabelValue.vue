@@ -13,7 +13,7 @@
       :filled                 ="!hundido"
       :options                ="opciones"
       :clearable              ="clearable && !!modelValue && !!modelo && !!modelo.label"
-      :loading                ="options.length == 0 || loading"
+      :loading                ="(options.length == 0 || loading) && !noLoading"
       :readonly               ="readonly"
       :use-input              ="useInput"
       :behavior               ="behavior"
@@ -76,6 +76,7 @@
     options:      { required: true,           type: Array   as PropType<ILabelValue[]>  },
     clearable:    { default: false,           type: Boolean                             },
     loading:      { default: false,           type: Boolean                             },
+    noLoading:    { default: false,           type: Boolean                             },
     defecto:      { default: "",              type: String,                             },
     optionsSort:  { default: "",              type: String                              },
     behavior:     { default: "default",       type: String  as PropType< "default" | "menu" | "dialog" > },

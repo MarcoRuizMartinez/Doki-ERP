@@ -14,6 +14,7 @@
     @click-borrar           ="eliminarAcuerdo"
     @click-remision         ="generarRemisionPDF"
     @click-reabrir          ="reabrirPedido"
+    @click-recargar         ="recargar"
   />
   <tercero-y-contacto       scroll
     class                   ="col-md-4 col-12"

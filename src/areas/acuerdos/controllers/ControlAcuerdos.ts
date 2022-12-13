@@ -7,7 +7,9 @@ import {  useStoreAcuerdo       } from 'src/stores/acuerdo'
 import {  useControlProductos   } from "src/areas/acuerdos/controllers/ControlLineasProductos"
 import {  servicesAcuerdos      } from "src/areas/acuerdos/services/servicesAcuerdos"
 import {  servicesTerceros      } from "src/areas/terceros/services/servicesTerceros"
-import {  useApiDolibarr        } from "src/services/useApiDolibarr"  
+import {  useApiDolibarr        } from "src/services/useApiDolibarr"
+import {  useFetch              } from "src/useSimpleOk/useFetch"
+import {  getURL, getFormData   } from "src/services/APIMaco"
 import {  useTools,
           ID_URL_Ok,
           confeti               } from "src/useSimpleOk/useTools"
@@ -58,6 +60,7 @@ export function useControlAcuerdo()
           moverContactoAOtroTercero
                               } = servicesTerceros()
   const { apiDolibarr         } = useApiDolibarr()
+  const { miFetch             } = useFetch()
   const { acuerdo,
           loading             } = storeToRefs( useStoreAcuerdo() )  
 
@@ -174,10 +177,13 @@ export function useControlAcuerdo()
       //acuerdo.value.contacto.idRelacion  = id
       aviso("positive", "Contacto asignado", "account")
 
-      if(tipo === TIPOS_CONTACTO.ENTREGA  ) acuerdo.value.contactoEntrega   = contacto
+      if(tipo === TIPOS_CONTACTO.ENTREGA  ){
+        acuerdo.value.contactoEntrega   = contacto
+        await editarDatosEntregaSistemaViejo()
+      }
       else
       if(tipo === TIPOS_CONTACTO.CONTABLE ) acuerdo.value.contactoContable  = contacto
-    }    
+    }
   }
     
 
@@ -193,14 +199,33 @@ export function useControlAcuerdo()
       if(mostrarAviso)
         aviso("positive", "Contacto desvinculado", "account")
         
-      if(tipo === TIPOS_CONTACTO.ENTREGA  ) acuerdo.value.contactoEntrega   = new Contacto()
+      if(tipo === TIPOS_CONTACTO.ENTREGA  ){
+        acuerdo.value.contactoEntrega   = new Contacto()
+        await editarDatosEntregaSistemaViejo()
+      }
+      else        
       if(tipo === TIPOS_CONTACTO.CONTABLE ) acuerdo.value.contactoContable  = new Contacto()
     }
     else{
       aviso("negative", "error al desvincular contacto", "account")
     }
-
+    await editarDatosEntregaSistemaViejo()
     return desvinculado
+  }
+
+  async function editarDatosEntregaSistemaViejo() : Promise<boolean>
+  {
+    const endPoint              = getURL("servicios", "acuerdos")
+    const objeto                = {
+                                    pedido_id:    acuerdo.value.id,
+                                    acuerdo:      acuerdo.value.tipo,
+                                    ciudad:       acuerdo.value.contactoEntrega.municipio.label,
+                                    dir_entre:    acuerdo.value.contactoEntrega.direccion,
+                                    indicaciones: acuerdo.value.contactoEntrega.nota,
+                                  }
+    const objetoForData         = { body: getFormData("editarEntregaOld", objeto), method: "POST"}    
+    const { ok  }               = await miFetch( endPoint, objetoForData, { mensaje: "datos entrega" } )
+    return ok
   }
     
 
@@ -578,5 +603,6 @@ export function useControlAcuerdo()
     cambiarContactoAcuerdo,
     vincularContactoAcuerdo,
     desvincularContactoAcuerdo,
+    editarDatosEntregaSistemaViejo,
   }
 }

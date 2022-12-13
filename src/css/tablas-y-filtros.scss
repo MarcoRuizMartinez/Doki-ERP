@@ -105,10 +105,12 @@ legend{
     transition: transform .28s, background-color .28s;
 }  
 
+.tabla-info td:nth-child(odd),
 .tabla-tooltip td:nth-child(odd) {
     font-weight: bold;
     min-width: 70px;
 }
+.tabla-info td:nth-child(odd)::after 
 .tabla-tooltip td:nth-child(odd)::after {
     content: ":";
 }

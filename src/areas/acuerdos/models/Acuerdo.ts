@@ -138,6 +138,7 @@ export interface IAcuerdo
   contactoComercial:          IContacto
   contactoEntrega:            IContacto
   contactoContable:           IContacto
+  contactoSmart:              IContacto
   productos:                  ILineaAcuerdo[]
   proGrupos:                  IGrupoLineas[]
 
@@ -695,6 +696,13 @@ export class Acuerdo implements IAcuerdo
       acuForApi.fin_validite        = getMilisecShortForApiDolibarr( this.fechaFinValidez )
 
     return acuForApi
+  }
+
+  get contactoSmart() : IContacto {
+    if(this.esPedido && !!this.contactoEntrega.id)
+      return this.contactoEntrega
+
+    return this.contactoComercial
   }
 
 

@@ -333,7 +333,13 @@
     editando:     { default:  false,            type: Boolean                           },
     tipoEntrega:  { default:  false,            type: Boolean                           },
   })
-  const emit                  = defineEmits(["update:modelValue", "crear", "borrar"])
+
+  const emit                  = defineEmits<{
+    (e: "update:modelValue",  value: IContacto  ): void
+    (e: "crear",              value: IContacto  ): void
+    (e: "borrar",             value: number     ): void
+  }>()
+    
   const { modelValue,
           municipio,
           editando,

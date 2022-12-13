@@ -89,19 +89,17 @@
   // * /////////////////////////////////////////////////////////////////////////////////// Core
   import {  PropType            } from "vue"
   // * /////////////////////////////////////////////////////////////////////////////////// Modelos
-  import {  IAnticipo,
-            TTipoFileAnticipo   } from "src/areas/acuerdos/models/Anticipo"  
+  import {  IAnticipo           } from "src/areas/acuerdos/models/Anticipo"  
   import {  IArchivo, Archivo   } from "src/models/Archivo"
-
 
   const props                 = defineProps({      
     modelValue: { required: true,  type: Object as PropType< IAnticipo >  },
   })
 
   const emit                  = defineEmits<{
-    (e: "clickVerArchivo",  value: IArchivo           ): void
-    (e: "clickAnticipo",    value: IAnticipo          ): void
-    (e: "clickRecibo",      value: IAnticipo          ): void
+    (e: "clickVerArchivo",  value: IArchivo   ): void
+    (e: "clickAnticipo",    value: IAnticipo  ): void
+    (e: "clickRecibo",      value: IAnticipo  ): void
   }>()
 
   function enviarArchivoVer( file : IArchivo ){

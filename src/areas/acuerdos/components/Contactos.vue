@@ -28,6 +28,7 @@
       @contacto-nuevo         =" c => vincularContactoAcuerdo           ( c,        TIPOS_CONTACTO.ENTREGA  )"
       @quitar-contacto        =" c => desvincularContactoAcuerdo        ( c.id,     TIPOS_CONTACTO.ENTREGA, true  )"
       @contacto-cambio        =" ( c, idOld ) => cambiarContactoAcuerdo ( c, idOld, TIPOS_CONTACTO.ENTREGA  )"
+      @update:contacto        ="editarDatosEntregaSistemaViejo"
     />
     <!-- :readonly               ="acuerdo.esEstadoValido" -->
     <!-- //* ///////////////////////////////////////////////// Contacto contable -->
@@ -41,7 +42,7 @@
       :readonly               ="acuerdo.esEstadoValido"
       @contacto-nuevo         =" c => vincularContactoAcuerdo           ( c,        TIPOS_CONTACTO.CONTABLE )"
       @quitar-contacto        =" c => desvincularContactoAcuerdo        ( c.id,     TIPOS_CONTACTO.CONTABLE, true )"
-      @contacto-cambio        =" ( c, idOld ) => cambiarContactoAcuerdo ( c, idOld, TIPOS_CONTACTO.CONTABLE )"
+      @contacto-cambio        =" ( c, idOld ) => cambiarContactoAcuerdo ( c, idOld, TIPOS_CONTACTO.CONTABLE )"      
     />   
   </ventana>
 </template>
@@ -62,6 +63,7 @@
           cambiarContactoAcuerdo,
           vincularContactoAcuerdo,
           desvincularContactoAcuerdo,
+          editarDatosEntregaSistemaViejo
                                   } = useControlAcuerdo()
 
 </script>

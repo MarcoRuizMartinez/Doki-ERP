@@ -6,13 +6,13 @@
           <td>Ref</td>
           <td>{{ acuerdo.ref }}</td>
         </tr>
-        <tr v-if="!!acuerdo.contactoComercial.empresa">
+        <tr v-if="!!acuerdo.contactoSmart.empresa">
           <td>Empresa</td>
-          <td> {{acuerdo.contactoComercial.empresa}}</td>
+          <td> {{acuerdo.contactoSmart.empresa}}</td>
         </tr>
-        <tr v-if="!!acuerdo.contactoComercial.id">
+        <tr v-if="!!acuerdo.contactoSmart.id">
             <td>Contacto</td>
-            <td>{{ acuerdo.contactoComercial.nombreCompleto }}</td>
+            <td>{{ acuerdo.contactoSmart.nombreCompleto }}</td>
         </tr>
         <tr v-if="acuerdo.esOCProveedor">
             <td>Creador</td>
@@ -40,9 +40,9 @@
           </span>
         </td></tr>
         <tr> <td>Subtotal</td> <td>{{ formatoPrecio( acuerdo.totalConDescu ) }}</td> </tr>
-        <tr v-if="!!acuerdo.contactoComercial.correo"       ><td>Correo</td>    <td><div class="ellipsis"> {{acuerdo.contactoComercial.correo}} </div> </td></tr>
-        <tr v-if="!!acuerdo.contactoComercial.telefono"     ><td>Teléfono</td>  <td>{{acuerdo.contactoComercial.telefono}}</td></tr>
-        <tr v-if="!!acuerdo.contactoComercial.municipioId"  ><td>Municipio</td> <td>{{acuerdo.contactoComercial.municipio.label}}</td></tr>
+        <tr v-if="!!acuerdo.contactoSmart.correo"       ><td>Correo</td>    <td><div class="ellipsis"> {{acuerdo.contactoSmart.correo}} </div> </td></tr>
+        <tr v-if="!!acuerdo.contactoSmart.telefono"     ><td>Teléfono</td>  <td>{{acuerdo.contactoSmart.telefono}}</td></tr>
+        <tr v-if="!!acuerdo.contactoSmart.municipioId"  ><td>Municipio</td> <td>{{acuerdo.contactoSmart.municipio.label}}</td></tr>
         <tr v-if="!!acuerdo.titulo"                ><td>Titulo</td>    <td>{{acuerdo.titulo}}</td></tr>
         <tr> <td>Creación</td> <td>{{ fechaLarga( acuerdo.fechaCreacion )    }}</td> </tr>
       </table>      

@@ -94,7 +94,7 @@
         class                   ="col-12"
       />
       <!-- //* ///////////////////////////////////////////////////////////// Comprobante interno -->
-      <select-label-value       clearable
+      <select-label-value       clearable no-loading
         v-model                 ="modelo.fileInterno"
         label                   ="Comprobante pago"
         icon                    ="mdi-bank"
@@ -104,7 +104,7 @@
         @update:model-value     ="modelo.estadoSelect = {label: ESTADO_ANTICIPO_LABEL.VERIFICADO, value: ESTADO_ANTICIPO.VERIFICADO } "
       />
       <!-- //* ///////////////////////////////////////////////////////////// Comprobante Cliente -->
-      <select-label-value       clearable
+      <select-label-value       clearable no-loading
         v-model                 ="modelo.fileCliente"
         label                   ="Recibo de cliente"
         icon                    ="mdi-account-cash"
@@ -141,7 +141,7 @@
   import {  btnBaseSm,
             btnRedondoFlat      } from "src/useSimpleOk/useEstilos"
   import {  dexieCuentasDinero  } from "src/services/useDexie"  
-  import {  getURL, getFormData } from "src/services/APIMaco"  
+  import {  getURL, getFormData } from "src/services/APIMaco"
   // * ///////////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana               from "components/utilidades/Ventana.vue"
   import    inputText             from "src/components/utilidades/input/InputFormText.vue"
@@ -174,12 +174,17 @@
 
   const modificado            = computed( ()=>  copiaAnticipo !== JSON.stringify( modelo.value ) ) 
   const btnDisable            = computed( ()=> !modelo.value.esNuevo && !modificado.value)
-  const objetoToFetch         = computed( ()=> { return {
-                                                    body: getFormData( modelo.value.esNuevo ? "nuevoAnticipo" : "editarAnticipo", modelo.value.anticipoToApi ),
-                                                    method: "POST"
-                                                  }
-                                                }
-                                        )
+  const objetoToFetch         = computed( ()=>
+    { 
+      modelo.value.index      =   modelo.value.esNuevo
+                                ? acuerdo.value.anticipos.length + 1
+                                : acuerdo.value.anticipos.findIndex( a => a.id == modelo.value.id ) + 1
+      return {
+        body:   getFormData( modelo.value.esNuevo ? "nuevoAnticipo" : "editarAnticipo", modelo.value.anticipoToApi ),
+        method: "POST"
+      }
+    }
+  )
   
   watch(modelValue, (newAnticipo) =>
     {
@@ -202,8 +207,8 @@
   async function onSubmit()
   {
     cargando.value            = true
+    
     const { data, ok  }       = await miFetch( endPoint, objetoToFetch.value, { mensaje: "guardar anticipo" } )
-
     if(ok)
     {
       aviso( "positive", "Anticipo guardaro exitosamente" )

@@ -61,7 +61,7 @@
       </template>      
       <!-- //* ///////////////  Columna contacto  -->
       <template
-        #body-cell-contacto     ="props">
+        #body-cell-contactoComercial="props">
         <q-td   :props          ="props">
           <span
             class               ="ellipsis"
@@ -282,7 +282,7 @@
     if(!busqueda.value.esOCProveedor){
       columnas.value.splice(1, 0,  new Columna({ name: "refCliente",          label: "Ref cliente"    }) )
       columnas.value.splice(4, 0,  new Columna({ name: "comercial",           label: "Asesor"         }) )
-      columnas.value.splice(5, 0,  new Columna({ name: "contacto"                                     }) )
+      columnas.value.splice(5, 0,  new Columna({ name: "contactoSmart",       label: "Contacto"       }) )
       columnas.value.splice(7, 0,  new Columna({ name: "condicionPagoLabel",  label: "Condiciones"    }) )
       columnas.value.splice(8, 0,  new Columna({ name: "formaPagoLabel",      label: "Forma de pago"  }) )
       columnas.value.splice(9, 0,  new Columna({ name: "metodoEntregaLabel",  label: "Entrega"        }) )
