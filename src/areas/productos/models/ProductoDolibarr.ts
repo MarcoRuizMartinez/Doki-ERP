@@ -61,6 +61,8 @@ export interface IProductoDoli {
   precio:                   number        // Precio final, el menor entre publico y promocion 
   codigo:                   number
   competencia:              number
+  esProducto:               boolean
+  esServicio:               boolean
 
   elegido:                  boolean       // Se utiliza para indicar que el producto a sido agregado a lista
   esRefEspecial:            boolean
@@ -299,6 +301,9 @@ export class ProductoDoli implements IProductoDoli
             )
             || this.esRefEspecial
   }
+
+  get esProducto() : boolean  { return this.tipo === 0 }
+  get esServicio() : boolean  { return this.tipo === 1 }
 
 
   get esRefEspecial() : boolean {

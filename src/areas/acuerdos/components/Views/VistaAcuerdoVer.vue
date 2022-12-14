@@ -15,6 +15,7 @@
     @click-remision         ="generarRemisionPDF"
     @click-reabrir          ="reabrirPedido"
     @click-recargar         ="recargar"
+    @click-entregado        ="cerrarPedido"
   />
   <tercero-y-contacto       scroll
     class                   ="col-md-4 col-12"
@@ -123,6 +124,7 @@
           buscarAcuerdo,
           eliminarAcuerdo,
           validarAcuerdo,
+          cerrarPedido,
                             } = useControlAcuerdo()
   const minimizadoTodo        = ref< boolean  >(false)
   const srcPDF                = ref< string   >("")

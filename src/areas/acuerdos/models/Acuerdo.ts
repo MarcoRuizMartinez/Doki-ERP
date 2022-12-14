@@ -1,3 +1,21 @@
+/*
+https://dolibarr.mublex.com/expedition/card.php?action=create&shipping_method_id=9&origin=commande&origin_id=9461&projectid=&entrepot_id=1
+https://dolibarr.mublex.com/expedition/card.php?
+    action              =create&
+    shipping_method_id  =9&
+    origin              =commande&
+    origin_id           =9461&
+    projectid           =&
+    entrepot_id         =1
+*/  
+/* 
+https://dolibarr.mublex.com/fichinter/card.php?action=create&origin=commande&originid=9461&socid=6179
+https://dolibarr.mublex.com/fichinter/card.php?
+    action              =create&
+    origin              =commande&
+    originid            =9461&
+    socid               =6179
+*/
 //* ///////////////////////////////////////// Core
 import {  date                              } from "quasar"
 import {  getCondicionesPagoDB,
@@ -99,6 +117,7 @@ export interface IAcuerdo
   esEstadoCotizado:           boolean
   esEstadoFacturado:          boolean
   esEstadoEntregando:         boolean
+  esEstadoEntregado:          boolean
   esEstadoAnulado:            boolean
 
   notaPrivada:                string
@@ -484,8 +503,10 @@ export class Acuerdo implements IAcuerdo
   get esEstadoValido      ():boolean { return this.estado   > ESTADO_ACU.BORRADOR     }
   get esEstadoValidado    ():boolean { return this.estado === ESTADO_ACU.VALIDADO     } 
   get esEstadoEntregando  ():boolean { return this.estado === ESTADO_PED.ENTREGANDO   } 
+  get esEstadoEntregado   ():boolean { return this.estado === ESTADO_PED.ENTREGADO    }  
   get esEstadoCotizado    ():boolean { return this.estado === ESTADO_CTZ.COTIZADO     }
-  get esEstadoFacturado   ():boolean { return this.estado === ESTADO_CTZ.FACTURADO    }  
+  get esEstadoFacturado   ():boolean { return this.estado === ESTADO_CTZ.FACTURADO    }
+
   get esEstadoAbierto     ():boolean { 
     let abierto           = false
     if

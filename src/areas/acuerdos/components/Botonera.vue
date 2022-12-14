@@ -115,11 +115,11 @@
     <!-- </efecto> -->
     <!-- //* ////////////////////////////////////////////////////////// Boton Validar -->
     <q-btn
-      v-if                  ="acuerdo.esEstadoNoValidado"
+      v-if                  ="acuerdo.esEstadoNoValidado || ( acuerdo.esPedido && acuerdo.esEstadoEntregado )"
       v-bind                ="btnBaseMd"
       color                 ="positive"
-      icon                  ="mdi-check-circle-outline"
-      :label                ="esMobil ? '' : 'Validar'"
+      :icon                 ="acuerdo.esEstadoEntregado ? 'mdi-lock-open-variant' : 'mdi-check-circle-outline'"
+      :label                ="esMobil ? '' : acuerdo.esEstadoEntregado ? 'Reabrir' : 'Validar'"
       :disable              ="cargandoAlgo
                               || !acuerdo.proGrupos.length
                               || !acuerdo.proGrupos[0].productos.length
@@ -128,8 +128,21 @@
       :loading              ="loading.validar"
       @click                ="emit('clickValidar')"
       >
-      <Tooltip label        ="Validar"/>
+      <Tooltip label        ="Clasificar validado"/>
     </q-btn>
+    <!-- //* ////////////////////////////////////////////////////////// Boton Cerrar pedido -->
+    <q-btn
+      v-if                  ="acuerdo.esEstadoValidado"
+      v-bind                ="btnBaseMd"
+      color                 ="blue-7"
+      icon                  ="mdi-truck-check"
+      :label                ="esMobil ? '' : 'Entrega Ok'"
+      :disable              ="cargandoAlgo"
+      :loading              ="loading.cerrar"
+      @click                ="emit('clickEntregado')"
+      >
+      <Tooltip label        ="Clasificar entregado"/>
+    </q-btn>    
     <!-- //* ////////////////////////////////////////////////////////// Boton Editar -->
     <q-btn
       v-if                  ="mostrarEditar"
@@ -206,12 +219,17 @@
           loading           } = storeToRefs( useStoreAcuerdo() )
 
   const { esMobil     } = useTools()
-  const emit            = defineEmits(["clickPdf","clickAprobar", "clickAnular", "clickValidar", "clickEditar", "clickBorrar", "clickRemision", "clickReabrir", "clickRecargar"])
+  const emit            = defineEmits(["clickPdf","clickAprobar", "clickAnular", "clickValidar", "clickEditar", "clickBorrar", "clickRemision", "clickReabrir", "clickRecargar", "clickEntregado"])
   const cargandoAlgo    = computed(()=> Object.values(loading.value).some( ( estado : boolean )=> !!estado ) )
   const totalNotas      = computed(()=> ( !!acuerdo.value.notaPrivada ? 1 : 0 ) + ( !!acuerdo.value.notaPublica ? 1 : 0 )  )
   const mostrarEditar   = computed(()=>   ( acuerdo.value.esCotizacion && !acuerdo.value.esEstadoFacturado )
                                           ||
-                                          ( acuerdo.value.esPedido && !acuerdo.value.facturado && !acuerdo.value.esEstadoNoValidado  && !acuerdo.value.esEstadoAnulado )
+                                          (     acuerdo.value.esPedido
+                                            &&  !acuerdo.value.facturado
+                                            &&  !acuerdo.value.esEstadoNoValidado
+                                            &&  !acuerdo.value.esEstadoAnulado
+                                            &&  !acuerdo.value.esEstadoEntregado
+                                          )
 
                                   )
   function clickEnNotas()

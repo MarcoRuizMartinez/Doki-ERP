@@ -99,6 +99,7 @@ export interface ILoading {
   crear           ?: boolean
   borrar          ?: boolean
   validar         ?: boolean
+  cerrar          ?: boolean
   editar          ?: boolean
   anular          ?: boolean
   aprobar         ?: boolean
@@ -134,6 +135,7 @@ export const LoadingDefault = {
   crear           : false,
   borrar          : false,
   validar         : false,
+  cerrar          : false,
   editar          : false,
   anular          : false,
   aprobar         : false,

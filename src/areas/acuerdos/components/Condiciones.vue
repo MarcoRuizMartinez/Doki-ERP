@@ -31,7 +31,7 @@
     />
     <!-- //* ///////////////////////////////////////////////// Contacto entrega -->
     <select-contacto          quitar-contacto tipo-entrega
-      v-if                    ="acuerdo.esPedido && !acuerdo.tercero.esEmpresa"
+      v-if                    ="!acuerdo.esNuevo && acuerdo.esPedido && !acuerdo.tercero.esEmpresa"
       class                   ="col-12"
       v-model:contacto        ="acuerdo.contactoEntrega"
       label                   ="Contacto entrega"

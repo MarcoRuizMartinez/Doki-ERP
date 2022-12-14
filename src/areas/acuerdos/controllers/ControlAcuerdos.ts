@@ -346,6 +346,22 @@ export function useControlAcuerdo()
     loading.value.aprobar     = false
   }
 
+  //* ////////////////////////////////////////////////////////////////////// Cerrar pedido
+  async function cerrarPedido()
+  {
+    loading.value.cerrar      = true
+    const { ok, data }        = await apiDolibarr("close", acuerdo.value.tipo, { notrigger: 0 }, acuerdo.value.id)
+
+    if(ok){
+      aviso("positive", `Entrega de ${acuerdo.value.label} 👌🏼`)
+      acuerdo.value.estado    = ESTADO_PED.ENTREGADO
+    }
+    else
+      aviso("negative", `"Error al cerrar ${acuerdo.value.tipo}`)
+
+    loading.value.cerrar      = false
+  }
+
 
 
   //* ////////////////////////////////////////////////////////////////////// Anular acuerdo
@@ -585,6 +601,7 @@ export function useControlAcuerdo()
     pasarABorradorAcuerdo,
     reabrirPedido,
     editarOrigen,
+    cerrarPedido,
     editarRefCliente,
     editarTiempoEntrega,
     editarMetodoEntrega,
