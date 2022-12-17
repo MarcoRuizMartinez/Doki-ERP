@@ -63,7 +63,10 @@
       </div>
     </q-menu>
   </q-btn>
-  <q-dialog v-model       ="ventanaApariencia">
+  <q-dialog
+    v-model               ="ventanaApariencia"
+    v-bind                ="dialogDefault"
+    >
     <apariencia />
   </q-dialog>
 </template>
@@ -74,7 +77,8 @@
   import    apariencia          from "./Apariencia.vue"
   import {  useStoreUser      } from 'src/stores/user'
   import {  limpiarDB         } from "src/services/useDexie"
-  import {  btnBaseMd         } from "src/useSimpleOk/useEstilos"
+  import {  btnBaseMd,
+            dialogDefault     } from "src/useSimpleOk/useEstilos"
   import {  useRouter         } from 'vue-router'
   import {  pausa             } from "src/useSimpleOk/useTools"
   import {  AlmacenesLimpiar  } from "src/models/TiposVarios"

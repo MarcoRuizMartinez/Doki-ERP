@@ -15,6 +15,16 @@ https://dolibarr.mublex.com/fichinter/card.php?
     origin              =commande&
     originid            =9461&
     socid               =6179
+
+    mdi-hammer
+
+    mdi-truck-delivery
+    mdi-truck-fast
+
+    mdi-dolly
+    mdi-routes-clock
+    mdi-run-fast
+    mdi-margin
 */
 //* ///////////////////////////////////////// Core
 import {  date                              } from "quasar"
@@ -82,6 +92,8 @@ export interface IAcuerdo
 
   urlDolibarr:                string
   urlDolibarrOC:              string
+  urlDolibarrNuevoEnvio:      string
+  urlDolibarrNuevaInsta:      string
   title:                      string // Titulo HTML
   terceroId:                  number
   tercero:                    ITercero
@@ -119,6 +131,8 @@ export interface IAcuerdo
   esEstadoEntregando:         boolean
   esEstadoEntregado:          boolean
   esEstadoAnulado:            boolean
+  hayServicios:               boolean
+  hayProductos:               boolean
 
   notaPrivada:                string
   notaPublica:                string
@@ -366,6 +380,49 @@ export class Acuerdo implements IAcuerdo
             : ""
   }  
 
+  get urlDolibarrNuevoEnvio() : string {
+
+    const url   = process.env.URL_DOLIBARR.concat(
+                  "/expedition/card.php?action=create&origin=commande&",
+                  `shipping_method_id=${this.metodoEntrega.id}&`,
+                  `origin_id=${this.id}&`,
+                  (!!this.proyecto.id ? `projectid=${this.proyecto.id}&` : ''),
+                  `ref_client=${this.refCliente}&`,
+                  `note_public=${this.notaPublica}&`,
+                  `note_private=${this.notaPrivada}`
+                )
+    return  this.esPedido ? url : ""
+  }  
+
+  get urlDolibarrNuevaInsta() : string {
+    const url   = process.env.URL_DOLIBARR.concat(
+                  "/fichinter/card.php?action=create&origin=commande&",
+                  `originid=${this.id}&`,
+                  `socid=${this.terceroId}&`,
+                  (!!this.proyecto.id ? `projectid=${this.proyecto.id}&` : ''),
+                  `ref_client=${this.refCliente}&`,
+                  `note_public=${this.notaPublica}&`,
+                  `note_private=${this.notaPrivada}`                  
+                )    
+    return  this.esPedido ? url : ""
+  }
+
+/*
+https://dolibarr.mublex.com/expedition/card.php?action=create&shipping_method_id=9&origin=commande&origin_id=9461&projectid=&entrepot_id=1
+https://dolibarr.mublex.com/expedition/card.php?
+    
+    shipping_method_id  =9&
+    origin_id           =9461&
+    projectid           =&
+    entrepot_id         =1
+*/  
+/* 
+https://dolibarr.mublex.com/fichinter/card.php?action=create&origin=commande&originid=9461&socid=6179
+https://dolibarr.mublex.com/fichinter/card.php?
+    ?action=create&origin=commande&
+    originid            =9461&
+    socid               =6179
+*/
 
   get imagen() :  string {
     const imagen  = this.tipo === TIPO_ACUERDO.COTIZACION   ? "iconoCotizacion.webp"
@@ -396,13 +453,15 @@ export class Acuerdo implements IAcuerdo
     return suma
   }
 
-  get esCotizacion()      : boolean { return this.tipo === TIPO_ACUERDO.COTIZACION  }
-  get esPedido()          : boolean { return this.tipo === TIPO_ACUERDO.PEDIDO      }
-  get esOCProveedor()     : boolean { return this.tipo === TIPO_ACUERDO.OC_PROVEEDOR}
-  get esFactura()         : boolean { return this.tipo === TIPO_ACUERDO.FACTURA     }
-  get municipioTercero()  : string  { return this.tercero.municipio.label           }
-  get area()              : string  { return this.tercero.areaNombre                }
-  get vinculado()         : boolean { return !!this.enlaces.length                  }
+  get esCotizacion()      : boolean { return this.tipo === TIPO_ACUERDO.COTIZACION    }
+  get esPedido()          : boolean { return this.tipo === TIPO_ACUERDO.PEDIDO        }
+  get esOCProveedor()     : boolean { return this.tipo === TIPO_ACUERDO.OC_PROVEEDOR  }
+  get esFactura()         : boolean { return this.tipo === TIPO_ACUERDO.FACTURA       }
+  get municipioTercero()  : string  { return this.tercero.municipio.label             }
+  get area()              : string  { return this.tercero.areaNombre                  }
+  get vinculado()         : boolean { return !!this.enlaces.length                    }
+  get hayServicios()      : boolean { return this.productos.some( p => p.esServicio ) }
+  get hayProductos()      : boolean { return this.productos.some( p => p.esProducto ) }
 
   //get comercialNombre() : string { return this.comercial.nombreCompleto }
   //get terceroNombre() : string { return this.tercero.nombre }

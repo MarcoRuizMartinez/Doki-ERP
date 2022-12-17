@@ -107,8 +107,7 @@
   <!-- //* ///////////////////////////////////////////////////////////// Modal Buscar Formulario anticipo -->
   <q-dialog
     v-model                     ="ventanaFormulario"
-    transition-show             ="slide-up"
-    transition-hide             ="slide-down"
+    v-bind                      ="dialogDefault"
     >
     <formulario
       v-model                   ="anticipo"
@@ -138,7 +137,8 @@
             getFormData           } from "src/services/APIMaco"
   import {  useTools, 
             formatoPrecio         } from "src/useSimpleOk/useTools"
-  import {  btnBaseSm             } from "src/useSimpleOk/useEstilos"
+  import {  btnBaseSm,
+            dialogDefault         } from "src/useSimpleOk/useEstilos"
   import {  useApiDolibarr        } from "src/services/useApiDolibarr"
   import {  useReciboCajaPDF      } from "src/areas/acuerdos/composables/useReciboCajaPDF"
   import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"

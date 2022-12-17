@@ -15,6 +15,7 @@ export const btnBaseMd = {
   glossy:   true,
   dense:    false,
   size:     "md",
+  padding:  "2px 8px"
 }
 
 export const btnFlatSm = {
@@ -53,6 +54,11 @@ export const toggleGris = {
   toggleColor:      "grey-4",
   textColor:        "grey-6",
   toggleTextColor:  "grey-10",
+}
+
+export const dialogDefault = {
+  transitionShow: "slide-up",
+  transitionHide: "slide-down",
 }
 
 

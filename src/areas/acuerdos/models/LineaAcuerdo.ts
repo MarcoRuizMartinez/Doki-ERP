@@ -54,14 +54,16 @@ export interface ILineaAcuerdo extends IProductoDoli {
   totalDescuento:           number
   ivaValorLinea:            number      
   ivaValorTotal:            number
-  totalConIva:              number
-  
+  totalConIva:              number  
   hayDescuento:             boolean
   class:                    string
   qtyUnd:                   string
   borrar:                   boolean
   destacar:                 ( accion? : TAccionDestacar , mostrar? : "mostrar" | "ocultar" ) => void
   accion:                   TAccionesSobreLinea
+
+  aumentoFromCosto:         number
+  nivelPrecios:             string 
 }
 
 export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
@@ -116,6 +118,13 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
   get esTitulo()    : boolean { return this.tipo === 9 && this.codeX === 104777 && this.qty === 1 }
   get esSubTotal()  : boolean { return this.tipo === 9 && this.codeX === 104777 && this.qty === 99 }
 
+  get aumentoFromCosto()  : number { return  ( ( this.precioFinal / this.costo ) - 1 )  * 100 } 
+  get nivelPrecios()      : string { return     this.aumentoFromCosto >= 45 ? "a"
+                                              : this.aumentoFromCosto >= 35 ? "b"
+                                              : "c"
+                                            } 
+
+  
   // * ////////////////////////////////////////////////////////////////////////////////////////////////////
   // * ////////////////////////////////////////////////////////////////////// GET SET Descuento redondeado
 /*   get descuX100Round() : number {

@@ -17,7 +17,8 @@ import {  useTools,
 import {  ESTADO_CTZ,
           ESTADO_PED,
           ESTADO_ACU,         
-          TTipoAcuerdo
+          TTipoAcuerdo,
+          TIPO_ACUERDO
                                 } from "../models/ConstantesAcuerdos"
 import {  IOrigenContacto       } from "src/models/Diccionarios/OrigenContacto"
 import {  IUsuario              } from "src/areas/usuarios/models/Usuario"
@@ -350,7 +351,7 @@ export function useControlAcuerdo()
   async function cerrarPedido()
   {
     loading.value.cerrar      = true
-    const { ok, data }        = await apiDolibarr("close", acuerdo.value.tipo, { notrigger: 0 }, acuerdo.value.id)
+    const ok                  = await cerrarAcuerdo( acuerdo.value.tipo,  acuerdo.value.id)
 
     if(ok){
       aviso("positive", `Entrega de ${acuerdo.value.label} 👌🏼`)
@@ -362,7 +363,12 @@ export function useControlAcuerdo()
     loading.value.cerrar      = false
   }
 
-
+  //* ////////////////////////////////////////////////////////////////////// Cerrar pedido
+  async function cerrarAcuerdo( tipo : TIPO_ACUERDO , id : number)
+  {
+    const { ok }        = await apiDolibarr("close", tipo, { notrigger: 0 }, id)
+    return ok
+  }
 
   //* ////////////////////////////////////////////////////////////////////// Anular acuerdo
   async function anularAcuerdo()

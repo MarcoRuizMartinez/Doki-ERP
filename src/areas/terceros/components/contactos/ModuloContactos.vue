@@ -20,7 +20,10 @@
         :disable                ="modo == 'buscando'"
         @click                  ="clickFila"
       />
-      <q-dialog v-model         ="ventanaOk">
+      <q-dialog
+        v-model                 ="ventanaOk"
+        v-bind                  ="dialogDefault"
+        >
         <!-- //* /////////////  Formulario Contacto  -->
         <form-contacto          borrable
           v-model               ="contactoSelect"
@@ -75,7 +78,8 @@
   import    formContacto      from "src/areas/terceros/components/contactos/FormularioContacto.vue"
   import {  Tercero,
             ITercero        } from "src/areas/terceros/models/Tercero"
-  import {  btnBaseSm       } from "src/useSimpleOk/useEstilos"
+  import {  btnBaseSm, 
+            dialogDefault   } from "src/useSimpleOk/useEstilos"
 
   const { apiDolibarr       } = useApiDolibarr()
   const storeUser             = useStoreUser()

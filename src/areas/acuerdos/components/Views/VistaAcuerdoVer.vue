@@ -33,12 +33,12 @@
     v-if                    ="acuerdo.tercero.esEmpresa"
     class                   ="col-12"
   />
-  <enlaces
+  <enlaces                  minimizar
     ref                     ="moduloEnlaces"
     class                   ="col-md-4 col-12"
     height-card             ="220px"
   />    
-  <documentos
+  <documentos               minimizar
     class                   ="col-md-4 col-12"
     height-card-min         ="164px"
     :modulo                 ="acuerdo.modulo"
@@ -48,7 +48,7 @@
     @descarga-ok            ="cargarArchivos"
     @borrado-ok             ="cargarArchivos"
   />
-  <anticipos                scroll
+  <anticipos                minimizar scroll
     v-if                    ="acuerdo.esPedido"
     class                   ="col-md-4 col-12"
     height-card-min         ="140px"

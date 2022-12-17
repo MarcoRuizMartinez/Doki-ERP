@@ -228,8 +228,7 @@
     <!-- //* ///////////////////////////////////////////////////////////// Modal consentimiento -->
     <q-dialog
       v-model                   ="ventanaClienteExiste"      
-      transition-show           ="slide-up"
-      transition-hide           ="slide-down"
+      v-bind                    ="dialogDefault"
       >
       <ventana                  cerrar scroll
         titulo                  ="Terceros registrados"
@@ -257,8 +256,7 @@
     </q-dialog>
     <q-dialog
       v-model                   ="ventanaCopiarContacto"      
-      transition-show           ="slide-up"
-      transition-hide           ="slide-down"
+      v-bind                    ="dialogDefault"
       >
       <contactos                cerrar solo-emitir
         :tercero-id             ="acuerdo.tercero.id"
@@ -299,7 +297,8 @@
   import {  getURL,
             getFormData     } from "src/services/APIMaco"
   import {  btnBaseSm,
-            btnFlatSm       } from "src/useSimpleOk/useEstilos"            
+            btnFlatSm,
+            dialogDefault   } from "src/useSimpleOk/useEstilos"            
   // * /////////////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana           from "components/utilidades/Ventana.vue"
   import    municipios        from "components/utilidades/select/SelectMunicipios.vue"

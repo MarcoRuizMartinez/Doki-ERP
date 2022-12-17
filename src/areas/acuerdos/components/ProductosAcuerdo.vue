@@ -59,9 +59,8 @@
     <!-- //* ///////////////////////////////////////////////////////////// Modal Buscar productos -->
     <q-dialog                   maximized
       v-model                   ="modales.añadirProductos"
+      v-bind                    ="dialogDefault"
       :persistent               ="loading.añadir || loading.borrarLote"
-      transition-show           ="slide-up"
-      transition-hide           ="slide-down"
       @hide                     ="grupoElegido.noDestacarProductos()"
       >
       <buscar-productos />
@@ -69,6 +68,7 @@
     <!-- //* ///////////////////////////////////////////////////////////// Modal formulario edicion Linea   -->
     <q-dialog
       v-model                   ="modales.formulario"
+      v-bind                    ="dialogDefault"
       :persistent               ="loading.editarLinea || loading.borrarLinea"
       >
       <formulario-linea />
@@ -76,6 +76,7 @@
     <!-- //* ///////////////////////////////////////////////////////////// Modal editar en lote -->
     <q-dialog
       v-model                   ="modales.editarEnLote"
+      v-bind                    ="dialogDefault"
       :persistent               ="loading.editarLote"
       >
       <editar-en-lote />
@@ -90,8 +91,11 @@
   import {  useStoreAcuerdo       } from 'src/stores/acuerdo'
   // * ///////////////////////////////////////////////////////////////////////////// Componibles
   import {  useControlProductos   } from "src/areas/acuerdos/controllers/ControlLineasProductos"
-  import {  btnBaseSm             } from "src/useSimpleOk/useEstilos"
+  import {  btnBaseSm, 
+            dialogDefault         } from "src/useSimpleOk/useEstilos"
+  
   // * ///////////////////////////////////////////////////////////////////////////// Componentes
+
   import    ventana                 from "components/utilidades/Ventana.vue"
   import    editarGrupo             from "src/areas/acuerdos/components/Grupos/EditarGrupo.vue"
   import    tablaProductos          from "./TablaProductos/TablaProductos.vue"

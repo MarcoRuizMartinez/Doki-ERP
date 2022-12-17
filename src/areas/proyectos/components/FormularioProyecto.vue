@@ -191,8 +191,7 @@
     <!-- //* ///////////////////////////////////////////////////////////// Modal Buscar productos -->
     <q-dialog
       v-model                   ="ventanaClienteExiste"      
-      transition-show           ="slide-up"
-      transition-hide           ="slide-down"
+      v-bind                    ="dialogDefault"
       >
       <ventana                  cerrar scroll
         titulo                  ="Terceros registrados"
@@ -251,7 +250,8 @@
   import {  useFetch        } from "src/useSimpleOk/useFetch"
   import {  getURL,
             getFormData     } from "src/services/APIMaco"
-  import {  btnBaseSm       } from "src/useSimpleOk/useEstilos"            
+  import {  btnBaseSm,
+            dialogDefault   } from "src/useSimpleOk/useEstilos"      
 
   const { dialog            } = useQuasar()
   const { apiDolibarr       } = useApiDolibarr()

@@ -228,7 +228,7 @@
   const {  esMobil          } = useTools()
   const estiloCard            = computed(() =>  esMobil ? "" : `
                                                 height:     ${heightCard.value};
-                                                min-height: ${heightCardMin.value};
+                                                min-height: ${ minimizadoModel.value ? 'auto' : heightCardMin.value};
                                                 max-height: ${heightCardMax.value};
                                                 `
                                         )

@@ -63,7 +63,10 @@
       </q-btn> 
     </template>
   </q-select>
-  <q-dialog v-model           ="ventanaOk">
+  <q-dialog
+    v-model                   ="ventanaOk"
+    v-bind                    ="dialogDefault"
+    >
     <!-- //* /////////////  Formulario Contacto  -->
     <form-contacto
       v-model                 ="contactoEditar"
@@ -88,6 +91,7 @@
   import {  ITercero        } from "src/areas/terceros/models/Tercero"            
   import    tooltipContacto   from "src/areas/terceros/components/contactos/TooltipContacto.vue"
   import    formContacto      from "src/areas/terceros/components/contactos/FormularioContacto.vue"
+  import {  dialogDefault   } from "src/useSimpleOk/useEstilos"
 
   const contactos             = ref< IContacto[] > ([])
   const modelo                = ref< IContacto >()

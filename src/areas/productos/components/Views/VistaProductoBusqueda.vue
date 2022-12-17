@@ -41,8 +41,7 @@
   <!-- //* ///////////////////////////////////////////////////////////// Modal formulario producto  -->
   <q-dialog
     v-model                   ="ventanaProducto"
-    transition-show           ="slide-up"
-    transition-hide           ="slide-down"      
+    v-bind                    ="dialogDefault"      
     :persistent               ="loading.crear || loading.editar"
     >
     <formulario               modo-ventana
@@ -72,6 +71,7 @@
   import {  generarCSVDesdeTabla} from "src/useSimpleOk/UtilFiles"
   import {  IProductoDoli,
             ProductoDoli        } from "src/areas/productos/models/ProductoDolibarr"
+  import {  dialogDefault       } from "src/useSimpleOk/useEstilos"            
   // * /////////////////////////////////////////////////////////////////////// Modelos
   import {  BusquedaProducto,
             IQueryProducto      } from "src/areas/productos/models/BusquedaProductos"
@@ -86,6 +86,7 @@
   import    tabla                 from "src/areas/productos/components/TablaProductos/TablaProductos.vue"  
   import    formulario            from "src/areas/productos/components/FormularioProducto.vue"
   
+
   // * ////////////////////////// Columnas
   const { buscarProductos       } = servicesProductos()
   const { usuario, permisos     } = storeToRefs( useStoreUser() )  

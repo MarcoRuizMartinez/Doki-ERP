@@ -1,8 +1,7 @@
 <template>
   <q-dialog
     v-model                   ="visibleModel"
-    transition-show           ="slide-up"
-    transition-hide           ="slide-down"
+    v-bind                    ="dialogDefault"
     :maximized                ="fullScreen"
     @hide                     ="cerrarVentana"    
     >  
@@ -47,6 +46,7 @@
   import    ventana             from "components/utilidades/Ventana.vue"
   import {  File_B64_ToBlob   } from "src/useSimpleOk/UtilFiles"
   import {  ModosVentana      } from "src/models/TiposVarios"
+  import {  dialogDefault     } from "src/useSimpleOk/useEstilos"
 
   const visibleModel            = ref< boolean  >(false)
   const srcModel                = ref< string   >("")

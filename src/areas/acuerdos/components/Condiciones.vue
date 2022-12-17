@@ -46,8 +46,8 @@
     <!-- //* ///////////////////////////////////////////////// Fecha entrega -->
     <input-fecha              no-pasado
       v-model                 ="acuerdo.fechaEntrega"
-      label                   ="Fecha entrega"
-      titulo                  ="Fecha entrega"
+      label                   ="Fecha compromiso"
+      titulo                  ="Fecha compromiso entrega"
       class                   ="col-md-6 col-12"
       :loading                ="loading.fechaEntrega"
       @update:model-value     ="editarFechaEntrega"

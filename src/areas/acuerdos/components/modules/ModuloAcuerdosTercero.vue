@@ -14,7 +14,7 @@
         class                   ="link-limpio text-white"
         :to                     ="`/${Acuerdo.getRuta( tipo )}/?tercero=${tercero.documento.numero}`"
         >
-        {{ Acuerdo.getTipoAcuerdoPlural( tipo )}}
+        Ver {{ Acuerdo.getTipoAcuerdoPlural( tipo )}}
       </router-link>  
       <Tooltip label            ="Ver listado completo"/>
     </template>    

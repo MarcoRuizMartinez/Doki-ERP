@@ -36,6 +36,9 @@ export interface IUsuario {
     areaEsEscom:        boolean
     areaEsMublex:       boolean
     areaEsGlobal:       boolean
+    nivel_a:            number
+    nivel_b:            number
+    nivel_c:            number
 }
 
 export class Usuario implements IUsuario
@@ -55,6 +58,9 @@ export class Usuario implements IUsuario
   tipo:           TIPO_USUARIO
   permisos:       string
   gruposString:   string
+  nivel_a:        number
+  nivel_b:        number
+  nivel_c:        number  
 
   constructor( usuario? : IUsuario )
   {
@@ -73,6 +79,9 @@ export class Usuario implements IUsuario
       this.gruposString       = ""
       this.cel                = ""
       this.correo             = ""
+      this.nivel_a            = 0
+      this.nivel_b            = 0
+      this.nivel_c            = 0
 
       if(!!usuario)
       {
@@ -91,6 +100,9 @@ export class Usuario implements IUsuario
         this.gruposString     = usuario.gruposString
         this.cel              = usuario.cel
         this.correo           = usuario.correo
+        this.nivel_a          = +usuario.nivel_a
+        this.nivel_b          = +usuario.nivel_b
+        this.nivel_c          = +usuario.nivel_c
       }
   }
     get grupos() : string[] { return !!this.gruposString ? this.gruposString.split(',') : [] }

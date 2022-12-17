@@ -61,7 +61,7 @@
       </template>      
       <!-- //* ///////////////  Columna contacto  -->
       <template
-        #body-cell-contactoComercial="props">
+        #body-cell-contactoSmart="props">
         <q-td   :props          ="props">
           <span
             class               ="ellipsis"
@@ -76,7 +76,7 @@
           <estado :acuerdo      ="props.row"/>
         </q-td>
       </template> 
-      <!-- //* ///////////////  Columna Comercial  -->
+      <!-- //* ///////////////  Columna Creador  -->
       <template
         #body-cell-creador      ="props">
         <q-td   :props          ="props">
@@ -87,9 +87,8 @@
     <!-- //* ///////////////////////////////////////////////////////////// Modal vista rapida -->
     <q-dialog                   maximized
       v-model                   ="ventanaVistaRapida"
+      v-bind                    ="dialogDefault"
       :persistent               ="false"
-      transition-show           ="slide-up"
-      transition-hide           ="slide-down"
       >
       <ventana                  cerrar scroll full-screen
         :titulo                 ="`Vista rapida ${Acuerdo.getTipoAcuerdoSingular(tipo)}`"
@@ -143,6 +142,7 @@
   import {  useControlAcuerdo   } from "src/areas/acuerdos/controllers/ControlAcuerdos"
   import {  useTools            } from "src/useSimpleOk/useTools"
   import {  generarCSVDesdeTabla} from "src/useSimpleOk/UtilFiles"
+  import {  dialogDefault       } from "src/useSimpleOk/useEstilos"            
   // * /////////////////////////////////////////////////////////////////////// Modelos
   import {  BusquedaAcuerdo,
             IQueryAcuerdo       } from "src/areas/acuerdos/models/BusquedaAcuerdos"

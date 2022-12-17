@@ -70,7 +70,10 @@
       -->
     </template>
   </q-select>
-  <q-dialog v-model           ="ventanaOk">
+  <q-dialog
+    v-model                   ="ventanaOk"
+    v-bind                    ="dialogDefault"
+    >
     <!-- //* /////////////  Formulario Proyecto  -->
     <!--
     <form-contacto
@@ -103,6 +106,7 @@
   //import    tooltipProyecto   from "src/areas/proyectos/components/TooltipProyecto.vue"
   //import    formProyecto      from "src/areas/proyectos/components/FormularioProyecto.vue"
   import    confirmar         from "components/utilidades/MenuConfirmar.vue"
+  import {  dialogDefault   } from "src/useSimpleOk/useEstilos"
 
   const { acuerdo           } = storeToRefs( useStoreAcuerdo() )
   const proyectos             = ref< IProyecto[] > ([])

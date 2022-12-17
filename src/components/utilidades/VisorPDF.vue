@@ -1,8 +1,7 @@
 <template>
   <q-dialog                   maximized 
     v-model                   ="visibleModel"
-    transition-show           ="slide-up"
-    transition-hide           ="slide-down"
+    v-bind                    ="dialogDefault"
     @escape-key               ="cerrarVentana"
     >
     <ventana                  cerrar full-screen scroll
@@ -46,7 +45,8 @@
   import    ventana           from "components/utilidades/Ventana.vue"
   import {  File_B64_ToBlob } from "src/useSimpleOk/UtilFiles"
   import {  useTools        } from "src/useSimpleOk/useTools"
-  import {  btnBaseSm       } from "src/useSimpleOk/useEstilos"
+  import {  btnBaseSm,
+            dialogDefault   } from "src/useSimpleOk/useEstilos"
   import    efecto            from "components/utilidades/Efecto.vue"
 
   const emit                  = defineEmits(["update:visible", "update:src", "clickDescargar"])

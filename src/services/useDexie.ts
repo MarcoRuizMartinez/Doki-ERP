@@ -419,6 +419,9 @@ export async function getUsuarioDB( id : number ) : Promise < IUsuario >
       const usuario         = await db[ TABLAS.USUARIOS ].where("id").equals(id).toArray()
       if(usuario.length     == 1){
         usuario[0].terceroIdCtz = +usuario[0].terceroIdCtz
+        usuario[0].nivel_a      = +usuario[0].nivel_a
+        usuario[0].nivel_b      = +usuario[0].nivel_b
+        usuario[0].nivel_c      = +usuario[0].nivel_c
         return usuario[0]
       }
       else

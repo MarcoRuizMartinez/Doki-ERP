@@ -69,6 +69,41 @@
         <Tooltip label      ="Generar PDF" :hide="loading.pdf"/>
       </q-btn>
     </efecto>
+      <!-- //* ////////////////////////////////////////////////////////// Botones Instalacion y entrega
+        v-if              ="acuerdo.hayServicios"
+      -->
+      <q-btn-group  v-if    ="acuerdo.esEstadoValidado && acuerdo.esPedido && !acuerdo.esTerceroCtz">
+        <!-- //* //////////////////////////////////////////////////////// Botones Instalacion -->
+        <q-btn
+          v-bind            ="btnBaseMd"
+          color             ="positive"
+          icon              ="mdi-run-fast"
+          :label            ="esMobil ? '' : 'Nueva instalación'"
+          :disable          ="cargandoAlgo"
+          :loading          ="loading.aprobar"
+          target            ="_blank"
+          :href             ="acuerdo.urlDolibarrNuevaInsta"
+          >
+          <Tooltip label    ="Generar nueva instalación"/>
+        </q-btn>
+        <!-- //* ////////////////////////////////////////////////////////// Boton Entrega  -->
+        <q-btn 
+          v-bind            ="btnBaseMd"
+          color             ="positive"
+          icon              ="mdi-truck-fast"
+          :label            ="esMobil ? '' : 'Nueva entrega'"
+          :disable          ="envioInactivo"
+          :loading          ="loading.anular"
+          target            ="_blank"
+          :href             ="acuerdo.urlDolibarrNuevoEnvio"
+          >
+          <Tooltip>
+            <template v-if="envioInactivo">Fecha de compromiso y método de entrega requeridos</template>
+            <template v-else>Generar nueva entrega</template>
+          </Tooltip>   
+        </q-btn>
+     
+      </q-btn-group>    
     <!-- //* //////////////////////////////////////////////////////////  Boton Remision -->
 <!--     <efecto efecto          ="Down">      
       <q-btn
@@ -144,7 +179,7 @@
       <Tooltip label        ="Clasificar entregado"/>
     </q-btn>    
     <!-- //* ////////////////////////////////////////////////////////// Boton Editar -->
-    <q-btn
+    <q-btn                  dense
       v-if                  ="mostrarEditar"
       v-bind                ="btnBaseMd"
       color                 ="positive"
@@ -170,17 +205,20 @@
       <Tooltip label        ="Reabrir"/>
     </q-btn>    
     <!-- //* ////////////////////////////////////////////////////////// Boton borrar -->
-    <q-btn
-      v-bind                ="btnBaseMd"
-      color                 ="negative"
-      icon                  ="mdi-trash-can"
-      :label                ="esMobil ? '' : 'Borrar'"
-      :disable              ="cargandoAlgo || acuerdo.vinculado"
-      :loading              ="loading.borrar"
-      >
-      <confirmar  @ok       ="emit('clickBorrar')" :con-label="!esMobil"/>
-      <Tooltip label        ="Borrar"/>
-    </q-btn>
+    <div>
+      <q-btn
+        v-bind              ="btnBaseMd"
+        color               ="negative"
+        class               ="fit"
+        icon                ="mdi-trash-can"
+        :label              ="esMobil ? '' : 'Borrar'"
+        :disable            ="cargandoAlgo || acuerdo.vinculado"
+        :loading            ="loading.borrar"
+        >
+        <confirmar  @ok     ="emit('clickBorrar')" :con-label="!esMobil"/>
+      </q-btn>
+      <Tooltip :label       ="`${ acuerdo.vinculado ? 'Hay elementos vinculados. No se puede eliminar.' : 'Borrar' }`"/>
+    </div>
     <q-btn                  round dense flat
       v-if                  ="!acuerdo.esNuevo"
       icon                  ="mdi-information-outline"
@@ -222,6 +260,7 @@
   const emit            = defineEmits(["clickPdf","clickAprobar", "clickAnular", "clickValidar", "clickEditar", "clickBorrar", "clickRemision", "clickReabrir", "clickRecargar", "clickEntregado"])
   const cargandoAlgo    = computed(()=> Object.values(loading.value).some( ( estado : boolean )=> !!estado ) )
   const totalNotas      = computed(()=> ( !!acuerdo.value.notaPrivada ? 1 : 0 ) + ( !!acuerdo.value.notaPublica ? 1 : 0 )  )
+  const envioInactivo   = computed(()=> cargandoAlgo.value || !acuerdo.value.metodoEntrega.id || !acuerdo.value.fechaEntregaCorta )
   const mostrarEditar   = computed(()=>   ( acuerdo.value.esCotizacion && !acuerdo.value.esEstadoFacturado )
                                           ||
                                           (     acuerdo.value.esPedido
