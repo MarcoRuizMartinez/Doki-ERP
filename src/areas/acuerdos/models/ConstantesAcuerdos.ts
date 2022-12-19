@@ -1,18 +1,24 @@
 export enum TIPO_ACUERDO
 {
   NULO                        = "",
-  COTIZACION                  = "cotización", // Igual que el END POINT del servicio
-  PEDIDO                      = "pedido",
-  ENTREGA                     = "entrega",
-  OC_PROVEEDOR                = "oc_proveedor",
-  FACTURA                     = "factura",
+  COTIZACION_CLI              = "cotización", // Igual que el END POINT del servicio
+  COTIZACION_PRO              = "cotizaciónPro", // Igual que el END POINT del servicio
+  PEDIDO_CLI                  = "pedido",
+  PEDIDO_PRO                  = "pedidoPro",
+  ENTREGA_CLI                 = "entrega",
+  ENTREGA_PRO                 = "entregaPro",
+  FACTURA_CLI                 = "factura",
+  FACTURA_PRO                 = "facturaPro",
 }
 
-export type TTipoAcuerdo      =   TIPO_ACUERDO.COTIZACION
-                                | TIPO_ACUERDO.PEDIDO
-                                | TIPO_ACUERDO.ENTREGA
-                                | TIPO_ACUERDO.OC_PROVEEDOR
-                                | TIPO_ACUERDO.FACTURA
+export type TTipoAcuerdo      =   TIPO_ACUERDO.COTIZACION_CLI
+                                | TIPO_ACUERDO.COTIZACION_PRO
+                                | TIPO_ACUERDO.PEDIDO_CLI
+                                | TIPO_ACUERDO.PEDIDO_PRO
+                                | TIPO_ACUERDO.ENTREGA_CLI
+                                | TIPO_ACUERDO.ENTREGA_PRO
+                                | TIPO_ACUERDO.FACTURA_CLI
+                                | TIPO_ACUERDO.FACTURA_PRO
                                 | TIPO_ACUERDO.NULO
 
 enum COLORES
@@ -72,7 +78,7 @@ export class EstadosAcuerdos
   static estadoToName(  tipo : TTipoAcuerdo, estado : number  ): string
   {
     let valor : string          = ""
-    if( tipo === TIPO_ACUERDO.COTIZACION ){
+    if( tipo === TIPO_ACUERDO.COTIZACION_CLI ){
       valor                     = estado == ESTADO_CTZ.NO_GUARDADO      ? "Boceto"
                                 : estado == ESTADO_CTZ.BORRADOR         ? "Edición"
                                 : estado == ESTADO_CTZ.COTIZADO         ? "Cotizado"
@@ -82,7 +88,7 @@ export class EstadosAcuerdos
                                 : ""
     }
     else
-    if( tipo === TIPO_ACUERDO.PEDIDO ){
+    if( tipo === TIPO_ACUERDO.PEDIDO_CLI ){
       valor                     = estado == ESTADO_PED.NO_GUARDADO      ? "Boceto"
                                 : estado == ESTADO_PED.CANCELADO        ? "Cancelado"
                                 : estado == ESTADO_PED.BORRADOR         ? "Borrador"
@@ -92,7 +98,7 @@ export class EstadosAcuerdos
                                 : ""
     }
     else
-    if( tipo === TIPO_ACUERDO.OC_PROVEEDOR ){
+    if( tipo === TIPO_ACUERDO.PEDIDO_PRO ){
       valor                     = estado == ESTADO_OC.NO_GUARDADO       ? "Boceto"
                                 : estado == ESTADO_OC.BORRADOR          ? "Edición"
                                 : estado == ESTADO_OC.VALIDADO          ? "Validado"
@@ -112,7 +118,7 @@ export class EstadosAcuerdos
   static estadoToColor(  tipo : TTipoAcuerdo, estado : number  ): string
   {
     let color : string          = ""
-    if( tipo === TIPO_ACUERDO.COTIZACION ){
+    if( tipo === TIPO_ACUERDO.COTIZACION_CLI ){
       color                     = estado == ESTADO_CTZ.NO_GUARDADO      ? COLORES.NEGRO
                                 : estado == ESTADO_CTZ.BORRADOR         ? COLORES.GRIS
                                 : estado == ESTADO_CTZ.COTIZADO         ? COLORES.AZUL
@@ -122,7 +128,7 @@ export class EstadosAcuerdos
                                 : "transparent"
     }
     else
-    if( tipo === TIPO_ACUERDO.PEDIDO ){
+    if( tipo === TIPO_ACUERDO.PEDIDO_CLI ){
       color                     = estado == ESTADO_PED.NO_GUARDADO      ? COLORES.NEGRO
                                 : estado == ESTADO_PED.CANCELADO        ? COLORES.MORADO
                                 : estado == ESTADO_PED.BORRADOR         ? COLORES.GRIS
@@ -132,7 +138,7 @@ export class EstadosAcuerdos
                                 : "transparent"
     }
     else
-    if( tipo === TIPO_ACUERDO.OC_PROVEEDOR ){
+    if( tipo === TIPO_ACUERDO.PEDIDO_PRO ){
       color                     = estado == ESTADO_OC.NO_GUARDADO       ? COLORES.NEGRO
                                 : estado == ESTADO_OC.BORRADOR          ? COLORES.GRIS
                                 : estado == ESTADO_OC.VALIDADO          ? COLORES.AZUL_OSCURO
@@ -152,7 +158,7 @@ export class EstadosAcuerdos
   static estadoIcono( tipo : TTipoAcuerdo, estado : number ): string
   {
     let icono : string          = ""
-    if( tipo === TIPO_ACUERDO.COTIZACION ){
+    if( tipo === TIPO_ACUERDO.COTIZACION_CLI ){
       icono                     = estado == ESTADO_CTZ.NO_GUARDADO      ? "mdi-eraser-variant"
                                 : estado == ESTADO_CTZ.BORRADOR         ? "mdi-circle-edit-outline"
                                 : estado == ESTADO_CTZ.COTIZADO         ? "mdi-notebook-check"
@@ -162,7 +168,7 @@ export class EstadosAcuerdos
                                 : ""
     }
     else
-    if( tipo === TIPO_ACUERDO.PEDIDO ){
+    if( tipo === TIPO_ACUERDO.PEDIDO_CLI ){
       icono                     = estado == ESTADO_PED.NO_GUARDADO      ? "mdi-eraser-variant"
                                 : estado == ESTADO_PED.CANCELADO        ? "mdi-close-circle"
                                 : estado == ESTADO_PED.BORRADOR         ? "mdi-circle-edit-outline"
@@ -172,7 +178,7 @@ export class EstadosAcuerdos
                                 : ""
     }
     else
-    if( tipo === TIPO_ACUERDO.OC_PROVEEDOR ){
+    if( tipo === TIPO_ACUERDO.PEDIDO_PRO ){
       icono                     = estado == ESTADO_OC.NO_GUARDADO       ? "mdi-eraser-variant"
                                 : estado == ESTADO_OC.BORRADOR          ? "mdi-circle-edit-outline"
                                 : estado == ESTADO_OC.VALIDADO          ? "mdi-check-bold"
@@ -202,29 +208,29 @@ export class EstadosAcuerdos
 }
 
 export const estadosCtz       = [
-  { value: ESTADO_CTZ.NO_GUARDADO,      label: EstadosAcuerdos.estadoToName( TIPO_ACUERDO.COTIZACION,   ESTADO_CTZ.NO_GUARDADO ) },
-  { value: ESTADO_CTZ.BORRADOR,         label: EstadosAcuerdos.estadoToName( TIPO_ACUERDO.COTIZACION,   ESTADO_CTZ.BORRADOR    ) },
-  { value: ESTADO_CTZ.COTIZADO,         label: EstadosAcuerdos.estadoToName( TIPO_ACUERDO.COTIZACION,   ESTADO_CTZ.COTIZADO    ) },
-  { value: ESTADO_CTZ.APROBADO,         label: EstadosAcuerdos.estadoToName( TIPO_ACUERDO.COTIZACION,   ESTADO_CTZ.APROBADO    ) },
-  { value: ESTADO_CTZ.RECHAZADO,        label: EstadosAcuerdos.estadoToName( TIPO_ACUERDO.COTIZACION,   ESTADO_CTZ.RECHAZADO   ) },
-  { value: ESTADO_CTZ.FACTURADO,        label: EstadosAcuerdos.estadoToName( TIPO_ACUERDO.COTIZACION,   ESTADO_CTZ.FACTURADO   ) },
+  { value: ESTADO_CTZ.NO_GUARDADO,      label: EstadosAcuerdos.estadoToName( TIPO_ACUERDO.COTIZACION_CLI,   ESTADO_CTZ.NO_GUARDADO ) },
+  { value: ESTADO_CTZ.BORRADOR,         label: EstadosAcuerdos.estadoToName( TIPO_ACUERDO.COTIZACION_CLI,   ESTADO_CTZ.BORRADOR    ) },
+  { value: ESTADO_CTZ.COTIZADO,         label: EstadosAcuerdos.estadoToName( TIPO_ACUERDO.COTIZACION_CLI,   ESTADO_CTZ.COTIZADO    ) },
+  { value: ESTADO_CTZ.APROBADO,         label: EstadosAcuerdos.estadoToName( TIPO_ACUERDO.COTIZACION_CLI,   ESTADO_CTZ.APROBADO    ) },
+  { value: ESTADO_CTZ.RECHAZADO,        label: EstadosAcuerdos.estadoToName( TIPO_ACUERDO.COTIZACION_CLI,   ESTADO_CTZ.RECHAZADO   ) },
+  { value: ESTADO_CTZ.FACTURADO,        label: EstadosAcuerdos.estadoToName( TIPO_ACUERDO.COTIZACION_CLI,   ESTADO_CTZ.FACTURADO   ) },
 ]
 
 export const estadosPed       = [
-  { value: ESTADO_PED.NO_GUARDADO,      label: EstadosAcuerdos.estadoToName( TIPO_ACUERDO.PEDIDO,       ESTADO_PED.NO_GUARDADO ) },
-  { value: ESTADO_PED.CANCELADO,        label: EstadosAcuerdos.estadoToName( TIPO_ACUERDO.PEDIDO,       ESTADO_PED.CANCELADO ) },
-  { value: ESTADO_PED.BORRADOR,         label: EstadosAcuerdos.estadoToName( TIPO_ACUERDO.PEDIDO,       ESTADO_PED.BORRADOR ) },
-  { value: ESTADO_PED.VALIDADO,         label: EstadosAcuerdos.estadoToName( TIPO_ACUERDO.PEDIDO,       ESTADO_PED.VALIDADO ) },
-  { value: ESTADO_PED.ENTREGANDO,       label: EstadosAcuerdos.estadoToName( TIPO_ACUERDO.PEDIDO,       ESTADO_PED.ENTREGANDO ) },
-  { value: ESTADO_PED.ENTREGADO,        label: EstadosAcuerdos.estadoToName( TIPO_ACUERDO.PEDIDO,       ESTADO_PED.ENTREGADO ) },
+  { value: ESTADO_PED.NO_GUARDADO,      label: EstadosAcuerdos.estadoToName( TIPO_ACUERDO.PEDIDO_CLI,       ESTADO_PED.NO_GUARDADO ) },
+  { value: ESTADO_PED.CANCELADO,        label: EstadosAcuerdos.estadoToName( TIPO_ACUERDO.PEDIDO_CLI,       ESTADO_PED.CANCELADO ) },
+  { value: ESTADO_PED.BORRADOR,         label: EstadosAcuerdos.estadoToName( TIPO_ACUERDO.PEDIDO_CLI,       ESTADO_PED.BORRADOR ) },
+  { value: ESTADO_PED.VALIDADO,         label: EstadosAcuerdos.estadoToName( TIPO_ACUERDO.PEDIDO_CLI,       ESTADO_PED.VALIDADO ) },
+  { value: ESTADO_PED.ENTREGANDO,       label: EstadosAcuerdos.estadoToName( TIPO_ACUERDO.PEDIDO_CLI,       ESTADO_PED.ENTREGANDO ) },
+  { value: ESTADO_PED.ENTREGADO,        label: EstadosAcuerdos.estadoToName( TIPO_ACUERDO.PEDIDO_CLI,       ESTADO_PED.ENTREGADO ) },
 ]
 
 export const estadosOC       = [
-  { value: ESTADO_OC.BORRADOR,          label: EstadosAcuerdos.estadoToName( TIPO_ACUERDO.OC_PROVEEDOR, ESTADO_OC.BORRADOR ) },
-  { value: ESTADO_OC.VALIDADO,          label: EstadosAcuerdos.estadoToName( TIPO_ACUERDO.OC_PROVEEDOR, ESTADO_OC.VALIDADO ) },
-  { value: ESTADO_OC.APROBADO,          label: EstadosAcuerdos.estadoToName( TIPO_ACUERDO.OC_PROVEEDOR, ESTADO_OC.APROBADO ) },
-  { value: ESTADO_OC.PEDIDO_ENVIADO,    label: EstadosAcuerdos.estadoToName( TIPO_ACUERDO.OC_PROVEEDOR, ESTADO_OC.PEDIDO_ENVIADO ) },
-  { value: ESTADO_OC.RECIBIDO_PARCIAL,  label: EstadosAcuerdos.estadoToName( TIPO_ACUERDO.OC_PROVEEDOR, ESTADO_OC.RECIBIDO_PARCIAL ) },
-  { value: ESTADO_OC.RECIBIDO_TOTAL,    label: EstadosAcuerdos.estadoToName( TIPO_ACUERDO.OC_PROVEEDOR, ESTADO_OC.RECIBIDO_TOTAL ) },
-  { value: ESTADO_OC.CANCELADO,         label: EstadosAcuerdos.estadoToName( TIPO_ACUERDO.OC_PROVEEDOR, ESTADO_OC.CANCELADO ) },
+  { value: ESTADO_OC.BORRADOR,          label: EstadosAcuerdos.estadoToName( TIPO_ACUERDO.PEDIDO_PRO, ESTADO_OC.BORRADOR ) },
+  { value: ESTADO_OC.VALIDADO,          label: EstadosAcuerdos.estadoToName( TIPO_ACUERDO.PEDIDO_PRO, ESTADO_OC.VALIDADO ) },
+  { value: ESTADO_OC.APROBADO,          label: EstadosAcuerdos.estadoToName( TIPO_ACUERDO.PEDIDO_PRO, ESTADO_OC.APROBADO ) },
+  { value: ESTADO_OC.PEDIDO_ENVIADO,    label: EstadosAcuerdos.estadoToName( TIPO_ACUERDO.PEDIDO_PRO, ESTADO_OC.PEDIDO_ENVIADO ) },
+  { value: ESTADO_OC.RECIBIDO_PARCIAL,  label: EstadosAcuerdos.estadoToName( TIPO_ACUERDO.PEDIDO_PRO, ESTADO_OC.RECIBIDO_PARCIAL ) },
+  { value: ESTADO_OC.RECIBIDO_TOTAL,    label: EstadosAcuerdos.estadoToName( TIPO_ACUERDO.PEDIDO_PRO, ESTADO_OC.RECIBIDO_TOTAL ) },
+  { value: ESTADO_OC.CANCELADO,         label: EstadosAcuerdos.estadoToName( TIPO_ACUERDO.PEDIDO_PRO, ESTADO_OC.CANCELADO ) },
 ]

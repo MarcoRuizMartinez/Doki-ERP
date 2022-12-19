@@ -34,19 +34,19 @@
       <acuerdos
         v-if                  ="permisos.cotizar_ver && tercero.esCliente"
         class                 ="col-12 col-md-4"
-        :tipo                 ="TIPO_ACUERDO.COTIZACION"        
+        :tipo                 ="TIPO_ACUERDO.COTIZACION_CLI"        
         :tercero              ="tercero"
       />
       <acuerdos
         v-if                  ="permisos.pedido_ver && tercero.esCliente"
         class                 ="col-12 col-md-4"
-        :tipo                 ="TIPO_ACUERDO.PEDIDO"        
+        :tipo                 ="TIPO_ACUERDO.PEDIDO_CLI"
         :tercero              ="tercero"
       />
       <acuerdos
         v-if                  ="permisos.prove_pedido_ver && tercero.esProveedor"
         class                 ="col-12 col-md-4"
-        :tipo                 ="TIPO_ACUERDO.OC_PROVEEDOR"        
+        :tipo                 ="TIPO_ACUERDO.PEDIDO_PRO"        
         :tercero              ="tercero"
       />      
       <efecto>

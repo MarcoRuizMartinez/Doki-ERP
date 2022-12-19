@@ -76,19 +76,19 @@ const routes: RouteRecordRaw[] = [
       {
         path:       '',
         name:       'cotizaciones',
-        props:      () => ({ tipo: TIPO_ACUERDO.COTIZACION }),
+        props:      () => ({ tipo: TIPO_ACUERDO.COTIZACION_CLI }),
         component:  () => import('src/areas/acuerdos/pages/PageAcuerdoBuscar.vue'),
       },
       {
         path:       '/cotizaciones/:id',
         name:       'cotizacion',
-        props:      route => ({ tipo: TIPO_ACUERDO.COTIZACION, id: route.params.id }),
+        props:      route => ({ tipo: TIPO_ACUERDO.COTIZACION_CLI, id: route.params.id }),
         component:  () => import('src/areas/acuerdos/pages/PageAcuerdoVer.vue')
       },
       {
         path:       '/cotizaciones/crear',
         name:       'crearCotizacion', 
-        props:      route => ({ tipo: TIPO_ACUERDO.COTIZACION }), // , terceroId: route.params.terceroId
+        props:      route => ({ tipo: TIPO_ACUERDO.COTIZACION_CLI }), // , terceroId: route.params.terceroId
         component:  () => import('src/areas/acuerdos/pages/PageAcuerdoCrear.vue'),
       },
       {
@@ -105,44 +105,62 @@ const routes: RouteRecordRaw[] = [
     children:
     [
       {
-        path:       '',
+        path:       'cliente',
         name:       'pedidos',
-        props:      () => ({ tipo: TIPO_ACUERDO.PEDIDO }),
+        props:      () => ({ tipo: TIPO_ACUERDO.PEDIDO_CLI }),
         component:  () => import('src/areas/acuerdos/pages/PageAcuerdoBuscar.vue'),
       },
       {
-        path:       '/pedidos/:id',
+        path:       'cliente/:id',
         name:       'pedido',
-        props:      route => ({ tipo: TIPO_ACUERDO.PEDIDO, id: route.params.id }),
+        props:      route => ({ tipo: TIPO_ACUERDO.PEDIDO_CLI, id: route.params.id }),
         component:  () => import('src/areas/acuerdos/pages/PageAcuerdoVer.vue')
       },      
       {
-        path:       '/pedidos/crear',
+        path:       'cliente/crear',
         name:       'crearPedido',
-        props:      route => ({ tipo: TIPO_ACUERDO.PEDIDO }), // , terceroId: route.params.terceroId
+        props:      route => ({ tipo: TIPO_ACUERDO.PEDIDO_CLI }), // , terceroId: route.params.terceroId
         component:  () => import('src/areas/acuerdos/pages/PageAcuerdoCrear.vue'),
-      },      
+      },
+      {
+        path:       'proveedor',
+        name:       'pedidosProveedor',
+        props:      () => ({ tipo: TIPO_ACUERDO.PEDIDO_PRO }),
+        component:  () => import('src/areas/acuerdos/pages/PageAcuerdoBuscar.vue'),
+      },
+      {
+        path:       'proveedor/:id',
+        name:       'pedidoProveedor',
+        props:      route => ({ tipo: TIPO_ACUERDO.PEDIDO_PRO, id: route.params.id }),
+        component:  () => import('src/areas/acuerdos/pages/PageAcuerdoVer.vue')
+      },
     ],
   },
   {
-    path:           '/pedidos-proveedor',
-    component:      () => import('layouts/LayoutPrincipal.vue'),
+    path: '/facturas',
+    component: () => import('layouts/LayoutPrincipal.vue'),
     children:
     [
       {
-        path:       '',
-        name:       'pedidosProveedor',
-        props:      () => ({ tipo: TIPO_ACUERDO.OC_PROVEEDOR }),
+        path:       'cliente',
+        name:       'facturasCli',
+        props:      () => ({ tipo: TIPO_ACUERDO.FACTURA_CLI }),
         component:  () => import('src/areas/acuerdos/pages/PageAcuerdoBuscar.vue'),
       },
       {
-        path:       '/pedidos-proveedor/:id',
-        name:       'pedidoProveedor',
-        props:      route => ({ tipo: TIPO_ACUERDO.OC_PROVEEDOR, id: route.params.id }),
+        path:       '/cliente/:id',
+        name:       'facturaCli',
+        props:      route => ({ tipo: TIPO_ACUERDO.FACTURA_CLI, id: route.params.id }),
         component:  () => import('src/areas/acuerdos/pages/PageAcuerdoVer.vue')
       },
+      {
+        path:       '/cliente/crear',
+        name:       'crearFacturaCli', 
+        props:      route => ({ tipo: TIPO_ACUERDO.FACTURA_CLI }), // , terceroId: route.params.terceroId
+        component:  () => import('src/areas/acuerdos/pages/PageAcuerdoCrear.vue'),
+      },
     ],
-  },  
+  },
   {
     path:           '/productos',
     component:      () => import('layouts/LayoutPrincipal.vue'),

@@ -250,7 +250,7 @@ export class Contacto implements IContacto
   static getTipoIdFromTipoString( tipo : string, tipoAcuerdo : TTipoAcuerdo  ) : number
   {
     let id          = 0
-    if( tipoAcuerdo === TIPO_ACUERDO.COTIZACION)
+    if( tipoAcuerdo === TIPO_ACUERDO.COTIZACION_CLI)
     {
       id            =   tipo === TIPOS_CONTACTO.CONTABLE  ? TIPOS_CONTACTO_ID.CTZ_BILLING
                       : tipo === TIPOS_CONTACTO.COMERCIAL ? TIPOS_CONTACTO_ID.CTZ_CUSTOMER
@@ -258,7 +258,7 @@ export class Contacto implements IContacto
                       : id
     }
     else
-    if( tipoAcuerdo === TIPO_ACUERDO.PEDIDO)
+    if( tipoAcuerdo === TIPO_ACUERDO.PEDIDO_CLI)
     {
       id            =   tipo === TIPOS_CONTACTO.CONTABLE  ? TIPOS_CONTACTO_ID.PED_BILLING
                       : tipo === TIPOS_CONTACTO.COMERCIAL ? TIPOS_CONTACTO_ID.PED_CUSTOMER
@@ -266,7 +266,7 @@ export class Contacto implements IContacto
                       : id
     }
     else
-    if( tipoAcuerdo === TIPO_ACUERDO.FACTURA)
+    if( tipoAcuerdo === TIPO_ACUERDO.FACTURA_CLI)
     {
       id            =   tipo === TIPOS_CONTACTO.CONTABLE  ? TIPOS_CONTACTO_ID.FAC_BILLING
                       : tipo === TIPOS_CONTACTO.COMERCIAL ? TIPOS_CONTACTO_ID.FAC_SERVICE

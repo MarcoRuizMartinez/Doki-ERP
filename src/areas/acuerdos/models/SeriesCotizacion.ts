@@ -58,6 +58,6 @@ export class SerieCtz extends Serie implements ISerieCtz
     return this.cuentaCtzConTotal + this.cuentaCtzSinTotal
   }
 
-  get estado()      : string { return EstadosAcuerdos.estadoToName ( TIPO_ACUERDO.COTIZACION, this.estadoId ) }
-  get estadoColor() : string { return EstadosAcuerdos.estadoToColor( TIPO_ACUERDO.COTIZACION, this.estadoId ) }
+  get estado()      : string { return EstadosAcuerdos.estadoToName ( TIPO_ACUERDO.COTIZACION_CLI, this.estadoId ) }
+  get estadoColor() : string { return EstadosAcuerdos.estadoToColor( TIPO_ACUERDO.COTIZACION_CLI, this.estadoId ) }
 }      

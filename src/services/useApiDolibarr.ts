@@ -15,7 +15,11 @@ type AccionDolibarr           = "crear"         | "editar"        | "ver"       
                                 "close"         | "setinvoiced"   | "settodraft"    | "validate"      | "reopen"
 //  | "crear-lineas"  |  |
 
-type ModuloDolibarr           = "" | "tercero" | "contacto" | "documento" | "cotización" | "pedido" | "oc_proveedor" | "entrega" | "factura" | "saber" | "producto" | "proyecto"
+type ModuloDolibarr           = "" | "tercero" | "contacto" | "documento" | "saber" | "producto" | "proyecto" |
+                                "cotización"  | "cotizaciónPro" |
+                                "pedido"      | "pedidoPro"     |
+                                "entrega"     | "entregaPro"    |
+                                "factura"     | "facturaPro" 
 type Metodo                   = "post" | "put" | "get" | "delete"
 
 export function useApiDolibarr()
@@ -54,7 +58,7 @@ export function useApiDolibarr()
       case "saber":             endPoint = "knowledgemanagement"; break;
       case "producto":          endPoint = "products";            break;
       case "proyecto":          endPoint = "projects";            break;
-      case "oc_proveedor":      endPoint = "supplierorders";      break;
+      case "pedidoPro":         endPoint = "supplierorders";      break;
       default: break;
     }
 

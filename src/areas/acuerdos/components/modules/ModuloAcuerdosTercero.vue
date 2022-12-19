@@ -21,7 +21,7 @@
     <template                   #barra>
       <!-- //* ///////////////  Boton crear acuerdo  -->
       <q-btn
-        v-if                    ="tipo !== TIPO_ACUERDO.OC_PROVEEDOR"
+        v-if                    ="tipo !== TIPO_ACUERDO.PEDIDO_PRO"
         v-bind                  ="btnBaseSm"
         label                   ="Crear"
         color                   ="positive"

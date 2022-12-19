@@ -128,9 +128,9 @@ export class BusquedaAcuerdo implements IBusquedaAcuerdo
     this.busquedaVacia    = true
   }
 
-  get esCotizacion()  : boolean { return this.acuerdo === TIPO_ACUERDO.COTIZACION   }
-  get esPedido()      : boolean { return this.acuerdo === TIPO_ACUERDO.PEDIDO       }
-  get esOCProveedor() : boolean { return this.acuerdo === TIPO_ACUERDO.OC_PROVEEDOR }
+  get esCotizacion()  : boolean { return this.acuerdo === TIPO_ACUERDO.COTIZACION_CLI   }
+  get esPedido()      : boolean { return this.acuerdo === TIPO_ACUERDO.PEDIDO_CLI       }
+  get esOCProveedor() : boolean { return this.acuerdo === TIPO_ACUERDO.PEDIDO_PRO }
 
   get query() : IQueryAcuerdo
   {

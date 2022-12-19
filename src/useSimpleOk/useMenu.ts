@@ -97,20 +97,20 @@ export function useMenu()
       ]
     },
     {
-      ...new ItemMenu({ label: "Logistica", icon: "mdi-truck-fast", to: "/pedidos" }),
+      ...new ItemMenu({ label: "Logistica", icon: "mdi-truck-fast", to: "/pedidos/cliente" }),
       submenu:
       [
         { ...new ItemMenu({
                             label:      "Pedidos",
                             icon:       "mdi-cart",
-                            to:         "/pedidos",
+                            to:         "/pedidos/cliente",
                             visible:    permisos.value.terceros_ver
                           }),
         }, 
         { ...new ItemMenu({
                             label:      "Crear pedido",
                             icon:       "mdi-cart-plus",
-                            to:         "/pedidos/crear",
+                            to:         "/pedidos/cliente/crear",
                             visible:    permisos.value.terceros_ver
                           }),
         },
@@ -118,10 +118,30 @@ export function useMenu()
         { ...new ItemMenu({
                             label:      "Pedidos proveedor",
                             icon:       "mdi-domain",
-                            to:         "/pedidos-proveedor",
+                            to:         "/pedidos/proveedor",
                             visible:    permisos.value.terceros_ver
                           }),
         },                
+      ]
+    },
+    {
+      ...new ItemMenu({ label: "Cuentas", icon: "mdi-book-open-variant", to: "/facturas/cliente" }),
+      submenu:
+      [
+        { ...new ItemMenu({
+                            label:      "Facturas clientes",
+                            icon:       "mdi-inbox-full",
+                            to:         "/facturas/cliente",
+                            visible:    permisos.value.terceros_ver
+                          }),
+        }, 
+        { ...new ItemMenu({
+                            label:      "Facturas proveedor",
+                            icon:       "mdi-inbox-full",
+                            to:         "/facturas/proveedor",
+                            visible:    permisos.value.terceros_ver
+                          }),
+        },
       ]
     },
     {

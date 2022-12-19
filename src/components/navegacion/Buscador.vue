@@ -24,12 +24,12 @@
     TERCEROS        = "Terceros",
     PEDIDOS         = "Pedidos",
     COTIZACIONES    = "Cotizaciones",
-    OC_PROVEEDOR    = "Ordenes proveedores",
+    PEDIDO_PRO    = "Ordenes proveedores",
     PRODUCTOS       = "Productos",
   }
 
   const router      = useRouter()
-  const busquedas   = [ BUSQUEDAS.PEDIDOS, BUSQUEDAS.COTIZACIONES, BUSQUEDAS.OC_PROVEEDOR, BUSQUEDAS.PRODUCTOS ]
+  const busquedas   = [ BUSQUEDAS.PEDIDOS, BUSQUEDAS.COTIZACIONES, BUSQUEDAS.PEDIDO_PRO, BUSQUEDAS.PRODUCTOS ]
   const modelo      = ref<string>("")
   let busqueda      = ""
 
@@ -41,7 +41,7 @@
   {
     let patch       =   tipo  === BUSQUEDAS.PEDIDOS       ? "/pedidos?tercero="
                       : tipo  === BUSQUEDAS.COTIZACIONES  ? "/cotizaciones?tercero="
-                      : tipo  === BUSQUEDAS.OC_PROVEEDOR  ? "/pedidos-proveedor?tercero="
+                      : tipo  === BUSQUEDAS.PEDIDO_PRO  ? "/pedidos-proveedor?tercero="
                       : tipo  === BUSQUEDAS.PRODUCTOS     ? "/productos?busqueda="
                       : ""
     if(!patch) return

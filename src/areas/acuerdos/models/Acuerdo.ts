@@ -342,11 +342,11 @@ export class Acuerdo implements IAcuerdo
   } */
  
 /*   get label() : string {
-    const label   = this.tipo === TIPO_ACUERDO.COTIZACION   ? "cotización"
-                  : this.tipo === TIPO_ACUERDO.PEDIDO       ? "pedido"
+    const label   = this.tipo === TIPO_ACUERDO.COTIZACION_CLI   ? "cotización"
+                  : this.tipo === TIPO_ACUERDO.PEDIDO_CLI       ? "pedido"
                   : this.tipo === TIPO_ACUERDO.ENTREGA      ? "entrega"
-                  : this.tipo === TIPO_ACUERDO.OC_PROVEEDOR ? "pedido proveedor"
-                  : this.tipo === TIPO_ACUERDO.FACTURA      ? "factura"
+                  : this.tipo === TIPO_ACUERDO.PEDIDO_PRO ? "pedido proveedor"
+                  : this.tipo === TIPO_ACUERDO.FACTURA_CLI  ? "factura"
                   : ""
     return label
   } */
@@ -364,11 +364,11 @@ export class Acuerdo implements IAcuerdo
 
   
   get urlDolibarr() : string {
-    const ruta    = this.tipo === TIPO_ACUERDO.COTIZACION   ? "/comm/propal/card.php?id="
-                  : this.tipo === TIPO_ACUERDO.PEDIDO       ? "/commande/card.php?id="
-                  : this.tipo === TIPO_ACUERDO.ENTREGA      ? ""
-                  : this.tipo === TIPO_ACUERDO.OC_PROVEEDOR ? "/fourn/commande/card.php?id="
-                  : this.tipo === TIPO_ACUERDO.FACTURA      ? ""
+    const ruta    = this.tipo === TIPO_ACUERDO.COTIZACION_CLI   ? "/comm/propal/card.php?id="
+                  : this.tipo === TIPO_ACUERDO.PEDIDO_CLI       ? "/commande/card.php?id="
+                  : this.tipo === TIPO_ACUERDO.ENTREGA_CLI      ? ""
+                  : this.tipo === TIPO_ACUERDO.PEDIDO_PRO       ? "/fourn/commande/card.php?id="
+                  : this.tipo === TIPO_ACUERDO.FACTURA_CLI      ? ""
                   : ""
 
     return process.env.URL_DOLIBARR + ruta + this.id
@@ -425,11 +425,11 @@ https://dolibarr.mublex.com/fichinter/card.php?
 */
 
   get imagen() :  string {
-    const imagen  = this.tipo === TIPO_ACUERDO.COTIZACION   ? "iconoCotizacion.webp"
-                  : this.tipo === TIPO_ACUERDO.PEDIDO       ? "iconoPedido.webp"
-                  : this.tipo === TIPO_ACUERDO.ENTREGA      ? ""
-                  : this.tipo === TIPO_ACUERDO.OC_PROVEEDOR ? "iconoOCProveedor.webp"
-                  : this.tipo === TIPO_ACUERDO.FACTURA      ? ""
+    const imagen  = this.tipo === TIPO_ACUERDO.COTIZACION_CLI   ? "iconoCotizacion.webp"
+                  : this.tipo === TIPO_ACUERDO.PEDIDO_CLI       ? "iconoPedido.webp"
+                  : this.tipo === TIPO_ACUERDO.ENTREGA_CLI      ? ""
+                  : this.tipo === TIPO_ACUERDO.PEDIDO_PRO       ? "iconoOCProveedor.webp"
+                  : this.tipo === TIPO_ACUERDO.FACTURA_CLI      ? ""
                   : ""
     return imagen
   } 
@@ -437,10 +437,10 @@ https://dolibarr.mublex.com/fichinter/card.php?
   get modulo() : TModulosDolibarr
   {
     let modulo  : TModulosDolibarr
-        modulo  =   this.tipo === TIPO_ACUERDO.COTIZACION ? "proposal"
-                  : this.tipo === TIPO_ACUERDO.PEDIDO     ? "order"
-                  : this.tipo === TIPO_ACUERDO.ENTREGA    ? "shipment"
-                  : this.tipo === TIPO_ACUERDO.FACTURA    ? "invoice"
+        modulo  =   this.tipo === TIPO_ACUERDO.COTIZACION_CLI ? "proposal"
+                  : this.tipo === TIPO_ACUERDO.PEDIDO_CLI     ? "order"
+                  : this.tipo === TIPO_ACUERDO.ENTREGA_CLI    ? "shipment"
+                  : this.tipo === TIPO_ACUERDO.FACTURA_CLI    ? "invoice"
                   : "proposal"
     return modulo
   }
@@ -453,15 +453,15 @@ https://dolibarr.mublex.com/fichinter/card.php?
     return suma
   }
 
-  get esCotizacion()      : boolean { return this.tipo === TIPO_ACUERDO.COTIZACION    }
-  get esPedido()          : boolean { return this.tipo === TIPO_ACUERDO.PEDIDO        }
-  get esOCProveedor()     : boolean { return this.tipo === TIPO_ACUERDO.OC_PROVEEDOR  }
-  get esFactura()         : boolean { return this.tipo === TIPO_ACUERDO.FACTURA       }
-  get municipioTercero()  : string  { return this.tercero.municipio.label             }
-  get area()              : string  { return this.tercero.areaNombre                  }
-  get vinculado()         : boolean { return !!this.enlaces.length                    }
-  get hayServicios()      : boolean { return this.productos.some( p => p.esServicio ) }
-  get hayProductos()      : boolean { return this.productos.some( p => p.esProducto ) }
+  get esCotizacion()      : boolean { return this.tipo === TIPO_ACUERDO.COTIZACION_CLI  }
+  get esPedido()          : boolean { return this.tipo === TIPO_ACUERDO.PEDIDO_CLI      }
+  get esOCProveedor()     : boolean { return this.tipo === TIPO_ACUERDO.PEDIDO_PRO      }
+  get esFactura()         : boolean { return this.tipo === TIPO_ACUERDO.FACTURA_CLI     }
+  get municipioTercero()  : string  { return this.tercero.municipio.label               }
+  get area()              : string  { return this.tercero.areaNombre                    }
+  get vinculado()         : boolean { return !!this.enlaces.length                      }
+  get hayServicios()      : boolean { return this.productos.some( p => p.esServicio )   }
+  get hayProductos()      : boolean { return this.productos.some( p => p.esProducto )   }
 
   //get comercialNombre() : string { return this.comercial.nombreCompleto }
   //get terceroNombre() : string { return this.tercero.nombre }
@@ -787,51 +787,57 @@ https://dolibarr.mublex.com/fichinter/card.php?
 
 
   static getTipoAcuerdoSingular( tipo : TTipoAcuerdo ) : string {
-    const label                   = tipo === TIPO_ACUERDO.COTIZACION        ? "cotización"
-                                  : tipo === TIPO_ACUERDO.PEDIDO            ? "pedido"
-                                  : tipo === TIPO_ACUERDO.ENTREGA           ? "entrega"
-                                  : tipo === TIPO_ACUERDO.OC_PROVEEDOR      ? "pedido proveedor"
-                                  : tipo === TIPO_ACUERDO.FACTURA           ? "factura"
+    const label                   = tipo === TIPO_ACUERDO.COTIZACION_CLI  ? "cotización"
+                                  : tipo === TIPO_ACUERDO.PEDIDO_CLI      ? "pedido"
+                                  : tipo === TIPO_ACUERDO.ENTREGA_CLI     ? "entrega"
+                                  : tipo === TIPO_ACUERDO.PEDIDO_PRO      ? "pedido proveedor"
+                                  : tipo === TIPO_ACUERDO.FACTURA_CLI     ? "factura"
                                   : ""
     return label
   }  
 
   static  getTipoAcuerdoPlural( tipo : TTipoAcuerdo ) : string {
-    const singular                = tipo === TIPO_ACUERDO.COTIZACION        ? "cotizaciones"
-                                  : tipo === TIPO_ACUERDO.PEDIDO            ? "pedidos"
-                                  : tipo === TIPO_ACUERDO.ENTREGA           ? "entregas"
-                                  : tipo === TIPO_ACUERDO.OC_PROVEEDOR      ? "pedidos proveedor"
-                                  : tipo === TIPO_ACUERDO.FACTURA           ? "facturas"
+    const singular                = tipo === TIPO_ACUERDO.COTIZACION_CLI  ? "cotizaciones"
+                                  : tipo === TIPO_ACUERDO.PEDIDO_CLI      ? "pedidos"
+                                  : tipo === TIPO_ACUERDO.ENTREGA_CLI     ? "entregas"
+                                  : tipo === TIPO_ACUERDO.PEDIDO_PRO      ? "pedidos proveedor"
+                                  : tipo === TIPO_ACUERDO.FACTURA_CLI     ? "facturas"
                                   : ""
     return singular
   }
   
   static getIconoAcuerdo( tipo : TTipoAcuerdo ) : string {
-    const singular                = tipo === TIPO_ACUERDO.COTIZACION        ? "mdi-format-list-checks"
-                                  : tipo === TIPO_ACUERDO.PEDIDO            ? "mdi-cart"
-                                  : tipo === TIPO_ACUERDO.ENTREGA           ? ""
-                                  : tipo === TIPO_ACUERDO.OC_PROVEEDOR      ? "mdi-domain" // mdi-water-well
-                                  : tipo === TIPO_ACUERDO.FACTURA           ? ""
+    const singular                = tipo === TIPO_ACUERDO.COTIZACION_CLI  ? "mdi-format-list-checks"
+                                  : tipo === TIPO_ACUERDO.PEDIDO_CLI      ? "mdi-cart"
+                                  : tipo === TIPO_ACUERDO.ENTREGA_CLI     ? ""
+                                  : tipo === TIPO_ACUERDO.PEDIDO_PRO      ? "mdi-domain" // mdi-water-well
+                                  : tipo === TIPO_ACUERDO.FACTURA_CLI     ? "mdi-inbox-full"
                                   : ""
     return singular
   }
-
+/*
+  mdi-file-document-multiple mdi-book-open-variant mdi-newspaper-variant-outline  mdi-inbox-full
+  mdi-notebook-check mdi-text-box mdi-ballot mdi-text-box-multiple mdi-text-box-check
+  mdi-book-open mdi-book-open-page-variant  mdi-book-open-blank-variant mdi-bookmark-check
+  mdi-marker-check
+  mdi-book-open mdi-inbox-full
+*/
   static getEmojiAcuerdo( tipo : TTipoAcuerdo ) :  string {
-    const emoji                 = tipo === TIPO_ACUERDO.COTIZACION          ? "📜"
-                                : tipo === TIPO_ACUERDO.PEDIDO              ? "🛒"
-                                : tipo === TIPO_ACUERDO.ENTREGA             ? "🚛"
-                                : tipo === TIPO_ACUERDO.OC_PROVEEDOR        ? "🚛"
-                                : tipo === TIPO_ACUERDO.FACTURA             ? "📄"
+    const emoji                 = tipo === TIPO_ACUERDO.COTIZACION_CLI    ? "📜"
+                                : tipo === TIPO_ACUERDO.PEDIDO_CLI        ? "🛒"
+                                : tipo === TIPO_ACUERDO.ENTREGA_CLI       ? "🚛"
+                                : tipo === TIPO_ACUERDO.PEDIDO_PRO        ? "🚛"
+                                : tipo === TIPO_ACUERDO.FACTURA_CLI       ? "📄"
                                 : "✅"
     return emoji
   } 
 
   static getRuta( tipo : TTipoAcuerdo ) : string{
-    const ruta                  = tipo === TIPO_ACUERDO.COTIZACION          ? "cotizaciones"
-                                : tipo === TIPO_ACUERDO.PEDIDO              ? "pedidos"
-                                : tipo === TIPO_ACUERDO.ENTREGA             ? "entregas"
-                                : tipo === TIPO_ACUERDO.OC_PROVEEDOR        ? "pedidos-proveedor"
-                                : tipo === TIPO_ACUERDO.FACTURA             ? "facturas"
+    const ruta                  = tipo === TIPO_ACUERDO.COTIZACION_CLI    ? "cotizaciones"
+                                : tipo === TIPO_ACUERDO.PEDIDO_CLI        ? "pedidos/cliente"
+                                : tipo === TIPO_ACUERDO.ENTREGA_CLI       ? "entregas"
+                                : tipo === TIPO_ACUERDO.PEDIDO_PRO        ? "pedidos/proveedor"
+                                : tipo === TIPO_ACUERDO.FACTURA_CLI       ? "facturas"
                                 : ""
     return ruta
   }

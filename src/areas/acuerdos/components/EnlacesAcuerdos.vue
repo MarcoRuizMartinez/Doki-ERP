@@ -121,12 +121,12 @@
 
   async function buscarAcuerdo()
   {
-    const pedi            = getIds(   TIPO_ACUERDO.PEDIDO       )
-    const coti            = getIds(   TIPO_ACUERDO.COTIZACION   )
-    const oc_p            = getIds(   TIPO_ACUERDO.OC_PROVEEDOR )
-    const paquete         = [ { ids:  pedi, tipo: TIPO_ACUERDO.PEDIDO       },
-                              { ids:  coti, tipo: TIPO_ACUERDO.COTIZACION   },
-                              { ids:  oc_p, tipo: TIPO_ACUERDO.OC_PROVEEDOR }
+    const pedi            = getIds(   TIPO_ACUERDO.PEDIDO_CLI       )
+    const coti            = getIds(   TIPO_ACUERDO.COTIZACION_CLI   )
+    const oc_p            = getIds(   TIPO_ACUERDO.PEDIDO_PRO )
+    const paquete         = [ { ids:  pedi, tipo: TIPO_ACUERDO.PEDIDO_CLI       },
+                              { ids:  coti, tipo: TIPO_ACUERDO.COTIZACION_CLI   },
+                              { ids:  oc_p, tipo: TIPO_ACUERDO.PEDIDO_PRO }
                             ]
     acuerdos.value        = []                            
 

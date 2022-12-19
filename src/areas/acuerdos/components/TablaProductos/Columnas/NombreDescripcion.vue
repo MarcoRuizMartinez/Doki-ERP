@@ -13,7 +13,7 @@
       class             ="text-0_8em"
       >
     </span>
-    <Tooltip>
+    <Tooltip v-if       ="false">
       <table  class     ="tabla-info text-1em rounded-borders q-px-sm min-w-100">
         <tbody>
           <tr>
