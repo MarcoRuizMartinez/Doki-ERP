@@ -26,7 +26,7 @@
   import {  useControlProductos   } from "src/areas/acuerdos/controllers/ControlLineasProductos"            
   import    numeroPaso              from "components/utilidades/input/InputNumeroPaso.vue"
 
-  const { editarDescuento } = useControlProductos()  
+  const { editarLinea }     = useControlProductos()  
 
   const props               = defineProps({
     modelValue: { required: true, type: Object as PropType< ILineaAcuerdo > },
@@ -41,6 +41,6 @@
   function actualizar()
   {
     emit("update:modelValue", linea.value)
-    editarDescuento( linea.value )
+    editarLinea( linea.value )
   }
 </script>

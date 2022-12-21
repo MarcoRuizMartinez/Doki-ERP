@@ -3,7 +3,7 @@
     @click              ="emit('click')"
     v-bind              ="$attrs"
     >
-    <q-icon :name="`mdi-alpha-${linea.nivelPrecios}-circle`" color="grey-6" size="xs"/>
+    <!-- <q-icon :name="`mdi-alpha-${linea.nivelPrecios}-circle`" color="grey-6" size="xs"/> -->
     <span class         ="text-bold q-mr-sm">{{linea.ref}}</span>
     <span class         ="text-subtitle1">{{linea.nombre}}</span>
     <br/>
