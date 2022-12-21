@@ -99,19 +99,22 @@
         <vista-acuerdo
           :id                   ="acuerdo.id.toString()"
           :tipo                 ="tipo"
-        />        
+        />
         <template               #barra>
-          <q-btn                dense flat unelevated  
+          <q-btn                dense flat   
             icon                ="mdi-chevron-left"
             class               ="op40 op100-hover"
+            padding             ="none"
+            size                ="1.5em"
             :disable            ="!puedeAnterior"
             @click              ="anteriorAcuerdo"
             >
             <tooltip label      ="Anterior"/>
           </q-btn>
-          <q-btn                dense flat unelevated  
+          <q-btn                dense flat
             icon                ="mdi-chevron-right"
             class               ="op40 op100-hover"
+            size                ="1.5em"
             :disable            ="!puedeSiguiente"
             @click              ="siguienteAcuerdo"
             >
