@@ -121,8 +121,9 @@
     acuerdo.value.terceroId   = tercero.value.id
     acuerdo.value.tercero     = tercero.value
     router.push({
-      path:   `/${Acuerdo.getTipoAcuerdoPlural(tipo.value)}/crear`,
-      query: { origen: "tercero"},
+      //path:   `/${Acuerdo.getTipoAcuerdoPlural(tipo.value)}/crear`,
+      path:   `/${Acuerdo.getRuta(tipo.value)}/crear`,
+      query:  { origen: "tercero"},
     })
   }
 

@@ -833,7 +833,7 @@ https://dolibarr.mublex.com/fichinter/card.php?
   } 
 
   static getRuta( tipo : TTipoAcuerdo ) : string{
-    const ruta                  = tipo === TIPO_ACUERDO.COTIZACION_CLI    ? "cotizaciones"
+    const ruta                  = tipo === TIPO_ACUERDO.COTIZACION_CLI    ? "cotizaciones/cliente"
                                 : tipo === TIPO_ACUERDO.PEDIDO_CLI        ? "pedidos/cliente"
                                 : tipo === TIPO_ACUERDO.ENTREGA_CLI       ? "entregas"
                                 : tipo === TIPO_ACUERDO.PEDIDO_PRO        ? "pedidos/proveedor"

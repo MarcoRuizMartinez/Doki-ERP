@@ -60,6 +60,7 @@
       style                     ="min-height: 160px;"
       :rows                     ="acuerdo.anticipos"
       :columns                  ="columnas"
+      :rows-per-page-options    ="[200, 400]"
       >
       <!-- //* ///////////////////////////////////////////////////// Vista Card de producto -->
       <template                 #item="props">

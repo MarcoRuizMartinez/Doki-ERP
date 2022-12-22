@@ -103,22 +103,31 @@
         <template               #barra>
           <q-btn                dense flat   
             icon                ="mdi-chevron-left"
-            class               ="op40 op100-hover"
+            class               ="op100-hover"
+            :class              ="puedeAnterior ? 'op60' : 'white-a20'"
             padding             ="none"
             size                ="1.5em"
             :disable            ="!puedeAnterior"
             @click              ="anteriorAcuerdo"
             >
-            <tooltip label      ="Anterior"/>
+            <tooltip
+              v-if              ="puedeAnterior"
+              label             ="Anterior"
+            />
           </q-btn>
           <q-btn                dense flat
             icon                ="mdi-chevron-right"
-            class               ="op40 op100-hover"
+            class               ="op100-hover"
+            :class              ="puedeSiguiente ? 'op60' : 'white-a20'"
+            padding             ="none"
             size                ="1.5em"
             :disable            ="!puedeSiguiente"
             @click              ="siguienteAcuerdo"
             >
-            <tooltip label      ="Siguiente"/>
+            <tooltip
+              v-if              ="puedeSiguiente"
+              label             ="Siguiente"
+            />
           </q-btn>
         </template>
       </ventana>
@@ -265,6 +274,7 @@
   function seleccionarAcuerdo( index : number )
   {    
     indexSelect.value             = index
+    //acuerdo.value.proGrupos       = []
     acuerdo.value                 = acuerdos.value[index]
     buscarTerceroDolibarr( acuerdo.value.terceroId )
   }

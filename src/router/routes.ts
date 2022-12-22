@@ -73,24 +73,28 @@ const routes: RouteRecordRaw[] = [
     component: () => import('layouts/LayoutPrincipal.vue'),
     children:
     [
+      //* ////////////////////////////////////////////////////////////////// Cotizacion cliente Buscar
       {
-        path:       '',
+        path:       'cliente',
         name:       'cotizaciones',
         props:      () => ({ tipo: TIPO_ACUERDO.COTIZACION_CLI }),
         component:  () => import('src/areas/acuerdos/pages/PageAcuerdoBuscar.vue'),
       },
+      //* ////////////////////////////////////////////////////////////////// Cotizacion cliente Ver
       {
-        path:       '/cotizaciones/:id',
+        path:       'cliente/:id',
         name:       'cotizacion',
         props:      route => ({ tipo: TIPO_ACUERDO.COTIZACION_CLI, id: route.params.id }),
         component:  () => import('src/areas/acuerdos/pages/PageAcuerdoVer.vue')
       },
+      //* ////////////////////////////////////////////////////////////////// Cotizacion cliente Crear
       {
-        path:       '/cotizaciones/crear',
+        path:       'cliente/crear',
         name:       'crearCotizacion', 
         props:      route => ({ tipo: TIPO_ACUERDO.COTIZACION_CLI }), // , terceroId: route.params.terceroId
         component:  () => import('src/areas/acuerdos/pages/PageAcuerdoCrear.vue'),
       },
+      //* ////////////////////////////////////////////////////////////////// Cotizacion cliente informes
       {
         path:       '/cotizaciones/informes',
         name:       'cotizacionInformes',
@@ -104,30 +108,35 @@ const routes: RouteRecordRaw[] = [
     component:      () => import('layouts/LayoutPrincipal.vue'),
     children:
     [
+      //* ////////////////////////////////////////////////////////////////// Pedido cliente Buscar 
       {
         path:       'cliente',
         name:       'pedidos',
         props:      () => ({ tipo: TIPO_ACUERDO.PEDIDO_CLI }),
         component:  () => import('src/areas/acuerdos/pages/PageAcuerdoBuscar.vue'),
       },
+      //* ////////////////////////////////////////////////////////////////// Pedido cliente Ver 
       {
         path:       'cliente/:id',
         name:       'pedido',
         props:      route => ({ tipo: TIPO_ACUERDO.PEDIDO_CLI, id: route.params.id }),
         component:  () => import('src/areas/acuerdos/pages/PageAcuerdoVer.vue')
-      },      
+      },
+      //* ////////////////////////////////////////////////////////////////// Pedido cliente Crear 
       {
         path:       'cliente/crear',
         name:       'crearPedido',
         props:      route => ({ tipo: TIPO_ACUERDO.PEDIDO_CLI }), // , terceroId: route.params.terceroId
         component:  () => import('src/areas/acuerdos/pages/PageAcuerdoCrear.vue'),
       },
+      //* ////////////////////////////////////////////////////////////////// Pedido proveedor Buscar
       {
         path:       'proveedor',
         name:       'pedidosProveedor',
         props:      () => ({ tipo: TIPO_ACUERDO.PEDIDO_PRO }),
         component:  () => import('src/areas/acuerdos/pages/PageAcuerdoBuscar.vue'),
       },
+      //* ////////////////////////////////////////////////////////////////// Pedido proveedor Ver
       {
         path:       'proveedor/:id',
         name:       'pedidoProveedor',

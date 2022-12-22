@@ -61,17 +61,18 @@ export function useMenu()
         { ...new ItemMenu({
                             label:      "Cotizaciones",
                             icon:       "mdi-table-search",
-                            to:         "/cotizaciones",
+                            to:         "/cotizaciones/cliente",
                             visible:    permisos.value.terceros_ver
                           }),
         },
         { ...new ItemMenu({
                             label:      "Crear cotización",
                             icon:       "mdi-format-list-checks",
-                            to:         "/cotizaciones/crear",
+                            to:         "/cotizaciones/cliente/crear",
                             visible:    permisos.value.terceros_ver
                           }),
         },                            
+/*         
         { ...new ItemMenu({
                             label:      "Informes",
                             icon:       "mdi-chart-areaspline",
@@ -86,7 +87,7 @@ export function useMenu()
                             to:         "/politicas/politicas-entre-comerciales",
                             visible:    permisos.value.terceros_ver
                           }),                                              
-        },
+        }, 
         { ...new ItemMenu({
                             label:      "Políticas de entrega",
                             icon:       "mdi-book-open-variant",
@@ -94,6 +95,7 @@ export function useMenu()
                             visible:    permisos.value.terceros_ver
                         }),
         },
+        */
       ]
     },
     {
