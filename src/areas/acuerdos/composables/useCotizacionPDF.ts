@@ -334,7 +334,10 @@ export function useCotizacionPDF()
     doc.y                       +=altoTotales 
 
     // * //////////////////////////////////////////////// Nombre de Valores
-    const nombreValores         = "Subtotal bruto:\nDescuento:\nSubtotal neto:\nIVA:\nTotal:"
+    let nombreValores           = quote.hayDescuento
+                                  ? "Subtotal bruto:\nDescuento:\nSubtotal neto:\n"
+                                  : "Subtotal:\n"
+    nombreValores               += "IVA:\nTotal:"
     doc.setFont                 ( 11, 90 )
     posY                        += 16
     pdf.text                    ( nombreValores, doc.margenDerX - 5, posY, { align: "right", lineHeightFactor: 1.4, renderingMode: 'fillThenStroke' })
@@ -362,8 +365,10 @@ export function useCotizacionPDF()
 
     // * //////////////////////////////////////////////// Valores totales
     let valores                 =  formatoPrecio(quote.totalSinDescu,   "decimales-si") + "\n"
-    valores                     += formatoPrecio(quote.descuentoValor,  "decimales-si") + "\n"
-    valores                     += formatoPrecio(quote.totalConDescu,   "decimales-si") + "\n"
+    if(quote.hayDescuento){
+      valores                   += formatoPrecio(quote.descuentoValor,  "decimales-si") + "\n"
+      valores                   += formatoPrecio(quote.totalConDescu,   "decimales-si") + "\n"
+    }
     valores                     += formatoPrecio(quote.ivaValor,        "decimales-si") + "\n"
     valores                     += formatoPrecio(quote.totalConIva,     "decimales-si")
 
