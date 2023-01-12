@@ -43,8 +43,8 @@ export interface IProductoDoli {
   costoTotal:               number
   creador_id:               number
   disponible:               boolean       // Disponible proveedor
-  en_compra:                boolean
-  en_venta:                 boolean
+  activoEnCompra:           boolean
+  activoEnVenta:            boolean
   sin_proveedor:            boolean
   fecha_creacion:           string
   fecha_llegada:            string        // Fecha llegada proveedor
@@ -92,8 +92,8 @@ export class ProductoDoli implements IProductoDoli
   costo_adicional:          number  
   creador_id:               number
   disponible:               boolean        
-  en_compra:                boolean
-  en_venta:                 boolean
+  activoEnCompra:           boolean
+  activoEnVenta:            boolean
   sin_proveedor:            boolean
   fecha_creacion:           string
   fecha_llegada:            string        
@@ -131,8 +131,8 @@ export class ProductoDoli implements IProductoDoli
     this.aumento_loco       = 0  
     this.costo_adicional    = 0
     this.creador_id         = 0
-    this.en_compra          = true
-    this.en_venta           = true
+    this.activoEnCompra     = true
+    this.activoEnVenta      = true
     this.sin_proveedor      = false
     this.fecha_creacion     = ""
     this.fecha_llegada      = ""        
@@ -149,6 +149,7 @@ export class ProductoDoli implements IProductoDoli
     this.codigo             = 0
     this.competencia        = 0
     this.elegido            = false
+    
 
     /* 
     p.ref                                       as ref,
@@ -169,8 +170,7 @@ export class ProductoDoli implements IProductoDoli
     IFNULL(px.precio_promocion,     0)          as precio_promocion,
     IFNULL(px.costo_adicional,      0)          as costo_adicional,
     */
-  }
-  productoForAp: any
+  }  
 
   get precio_aumento()          :number { return this.calcularPrecioConAumento( this.aumento            ) } 
   get precio_aumento_escom()    :number { return this.calcularPrecioConAumento( this.aumento_escom      ) } 
@@ -293,11 +293,11 @@ export class ProductoDoli implements IProductoDoli
 
   get activo() :boolean {
     return  (
-              this.activo_proveedor && this.disponible && this.en_venta
+              this.activo_proveedor && this.disponible && this.activoEnVenta
             )
             ||
             (
-              !this.aumento && !this.aumento_descuento && !!this.aumento_escom && this.en_venta && !this.activo_proveedor && !this.disponible
+              !this.aumento && !this.aumento_descuento && !!this.aumento_escom && this.activoEnVenta && !this.activo_proveedor && !this.disponible
             )
             || this.esRefEspecial
   }
@@ -307,48 +307,52 @@ export class ProductoDoli implements IProductoDoli
 
 
   get esRefEspecial() : boolean {
-    return  this.sin_proveedor         ||
-            this.ref.includes("-ITEM") ||
-            this.ref.includes("ARRA-") ||
-            this.ref.includes("ARR-")  ||
-            this.ref.includes("ARRP-") ||                            
-            this.ref.includes("ADC-")  ||
-            this.ref.includes("CABL-") ||
-            this.ref.includes("CANT-") ||
-            this.ref.includes("CERR-") ||
-            this.ref.includes("CIER-") ||
-            this.ref.includes("CORT-") ||
-            this.ref.includes("DI-")   ||
-            this.ref.includes("DIAP-") ||
-            this.ref.includes("DID-")  ||
-            this.ref.includes("DIMA-") ||
-            this.ref.includes("DIMI-") ||
-            this.ref.includes("DIMO-") ||
-            this.ref.includes("DISÑ-") ||
-            this.ref.includes("DIVR-") ||
-            this.ref.includes("DUCT-") ||
-            this.ref.includes("EMBA-") ||
-            this.ref.includes("FINC-") ||
-            this.ref.includes("INST-") ||
-            this.ref.includes("LUZ-")  ||
-            this.ref.includes("MANT-") ||
-            this.ref.includes("META-") ||
-            this.ref.includes("MURO-") ||
-            this.ref.includes("OBRA-") ||
-            this.ref.includes("PANE-") ||
-            this.ref.includes("PINT-") ||
-            this.ref.includes("PISO-") ||
-            this.ref.includes("PUER-") ||
-            this.ref.includes("RED-")  ||
-            this.ref.includes("REPR-") ||
-            this.ref.includes("REUB-") ||
-            this.ref.includes("SERV-") ||
-            this.ref.includes("TAPZ-") ||
-            this.ref.includes("TECH-") ||
-            this.ref.includes("TELA-") ||
-            this.ref.includes("TOOL-") ||
-            this.ref.includes("TRAN-") ||
-            this.ref.includes("VIAT-")
+    return  ( this.activoEnCompra && this.activoEnVenta )
+            &&
+            (
+              this.sin_proveedor         ||
+              this.ref.includes("-ITEM") ||
+              this.ref.includes("ARRA-") ||
+              this.ref.includes("ARR-")  ||
+              this.ref.includes("ARRP-") ||                            
+              this.ref.includes("ADC-")  ||
+              this.ref.includes("CABL-") ||
+              this.ref.includes("CANT-") ||
+              this.ref.includes("CERR-") ||
+              this.ref.includes("CIER-") ||
+              this.ref.includes("CORT-") ||
+              this.ref.includes("DI-")   ||
+              this.ref.includes("DIAP-") ||
+              this.ref.includes("DID-")  ||
+              this.ref.includes("DIMA-") ||
+              this.ref.includes("DIMI-") ||
+              this.ref.includes("DIMO-") ||
+              this.ref.includes("DISÑ-") ||
+              this.ref.includes("DIVR-") ||
+              this.ref.includes("DUCT-") ||
+              this.ref.includes("EMBA-") ||
+              this.ref.includes("FINC-") ||
+              this.ref.includes("INST-") ||
+              this.ref.includes("LUZ-")  ||
+              this.ref.includes("MANT-") ||
+              this.ref.includes("META-") ||
+              this.ref.includes("MURO-") ||
+              this.ref.includes("OBRA-") ||
+              this.ref.includes("PANE-") ||
+              this.ref.includes("PINT-") ||
+              this.ref.includes("PISO-") ||
+              this.ref.includes("PUER-") ||
+              this.ref.includes("RED-")  ||
+              this.ref.includes("REPR-") ||
+              this.ref.includes("REUB-") ||
+              this.ref.includes("SERV-") ||
+              this.ref.includes("TAPZ-") ||
+              this.ref.includes("TECH-") ||
+              this.ref.includes("TELA-") ||
+              this.ref.includes("TOOL-") ||
+              this.ref.includes("TRAN-") ||
+              this.ref.includes("VIAT-")
+            )
   }  
 
 
@@ -360,8 +364,8 @@ export class ProductoDoli implements IProductoDoli
       description:            this.descripcion,
       price:                  !!this.precio_aumento ? this.precio_aumento : this.precio_aumento_escom,
       cost_price:             this.costo,
-      status:                 +this.en_venta,
-      status_buy:             +this.en_compra,
+      status:                 +this.activoEnVenta,
+      status_buy:             +this.activoEnCompra,
       fk_unit:                this.unidad.id ?? 28,
       array_options:
       {
@@ -399,8 +403,8 @@ export class ProductoDoli implements IProductoDoli
 
     producto.activo_proveedor       = Boolean( +productoApi.activo_proveedor      )
     producto.disponible             = Boolean( +productoApi.disponible            )
-    producto.en_compra              = Boolean( +productoApi.en_compra             )
-    producto.en_venta               = Boolean( +productoApi.en_venta              )
+    producto.activoEnCompra         = Boolean( +productoApi.en_compra             )
+    producto.activoEnVenta          = Boolean( +productoApi.en_venta              )
     producto.sin_proveedor          = Boolean( +productoApi.sin_proveedor         )
     
     producto.aumento                = parseFloat( productoApi.aumento             )

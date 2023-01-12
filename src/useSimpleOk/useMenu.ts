@@ -126,6 +126,7 @@ export function useMenu()
         },                
       ]
     },
+/*     
     {
       ...new ItemMenu({ label: "Cuentas", icon: "mdi-book-open-variant", to: "/facturas/cliente" }),
       submenu:
@@ -146,6 +147,7 @@ export function useMenu()
         },
       ]
     },
+ */
     {
       ...new ItemMenu({ label: "Productos", icon: "mdi-package-variant-closed" }),
       submenu:

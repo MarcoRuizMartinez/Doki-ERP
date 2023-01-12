@@ -169,13 +169,13 @@
         :disable                ="readonly"
       />   
       <q-toggle
-        v-model                 ="proModel.en_venta"
+        v-model                 ="proModel.activoEnVenta"
         label                   ="Activo venta"
         class                   ="col-4"
         :disable                ="readonly"
       />            
       <q-toggle
-        v-model                 ="proModel.en_compra"
+        v-model                 ="proModel.activoEnCompra"
         label                   ="Activo compra"
         class                   ="col-4"
         :disable                ="readonly"
