@@ -6,10 +6,10 @@
     titulo                    ="Información de tercero"
     >
     <!-- //* ///////////////////////////////////////////////////////// SLOT TITULO -->
-    <!--  Si es un acuerdo existente, genera un link para ver el tercero, 
+    <!--  Si es un acuerdo existente, genera un link para ver el tercero,
           si no, muestra el titulo asignado al componente ventana
     -->
-    <!--  Solo se muestra si es un acuerdo en edicion -->    
+    <!--  Solo se muestra si es un acuerdo en edicion -->
     <template                 #titulo
       v-if                    ="!acuerdo.esNuevo"
       >
@@ -23,7 +23,7 @@
       <tooltip-tercero
         v-if                  ="!!acuerdo.tercero.id"
         :tercero              ="acuerdo.tercero"
-      />          
+      />
     </template>
     <!-- //* ///////////////////////////////////////////////////////// SLOT DEFAULT -->
     <!-- //* ///////////////////////////////////////////////// Tercero -->
@@ -58,17 +58,30 @@
       :loading                ="loading.proyecto"
       :readonly               ="loading.proyecto"
       @update:proyecto        ="cambiarProyecto"
-    /> 
-    <!-- //* ///////////////////////////////////////////////// Comercial -->
+    />
+    <!-- //* ///////////////////////////////////////////////// Comercial principal -->
     <comercial
-      class                   ="col-12"
+      :class                  ="acuerdo.esOCProveedor ? 'col-12' : 'col-6'"
       label                   ="Comercial"
       v-model                 ="acuerdo.comercial"
       :grupos                 ="[GRUPO_USUARIO.COMERCIALES]"
       :autoselect             ="acuerdo.esNuevo"
       :loading                ="loading.comercial"
-      @select                 ="editarComercial"
-    /> 
+      @select                 ="editarComercialPrincial"
+    />
+    <!-- //* ///////////////////////////////////////////////// Comercial apoyo -->
+    <comercial                clearable
+      v-if                    ="!acuerdo.esOCProveedor"
+      class                   ="col-6"
+      label                   ="Comercial apoyo"
+      v-model                 ="acuerdo.comercial2"
+      :grupos                 ="[GRUPO_USUARIO.COMERCIALES]"
+      :loading                ="loading.comercial"
+      :ids-negativos          ="[ acuerdo.comercial.id ]"
+      @select                 ="editarComercialApoyo"
+      @clear                  ="borrarComercialApoyo"
+    />
+    <!-- {{ typeof acuerdo.comercial.reglaComision.comision_alfa }} -->
     <!-- //* ///////////////////////////////////////////////// Origen -->
     <select-label-value
       v-model                 ="acuerdo.origenContacto"
@@ -92,24 +105,25 @@
 </template>
 <script setup lang="ts">
   //* ///////////////////////////////////////////////////////////////////////////// Store
-  import {  storeToRefs           } from 'pinia'                            
-  import {  useStoreAcuerdo       } from 'stores/acuerdo'  
+  import {  storeToRefs           } from 'pinia'
+  import {  useStoreAcuerdo       } from 'stores/acuerdo'
   //* ///////////////////////////////////////////////////////////////////////////// Componibles
   import {  dexieOrigenesContacto } from "src/services/useDexie"
   import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"
   import {  GRUPO_USUARIO         } from "src/models/TiposVarios"
-  import {  TIPOS_CONTACTO        } from "src/areas/terceros/models/Contacto"  
+  import {  TIPOS_CONTACTO        } from "src/areas/terceros/models/Contacto"
+  import {  IUsuario, Usuario     } from "src/areas/usuarios/models/Usuario"
   //* ///////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana                 from "components/utilidades/Ventana.vue"
   import    inputText               from "components/utilidades/input/InputFormText.vue"
-  import    selectLabelValue        from "components/utilidades/select/SelectLabelValue.vue"  
+  import    selectLabelValue        from "components/utilidades/select/SelectLabelValue.vue"
   import    selectTercero           from "src/areas/terceros/components/SelectTercero.vue"
   import    comercial               from "src/areas/usuarios/components/SelectUsuario.vue"
   import    tooltipTercero          from "src/areas/terceros/components/TooltipTerceros.vue"
   import    selectContacto          from "src/areas/terceros/components/contactos/SelectContacto.vue"
   import    selectProyecto          from "src/areas/proyectos/components/SelectProyecto.vue"
 
-  const { acuerdo, loading        } = storeToRefs( useStoreAcuerdo() )  
+  const { acuerdo, loading        } = storeToRefs( useStoreAcuerdo() )
   const { actualizarTercero,
           cambiarProyecto,
           editarOrigen,
@@ -118,6 +132,23 @@
           cambiarContactoAcuerdo,
           vincularContactoAcuerdo,
                                   } = useControlAcuerdo()
-                    
-  const origenNego                  = dexieOrigenesContacto() 
+
+  const origenNego                  = dexieOrigenesContacto()
+
+  async function editarComercialPrincial( u : IUsuario )
+  {
+    await editarComercial( u,  "1" )
+    if( !!acuerdo.value.comercial2.nombre ){
+      await borrarComercialApoyo()
+      acuerdo.value.comercial2      = new Usuario()
+    }
+  }
+
+  function editarComercialApoyo( u : IUsuario )  {
+    editarComercial( u,  "2" )
+  }
+
+  async function borrarComercialApoyo(){
+    await editarComercial( null, "2")
+  }
 </script>

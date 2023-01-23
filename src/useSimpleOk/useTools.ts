@@ -10,7 +10,7 @@ import {  ILabelValue,
 
 type Iconos = "" | "water" | "account" | "shield" | "clipboard" | "clock" | "cloud" | "sticker" | "comment" | "table" | "head" | "phone" | "timeline" | "bell" | "printer" | "email" | "lock" | "file" | "lock-open" | "map-marker"
 
-export function useTools() 
+export function useTools()
 {
   const quasar                  = useQuasar()
   const { notify              } = quasar
@@ -21,7 +21,7 @@ export function useTools()
     tipo      : "positive" | "negative",
     mensaje   : string,
     icono     : Iconos          = "",
-    duracion  : number          = 1600,   
+    duracion  : number          = 1600,
     acciones  : QNotifyAction[] = [],
     html      : boolean         = false
   )
@@ -46,7 +46,7 @@ export function useTools()
   }
 }
 
-//const { notify } = useQuasar() 
+//const { notify } = useQuasar()
 export function mayusculasPrimeraLetra( texto : string ) : string
 {
   texto           = texto.toLowerCase()
@@ -83,7 +83,7 @@ export function getColorTextFromHexa( color : string ) : { color : string, prome
 {
   if(color.length != 7)
     return { color: "", promedio: 0 }
-  
+
   let hexa1       = color.slice(1, 3)
   let hexa2       = color.slice(3, 5)
   let hexa3       = color.slice(5, 7)
@@ -106,11 +106,11 @@ export function nuevoJS()
   cosa  &&= 2 // Si x es truthy, se le asigna y
   //console.log('%c⧭', 'color: #5200cc', "&&=", cosa);
   cosa  ??= 3 // Si x es null o undefined, se le asigna y
-  //console.log('%c⧭', 'color: #f27999', "??=", cosa);  
-  
+  //console.log('%c⧭', 'color: #f27999', "??=", cosa);
+
 // Equivale
   var importe : number = 1_283_792_189;
-  //console.log('%c⧭', 'color: #607339', "importe", importe);  
+  //console.log('%c⧭', 'color: #607339', "importe", importe);
 }
 
 export function pausa( demora = 0 ) : Promise< any >
@@ -120,7 +120,7 @@ export function pausa( demora = 0 ) : Promise< any >
   })
 }
 
-  
+
 import confetti from 'canvas-confetti';
 export function confeti( total : number = 1 )
 {
@@ -164,10 +164,10 @@ export function ID_URL_Ok( id : string ) : number
   return idEvaluar
 }
 
-export function strOrNumToNum( numero : string | number, defecto : number  ) : number 
+export function strOrNumToNum( numero : string | number, defecto : number  ) : number
 {
-    if(typeof numero      === "number") 
-      return valorValido(numero) ? numero : defecto 
+    if(typeof numero      === "number")
+      return valorValido(numero) ? numero : defecto
     else
       return !!numero ? parseFloat(numero) : defecto
 }
@@ -180,7 +180,7 @@ export function valuesObjectArrayToNumber( array : any[] ) : any[]
     for (const key of Object.keys(item))
     {
       let valor :     number | string
-      valor           = parseFloat( item[key] ) 
+      valor           = parseFloat( item[key] )
 
       if(isNaN(valor))
         valor         = !!item[key] && item[key].length > 0 ? item[key] : 0
@@ -188,7 +188,7 @@ export function valuesObjectArrayToNumber( array : any[] ) : any[]
       item[key]       = valor
     }
   }
-  
+
   return array
 }
 
@@ -196,7 +196,7 @@ export function valuesObjectArrayToNumber( array : any[] ) : any[]
 let formato         = new Intl.NumberFormat("es-CO",
                     {   style:    'currency',
                         currency: 'COP',
-                        minimumFractionDigits: process.env.CON_DECIMALES ? 2 : 0 
+                        minimumFractionDigits: process.env.CON_DECIMALES ? 2 : 0
                     }
                     );
 
@@ -220,10 +220,10 @@ export function formatoPrecio( valor : string | number, tipo : "decimales-si" | 
     precioNum = valor
   else if(!valor)
     return ""
-  
+
   if(isNaN(precioNum))
     precioNum           = 0
-    
+
   let formatoFinal      = tipo == "decimales-si"
                           ? formatoDecimal  .format( precioNum )
                           : formato         .format( precioNum )
@@ -272,7 +272,7 @@ export function sortArray( arraySort : any[], key : string, orden : '<' | '>' = 
 export function roundInt(value : number, exp : number ) : number
 {
   // Si el exp no está definido o es cero...
-  if (typeof exp === 'undefined' || +exp === 0) 
+  if (typeof exp === 'undefined' || +exp === 0)
     return Math.round(value)
 
   value         = +value
@@ -317,21 +317,21 @@ export function filterArrayMaxMin< T >
     arrayFiltrada           = arrayOriginal.filter( p => p[key] <= max )
   else
   if(!!min  && !!max)
-    arrayFiltrada           = arrayOriginal.filter( p => p[key] >= min && p[key] <= max )    
+    arrayFiltrada           = arrayOriginal.filter( p => p[key] >= min && p[key] <= max )
   else
     arrayFiltrada           = arrayOriginal
 
-  return arrayFiltrada 
+  return arrayFiltrada
 }
 
 export function limpiarHTML (html : string ) : string
 {
   let tmp                   = document.createElement("DIV")
       tmp.innerHTML         = html;
-      
+
   return tmp.textContent || tmp.innerText;
 }
-export const fechaCorta = ( fecha : Date ) : string => { 
+export const fechaCorta = ( fecha : Date ) : string => {
   return !!fecha.valueOf() ? fecha.toLocaleDateString('sv-SE') : ""
 }
 
@@ -355,23 +355,23 @@ export const siNo       = ( boleano : boolean, conIconos : boolean = true ) : st
   else
     retorno             = boleano ? "Si" : "No"
   return retorno
-} 
+}
 
 export const formatoNumeroCorto = ( valor : string | number, formato : "normal" | "precio" | "porcentaje" = "normal" ) : string =>
 {
   if(!valor) return "0"
 
   let numero            = 0
-  
+
   if(typeof valor       === "string"){
     numero              = parseInt(valor)
-    if(isNaN(numero)    || !numero) 
+    if(isNaN(numero)    || !numero)
       numero            = 0
   }
   else
     numero              = valor
 
-  const numeroStr       = numero.toFixed(0) 
+  const numeroStr       = numero.toFixed(0)
   const largo           = numeroStr.length
   let label             = ""
   switch (largo) {
@@ -383,17 +383,17 @@ export const formatoNumeroCorto = ( valor : string | number, formato : "normal" 
     case 10:  label     = numeroStr.slice(0,4)  + " M"; break; // 1.000.000.000
     default:  label     = numeroStr;                    break;
   }
-  
+
   if (formato === "precio") label = "$" + label
-  
+
   return label
-} 
+}
 
 function siNoLargo( verdaderoFalso : boolean ) : string {
   if(verdaderoFalso === true)
     return "Si"
   else
-    return "No" 
+    return "No"
 }
 
 
@@ -406,14 +406,14 @@ export function getQueryRouterLabelValue
     tipoKey     : "string"            | "number"              = "number"
 )               : ILabelValue
 {
-  
+
 
   if( Array.isArray(paramQuery) || paramQuery === undefined )
     return labelValueNulo
 
   const valorRaw      = paramQuery as string
   const valor         = tipoKey === "number" ? parseInt(valorRaw) : valorRaw
-  const itemTem       = lista.find( i => i.value == valor || i.id == valor )      
+  const itemTem       = lista.find( i => i.value == valor || i.id == valor )
   const estadoFinal   = itemTem !== undefined ? itemTem : labelValueNulo
   //console.log('lista: ', valor, itemTem, lista, estadoFinal);
   return estadoFinal
@@ -428,7 +428,7 @@ export function getQueryRouterLabelValueArray
     tipoKey     : "string"            | "number"              = "number"
 )               : ILabelValue[]
 {
-  
+
 
   if( Array.isArray(paramQuery) || paramQuery === undefined )
     return []
@@ -442,7 +442,7 @@ export function getQueryRouterLabelValueArray
   //console.log("arrayFinal: ", arrayFinal);
 
   //const valor         = tipoKey === "number" ? arrayRaw.forEach( i => i = +i ) : valorRaw
-  //const itemTem       = lista.find( i => i.value == valor || i.id == valor )      
+  //const itemTem       = lista.find( i => i.value == valor || i.id == valor )
   //const estadoFinal   = itemTem !== undefined ? itemTem : labelValueNulo
   //console.log('lista: ', valor, itemTem, lista, estadoFinal);
   return arrayFinal
@@ -454,7 +454,7 @@ export function fechaValida( fecha : string | Date ) : boolean {
   else
     return fecha.toString() !== "Invalid Date"
 
-  
+
 }
 
 
@@ -486,7 +486,7 @@ export function getQueryRouterDate(paramQuery  : LocationQueryValue  | LocationQ
 }
 
 export function fechaMasMedioDia( fechaStr : string ) : Date | "" { return !!fechaStr ? new Date( new Date( fechaStr ).valueOf() + 43200000  ) : "" }
-  
+
 
 export function esCorreoFamoso( correo : string ) : boolean {
   let esFamoso        = false
@@ -495,7 +495,7 @@ export function esCorreoFamoso( correo : string ) : boolean {
     if(correo.includes(dominio)) {
       esFamoso        = true
       break
-    }            
+    }
   }
   return esFamoso
 }

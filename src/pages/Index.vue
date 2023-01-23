@@ -20,8 +20,9 @@
     <modulo-enlaces
       class               ="col-md-4 col-12"
     />
-    <template v-if        ="storeUser.usuario.esDev">      
+    <template v-if        ="storeUser.usuario.esDev">
       <modulo-usuarios            class="col-md-4 col-12" height-card="260px"/>
+      <modulo-reglas-comision     class="col-md-4 col-12" height-card="260px"/>
       <modulo-proveedores         class="col-md-4 col-12" height-card="260px"/>
       <modulo-municipios          class="col-md-4 col-12" height-card="260px"/>
       <modulo-condiciones         class="col-md-4 col-12" height-card="260px"/>
@@ -34,19 +35,19 @@
       <modulo-unidades            class="col-md-4 col-12" height-card="260px"/>
       <modulo-categorias-producto class="col-md-4 col-12" height-card="260px"/>
       <modulo-constantes          class="col-md-4 col-12" height-card="260px"/>
-      <modulo-cuentas-dinero      class="col-md-4 col-12" height-card="260px"/>      
+      <modulo-cuentas-dinero      class="col-md-4 col-12" height-card="260px"/>
     </template>
   </q-page>
 </template>
 
 <script setup lang="ts">
-  import {  ref,  provide           } from 'vue'  
-  import {  useStoreUser            } from 'src/stores/user'   
+  import {  ref,  provide           } from 'vue'
+  import {  useStoreUser            } from 'src/stores/user'
   import    buscarTerceros            from "src/areas/terceros/components/modules/ModuloBuscarTercerosMini.vue"
   import    tercerosFavoritos         from "src/areas/terceros/components/modules/ModuloTercerosFavoritos.vue"
   import    misTerceros               from "src/areas/terceros/components/modules/ModuloMisTerceros.vue"
   import {  useTitle                } from "@vueuse/core"
-  
+
   import    moduloEnlaces             from "src/areas/sistemas/components/ModuloLinks.vue"
   import    moduloUsuarios            from "src/areas/sistemas/components/ModuloUsuarios.vue"
   import    moduloProveedores         from "src/areas/sistemas/components/ModuloProveedores.vue"
@@ -62,6 +63,7 @@
   import    moduloCategoriasProducto  from "src/areas/sistemas/components/ModuloCategoriasProducto.vue"
   import    moduloConstantes          from "src/areas/sistemas/components/ModuloConstantes.vue"
   import    moduloCuentasDinero       from "src/areas/sistemas/components/ModuloCuentasDinero.vue"
+  import    moduloReglasComision      from "src/areas/sistemas/components/ModuloReglasComision.vue"
 
   import {  cargarListasIndex       } from "src/services/useDexie"
 

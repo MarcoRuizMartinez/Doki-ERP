@@ -16,7 +16,7 @@
           icon                  ="mdi-check"
           label                 ="Crear"
           @click                ="validar"
-        />        
+        />
         <q-btn
           v-else-if             ="readonly"
           v-bind                ="btnBaseSm"
@@ -32,9 +32,9 @@
           icon                  ="mdi-content-save"
           label                 ="Guardar"
           @click                ="validar"
-        />          
+        />
       </efecto>
-    </template>   
+    </template>
     <!-- //* ////////////////   FORMULARIO  -->
     <q-form
       ref                       ="formulario"
@@ -44,7 +44,7 @@
       <!-- //* //////////////   Nombre producto  -->
       <input-text               clearable AZ09 copy alerta autofocus
         v-model                 ="proModel.nombre"
-        class                   ="col-12"        
+        class                   ="col-12"
         icon                    ="mdi-text"
         label                   ="Nombre"
         :readonly               ="readonly"
@@ -66,7 +66,7 @@
         options-sort            ="nombre"
         :options                ="categorias"
         @select                 ="( c : IProductoCategoria )=> proModel.ref = c.sigla + '-'"
-      /> 
+      />
       <!-- //* //////////////   Costo -->
       <input-number
         v-model                 ="proModel.costo"
@@ -75,12 +75,12 @@
         tipo                    ="precio"
         colores                 ="verde-rojo"
         iconos                  ="suma"
-        debounce                ="1800"        
-        :minimo                 ="0"        
+        debounce                ="1800"
+        :minimo                 ="0"
         :con-decimales          ="false"
         :paso                   ="1000"
         :readonly               ="readonly"
-      />      
+      />
       <!-- //* //////////////   Costo Adicional -->
       <input-number
         v-model                 ="proModel.costo_adicional"
@@ -89,8 +89,8 @@
         tipo                    ="precio"
         colores                 ="verde-rojo"
         iconos                  ="suma"
-        debounce                ="1800"        
-        :minimo                 ="0"        
+        debounce                ="1800"
+        :minimo                 ="0"
         :con-decimales          ="false"
         :paso                   ="1000"
         :readonly               ="readonly"
@@ -103,7 +103,7 @@
           modo                  ="right"
           :paso                 ="0.1"
           :maximo               ="500"
-          :minimo               ="proModel.aumento_descuento" 
+          :minimo               ="proModel.aumento_descuento"
           :readonly             ="readonly"
         />
         <precio-tabla
@@ -130,7 +130,7 @@
         />
       </div>
       <!-- //* //////////////   Aumento Descuento -->
-      <div class                ="col-6 col-md-3">        
+      <div class                ="col-6 col-md-3">
         <numero-paso            porcentaje
           v-model               ="proModel.aumento_descuento"
           label                 ="Aumento descuento"
@@ -144,10 +144,10 @@
           alineado              ="center"
           :precio               ="proModel.precio_aumento_descuento"
           :iva                  ="proModel.iva"
-        />        
+        />
       </div>
       <!-- //* //////////////   Aumento Loco -->
-      <div class                ="col-6 col-md-3">      
+      <div class                ="col-6 col-md-3">
         <numero-paso            porcentaje
           v-model               ="proModel.aumento_loco"
           label                 ="Aumento loco"
@@ -160,26 +160,26 @@
           alineado              ="center"
           :precio               ="proModel.precio_aumento_loco"
           :iva                  ="proModel.iva"
-        />            
+        />
       </div>
       <q-toggle
         v-model                 ="proModel.sin_proveedor"
         label                   ="Sin REF proveedor"
         class                   ="col-4"
         :disable                ="readonly"
-      />   
+      />
       <q-toggle
         v-model                 ="proModel.activoEnVenta"
         label                   ="Activo venta"
         class                   ="col-4"
         :disable                ="readonly"
-      />            
+      />
       <q-toggle
         v-model                 ="proModel.activoEnCompra"
         label                   ="Activo compra"
         class                   ="col-4"
         :disable                ="readonly"
-      />   
+      />
       <!-- //* ///////////////////////////////////////////////////////////// Unidad -->
       <select-label-value       no-inmediato use-input
         v-model                 ="proModel.unidad"
@@ -226,34 +226,34 @@
   import {  IProductoCategoria,
             ProductoCategoria   } from "src/areas/productos/models/ProductoCategoria"
   import {  IProductoDoli,
-            ProductoDoli        } from "src/areas/productos/models/ProductoDolibarr"            
-  //* ///////////////////////////////////////////////////////////////////////////////// Componibles  
+            ProductoDoli        } from "src/areas/productos/models/ProductoDolibarr"
+  //* ///////////////////////////////////////////////////////////////////////////////// Componibles
   import {  formatoPrecio,
-            confeti               } from "src/useSimpleOk/useTools" 
+            confeti               } from "src/useSimpleOk/useTools"
   import {  btnBaseSm             } from "src/useSimpleOk/useEstilos"
   import {  useControlProductos   } from "src/areas/productos/controllers/ControlProductosDolibarr"
   import {  dexieUnidades,
             dexieCategoriasProducto
                                   } from "src/services/useDexie"
   //* ///////////////////////////////////////////////////////////////////////////////// Componentes
-  import    efecto                  from "components/utilidades/Efecto.vue"  
+  import    efecto                  from "components/utilidades/Efecto.vue"
   import    ventana                 from "components/utilidades/Ventana.vue"
   import    numeroPaso              from "components/utilidades/input/InputNumeroPaso.vue"
   import    inputNumber             from "components/utilidades/input/InputFormNumber.vue"
-  import    selectLabelValue        from "components/utilidades/select/SelectLabelValue.vue"    
+  import    selectLabelValue        from "components/utilidades/select/SelectLabelValue.vue"
   import    inputText               from "src/components/utilidades/input/InputFormText.vue"
   import    precioTabla             from "src/areas/productos/components/Tools/PrecioProducto.vue"
 
   const { producto,
-          loading           } = storeToRefs( useStoreProducto() )  
+          loading           } = storeToRefs( useStoreProducto() )
 
   const proModel              = ref< IProductoDoli >( new ProductoDoli() )
   const formulario            = ref< any >()
-  const categorias            = dexieCategoriasProducto() 
+  const categorias            = dexieCategoriasProducto({ cargarSiempre : true})
   const unidades              = dexieUnidades()
   const { crearProducto,
           editarProducto    } = useControlProductos()
-  
+
 
   //* ////////////////////////////////////////////////////////////////////////////////////// Props
   const props                 = defineProps(
@@ -291,7 +291,7 @@
   {
     if(tipo.value             == "ver"){
       return
-    }    
+    }
   }
 
   //* ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -302,7 +302,7 @@
   async function validar()
   {
     let validacionOk          = await formulario.value.validate()
-    if(validacionOk)          onSubmit()  
+    if(validacionOk)          onSubmit()
   }
 
   //* ////////////////////////////////////////////////////////////////////////////////////// Submit
@@ -330,7 +330,7 @@
       proModel.value.id   = id
       emit("creado", proModel.value)
     }
-  }  
+  }
 
   //* ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //* /////////////////////////////////////////////////////////////////////////////////////////////////// FUNCTION VARIAS

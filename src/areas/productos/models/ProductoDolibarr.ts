@@ -1,114 +1,118 @@
 import {  IUnidad,
           Unidad            } from "src/models/Diccionarios/Unidad"
-import {  getUnidadDB       } from "src/services/useDexie"
+import {  getCategoriaDB,
+          getUnidadDB       } from "src/services/useDexie"
 import {  roundInt,
           valorValido,
           X100_Aumento,
           X100_Calcular     } from "src/useSimpleOk/useTools"
+import {  IProductoCategoria,
+          ProductoCategoria } from "src/areas/productos/models/ProductoCategoria"
 
 export const imagenDefault  :string  = "https://dolibarr.mublex.com/_maco/img/box.jpg"
 const ivaX100                 = parseInt( process.env.IVA ?? "0" )
 
 export interface IProductoDoli {
-  id:                       number
-  ref:                      string
-  refProv:                  string
-  nombre:                   string
-  urlDolibarr:              string
-  sigla:                    string
-  descripcion:              string
-  iva:                      number
-  unidadId:                 number
-  unidad:                   IUnidad
-  tipo:                     0 | 1 | 9     // 0 producto 1 servicio 9 subtotal
-  tipoProducto:             string
-  imagen:                   string
-  imagenFull:               string
-  imagen100px:              string
-  imagen300px:              string
-  activo_proveedor:         boolean       // Activo proveedor
-  aumento:                  number
-  aumento_escom:            number
-  aumento_descuento:        number
-  aumento_loco:             number
-  precio_aumento:           number
-  precio_aumento_escom:     number
-  precio_aumento_descuento: number
-  precio_aumento_loco:      number
-  precio_publico_final:     number
-  precio_escom:             number
-  descuentoCalculado:       number
-  costo:                    number        // precio que viene de la tabla llx_product > cost_price
-  costo_adicional:          number
-  costoTotal:               number
-  creador_id:               number
-  disponible:               boolean       // Disponible proveedor
-  activoEnCompra:           boolean
-  activoEnVenta:            boolean
-  sin_proveedor:            boolean
-  fecha_creacion:           string
-  fecha_llegada:            string        // Fecha llegada proveedor
-  garantia:                 string        // "1_year"
-  hecho_en:                 string        // "colombia"
-  id_extra:                 number        // ID extra field 
-  id_producto_pro:          number        // ID producto proveedor 
-  id_proveedor:             number  
-  precio_proveedor:         number        // precio que es el minimo de la tabla productos_proveedor > precio
-  precio_publico:           number
-  precio_promocion:         number
-  precioPublicoConIVA:      number
-  precioPromocionConIVA:    number
-  precio:                   number        // Precio final, el menor entre publico y promocion 
-  codigo:                   number
-  competencia:              number
-  esProducto:               boolean
-  esServicio:               boolean
-
-  elegido:                  boolean       // Se utiliza para indicar que el producto a sido agregado a lista
-  esRefEspecial:            boolean
-  activo:                   boolean
-  productoForApi:           any
+  id                        : number
+  ref                       : string
+  refProv                   : string
+  categoria                 : IProductoCategoria
+  nombre                    : string
+  urlDolibarr               : string
+  sigla                     : string
+  descripcion               : string
+  iva                       : number
+  unidadId                  : number
+  unidad                    : IUnidad
+  tipo                      : 0 | 1 | 9     // 0 producto 1 servicio 9 subtotal
+  tipoProducto              : string
+  imagen                    : string
+  imagenFull                : string
+  imagen100px               : string
+  imagen300px               : string
+  activo_proveedor          : boolean       // Activo proveedor
+  aumento                   : number
+  aumento_escom             : number
+  aumento_descuento         : number
+  aumento_loco              : number
+  precio_aumento            : number
+  precio_aumento_escom      : number
+  precio_aumento_descuento  : number
+  precio_aumento_loco       : number
+  precio_publico_final      : number
+  precio_escom              : number
+  descuentoCalculado        : number
+  costo                     : number        // precio que viene de la tabla llx_product > cost_price
+  costo_adicional           : number
+  costoTotal                : number
+  creador_id                : number
+  disponible                : boolean       // Disponible proveedor
+  activoEnCompra            : boolean
+  activoEnVenta             : boolean
+  sin_proveedor             : boolean
+  fecha_creacion            : string
+  fecha_llegada             : string        // Fecha llegada proveedor
+  garantia                  : string        // "1_year"
+  hecho_en                  : string        // "colombia"
+  id_extra                  : number        // ID extra field
+  id_producto_pro           : number        // ID producto proveedor
+  id_proveedor              : number
+  precio_proveedor          : number        // precio que es el minimo de la tabla productos_proveedor > precio
+  precio_publico            : number
+  precio_promocion          : number
+  precioPublicoConIVA       : number
+  precioPromocionConIVA     : number
+  precio                    : number        // Precio final, el menor entre publico y promocion
+  codigo                    : number
+  competencia               : number
+  esProducto                : boolean
+  esServicio                : boolean
+  elegido                   : boolean       // Se utiliza para indicar que el producto a sido agregado a lista
+  esRefEspecial             : boolean
+  activo                    : boolean
+  productoForApi            : any
 }
 
 export class ProductoDoli implements IProductoDoli
 {
-  id:                       number
-  ref:                      string
-  refProv:                  string
-  nombre:                   string
-  sigla:                    string
-  descripcion:              string
-  iva:                      number
-  unidadId:                 number
-  unidad:                   IUnidad
-  tipo:                     0 | 1 | 9  
-  imagen:                   string
-  activo_proveedor:         boolean       
-  aumento:                  number
-  aumento_escom:            number
-  aumento_descuento:        number
-  aumento_loco:             number
-  costo:                    number
-  costo_adicional:          number  
-  creador_id:               number
-  disponible:               boolean        
-  activoEnCompra:           boolean
-  activoEnVenta:            boolean
-  sin_proveedor:            boolean
-  fecha_creacion:           string
-  fecha_llegada:            string        
-  garantia:                 string        
-  hecho_en:                 string        
-  id_extra:                 number        
-  id_producto_pro:          number        
-  id_proveedor:             number  
-  precio_proveedor:         number        
-  precio_publico:           number
-  precio_promocion:         number
-  precio:                   number
-  codigo:                   number
-  competencia:              number  
-  elegido:                  boolean
+  id                        : number
+  ref                       : string
+  refProv                   : string
+  categoria                 : IProductoCategoria
+  nombre                    : string
+  sigla                     : string
+  descripcion               : string
+  iva                       : number
+  unidadId                  : number
+  unidad                    : IUnidad
+  tipo                      : 0 | 1 | 9
+  imagen                    : string
+  activo_proveedor          : boolean
+  aumento                   : number
+  aumento_escom             : number
+  aumento_descuento         : number
+  aumento_loco              : number
+  costo                     : number
+  costo_adicional           : number
+  creador_id                : number
+  disponible                : boolean
+  activoEnCompra            : boolean
+  activoEnVenta             : boolean
+  sin_proveedor             : boolean
+  fecha_creacion            : string
+  fecha_llegada             : string
+  garantia                  : string
+  hecho_en                  : string
+  id_extra                  : number
+  id_producto_pro           : number
+  id_proveedor              : number
+  precio_proveedor          : number
+  precio_publico            : number
+  precio_promocion          : number
+  precio                    : number
+  codigo                    : number
+  competencia               : number
+  elegido                   : boolean
 
   constructor()
   {
@@ -116,6 +120,7 @@ export class ProductoDoli implements IProductoDoli
     this.ref                = ""
     this.refProv            = ""
     this.sigla              = ""
+    this.categoria          = new ProductoCategoria()
     this.nombre             = ""
     this.descripcion        = ""
     this.iva                = 0
@@ -123,35 +128,35 @@ export class ProductoDoli implements IProductoDoli
     this.unidad             = new Unidad()
     this.tipo               = 0
     this.imagen             = imagenDefault
-    this.activo_proveedor   = true       
+    this.activo_proveedor   = true
     this.disponible         = true
     this.aumento            = 0
-    this.aumento_escom      = 0  
-    this.aumento_descuento  = 0  
-    this.aumento_loco       = 0  
+    this.aumento_escom      = 0
+    this.aumento_descuento  = 0
+    this.aumento_loco       = 0
     this.costo_adicional    = 0
     this.creador_id         = 0
     this.activoEnCompra     = true
     this.activoEnVenta      = true
     this.sin_proveedor      = false
     this.fecha_creacion     = ""
-    this.fecha_llegada      = ""        
-    this.garantia           = ""        
-    this.hecho_en           = ""        
-    this.id_extra           = 0        
-    this.id_producto_pro    = 0        
+    this.fecha_llegada      = ""
+    this.garantia           = ""
+    this.hecho_en           = ""
+    this.id_extra           = 0
+    this.id_producto_pro    = 0
     this.id_proveedor       = 0
-    this.costo              = 0        
-    this.precio_proveedor   = 0        
+    this.costo              = 0
+    this.precio_proveedor   = 0
     this.precio_publico     = 0
     this.precio_promocion   = 0
     this.precio             = 0
     this.codigo             = 0
     this.competencia        = 0
     this.elegido            = false
-    
 
-    /* 
+
+    /*
     p.ref                                       as ref,
     p.label                                     as nombre,
     p.price                                     as precio,
@@ -165,29 +170,29 @@ export class ProductoDoli implements IProductoDoli
     IFNULL(px.aumento_escom,        0)          as aumento_escom,
     IFNULL(px.aumento_precio_desc,  0)          as aumento_descuento,
     IFNULL(px.aumento_precio_loco,  0)          as aumento_loco,
-    
+
     IFNULL(px.precio_publico,       0)          as precio_publico,
     IFNULL(px.precio_promocion,     0)          as precio_promocion,
     IFNULL(px.costo_adicional,      0)          as costo_adicional,
     */
-  }  
+  }
 
-  get precio_aumento()          :number { return this.calcularPrecioConAumento( this.aumento            ) } 
-  get precio_aumento_escom()    :number { return this.calcularPrecioConAumento( this.aumento_escom      ) } 
-  get precio_aumento_descuento():number { return this.calcularPrecioConAumento( this.aumento_descuento  ) } 
-  get precio_aumento_loco()     :number { return this.calcularPrecioConAumento( this.aumento_loco       ) } 
+  get precio_aumento()          :number { return this.calcularPrecioConAumento( this.aumento            ) }
+  get precio_aumento_escom()    :number { return this.calcularPrecioConAumento( this.aumento_escom      ) }
+  get precio_aumento_descuento():number { return this.calcularPrecioConAumento( this.aumento_descuento  ) }
+  get precio_aumento_loco()     :number { return this.calcularPrecioConAumento( this.aumento_loco       ) }
 
 
-  get precio_publico_final() : number 
+  get precio_publico_final() : number
   {
-    let precio = !!this.precio_aumento ? this.precio_aumento : this.precio_aumento_escom    
+    let precio = !!this.precio_aumento ? this.precio_aumento : this.precio_aumento_escom
     return precio
   }
 
 
   calcularPrecioConAumento( aumento : number) : number {
     if(!this.costo || !aumento) return 0
-    else                        return roundInt( X100_Aumento( this.costoTotal, aumento), 2 )    
+    else                        return roundInt( X100_Aumento( this.costoTotal, aumento), 2 )
   }
 
   get costoTotal() : number {
@@ -229,13 +234,13 @@ export class ProductoDoli implements IProductoDoli
         urlImagen = `${process.env.URL_DOLIBARR}/resizer/resizer.php?file=..${url}&width=100&height=100&action=resize&crop_pos=center&quality=90`
       }
       else
-      {        
+      {
         if( this.imagen.includes( ".jpg" ) || this.imagen.includes( ".jpeg" ))
           urlImagen       = this.imagen.replace(".j", "-100x100.j")
         if( this.imagen.includes( ".webp" ) )
           urlImagen       = this.imagen.replace(".webp", "-100x100.webp")
 
-        urlImagen           = this.imagen.replace("http:", "https:")        
+        urlImagen           = this.imagen.replace("http:", "https:")
       }
 
     }
@@ -254,11 +259,11 @@ export class ProductoDoli implements IProductoDoli
         urlImagen = `${process.env.URL_DOLIBARR}/resizer/resizer.php?file=..${url}&width=300&height=300&action=resize&crop_pos=center&quality=90`
       }
       else
-      {      
+      {
         if( this.imagen.includes( ".jpg" ) || this.imagen.includes( ".jpeg" ))
             urlImagen         = this.imagen.replace(".j", "-300x300.j")
         if( this.imagen.includes( ".webp" ) )
-            urlImagen         = this.imagen.replace(".webp", "-300x300.webp")                
+            urlImagen         = this.imagen.replace(".webp", "-300x300.webp")
 
         urlImagen             = this.imagen.replace("http:", "https:")
       }
@@ -286,7 +291,7 @@ export class ProductoDoli implements IProductoDoli
 
     let descuento = +X100_Calcular( this.precio_publico, diferencia ).toFixed(1)
 
-    if(descuento == 100)  
+    if(descuento == 100)
       descuento   = 0
     return descuento
   }
@@ -304,8 +309,6 @@ export class ProductoDoli implements IProductoDoli
 
   get esProducto() : boolean  { return this.tipo === 0 }
   get esServicio() : boolean  { return this.tipo === 1 }
-
-
   get esRefEspecial() : boolean {
     return  ( this.activoEnCompra && this.activoEnVenta )
             &&
@@ -314,7 +317,7 @@ export class ProductoDoli implements IProductoDoli
               this.ref.includes("-ITEM") ||
               this.ref.includes("ARRA-") ||
               this.ref.includes("ARR-")  ||
-              this.ref.includes("ARRP-") ||                            
+              this.ref.includes("ARRP-") ||
               this.ref.includes("ADC-")  ||
               this.ref.includes("CABL-") ||
               this.ref.includes("CANT-") ||
@@ -353,7 +356,7 @@ export class ProductoDoli implements IProductoDoli
               this.ref.includes("TRAN-") ||
               this.ref.includes("VIAT-")
             )
-  }  
+  }
 
 
   get productoForApi() : any
@@ -406,7 +409,7 @@ export class ProductoDoli implements IProductoDoli
     producto.activoEnCompra         = Boolean( +productoApi.en_compra             )
     producto.activoEnVenta          = Boolean( +productoApi.en_venta              )
     producto.sin_proveedor          = Boolean( +productoApi.sin_proveedor         )
-    
+
     producto.aumento                = parseFloat( productoApi.aumento             )
     producto.aumento_escom          = parseFloat( productoApi.aumento_escom       )
     producto.aumento_descuento      = parseFloat( productoApi.aumento_descuento   )
@@ -421,14 +424,15 @@ export class ProductoDoli implements IProductoDoli
     producto.imagen                 = !!producto.imagen ? producto.imagen : imagenDefault
 
     if(!producto.precio             && !!producto.aumento_escom ){
-      producto.precio               = producto.precio_aumento_escom     
+      producto.precio               = producto.precio_aumento_escom
     }
 
     if(!producto.precio_publico     && !!producto.aumento_escom ){
-      producto.precio_publico       = producto.precio_aumento_escom     
+      producto.precio_publico       = producto.precio_aumento_escom
     }
-    
-    producto.unidad                 = await getUnidadDB( producto.unidadId      )
+
+    producto.unidad                 = await getUnidadDB( producto.unidadId )
+    producto.categoria              = await getCategoriaDB( producto.sigla )
     return producto
   }
 }

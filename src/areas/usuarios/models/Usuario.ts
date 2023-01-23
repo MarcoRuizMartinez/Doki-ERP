@@ -2,65 +2,65 @@ import {  TIPO_USUARIO,
           AREA,
           GRUPO_USUARIO
                             } from "src/models/TiposVarios"
+import {  IReglasComision,
+          ReglasComision    } from "src/models/Diccionarios/ReglasComision"
 
 const fotoDefault = process.env.URL_DOLIBARR + "/_maco/img/user.png"
 
 export interface IUsuario {
-    id:                 number
-    terceroIdCtz:       number
-    nombre:             string
-    apellido:           string
-    foto:               string
-    puesto:             string
-    usuario:            string
-    cedula:             string
-    urlFoto:            string
-    fotoPerfilMini:     string
-    fotoPerfilMedia:    string
-    fotoPerfilBig:      string
-    cel:                string
-    correo:             string
-    area:               AREA
-    tipo:               TIPO_USUARIO
-    estado:             string
-    activo:             boolean
-    label:              string
-    value:              number
-    nombreCompleto:     string
-    permisos:           string // Permisos un array crudo con los permisos
-    gruposString:       string
-    grupos:             string[]
-    esComercial:        boolean
-    esProduccion:       boolean
-    esDev:              boolean
-    areaEsEscom:        boolean
-    areaEsMublex:       boolean
-    areaEsGlobal:       boolean
-    nivel_a:            number
-    nivel_b:            number
-    nivel_c:            number
+  id                : number
+  terceroIdCtz      : number
+  nombre            : string
+  apellido          : string
+  foto              : string
+  puesto            : string
+  usuario           : string
+  cedula            : string
+  urlFoto           : string
+  fotoPerfilMini    : string
+  fotoPerfilMedia   : string
+  fotoPerfilBig     : string
+  cel               : string
+  correo            : string
+  area              : AREA
+  tipo              : TIPO_USUARIO
+  estado            : string
+  activo            : boolean
+  label             : string
+  value             : number
+  nombreCompleto    : string
+  permisos          : string // Permisos un array crudo con los permisos
+  gruposString      : string
+  grupos            : string[]
+  esComercial       : boolean
+  esProduccion      : boolean
+  esDev             : boolean
+  areaEsEscom       : boolean
+  areaEsMublex      : boolean
+  areaEsGlobal      : boolean
+  reglaComisionId   : number
+  reglaComision     : IReglasComision
 }
 
 export class Usuario implements IUsuario
 {
-  id:             number
-  terceroIdCtz:   number
-  nombre:         string
-  apellido:       string
-  foto:           string
-  puesto:         string
-  usuario:        string
-  cedula:         string
-  cel:            string
-  correo:         string
-  estado:         string
-  area:           AREA
-  tipo:           TIPO_USUARIO
-  permisos:       string
-  gruposString:   string
-  nivel_a:        number
-  nivel_b:        number
-  nivel_c:        number  
+  id                : number
+  terceroIdCtz      : number
+  nombre            : string
+  apellido          : string
+  foto              : string
+  puesto            : string
+  usuario           : string
+  cedula            : string
+  cel               : string
+  correo            : string
+  estado            : string
+  area              : AREA
+  tipo              : TIPO_USUARIO
+  permisos          : string
+  gruposString      : string
+  reglaComisionId   : number
+  reglaComision     : IReglasComision
 
   constructor( usuario? : IUsuario )
   {
@@ -79,9 +79,8 @@ export class Usuario implements IUsuario
       this.gruposString       = ""
       this.cel                = ""
       this.correo             = ""
-      this.nivel_a            = 0
-      this.nivel_b            = 0
-      this.nivel_c            = 0
+      this.reglaComisionId    = 0
+      this.reglaComision      = new ReglasComision()
 
       if(!!usuario)
       {
@@ -100,9 +99,6 @@ export class Usuario implements IUsuario
         this.gruposString     = usuario.gruposString
         this.cel              = usuario.cel
         this.correo           = usuario.correo
-        this.nivel_a          = +usuario.nivel_a
-        this.nivel_b          = +usuario.nivel_b
-        this.nivel_c          = +usuario.nivel_c
       }
   }
     get grupos() : string[] { return !!this.gruposString ? this.gruposString.split(',') : [] }

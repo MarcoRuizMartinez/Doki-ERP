@@ -26,7 +26,7 @@
         >
         <Tooltip label        ="Recargar"/>
       </q-btn>
-    </template>    
+    </template>
     <template                 #menu>
       <div class              ="row col gap-pa-md">
         <!-- //* ///////////////////////////////////////////////////////////// Campo buscar -->
@@ -143,9 +143,9 @@
   import {  storeToRefs         } from 'pinia'
   import {  useStoreAcuerdo     } from 'src/stores/acuerdo'
   import {  useStoreUser        } from 'src/stores/user'
-  import {  useStoreProducto    } from 'src/stores/producto'    
+  import {  useStoreProducto    } from 'src/stores/producto'
   // * /////////////////////////////////////////////////////////////////////////////////// Modelos
-  import {  ILineaAcuerdo       } from "src/areas/acuerdos/models/LineaAcuerdo"  
+  import {  ILineaAcuerdo       } from "src/areas/acuerdos/models/LineaAcuerdo"
   import {  ModosVentana        } from "src/models/TiposVarios"
   import {  IProductoCategoria,
             ProductoCategoria   } from "src/areas/productos/models/ProductoCategoria"
@@ -157,7 +157,7 @@
   import {  servicesProductos   } from "src/areas/productos/services/servicesProductos"
   import {  dexieCategoriasProducto
                                 } from "src/services/useDexie"
-  import {  
+  import {
             sortArray,
             useTools,
                                 } from "src/useSimpleOk/useTools"
@@ -194,16 +194,16 @@
   const busquedaTxt           = ref< string   >("")
   const modo                  = ref< ModosVentana >("esperando-busqueda")
   const categoria             = ref< IProductoCategoria  >( new ProductoCategoria() )
-  
-  const { buscarProductos   } = servicesProductos()
-  const categorias            = dexieCategoriasProducto()
 
-  const { 
+  const { buscarProductos   } = servicesProductos()
+  const categorias            = dexieCategoriasProducto({ cargarSiempre : true})
+
+  const {
           productos,
           productosFil,
           seleccion,
           //busqueda,
-                            } = storeToRefs( useStoreProducto() )  
+                            } = storeToRefs( useStoreProducto() )
 
   const precioMinQuery        = ref < number >()
   const precioMaxQuery        = ref < number >()
@@ -216,7 +216,7 @@
 
     modo.value                = "buscando"
     productos.value           = await buscarProductos( getQuery() )
-    productos.value           = procesarProductosDeBusqueda( productos.value )    
+    productos.value           = procesarProductosDeBusqueda( productos.value )
     productosFil.value        = productos.value
     modo.value                = !!productos.value.length ? "normal" : "sin-resultados"
     buscarSiProductosEstanEnGrupo()
@@ -264,7 +264,7 @@
             [{ label: 'Cerrar', color: 'white', handler: cerrar }]
         )
   }
- 
+
   function cerrar(){
     emit("cerrar")
     modales.value.añadirProductos  = false

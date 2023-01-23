@@ -7,8 +7,8 @@ https://dolibarr.mublex.com/expedition/card.php?
     origin_id           =9461&
     projectid           =&
     entrepot_id         =1
-*/  
-/* 
+*/
+/*
 https://dolibarr.mublex.com/fichinter/card.php?action=create&origin=commande&originid=9461&socid=6179
 https://dolibarr.mublex.com/fichinter/card.php?
     action              =create&
@@ -34,12 +34,13 @@ import {  getCondicionesPagoDB,
           getOrigenContactoDB,
           getTiempoEntregaDB,
           getUsuarioDB,
+          getReglasComisionDB
                                             } from "src/services/useDexie"
 import {  TTipoAcuerdo,
           TIPO_ACUERDO,
           ESTADO_CTZ,
           ESTADO_ACU,
-          EstadosAcuerdos,          
+          EstadosAcuerdos,
           ESTADO_PED                        } from "./ConstantesAcuerdos"
 //* ///////////////////////////////////////// Modelos
 import {  IAnticipo,        Anticipo,
@@ -81,9 +82,9 @@ export interface IAcuerdo
   esPedido:                   boolean
   esOCProveedor:              boolean
   esFactura:                  boolean
-  esNuevo:                    boolean  
+  esNuevo:                    boolean
   id:                         number
-  
+
   ref:                        string
   refCorta:                   string
   refCliente:                 string
@@ -112,7 +113,8 @@ export interface IAcuerdo
 
   comercialId:                number
   comercial:                  IUsuario
-  //comercialNombre:            string
+  comercial2Id:               number
+  comercial2:                 IUsuario
   creadorId:                  number
   creador:                    IUsuario
 
@@ -139,7 +141,7 @@ export interface IAcuerdo
 
   condicionPagoId:            number
   condicionPago:              ICondicionPago
-  condicionPagoLabel:         string  
+  condicionPagoLabel:         string
 
   formaPagoId:                number
   formaPago:                  IFormaPago
@@ -148,7 +150,7 @@ export interface IAcuerdo
   metodoEntregaId:            number
   metodoEntrega:              IMetodoEntrega
   metodoEntregaLabel:         string
-  
+
   tiempoEntregaId:            number
   tiempoEntrega:              ITiempoEntrega
   tiempoEntregaLabel:         string
@@ -236,6 +238,8 @@ export class Acuerdo implements IAcuerdo
   notaPublica:                string
   comercialId:                number
   comercial:                  IUsuario
+  comercial2Id:               number
+  comercial2:                 IUsuario
   condicionPagoId:            number
   formaPagoId:                number
   metodoEntregaId:            number
@@ -249,7 +253,7 @@ export class Acuerdo implements IAcuerdo
   contactos:                  IContacto[]
   contactoComercial:          IContacto
   contactoEntrega:            IContacto
-  contactoContable:           IContacto  
+  contactoContable:           IContacto
   productos:                  ILineaAcuerdo[]
   proGrupos:                  IGrupoLineas[]
   condicionPago:              ICondicionPago
@@ -287,6 +291,8 @@ export class Acuerdo implements IAcuerdo
     this.fechaEntrega         = new Date(0)
     this.comercialId          = 0
     this.comercial            = new Usuario()
+    this.comercial2Id         = 0
+    this.comercial2           = new Usuario()
     this.creadorId            = 0
     this.creador              = new Usuario()
     this.estado               = ESTADO_CTZ.NO_GUARDADO
@@ -313,7 +319,7 @@ export class Acuerdo implements IAcuerdo
     this.metodoEntrega        = new MetodoEntrega()
     this.origenContacto       = new OrigenContacto()
     this.tiempoEntrega        = new TiempoEntrega()
-    this.conIVA               = true    
+    this.conIVA               = true
 
     /* Solo para cotizaciones */
     this.titulo               = ""
@@ -321,9 +327,9 @@ export class Acuerdo implements IAcuerdo
     this.conTotal             = true
 
     /* Solo para pedidos */
-    this.facturado            = false    
+    this.facturado            = false
   }
-  
+
 
 
 /*   reorganizarProductosGrupos()
@@ -340,7 +346,7 @@ export class Acuerdo implements IAcuerdo
       if(grupo.totalCreado)   orden++
     }
   } */
- 
+
 /*   get label() : string {
     const label   = this.tipo === TIPO_ACUERDO.COTIZACION_CLI   ? "cotización"
                   : this.tipo === TIPO_ACUERDO.PEDIDO_CLI       ? "pedido"
@@ -358,11 +364,11 @@ export class Acuerdo implements IAcuerdo
   get ruta()        : string { return Acuerdo.getRuta                 ( this.tipo ) }
 
   //get labelPlural() : string { return getTipoAcuerdoPlural( this.tipo ) }
-  //get icono()       : string { return getIconoAcuerdo     ( this.tipo ) }  
-  //get tipoPlural()  : string { return "" } 
-  
+  //get icono()       : string { return getIconoAcuerdo     ( this.tipo ) }
+  //get tipoPlural()  : string { return "" }
 
-  
+
+
   get urlDolibarr() : string {
     const ruta    = this.tipo === TIPO_ACUERDO.COTIZACION_CLI   ? "/comm/propal/card.php?id="
                   : this.tipo === TIPO_ACUERDO.PEDIDO_CLI       ? "/commande/card.php?id="
@@ -373,12 +379,12 @@ export class Acuerdo implements IAcuerdo
 
     return process.env.URL_DOLIBARR + ruta + this.id
   }
-  
+
   get urlDolibarrOC() : string {
     return    this.esPedido
             ? process.env.URL_DOLIBARR + "/supplierorderfromorder/ordercustomer.php?id=" + this.id
             : ""
-  }  
+  }
 
   get urlDolibarrNuevoEnvio() : string {
 
@@ -392,7 +398,7 @@ export class Acuerdo implements IAcuerdo
                   `note_private=${this.notaPrivada}`
                 )
     return  this.esPedido ? url : ""
-  }  
+  }
 
   get urlDolibarrNuevaInsta() : string {
     const url   = process.env.URL_DOLIBARR.concat(
@@ -402,21 +408,21 @@ export class Acuerdo implements IAcuerdo
                   (!!this.proyecto.id ? `projectid=${this.proyecto.id}&` : ''),
                   `ref_client=${this.refCliente}&`,
                   `note_public=${this.notaPublica}&`,
-                  `note_private=${this.notaPrivada}`                  
-                )    
+                  `note_private=${this.notaPrivada}`
+                )
     return  this.esPedido ? url : ""
   }
 
 /*
 https://dolibarr.mublex.com/expedition/card.php?action=create&shipping_method_id=9&origin=commande&origin_id=9461&projectid=&entrepot_id=1
 https://dolibarr.mublex.com/expedition/card.php?
-    
+
     shipping_method_id  =9&
     origin_id           =9461&
     projectid           =&
     entrepot_id         =1
-*/  
-/* 
+*/
+/*
 https://dolibarr.mublex.com/fichinter/card.php?action=create&origin=commande&originid=9461&socid=6179
 https://dolibarr.mublex.com/fichinter/card.php?
     ?action=create&origin=commande&
@@ -432,7 +438,7 @@ https://dolibarr.mublex.com/fichinter/card.php?
                   : this.tipo === TIPO_ACUERDO.FACTURA_CLI      ? ""
                   : ""
     return imagen
-  } 
+  }
 
   get modulo() : TModulosDolibarr
   {
@@ -548,7 +554,7 @@ https://dolibarr.mublex.com/fichinter/card.php?
   }
 
   // * /////////////////////////////////////////////////////////////////////////////// TOTAL
-  get totalConIva() :number {    
+  get totalConIva() :number {
     let total               = (this.totalConDescu ?? 0 ) + (this.ivaValor ?? 0)
 
     if(this.aiuOn)
@@ -560,13 +566,13 @@ https://dolibarr.mublex.com/fichinter/card.php?
   get esEstadoBoceto      ():boolean { return this.estado === ESTADO_ACU.NO_GUARDADO  }
   get esEstadoNoValidado  ():boolean { return this.estado === ESTADO_ACU.NO_GUARDADO || this.estado === ESTADO_ACU.BORRADOR}
   get esEstadoValido      ():boolean { return this.estado   > ESTADO_ACU.BORRADOR     }
-  get esEstadoValidado    ():boolean { return this.estado === ESTADO_ACU.VALIDADO     } 
-  get esEstadoEntregando  ():boolean { return this.estado === ESTADO_PED.ENTREGANDO   } 
-  get esEstadoEntregado   ():boolean { return this.estado === ESTADO_PED.ENTREGADO    }  
+  get esEstadoValidado    ():boolean { return this.estado === ESTADO_ACU.VALIDADO     }
+  get esEstadoEntregando  ():boolean { return this.estado === ESTADO_PED.ENTREGANDO   }
+  get esEstadoEntregado   ():boolean { return this.estado === ESTADO_PED.ENTREGADO    }
   get esEstadoCotizado    ():boolean { return this.estado === ESTADO_CTZ.COTIZADO     }
   get esEstadoFacturado   ():boolean { return this.estado === ESTADO_CTZ.FACTURADO    }
 
-  get esEstadoAbierto     ():boolean { 
+  get esEstadoAbierto     ():boolean {
     let abierto           = false
     if
     (
@@ -579,8 +585,8 @@ https://dolibarr.mublex.com/fichinter/card.php?
     )
       abierto             = true
     return abierto
-  }  
-  get esEstadoAnulado     ():boolean { 
+  }
+  get esEstadoAnulado     ():boolean {
     let anulado           = false
     if
     (
@@ -608,7 +614,7 @@ https://dolibarr.mublex.com/fichinter/card.php?
     return this.condicionPago.label
   }
   get formaPagoLabel()      : string{
-    return   this.formaPago.label    
+    return   this.formaPago.label
   }
   get metodoEntregaLabel()  : string{
     return   this.metodoEntrega.label
@@ -644,7 +650,7 @@ https://dolibarr.mublex.com/fichinter/card.php?
       inicio              = 9
       final               = 29
     }
-    
+
     return this.ref.length > 10 ? this.ref.slice( inicio, final ) : this.ref
   }
 
@@ -794,7 +800,7 @@ https://dolibarr.mublex.com/fichinter/card.php?
                                   : tipo === TIPO_ACUERDO.FACTURA_CLI     ? "factura"
                                   : ""
     return label
-  }  
+  }
 
   static  getTipoAcuerdoPlural( tipo : TTipoAcuerdo ) : string {
     const singular                = tipo === TIPO_ACUERDO.COTIZACION_CLI  ? "cotizaciones"
@@ -805,7 +811,7 @@ https://dolibarr.mublex.com/fichinter/card.php?
                                   : ""
     return singular
   }
-  
+
   static getIconoAcuerdo( tipo : TTipoAcuerdo ) : string {
     const singular                = tipo === TIPO_ACUERDO.COTIZACION_CLI  ? "mdi-format-list-checks"
                                   : tipo === TIPO_ACUERDO.PEDIDO_CLI      ? "mdi-cart"
@@ -830,7 +836,7 @@ https://dolibarr.mublex.com/fichinter/card.php?
                                 : tipo === TIPO_ACUERDO.FACTURA_CLI       ? "📄"
                                 : "✅"
     return emoji
-  } 
+  }
 
   static getRuta( tipo : TTipoAcuerdo ) : string{
     const ruta                  = tipo === TIPO_ACUERDO.COTIZACION_CLI    ? "cotizaciones/cliente"
@@ -841,9 +847,6 @@ https://dolibarr.mublex.com/fichinter/card.php?
                                 : ""
     return ruta
   }
-    
-
-
 
   // * ///////////////////////////////////////////////////// static convertir data de API en new Cotizacion
   static async convertirDataApiToAcuerdo( acuApi : any, tipo : TTipoAcuerdo ) : Promise < IAcuerdo >
@@ -851,10 +854,10 @@ https://dolibarr.mublex.com/fichinter/card.php?
     acuApi.id                 = +acuApi.id
     acuApi.terceroId          = +acuApi.terceroId
     acuApi.proyectoId         = +acuApi.proyectoId
-    
+
     acuApi.creadorId          = +acuApi.usuariId
     acuApi.estado             = +acuApi.estado
-    
+
     acuApi.enlaces            = acuApi.enlaces ?? ""
     acuApi.facturado          = Boolean( +acuApi.facturado )
     acuApi.conTotal           = Boolean( +acuApi.conTotal )
@@ -867,12 +870,13 @@ https://dolibarr.mublex.com/fichinter/card.php?
     acuApi.aiuUtili           = getNumberValido( acuApi, "aiuUtili" )
     acuApi.descuento          = getNumberValido( acuApi, "descuento" )
     acuApi.comercialId        = getNumberValido( acuApi, "comercialId" )
-    
+    acuApi.comercial2Id       = getNumberValido( acuApi, "comercial2Id" )
+
     acuApi.condicionPagoId    = +acuApi.condicionPagoId
     acuApi.formaPagoId        = +acuApi.formaPagoId
     acuApi.metodoEntregaId    = +acuApi.metodoEntregaId
     acuApi.origenContactoId   = +acuApi.origenContactoId
-    acuApi.tiempoEntregaId    = +acuApi.tiempoEntregaId 
+    acuApi.tiempoEntregaId    = +acuApi.tiempoEntregaId
 
     acuApi.fechaCreacion      = getDateToStr( acuApi.fechaCreacion    )
     acuApi.fechaValidacion    = getDateToStr( acuApi.fechaValidacion  )
@@ -884,8 +888,15 @@ https://dolibarr.mublex.com/fichinter/card.php?
     acu.esNuevo               = false
     acu.tipo                  = tipo
     acu.creador               = await getUsuarioDB          ( acu.creadorId )
-    if(!!acu.comercialId)
-      acu.comercial           = await getUsuarioDB          ( acu.comercialId )
+    if(!!acu.comercialId){
+      acu.comercial               = await getUsuarioDB        ( acu.comercialId )
+      acu.comercial.reglaComision = await getReglasComisionDB ( acu.comercial.reglaComisionId )
+    }
+    if(!!acu.comercial2Id){
+      acu.comercial2               = await getUsuarioDB        ( acu.comercial2Id )
+      acu.comercial2.reglaComision = await getReglasComisionDB ( acu.comercial2.reglaComisionId )
+    }
+
     acu.tercero               = await Tercero.convertirDataApiATercero( acuApi.tercero )
 
     if( "contactosJSON" in acuApi && !!acuApi.contactosJSON && typeof acuApi.contactosJSON === "string" )
@@ -928,4 +939,3 @@ https://dolibarr.mublex.com/fichinter/card.php?
     return acu
   }
 }
-

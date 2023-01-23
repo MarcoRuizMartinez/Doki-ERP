@@ -1,13 +1,13 @@
-import {    
+import {
           ref,
           Ref,
           onMounted,
           onUnmounted
                             } from 'vue'
 import {  db                } from "src/boot/dexie"
-import {  useStoreApp       } from 'src/stores/app' 
-import {  ALMACEN_LOCAL     } from "src/models/TiposVarios"  
-import {  LocalStorage      } from 'quasar'  
+import {  useStoreApp       } from 'src/stores/app'
+import {  ALMACEN_LOCAL     } from "src/models/TiposVarios"
+import {  LocalStorage      } from 'quasar'
 import {  pausa             } from "src/useSimpleOk/useTools"
 
 import {  IMunicipio,         Municipio         } from "src/models/Municipio"
@@ -24,6 +24,7 @@ import {  IProductoCategoria, ProductoCategoria } from "src/areas/productos/mode
 import {  IConstante,         Constante         } from "src/models/Diccionarios/Constante"
 import {  IProveedor,         Proveedor         } from "src/models/Diccionarios/Proveedor"
 import {  ICuentaDinero,      CuentaDinero      } from "src/models/Diccionarios/CuentaDinero"
+import {  IReglasComision,    ReglasComision    } from "src/models/Diccionarios/ReglasComision"
 import {  storeToRefs                           } from 'pinia'
 
 //* ///////////////////////////////////////////////////////////// Tipos de documento
@@ -43,9 +44,10 @@ export enum TABLAS
   CONSTANTE                   = "constantes",
   PROVEEDORES                 = "proveedores",
   CUENTA_DINERO               = "cuentasDinero",
+  REGLA_COMISION              = "reglasComision",
 }
 
-export type ITabla            = IMunicipio      | IUsuario        | ITipoDocumento      | ICondicionPago |
+export type ITabla            = IMunicipio      | IUsuario        | ITipoDocumento      | ICondicionPago | IReglasComision |
                                 IFormaPago      | IMetodoEntrega  | IOrigenContacto     | IUnidad        | ICuentaDinero |
                                 ITiempoEntrega  | ITipoContacto   | IProductoCategoria  | IConstante     | IProveedor
 
@@ -57,7 +59,7 @@ export function cargarListasIndex() {
   dexieUsuarios   ({ cargarSiempre : true})
   dexieConstantes ({ cargarSiempre : true})
   dexieProveedores({ cargarSiempre : true})
-  
+
   const check                     = checkListasVencidas()
   if(check)
   {
@@ -72,6 +74,7 @@ export function cargarListasIndex() {
     /* tiposDocumentos               = */ dexieTiposDocumentos(param)
     /* unidades                      = */ dexieUnidades(param)
                                           dexieCuentasDinero(param)
+                                          dexieReglasComision(param)
   }
 }
 
@@ -165,13 +168,17 @@ export function dexieCuentasDinero      ( { cargarSiempre = false, demora = 0 } 
   return lista as Ref< ICuentaDinero[] >
 }
 
-
+//* ///////////////////////////////////////////////////////////// Unidades
+export function dexieReglasComision ( { cargarSiempre = false, demora = 0 } = paramDefault ) :Ref< IReglasComision[] > {
+  const { lista } = useDexie( TABLAS.REGLA_COMISION, { cargarSiempre, demora } )
+  return lista as Ref< IReglasComision[] >
+}
 
 function useDexie( tabla : TABLAS, { cargarSiempre = false, demora = 0 } = paramDefault )
 {
   const{ online }                 = storeToRefs( useStoreApp() )
   const lista                     = ref< Array < any > >( [] )
-  
+
   //* ///////////////////////////////////////////////////////////////////////// On Mounted
   onMounted( motorTabla )
 
@@ -190,15 +197,15 @@ function useDexie( tabla : TABLAS, { cargarSiempre = false, demora = 0 } = param
     else
     {
       await cargarTablaDBLocal()
-      
+
       if(online.value)
       {
         let DBsIguales            = true
 
         if(!cargarSiempre){
-          DBsIguales              = await DBLocalEsIgualADBHosting( largoDBTabla )  
+          DBsIguales              = await DBLocalEsIgualADBHosting( largoDBTabla )
         }
-      
+
         if( !DBsIguales || cargarSiempre )
         {
           await pedirYguardarTabla()
@@ -209,19 +216,19 @@ function useDexie( tabla : TABLAS, { cargarSiempre = false, demora = 0 } = param
   }
 
   async function cargarTablaDBLocal()
-  { 
+  {
     lista.value                   = await getDatosDBToArray()
   }
 
   async function getDatosDBToArray() : Promise < ITabla[] >
-  { 
+  {
     return db.transaction('r', db[ tabla ], async () =>
       {
-        const arrayResultado      = await db[ tabla ].toArray() 
-        return arrayResultado 
+        const arrayResultado      = await db[ tabla ].toArray()
+        return arrayResultado
       }
     )
-  }    
+  }
 
   async function DBLocalEsIgualADBHosting( largoLocal : number ) : Promise < boolean >
   {
@@ -254,7 +261,7 @@ function useDexie( tabla : TABLAS, { cargarSiempre = false, demora = 0 } = param
               ||
               !item.hasOwnProperty( "id" )
             ) continue
-            
+
 
             item.id               = parseInt( item.id )
 
@@ -266,51 +273,54 @@ function useDexie( tabla : TABLAS, { cargarSiempre = false, demora = 0 } = param
               try
               {
                 await db[ tabla ].clear()
-                
+
                 switch ( tabla )
                 {
-                  case TABLAS.MUNICIPIOS : 
+                  case TABLAS.MUNICIPIOS :
                     await db[ TABLAS.MUNICIPIOS         ].bulkAdd( listaCarga )
                     break;
-                  case TABLAS.USUARIOS : 
+                  case TABLAS.USUARIOS :
                     await db[ TABLAS.USUARIOS           ].bulkAdd( listaCarga )
                     break;
-                  case TABLAS.TIPOS_DOCUMENTOS : 
+                  case TABLAS.TIPOS_DOCUMENTOS :
                     await db[ TABLAS.TIPOS_DOCUMENTOS   ].bulkAdd( listaCarga )
                     break;
-                  case TABLAS.CONDICION_PAGO : 
+                  case TABLAS.CONDICION_PAGO :
                     await db[ TABLAS.CONDICION_PAGO     ].bulkAdd( listaCarga )
                     break;
-                  case TABLAS.FORMA_PAGO : 
+                  case TABLAS.FORMA_PAGO :
                     await db[ TABLAS.FORMA_PAGO         ].bulkAdd( listaCarga )
                     break;
-                  case TABLAS.METODO_ENTREGA : 
+                  case TABLAS.METODO_ENTREGA :
                     await db[ TABLAS.METODO_ENTREGA     ].bulkAdd( listaCarga )
                     break;
-                  case TABLAS.ORIGEN_CONTACTO : 
+                  case TABLAS.ORIGEN_CONTACTO :
                     await db[ TABLAS.ORIGEN_CONTACTO    ].bulkAdd( listaCarga )
                     break;
-                  case TABLAS.UNIDAD : 
+                  case TABLAS.UNIDAD :
                     await db[ TABLAS.UNIDAD             ].bulkAdd( listaCarga )
                     break;
-                  case TABLAS.TIEMPO_ENTREGA : 
+                  case TABLAS.TIEMPO_ENTREGA :
                     await db[ TABLAS.TIEMPO_ENTREGA     ].bulkAdd( listaCarga )
                     break;
-                  case TABLAS.TIPO_CONTACTO : 
+                  case TABLAS.TIPO_CONTACTO :
                     await db[ TABLAS.TIPO_CONTACTO      ].bulkAdd( listaCarga )
                     break;
-                  case TABLAS.PRODUCTO_CATE : 
+                  case TABLAS.PRODUCTO_CATE :
                     await db[ TABLAS.PRODUCTO_CATE      ].bulkAdd( listaCarga )
-                    break;            
-                  case TABLAS.CONSTANTE : 
+                    break;
+                  case TABLAS.CONSTANTE :
                     await db[ TABLAS.CONSTANTE          ].bulkAdd( listaCarga )
                     break;
-                  case TABLAS.PROVEEDORES : 
+                  case TABLAS.PROVEEDORES :
                     await db[ TABLAS.PROVEEDORES        ].bulkAdd( listaCarga )
                     break;
                   case TABLAS.CUENTA_DINERO :
                     await db[ TABLAS.CUENTA_DINERO      ].bulkAdd( listaCarga )
-                    break;                                        
+                    break;
+                  case TABLAS.REGLA_COMISION :
+                    await db[ TABLAS.REGLA_COMISION     ].bulkAdd( listaCarga )
+                    break;
                   default:
                     break;
                 }
@@ -319,8 +329,8 @@ function useDexie( tabla : TABLAS, { cargarSiempre = false, demora = 0 } = param
               catch(error){
                 console.error(error)
                 return -1
-              } 
-            } 
+              }
+            }
           )
         }
         else
@@ -339,11 +349,11 @@ function useDexie( tabla : TABLAS, { cargarSiempre = false, demora = 0 } = param
       const miBody                = new FormData()
             miBody.append("tipo", tipo)
       const url                   = process.env.URL_WEBSERVICES + "/listas/diccionarios-count.php"
-  
+
       try{
         const resultado           = await fetch( url, { method: 'POST', body: miBody })
         const total               = await resultado.text()
-  
+
         if(!!total)
         {
           resolve( parseInt ( total ) )
@@ -351,7 +361,7 @@ function useDexie( tabla : TABLAS, { cargarSiempre = false, demora = 0 } = param
       } catch(e) {
         resolve(0)
         console.error(e);
-      }    
+      }
     })
   }
 
@@ -377,9 +387,15 @@ export async function getCategoriaDB( sigla : string ) : Promise < IProductoCate
 {
   return db.transaction('r', db[ TABLAS.PRODUCTO_CATE ], async () =>
     {
-      const categ           = await db[ TABLAS.PRODUCTO_CATE ].where("sigla").equals( sigla ).toArray()
-      if(categ.length   == 1)
-        return categ[0]
+      const catego          = await db[ TABLAS.PRODUCTO_CATE ].where("sigla").equals( sigla ).toArray()
+      if(catego.length      == 1)
+      {
+        // TODO
+        catego[0].modificadorComision = +catego[0].modificadorComision
+        catego[0].codigoCompra        = +catego[0].codigoCompra
+        catego[0].codigoVenta         = +catego[0].codigoVenta
+        return catego[0]
+      }
       else
         return new ProductoCategoria()
     }
@@ -387,7 +403,7 @@ export async function getCategoriaDB( sigla : string ) : Promise < IProductoCate
 }
 
 export async function getTipoDocumentoDB( id : number ) : Promise < ITipoDocumento >
-{ 
+{
   return db.transaction('r', db[ TABLAS.TIPOS_DOCUMENTOS ], async () =>
     {
       const tipo            = await db[ TABLAS.TIPOS_DOCUMENTOS ].where("id").equals(id).toArray()
@@ -400,7 +416,7 @@ export async function getTipoDocumentoDB( id : number ) : Promise < ITipoDocumen
 }
 
 export async function getUsuariosDB( ids : number[] ) : Promise < IUsuario[] >
-{ 
+{
   return db.transaction('r', db[ TABLAS.USUARIOS ], async () =>
     {
       const usuarios        = await db[ TABLAS.USUARIOS ].where("id").anyOf( ...ids ).toArray()
@@ -418,10 +434,8 @@ export async function getUsuarioDB( id : number ) : Promise < IUsuario >
     {
       const usuario         = await db[ TABLAS.USUARIOS ].where("id").equals(id).toArray()
       if(usuario.length     == 1){
-        usuario[0].terceroIdCtz = +usuario[0].terceroIdCtz
-        usuario[0].nivel_a      = +usuario[0].nivel_a
-        usuario[0].nivel_b      = +usuario[0].nivel_b
-        usuario[0].nivel_c      = +usuario[0].nivel_c
+        usuario[0].terceroIdCtz     = +usuario[0].terceroIdCtz
+        usuario[0].reglaComisionId  = +usuario[0].reglaComisionId
         return usuario[0]
       }
       else
@@ -431,7 +445,7 @@ export async function getUsuarioDB( id : number ) : Promise < IUsuario >
 }
 
 export async function getCondicionesPagoDB( id : number ) : Promise < ICondicionPago >
-{ 
+{
   return db.transaction('r', db[ TABLAS.CONDICION_PAGO ], async () =>
     {
       const listaDB         = await db[ TABLAS.CONDICION_PAGO ].where("id").equals(id).toArray()
@@ -444,7 +458,7 @@ export async function getCondicionesPagoDB( id : number ) : Promise < ICondicion
 }
 
 export async function getFormasPagoDB( id : number ) : Promise < IFormaPago >
-{ 
+{
   return db.transaction('r', db[ TABLAS.FORMA_PAGO ], async () =>
     {
       const listaDB         = await db[ TABLAS.FORMA_PAGO ].where("id").equals(id).toArray()
@@ -457,7 +471,7 @@ export async function getFormasPagoDB( id : number ) : Promise < IFormaPago >
 }
 
 export async function getMetodosEntregaDB( id : number ) : Promise < IMetodoEntrega >
-{ 
+{
   return db.transaction('r', db[ TABLAS.METODO_ENTREGA ], async () =>
     {
       const listaDB          = await db[ TABLAS.METODO_ENTREGA ].where("id").equals(id).toArray()
@@ -470,7 +484,7 @@ export async function getMetodosEntregaDB( id : number ) : Promise < IMetodoEntr
 }
 
 export async function getOrigenContactoDB( id : number ) : Promise < IOrigenContacto >
-{ 
+{
   return db.transaction('r', db[ TABLAS.ORIGEN_CONTACTO ], async () =>
     {
       const listaDB          = await db[ TABLAS.ORIGEN_CONTACTO ].where("id").equals(id).toArray()
@@ -483,7 +497,7 @@ export async function getOrigenContactoDB( id : number ) : Promise < IOrigenCont
 }
 
 export async function getUnidadDB( id : number ) : Promise < IUnidad >
-{ 
+{
   return db.transaction('r', db[ TABLAS.UNIDAD ], async () =>
     {
       const listaDB          = await db[ TABLAS.UNIDAD ].where("id").equals(id).toArray()
@@ -496,7 +510,7 @@ export async function getUnidadDB( id : number ) : Promise < IUnidad >
 }
 
 export async function getTiempoEntregaDB( id : number ) : Promise < ITiempoEntrega >
-{ 
+{
   return db.transaction('r', db[ TABLAS.TIEMPO_ENTREGA ], async () =>
     {
       const listaDB          = await db[ TABLAS.TIEMPO_ENTREGA ].where("id").equals(id).toArray()
@@ -509,7 +523,7 @@ export async function getTiempoEntregaDB( id : number ) : Promise < ITiempoEntre
 }
 
 export async function getConstante( label : string ) : Promise < IConstante >
-{ 
+{
   return db.transaction('r', db[ TABLAS.CONSTANTE ], async () =>
     {
       const listaDB          = await db[ TABLAS.CONSTANTE ].where("label").equals(label).toArray()
@@ -522,7 +536,7 @@ export async function getConstante( label : string ) : Promise < IConstante >
 }
 
 export async function getProveedorDB( id : number ) : Promise < IProveedor >
-{ 
+{
   return db.transaction('r', db[ TABLAS.PROVEEDORES ], async () =>
     {
       const listaDB          = await db[ TABLAS.PROVEEDORES ].where("id").equals(id).toArray()
@@ -535,7 +549,7 @@ export async function getProveedorDB( id : number ) : Promise < IProveedor >
 }
 
 export async function getCuentasDineroDB( id : number ) : Promise < ICuentaDinero >
-{ 
+{
   return db.transaction('r', db[ TABLAS.CUENTA_DINERO ], async () =>
     {
       const listaDB          = await db[ TABLAS.CUENTA_DINERO ].where("id").equals(id).toArray()
@@ -547,13 +561,43 @@ export async function getCuentasDineroDB( id : number ) : Promise < ICuentaDiner
   )
 }
 
+export async function getReglasComisionDB( id : number ) : Promise < IReglasComision >
+{
+  return db.transaction('r', db[ TABLAS.REGLA_COMISION ], async () =>
+    {
+      const listaDB         = await db[ TABLAS.REGLA_COMISION ].where("id").equals(id).toArray()
+      if(listaDB.length     == 1)
+      {
+        const regla         = listaDB[0]
+        // TODO
+        regla.id            = +regla.id
+        regla.comision_alfa = +regla.comision_alfa
+        regla.comision_a    = +regla.comision_a
+        regla.comision_b    = +regla.comision_b
+        regla.comision_c    = +regla.comision_c
+        regla.comision_d    = +regla.comision_d
+        regla.comision_e    = +regla.comision_e
+        regla.nivel_alfa    = +regla.nivel_alfa
+        regla.nivel_a       = +regla.nivel_a
+        regla.nivel_b       = +regla.nivel_b
+        regla.nivel_c       = +regla.nivel_c
+        regla.nivel_d       = +regla.nivel_d
+        regla.nivel_e       = +regla.nivel_e
+        return listaDB[0]
+      }
+      else
+        return new ReglasComision()
+    }
+  )
+}
+
 function checkListasVencidas() : boolean
 {
   const TIEMPO_EXPIRAR  = 86_400_000 * 2 // ( 24 * 120)
 
   let fechaVencida      = false
   const lastFecha       = LocalStorage.getItem( pre + ALMACEN_LOCAL.FECHA_LISTAS ) as number
-  
+
   if( !lastFecha )
     fechaVencida        = true
   else
@@ -563,7 +607,7 @@ function checkListasVencidas() : boolean
       fechaVencida      = true
   }
 
-  if(fechaVencida) 
+  if(fechaVencida)
     LocalStorage.set( pre + ALMACEN_LOCAL.FECHA_LISTAS, Date.now() )
 
   return fechaVencida

@@ -7,6 +7,12 @@
     <span class         ="text-bold q-mr-sm">{{linea.ref}}</span>
     <span class         ="text-subtitle1">{{linea.nombre}}</span>
     <br/>
+    <span class         ="text-subtitle1">{{linea.categoria.modificadorComision}}</span>
+    <br/>
+    <span class         ="text-subtitle1">{{linea.costo}}</span>
+    <br/>
+    <span class         ="text-subtitle1">{{linea.aumentoFromCosto}}</span>
+    <br/>
     <span
       v-if              ="!!linea.descripcion"
       v-html            ="linea.descripcion"
@@ -39,11 +45,11 @@
             <td>
               {{ linea.nivelPrecios }}
             </td>
-          </tr>          
+          </tr>
         </tbody>
       </table>
     </Tooltip>
-  </div>  
+  </div>
   <q-menu               touch-position context-menu>
     <div  class         ="column items-start ">
       <q-btn            v-close-popup flat dense no-caps
@@ -68,7 +74,7 @@
   import {  PropType      } from "vue"
   import {  ILineaAcuerdo } from "src/areas/acuerdos/models/LineaAcuerdo"
   import    confirmar       from "components/utilidades/MenuConfirmar.vue"
-  import {  formatoPrecio         } from "src/useSimpleOk/useTools" 
+  import {  formatoPrecio         } from "src/useSimpleOk/useTools"
 
   const props               = defineProps({
     linea:      { required: true, type: Object as PropType< ILineaAcuerdo > },

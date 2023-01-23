@@ -7,6 +7,8 @@ import {  X100_Descuento,
           X100,
           roundInt          } from "src/useSimpleOk/useTools"
 import {  getUnidadDB       } from "src/services/useDexie"
+import {  IReglasComision,
+          ReglasComision    } from "src/models/Diccionarios/ReglasComision"
 
 export type TipoLinea       = "producto" | "servicio" | "titulo" | "subtotal" | "descripcion"
 
@@ -14,76 +16,76 @@ type TAccionDestacar        = "seleccionar" | "guardar" | "borrar" | "no-destaca
 type TAccionesSobreLinea    = "editar" | "borrar" | "crear" | ""
 
 export interface  ILineaApi {
-  id?:                      number
-  rang?:                    number
-  product_type?:            number
-  fk_product?:              number
-  qty?:                     number
-  tva_tx?:                  number
-  subprice?:                number
-  remise_percent?:          number
-  desc?:                    string
-  fk_unit?:                 number | string
-  label?:                   string
-  special_code?:            number  
+  id                        ?: number
+  rang                      ?: number
+  product_type              ?: number
+  fk_product                ?: number
+  qty                       ?: number
+  tva_tx                    ?: number
+  subprice                  ?: number
+  remise_percent            ?: number
+  desc                      ?: string
+  fk_unit                   ?: number | string
+  label                     ?: string
+  special_code              ?: number
 }
 
 export interface ILineaAcuerdo extends IProductoDoli {
-  padreId:                  number      // Id de cotizacion, orden o factura
-  lineaId:                  number
-  qty:                      number
-  x100Maximo:               number
-  orden:                    number
-  codeX:                    number
-  tipoLinea:                TipoLinea
-  esTitulo:                 boolean
-  esSubTotal:               boolean
-  fixed:                    boolean
-  precioBase:               number
-  precioBaseConIVA:         number
-  precioFinal:              number
-  precioFinalConIVA:        number
-  precioMinimo:             number
-  precioMinimoConIVA:       number
-
-  descuentoX100:            number      // Descuento bruto
+  padreId                   : number      // Id de cotizacion, orden o factura
+  lineaId                   : number
+  qty                       : number
+  x100Maximo                : number
+  orden                     : number
+  codeX                     : number
+  tipoLinea                 : TipoLinea
+  esTitulo                  : boolean
+  esSubTotal                : boolean
+  fixed                     : boolean
+  precioBase                : number
+  precioBaseConIVA          : number
+  precioFinal               : number
+  precioFinalConIVA         : number
+  precioMinimo              : number
+  precioMinimoConIVA        : number
+  descuentoX100             : number      // Descuento bruto
+  descuentoValor            : number      // Descuento valor
+  totalSinDescu             : number      // Subtotal sin descuento
+  totalConDescu             : number      // Subtotal con descuento
+  totalDescuento            : number
+  ivaValorLinea             : number
+  ivaValorTotal             : number
+  totalConIva               : number
+  hayDescuento              : boolean
+  class                     : string
+  qtyUnd                    : string
+  borrar                    : boolean
+  destacar                  : ( accion? : TAccionDestacar , mostrar? : "mostrar" | "ocultar" ) => void
+  accion                    : TAccionesSobreLinea
+  aumentoFromCosto          : number
+  nivelPrecios              : string
+  //reglaComision             : IReglasComision
   //descuX100Round:           number      // Descuento redondeado
-  descuentoValor:           number      // Descuento valor
-  totalSinDescu:            number      // Subtotal sin descuento
-  totalConDescu:            number      // Subtotal con descuento
-  totalDescuento:           number
-  ivaValorLinea:            number      
-  ivaValorTotal:            number
-  totalConIva:              number  
-  hayDescuento:             boolean
-  class:                    string
-  qtyUnd:                   string
-  borrar:                   boolean
-  destacar:                 ( accion? : TAccionDestacar , mostrar? : "mostrar" | "ocultar" ) => void
-  accion:                   TAccionesSobreLinea
-
-  aumentoFromCosto:         number
-  nivelPrecios:             string 
 }
 
 export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
 {
-  padreId:                  number
-  lineaId:                  number
-  qty:                      number
-  descuentoX100:            number
-  orden:                    number
-  codeX:                    number
-  fixed:                    boolean
-  class:                    string
-  precioBase:               number
-  borrar:                   boolean
-  accion:                   TAccionesSobreLinea
+  padreId                   : number
+  lineaId                   : number
+  qty                       : number
+  descuentoX100             : number
+  orden                     : number
+  codeX                     : number
+  fixed                     : boolean
+  class                     : string
+  precioBase                : number
+  borrar                    : boolean
+  accion                    : TAccionesSobreLinea
+  //reglaComision             : IReglasComision
 
   constructor()
   {
     super()
-    
+
     this.padreId            = 0
     this.lineaId            = 0
     this.qty                = 0
@@ -95,6 +97,7 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
     this.class              = ""
     this.borrar             = false
     this.accion             = ""
+    //this.reglaComision      = new ReglasComision()
   }
 
   // * /////////////////////////////////////////////////////////////////////////////// Tipo de linea
@@ -118,13 +121,13 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
   get esTitulo()    : boolean { return this.tipo === 9 && this.codeX === 104777 && this.qty === 1 }
   get esSubTotal()  : boolean { return this.tipo === 9 && this.codeX === 104777 && this.qty === 99 }
 
-  get aumentoFromCosto()  : number { return  ( ( this.precioFinal / this.costo ) - 1 )  * 100 } 
+  get aumentoFromCosto()  : number { return  ( ( this.precioFinal / this.costo ) - 1 )  * 100 }
   get nivelPrecios()      : string { return     this.aumentoFromCosto >= 45 ? "a"
                                               : this.aumentoFromCosto >= 35 ? "b"
                                               : "c"
-                                            } 
+                                            }
 
-  
+
   // * ////////////////////////////////////////////////////////////////////////////////////////////////////
   // * ////////////////////////////////////////////////////////////////////// GET SET Descuento redondeado
 /*   get descuX100Round() : number {
@@ -147,14 +150,14 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
   get precioMinimoConIVA() :number {
     return X100_Aumento( this.costo, this.iva )
   }
-  
+
 
   // * //////////////////////////////////////////////////////////////////////// Descuento maximo permitido
   get x100Maximo() :number {
     let diferencia          = this.precioBase - this.costo
     let x100                = diferencia * 100 / this.precioBase
     if( x100                < 1 || !x100 || isNaN(x100))
-        x100                = 999_999_999  
+        x100                = 999_999_999
     return x100
   }
 
@@ -162,7 +165,7 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
   get precioBaseConIVA() : number{
     return X100_Aumento( this.precioBase, this.iva )
   }
-  // * ////////////////////////////////////////////////////////////////////////////////////////////// 
+  // * //////////////////////////////////////////////////////////////////////////////////////////////
   // * //////////////////////////////////////////////////////////////////////// GET SET Precio final con IVA
   get precioFinalConIVA() : number{
     return +X100_Aumento( this.precioFinal, this.iva ).toFixed(2)
@@ -175,7 +178,7 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
       this.descuentoX100  = +(newDescuentoValor * 100 / this.precioBase).toFixed(3)
     else
       this.descuentoX100  = 0
-  } 
+  }
 
   // * /////////////////////////////////////////////////////////////////////////////// IVA valor unidad
   get ivaValorLinea() :number {
@@ -191,36 +194,36 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
   // * /////////////////////////////////////////////////////////////////////////////// GET SET Precio Final
   get precioFinal() :number {
     return X100_Descuento( this.precioBase, this.descuentoX100 )
-  }  
-  
+  }
+
   set precioFinal( valor : number )  {
     if(!process.env.CON_DECIMALES)
       valor                 = roundInt(valor, 2)
-    
+
     let diferencia          = this.precioBase - valor
     if( diferencia          <= 0){
       this.descuentoX100    = 0
-            
+
       return
-    } 
+    }
     this.descuentoX100      = +( diferencia * 100 / this.precioBase ).toFixed(2)
-    
+
   }
 
   // * /////////////////////////////////////////////////////////////////////////////// Total sin descuento
   get totalSinDescu() : number {
     return this.precioBase * this.qty
-  }  
+  }
 
   // * /////////////////////////////////////////////////////////////////////////////// Total con descuento
   get totalConDescu() : number {
     return this.precioFinal * this.qty
   }
-  
+
   // * /////////////////////////////////////////////////////////////////////////////// Total iva incluido
   get totalConIva() :number {
     return this.totalConDescu + this.ivaValorTotal
-  }  
+  }
 
   // * /////////////////////////////////////////////////////////////////////////////// Descuento Valor
   get descuentoValor() : number {
@@ -253,7 +256,7 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
 
         if(mostrar          == "ocultar" && accion != "borrar")
           this.class        = ""
-        
+
         if(this.class.includes("op00"))
           this.class        = "op00"
       }
@@ -273,12 +276,12 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
       else
       if( accion            == "no-destacar" && deTimer)
         clase               = ""
-        
+
       return clase
     }
   }
 
-  // * ////////////////////////////////////////////////////////////////////////// Get new LineaAcuerdo data de API 
+  // * ////////////////////////////////////////////////////////////////////////// Get new LineaAcuerdo data de API
   static async getLineaFromAPIMaco( lineaApi : any, padreId : number ) : Promise< ILineaAcuerdo[] >
   {
     lineaApi                = JSON.parse( lineaApi )
@@ -293,7 +296,7 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
         linea.costo         = parseFloat( linea.costo         )
         linea.iva           = parseFloat( linea.iva           )
         linea.descuentoX100 = parseFloat( linea.descuentoX100 )
-        
+
         linea.tipo          = +linea.tipo
         linea.lineaId       = +linea.lineaId
         linea.qty           = +linea.qty
@@ -327,7 +330,7 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
     let linea               = new LineaAcuerdo()
         linea.codeX         = 104777
         linea.qty           = 1
-        linea.tipo          = 9        
+        linea.tipo          = 9
         linea.nombre        = nombre
     return linea
   }
@@ -343,14 +346,14 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
 
   static lineaDeProducto( producto : IProductoDoli ) : ILineaAcuerdo
   {
-    let linea : ILineaAcuerdo = Object.assign( new LineaAcuerdo(), producto ) 
+    let linea : ILineaAcuerdo = Object.assign( new LineaAcuerdo(), producto )
         // linea.lineaId      = 0
         // linea.orden        = 0
         linea.qty             = 1
         linea.descuentoX100   = !!producto.descuentoCalculado ? producto.descuentoCalculado : 0
-                
+
         linea.precioBase      = producto.precio_publico
-        
+
 
     return linea
   }
@@ -425,38 +428,38 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
           "ref"
           "SIG-3-745",
           "nombre" "",
-          "descripcion" "", 
+          "descripcion" "",
           "precioBase" 326000.00000000,
           "costo" 233175.00000000,
           "iva" 19.000,
           "unidadId" "1",
           "tipo" 0,
           "fotoURL" "http//www.mublex.com/wp-content/uploads/2018/07/silla_dubai.jpg",
-          "lineaId" 2271, 
+          "lineaId" 2271,
           "qty" 1,
-          "descuentoX100" 2.5, 
-          "orden" 2, 
+          "descuentoX100" 2.5,
+          "orden" 2,
           "codeX" 0
         },
 
-          {"id" 0, "ref" "", "descripcion" "", "precioBase" 0.00000000, "costo" 0.00000000, "iva" 0.000, 
-          "unidadId" "", "tipo" 9, "fotoURL" "", "lineaId" 2272,  "descuentoX100" 0, "orden" 1, 
+          {"id" 0, "ref" "", "descripcion" "", "precioBase" 0.00000000, "costo" 0.00000000, "iva" 0.000,
+          "unidadId" "", "tipo" 9, "fotoURL" "", "lineaId" 2272,  "descuentoX100" 0, "orden" 1,
 
 
-          {"id" 0, "ref" "", "descripcion" "", "precioBase" 0.00000000, "costo" 0.00000000, "iva" 0.000, 
-          "unidadId" "", "tipo" 9, "fotoURL" "", "lineaId" 2273,  "descuentoX100" 0, "orden" 4, 
-          
-          
-          {"id" 4912, "ref" "SIG-1726", "nombre" "", "descripcion" "", "precioBase" 351000.00000000, "costo" 227105.00000000, 
+          {"id" 0, "ref" "", "descripcion" "", "precioBase" 0.00000000, "costo" 0.00000000, "iva" 0.000,
+          "unidadId" "", "tipo" 9, "fotoURL" "", "lineaId" 2273,  "descuentoX100" 0, "orden" 4,
+
+
+          {"id" 4912, "ref" "SIG-1726", "nombre" "", "descripcion" "", "precioBase" 351000.00000000, "costo" 227105.00000000,
           "iva" 19.000, "unidadId" "1", "tipo" 0,
           "fotoURL" "https//www.mublex.com/wp-content/uploads/2021/02/silla_shanghai_sin_brazos.jpg", "lineaId" 2274, "qty" 1,
           "descuentoX100" 0, "orden" 3, "codeX" 0},
-          
-          {"id" 6189, "ref" "BASE-PLEG-75X42", "nombre" "", "descripcion" "", "precioBase" 156000.00000000, "costo" 104000.00000000, 
+
+          {"id" 6189, "ref" "BASE-PLEG-75X42", "nombre" "", "descripcion" "", "precioBase" 156000.00000000, "costo" 104000.00000000,
           "iva" 19.000, "unidadId" "1", "tipo" 0, "fotoURL" "", "lineaId" 2275, "qty" 1, "descuentoX100" 0, "orden" 5, "codeX" 0},
-          
-          {"id" 0, "ref" "", "nombre" "", "descripcion" "asdfasdfasdfasdfd fasdf asdf", "precioBase" 0.00000000, 
-          "costo" 0.00000000, "iva" 0.000, "unidadId" "", "tipo" 9, "fotoURL" "", "lineaId" 2276,  "descuentoX100" 0, "orden" 6, 
-          
-        ]"    
+
+          {"id" 0, "ref" "", "nombre" "", "descripcion" "asdfasdfasdfasdfd fasdf asdf", "precioBase" 0.00000000,
+          "costo" 0.00000000, "iva" 0.000, "unidadId" "", "tipo" 9, "fotoURL" "", "lineaId" 2276,  "descuentoX100" 0, "orden" 6,
+
+        ]"
     */

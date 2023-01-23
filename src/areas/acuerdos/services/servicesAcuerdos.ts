@@ -30,7 +30,7 @@ import {  ISerieCtz,
           SerieCtz          } from "src/areas/acuerdos/models/SeriesCotizacion"
 import {  IQueryAcuerdo     } from "src/areas/acuerdos/models/BusquedaAcuerdos"
 import {  TTipoAcuerdo,
-          TIPO_ACUERDO      } from "src/areas/acuerdos/models/ConstantesAcuerdos"  
+          TIPO_ACUERDO      } from "src/areas/acuerdos/models/ConstantesAcuerdos"
 import {  Acuerdo,
           IAcuerdo,         } from "src/areas/acuerdos/models/Acuerdo"
 import {  pausa,
@@ -335,7 +335,7 @@ export function servicesAcuerdos()
 
   async function setTiempoEntrega( ctz_id : number, valor : number, acuerdo : TTipoAcuerdo ) : Promise< boolean >
   {
-    const obj           = { id: ctz_id, valor: valor ?? "NULL", acuerdo: acuerdo }        
+    const obj           = { id: ctz_id, valor: valor ?? "NULL", acuerdo: acuerdo }
 
     return new Promise( async (resolver, rechazar ) =>
     {
@@ -368,9 +368,13 @@ export function servicesAcuerdos()
     })
   }
 
-  async function setComercial( ctz_id : number, comercial_id : number, acuerdo : TTipoAcuerdo ) : Promise< boolean >
+  async function setComercial(  ctz_id          : number,
+                                comercial_id    : number,
+                                acuerdo         : TTipoAcuerdo,
+                                numeroComercial : string,
+                              ) : Promise< boolean >
   {
-    const obj           = { id: ctz_id, valor: comercial_id, acuerdo: acuerdo }
+    const obj           = { id: ctz_id, valor: comercial_id, acuerdo: acuerdo, numeroComercial }
 
     return new Promise( async (resolver, rechazar ) =>
     {

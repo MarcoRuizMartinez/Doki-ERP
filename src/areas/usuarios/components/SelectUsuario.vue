@@ -75,7 +75,7 @@
     (e: 'select',             value: IUsuario             ): void
     (e: 'clear',              value: void                 ): void
   }>()
-  
+
   const props                 = defineProps(
   {
     label:        { default: "Responsable", String                                },
@@ -91,6 +91,7 @@
     //noInmediato:  { default: false,         type: Boolean                       },
     area:         { default: "",            type: String as PropType< AREA >      },
     clearable:    { default: false,         type: Boolean                         },
+    idsNegativos: { default: [],            type: Array  as PropType < number[] > },
   })
   const { modelValue,
           readonly,
@@ -98,10 +99,15 @@
           inactivos,
           grupos,
           //noInmediato,
+          idsNegativos,
           area,
                             } = toRefs( props )
-  
+
   let modelo                  = ref< IUsuario >()
+
+  watch(idsNegativos, (idsNew)=>{
+    copiarListaToUsuarios()
+  })
 
   watch(usuariosDB, (dbUsuarios) =>
   {
@@ -126,26 +132,28 @@
       if(typeof autoselect.value === "boolean")
         modelo.value          = usuario.value
       else
-        modelo.value          = usuarios.value.find( u => u.id === autoselect.value ) ?? new Usuario() 
+        modelo.value          = usuarios.value.find( u => u.id === autoselect.value ) ?? new Usuario()
 
       emit("autoselect", modelo.value)
     }
   }
-  //, { deep: true, immediate: true }  
+  //, { deep: true, immediate: true }
   )
 
   watch( modelo, ( newValue, oldValue ) => {
     //restriccion para que no me cambie algo de forma inmedita cuando recibe el contacto
     //if(noInmediato.value && !!newValue && !!oldValue && oldValue.id === -1 && !!newValue.id ) return
-    //if(!!newValue && !!oldValue) // && newValue.id === oldValue.id)     
+    //if(!!newValue && !!oldValue) // && newValue.id === oldValue.id)
 
     emit("update:modelValue", newValue )
   })    //,{ deep: true, immediate: true }
-  
+
 
   watch( modelValue, ( newValue ) => {
-      if(newValue.id < 0) return
-      modelo.value                = newValue
+      if(newValue.id >= 0)
+        modelo.value                = newValue
+      else
+        modelo.value                = undefined
     },
     { immediate: true }
   )
@@ -166,17 +174,19 @@
   function copiarListaToUsuarios()
   {
     usuarios.value    = usuariosDB.value.filter ( ( u : IUsuario ) =>
-                                                  ( u.activo      || inactivos.value  )
-                                                  &&
-                                                  (
-                                                    !grupos.value.length
-                                                    ||
+                                                    ( u.activo      || inactivos.value  )
+                                                    &&
                                                     (
-                                                      u.grupos.some( ( gu : string ) => grupos.value.some( ( g : string )=> g === gu ) )
+                                                      !grupos.value.length
+                                                      ||
+                                                      (
+                                                        u.grupos.some( ( gu : string ) => grupos.value.some( ( g : string )=> g === gu ) )
+                                                      )
                                                     )
-                                                  )
-                                                  &&
-                                                  ( u.area  == area.value || area.value == AREA.GLOBAL ||  area.value == AREA.NULO )
+                                                    &&
+                                                    ( u.area  == area.value || area.value == AREA.GLOBAL ||  area.value == AREA.NULO )
+                                                    &&
+                                                    ( !idsNegativos.value.length || !idsNegativos.value.some( idI => idI === u.id  ) )
                                                 )
                                         .sort   ( ( a : IUsuario, b : IUsuario ) =>
                                                   {
@@ -198,7 +208,7 @@
   }
 
   function filterFn ( busqueda : any, update : Function, abort : Function  )
-  {    
+  {
     if (busqueda              === "")
     {
       update(() => {

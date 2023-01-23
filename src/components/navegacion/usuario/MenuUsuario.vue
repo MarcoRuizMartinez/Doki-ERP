@@ -6,16 +6,16 @@
       <img                :src="usuario.fotoPerfilMini">
     </q-avatar>
     <q-menu
-      class               ="panel-blur"        
+      class               ="panel-blur"
       transition-show     ="jump-down"
       transition-hide     ="jump-up"
-      > 
+      >
       <div                class="row no-wrap q-pa-md">
-        <div              class="column">
+        <div              class="column min-w-max">
           <div            class="text-h6 q-mb-md">
             Ajustes
           </div>
-          <q-btn          
+          <q-btn
             v-bind        ="btnBaseMd"
             :href         ="urlPerfil"
             class         ="q-mb-sm"
@@ -23,12 +23,12 @@
             icon          ="mdi-account-details"
             label         ="Perfil"
             size          ="sm"
-            target        ="_blank" 
+            target        ="_blank"
           />
-          <q-btn          
+          <q-btn
             v-bind        ="btnBaseMd"
             class         ="q-mb-sm"
-            color         ="accent" 
+            color         ="accent"
             icon          ="mdi-palette"
             label         ="Apariencia"
             size          ="sm"
@@ -86,14 +86,14 @@
   const ventanaApariencia         = ref(false)
   const storeUser                 = useStoreUser()
   const usuario                   = computed( () => storeUser.usuario)
-  const urlPerfil                 = computed( () => process.env.URL_DOLIBARR + "/user/card.php?id=" + storeUser.usuario.id + "&action=edit") 
+  const urlPerfil                 = computed( () => process.env.URL_DOLIBARR + "/user/card.php?id=" + storeUser.usuario.id + "&action=edit")
 
   function salir()
   {
     //store.commit('usuario/setLogueado', false)
     storeUser.logueado = false
   }
-  
+
   async function limpiar()
   {
     limpiarLocal()
@@ -101,9 +101,9 @@
     router.push("/")
     await pausa(500)
     location.reload()
-  }  
+  }
 
   function limpiarLocal(){
-    AlmacenesLimpiar.forEach( a => localStorage.removeItem( process.env.PREFIJO + a ) )    
+    AlmacenesLimpiar.forEach( a => localStorage.removeItem( process.env.PREFIJO + a ) )
   }
 </script>

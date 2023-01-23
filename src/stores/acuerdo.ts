@@ -13,10 +13,10 @@ import {  ILineaAcuerdo,
 import {  BusquedaAcuerdo,
           IBusquedaAcuerdo  } from "src/areas/acuerdos/models/BusquedaAcuerdos"
 import {  Anticipo,
-          IAnticipo         } from "src/areas/acuerdos/models/Anticipo"  
+          IAnticipo         } from "src/areas/acuerdos/models/Anticipo"
 interface IAcuerdoState {
   acuerdo             : IAcuerdo,
-  loading             : ILoading,  
+  loading             : ILoading,
   grupoElegido        : IGrupoLineas,
   lineaElegida        : ILineaAcuerdo,
   modales             : IModales,

@@ -11,9 +11,9 @@
         <input-buscar             autofocus clearable hundido
           v-model                 ="filtro"
           label                   ="Filtrar.."
-          class                   ="full-width"        
+          class                   ="full-width"
         />
-      </template>    
+      </template>
       <q-table                    borbordered dense flat
         class                     ="fit tabla-maco"
         row-key                   ="id"
@@ -24,7 +24,7 @@
       </q-table>
     </ventana>
   </template>
-  
+
   <script setup lang="ts">
     import {  ref                     } from "vue"
     import {  IColumna,
@@ -32,13 +32,16 @@
     import    ventana                   from "components/utilidades/Ventana.vue"
     import    inputBuscar               from "src/components/utilidades/input/InputSimple.vue"
     import {  dexieCategoriasProducto } from "src/services/useDexie"
-  
-    const filtro                = ref< string >("")  
-    const lista                 = dexieCategoriasProducto()
+
+    const filtro                = ref< string >("")
+    const lista                 = dexieCategoriasProducto({ cargarSiempre : true})
     const columnas: IColumna[]  = [
                                     new Columna({ name: "id"}),
                                     new Columna({ name: "nombre"}),
                                     new Columna({ name: "sigla"}),
                                     new Columna({ name: "grupo"}),
+                                    new Columna({ name: "modificadorComision"}),
+                                    new Columna({ name: "codigoVenta"}),
+                                    new Columna({ name: "codigoCompra"}),
                                   ]
   </script>

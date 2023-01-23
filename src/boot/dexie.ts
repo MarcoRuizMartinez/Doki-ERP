@@ -15,6 +15,7 @@ import {  ITipoContacto,      TipoContacto      } from "src/models/Diccionarios/
 import {  IConstante,         Constante         } from "src/models/Diccionarios/Constante"
 import {  IProveedor,         Proveedor         } from "src/models/Diccionarios/Proveedor"
 import {  ICuentaDinero,      CuentaDinero      } from "src/models/Diccionarios/CuentaDinero"
+import {  IReglasComision,    ReglasComision    } from "src/models/Diccionarios/ReglasComision"
 import {  IProductoCategoria, ProductoCategoria } from "src/areas/productos/models/ProductoCategoria"
 
 export class DBSimpleOk extends Dexie
@@ -33,15 +34,16 @@ export class DBSimpleOk extends Dexie
   [TABLAS.CONSTANTE]!:        Dexie.Table< IConstante,        number >
   [TABLAS.PROVEEDORES]!:      Dexie.Table< IProveedor,        number >
   [TABLAS.CUENTA_DINERO]!:    Dexie.Table< ICuentaDinero,     number >
+  [TABLAS.REGLA_COMISION]!:   Dexie.Table< IReglasComision,   number >
 
   constructor()
-  {  
+  {
     super(process.env.PREFIJO + "DBSimpleOk")
 
     this.version(1).stores(
     {
       [TABLAS.MUNICIPIOS]:        "++id, municipio, departamento, departamentoSigla, departamentoId, indicativo",
-      [TABLAS.USUARIOS]:          "++id, nombre, apellido, puesto, foto, tipo, area, estado, gruposString, terceroIdCtz, cel, correo, nivel_a, nivel_b, nivel_c",
+      [TABLAS.USUARIOS]:          "++id, nombre, apellido, puesto, foto, tipo, area, estado, gruposString, terceroIdCtz, cel, correo, regla_comision_id",
       [TABLAS.TIPOS_DOCUMENTOS]:  "++id, codigo, nombre",
       [TABLAS.CONDICION_PAGO]:    "++id, label, descripcion, dias",
       [TABLAS.FORMA_PAGO]:        "++id, label",
@@ -50,10 +52,11 @@ export class DBSimpleOk extends Dexie
       [TABLAS.UNIDAD]:            "++id, nombre, codigo, tipo, orden",
       [TABLAS.TIEMPO_ENTREGA]:    "++id, label, codigo",
       [TABLAS.TIPO_CONTACTO]:     "++id, codigo, tipo,  origen",
-      [TABLAS.PRODUCTO_CATE]:     "++id, nombre, sigla, grupo",
+      [TABLAS.PRODUCTO_CATE]:     "++id, nombre, sigla, grupo, modificadorComision, codigoVenta, codigoCompra",
       [TABLAS.CONSTANTE]:         "++id, label, value",
       [TABLAS.PROVEEDORES]:       "++id, nombre, alias, codigo",
       [TABLAS.CUENTA_DINERO]:     "++id, ref, label, tipoId, logoUrl, virtual",
+      [TABLAS.REGLA_COMISION]:    "++id, nombre, descripcion, comision_alfa, comision_a, comision_b, comision_c, comision_d, comision_e, nivel_alfa, nivel_a, nivel_b, nivel_c, nivel_d, nivel_e",
     })
 
     this[TABLAS.MUNICIPIOS]       = this.table( TABLAS.MUNICIPIOS )
@@ -67,16 +70,16 @@ export class DBSimpleOk extends Dexie
 
     this[TABLAS.CONDICION_PAGO]   = this.table( TABLAS.CONDICION_PAGO )
     this[TABLAS.CONDICION_PAGO]   .mapToClass( CondicionPago )
-    
+
     this[TABLAS.FORMA_PAGO]       = this.table( TABLAS.FORMA_PAGO )
     this[TABLAS.FORMA_PAGO]       .mapToClass( FormaPago )
-    
+
     this[TABLAS.METODO_ENTREGA]   = this.table( TABLAS.METODO_ENTREGA )
     this[TABLAS.METODO_ENTREGA]   .mapToClass( MetodoEntrega )
-    
+
     this[TABLAS.ORIGEN_CONTACTO]  = this.table( TABLAS.ORIGEN_CONTACTO )
     this[TABLAS.ORIGEN_CONTACTO]  .mapToClass( OrigenContacto )
-    
+
     this[TABLAS.UNIDAD]           = this.table( TABLAS.UNIDAD )
     this[TABLAS.UNIDAD]           .mapToClass( Unidad )
 
@@ -96,7 +99,10 @@ export class DBSimpleOk extends Dexie
     this[TABLAS.PROVEEDORES]      .mapToClass( Proveedor )
 
     this[TABLAS.CUENTA_DINERO]    = this.table( TABLAS.CUENTA_DINERO )
-    this[TABLAS.CUENTA_DINERO]    .mapToClass( CuentaDinero )      
+    this[TABLAS.CUENTA_DINERO]    .mapToClass( CuentaDinero )
+
+    this[TABLAS.REGLA_COMISION]   = this.table( TABLAS.REGLA_COMISION )
+    this[TABLAS.REGLA_COMISION]   .mapToClass( ReglasComision )
   }
 }
 

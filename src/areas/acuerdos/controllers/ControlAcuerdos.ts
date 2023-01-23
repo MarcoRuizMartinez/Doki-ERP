@@ -1,7 +1,7 @@
 //* ////////////////////////////////////////////////////////////////// Core
 import {  useRouter             } from 'vue-router'
 //* ////////////////////////////////////////////////////////////////// Store
-import {  storeToRefs           } from 'pinia'  
+import {  storeToRefs           } from 'pinia'
 import {  useStoreAcuerdo       } from 'src/stores/acuerdo'
 //* ////////////////////////////////////////////////////////////////// Componibles
 import {  useControlProductos   } from "src/areas/acuerdos/controllers/ControlLineasProductos"
@@ -16,7 +16,7 @@ import {  useTools,
 //* ////////////////////////////////////////////////////////////////// Modelos
 import {  ESTADO_CTZ,
           ESTADO_PED,
-          ESTADO_ACU,         
+          ESTADO_ACU,
           TTipoAcuerdo,
           TIPO_ACUERDO
                                 } from "../models/ConstantesAcuerdos"
@@ -35,17 +35,17 @@ import {  IContacto,
                                 } from "src/areas/terceros/models/Contacto"
 
 
-export function useControlAcuerdo() 
+export function useControlAcuerdo()
 {
   const router                  = useRouter()
-  const { aviso               } = useTools()  
+  const { aviso               } = useTools()
   const {
           setFechaFinValidez,
           setFechaEntrega,
           setCondicionPago,
           setFormaPago,
           setMetodoEntrega,
-          setTiempoEntrega,    
+          setTiempoEntrega,
           getAcuerdo,
           setOrigenContacto,
           setRefCliente,
@@ -63,13 +63,13 @@ export function useControlAcuerdo()
   const { apiDolibarr         } = useApiDolibarr()
   const { miFetch             } = useFetch()
   const { acuerdo,
-          loading             } = storeToRefs( useStoreAcuerdo() )  
+          loading             } = storeToRefs( useStoreAcuerdo() )
 
   //* /////////////////////////////////////////////////////////////// Crear Acuerdo
   async function crearAcuerdo( idUsuario : number ) : Promise<boolean>
   {
     loading.value.crear       = true
-    const acuForApi           = acuerdo.value.getAcuerdoForApi( idUsuario )    
+    const acuForApi           = acuerdo.value.getAcuerdoForApi( idUsuario )
     const { ok, data }        = await apiDolibarr("crear", acuerdo.value.tipo, acuForApi )
     if(!ok || !data) {
       aviso("negative", `Error al crear al ${acuerdo.value.tipo}`)
@@ -93,19 +93,19 @@ export function useControlAcuerdo()
         aviso("negative", "Error al asignar contacto")
       }
     }
-    
+
     //* ////////////////////  Notificando y redireccionando
     aviso("positive", `Creación de ${acuerdo.value.tipo} 👌🏼`)
     loading.value.crear       = false
     router.push( `/${acuerdo.value.ruta}/${id}` )
     return true
-  }          
+  }
 
-  //* ////////////////////////////////////////////////////////////////////// Buscar Acuerdo 
+  //* ////////////////////////////////////////////////////////////////////// Buscar Acuerdo
   async function buscarAcuerdo( tipo : TTipoAcuerdo, id_ : string )
   {
     const idOk                  = ID_URL_Ok( id_ )
-    if(!idOk) router.push("/error") 
+    if(!idOk) router.push("/error")
 
     loading.value.carga         = true
     acuerdo.value.productos     = []
@@ -127,9 +127,9 @@ export function useControlAcuerdo()
 
     loading.value.carga         = false
   }
-  
-  
-  //* ////////////////////////////////////////////////////////////////////// Buscar tercero 
+
+
+  //* ////////////////////////////////////////////////////////////////////// Buscar tercero
   async function buscarTerceroDolibarr( id_ : number )
   {
     acuerdo.value.tercero       = await buscarTercero( id_ )
@@ -142,7 +142,7 @@ export function useControlAcuerdo()
     }
   }
 
-  //* ////////////////////////////////////////////////////////////////////// Buscar proyecto 
+  //* ////////////////////////////////////////////////////////////////////// Buscar proyecto
   async function buscarProyecto( id_ : number )
   {
     if(!id_) return
@@ -186,7 +186,7 @@ export function useControlAcuerdo()
       if(tipo === TIPOS_CONTACTO.CONTABLE ) acuerdo.value.contactoContable  = contacto
     }
   }
-    
+
 
   //* ////////////////////////////////////////////////////////////////////// Asignar nuevo contacto
   async function desvincularContactoAcuerdo( id : number, tipo : TTipoContacto, mostrarAviso : boolean = false  ) : Promise<boolean>
@@ -195,16 +195,16 @@ export function useControlAcuerdo()
                                                       { id, tipo },
                                                       acuerdo.value.id
                                                     )
-    
+
     if(desvinculado){
       if(mostrarAviso)
         aviso("positive", "Contacto desvinculado", "account")
-        
+
       if(tipo === TIPOS_CONTACTO.ENTREGA  ){
         acuerdo.value.contactoEntrega   = new Contacto()
         await editarDatosEntregaSistemaViejo()
       }
-      else        
+      else
       if(tipo === TIPOS_CONTACTO.CONTABLE ) acuerdo.value.contactoContable  = new Contacto()
     }
     else{
@@ -224,33 +224,33 @@ export function useControlAcuerdo()
                                     dir_entre:    acuerdo.value.contactoEntrega.direccion,
                                     indicaciones: acuerdo.value.contactoEntrega.nota,
                                   }
-    const objetoForData         = { body: getFormData("editarEntregaOld", objeto), method: "POST"}    
+    const objetoForData         = { body: getFormData("editarEntregaOld", objeto), method: "POST"}
     const { ok  }               = await miFetch( endPoint, objetoForData, { mensaje: "datos entrega" } )
     return ok
   }
-    
+
 
   //* /////////////////////////////////////////////////////////////// Actualizar tercero
   async function actualizarTercero( terceroNew : ITercero )
   {
     if(acuerdo.value.esNuevo) return
 
-    // Parece que no es necesario, solo para que sea mas corto el codigo 
+    // Parece que no es necesario, solo para que sea mas corto el codigo
     const contactoNow             = acuerdo.value.contactoComercial
 
-    // Servicio que cambia el ID del tercero del acuerdo 
+    // Servicio que cambia el ID del tercero del acuerdo
     const idEditado               = await setTerceroId( acuerdo.value.id, terceroNew.id, acuerdo.value.tipo)
     if(idEditado){
       acuerdo.value.tercero       = terceroNew
       aviso("positive", `Tercero de ${acuerdo.value.tipo} cambiado` )
     }
-      
+
     // Si se ha cambiado el tercero, y tiene un contacto, entonces...
     if(idEditado && !!contactoNow.id)
     {
       // Si es una empresa
       if(terceroNew.esEmpresa){
-        const contactoMovido      = await moverContactoAOtroTercero( contactoNow.id, terceroNew.id )      
+        const contactoMovido      = await moverContactoAOtroTercero( contactoNow.id, terceroNew.id )
         aviso("positive", "Contacto movido a nuevo tercero" )
       }
       // Si se mueve el acuerdo a una persona natural, se desvincula el contacto
@@ -263,14 +263,14 @@ export function useControlAcuerdo()
   }
 
   //* /////////////////////////////////////////////////////////////// Editar comercial
-  async function editarComercial( usuario : IUsuario )
+  async function editarComercial( usuario : IUsuario | null, numeroComercial : string )
   {
     if(acuerdo.value.esNuevo) return
 
     loading.value.comercial       = true
     const idUsuario               = !!usuario ? usuario.id : 0
-    const ok                      = await setComercial( acuerdo.value.id, idUsuario, acuerdo.value.tipo)
-    if   (ok) aviso("positive", "Comercial asignado", "account" )
+    const ok                      = await setComercial( acuerdo.value.id, idUsuario, acuerdo.value.tipo, numeroComercial )
+    if   (ok) aviso("positive", "Comercial editado", "account" )
     loading.value.comercial       = false
   }
 
@@ -289,13 +289,13 @@ export function useControlAcuerdo()
   //* /////////////////////////////////////////////////////////////// Editar Ref Cliente
   async function editarRefCliente( ref : string )
   {
-    if(acuerdo.value.esNuevo) return 
+    if(acuerdo.value.esNuevo) return
 
     loading.value.ref           = true
     const ok                    = await setRefCliente( acuerdo.value.id, ref, acuerdo.value.tipo)
     if   (ok) aviso("positive", "Referencia cliente cambiada" )
     loading.value.ref           = false
-  }  
+  }
 
   //* ////////////////////////////////////////////////////////////////////// Editar acuerdo
   async function pasarABorradorAcuerdo()
@@ -327,7 +327,7 @@ export function useControlAcuerdo()
       aviso("negative", `Error al reabrir ${acuerdo.value.tipo}`)
 
     loading.value.editar      = false
-  }  
+  }
 
   //* ////////////////////////////////////////////////////////////////////// Aprobar Cotizacion
   async function aprobarCotizacion()
@@ -419,7 +419,7 @@ export function useControlAcuerdo()
   //* ////////////////////////////////////////////////////////////////////// Editar Nota Privada
   async function cambiarProyecto( proyecto : IProyecto )
   {
-    if(acuerdo.value.esNuevo || !proyecto) return    
+    if(acuerdo.value.esNuevo || !proyecto) return
     const id                    = proyecto.id === 0 ? null : proyecto.id
 
     loading.value.proyecto      = true
@@ -430,14 +430,14 @@ export function useControlAcuerdo()
     else
       aviso("negative", `Error al asignar proyecto en ${acuerdo.value.tipo}`)
     loading.value.proyecto      = false
-  }  
+  }
 
   //* ////////////////////////////////////////////////////////////////////// Editar Nota Privada
   async function editarNotaPrivada( nota : string )
   {
     if(acuerdo.value.esNuevo) return
     loading.value.notaPrivada   = true
-    const {ok}                  = await apiDolibarr("editar", acuerdo.value.tipo, { note_private: nota }, acuerdo.value.id )       
+    const {ok}                  = await apiDolibarr("editar", acuerdo.value.tipo, { note_private: nota }, acuerdo.value.id )
     if(ok){
       aviso("positive", `Nota privada editada 👌🏼`)
     }
@@ -451,7 +451,7 @@ export function useControlAcuerdo()
   {
     if(acuerdo.value.esNuevo) return
     loading.value.notaPublica   = true
-    const {ok}                  = await apiDolibarr("editar", acuerdo.value.tipo, { note_public: nota }, acuerdo.value.id )       
+    const {ok}                  = await apiDolibarr("editar", acuerdo.value.tipo, { note_public: nota }, acuerdo.value.id )
     if(ok){
       aviso("positive", `Nota publica editada 👌🏼`)
     }
@@ -480,7 +480,7 @@ export function useControlAcuerdo()
   async function editarFechaFinValidez( fecha : Date )
   {
     if(acuerdo.value.esNuevo) return
-    
+
     loading.value.fechaFinValidez = true
     const ok                      = await setFechaFinValidez( acuerdo.value.id, acuerdo.value.fechaFinValidez, acuerdo.value.tipo )
     if (ok) aviso("positive", "Fecha cambiada", "clock" )
@@ -497,7 +497,7 @@ export function useControlAcuerdo()
     if (ok) aviso("positive", "Fecha de entrega cambiada", "clock" )
     loading.value.fechaEntrega  = false
   }
-  
+
   //* /////////////////////////////////////////////////////////////// Editar condiciones de pago
   async function editarCondicionPago( condicion : ICondicionPago )
   {
@@ -518,7 +518,7 @@ export function useControlAcuerdo()
     const ok                    = await setFormaPago( acuerdo.value.id, forma.id, acuerdo.value.tipo)
     if (ok) aviso("positive", "Forma de pago cambiada" )
     loading.value.formaPago     = false
-  }    
+  }
 
   //* /////////////////////////////////////////////////////////////// Editar metodo de entrega
   async function editarMetodoEntrega( metodo : IMetodoEntrega )
@@ -529,7 +529,7 @@ export function useControlAcuerdo()
     const ok                        = await setMetodoEntrega( acuerdo.value.id, metodo.id, acuerdo.value.tipo)
     if (ok) aviso("positive", "Método de entrega cambiado" )
     loading.value.metodoEntrega     = false
-  }    
+  }
 
   //* /////////////////////////////////////////////////////////////// Editar tiempo de entrega
   async function editarTiempoEntrega( tiempo : ITiempoEntrega )
@@ -558,7 +558,7 @@ export function useControlAcuerdo()
     loading.value.valoresAIU    = false
     //if(!ok) aviso("positive", "AIU modificado")
   }
-  
+
   //* /////////////////////////////////////////////////////////////// Editar con Total
   async function editarConTotal( on : boolean )
   {
@@ -573,26 +573,26 @@ export function useControlAcuerdo()
   {
     loading.value.conIVA        = true
     const conIVAEditado         = await setConIVA( acuerdo.value.id, on, acuerdo.value.tipo)
-    
+
     for (const linea of acuerdo.value.productos)
     {
       const iva                 = parseInt( process.env.IVA ?? "0" )
       linea.iva                 =  on ? iva : 0
       const lineaEdit           = { id: linea.lineaId, tva_tx: linea.iva }
       const {ok}                = await apiDolibarr("editar-linea", acuerdo.value.tipo, lineaEdit, acuerdo.value.id )
-      if (!ok){ 
+      if (!ok){
         const error             = "Error al cambiar el IVA del producto"
         console.trace()
         console.error(error)
         aviso("negative", error)
       }
     }
-    
+
     if(conIVAEditado) aviso("positive", "IVA " + ( on ? "activado" : "desactivado" ))
     loading.value.conIVA        = false
   }
 
-  
+
 
   //* /////////////////////////////////////////////////////////////// Return
   return {
@@ -614,7 +614,7 @@ export function useControlAcuerdo()
     editarFormaPago,
     editarCondicionPago,
     editarFechaEntrega,
-    editarFechaFinValidez,    
+    editarFechaFinValidez,
     editarConAIU,
     editarValorAIU,
     editarConTotal,

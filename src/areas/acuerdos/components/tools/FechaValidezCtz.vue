@@ -5,7 +5,7 @@
     class                   ="col-md-6 col-12"
     titulo                  ="Fecha vencimiento"
     :loading                ="loading"
-    :dias-validos           ="diasDefault"
+    :dias-validos           ="+diasDefault"
     @update:model-value     ="emitir"
     >
     {{dias + ( dias === 1 ? " día" : " días")}}
@@ -21,6 +21,7 @@
   import {  useConstantes,
             CONSTANTES        } from "src/models/Diccionarios/Constante"
   import {  date              } from 'quasar'
+  import {  ID_URL_Ok         } from "src/useSimpleOk/useTools"
 
   const emit                  = defineEmits(["update:model-value"])
   const props                 = defineProps({
@@ -30,24 +31,24 @@
     nuevo:      { default:  false,      type: Boolean },
   })
 
-  
+
   const { modelValue, nuevo } = toRefs(props)
   const modelo                = ref<Date> ( modelValue.value )
   const diasDefault           = useConstantes( CONSTANTES.CTZ_DIAS_VALIDEZ )
 
   //onMounted()
 
-  watch([modelValue, diasDefault], ([ newFecha, newDias ],[oldFecha, oldDias ]) =>
+  watch([modelValue, diasDefault], ([ newFecha, newDias ], [oldFecha, oldDias ]) =>
   {
     let miliSec1970           = newFecha.valueOf()
 
     if
     (
-      // Si fecha de model value es 0 y los dias son validos, y es un nueva cotizacion, 
+      // Si fecha de model value es 0 y los dias son validos, y es un nueva cotizacion,
       (!miliSec1970           && !!newDias && nuevo.value)
       ||
       // Los nuevos dias son validos y es una nueva cotizacion, y los nuevos son diferentes a los viejos dias
-      (newDias > 0 && newDias !== oldDias && nuevo.value)
+      (+newDias > 0 && +newDias !== +oldDias && nuevo.value)
     )
     {
       modelo.value            = getFechaDefault()
@@ -68,6 +69,6 @@
   }
 
   function getFechaDefault() : Date {
-    return date.addToDate(new Date(), { days: diasDefault.value })
+    return date.addToDate(new Date(), { days: +diasDefault.value })
   }
 </script>
