@@ -7,24 +7,25 @@
 <script setup lang="ts">
   // * /////////////////////////////////////////////////////////////////////// Core
   import {  watch,
-            toRefs,            
+            toRefs,
             PropType,
             onMounted,
                                   } from "vue"
   //* ///////////////////////////////////////////////////////////////////////////////// Store
-  import {  storeToRefs           } from 'pinia'    
+  import {  storeToRefs           } from 'pinia'
   import {  useStoreAcuerdo       } from 'src/stores/acuerdo'
   //* ///////////////////////////////////////////////////////////////////////////////// Componibles
   import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"
-  import {  useControlProductos   } from "src/areas/acuerdos/controllers/ControlLineasProductos"  
+  import {  useControlProductos   } from "src/areas/acuerdos/controllers/ControlLineasProductos"
   import {  TTipoAcuerdo          } from "src/areas/acuerdos/models/ConstantesAcuerdos"
   //* ///////////////////////////////////////////////////////////////////////////////// Componentes
   import    vistaAcuerdo            from "src/areas/acuerdos/components/Views/VistaAcuerdoVer.vue"
-  
+
   const { buscarAcuerdo     } = useControlAcuerdo()
   const { copiarProductos,
           deGruposAProductos }= useControlProductos()
-  const { acuerdo           } = storeToRefs( useStoreAcuerdo() )  
+  const { acuerdo           } = storeToRefs( useStoreAcuerdo() )
+  const storeAcuerdo          = useStoreAcuerdo()
 
   const props                 = defineProps({
     id:   { required: true, type: String },
@@ -39,10 +40,11 @@
             if(!!id.value && !!tipo.value)
               iniciar()
           }
-        )  
+        )
 
   async function iniciar()
   {
+    storeAcuerdo.cargarNivelesComision()
     const gruposBoceto              = Object.assign( acuerdo.value.proGrupos, {} )
     const idCopiaAcuerdo            = acuerdo.value.id
     const tipoCopiaAcuerdo          = acuerdo.value.tipo

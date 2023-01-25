@@ -33,9 +33,9 @@
           />
           <!-- //* //////////////////////////////////////////////////////// Nombre-->
           <nombre-descripcion
+            v-model             ="props.row"
             class               ="col"
             :class              ="{'cursor-pointer' : acuerdo.esEstadoNoValidado}"
-            :linea              ="(props.row as LineaAcuerdo)"
             :es-validado        ="acuerdo.esEstadoValido"
             @click              ="mostrarFormulario( props.row as LineaAcuerdo )"
             @borrar-linea       ="borrarLineaMenu"

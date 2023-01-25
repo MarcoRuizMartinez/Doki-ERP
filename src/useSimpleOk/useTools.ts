@@ -7,7 +7,6 @@ import {  LocationQueryValue      } from "vue-router"
 import {  ILabelValue,
           labelValueNulo,         } from "src/models/TiposVarios"
 
-
 type Iconos = "" | "water" | "account" | "shield" | "clipboard" | "clock" | "cloud" | "sticker" | "comment" | "table" | "head" | "phone" | "timeline" | "bell" | "printer" | "email" | "lock" | "file" | "lock-open" | "map-marker"
 
 export function useTools()
@@ -15,6 +14,7 @@ export function useTools()
   const quasar                  = useQuasar()
   const { notify              } = quasar
   const esMobil                 = !!quasar.platform.is.mobile
+  
 
   function aviso
   (
@@ -40,9 +40,10 @@ export function useTools()
     })
   }
 
+
   return {
     aviso,
-    esMobil
+    esMobil,
   }
 }
 

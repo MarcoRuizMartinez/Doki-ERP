@@ -137,18 +137,13 @@
 
   async function editarComercialPrincial( u : IUsuario )
   {
-    await editarComercial( u,  "1" )
-    if( !!acuerdo.value.comercial2.nombre ){
+    await editarComercial( u,  "1" )    
+    if( !!acuerdo.value.comercial2?.nombre ){
       await borrarComercialApoyo()
       acuerdo.value.comercial2      = new Usuario()
     }
   }
 
-  function editarComercialApoyo( u : IUsuario )  {
-    editarComercial( u,  "2" )
-  }
-
-  async function borrarComercialApoyo(){
-    await editarComercial( null, "2")
-  }
+  const editarComercialApoyo = ( u : IUsuario ) => editarComercial( u,  "2" )
+  const borrarComercialApoyo = async()          => await editarComercial( null, "2")
 </script>

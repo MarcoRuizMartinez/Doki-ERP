@@ -8,7 +8,7 @@
       :cargando                   ="!lista.length"
       >
       <template                   #menu>
-        <input-buscar             autofocus clearable hundido
+        <input-buscar             clearable hundido
           v-model                 ="filtro"
           label                   ="Filtrar.."
           class                   ="full-width"

@@ -2,8 +2,8 @@ import {  TIPO_USUARIO,
           AREA,
           GRUPO_USUARIO
                             } from "src/models/TiposVarios"
-import {  IReglasComision,
-          ReglasComision    } from "src/models/Diccionarios/ReglasComision"
+import {  IReglaComision,
+          ReglaComision    } from "src/models/Diccionarios/ReglasComision"
 
 const fotoDefault = process.env.URL_DOLIBARR + "/_maco/img/user.png"
 
@@ -39,7 +39,7 @@ export interface IUsuario {
   areaEsMublex      : boolean
   areaEsGlobal      : boolean
   reglaComisionId   : number
-  reglaComision     : IReglasComision
+  reglaComision     : IReglaComision
 }
 
 export class Usuario implements IUsuario
@@ -60,7 +60,7 @@ export class Usuario implements IUsuario
   permisos          : string
   gruposString      : string
   reglaComisionId   : number
-  reglaComision     : IReglasComision
+  reglaComision     : IReglaComision
 
   constructor( usuario? : IUsuario )
   {
@@ -80,7 +80,7 @@ export class Usuario implements IUsuario
       this.cel                = ""
       this.correo             = ""
       this.reglaComisionId    = 0
-      this.reglaComision      = new ReglasComision()
+      this.reglaComision      = new ReglaComision()
 
       if(!!usuario)
       {

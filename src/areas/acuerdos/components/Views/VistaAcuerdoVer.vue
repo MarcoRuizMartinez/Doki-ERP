@@ -24,7 +24,7 @@
   <condiciones              scroll
     class                   ="col-md-4 col-12"
     height-card             ="260px"
-  /> 
+  />
   <totales                  scroll
     class                   ="col-md-4 col-12"
     height-card-min         ="260px"
@@ -37,7 +37,7 @@
     ref                     ="moduloEnlaces"
     class                   ="col-md-4 col-12"
     height-card             ="220px"
-  />    
+  />
   <documentos               minimizar
     class                   ="col-md-4 col-12"
     height-card-min         ="164px"
@@ -55,9 +55,9 @@
   />
   <notas
     class                   ="col-md-4 col-12"
-    height-card             ="220px"  
+    height-card             ="220px"
     :class                  ="{ 'order-1' : acuerdo.esPedido }"
-  /> 
+  />
   <productos
     class                   ="col-12"
   />
@@ -83,18 +83,18 @@
             provide,
             PropType,
                                   } from "vue"
-  import {  useTitle              } from "@vueuse/core"                                  
+  import {  useTitle              } from "@vueuse/core"
   //* ///////////////////////////////////////////////////////////////////////////////// Store
-  import {  storeToRefs           } from 'pinia'    
+  import {  storeToRefs           } from 'pinia'
   import {  useStoreAcuerdo       } from 'src/stores/acuerdo'
   //* ///////////////////////////////////////////////////////////////////////////////// Modelos
-  //import {  Acuerdo, TIPO_ACUERDO } from "../../models/Acuerdo"  
-  import {  LineaAcuerdo          } from "src/areas/acuerdos/models/LineaAcuerdo"  
-  import {  IArchivo              } from "src/models/Archivo"  
+  //import {  Acuerdo, TIPO_ACUERDO } from "../../models/Acuerdo"
+  import {  LineaAcuerdo          } from "src/areas/acuerdos/models/LineaAcuerdo"
+  import {  IArchivo              } from "src/models/Archivo"
   //* ///////////////////////////////////////////////////////////////////////////////// Componibles
   import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"
   import {  useCotizacionPDF      } from "src/areas/acuerdos/composables/useCotizacionPDF"
-  //import {  useControlProductos   } from "src/areas/acuerdos/controllers/ControlLineasProductos"  
+  //import {  useControlProductos   } from "src/areas/acuerdos/controllers/ControlLineasProductos"
   import {  TTipoAcuerdo          } from "src/areas/acuerdos/models/ConstantesAcuerdos"
   //* ///////////////////////////////////////////////////////////////////////////////// Componentes
   import    visorPdf                from "components/utilidades/VisorPDF.vue"
@@ -135,7 +135,7 @@
     tipo: { required: true, type: String as PropType< TTipoAcuerdo > },
   })
 
-  const { id, tipo }          = toRefs( props )  
+  const { id, tipo }          = toRefs( props )
 
   watch ( [()=>acuerdo.value.id, ()=>acuerdo.value.tipo],
           ()=> {
@@ -162,8 +162,8 @@
 
     //loading.value.pdf           = true
     modales.value.pdfRemision   = true
-  }  
-  
+  }
+
 
   async function recargar(){
     await buscarAcuerdo( tipo.value, id.value )

@@ -34,7 +34,7 @@ import {  getCondicionesPagoDB,
           getOrigenContactoDB,
           getTiempoEntregaDB,
           getUsuarioDB,
-          getReglasComisionDB
+          getReglaComisionDB
                                             } from "src/services/useDexie"
 import {  TTipoAcuerdo,
           TIPO_ACUERDO,
@@ -52,6 +52,7 @@ import {  ITercero,         Tercero         } from "src/areas/terceros/models/Te
 import {  IUsuario,         Usuario         } from "src/areas/usuarios/models/Usuario"
 import {  IContacto,        Contacto        } from "src/areas/terceros/models/Contacto"
 import {  IGrupoLineas,     GrupoLineas     } from "src/areas/acuerdos/models/GrupoLineasAcuerdo"
+import {  IComision,        Comision        } from "src/areas/acuerdos/models/Comisiones/Comision"
 import {  IArchivo,         Archivo         } from "src/models/Archivo"
 import {  ICondicionPago,   CondicionPago   } from "src/models/Diccionarios/CondicionPago"
 import {  IFormaPago,       FormaPago       } from "src/models/Diccionarios/FormaPago"
@@ -188,7 +189,7 @@ export interface IAcuerdo
 
   vinculado:                  boolean     // Tiene un vinculo con otro elemento en dolibarr como facturas o pedidos
   puedeCrearSubtotal:         boolean
-  puedeCrearNuevoGrupo:       boolean
+  puedeCrearNuevoGrupo:       boolean  
 
   /* Solo para cotizaciones */
   titulo:                     string
@@ -319,7 +320,7 @@ export class Acuerdo implements IAcuerdo
     this.metodoEntrega        = new MetodoEntrega()
     this.origenContacto       = new OrigenContacto()
     this.tiempoEntrega        = new TiempoEntrega()
-    this.conIVA               = true
+    this.conIVA               = true    
 
     /* Solo para cotizaciones */
     this.titulo               = ""
@@ -888,13 +889,14 @@ https://dolibarr.mublex.com/fichinter/card.php?
     acu.esNuevo               = false
     acu.tipo                  = tipo
     acu.creador               = await getUsuarioDB          ( acu.creadorId )
+
     if(!!acu.comercialId){
-      acu.comercial               = await getUsuarioDB        ( acu.comercialId )
-      acu.comercial.reglaComision = await getReglasComisionDB ( acu.comercial.reglaComisionId )
+      acu.comercial                 = await getUsuarioDB        ( acu.comercialId )
+      acu.comercial.reglaComision   = await getReglaComisionDB  ( acu.comercial.reglaComisionId )
     }
     if(!!acu.comercial2Id){
-      acu.comercial2               = await getUsuarioDB        ( acu.comercial2Id )
-      acu.comercial2.reglaComision = await getReglasComisionDB ( acu.comercial2.reglaComisionId )
+      acu.comercial2                = await getUsuarioDB       ( acu.comercial2Id )
+      acu.comercial2.reglaComision  = await getReglaComisionDB ( acu.comercial2.reglaComisionId )
     }
 
     acu.tercero               = await Tercero.convertirDataApiATercero( acuApi.tercero )

@@ -26,7 +26,7 @@ export class ProductoCategoria implements IProductoCategoria
     this.nombre               = ""
     this.sigla                = ""
     this.grupo                = ""
-    this.modificadorComision  = 0
+    this.modificadorComision  = 0.3
     this.codigoVenta          = 0
     this.codigoCompra         = 0
   }

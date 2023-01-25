@@ -3,17 +3,14 @@
     @click              ="emit('click')"
     v-bind              ="$attrs"
     >
-    <!-- <q-icon :name="`mdi-alpha-${linea.nivelPrecios}-circle`" color="grey-6" size="xs"/> -->
     <span class         ="text-bold q-mr-sm">{{linea.ref}}</span>
     <span class         ="text-subtitle1">{{linea.nombre}}</span>
+<!--     <br/> <span class         ="text-subtitle1">Modificador: {{linea.categoria.modificadorComision}}</span>
+    <br/> <span class         ="text-subtitle1">Costo: {{linea.costo}}</span>
+    <br/> <span class         ="text-subtitle1">Aumento: {{linea.aumentoFromCosto}}</span>
+    <br/> <span class         ="text-subtitle1">Division: {{linea.comsionX100Division}}</span> -->
     <br/>
-    <span class         ="text-subtitle1">{{linea.categoria.modificadorComision}}</span>
-    <br/>
-    <span class         ="text-subtitle1">{{linea.costo}}</span>
-    <br/>
-    <span class         ="text-subtitle1">{{linea.aumentoFromCosto}}</span>
-    <br/>
-    <span
+    <span 
       v-if              ="!!linea.descripcion"
       v-html            ="linea.descripcion"
       class             ="text-0_8em"
@@ -43,7 +40,7 @@
           <tr>
             <td>Nivel de precios</td>
             <td>
-              {{ linea.nivelPrecios }}
+              
             </td>
           </tr>
         </tbody>
@@ -71,18 +68,24 @@
 </template>
 <script lang="ts" setup>
 //      style             ="min-width: 100px">
-  import {  PropType      } from "vue"
+  import {  ref,
+            watch,
+            toRefs,
+            PropType              } from "vue"  
   import {  ILineaAcuerdo } from "src/areas/acuerdos/models/LineaAcuerdo"
   import    confirmar       from "components/utilidades/MenuConfirmar.vue"
-  import {  formatoPrecio         } from "src/useSimpleOk/useTools"
-
+  import {  formatoPrecio } from "src/useSimpleOk/useTools"
+  
   const props               = defineProps({
-    linea:      { required: true, type: Object as PropType< ILineaAcuerdo > },
+    modelValue: { required: true, type: Object as PropType< ILineaAcuerdo > },
     esValidado: { required: true, type: Boolean },
   })
+  const { modelValue }      = toRefs(props)
+  const linea               = ref< ILineaAcuerdo >( modelValue.value )  
+  watch( modelValue, (newLinea)=> linea.value = newLinea )
 
   const emit = defineEmits<{
     (e: 'click',        value: void           ): void
     (e: 'borrarLinea',  value: ILineaAcuerdo  ): void
-  }>()
+  }>()  
 </script>

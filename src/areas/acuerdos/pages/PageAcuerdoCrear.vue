@@ -9,10 +9,9 @@
             //toRefs,
             PropType,
             onUnmounted,
-                                  } from "vue"  
+                                  } from "vue"
   // * /////////////////////////////////////////////////////////////////////////////////// Store
-  //import {  storeToRefs           } from 'pinia'
-  //import {  useStoreAcuerdo       } from 'src/stores/acuerdo'
+  import {  useStoreAcuerdo       } from 'src/stores/acuerdo'
   // * /////////////////////////////////////////////////////////////////////////////////// Modelos
   //import {  Acuerdo               } from "src/areas/acuerdos/models/Acuerdo"
   import {  TTipoAcuerdo          } from "src/areas/acuerdos/models/ConstantesAcuerdos"
@@ -25,8 +24,10 @@
     tipo:       { required: true, type: String as PropType< TTipoAcuerdo > },
   })
   //const { tipo              } = toRefs( props )
-  
+  const storeAcuerdo          = useStoreAcuerdo()
+
   onUnmounted(()=>{
+    storeAcuerdo.cargarNivelesComision()
     //console.log("onUnmounted Page crear")
     //if(acuerdoCreado) return
     //acuerdo.value             = new Acuerdo( tipo.value )

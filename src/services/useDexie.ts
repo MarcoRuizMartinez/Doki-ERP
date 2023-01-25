@@ -24,7 +24,7 @@ import {  IProductoCategoria, ProductoCategoria } from "src/areas/productos/mode
 import {  IConstante,         Constante         } from "src/models/Diccionarios/Constante"
 import {  IProveedor,         Proveedor         } from "src/models/Diccionarios/Proveedor"
 import {  ICuentaDinero,      CuentaDinero      } from "src/models/Diccionarios/CuentaDinero"
-import {  IReglasComision,    ReglasComision    } from "src/models/Diccionarios/ReglasComision"
+import {  IReglaComision,     ReglaComision     } from "src/models/Diccionarios/ReglasComision"
 import {  storeToRefs                           } from 'pinia'
 
 //* ///////////////////////////////////////////////////////////// Tipos de documento
@@ -47,7 +47,7 @@ export enum TABLAS
   REGLA_COMISION              = "reglasComision",
 }
 
-export type ITabla            = IMunicipio      | IUsuario        | ITipoDocumento      | ICondicionPago | IReglasComision |
+export type ITabla            = IMunicipio      | IUsuario        | ITipoDocumento      | ICondicionPago | IReglaComision |
                                 IFormaPago      | IMetodoEntrega  | IOrigenContacto     | IUnidad        | ICuentaDinero |
                                 ITiempoEntrega  | ITipoContacto   | IProductoCategoria  | IConstante     | IProveedor
 
@@ -74,11 +74,9 @@ export function cargarListasIndex() {
     /* tiposDocumentos               = */ dexieTiposDocumentos(param)
     /* unidades                      = */ dexieUnidades(param)
                                           dexieCuentasDinero(param)
-                                          dexieReglasComision(param)
+                                          dexieReglaComision(param)
   }
 }
-
-
 
 interface IParametros         { cargarSiempre?:  boolean , demora?:         number }
 
@@ -86,8 +84,8 @@ const paramDefault : IParametros = { cargarSiempre : false, demora : 0 }
 
 //* ///////////////////////////////////////////////////////////// Usuarios
 export function dexieUsuarios         ( { cargarSiempre = false, demora = 0 } = paramDefault ) :Ref< IUsuario[] > {
-  const { lista } = useDexie( TABLAS.USUARIOS, { cargarSiempre, demora } )
-  return lista as Ref< IUsuario[] >
+  const { lista : usuarios  }  = useDexie( TABLAS.USUARIOS,        { cargarSiempre, demora } )
+  return usuarios as Ref< IUsuario[] >
 }
 
 //* ///////////////////////////////////////////////////////////// Municipios
@@ -169,9 +167,9 @@ export function dexieCuentasDinero      ( { cargarSiempre = false, demora = 0 } 
 }
 
 //* ///////////////////////////////////////////////////////////// Unidades
-export function dexieReglasComision ( { cargarSiempre = false, demora = 0 } = paramDefault ) :Ref< IReglasComision[] > {
+export function dexieReglaComision ( { cargarSiempre = false, demora = 0 } = paramDefault ) :Ref< IReglaComision[] > {
   const { lista } = useDexie( TABLAS.REGLA_COMISION, { cargarSiempre, demora } )
-  return lista as Ref< IReglasComision[] >
+  return lista as Ref< IReglaComision[] >
 }
 
 function useDexie( tabla : TABLAS, { cargarSiempre = false, demora = 0 } = paramDefault )
@@ -522,7 +520,7 @@ export async function getTiempoEntregaDB( id : number ) : Promise < ITiempoEntre
   )
 }
 
-export async function getConstante( label : string ) : Promise < IConstante >
+export async function getConstanteDB( label : string ) : Promise < IConstante >
 {
   return db.transaction('r', db[ TABLAS.CONSTANTE ], async () =>
     {
@@ -560,33 +558,25 @@ export async function getCuentasDineroDB( id : number ) : Promise < ICuentaDiner
     }
   )
 }
-
-export async function getReglasComisionDB( id : number ) : Promise < IReglasComision >
+// TODO
+export async function getReglaComisionDB( id : number ) : Promise < IReglaComision >
 {
   return db.transaction('r', db[ TABLAS.REGLA_COMISION ], async () =>
     {
-      const listaDB         = await db[ TABLAS.REGLA_COMISION ].where("id").equals(id).toArray()
+      const listaDB         = await db[ TABLAS.REGLA_COMISION ].where("id").equals( id ).toArray()
+      //console.log("listaDB: ", listaDB);
       if(listaDB.length     == 1)
       {
-        const regla         = listaDB[0]
+        //listaDB[0].id       = +listaDB[0].id
+        const regla         = Object.assign( listaDB[0], {} )
+        //console.log("regla: ", regla);
         // TODO
         regla.id            = +regla.id
-        regla.comision_alfa = +regla.comision_alfa
-        regla.comision_a    = +regla.comision_a
-        regla.comision_b    = +regla.comision_b
-        regla.comision_c    = +regla.comision_c
-        regla.comision_d    = +regla.comision_d
-        regla.comision_e    = +regla.comision_e
-        regla.nivel_alfa    = +regla.nivel_alfa
-        regla.nivel_a       = +regla.nivel_a
-        regla.nivel_b       = +regla.nivel_b
-        regla.nivel_c       = +regla.nivel_c
-        regla.nivel_d       = +regla.nivel_d
-        regla.nivel_e       = +regla.nivel_e
+        //console.log("listaDB[0]: ", listaDB[0]);
         return listaDB[0]
       }
       else
-        return new ReglasComision()
+        return new ReglaComision()
     }
   )
 }

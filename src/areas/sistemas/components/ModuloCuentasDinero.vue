@@ -8,12 +8,12 @@
     :cargando                   ="!lista.length"
     >
     <template                   #menu>
-      <input-buscar             autofocus clearable hundido
+      <input-buscar             clearable hundido
         v-model                 ="filtro"
         label                   ="Filtrar.."
-        class                   ="full-width"        
+        class                   ="full-width"
       />
-    </template>    
+    </template>
     <q-table                    borbordered dense flat
       class                     ="fit tabla-maco"
       row-key                   ="id"
@@ -32,7 +32,7 @@
   import    inputBuscar           from "src/components/utilidades/input/InputSimple.vue"
   import {  dexieCuentasDinero  } from "src/services/useDexie"
 
-  const filtro                = ref< string >("")  
+  const filtro                = ref< string >("")
   const lista                 = dexieCuentasDinero()
   const columnas: IColumna[]  = [
                                   new Columna({ name: "id"}),

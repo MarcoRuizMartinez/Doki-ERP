@@ -29,7 +29,6 @@ export class Constante implements IConstante
 import {  ref, watch        } from "vue"
 import {  dexieConstantes   } from "src/services/useDexie"
 
-
 export function useConstantes( constanteBuscada : CONSTANTES )
 {
   const constantes              = dexieConstantes( { cargarSiempre : true } ) // Para buscar de Dolibarr los valores y cargarlos a la DB local

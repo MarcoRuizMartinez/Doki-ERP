@@ -1,6 +1,7 @@
 <template>
   <div class="text-right cursor-pointer">
     {{ linea.descuentoX100 }}
+    <q-icon :name="linea.iconoNivel" color="grey-6" size="sm" class="q-mr-xs"/>
   </div>
   <q-popup-edit           buttons
     v-if                  ="!readonly"
@@ -21,22 +22,27 @@
   </q-popup-edit>
 </template>
 <script lang="ts" setup>
-  import {  ref, toRefs, PropType } from "vue"    
+  import {  ref,
+            watch,
+            toRefs,
+            PropType              } from "vue"    
   import {  ILineaAcuerdo         } from "src/areas/acuerdos/models/LineaAcuerdo"
   import {  useControlProductos   } from "src/areas/acuerdos/controllers/ControlLineasProductos"            
   import    numeroPaso              from "components/utilidades/input/InputNumeroPaso.vue"
 
-  const { editarLinea }     = useControlProductos()  
+  const { editarLinea }     = useControlProductos()
 
   const props               = defineProps({
     modelValue: { required: true, type: Object as PropType< ILineaAcuerdo > },
     readonly:   { default:  false,  type: Boolean                           }
   })
   const { modelValue }      = toRefs(props)
-  const linea               = ref<ILineaAcuerdo>(modelValue.value)  
+  const linea               = ref< ILineaAcuerdo >( modelValue.value )  
   const emit                = defineEmits<{
-    (e: 'update:modelValue',  value: ILineaAcuerdo ): void
-  }>()  
+    (e: 'update:modelValue',  value : ILineaAcuerdo ): void
+  }>()
+
+  watch( modelValue, (newLinea)=> linea.value = newLinea )
 
   function actualizar()
   {

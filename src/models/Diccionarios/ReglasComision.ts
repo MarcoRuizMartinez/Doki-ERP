@@ -1,69 +1,63 @@
-import {  ILineaAcuerdo,
-          LineaAcuerdo    } from "src/areas/acuerdos/models/LineaAcuerdo"
-
-export interface IReglasComision
+export interface IReglaComision
 {
   id                        : number
 	nombre                    : string
   descripcion               : string
-	comision_alfa             : number
-	comision_a                : number
-	comision_b                : number
-	comision_c                : number
-	comision_d                : number
-	comision_e                : number
-	nivel_alfa                : number
-	nivel_a                   : number
-	nivel_b                   : number
-	nivel_c                   : number
-	nivel_d                   : number
-	nivel_e                   : number
 
   label                     : string
   value                     : number
 
-  lineas                    : ILineaAcuerdo[]
+  // *                      // Para guardar en Dexie estos valores
+	alfa                      : string
+	a                         : string
+	b                         : string
+	c                         : string
+	d                         : string
+	e                         : string
+
+  X100_alfa                 : number
+  X100_a                    : number
+  X100_b                    : number
+  X100_c                    : number
+  X100_d                    : number
+  X100_e                    : number
 }
 
-export class ReglasComision implements IReglasComision
+export class ReglaComision implements IReglaComision
 {
   id                        : number
 	nombre                    : string
   descripcion               : string
-	comision_alfa             : number
-	comision_a                : number
-	comision_b                : number
-	comision_c                : number
-	comision_d                : number
-	comision_e                : number
-	nivel_alfa                : number
-	nivel_a                   : number
-	nivel_b                   : number
-	nivel_c                   : number
-	nivel_d                   : number
-	nivel_e                   : number
-  lineas                    : ILineaAcuerdo[]
+
+	alfa                      : string
+	a                         : string
+	b                         : string
+	c                         : string
+	d                         : string
+	e                         : string
 
   constructor()
   {
     this.id                 = 0
     this.nombre             = ""
     this.descripcion        = ""
-    this.comision_alfa      = 0
-    this.comision_a         = 0
-    this.comision_b         = 0
-    this.comision_c         = 0
-    this.comision_d         = 0
-    this.comision_e         = 0
-    this.nivel_alfa         = 0
-    this.nivel_a            = 0
-    this.nivel_b            = 0
-    this.nivel_c            = 0
-    this.nivel_d            = 0
-    this.nivel_e            = 0
-    this.lineas             = []
+
+    this.alfa               = "0"
+    this.a                  = "0"
+    this.b                  = "0"
+    this.c                  = "0"
+    this.d                  = "0"
+    this.e                  = "0"
   }
 
-  get label()       : string  { return this.nombre }
-  get value()       : number  { return this.id }
+  get label()     : string  { return this.nombre  }
+  get value()     : number  { return this.id      }
+
+  get X100_alfa() : number  { return +this.alfa   }
+  get X100_a()    : number  { return +this.a      }
+  get X100_b()    : number  { return +this.b      }
+  get X100_c()    : number  { return +this.c      }
+  get X100_d()    : number  { return +this.d      }
+  get X100_e()    : number  { return +this.e      }
+
 }

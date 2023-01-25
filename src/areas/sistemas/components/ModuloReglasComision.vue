@@ -8,7 +8,7 @@
       :cargando                   ="!lista.length"
       >
       <template                   #menu>
-        <input-buscar             autofocus clearable hundido
+        <input-buscar             clearable hundido
           v-model                 ="filtro"
           label                   ="Filtrar.."
           class                   ="full-width"
@@ -31,13 +31,18 @@
             Columna             } from "src/models/Tabla"
   import    ventana               from "components/utilidades/Ventana.vue"
   import    inputBuscar           from "src/components/utilidades/input/InputSimple.vue"
-  import {  dexieReglasComision } from "src/services/useDexie"
+  import {  dexieReglaComision  } from "src/services/useDexie"
 
   const filtro                = ref< string >("")
-  const lista                 = dexieReglasComision()
+  const lista                 = dexieReglaComision()
   const columnas: IColumna[]  = [
                                   new Columna({ name: "id"}),
                                   new Columna({ name: "nombre"}),
+                                  new Columna({ name: "alfa"}),
+                                  new Columna({ name: "a"}),
+                                  new Columna({ name: "b"}),
+                                  new Columna({ name: "c"}),
+                                  new Columna({ name: "d"}),
+                                  new Columna({ name: "e"}),
                                 ]
-  //[TABLAS.MUNICIPIOS]:        "++id, municipio, departamento
 </script>

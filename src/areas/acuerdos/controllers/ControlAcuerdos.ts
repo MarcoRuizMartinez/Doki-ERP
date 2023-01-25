@@ -13,6 +13,8 @@ import {  getURL, getFormData   } from "src/services/APIMaco"
 import {  useTools,
           ID_URL_Ok,
           confeti               } from "src/useSimpleOk/useTools"
+import {  dexieReglaComision,
+          getReglaComisionDB     } from "src/services/useDexie"
 //* ////////////////////////////////////////////////////////////////// Modelos
 import {  ESTADO_CTZ,
           ESTADO_PED,
@@ -64,6 +66,7 @@ export function useControlAcuerdo()
   const { miFetch             } = useFetch()
   const { acuerdo,
           loading             } = storeToRefs( useStoreAcuerdo() )
+  const reglasComision          = dexieReglaComision()
 
   //* /////////////////////////////////////////////////////////////// Crear Acuerdo
   async function crearAcuerdo( idUsuario : number ) : Promise<boolean>
@@ -269,9 +272,30 @@ export function useControlAcuerdo()
 
     loading.value.comercial       = true
     const idUsuario               = !!usuario ? usuario.id : 0
+
     const ok                      = await setComercial( acuerdo.value.id, idUsuario, acuerdo.value.tipo, numeroComercial )
-    if   (ok) aviso("positive", "Comercial editado", "account" )
+
+    if(ok) {
+      aviso("positive", "Comercial editado", "account" )
+      if(!!usuario)
+        asignarReglaComision( usuario )
+    }
     loading.value.comercial       = false
+  }
+
+  async function asignarReglaComision( comercial : IUsuario )
+  {
+    if(!reglasComision.value.length){
+      console.warn("Error asignando regla de comisión. No hay reglas.")
+      return
+    }
+
+    const i       = reglasComision.value.findIndex( r => r.id == comercial.reglaComisionId )
+    if(i          === -1){
+      console.warn("Error asignando regla de comisión. Regla no encontrada.")
+      return 
+    }
+    comercial.reglaComision = reglasComision.value[i]
   }
 
   //* /////////////////////////////////////////////////////////////// Editar origen

@@ -20,7 +20,10 @@
   </q-popup-edit> 
 </template>
 <script lang="ts" setup>
-  import {  ref, toRefs, PropType } from "vue"    
+  import {  ref,
+            watch,
+            toRefs,
+            PropType              } from "vue"    
   import {  ILineaAcuerdo         } from "src/areas/acuerdos/models/LineaAcuerdo"
   import {  useControlProductos   } from "src/areas/acuerdos/controllers/ControlLineasProductos"            
   import    numeroPaso              from "components/utilidades/input/InputNumeroPaso.vue"
@@ -36,6 +39,8 @@
   const emit                = defineEmits<{
     (e: 'update:modelValue',  value: ILineaAcuerdo ): void
   }>()  
+
+  watch( modelValue, (newLinea)=> linea.value = newLinea )
 
   function actualizar()
   {

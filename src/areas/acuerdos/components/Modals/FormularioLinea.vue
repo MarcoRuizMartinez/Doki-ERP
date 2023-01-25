@@ -59,6 +59,11 @@
       :paso                   ="conDecimales ? 0.01 : 50"
       :readonly               ="acuerdo.esEstadoValido"
     />
+    <!-- //* ///////////////////////////////////////////////////////////// Slider Descuento  -->
+    <slider-descuento
+      v-model                 ="linea"
+      class                   ="col-12"
+    />
     <!-- //* ///////////////////////////////////////////////////////////// Descuento valor -->
     <div class                ="col-5 col-md-6">
       <div
@@ -173,7 +178,10 @@
 </template>
 <script setup lang="ts">
   //* ////////////////////////////////////////////////////////////////////////// Core
-  import {  ref, computed       } from "vue"
+  import {  ref, 
+            computed,
+            onMounted            
+                                } from "vue"
   import {  useTransition       } from '@vueuse/core'
   import {  useQuasar           } from 'quasar'
   //* ////////////////////////////////////////////////////////////////////////// Store
@@ -194,6 +202,7 @@
   import    selectLabelValue      from "components/utilidades/select/SelectLabelValue.vue"
   import    numeroPaso            from "components/utilidades/input/InputNumeroPaso.vue"
   import    inputNumber           from "components/utilidades/input/InputFormNumber.vue"
+  import    sliderDescuento       from "src/areas/acuerdos/components/Modals/FormularioLinea/SliderDescuento.vue"
 
   const { dialog              } = useQuasar()
   const { aviso               } = useTools()  
@@ -220,6 +229,13 @@
   const aDescuento              = useTransition( computed(()=> linea.value.totalDescuento ),  duracion )
   const aIVA                    = useTransition( computed(()=> linea.value.ivaValorTotal  ),  duracion )
   const aTotal                  = useTransition( computed(()=> linea.value.totalConIva    ),  duracion )
+
+  onMounted(()=>{
+    console.log("Iniciar")
+    
+    console.log("linea: ", linea.value.x100DescuentoNiveles);
+    
+  })
 
   function confirmarBorrar()
   {
