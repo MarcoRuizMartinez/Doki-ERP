@@ -39,7 +39,7 @@ export interface IUsuario {
   areaEsMublex      : boolean
   areaEsGlobal      : boolean
   reglaComisionId   : number
-  reglaComision     : IReglaComision
+  comision          : IReglaComision
 }
 
 export class Usuario implements IUsuario
@@ -60,7 +60,7 @@ export class Usuario implements IUsuario
   permisos          : string
   gruposString      : string
   reglaComisionId   : number
-  reglaComision     : IReglaComision
+  comision          : IReglaComision
 
   constructor( usuario? : IUsuario )
   {
@@ -80,7 +80,7 @@ export class Usuario implements IUsuario
       this.cel                = ""
       this.correo             = ""
       this.reglaComisionId    = 0
-      this.reglaComision      = new ReglaComision()
+      this.comision           = new ReglaComision()
 
       if(!!usuario)
       {

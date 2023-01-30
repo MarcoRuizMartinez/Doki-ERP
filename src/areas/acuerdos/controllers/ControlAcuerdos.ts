@@ -295,7 +295,7 @@ export function useControlAcuerdo()
       console.warn("Error asignando regla de comisión. Regla no encontrada.")
       return 
     }
-    comercial.reglaComision = reglasComision.value[i]
+    comercial.comision = reglasComision.value[i]
   }
 
   //* /////////////////////////////////////////////////////////////// Editar origen

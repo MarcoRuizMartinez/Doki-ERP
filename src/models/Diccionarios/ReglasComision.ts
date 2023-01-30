@@ -1,3 +1,7 @@
+import {  TNivelesComision,
+          NIVELES_COMISION  } from "src/areas/acuerdos/models/Comisiones/NivelesComision"
+
+
 export interface IReglaComision
 {
   id                        : number
@@ -21,6 +25,7 @@ export interface IReglaComision
   X100_c                    : number
   X100_d                    : number
   X100_e                    : number
+  getX100Comision           : ( nivel : TNivelesComision )=> number
 }
 
 export class ReglaComision implements IReglaComision
@@ -60,4 +65,15 @@ export class ReglaComision implements IReglaComision
   get X100_d()    : number  { return +this.d      }
   get X100_e()    : number  { return +this.e      }
 
+  getX100Comision( nivel : TNivelesComision ) : number 
+  {
+    const comision  =   nivel === NIVELES_COMISION.ALFA ? this.X100_alfa
+                      : nivel === NIVELES_COMISION.A    ? this.X100_a
+                      : nivel === NIVELES_COMISION.B    ? this.X100_b
+                      : nivel === NIVELES_COMISION.C    ? this.X100_c
+                      : nivel === NIVELES_COMISION.D    ? this.X100_d
+                      : nivel === NIVELES_COMISION.E    ? this.X100_e
+                      :                                   0
+    return comision
+  }  
 }

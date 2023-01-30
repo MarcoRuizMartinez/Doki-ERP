@@ -98,7 +98,7 @@
             <td>{{ formatoPrecio( aTotalSinDescu )}}</td>
           </tr>
           <tr>
-            <td>Descuento:</td>
+            <td>Descuento {{ linea.nivelPrecios.toString().toUpperCase()}}:</td>
             <td>{{ formatoPrecio( aDescuento )}}</td>
           </tr>
           <tr>
@@ -138,7 +138,7 @@
           save: {
             tip:              'Guardar descripción',
             icon:             'mdi-content-save',
-            label:            'Guardar',
+            label:            'Guardar descripción en base de datos',
             handler:          guardarDescripcion
           }
         }"
@@ -179,8 +179,7 @@
 <script setup lang="ts">
   //* ////////////////////////////////////////////////////////////////////////// Core
   import {  ref, 
-            computed,
-            onMounted            
+            computed
                                 } from "vue"
   import {  useTransition       } from '@vueuse/core'
   import {  useQuasar           } from 'quasar'
@@ -229,13 +228,6 @@
   const aDescuento              = useTransition( computed(()=> linea.value.totalDescuento ),  duracion )
   const aIVA                    = useTransition( computed(()=> linea.value.ivaValorTotal  ),  duracion )
   const aTotal                  = useTransition( computed(()=> linea.value.totalConIva    ),  duracion )
-
-  onMounted(()=>{
-    console.log("Iniciar")
-    
-    console.log("linea: ", linea.value.x100DescuentoNiveles);
-    
-  })
 
   function confirmarBorrar()
   {

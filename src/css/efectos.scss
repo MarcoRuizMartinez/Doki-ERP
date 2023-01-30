@@ -9,3 +9,8 @@
 .mi-fade-leave-to {
     opacity: 0;
 }
+
+.box-sombra {
+    box-shadow: 3px 2px 4px 2px #00000070 !important;
+    /* filter: drop-shadow(4px 4px 4px #00000040); */
+}

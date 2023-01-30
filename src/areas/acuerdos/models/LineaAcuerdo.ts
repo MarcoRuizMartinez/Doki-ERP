@@ -11,13 +11,16 @@ import {  getUnidadDB,
 import {  storeToRefs       } from 'pinia'
 import {  useStoreAcuerdo   } from 'src/stores/acuerdo'
 import {  NivelesComision,
-          INivelesComision  } from "src/areas/acuerdos/models/Comisiones/NivelesComision"
+          INivelesComision,
+          TNivelesComision,
+          NIVELES_COMISION  } from "src/areas/acuerdos/models/Comisiones/NivelesComision"
+import {  ComisionLinea,
+          IComisionLinea    } from "src/areas/acuerdos/models/Comisiones/ComisionLinea"
 
 export type TipoLinea       = "producto" | "servicio" | "titulo" | "subtotal" | "descripcion"
 
 type TAccionDestacar        = "seleccionar" | "guardar" | "borrar" | "no-destacar"
 type TAccionesSobreLinea    = "editar" | "borrar" | "crear" | ""
-const ALPHA = "alfa"
 
 export interface  ILineaApi {
   id                        ?: number
@@ -45,6 +48,7 @@ export interface ILineaAcuerdo extends IProductoDoli {
   tipoLinea                 : TipoLinea
   esTitulo                  : boolean
   esSubTotal                : boolean
+  esTituloOsubTotal         : boolean
   fixed                     : boolean
   precioBase                : number
   precioBaseConIVA          : number
@@ -73,9 +77,11 @@ export interface ILineaAcuerdo extends IProductoDoli {
   comsionX100Division       : number  /*  Si hay 2 comerciales, esto determina cuando le corresponde a cada comercial
                                           Si es 60, entonces al comercial principal le corresponde el 60% y al comercial 2 el 40%  
                                       */
-  nivelPrecios              : string
-  iconoNivel                : string
-  x100DescuentoNiveles      : INivelesComision // 100% de descuento minimo para vender en cada nivel
+  nivelPrecios              : TNivelesComision  // GET: A partir de aumentoFromCosto calcula si es String "a", "b", etc...
+  iconoNivel                : string            // GET: mdi-alpha-a-box, etc...
+  x100DescuentoNiveles      : INivelesComision  // GET: 100% de descuento minimo para vender en cada nivel
+  comision_c1               : IComisionLinea
+  comision_c2               : IComisionLinea
 }
 
 
@@ -95,6 +101,8 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
 
   // */ /////////////////// Comisiones
   comsionX100Division       : number
+  comision_c1               : IComisionLinea
+  comision_c2               : IComisionLinea
 
   constructor()
   {
@@ -111,7 +119,9 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
     this.class              = ""
     this.borrar             = false
     this.accion             = ""
-    this.comsionX100Division= 100    
+    this.comsionX100Division= 100
+    this.comision_c1        = new ComisionLinea( "comercial 1" )
+    this.comision_c2        = new ComisionLinea( "comercial 2" )
   }
 
   // * /////////////////////////////////////////////////////////////////////////////// Tipo de linea
@@ -132,8 +142,9 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
     return tipo
   }
 
-  get esTitulo()    : boolean { return this.tipo === 9 && this.codeX === 104777 && this.qty === 1 }
-  get esSubTotal()  : boolean { return this.tipo === 9 && this.codeX === 104777 && this.qty === 99 }
+  get esTitulo()          : boolean { return this.tipo === 9 && this.codeX === 104777 && this.qty === 1 }
+  get esSubTotal()        : boolean { return this.tipo === 9 && this.codeX === 104777 && this.qty === 99 }
+  get esTituloOsubTotal() : boolean { return this.tipo === 9 && this.codeX === 104777 && ( this.qty === 99 || this.qty === 1 )}
 
   get aumentoFromCosto()  : number { 
     return ( ( this.precioFinal / this.costo ) - 1 )  * 100    
@@ -255,16 +266,16 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
 
   // * /////////////////////////////////////////////////////////////////////////////////// COMISIONES
   // * /////////////////////////////////////////////////////////////////////////////// Nivel Precios comision
-  get nivelPrecios()      : string {
+  get nivelPrecios()      : TNivelesComision {
     const { nivelesComision } = storeToRefs( useStoreAcuerdo() )
     
-    const nivel   =   this.aumentoFromCosto >= nivelesComision.value.alfa ? ALPHA
-                    : this.aumentoFromCosto >= nivelesComision.value.a    ? "a"
-                    : this.aumentoFromCosto >= nivelesComision.value.b    ? "b"
-                    : this.aumentoFromCosto >= nivelesComision.value.c    ? "c"
-                    : this.aumentoFromCosto >= nivelesComision.value.d    ? "d"
-                    : this.aumentoFromCosto >= nivelesComision.value.e    ? "e"
-                    :                                                       "x"
+    const nivel   =   this.aumentoFromCosto >= nivelesComision.value.alfa ? NIVELES_COMISION.ALFA
+                    : this.aumentoFromCosto >= nivelesComision.value.a    ? NIVELES_COMISION.A
+                    : this.aumentoFromCosto >= nivelesComision.value.b    ? NIVELES_COMISION.B
+                    : this.aumentoFromCosto >= nivelesComision.value.c    ? NIVELES_COMISION.C
+                    : this.aumentoFromCosto >= nivelesComision.value.d    ? NIVELES_COMISION.D
+                    : this.aumentoFromCosto >= nivelesComision.value.e    ? NIVELES_COMISION.E
+                    :                                                       NIVELES_COMISION.X
 
     return nivel
   }
@@ -272,7 +283,7 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
   // * /////////////////////////////////////////////////////////////////////////////// Icono nivel comision 
   get iconoNivel(): string {
     let icon        = "mdi-"
-        icon        += this.nivelPrecios === ALPHA
+        icon        += this.nivelPrecios === NIVELES_COMISION.ALFA
                         ? "alpha"
                         : `alpha-${ this.nivelPrecios }-box` // -circle-outline -box-outline
     return icon
@@ -354,8 +365,9 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
         linea.orden         = +linea.orden
         linea.codeX         = +linea.codeX
         linea.unidadId      = +linea.unidadId
-        linea.unidad        = await getUnidadDB( linea.unidadId )        
-        linea.categoria     = await getCategoriaDB( linea.sigla  )
+        linea.unidad        = await getUnidadDB( linea.unidadId )    
+        if(!!linea.sigla)
+          linea.categoria   = await getCategoriaDB( linea.sigla  )
         linea.imagen        = !!linea.imagen ? linea.imagen : imagenDefault
         const lineaFinal    = Object.assign( new LineaAcuerdo, linea ) as ILineaAcuerdo
         lineaFinal.comsionX100Division = +linea?.divisionComision ?? 100

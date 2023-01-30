@@ -16,6 +16,7 @@
     @click-reabrir          ="reabrirPedido"
     @click-recargar         ="recargar"
     @click-entregado        ="cerrarPedido"
+    @click-comisiones       ="modales.comisiones = true"
   />
   <tercero-y-contacto       scroll
     class                   ="col-md-4 col-12"
@@ -69,8 +70,15 @@
     nombre-pdf              ="Cotizacion"
     @click-descargar        ="guardarPDF"
   />
-  <!-- <remision v-model:visible ="modales.pdfRemision"/> -->
-<!--   <div id="capture" style="padding: 10px; background: #f5da55">
+    <!-- //* ///////////////////////////////////////////////////////////// Modal Buscar productos -->
+    <q-dialog
+      v-model               ="modales.comisiones"
+      v-bind                ="dialogDefault"      
+      >
+      <comisiones style     ="max-width: initial;"/>
+    </q-dialog>  
+    <!-- <remision v-model:visible ="modales.pdfRemision"/> -->
+    <!--   <div id="capture" style="padding: 10px; background: #f5da55">
     <h4 style="color: #000; ">Hello world!</h4>
   </div> -->
 </template>
@@ -96,6 +104,7 @@
   import {  useCotizacionPDF      } from "src/areas/acuerdos/composables/useCotizacionPDF"
   //import {  useControlProductos   } from "src/areas/acuerdos/controllers/ControlLineasProductos"
   import {  TTipoAcuerdo          } from "src/areas/acuerdos/models/ConstantesAcuerdos"
+  import {  dialogDefault         } from "src/useSimpleOk/useEstilos"  
   //* ///////////////////////////////////////////////////////////////////////////////// Componentes
   import    visorPdf                from "components/utilidades/VisorPDF.vue"
   import    notas                   from "src/areas/acuerdos/components/Notas.vue"
@@ -110,6 +119,7 @@
   import    anticipos               from "src/areas/acuerdos/components/Anticipos/ModuloAnticipos.vue"
   //import    remision                from "src/areas/acuerdos/components/PDF/RemisionPDF.vue"
   import    documentos              from "components/archivos/ModuloArchivos.vue"
+  import    comisiones              from "./../Modals/Comisiones.vue"
 
   const { acuerdo,
           modales,

@@ -21,13 +21,11 @@
   </q-tooltip>
 </template>
 <script setup lang="ts">
-  import {  PropType, ref      } from "vue"
+  import {  PropType      } from "vue"
   import {  ILineaAcuerdo } from "src/areas/acuerdos/models/LineaAcuerdo"
   const props = defineProps({
     lineas:  { required: true, type: Object as PropType<ILineaAcuerdo[]> }
   })
-
-  const cosa = ref<boolean>(true)
 </script>
 <style>
 

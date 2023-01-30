@@ -117,12 +117,14 @@ export interface IAcuerdo
   comercial2Id:               number
   comercial2:                 IUsuario
   creadorId:                  number
+  comision:                   IComision
+
   creador:                    IUsuario
 
   estado:                     number
   estadoIcono:                string
   estadoColor:                string
-  estadoLabel:                string
+  estadoLabel:                string 
 
   esEstadoBoceto:             boolean
   esEstadoNoValidado:         boolean
@@ -241,6 +243,7 @@ export class Acuerdo implements IAcuerdo
   comercial:                  IUsuario
   comercial2Id:               number
   comercial2:                 IUsuario
+  comision:                   IComision
   condicionPagoId:            number
   formaPagoId:                number
   metodoEntregaId:            number
@@ -294,6 +297,7 @@ export class Acuerdo implements IAcuerdo
     this.comercial            = new Usuario()
     this.comercial2Id         = 0
     this.comercial2           = new Usuario()
+    this.comision             = new Comision()
     this.creadorId            = 0
     this.creador              = new Usuario()
     this.estado               = ESTADO_CTZ.NO_GUARDADO
@@ -891,12 +895,12 @@ https://dolibarr.mublex.com/fichinter/card.php?
     acu.creador               = await getUsuarioDB          ( acu.creadorId )
 
     if(!!acu.comercialId){
-      acu.comercial                 = await getUsuarioDB        ( acu.comercialId )
-      acu.comercial.reglaComision   = await getReglaComisionDB  ( acu.comercial.reglaComisionId )
+      acu.comercial           = await getUsuarioDB        ( acu.comercialId )
+      acu.comercial.comision  = await getReglaComisionDB  ( acu.comercial.reglaComisionId )
     }
     if(!!acu.comercial2Id){
-      acu.comercial2                = await getUsuarioDB       ( acu.comercial2Id )
-      acu.comercial2.reglaComision  = await getReglaComisionDB ( acu.comercial2.reglaComisionId )
+      acu.comercial2          = await getUsuarioDB       ( acu.comercial2Id )
+      acu.comercial2.comision = await getReglaComisionDB ( acu.comercial2.reglaComisionId )
     }
 
     acu.tercero               = await Tercero.convertirDataApiATercero( acuApi.tercero )

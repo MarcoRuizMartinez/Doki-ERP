@@ -81,7 +81,7 @@
       @select                 ="editarComercialApoyo"
       @clear                  ="borrarComercialApoyo"
     />
-    <!-- {{ typeof acuerdo.comercial.reglaComision.comision_alfa }} -->
+    <!-- {{ typeof acuerdo.comercial.comision.comision_alfa }} -->
     <!-- //* ///////////////////////////////////////////////// Origen -->
     <select-label-value
       v-model                 ="acuerdo.origenContacto"

@@ -35,15 +35,13 @@
 .width170{
   width: 170px;
 }
-.width180{
-  width: 180px;
-}
-.width200{
-  width: 200px;
-}
-.width220{
-  width: 220px;
-}
+.width180{ width: 180px; }
+.width200{ width: 200px; }
+.width220{ width: 220px; }
+.width300{ width: 300px; }
+.width400{ width: 400px; }
+.width500{ width: 500px; }
+
 .gap-sm{
   gap: 0.6em;
 }
@@ -172,6 +170,9 @@
 }
 .text-1_3em{
   font-size: 1.3em;
+}
+.text-1_4em{
+  font-size: 1.4em;
 }
 .text-14px{
   font-size: 14px;

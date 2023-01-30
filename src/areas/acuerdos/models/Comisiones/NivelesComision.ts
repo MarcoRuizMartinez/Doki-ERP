@@ -8,6 +8,25 @@ export interface INivelesComision
   e     : number
 }
 
+export enum NIVELES_COMISION
+{
+  ALFA  = "alfa",
+  A     = "a",
+  B     = "b",
+  C     = "c",
+  D     = "d",
+  E     = "e",
+  X     = "x",
+}
+
+export type TNivelesComision  =   NIVELES_COMISION.ALFA
+                                | NIVELES_COMISION.A
+                                | NIVELES_COMISION.B
+                                | NIVELES_COMISION.C
+                                | NIVELES_COMISION.D
+                                | NIVELES_COMISION.E
+                                | NIVELES_COMISION.X
+
 export class NivelesComision implements INivelesComision
 {
   alfa  : number

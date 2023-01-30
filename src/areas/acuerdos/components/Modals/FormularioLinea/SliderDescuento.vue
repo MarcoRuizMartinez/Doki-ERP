@@ -1,14 +1,14 @@
 <template>
-  <q-slider           label
+  <q-slider           label switch-label-side
     v-model           ="linea.descuentoX100"
     color             ="primary"
     class             ="q-px-lg"
     :marker-labels    ="marcas"
-    :min              ="-10"
+    :min              ="0"
     :max              ="linea.x100Maximo"
     :inner-min        ="0"
     :inner-max        ="linea.x100Maximo"    
-    :label-value      ="'Nivel ' + linea.nivelPrecios.toString().toUpperCase()"
+    :label-value      ="'Nivel ' + linea.nivelPrecios.toString().toUpperCase()"    
   />
 </template>
 <script lang="ts" setup>
@@ -35,8 +35,7 @@
     const niveles = Object.assign( linea.value.x100DescuentoNiveles, { })
     return {
               0                       : '0%',
-              [-10]                   : '-10%',
-              [niveles.alfa]          : 'ą',
+              [niveles.alfa]          : 'Alfa',
               [niveles.a]             : 'A',
               [niveles.b]             : 'B',
               [niveles.c]             : 'C',

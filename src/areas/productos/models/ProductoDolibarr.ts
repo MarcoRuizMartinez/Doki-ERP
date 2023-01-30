@@ -123,7 +123,7 @@ export class ProductoDoli implements IProductoDoli
     this.categoria          = new ProductoCategoria()
     this.nombre             = ""
     this.descripcion        = ""
-    this.iva                = 0
+    this.iva                = parseInt( process.env.IVA ?? "0" )
     this.unidadId           = 0
     this.unidad             = new Unidad()
     this.tipo               = 0
