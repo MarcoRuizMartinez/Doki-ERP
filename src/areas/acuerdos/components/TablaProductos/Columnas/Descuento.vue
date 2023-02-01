@@ -3,9 +3,10 @@
     {{ linea.descuentoX100 }}
     <q-icon :name="linea.iconoNivel" color="grey-6" size="sm" class="q-mr-xs"/>
   </div>
-  <q-popup-edit           buttons
+  <q-popup-edit           buttons cover separate-close-popup
     v-if                  ="!readonly"
     v-model               ="linea.descuentoX100"
+    class                 ="alto-min-100"
     v-slot                ="scope"
     label-set             ="Editar"
     @update:model-value   ="actualizar"

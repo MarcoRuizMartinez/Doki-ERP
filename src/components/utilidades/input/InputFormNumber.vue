@@ -1,17 +1,20 @@
 <template>
   <div>
-    <q-input              dense hide-bottom-space
+    <!-- v-bind              ="$attrs" -->
+    <q-input              dense hide-bottom-space      
       v-model             ="modelo"
       class               ="transi input-numero"
       input-class         ="fuente-mono"
       lazy-rules          ="ondemand"
       type                ="text"
-      :debounce           ="debounce"
+      :debounce           ="debounce"    
       :class              ="{'campo-hundido' : hundido}"
       :filled             ="!hundido"
       :borderless         ="!hundido"
       :label              =" !!alerta && !readonly ? label + ' *' : label"
       :rules              ="[ ...rules, regla, reglaCero ]"
+      :error              ="error"
+      :error-message      ="errorMessage"
       :autofocus          ="autofocus"
       :readonly           ="readonly"
       :clearable          ="clearable"
@@ -24,9 +27,19 @@
       @focus              ="campoEnfocado = true" 
       @clear              ="limpiar"
       @update:model-value ="inputEvent"
+      @keyup.enter        ="emit('enter')"
       >
-      <template #prepend  v-if="!!icon">
+      <template           #prepend v-if="!!icon">
         <q-icon :name     ="icon" />
+      </template>
+      <template           #append  v-if="btnClick">
+        <q-btn
+          icon            ="mdi-chevron-right"
+          color           ="primary"
+          padding         ="6px 6px"
+          style           ="margin-right: -12px;"
+          @click          ="emit('click')"
+        />
       </template>
       <template           #after
         style             ="font-size: 14px; padding-left: 0px;"
@@ -58,7 +71,7 @@
             v-bind        ="estiloBotones('abajo')"
             v-touch-repeat:0:100.mouse  ="restar"
             :disable      ="btnRestarDisable"
-          />      
+          />
         </div>
       </template>
     </q-input>
@@ -86,36 +99,39 @@
   const NUM_MAX           = 9_999_999_999
   const props             = defineProps(
     {
-      modelValue:   { required: true,           type: [Number,  String  ],  default: ""  },
-      alerta:       { default:  false,          type: [Boolean, String  ] },
-      autofocus:    { default:  false,          type: Boolean             },
-      conDecimales: { default:  false,          type: Boolean             },
-      copy:         { default:  false,          type: Boolean             },
-      disable:      { default:  false,          type: Boolean             },
-      hundido:      { default:  false,          type: Boolean             },
-      icon:         { default:  "",             type: String              },
-      label:        { default:  "",             type: String              },
-      clearable:    { default:  false,          type: Boolean             },
-      noUndefined:  { default:  false,          type: Boolean             },
-      readonly:     { default:  false,          type: Boolean             },
-      soloPositivo: { default:  false,          type: Boolean             },
-      noCero:       { default:  false,          type: Boolean             },
-      paso:         { default:  0,              type: Number              },
-      debounce:     { default:  1200,           type: [String, Number]    },
-      maximo:       { default:   9_999_999_999, type: [String, Number]    },
-      minimo:       { default:  -9_999_999_999, type: [String, Number]    },
-      maxEnteros:   { default:  0,              type: [String, Number]    },
-      estadoCheck:  { default:  "off",          type: String as PropType< EstadoVerificar > },
-      retorno:      { default:  "Number",       type: String as PropType< "Number"  | "String" | "StringFormat" > },
-      rules:        { default:  [],             type: Array  as PropType< ValidationRule[] > },
-      separadorMil: { default:  "coma",         type: String as PropType< "coma"    | "punto" > },
-      tipo:         { default:  "numero",       type: String as PropType< "precio"  | "porcentaje" | "numero" > },
-      colores:      { default:  "gris-flat",    type: String as PropType< "gris"  | "verde-rojo" | "gris-flat" >  },
-      iconos:       { default:  "flecha",       type: String as PropType< "suma"  | "flecha" >            },
+      modelValue:   { required: true,             type: [Number,  String  ],  default: ""  },
+      alerta:       { default:  false,            type: [Boolean, String  ] },
+      autofocus:    { default:  false,            type: Boolean             },
+      conDecimales: { default:  false,            type: Boolean             },
+      copy:         { default:  false,            type: Boolean             },
+      disable:      { default:  false,            type: Boolean             },
+      hundido:      { default:  false,            type: Boolean             },
+      icon:         { default:  "",               type: String              },
+      label:        { default:  "",               type: String              },
+      clearable:    { default:  false,            type: Boolean             },
+      noUndefined:  { default:  false,            type: Boolean             },
+      readonly:     { default:  false,            type: Boolean             },
+      soloPositivo: { default:  false,            type: Boolean             },
+      noCero:       { default:  false,            type: Boolean             },
+      btnClick:     { default:  false,            type: Boolean             },
+      paso:         { default:  0,                type: Number              },
+      error:        { default:  false,            type: Boolean             },      
+      errorMessage: { default:  "Error en valor", type: String              },
+      debounce:     { default:  1200,             type: [String, Number]    },
+      maximo:       { default:   9_999_999_999,   type: [String, Number]    },
+      minimo:       { default:  -9_999_999_999,   type: [String, Number]    },
+      maxEnteros:   { default:  0,                type: [String, Number]    },
+      estadoCheck:  { default:  "off",            type: String as PropType< EstadoVerificar > },
+      retorno:      { default:  "Number",         type: String as PropType< "Number"  | "String" | "StringFormat" > },
+      rules:        { default:  [],               type: Array  as PropType< ValidationRule[] > },
+      separadorMil: { default:  "coma",           type: String as PropType< "coma"    | "punto" > },
+      tipo:         { default:  "numero",         type: String as PropType< "precio"  | "porcentaje" | "numero" > },
+      colores:      { default:  "gris-flat",      type: String as PropType< "gris"  | "verde-rojo" | "gris-flat" >  },
+      iconos:       { default:  "flecha",         type: String as PropType< "suma"  | "flecha" >            },
     } 
   )
 
-  const emit              = defineEmits(["update:modelValue", "blur", "clear"])
+  const emit              = defineEmits(["update:modelValue", "blur", "clear", "click", "enter"])
 
   const {
           modelValue,
@@ -157,7 +173,7 @@
 
 
   const btnSumarDisable   = computed( ()=> ( numero.value ?? 0 ) + paso.value > valorMaxModelo.value || readonly.value )
-  const btnRestarDisable  = computed( ()=> ( numero.value ?? 0 ) - paso.value < ( minimo.value ?? -NUM_MAX )  || readonly.value )
+  const btnRestarDisable  = computed( ()=> ( numero.value ?? 0 ) - paso.value < ( +minimo.value ?? -NUM_MAX )  || readonly.value )
 
   let   regex             = new RegExp("",  "")
 

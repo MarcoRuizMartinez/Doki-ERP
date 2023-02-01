@@ -28,6 +28,26 @@ export function useMenu()
       ] */                     
     },
     {
+      ...new ItemMenu({ label: "📖", icon: "mdi-book-open-variant" }),
+      submenu:
+      [
+        { ...new ItemMenu({
+                              label:    "Politicas",
+                              icon:     "mdi-shield-star",
+                              to:       "/politicas",
+                              visible:  true
+                          } ),
+        },
+        { ...new ItemMenu({
+                              label:    "Ayudas",
+                              icon:     "mdi-help-circle",
+                              to:       "/ayudas",
+                              visible:  true
+                          } ),
+        },
+      ]
+    },    
+    {
       ...new ItemMenu({ label: "Terceros", icon: "mdi-account-group", to: "/terceros" }),
       submenu:
       [
@@ -71,7 +91,7 @@ export function useMenu()
                             to:         "/cotizaciones/cliente/crear",
                             visible:    permisos.value.terceros_ver
                           }),
-        },                            
+        },
 /*         
         { ...new ItemMenu({
                             label:      "Informes",

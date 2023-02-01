@@ -73,6 +73,8 @@ export interface ILineaAcuerdo extends IProductoDoli {
   aumentoFromCosto          : number  
   //descuX100Round:           number      // Descuento redondeado
 
+  utilidad                  : number
+
   // */ /////////////////// Comisiones
   comsionX100Division       : number  /*  Si hay 2 comerciales, esto determina cuando le corresponde a cada comercial
                                           Si es 60, entonces al comercial principal le corresponde el 60% y al comercial 2 el 40%  
@@ -262,6 +264,10 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
   // * /////////////////////////////////////////////////////////////////////////////// Cantidad con unidad
   get qtyUnd() : string {
     return this.qty + " " + this.unidad.codigo
+  }
+
+  get utilidad() : number {
+    return ( this.precioFinal - this.costo ) * this.qty
   }
 
   // * /////////////////////////////////////////////////////////////////////////////////// COMISIONES

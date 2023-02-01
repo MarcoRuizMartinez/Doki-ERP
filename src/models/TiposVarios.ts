@@ -91,6 +91,7 @@ export const enum GRUPO_USUARIO {
   PRODUCCION      = "Producción",
   PRODUCTOS       = "Productos",
   DESARROLLO      = "Desarrollo",
+  CONTABLE        = "Contable",
 }
 
 

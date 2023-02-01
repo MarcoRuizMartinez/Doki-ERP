@@ -228,6 +228,24 @@ export function servicesAcuerdos()
     })
   }
 
+  async function setCostoLinea( costo : number, lineaId : number, acuerdo : TTipoAcuerdo ) : Promise< boolean >
+  {
+    const obj = { lineaId, costo, acuerdo }
+    console.log("obj: ", obj);
+
+    return new Promise( async (resolver, rechazar ) =>
+    {
+      const { ok  }   = await miFetch( getURL("servicios", "acuerdos"),
+                                                    {
+                                                      body: getFormData( "editarCosto", obj ),
+                                                      method: "POST"
+                                                    },
+                                                    { mensaje: "editar costo linea" }
+                                                  )
+      resolver( ok )
+    })
+  }  
+
   async function setTitulo( ctz_id : number, titulo : string, acuerdo : TTipoAcuerdo ) : Promise< boolean >
   {
     const obj         = { id: ctz_id, titulo: titulo, acuerdo: acuerdo }
@@ -501,5 +519,6 @@ export function servicesAcuerdos()
     getIdEnlaceContacto,
     setComercial,
     getInforme,
+    setCostoLinea,
   }
 }

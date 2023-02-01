@@ -3,7 +3,7 @@
     <!-- //* ////////////////////////////////////////////////////////////////////  Lado izquierdo -->
     <div class                ="row gap-sm">
       <q-btn
-        v-if                  ="!acuerdo.esEstadoBoceto"
+        v-if                  ="!acuerdo.esEstadoBoceto && ( acuerdo.usuarioEsDueño || usuario.esGerencia || usuario.esContable )"
         v-bind                ="btnBaseMd"
         color                 ="primary"
         icon                  ="mdi-account-details"
@@ -260,6 +260,7 @@
   import {  computed        } from "vue"
   // * /////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs     } from 'pinia'
+  import {  useStoreUser    } from 'src/stores/user'
   import {  useStoreAcuerdo } from 'src/stores/acuerdo'
   // * /////////////////////////////////////////////////////////////////////// Componibles
   import {  useTools        } from "src/useSimpleOk/useTools"
@@ -271,7 +272,8 @@
   import    tooltipAcuerdo    from "src/areas/acuerdos/components/Tooltips/TooltipAcuerdo.vue"
 
   const { acuerdo,
-          loading           } = storeToRefs( useStoreAcuerdo() )
+          loading     } = storeToRefs( useStoreAcuerdo() )
+  const { usuario     } = storeToRefs( useStoreUser() )          
 
   const { esMobil     } = useTools()
   const emit            = defineEmits(["clickPdf","clickAprobar", "clickAnular", "clickValidar", "clickEditar", "clickBorrar", "clickRemision", "clickReabrir", "clickRecargar", "clickEntregado", "clickComisiones"])

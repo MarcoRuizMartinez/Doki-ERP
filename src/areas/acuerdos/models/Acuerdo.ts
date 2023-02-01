@@ -43,8 +43,7 @@ import {  TTipoAcuerdo,
           EstadosAcuerdos,
           ESTADO_PED                        } from "./ConstantesAcuerdos"
 //* ///////////////////////////////////////// Modelos
-import {  IAnticipo,        Anticipo,
-          ESTADO_ANTICIPO                   } from "./Anticipo"
+import {  IAnticipo                         } from "./Anticipo"
 import {  IRetenciones,     Retenciones     } from "./Retenciones"
 import {  IProyecto,        Proyecto        } from "src/areas/proyectos/models/Proyecto"
 import {  ILineaAcuerdo,    LineaAcuerdo    } from "src/areas/acuerdos/models/LineaAcuerdo"
@@ -53,19 +52,20 @@ import {  IUsuario,         Usuario         } from "src/areas/usuarios/models/Us
 import {  IContacto,        Contacto        } from "src/areas/terceros/models/Contacto"
 import {  IGrupoLineas,     GrupoLineas     } from "src/areas/acuerdos/models/GrupoLineasAcuerdo"
 import {  IComision,        Comision        } from "src/areas/acuerdos/models/Comisiones/Comision"
-import {  IArchivo,         Archivo         } from "src/models/Archivo"
 import {  ICondicionPago,   CondicionPago   } from "src/models/Diccionarios/CondicionPago"
 import {  IFormaPago,       FormaPago       } from "src/models/Diccionarios/FormaPago"
 import {  IMetodoEntrega,   MetodoEntrega   } from "src/models/Diccionarios/MetodoEntrega"
 import {  IOrigenContacto,  OrigenContacto  } from "src/models/Diccionarios/OrigenContacto"
 import {  ITiempoEntrega,   TiempoEntrega   } from "src/models/Diccionarios/TiempoEntrega"
+import {  IArchivo                          } from "src/models/Archivo"
 import {  X100,
           fechaCorta,
           getDateToStr,
           getNumberValido,
-          existeYEsValido,
           getMilisecShortForApiDolibarr,    } from "src/useSimpleOk/useTools"
 import {  TModulosDolibarr                  } from "src/useSimpleOk/UtilFiles"
+import {  storeToRefs                       } from 'pinia'
+import {  useStoreUser                      } from 'src/stores/user'
 
 export interface IAcuerdo
 {
@@ -116,6 +116,7 @@ export interface IAcuerdo
   comercial:                  IUsuario
   comercial2Id:               number
   comercial2:                 IUsuario
+  usuarioEsDueño:             boolean
   creadorId:                  number
   comision:                   IComision
 
@@ -794,6 +795,11 @@ https://dolibarr.mublex.com/fichinter/card.php?
       return this.contactoEntrega
 
     return this.contactoComercial
+  }
+
+  get usuarioEsDueño() : boolean {
+    const { usuario }   = storeToRefs( useStoreUser() )
+    return this.comercial.id === usuario.value.id 
   }
 
 

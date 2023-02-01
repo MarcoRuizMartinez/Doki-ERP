@@ -6,6 +6,7 @@
     v-if                  ="!readonly"
     v-model               ="linea.qty"
     v-slot                ="scope"
+    class                 ="alto-min-100"
     label-set             ="Editar"
     @update:model-value   ="actualizar"
     >

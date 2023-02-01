@@ -12,7 +12,7 @@ const routes: RouteRecordRaw[] = [
         name: 'login',
         component: () => import('pages/PageLogin.vue')
         //component: () => import('pages/ErrorNotFound.vue')
-      }
+      }, 
     ]
   },
   {
@@ -31,6 +31,28 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/PageSinPermisos.vue'),
         props: true
       },
+      {
+        path: 'politicas',
+        name: 'politicas',
+        props: {
+                src:    "https://airtable.com/embed/shr3RyLFc5ujEGFZt?backgroundColor=cyan&viewControls=on",
+                titulo: "Politicas empresa",
+                icono:  "mdi-shield-star",
+                link:   "https://airtable.com/embed/shr3RyLFc5ujEGFZt/tblY7nRIsN5bctOwZ?backgroundColor=gray&viewControls=on",
+              },
+        component: () => import('components/navegacion/Paginaiframe.vue')
+      },
+      {
+        path: 'ayudas',
+        name: 'ayudas',
+        props: {
+                src:    "https://airtable.com/embed/shrza0g3D4XowxyzR?backgroundColor=cyan&viewControls=on",
+                titulo: "Ayudas y guías",
+                icono:  "mdi-help-circle",
+                link:   "https://airtable.com/shrza0g3D4XowxyzR/tbl0bVTdeiC9ZRJL3?backgroundColor=cyan&viewControls=on",
+              },
+        component: () => import('components/navegacion/Paginaiframe.vue')
+      },       
 /*       {
         path: 'test',
         name: 'test',
@@ -207,7 +229,7 @@ const routes: RouteRecordRaw[] = [
     ],
   },
   */
-  {
+ /*  { 
     path: '/politicas',
     component: () => import('layouts/LayoutPrincipal.vue'),
     children:
@@ -223,7 +245,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('src/areas/empresa/pages/politicas/PageEntrega.vue')
       },      
     ],
-  },
+  }, */
   // Always leave this as last one,
   // but you can also remove it
   {

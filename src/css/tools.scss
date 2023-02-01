@@ -17,50 +17,25 @@
   transition: all 0.2s ease;
 }
 
-.width60{
-  width: 60px;
-}
-.width120{
-  width: 120px;
-}
-.width140{
-  width: 140px;
-}
-.width150{
-  width: 150px;
-}
-.width160{
-  width: 160px;
-}
-.width170{
-  width: 170px;
-}
-.width180{ width: 180px; }
-.width200{ width: 200px; }
-.width220{ width: 220px; }
-.width300{ width: 300px; }
-.width400{ width: 400px; }
-.width500{ width: 500px; }
+.width60  { width: 60px;  }
+.width120 { width: 120px; }
+.width130 { width: 130px; }
+.width140 { width: 140px; }
+.width150 { width: 150px; }
+.width160 { width: 160px; }
+.width170 { width: 170px; }
+.width180 { width: 180px; }
+.width190 { width: 190px; }
+.width200 { width: 200px; }
+.width220 { width: 220px; }
+.width300 { width: 300px; }
+.width400 { width: 400px; }
+.width500 { width: 500px; }
 
-.gap-sm{
-  gap: 0.6em;
-}
-
-.gap-md{
-  gap: 1.2em;
-}
-
-
-.gap-lg{
-  gap: 2em;
-}
-
-
-.gap-pa-md > *{
-  padding: 2px 4px;
-}
-
-
+.gap-sm{ gap: 0.6em; }
+.gap-md{ gap: 1.2em; }
+.gap-lg{ gap: 2em;   }
+.gap-pa-md > *{  padding: 2px 4px; }
 
 .menu-gris{
   background: linear-gradient(to bottom,#f5f5f5,#cfd1cf);
@@ -149,47 +124,24 @@
 //.radius6{ border-radius: 6px; }
 
 
-.h-20px{
-  height: 20px;
-}
+.h-20px{ height: 20px; }
+.alto-min-100{ min-height: 100px !important; }
 
-.text-0_8em{
-  font-size: 0.8em;
-}
-.text-0_9em{
-  font-size: 0.9em;
-}
-.text-1em{
-  font-size: 1em;
-}
-.text-1_1em{
-  font-size: 1.1em;
-}
-.text-1_2em{
-  font-size: 1.2em;
-}
-.text-1_3em{
-  font-size: 1.3em;
-}
-.text-1_4em{
-  font-size: 1.4em;
-}
-.text-14px{
-  font-size: 14px;
-}
-.text-20px{
-  font-size: 20px;
-}
-.order-1{
-  order: 1;
-}
-.min-w-max{
-  min-width: max-content;
-}
-.min-w-100{
-  min-width: 100%;
-}
 
-.white-a20{
-  color: rgb(255 255 255 / 20%);
-}
+
+.text-0_8em { font-size: 0.8em; }
+.text-0_9em { font-size: 0.9em; }
+.text-1em   { font-size: 1em;   }
+.text-1_1em { font-size: 1.1em; }
+.text-1_2em { font-size: 1.2em; }
+.text-1_3em { font-size: 1.3em; }
+.text-1_4em { font-size: 1.4em; }
+.text-14px  { font-size: 14px;  }
+.text-20px  { font-size: 20px;  }
+
+.order-1{  order: 1; }
+
+.min-w-max{ min-width: max-content;}
+.min-w-100{  min-width: 100%; }
+
+.white-a20{ color: rgb(255 255 255); }

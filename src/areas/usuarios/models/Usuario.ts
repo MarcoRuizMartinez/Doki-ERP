@@ -34,6 +34,8 @@ export interface IUsuario {
   grupos            : string[]
   esComercial       : boolean
   esProduccion      : boolean
+  esGerencia        : boolean
+  esContable        : boolean
   esDev             : boolean
   areaEsEscom       : boolean
   areaEsMublex      : boolean
@@ -147,8 +149,11 @@ export class Usuario implements IUsuario
 
     get nombreCompleto():string     { return this.nombre + " " + this.apellido }
 
-    get esComercial ():boolean { return this.grupos.length > 0 ? this.grupos.some( g => g == GRUPO_USUARIO.COMERCIALES ) : false }
-    get esProduccion():boolean { return this.grupos.length > 0 ? this.grupos.some( g => g == GRUPO_USUARIO.PRODUCCION  ) : false }
+    get esComercial   ():boolean { return this.grupos.length > 0 ? this.grupos.some( g => g == GRUPO_USUARIO.COMERCIALES  ) : false }
+    get esProduccion  ():boolean { return this.grupos.length > 0 ? this.grupos.some( g => g == GRUPO_USUARIO.PRODUCCION   ) : false }
+    get esGerencia    ():boolean { return this.grupos.length > 0 ? this.grupos.some( g => g == GRUPO_USUARIO.GERENCIA     ) : false }
+    get esContable    ():boolean { return this.grupos.length > 0 ? this.grupos.some( g => g == GRUPO_USUARIO.CONTABLE     ) : false }
+
     get esDev       ():boolean { return this.grupos.length > 0 ? this.grupos.some( g => g == GRUPO_USUARIO.DESARROLLO  ) : false }
     get areaEsEscom ():boolean { return this.area === AREA.ESCOM  }
     get areaEsMublex():boolean { return this.area === AREA.MUBLEX }

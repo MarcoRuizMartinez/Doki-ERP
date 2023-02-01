@@ -165,12 +165,12 @@ export function ID_URL_Ok( id : string ) : number
   return idEvaluar
 }
 
-export function strOrNumToNum( numero : string | number, defecto : number  ) : number
+export function strOrNumToNum( numero : string | number, defectoSiNull : number  ) : number
 {
     if(typeof numero      === "number")
-      return valorValido(numero) ? numero : defecto
+      return valorValido(numero) ? numero : defectoSiNull
     else
-      return !!numero ? parseFloat(numero) : defecto
+      return !!numero ? parseFloat(numero) : defectoSiNull
 }
 
 

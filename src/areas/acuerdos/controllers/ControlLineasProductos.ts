@@ -17,7 +17,9 @@ import {  useTools,
 export function useControlProductos()
 {
   const { aviso               } = useTools()
-  const { ordenarLineas       } = servicesAcuerdos()
+  const { ordenarLineas,
+          setCostoLinea,
+                              } = servicesAcuerdos()
   const { apiDolibarr         } = useApiDolibarr()
   const { acuerdo,
           grupoElegido,
@@ -51,6 +53,18 @@ export function useControlProductos()
     if(!acuerdo.value.proGrupos.length)
       crearNuevoGrupo()
   }
+
+  async function editarCostoLinea( costo : number, lineaId : number ) : Promise<boolean>
+  {    
+    const ok = await setCostoLinea( costo, lineaId, acuerdo.value.tipo )
+    console.log("setCostoLinea: ", ok);
+
+    if(ok)
+      aviso("positive", "Costo editado")
+
+    return ok
+  }
+
 
   async function ordenarLineasEnDolibarr()
   {
@@ -469,6 +483,7 @@ export function useControlProductos()
     moverGrupo,
     seleccionarLineas,
     copiarProductos,
-    deGruposAProductos
+    deGruposAProductos,
+    editarCostoLinea,
   }
 }

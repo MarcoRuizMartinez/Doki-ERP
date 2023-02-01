@@ -11,7 +11,7 @@
     @cerrar                   ="cerrar"
     >
     <template                 #menu>
-      <div class              ="row col gap-pa-md">
+      <div class              ="row gap-pa-md">
         <table  class         ="tabla-totales">
           <tr>
             <td>Comisión:</td>
@@ -111,30 +111,37 @@
   import    ventana               from "components/utilidades/Ventana.vue"
   import    tooltipLinea          from "./../Tooltips/TooltipLinea.vue"
   
-  const emit = defineEmits<{
-    (e: 'cerrar',         value: void           ): void
-  }>()
-
-  const columnas: IColumna[]  = [
-    new Columna           ({ name: "ref",           label: "Producto"   }),
-    Columna.ColumnaPrecio ({ name: "totalConDescu", label: "Subtotal"   }),
-    new Columna           ({ name: "iconoNivel",    label: "Nivel"      }),
-    new Columna           ({ name: "comision_c1",   label: "Comision %", align: "right"}),
-    new Columna           ({ name: "comision_c2",   label: "Comision $", align: "right"}),
-  ]
-
-  columnas.forEach( c=> c.sortable = false )
-
-
-
   const { acuerdo,
           loading           } = storeToRefs( useStoreAcuerdo() )
   const { usuario           } = storeToRefs( useStoreUser() )
   const modo                  = ref< ModosVentana >("normal")
 
+  const emit = defineEmits<{
+    (e: 'cerrar',         value: void           ): void
+  }>()
+
+  const columnas              = ref< IColumna[] >([
+    new Columna           ({ name: "ref",           label: "Producto"   }),
+    Columna.ColumnaPrecio ({ name: "totalConDescu", label: "Subtotal"   }),
+    new Columna           ({ name: "iconoNivel",    label: "Nivel"      }),
+    new Columna           ({ name: "comision_c1",   label: "Comision %", align: "right"}),
+    new Columna           ({ name: "comision_c2",   label: "Comision $", align: "right"}),
+  ])
+
   onMounted(()=>{
     acuerdo.value.comision.calcular()
+    arreglarColumnas()
   })
+
+  function arreglarColumnas()
+  {
+    if(usuario.value.esGerencia){      
+      columnas.value.splice(2, 0,  Columna.ColumnaPrecio ({ name: "costo" }) )
+      columnas.value.splice(3, 0,  Columna.ColumnaPrecio ({ name: "utilidad" }) )
+    }
+
+    columnas.value.forEach( c=> c.sortable = false )
+  }
   
   function cerrar(){
     emit("cerrar")
@@ -167,4 +174,17 @@
     - Mostrar listado de incentivos aplicados dentro de comisiones 
     - Agregar otros incentivos dentro de pedido
     - Clasificar informe pagado
+
+id              : number 
+estado          : "aprobado" | "pagado" | "anulado" | "pospuesto" | "pagado ?"
+usuario_id      : number 
+valor           : number 
+tipo            : "comision" | "bono"
+id_origen       : id de pedido | id  de resultado
+nota            : string
+creador_id      : number
+creacion_fecha  : Date
+edito_id        : number
+edito_fecha     : Date
+edito_razon     : string
 -->

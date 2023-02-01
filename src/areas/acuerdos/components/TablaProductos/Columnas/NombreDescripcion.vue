@@ -48,11 +48,13 @@
     </Tooltip>
   </div>
   <q-menu               touch-position context-menu>
-    <div  class         ="column items-start ">
+    <div  class         ="column items-start">
       <q-btn            v-close-popup flat dense no-caps
         icon            ="mdi-open-in-new"
+        class           ="full-width"
         type            ="a"
         label           ="Ver producto"
+        align           ="left"
         target          ="_blank"
         :to             ="`/productos/${linea.id}`"
       />
@@ -60,9 +62,23 @@
         v-if            ="!esValidado"
         icon            ="mdi-trash-can"
         label           ="Borrar línea"
+        class           ="full-width"
+        align           ="left"
         >
         <confirmar      @ok="emit('borrarLinea', linea)"/>
       </q-btn>
+      <!-- //* ////////////////////////////////////////////////// Editar Titulo -->
+      <q-btn            flat dense no-caps
+        v-if            ="usuario.esProduccion || usuario.esGerencia"
+        label           ="Editar costo"
+        icon            ="mdi-cash-usd-outline"
+        class           ="full-width"
+        align           ="left"
+        >
+        <popup-costo
+          v-model       ="linea"
+        />
+      </q-btn>    
     </div>
   </q-menu>
 </template>
@@ -73,9 +89,14 @@
             toRefs,
             PropType              } from "vue"  
   import {  ILineaAcuerdo } from "src/areas/acuerdos/models/LineaAcuerdo"
-  import    confirmar       from "components/utilidades/MenuConfirmar.vue"
   import {  formatoPrecio } from "src/useSimpleOk/useTools"
-  
+  import    confirmar       from "components/utilidades/MenuConfirmar.vue"
+  import    popupCosto      from "./EditarCosto.vue"
+  // * /////////////////////////////////////////////////////////////////////// Store
+  import {  storeToRefs   } from 'pinia'
+  import {  useStoreUser  } from 'src/stores/user'
+
+  const { usuario         } = storeToRefs( useStoreUser() ) 
   const props               = defineProps({
     modelValue: { required: true, type: Object as PropType< ILineaAcuerdo > },
     esValidado: { required: true, type: Boolean },
