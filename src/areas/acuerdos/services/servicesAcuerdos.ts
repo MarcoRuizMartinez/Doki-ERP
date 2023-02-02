@@ -230,14 +230,11 @@ export function servicesAcuerdos()
 
   async function setCostoLinea( costo : number, lineaId : number, acuerdo : TTipoAcuerdo ) : Promise< boolean >
   {
-    const obj = { lineaId, costo, acuerdo }
-    console.log("obj: ", obj);
-
     return new Promise( async (resolver, rechazar ) =>
     {
       const { ok  }   = await miFetch( getURL("servicios", "acuerdos"),
                                                     {
-                                                      body: getFormData( "editarCosto", obj ),
+                                                      body: getFormData( "editarCosto", { lineaId, costo, acuerdo } ),
                                                       method: "POST"
                                                     },
                                                     { mensaje: "editar costo linea" }

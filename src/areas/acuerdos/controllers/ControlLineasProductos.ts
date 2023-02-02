@@ -57,7 +57,6 @@ export function useControlProductos()
   async function editarCostoLinea( costo : number, lineaId : number ) : Promise<boolean>
   {    
     const ok = await setCostoLinea( costo, lineaId, acuerdo.value.tipo )
-    console.log("setCostoLinea: ", ok);
 
     if(ok)
       aviso("positive", "Costo editado")

@@ -130,6 +130,7 @@ export interface IAcuerdo
   esEstadoBoceto:             boolean
   esEstadoNoValidado:         boolean
   esEstadoValido:             boolean // Es cualquier estado que no sea borrador o boceto
+  esEstadoEdicion:            boolean
   esEstadoValidado:           boolean // Es especificamente estado Validado
   esEstadoAbierto:            boolean
   esEstadoCotizado:           boolean
@@ -301,7 +302,7 @@ export class Acuerdo implements IAcuerdo
     this.comision             = new Comision()
     this.creadorId            = 0
     this.creador              = new Usuario()
-    this.estado               = ESTADO_CTZ.NO_GUARDADO
+    this.estado               = ESTADO_ACU.NO_GUARDADO
     this.notaPrivada          = ''
     this.notaPublica          = ''
     this.condicionPagoId      = 0
@@ -572,6 +573,7 @@ https://dolibarr.mublex.com/fichinter/card.php?
   get esEstadoBoceto      ():boolean { return this.estado === ESTADO_ACU.NO_GUARDADO  }
   get esEstadoNoValidado  ():boolean { return this.estado === ESTADO_ACU.NO_GUARDADO || this.estado === ESTADO_ACU.BORRADOR}
   get esEstadoValido      ():boolean { return this.estado   > ESTADO_ACU.BORRADOR     }
+  get esEstadoEdicion     ():boolean { return this.estado === ESTADO_ACU.BORRADOR     }
   get esEstadoValidado    ():boolean { return this.estado === ESTADO_ACU.VALIDADO     }
   get esEstadoEntregando  ():boolean { return this.estado === ESTADO_PED.ENTREGANDO   }
   get esEstadoEntregado   ():boolean { return this.estado === ESTADO_PED.ENTREGADO    }

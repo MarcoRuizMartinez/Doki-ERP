@@ -3,16 +3,17 @@ import {
           computed,
           watch
                         } from 'vue'
+import {  storeToRefs   } from 'pinia'
 import {  useStoreUser  } from 'src/stores/user'
 import {  useStoreApp   } from 'src/stores/app'
 import {  ItemMenu      } from 'components/navegacion/menus/iItemMenu'
 
 export function useMenu() 
 {
-  const storeUser                 = useStoreUser()
-  const storeApp                  = useStoreApp()
-  const permisos                  = computed(() => storeUser.permisos )
-  const menu                      = computed( () =>
+  const { usuario, permisos } = storeToRefs( useStoreUser() ) 
+  const { menu              } = storeToRefs( useStoreApp()  )
+
+  const menu_                 = computed( () =>
   [
     {
       ...new ItemMenu({ label:    "Inicio", icon: "mdi-home-circle", to: "/" }),
@@ -183,27 +184,14 @@ export function useMenu()
                               label:    "Crear producto",
                               icon:     "mdi-layers-plus",
                               to:       "/productos/crear",
-                              visible:  permisos.value.terceros_ver
+                              visible:  usuario.value.esProduccion || usuario.value.esGerencia
                           } ),
         },
       ]
     },
   ]
   )
-    
-  //* ///////////////////////////////////////////////////////////////////////// On Mounted
-  onMounted(() =>
-  {
-    storeApp.menu = menu.value
-  })
 
   //* ///////////////////////////////////////////////////////////////////////// Watch menu
-  watch(menu, (menuNow, menuOld) =>
-  {
-    storeApp.menu = menuNow
-  },
-  { deep: true }
-  )
-
-  return { menu}
+  watch(menu, ()=> menu.value = menu_.value,  { deep: true, immediate: true }  )  
 }

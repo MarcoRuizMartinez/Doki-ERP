@@ -8,7 +8,7 @@
     >
     <template                   #barra>
       <efecto efecto            ="Down">
-        <!-- //* //////////////////////////////////////////////////////////  Boton PDF -->
+        <!-- //* //////////////////////////////////////////////////////////  Botones -->
         <q-btn
           v-if                  ="tipo === 'crear'"
           v-bind                ="btnBaseSm"
@@ -18,7 +18,7 @@
           @click                ="validar"
         />
         <q-btn
-          v-else-if             ="readonly"
+          v-else-if             ="readonly && ( usuario.esProduccion || usuario.esGerencia )"
           v-bind                ="btnBaseSm"
           color                 ="positive"
           icon                  ="mdi-lead-pencil"
@@ -67,8 +67,9 @@
         :options                ="categorias"
         @select                 ="( c : IProductoCategoria )=> proModel.ref = c.sigla + '-'"
       />
+    <template v-if            ="usuario.esProduccion || usuario.esGerencia">
       <!-- //* //////////////   Costo -->
-      <input-number
+      <input-number        
         v-model                 ="proModel.costo"
         :label                  ="`Costo: ${ formatoPrecio( proModel.costoTotal )}`"
         class                   ="col-12 col-md-6"
@@ -162,6 +163,7 @@
           :iva                  ="proModel.iva"
         />
       </div>
+    </template>
       <q-toggle
         v-model                 ="proModel.sin_proveedor"
         label                   ="Sin REF proveedor"
@@ -246,6 +248,7 @@
 
   const { producto,
           loading           } = storeToRefs( useStoreProducto() )
+  const { usuario           } = storeToRefs( useStoreUser() )           
 
   const proModel              = ref< IProductoDoli >( new ProductoDoli() )
   const formulario            = ref< any >()
@@ -292,6 +295,9 @@
     if(tipo.value             == "ver"){
       return
     }
+
+    proModel.value.aumento        = 50
+    proModel.value.aumento_escom  = 50
   }
 
   //* ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

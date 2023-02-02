@@ -280,15 +280,20 @@
   const cargandoAlgo    = computed(()=> Object.values(loading.value).some( ( estado : boolean )=> !!estado ) )
   const totalNotas      = computed(()=> ( !!acuerdo.value.notaPrivada ? 1 : 0 ) + ( !!acuerdo.value.notaPublica ? 1 : 0 )  )
   const envioInactivo   = computed(()=> cargandoAlgo.value || !acuerdo.value.metodoEntrega.id || !acuerdo.value.fechaEntregaCorta )
-  const mostrarEditar   = computed(()=>   ( acuerdo.value.esCotizacion && !acuerdo.value.esEstadoFacturado )
-                                          ||
-                                          (     acuerdo.value.esPedido
-                                            &&  !acuerdo.value.facturado
-                                            &&  !acuerdo.value.esEstadoNoValidado
-                                            &&  !acuerdo.value.esEstadoAnulado
-                                            &&  !acuerdo.value.esEstadoEntregado
+  const mostrarEditar   = computed(()=>   !acuerdo.value.esEstadoEdicion
+                                          &&
+                                          (
+                                            (     acuerdo.value.esCotizacion
+                                              &&  !acuerdo.value.esEstadoFacturado
+                                            )
+                                            ||
+                                            (     acuerdo.value.esPedido
+                                              &&  !acuerdo.value.facturado
+                                              &&  !acuerdo.value.esEstadoNoValidado
+                                              &&  !acuerdo.value.esEstadoAnulado
+                                              &&  !acuerdo.value.esEstadoEntregado
+                                            )
                                           )
-
                                   )
   function clickEnNotas()
   {
