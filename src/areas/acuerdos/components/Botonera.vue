@@ -88,7 +88,7 @@
         <!-- //* ////////////////////////////////////////////////////////// Botones Instalacion y entrega
           v-if              ="acuerdo.hayServicios"
         -->
-        <q-btn-group  v-if    ="acuerdo.esEstadoValidado && acuerdo.esPedido && !acuerdo.esTerceroCtz">
+        <q-btn-group  v-if    ="acuerdo.esEstadoAbierto && acuerdo.esPedido && !acuerdo.esTerceroCtz">
           <!-- //* //////////////////////////////////////////////////////// Botones Instalacion -->
           <q-btn
             v-bind            ="btnBaseMd"

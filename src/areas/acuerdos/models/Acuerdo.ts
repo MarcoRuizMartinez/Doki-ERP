@@ -571,7 +571,7 @@ https://dolibarr.mublex.com/fichinter/card.php?
   }
 
   get esEstadoBoceto      ():boolean { return this.estado === ESTADO_ACU.NO_GUARDADO  }
-  get esEstadoNoValidado  ():boolean { return this.estado === ESTADO_ACU.NO_GUARDADO || this.estado === ESTADO_ACU.BORRADOR}
+  get esEstadoNoValidado  ():boolean { return this.estado === ESTADO_ACU.BORRADOR || this.estado === ESTADO_ACU.NO_GUARDADO}
   get esEstadoValido      ():boolean { return this.estado   > ESTADO_ACU.BORRADOR     }
   get esEstadoEdicion     ():boolean { return this.estado === ESTADO_ACU.BORRADOR     }
   get esEstadoValidado    ():boolean { return this.estado === ESTADO_ACU.VALIDADO     }
@@ -580,7 +580,8 @@ https://dolibarr.mublex.com/fichinter/card.php?
   get esEstadoCotizado    ():boolean { return this.estado === ESTADO_CTZ.COTIZADO     }
   get esEstadoFacturado   ():boolean { return this.estado === ESTADO_CTZ.FACTURADO    }
 
-  get esEstadoAbierto     ():boolean {
+  get esEstadoAbierto     ():boolean
+  {
     let abierto           = false
     if
     (
@@ -594,6 +595,7 @@ https://dolibarr.mublex.com/fichinter/card.php?
       abierto             = true
     return abierto
   }
+  
   get esEstadoAnulado     ():boolean {
     let anulado           = false
     if
@@ -605,6 +607,7 @@ https://dolibarr.mublex.com/fichinter/card.php?
       anulado             = true
     return anulado
   }
+
   get estadoLabel(): string { return EstadosAcuerdos.estadoToName( this.tipo, this.estado)  }
   get estadoColor(): string { return EstadosAcuerdos.estadoToColor( this.tipo, this.estado) }
   get estadoIcono(): string { return EstadosAcuerdos.estadoIcono( this.tipo, this.estado)   }

@@ -1,5 +1,8 @@
 <template>
-  <div class="text-right cursor-pointer">
+  <div
+    class                 ="text-right"
+    :class                ="$attrs.class"
+    >
     {{ linea.descuentoX100 }}
     <q-icon :name="linea.iconoNivel" color="grey-6" size="sm" class="q-mr-xs"/>
   </div>

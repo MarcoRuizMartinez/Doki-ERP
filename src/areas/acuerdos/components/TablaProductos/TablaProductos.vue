@@ -48,6 +48,7 @@
       <q-td>
         <cantidad
           v-model               ="props.row"
+          :class                ="{'cursor-pointer' : acuerdo.esEstadoNoValidado}"
           :readonly             ="acuerdo.esEstadoValido"
         />
       </q-td>
@@ -57,6 +58,7 @@
       <q-td :props="props">
         <descuento
           v-model               ="props.row"
+          :class                ="{'cursor-pointer' : acuerdo.esEstadoNoValidado}"
           :readonly             ="acuerdo.esEstadoValido"
         />
       </q-td>

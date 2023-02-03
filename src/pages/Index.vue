@@ -21,7 +21,8 @@
       class               ="col-md-4 col-12"
     />
     <template v-if        ="storeUser.usuario.esDev">
-      <modulo-usuarios            class="col-md-4 col-12" height-card="260px"/>
+      <modulo-usuarios            class="col-md-4 col-12" height-card="260px"/>      
+      <modulo-bodegas             class="col-md-4 col-12" height-card="260px"/>
       <modulo-reglas-comision     class="col-md-4 col-12" height-card="260px"/>
       <modulo-proveedores         class="col-md-4 col-12" height-card="260px"/>
       <modulo-municipios          class="col-md-4 col-12" height-card="260px"/>
@@ -64,6 +65,7 @@
   import    moduloConstantes          from "src/areas/sistemas/components/ModuloConstantes.vue"
   import    moduloCuentasDinero       from "src/areas/sistemas/components/ModuloCuentasDinero.vue"
   import    moduloReglasComision      from "src/areas/sistemas/components/ModuloReglasComision.vue"
+  import    moduloBodegas             from "src/areas/sistemas/components/ModuloBodegas.vue"
 
   import {  cargarListasIndex       } from "src/services/useDexie"
 

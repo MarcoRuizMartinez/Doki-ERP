@@ -25,6 +25,7 @@ import {  IConstante,         Constante         } from "src/models/Diccionarios/
 import {  IProveedor,         Proveedor         } from "src/models/Diccionarios/Proveedor"
 import {  ICuentaDinero,      CuentaDinero      } from "src/models/Diccionarios/CuentaDinero"
 import {  IReglaComision,     ReglaComision     } from "src/models/Diccionarios/ReglasComision"
+import {  IBodega,            Bodega            } from "src/models/Diccionarios/Bodega"
 import {  storeToRefs                           } from 'pinia'
 
 //* ///////////////////////////////////////////////////////////// Tipos de documento
@@ -45,11 +46,12 @@ export enum TABLAS
   PROVEEDORES                 = "proveedores",
   CUENTA_DINERO               = "cuentasDinero",
   REGLA_COMISION              = "reglasComision",
+  BODEGA                      = "bodegas",
 }
 
 export type ITabla            = IMunicipio      | IUsuario        | ITipoDocumento      | ICondicionPago | IReglaComision |
-                                IFormaPago      | IMetodoEntrega  | IOrigenContacto     | IUnidad        | ICuentaDinero |
-                                ITiempoEntrega  | ITipoContacto   | IProductoCategoria  | IConstante     | IProveedor
+                                IFormaPago      | IMetodoEntrega  | IOrigenContacto     | IUnidad        | ICuentaDinero  |
+                                ITiempoEntrega  | ITipoContacto   | IProductoCategoria  | IConstante     | IProveedor     | IBodega
 
 
 const pre                     = process.env.PREFIJO
@@ -64,17 +66,18 @@ export function cargarListasIndex() {
   if(check)
   {
     const param                   = { demora: 5_000, cargarSiempre : true }
-    /* municipios                    = */ dexieMunicipios(param)
-    /* condicionesPago               = */ dexieCondicionesPago(param)
-    /* formasPago                    = */ dexieFormasPago(param)
-    /* metodosEntrega                = */ dexieMetodosEntrega(param)
-    /* tiemposEntrega                = */ dexieTiemposEntrega(param)
-    /* tiposContacto                 = */ dexieTiposContacto(param)
-    /* origenesContacto              = */ dexieOrigenesContacto(param)
-    /* tiposDocumentos               = */ dexieTiposDocumentos(param)
-    /* unidades                      = */ dexieUnidades(param)
-                                          dexieCuentasDinero(param)
-                                          dexieReglaComision(param)
+    /* municipios                    = */ dexieMunicipios       (param)
+    /* condicionesPago               = */ dexieCondicionesPago  (param)
+    /* formasPago                    = */ dexieFormasPago       (param)
+    /* metodosEntrega                = */ dexieMetodosEntrega   (param)
+    /* tiemposEntrega                = */ dexieTiemposEntrega   (param)
+    /* tiposContacto                 = */ dexieTiposContacto    (param)
+    /* origenesContacto              = */ dexieOrigenesContacto (param)
+    /* tiposDocumentos               = */ dexieTiposDocumentos  (param)
+    /* unidades                      = */ dexieUnidades         (param)
+                                          dexieCuentasDinero    (param)
+                                          dexieReglaComision    (param)
+                                          dexieBodegas          (param)
   }
 }
 
@@ -166,10 +169,16 @@ export function dexieCuentasDinero      ( { cargarSiempre = false, demora = 0 } 
   return lista as Ref< ICuentaDinero[] >
 }
 
-//* ///////////////////////////////////////////////////////////// Unidades
+//* ///////////////////////////////////////////////////////////// Reglas comision
 export function dexieReglaComision ( { cargarSiempre = false, demora = 0 } = paramDefault ) :Ref< IReglaComision[] > {
   const { lista } = useDexie( TABLAS.REGLA_COMISION, { cargarSiempre, demora } )
   return lista as Ref< IReglaComision[] >
+}
+
+//* ///////////////////////////////////////////////////////////// Bodegas
+export function dexieBodegas ( { cargarSiempre = false, demora = 0 } = paramDefault ) :Ref< IBodega[] > {
+  const { lista } = useDexie( TABLAS.BODEGA, { cargarSiempre, demora } )
+  return lista as Ref< IBodega[] >
 }
 
 function useDexie( tabla : TABLAS, { cargarSiempre = false, demora = 0 } = paramDefault )
@@ -319,6 +328,9 @@ function useDexie( tabla : TABLAS, { cargarSiempre = false, demora = 0 } = param
                   case TABLAS.REGLA_COMISION :
                     await db[ TABLAS.REGLA_COMISION     ].bulkAdd( listaCarga )
                     break;
+                  case TABLAS.BODEGA :
+                    await db[ TABLAS.BODEGA             ].bulkAdd( listaCarga )
+                    break;                    
                   default:
                     break;
                 }
@@ -577,6 +589,26 @@ export async function getReglaComisionDB( id : number ) : Promise < IReglaComisi
       }
       else
         return new ReglaComision()
+    }
+  )
+}
+
+export async function getBodegaDB( id : number ) : Promise < IBodega >
+{
+  return db.transaction('r', db[ TABLAS.BODEGA ], async () =>
+    {
+      const listaDB         = await db[ TABLAS.BODEGA ].where("id").equals(id).toArray()
+      if(listaDB.length     == 1)
+      {
+        listaDB[0].id           = +listaDB[0].id
+        listaDB[0].activo       = Boolean( +listaDB[0].activo )
+        listaDB[0].padre_id     = +listaDB[0].padre_id
+        listaDB[0].proyecto_id  = +listaDB[0].proyecto_id
+
+        return listaDB[0]
+      }
+      else
+        return new Bodega()
     }
   )
 }

@@ -15,8 +15,9 @@ import {  ITipoContacto,      TipoContacto      } from "src/models/Diccionarios/
 import {  IConstante,         Constante         } from "src/models/Diccionarios/Constante"
 import {  IProveedor,         Proveedor         } from "src/models/Diccionarios/Proveedor"
 import {  ICuentaDinero,      CuentaDinero      } from "src/models/Diccionarios/CuentaDinero"
-import {  IReglaComision,    ReglaComision    } from "src/models/Diccionarios/ReglasComision"
+import {  IReglaComision,     ReglaComision     } from "src/models/Diccionarios/ReglasComision"
 import {  IProductoCategoria, ProductoCategoria } from "src/areas/productos/models/ProductoCategoria"
+import {  IBodega,            Bodega            } from "src/models/Diccionarios/Bodega"
 
 export class DBSimpleOk extends Dexie
 {
@@ -34,7 +35,8 @@ export class DBSimpleOk extends Dexie
   [TABLAS.CONSTANTE]!:        Dexie.Table< IConstante,        number >
   [TABLAS.PROVEEDORES]!:      Dexie.Table< IProveedor,        number >
   [TABLAS.CUENTA_DINERO]!:    Dexie.Table< ICuentaDinero,     number >
-  [TABLAS.REGLA_COMISION]!:   Dexie.Table< IReglaComision,   number >
+  [TABLAS.REGLA_COMISION]!:   Dexie.Table< IReglaComision,    number >
+  [TABLAS.BODEGA]!:           Dexie.Table< IBodega,           number >
 
   constructor()
   {
@@ -42,21 +44,22 @@ export class DBSimpleOk extends Dexie
 
     this.version(1).stores(
     {
-      [TABLAS.MUNICIPIOS]:        "++id, municipio, departamento, departamentoSigla, departamentoId, indicativo",
-      [TABLAS.USUARIOS]:          "++id, nombre, apellido, puesto, foto, tipo, area, estado, gruposString, terceroIdCtz, cel, correo, reglaComisionId",
-      [TABLAS.TIPOS_DOCUMENTOS]:  "++id, codigo, nombre",
-      [TABLAS.CONDICION_PAGO]:    "++id, label, descripcion, dias",
-      [TABLAS.FORMA_PAGO]:        "++id, label",
-      [TABLAS.METODO_ENTREGA]:    "++id, label",
-      [TABLAS.ORIGEN_CONTACTO]:   "++id, label",
-      [TABLAS.UNIDAD]:            "++id, nombre, codigo, tipo, orden",
-      [TABLAS.TIEMPO_ENTREGA]:    "++id, label, codigo",
-      [TABLAS.TIPO_CONTACTO]:     "++id, codigo, tipo,  origen",
-      [TABLAS.PRODUCTO_CATE]:     "++id, nombre, sigla, grupo, modificadorComision, codigoVenta, codigoCompra",
-      [TABLAS.CONSTANTE]:         "++id, label, value",
-      [TABLAS.PROVEEDORES]:       "++id, nombre, alias, codigo",
-      [TABLAS.CUENTA_DINERO]:     "++id, ref, label, tipoId, logoUrl, virtual",
-      [TABLAS.REGLA_COMISION]:    "++id, nombre, descripcion, alfa, a, b, c, d, e",
+      [TABLAS.MUNICIPIOS]       : "++id, municipio, departamento, departamentoSigla, departamentoId, indicativo",
+      [TABLAS.USUARIOS]         : "++id, nombre, apellido, puesto, foto, tipo, area, estado, gruposString, terceroIdCtz, cel, correo, reglaComisionId",
+      [TABLAS.TIPOS_DOCUMENTOS] : "++id, codigo, nombre",
+      [TABLAS.CONDICION_PAGO]   : "++id, label, descripcion, dias",
+      [TABLAS.FORMA_PAGO]       : "++id, label",
+      [TABLAS.METODO_ENTREGA]   : "++id, label",
+      [TABLAS.ORIGEN_CONTACTO]  : "++id, label",
+      [TABLAS.UNIDAD]           : "++id, nombre, codigo, tipo, orden",
+      [TABLAS.TIEMPO_ENTREGA]   : "++id, label, codigo",
+      [TABLAS.TIPO_CONTACTO]    : "++id, codigo, tipo,  origen",
+      [TABLAS.PRODUCTO_CATE]    : "++id, nombre, sigla, grupo, modificadorComision, codigoVenta, codigoCompra",
+      [TABLAS.CONSTANTE]        : "++id, label, value",
+      [TABLAS.PROVEEDORES]      : "++id, nombre, alias, codigo",
+      [TABLAS.CUENTA_DINERO]    : "++id, ref, label, tipoId, logoUrl, virtual",
+      [TABLAS.REGLA_COMISION]   : "++id, nombre, descripcion, alfa, a, b, c, d, e",
+      [TABLAS.BODEGA]           : "++id, ref, nombre, estado, padre_id, proyecto_id, descripcion, direccion",
     })
 
     this[TABLAS.MUNICIPIOS]       = this.table( TABLAS.MUNICIPIOS )
@@ -103,6 +106,9 @@ export class DBSimpleOk extends Dexie
 
     this[TABLAS.REGLA_COMISION]   = this.table( TABLAS.REGLA_COMISION )
     this[TABLAS.REGLA_COMISION]   .mapToClass( ReglaComision )
+
+    this[TABLAS.BODEGA]           = this.table( TABLAS.BODEGA )
+    this[TABLAS.BODEGA]           .mapToClass( Bodega )
   }
 }
 

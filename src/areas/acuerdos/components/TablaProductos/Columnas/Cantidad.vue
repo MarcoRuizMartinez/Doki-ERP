@@ -1,5 +1,8 @@
 <template>
-  <div class              ="text-right cursor-pointer">
+  <div
+    class                 ="text-right"
+    :class                ="$attrs.class"
+    >
     {{ linea.qtyUnd }}
   </div>
   <q-popup-edit           buttons

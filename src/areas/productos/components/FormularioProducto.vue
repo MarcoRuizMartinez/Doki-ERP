@@ -283,8 +283,12 @@
 
   watch(producto, (pro)=>
     {
-      if(!!pro)
-        proModel.value  = Object.assign( new ProductoDoli, pro )
+      if(!!pro){
+        proModel.value                = Object.assign( new ProductoDoli, pro )
+        proModel.value.aumento        = 50
+        proModel.value.aumento_escom  = 50
+      }
+
     }
     ,{ immediate: true }
   )
@@ -295,9 +299,6 @@
     if(tipo.value             == "ver"){
       return
     }
-
-    proModel.value.aumento        = 50
-    proModel.value.aumento_escom  = 50
   }
 
   //* ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
