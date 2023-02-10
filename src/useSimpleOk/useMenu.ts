@@ -46,6 +46,13 @@ export function useMenu()
                               visible:  true
                           } ),
         },
+        { ...new ItemMenu({
+                              label:    "Mejora continua",
+                              icon:     "mdi-rocket-launch",
+                              to:       "/ideas",
+                              visible:  true
+                          } ),
+        },
       ]
     },    
     {
@@ -137,6 +144,13 @@ export function useMenu()
                             visible:    permisos.value.terceros_ver
                           }),
         },
+        { ...new ItemMenu({
+                              label:    "Garantías",
+                              icon:     "mdi-lifebuoy",
+                              to:       "/garantias",
+                              visible:  true
+                          } ),
+        },        
         { ...new ItemMenu({ separator: true }), },
         { ...new ItemMenu({
                             label:      "Pedidos proveedor",

@@ -40,7 +40,7 @@ const routes: RouteRecordRaw[] = [
                 icono:  "mdi-shield-star",
                 link:   "https://airtable.com/embed/shr3RyLFc5ujEGFZt/tblY7nRIsN5bctOwZ?backgroundColor=gray&viewControls=on",
               },
-        component: () => import('components/navegacion/Paginaiframe.vue')
+        component: () => import('src/pages/PaginaIframe.vue')
       },
       {
         path: 'ayudas',
@@ -51,7 +51,31 @@ const routes: RouteRecordRaw[] = [
                 icono:  "mdi-help-circle",
                 link:   "https://airtable.com/shrza0g3D4XowxyzR/tbl0bVTdeiC9ZRJL3?backgroundColor=cyan&viewControls=on",
               },
-        component: () => import('components/navegacion/Paginaiframe.vue')
+        component: () => import('src/pages/PaginaIframe.vue')
+      },
+      {
+        path: 'ideas',
+        name: 'ideas',
+        props: {
+                src:            "https://airtable.com/embed/shrD7MAAGTDI2ysVW?backgroundColor=cyan&viewControls=on",
+                titulo:         "Mejora continua",
+                icono:          "mdi-rocket-launch",
+                link:           "https://airtable.com/shrD7MAAGTDI2ysVW",
+                srcFormulario:  "https://airtable.com/embed/shrYhHH17wVSAe389?backgroundColor=cyan",
+              },
+        component: () => import('src/pages/PaginaIframe.vue')
+      },
+      {
+        path: 'garantias',
+        name: 'garantias',
+        props: {
+                src:            "https://airtable.com/embed/shrTomYqJm4HxyHus?backgroundColor=cyan&viewControls=on",
+                titulo:         "Garantías",
+                icono:          "mdi-lifebuoy",
+                link:           "https://airtable.com/appDnXJg9nZ4PGLlL/pagOqbRoGUnw7c5MN?DrUh9=recCAkL0kRxOBylki",
+                srcFormulario:  "https://airtable.com/embed/shrLfahiij8C8JhJ3?backgroundColor=cyan",
+              },
+        component: () => import('src/pages/PaginaIframe.vue')
       },       
 /*       {
         path: 'test',
@@ -143,7 +167,7 @@ const routes: RouteRecordRaw[] = [
         name:       'pedido',
         props:      route => ({ tipo: TIPO_ACUERDO.PEDIDO_CLI, id: route.params.id }),
         component:  () => import('src/areas/acuerdos/pages/PageAcuerdoVer.vue')
-      },
+      },          
       //* ////////////////////////////////////////////////////////////////// Pedido cliente Crear 
       {
         path:       'cliente/crear',

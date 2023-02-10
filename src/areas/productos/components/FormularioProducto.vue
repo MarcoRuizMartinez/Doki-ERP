@@ -284,9 +284,13 @@
   watch(producto, (pro)=>
     {
       if(!!pro){
-        proModel.value                = Object.assign( new ProductoDoli, pro )
-        proModel.value.aumento        = 50
-        proModel.value.aumento_escom  = 50
+        proModel.value                  = Object.assign( new ProductoDoli(), pro )
+
+        if(tipo.value == "crear")
+        {
+          proModel.value.aumento        = 50
+          proModel.value.aumento_escom  = 50
+        }
       }
 
     }

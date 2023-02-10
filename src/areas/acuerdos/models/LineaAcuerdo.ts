@@ -375,7 +375,7 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
         if(!!linea.sigla)
           linea.categoria   = await getCategoriaDB( linea.sigla  )
         linea.imagen        = !!linea.imagen ? linea.imagen : imagenDefault
-        const lineaFinal    = Object.assign( new LineaAcuerdo, linea ) as ILineaAcuerdo
+        const lineaFinal    = Object.assign( new LineaAcuerdo(), linea ) as ILineaAcuerdo
         lineaFinal.comsionX100Division = +linea?.divisionComision ?? 100
         lineas.push( lineaFinal )
       }

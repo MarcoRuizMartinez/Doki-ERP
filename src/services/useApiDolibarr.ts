@@ -18,7 +18,7 @@ type AccionDolibarr           = "crear"         | "editar"        | "ver"       
 type ModuloDolibarr           = "" | "tercero" | "contacto" | "documento" | "saber" | "producto" | "proyecto" |
                                 "cotización"  | "cotizaciónPro" |
                                 "pedido"      | "pedidoPro"     |
-                                "entrega"     | "entregaPro"    |
+                                "entrega"     | "entregaPro"    | "entregasPedido" | 
                                 "factura"     | "facturaPro" 
 type Metodo                   = "post" | "put" | "get" | "delete"
 
@@ -50,15 +50,16 @@ export function useApiDolibarr()
   {
     let endPoint = ""
     switch (modulo) {
-      case "tercero":           endPoint = "thirdparties";        break;
-      case "contacto":          endPoint = "contacts";            break;
-      case "documento":         endPoint = "documents";           break;
-      case "cotización":        endPoint = "proposals";           break;
-      case "pedido":            endPoint = "orders";              break;
-      case "saber":             endPoint = "knowledgemanagement"; break;
-      case "producto":          endPoint = "products";            break;
-      case "proyecto":          endPoint = "projects";            break;
-      case "pedidoPro":         endPoint = "supplierorders";      break;
+      case "tercero"        : endPoint = "thirdparties";        break;
+      case "contacto"       : endPoint = "contacts";            break;
+      case "documento"      : endPoint = "documents";           break;
+      case "cotización"     : endPoint = "proposals";           break;
+      case "pedido"         : endPoint = "orders";              break;
+      case "saber"          : endPoint = "knowledgemanagement"; break;
+      case "producto"       : endPoint = "products";            break;
+      case "proyecto"       : endPoint = "projects";            break;
+      case "pedidoPro"      : endPoint = "supplierorders";      break;
+      case "entregasPedido" : endPoint = "orders";              break;
       default: break;
     }
 
@@ -87,7 +88,8 @@ export function useApiDolibarr()
       if(accion               === "crear-lineas")
         endPoint              += "/" + id + "/lines"
       else 
-      if(accion               === "crear-linea"){
+      if(accion               === "crear-linea")
+      {
         if(tipo               === "cotización")
           endPoint            += "/" + id + "/line"
         if(tipo               === "pedido")
@@ -107,6 +109,9 @@ export function useApiDolibarr()
     {
       metodo                  = "get"
       endPoint                += "/" + id
+      
+      if( tipo                === "entregasPedido" )
+        endPoint              += `/shipment`
     }
     else if(accion            === "buscar" && typeof objeto === "string")
     {

@@ -5,7 +5,8 @@ import {  ICuentaDinero,
           CuentaDinero        } from "src/models/Diccionarios/CuentaDinero"          
 import {  formatoPrecio       } from "src/useSimpleOk/useTools"  
 import {  IArchivo, Archivo   } from "src/models/Archivo"
-import {  ILabelValue,  labelValueNulo  } from "src/models/TiposVarios"
+import {  ILabelValue,  
+          labelValueNulo      } from "src/models/TiposVarios"
 import {  fechaCorta          } from "src/useSimpleOk/useTools"
 
 export enum ESTADO_ANTICIPO

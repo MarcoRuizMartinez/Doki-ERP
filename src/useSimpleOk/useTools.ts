@@ -74,6 +74,29 @@ export function getDateToStr( fechaStr : string, tipo : "UTC" | "local" = "local
   return new Date ( milisegundos )
 }
 
+export function getDateToApiDolibarr( fechaDoli : any ) : Date
+{
+  // Dolibarr envia fecha con 3 ceros menos que toca agregar. Ejem:  1675442604 
+
+  const raw = anyToNumOStr(fechaDoli)
+  if( !valorValido( raw ) )
+    return new Date()
+
+  const numero = strOrNumToNum( raw, 0 )
+  if(numero < 1_000_000_000 )
+    return new Date()
+    
+  return new Date( +(numero.toString() + "000")  )
+}
+
+export function anyToNumOStr( v : any ) : number | string
+{
+  if(typeof v === "number" || typeof v === "string")
+    return v 
+  else 
+    return ""
+}
+
 export function getMilisecShortForApiDolibarr( fecha : Date ) : number
 {
   return parseInt( fecha.valueOf().toString().slice(0,8) + "00" )

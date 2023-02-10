@@ -7,7 +7,7 @@
 </template>
 
 <script setup lang="ts">
-  import    paginaIframe    from "components/navegacion/Paginaiframe.vue"
+  import    paginaIframe    from "src/components/navegacion/VentanaIframe.vue"
   import {  useTitle            } from "@vueuse/core"
   const titulo  = "Políticas para el manejo de clientes entre comerciales de Escom y Mublex"
   const title   = useTitle("📖 " + titulo)

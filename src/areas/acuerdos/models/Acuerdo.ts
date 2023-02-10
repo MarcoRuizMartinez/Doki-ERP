@@ -62,6 +62,7 @@ import {  X100,
           fechaCorta,
           getDateToStr,
           getNumberValido,
+          getDateToApiDolibarr,
           getMilisecShortForApiDolibarr,    } from "src/useSimpleOk/useTools"
 import {  TModulosDolibarr                  } from "src/useSimpleOk/UtilFiles"
 import {  storeToRefs                       } from 'pinia'
@@ -216,6 +217,11 @@ export interface IAcuerdo
   saldo:                      number
   subTotalLimpio:             number
   retenciones:                IRetenciones
+
+  /* Solo para entregas */
+  entregas                    : IAcuerdo[]
+  transportadoraId            : number
+  numeroGuia                  : string
 }
 
 export class Acuerdo implements IAcuerdo
@@ -276,6 +282,10 @@ export class Acuerdo implements IAcuerdo
 
   /* Solo para pedidos */
   facturado:                  boolean
+  /* Solo para entregas */
+  entregas                    : IAcuerdo[]
+  transportadoraId            : number
+  numeroGuia                  : string
 
   constructor( tipo : TTipoAcuerdo = TIPO_ACUERDO.NULO )
   {
@@ -335,6 +345,11 @@ export class Acuerdo implements IAcuerdo
 
     /* Solo para pedidos */
     this.facturado            = false
+
+    /* Solo para entregas */
+    this.entregas             = []
+    this.transportadoraId     = 0
+    this.numeroGuia           = ""
   }
 
 
@@ -955,4 +970,96 @@ https://dolibarr.mublex.com/fichinter/card.php?
       acu.proGrupos       = GrupoLineas.getGruposDesdeProductos( acu.productos )
     return acu
   }
+
+  static async convertirDataApiToEntrega( ee : any ) : Promise < IAcuerdo >
+  {
+    const e : any         = {}
+    e.id                  = +ee?.id ?? 0
+    e.transportadoraId    = +ee?.array_options?.options_transportadora_id ?? 0
+    e.facturado           = Boolean( +ee?.billed ?? 0 )
+    e.fechaCreacion       = getDateToApiDolibarr( ee?.date_creation ?? "" )
+    e.fechaEntrega        = getDateToApiDolibarr( ee?.date_delivery ?? "" )
+    e.fechaValidacion     = getDateToApiDolibarr( ee?.date_valid    ?? "" )
+    e.ref                 = ee?.ref                 ?? ""
+    e.notaPublica         = ee?.note_public         ?? ""
+    e.refCliente          = ee?.ref_customer        ?? ""
+    e.terceroId           = +ee?.socid              ?? 0
+    e.estado              = +ee?.statut             ?? 0
+    e.numeroGuia          = ee?.tracking_number     ?? ""
+    e.metodoEntregaId     = +ee?.shipping_method_id ?? 0
+      
+
+    const entre           = Object.assign( new Acuerdo( TIPO_ACUERDO.ENTREGA_CLI ), e ) as IAcuerdo
+
+    entre.metodoEntrega   = await getMetodosEntregaDB( entre.metodoEntregaId )
+    return entre
+  }
+
+  static async convertirDataApiToEntregas( entregasApi : any[] ) : Promise < IAcuerdo[] >
+  {
+    const entregas : IAcuerdo[] = []
+
+    for(const entrega of entregasApi)
+    {
+      const e = await Acuerdo.convertirDataApiToEntrega( entrega )       
+      entregas.push( e )
+    }
+
+    return entregas
+  }
+
+
 }
+/*
+id: "2620"
+billed
+/////
+date_creation: 1675442604
+date_delivery:  1675918800
+date_valid: 1675442609
+
+lines
+  id
+
+  label
+  description
+  entrepot_id
+  fk_origin_line
+  origin_line_id
+  fk_product
+  tracking_number
+  fk_product_type
+  product_label  :   "Silla Shanghai con cabecero"
+  product_ref  :   "SIG-3-723"  
+  fk_unit
+  pa_ht: "282104.00000000"
+  price: "421832"
+  note_public: "Esta es una nota publica"
+  ref: "Entrega-23-02-1535"
+  ref_customer: "XX33"
+  shipping_method  :   "Recoge en oficina"
+  shipping_method_id  :   "9"  
+  statut : "1"
+  details_entrepot
+    entrepot_id
+    line_id
+    qty_shipped
+
+  qty  :   "1"
+  qty_asked  :   "3"
+  qty_shipped  :    "1"
+  rang  :   "1"
+  ref  :   "SIG-3-723"
+
+array_options
+  options_transportadora_id
+
+
+  statutshorts: 
+    0 :    StatusSendingDraftShort
+    1 :  StatusSendingValidatedShort
+    2 :  StatusSendingProcessedShort
+    -1 : StatusSendingCanceledShort
+
+
+*/

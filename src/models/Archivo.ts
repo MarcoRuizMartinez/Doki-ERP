@@ -1,4 +1,6 @@
-import { format } from 'quasar'
+import { format               } from 'quasar'
+import { getDateToApiDolibarr } from "src/useSimpleOk/useTools"          
+
 const { humanStorageSize } = format
 
 export type TFamiliaArchivos   = "PDF" | "Excel" | "Word" | "Texto" | "Calculo" | "PowerP" | "Imagen"
@@ -169,7 +171,7 @@ export class Archivo implements IArchivo
   }
 
   get fecha() : Date {
-    return new Date( parseInt( this.date.toString() + "000" ) )
+    return getDateToApiDolibarr( this.date )
   }
   get fechaCorta() : string {
     return this.fecha.toLocaleDateString('sv-SE') 

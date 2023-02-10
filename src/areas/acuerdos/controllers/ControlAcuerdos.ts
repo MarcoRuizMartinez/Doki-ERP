@@ -13,8 +13,7 @@ import {  getURL, getFormData   } from "src/services/APIMaco"
 import {  useTools,
           ID_URL_Ok,
           confeti               } from "src/useSimpleOk/useTools"
-import {  dexieReglaComision,
-          getReglaComisionDB     } from "src/services/useDexie"
+import {  dexieReglaComision    } from "src/services/useDexie"
 //* ////////////////////////////////////////////////////////////////// Modelos
 import {  ESTADO_CTZ,
           ESTADO_PED,
@@ -30,6 +29,7 @@ import {  IFormaPago            } from "src/models/Diccionarios/FormaPago"
 import {  IMetodoEntrega        } from "src/models/Diccionarios/MetodoEntrega"
 import {  ITiempoEntrega        } from "src/models/Diccionarios/TiempoEntrega"
 import {  IProyecto, Proyecto   } from "src/areas/proyectos/models/Proyecto"
+import {  Acuerdo               } from "src/areas/acuerdos/models/Acuerdo"  
 import {  IContacto,
           Contacto,
           TTipoContacto,
@@ -119,8 +119,9 @@ export function useControlAcuerdo()
     if(!!acuerdo.value.id)
     {
       //verificarPermisosLectura()
-      await buscarTerceroDolibarr( acuerdo.value.terceroId )
-      await buscarProyecto( acuerdo.value.proyectoId )
+      await buscarTerceroDolibarr ( acuerdo.value.terceroId   )
+      await buscarProyecto        ( acuerdo.value.proyectoId  )
+      await buscarEntregasPedido  ( acuerdo.value.id          )
     }
     else
     {
@@ -155,6 +156,20 @@ export function useControlAcuerdo()
       acuerdo.value.proyecto    = Proyecto.convertirDataApiToProyecto( data )
     }
   }
+
+  //* ////////////////////////////////////////////////////////////////////// Buscar entregas de pedido
+  async function buscarEntregasPedido( id_ : number )
+  {
+    if(!id_) return
+    const { data, ok }        = await apiDolibarr("ver", "entregasPedido", {}, id_ )
+    
+    if(ok && typeof data === "object" && Array.isArray( data ))
+    {
+      //console.log("Data Api", data[0]);
+      acuerdo.value.entregas  = await Acuerdo.convertirDataApiToEntregas( data )
+    }
+  }
+
 
 
   //* ////////////////////////////////////////////////////////////////////// Cambiar contacto

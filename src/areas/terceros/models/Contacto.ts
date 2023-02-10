@@ -4,6 +4,8 @@ import {  getMunicipioDB    } from "src/services/useDexie"
 
 import {  TTipoAcuerdo, 
           TIPO_ACUERDO      } from "src/areas/acuerdos/models/ConstantesAcuerdos"
+import {  getDateToApiDolibarr
+                            } from "src/useSimpleOk/useTools"          
 
 export const enum TIPOS_CONTACTO_ID { // llx_c_type_contact
   NO_ASIGNADO             = 0,
@@ -191,8 +193,8 @@ export class Contacto implements IContacto
     contacto.extension        = contactoApi.phone_perso
     contacto.direccion        = contactoApi.address
     contacto.nota             = contactoApi.note_private
-    contacto.fechaCreado      = new Date( parseInt( contactoApi.date_creation     .toString() + "000" ) )
-    contacto.fechaModificado  = new Date( parseInt( contactoApi.date_modification .toString() + "000" ) )
+    contacto.fechaCreado      = getDateToApiDolibarr( contactoApi?.date_creation      ?? "" )
+    contacto.fechaModificado  = getDateToApiDolibarr( contactoApi?.date_modification  ?? "" )
     contacto.activo           = Boolean(  parseInt( contactoApi.statut            ) )
 
     if( contactoApi.hasOwnProperty("array_options") )
