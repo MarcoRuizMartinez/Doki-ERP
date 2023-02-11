@@ -114,8 +114,10 @@
     if(ok && Array.isArray( data ) && !!data.length)
     {
       enlaces.length      = 0
-      for (const item of data)      
-        enlaces.push( EnlaceAnticipo.enlaceApiToEnlace( item ) )      
+      for (const item of data){
+        const enlace = EnlaceAnticipo.enlaceApiToEnlace( item )
+        enlaces.push( enlace )      
+      }
     }
   }  
 
@@ -123,10 +125,13 @@
   {
     const pedi            = getIds(   TIPO_ACUERDO.PEDIDO_CLI       )
     const coti            = getIds(   TIPO_ACUERDO.COTIZACION_CLI   )
-    const oc_p            = getIds(   TIPO_ACUERDO.PEDIDO_PRO )
+    const oc_p            = getIds(   TIPO_ACUERDO.PEDIDO_PRO       )
+    const en_c            = getIds(   TIPO_ACUERDO.ENTREGA_CLI      )
+
     const paquete         = [ { ids:  pedi, tipo: TIPO_ACUERDO.PEDIDO_CLI       },
                               { ids:  coti, tipo: TIPO_ACUERDO.COTIZACION_CLI   },
-                              { ids:  oc_p, tipo: TIPO_ACUERDO.PEDIDO_PRO }
+                              { ids:  oc_p, tipo: TIPO_ACUERDO.PEDIDO_PRO       },
+                              { ids:  en_c, tipo: TIPO_ACUERDO.ENTREGA_CLI      },
                             ]
     acuerdos.value        = []                            
 
@@ -143,6 +148,8 @@
       const acuerdosI           = await getAcuerdos( query )
       acuerdos.value.push( ...acuerdosI )
     }
+    
+    console.log("acuerdos.value: ", acuerdos.value);
 
     function getIds( tipo : TTipoAcuerdo ) :string
     {

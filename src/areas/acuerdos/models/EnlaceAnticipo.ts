@@ -25,9 +25,10 @@ export class EnlaceAnticipo implements IEnlaceAnticipo
   {
     enlaceApi.id_enlace     = +enlaceApi.id_enlace
     enlaceApi.id_objeto     = +enlaceApi.id_objeto
-    enlaceApi.tipo          =   enlaceApi.tipo === "commande"        ? TIPO_ACUERDO.PEDIDO_CLI
-                              : enlaceApi.tipo === "propal"          ? TIPO_ACUERDO.COTIZACION_CLI
-                              : enlaceApi.tipo === "order_supplier"  ? TIPO_ACUERDO.PEDIDO_PRO
+    enlaceApi.tipo          =   enlaceApi.tipo === "commande"         ? TIPO_ACUERDO.PEDIDO_CLI
+                              : enlaceApi.tipo === "propal"           ? TIPO_ACUERDO.COTIZACION_CLI
+                              : enlaceApi.tipo === "order_supplier"   ? TIPO_ACUERDO.PEDIDO_PRO
+                              : enlaceApi.tipo === "shipping"         ? TIPO_ACUERDO.ENTREGA_CLI
                               : TIPO_ACUERDO.NULO
     const enlace            = Object.assign( new EnlaceAnticipo(), enlaceApi ) as IEnlaceAnticipo   
     return enlace

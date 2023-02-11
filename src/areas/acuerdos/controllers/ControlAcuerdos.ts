@@ -113,6 +113,7 @@ export function useControlAcuerdo()
     loading.value.carga         = true
     acuerdo.value.productos     = []
     acuerdo.value               = await getAcuerdo( tipo, idOk )
+    //console.log("acuerdo.value: ", JSON.parse( acuerdo.value.enlaces ));
 
     if(!acuerdo.value.proGrupos.length) crearNuevoGrupo()
 
@@ -121,7 +122,7 @@ export function useControlAcuerdo()
       //verificarPermisosLectura()
       await buscarTerceroDolibarr ( acuerdo.value.terceroId   )
       await buscarProyecto        ( acuerdo.value.proyectoId  )
-      await buscarEntregasPedido  ( acuerdo.value.id          )
+      //await buscarEntregasPedido  ( acuerdo.value.id          )
     }
     else
     {
@@ -156,7 +157,7 @@ export function useControlAcuerdo()
       acuerdo.value.proyecto    = Proyecto.convertirDataApiToProyecto( data )
     }
   }
-
+ 
   //* ////////////////////////////////////////////////////////////////////// Buscar entregas de pedido
   async function buscarEntregasPedido( id_ : number )
   {

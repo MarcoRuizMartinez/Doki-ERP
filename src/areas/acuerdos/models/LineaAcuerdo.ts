@@ -84,6 +84,10 @@ export interface ILineaAcuerdo extends IProductoDoli {
   x100DescuentoNiveles      : INivelesComision  // GET: 100% de descuento minimo para vender en cada nivel
   comision_c1               : IComisionLinea
   comision_c2               : IComisionLinea
+
+  // */ /////////////////// Entrega
+  qtyTotal                  : number
+  bodegaId                  : number
 }
 
 
@@ -100,6 +104,8 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
   precioBase                : number
   borrar                    : boolean
   accion                    : TAccionesSobreLinea  
+  qtyTotal                  : number
+  bodegaId                  : number  
 
   // */ /////////////////// Comisiones
   comsionX100Division       : number
@@ -124,6 +130,8 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
     this.comsionX100Division= 100
     this.comision_c1        = new ComisionLinea( "comercial 1" )
     this.comision_c2        = new ComisionLinea( "comercial 2" )
+    this.qtyTotal           = 0
+    this.bodegaId           = 0
   }
 
   // * /////////////////////////////////////////////////////////////////////////////// Tipo de linea
