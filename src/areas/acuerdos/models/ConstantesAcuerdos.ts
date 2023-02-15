@@ -59,6 +59,16 @@ export enum ESTADO_PED
   ENTREGADO                   = 3,
 }
 
+
+export enum ESTADO_ENT
+{
+  NO_GUARDADO                 = -2,
+  CANCELADO                   = -1,
+  BORRADOR                    = 0,
+  VALIDADO                    = 1,
+  ENTREGADO                   = 2,
+}
+
 export enum ESTADO_OC
 {
   NO_GUARDADO                 = -2,  
@@ -98,6 +108,15 @@ export class EstadosAcuerdos
                                 : ""
     }
     else
+    if( tipo === TIPO_ACUERDO.ENTREGA_CLI ){
+      valor                     = estado == ESTADO_ENT.NO_GUARDADO      ? "Boceto"
+                                : estado == ESTADO_ENT.CANCELADO        ? "Cancelado"
+                                : estado == ESTADO_ENT.BORRADOR         ? "Borrador"
+                                : estado == ESTADO_ENT.VALIDADO         ? "Validado"
+                                : estado == ESTADO_ENT.ENTREGADO        ? "Entregado"
+                                : ""
+    }
+    else
     if( tipo === TIPO_ACUERDO.PEDIDO_PRO ){
       valor                     = estado == ESTADO_OC.NO_GUARDADO       ? "Boceto"
                                 : estado == ESTADO_OC.BORRADOR          ? "Edición"
@@ -133,8 +152,17 @@ export class EstadosAcuerdos
                                 : estado == ESTADO_PED.CANCELADO        ? COLORES.MORADO
                                 : estado == ESTADO_PED.BORRADOR         ? COLORES.GRIS
                                 : estado == ESTADO_PED.VALIDADO         ? COLORES.NARANJA
-                                : estado == ESTADO_PED.ENTREGANDO          ? COLORES.AZUL
+                                : estado == ESTADO_PED.ENTREGANDO       ? COLORES.AZUL
                                 : estado == ESTADO_PED.ENTREGADO        ? COLORES.VERDE
+                                : "transparent"
+    }
+    else
+    if( tipo === TIPO_ACUERDO.ENTREGA_CLI ){
+      color                     = estado == ESTADO_ENT.NO_GUARDADO      ? COLORES.NEGRO
+                                : estado == ESTADO_ENT.CANCELADO        ? COLORES.MORADO
+                                : estado == ESTADO_ENT.BORRADOR         ? COLORES.GRIS
+                                : estado == ESTADO_ENT.VALIDADO         ? COLORES.NARANJA
+                                : estado == ESTADO_ENT.ENTREGADO        ? COLORES.VERDE
                                 : "transparent"
     }
     else
@@ -173,8 +201,17 @@ export class EstadosAcuerdos
                                 : estado == ESTADO_PED.CANCELADO        ? "mdi-close-circle"
                                 : estado == ESTADO_PED.BORRADOR         ? "mdi-circle-edit-outline"
                                 : estado == ESTADO_PED.VALIDADO         ? "mdi-check-bold"
-                                : estado == ESTADO_PED.ENTREGANDO          ? "mdi-airplane-takeoff"
+                                : estado == ESTADO_PED.ENTREGANDO       ? "mdi-airplane-takeoff"
                                 : estado == ESTADO_PED.ENTREGADO        ? "mdi-truck-check"
+                                : ""
+    }
+    else
+    if( tipo === TIPO_ACUERDO.ENTREGA_CLI ){
+      icono                     = estado == ESTADO_ENT.NO_GUARDADO      ? "mdi-eraser-variant"
+                                : estado == ESTADO_ENT.CANCELADO        ? "mdi-close-circle"
+                                : estado == ESTADO_ENT.BORRADOR         ? "mdi-circle-edit-outline"
+                                : estado == ESTADO_ENT.VALIDADO         ? "mdi-check-bold"
+                                : estado == ESTADO_ENT.ENTREGADO        ? "mdi-truck-check"
                                 : ""
     }
     else
@@ -223,6 +260,14 @@ export const estadosPed       = [
   { value: ESTADO_PED.VALIDADO,         label: EstadosAcuerdos.estadoToName( TIPO_ACUERDO.PEDIDO_CLI,       ESTADO_PED.VALIDADO ) },
   { value: ESTADO_PED.ENTREGANDO,       label: EstadosAcuerdos.estadoToName( TIPO_ACUERDO.PEDIDO_CLI,       ESTADO_PED.ENTREGANDO ) },
   { value: ESTADO_PED.ENTREGADO,        label: EstadosAcuerdos.estadoToName( TIPO_ACUERDO.PEDIDO_CLI,       ESTADO_PED.ENTREGADO ) },
+]
+
+export const estadosEnt       = [
+  { value: ESTADO_ENT.NO_GUARDADO,      label: EstadosAcuerdos.estadoToName( TIPO_ACUERDO.ENTREGA_CLI,      ESTADO_ENT.NO_GUARDADO ) },
+  { value: ESTADO_ENT.CANCELADO,        label: EstadosAcuerdos.estadoToName( TIPO_ACUERDO.ENTREGA_CLI,      ESTADO_ENT.CANCELADO ) },
+  { value: ESTADO_ENT.BORRADOR,         label: EstadosAcuerdos.estadoToName( TIPO_ACUERDO.ENTREGA_CLI,      ESTADO_ENT.BORRADOR ) },
+  { value: ESTADO_ENT.VALIDADO,         label: EstadosAcuerdos.estadoToName( TIPO_ACUERDO.ENTREGA_CLI,      ESTADO_ENT.VALIDADO ) },
+  { value: ESTADO_ENT.ENTREGADO,        label: EstadosAcuerdos.estadoToName( TIPO_ACUERDO.ENTREGA_CLI,      ESTADO_ENT.ENTREGADO ) },
 ]
 
 export const estadosOC       = [

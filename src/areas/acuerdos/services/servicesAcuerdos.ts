@@ -72,11 +72,11 @@ export function servicesAcuerdos()
     {
       const { data, ok  }   = await miFetch( getURL("listas", "acuerdos"),
                                                     {
-                                                      body: getFormData(  "acuerdo",  { id: id, acuerdo: tipo } ),
-                                                      method: "POST"
+                                                      body:     getFormData(  "acuerdo",  { id: id, acuerdo: tipo } ),
+                                                      method:   "POST"
                                                     },
                                                     {
-                                                      mensaje:      "cargar cotización",
+                                                      mensaje:  "cargar cotización",
                                                       tiempoEspera: 10000
                                                     }
                                                     )
@@ -109,10 +109,12 @@ export function servicesAcuerdos()
                                                   )
       const acuerdos : IAcuerdo[]   = []
 
+      console.log("data: ", data);
       if(ok && Array.isArray( data ))
       {
-        for (const item of data){
-          const quote : IAcuerdo = await Acuerdo.convertirDataApiToAcuerdo( item, query.acuerdo )
+        for (const item of data)
+        {
+          const quote : IAcuerdo    = await Acuerdo.convertirDataApiToAcuerdo( item, query.acuerdo )
           acuerdos.push( quote )
         }
         resolver( acuerdos )

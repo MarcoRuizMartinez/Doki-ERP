@@ -1,7 +1,7 @@
 <template>
   <ventana                      cerrar
     class-contenido             ="column items-center"
-    titulo                      ="Anticipo"
+    titulo                      ="Anticipo o Autorización"
     icono                       ="mdi-cash"
     :cargando                   ="cargando"
     >
@@ -33,23 +33,24 @@
       class                     ="row q-col-gutter-md"
       >
       <!-- //* ///////////////////////////////////////////////////////////// Cuenta -->
-      <select-label-value       alerta
+      <select-label-value
         v-model                 ="modelo.cuenta"
         label                   ="Cuenta"
         icon                    ="mdi-wallet"
         class                   ="col-12"
+        :rules                  ="[ reglaCuenta ]"
         :options                ="cuentas"
         :loading                ="!cuentas.length"
       />
       <!-- //* ///////////////////////////////////////////////////////////// Valor -->
-      <input-number             no-undefined alerta solo-positivo no-cero
+      <input-number             no-undefined alerta solo-positivo 
         v-model                 ="modelo.valor"
         label                   ="Valor"
         tipo                    ="precio"
         class                   ="col-md-5 col-11"
         icon                    ="mdi-cash-usd"
         debounce                ="2500"
-        :rules                  ="[]"
+        :rules                  ="[ reglaValor ]"
         :minimo                 ="0"
       />
       <div class                ="col-1">
@@ -92,11 +93,12 @@
         label                   ="Nota"
         icon                    ="mdi-comment-quote"
         class                   ="col-12"
+        :rules                  ="[ reglaNota ]"
       />
       <!-- //* ///////////////////////////////////////////////////////////// Comprobante interno -->
       <select-label-value       clearable no-loading
         v-model                 ="modelo.fileInterno"
-        label                   ="Comprobante pago"
+        :label                  ="'Comprobante ' + (esAutorizacion ? 'autorización' : 'pago')"
         icon                    ="mdi-bank"
         class                   ="col-12"
         :alerta                 ="modelo.estadoSelect.label === ESTADO_ANTICIPO_LABEL.VERIFICADO"
@@ -128,6 +130,7 @@
                                 } from "vue"
   // * ///////////////////////////////////////////////////////////////////////////////// Modelos
   import {  IAnticipo, Anticipo,
+            TIPO_ANTICIPO,
             TIPO_ANTICIPO_LABEL,
             ESTADO_ANTICIPO_LABEL,
             ESTADO_ANTICIPO
@@ -174,6 +177,7 @@
 
   const modificado            = computed( ()=>  copiaAnticipo !== JSON.stringify( modelo.value ) ) 
   const btnDisable            = computed( ()=> !modelo.value.esNuevo && !modificado.value)
+  const esAutorizacion        = computed( ()=> modelo.value.tipoSelect.value === TIPO_ANTICIPO.AUTORIZACION  )
   const objetoToFetch         = computed( ()=>
     { 
       modelo.value.index      =   modelo.value.esNuevo
@@ -241,5 +245,21 @@
       aviso( "negative", "Error al borrado el anticipo", "account" )
 
     cargando.value            = false
+  }
+
+  function reglaCuenta() : boolean | string {
+    const cuentaSeleccionada  = !!modelo.value.cuenta.value
+    
+    return (cuentaSeleccionada || esAutorizacion.value )  || "Se debe seleccionar una cuenta"
+  }  
+
+  function reglaValor() : boolean | string {
+    const valorOk             = modelo.value.valor >  0    
+    return (valorOk || esAutorizacion.value )  || "Se debe indicar un valor valido"
+  }
+
+  function reglaNota() : boolean | string {
+    const notaOk              = modelo.value.nota.length >= 7
+    return (notaOk || !esAutorizacion.value )  || "Se debe indicar una razón para la autorización"
   }
 </script>

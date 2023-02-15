@@ -3,7 +3,10 @@
     <div>
       <table class="tabla-tooltip">
         <tr>
-          <td>Ref</td>
+          <td class="text-capitalize">
+            {{ acuerdo.tipo }}
+            {{ acuerdo.emoji }}            
+          </td>
           <td>{{ acuerdo.ref }}</td>
         </tr>
         <tr v-if="!!acuerdo.contactoSmart.empresa">

@@ -20,7 +20,8 @@
         </div> 
         <div class        ="col-2">
           <img :src       ="modelValue.cuenta.imagenUrl" width="32" height="32"/>
-          <Tooltip :label ="modelValue.cuenta.label"/>
+          <!-- Todo Horrible -->
+          <Tooltip :label ="!!modelValue.cuenta.label ? modelValue.cuenta.label : 'Autorización'"/>
         </div>
         <div class        ="col-8 text-right fuente-mono text-bold">
           <div

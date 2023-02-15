@@ -265,6 +265,25 @@
           class                 ="width160"
           :options              ="opcionesTerceroTipo"
         />    
+        <!-- //* ///////////////////////////////////////////////// Forma de pago -->
+        <!-- //* ///////////////////////////////////////////////// Estado Anticipo -->
+        <multi-label-value
+          v-if                  ="busqueda.esPedido"
+          v-model               ="busqueda.estadoAnticipo"
+          label                 ="Estado anticipo"
+          icon                  ="mdi-cash-check"
+          class                 ="width160"
+          :options              ="Anticipo.estados"
+        />
+        <!-- //* ///////////////////////////////////////////////// Estado Anticipo -->
+        <multi-label-value
+          v-if                  ="busqueda.esPedido"
+          v-model               ="busqueda.tipoAnticipo"
+          label                 ="Tipo anticipo"
+          icon                  ="mdi-cash"
+          class                 ="width160"
+          :options              ="Anticipo.tipos"
+        />
         <!-- //* ///////////////////////////////////////////////// Con pedidos a proveedor -->
         <select-label-value     use-input hundido clearable flat bordered
           v-if                  ="busqueda.esPedido"
@@ -273,17 +292,7 @@
           icon                  ="mdi-factory"
           class                 ="width160"
           :options              ="opcionesOrdenesProv"
-        />
-        <!-- //* ///////////////////////////////////////////////// Estado Anticipo -->
-        <!-- //* ///////////////////////////////////////////////// Forma de pago -->
-        <multi-label-value
-          v-if                  ="busqueda.esPedido"
-          v-model               ="busqueda.estadoAnticipo"
-          label                 ="Anticipos"
-          icon                  ="mdi-cash"
-          class                 ="width160"
-          :options              ="Anticipo.estados"
-        />
+        />         
       </fieldset-filtro>
       <fieldset-filtro      
         titulo                  ="Subtotal"
@@ -465,6 +474,7 @@
     busqueda.value.tipoTercero    = getQueryRouterLabelValue( queryURL.interno,               opcionesTerceroTipo   )
     busqueda.value.conOrdenes     = getQueryRouterLabelValue( queryURL.conOrdenes,            opcionesOrdenesProv   )
     busqueda.value.estadoAnticipo = getQueryRouterLabelValueArray ( queryURL.estadoAnticipo,  Anticipo.estados      )
+    busqueda.value.tipoAnticipo   = getQueryRouterLabelValueArray ( queryURL.tipoAnticipo,    Anticipo.tipos        )
     busqueda.value.estados        = getQueryRouterLabelValueArray ( queryURL.estados,         estados.value         )    
     busqueda.value.formaPago      = getQueryRouterLabelValueArray ( queryURL.formaPago,       formasPago.value      )
     busqueda.value.entrega        = getQueryRouterLabelValueArray ( queryURL.entrega,         metodosEntrega.value  )
@@ -498,7 +508,7 @@
                               !!b.estados.length    || !!b.condiciones.length || !!b.facturado.label    || !!b.comercial          || !!b.creador 
                             )
     tabs.value.alerts[1]  = ( !!b.formaPago.length  || !!b.entrega.length     || !!b.origenes.length    || !!b.conIva.label           ||  
-                              !!b.area.label        || !!b.municipio.id       || !!b.totalizado.label   || !!b.estadoAnticipo.length  ||   
+                              !!b.area.label        || !!b.municipio.id       || !!b.totalizado.label   || !!b.estadoAnticipo.length  || !!b.tipoAnticipo.length || 
                               !!b.tipoTercero.label ||!!b.conOrdenes.label    ||!!b.precioMinimo        || !!b.precioMaximo
                             )
   }

@@ -38,10 +38,12 @@ import {  getCondicionesPagoDB,
                                             } from "src/services/useDexie"
 import {  TTipoAcuerdo,
           TIPO_ACUERDO,
+          EstadosAcuerdos,
           ESTADO_CTZ,
           ESTADO_ACU,
-          EstadosAcuerdos,
-          ESTADO_PED                        } from "./ConstantesAcuerdos"
+          ESTADO_PED,
+          ESTADO_ENT,
+                                            } from "./ConstantesAcuerdos"
 //* ///////////////////////////////////////// Modelos
 import {  IAnticipo                         } from "./Anticipo"
 import {  IRetenciones,     Retenciones     } from "./Retenciones"
@@ -394,7 +396,7 @@ export class Acuerdo implements IAcuerdo
   get urlDolibarr() : string {
     const ruta    = this.tipo === TIPO_ACUERDO.COTIZACION_CLI   ? "/comm/propal/card.php?id="
                   : this.tipo === TIPO_ACUERDO.PEDIDO_CLI       ? "/commande/card.php?id="
-                  : this.tipo === TIPO_ACUERDO.ENTREGA_CLI      ? ""
+                  : this.tipo === TIPO_ACUERDO.ENTREGA_CLI      ? "/expedition/card.php?id="
                   : this.tipo === TIPO_ACUERDO.PEDIDO_PRO       ? "/fourn/commande/card.php?id="
                   : this.tipo === TIPO_ACUERDO.FACTURA_CLI      ? ""
                   : ""
@@ -846,7 +848,7 @@ https://dolibarr.mublex.com/fichinter/card.php?
   static getIconoAcuerdo( tipo : TTipoAcuerdo ) : string {
     const singular                = tipo === TIPO_ACUERDO.COTIZACION_CLI  ? "mdi-format-list-checks"
                                   : tipo === TIPO_ACUERDO.PEDIDO_CLI      ? "mdi-cart"
-                                  : tipo === TIPO_ACUERDO.ENTREGA_CLI     ? ""
+                                  : tipo === TIPO_ACUERDO.ENTREGA_CLI     ? "mdi-truck-delivery"
                                   : tipo === TIPO_ACUERDO.PEDIDO_PRO      ? "mdi-domain" // mdi-water-well
                                   : tipo === TIPO_ACUERDO.FACTURA_CLI     ? "mdi-inbox-full"
                                   : ""
@@ -872,7 +874,7 @@ https://dolibarr.mublex.com/fichinter/card.php?
   static getRuta( tipo : TTipoAcuerdo ) : string{
     const ruta                  = tipo === TIPO_ACUERDO.COTIZACION_CLI    ? "cotizaciones/cliente"
                                 : tipo === TIPO_ACUERDO.PEDIDO_CLI        ? "pedidos/cliente"
-                                : tipo === TIPO_ACUERDO.ENTREGA_CLI       ? "entregas"
+                                : tipo === TIPO_ACUERDO.ENTREGA_CLI       ? "entregas/cliente"
                                 : tipo === TIPO_ACUERDO.PEDIDO_PRO        ? "pedidos/proveedor"
                                 : tipo === TIPO_ACUERDO.FACTURA_CLI       ? "facturas"
                                 : ""
@@ -959,6 +961,7 @@ https://dolibarr.mublex.com/fichinter/card.php?
     acu.metodoEntrega     = await getMetodosEntregaDB   ( acu.metodoEntregaId   )
     acu.origenContacto    = await getOrigenContactoDB   ( acu.origenContactoId  )
     acu.tiempoEntrega     = await getTiempoEntregaDB    ( acu.tiempoEntregaId   )
+
     acu.productos         = await LineaAcuerdo.getLineaFromAPIMaco( acu.productos, acuApi.id )
     acu.productos         = acu.productos.sort ( ( a : ILineaAcuerdo, b : ILineaAcuerdo ) =>
                             {

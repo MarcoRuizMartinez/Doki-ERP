@@ -23,6 +23,7 @@ export interface ICamposBusqueda {
   precioMinimo          : number | undefined
   precioMaximo          : number | undefined
   categoria             : IProductoCategoria
+  activo                : boolean
 }
 
 export interface IFiltroProductos {
@@ -35,6 +36,7 @@ export interface IFiltroProductos {
 export interface IQueryProducto {
   tipo                  ?: string
   id                    ?: number
+  activo                ?: number
   completa              ?: number
   recientes             ?: number
   busqueda              ?: string
@@ -67,6 +69,7 @@ export class BusquedaProducto implements IBusquedaProducto
       categoria           : new ProductoCategoria(),
       precioMinimo        : undefined,
       precioMaximo        : undefined,
+      activo              : false,
     }
 
     this.f                = // f de Filtros
@@ -91,6 +94,7 @@ export class BusquedaProducto implements IBusquedaProducto
     if(!!this.c.categoria.value)    q.sigla      = this.c.categoria.sigla
     if(!!this.c.precioMinimo)       q.minimo     = this.c.precioMinimo
     if(!!this.c.precioMaximo)       q.maximo     = this.c.precioMaximo
+    if(this.c.activo)               q.activo     = +this.c.activo
 
     //if(!!this.area.label)         q.area          = this.area.value
     //if(!!this.facturado.label)    q.facturado     = this.facturado.value

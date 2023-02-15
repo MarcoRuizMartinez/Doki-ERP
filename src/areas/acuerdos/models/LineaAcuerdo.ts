@@ -7,7 +7,8 @@ import {  X100_Descuento,
           X100,
           roundInt          } from "src/useSimpleOk/useTools"
 import {  getUnidadDB,
-          getCategoriaDB    } from "src/services/useDexie"
+          getCategoriaDB,
+          getBodegaDB       } from "src/services/useDexie"
 import {  storeToRefs       } from 'pinia'
 import {  useStoreAcuerdo   } from 'src/stores/acuerdo'
 import {  NivelesComision,
@@ -16,6 +17,8 @@ import {  NivelesComision,
           NIVELES_COMISION  } from "src/areas/acuerdos/models/Comisiones/NivelesComision"
 import {  ComisionLinea,
           IComisionLinea    } from "src/areas/acuerdos/models/Comisiones/ComisionLinea"
+import {  Bodega,
+          IBodega           } from "src/models/Diccionarios/Bodega"
 
 export type TipoLinea       = "producto" | "servicio" | "titulo" | "subtotal" | "descripcion"
 
@@ -88,6 +91,7 @@ export interface ILineaAcuerdo extends IProductoDoli {
   // */ /////////////////// Entrega
   qtyTotal                  : number
   bodegaId                  : number
+  bodega                    : IBodega
 }
 
 
@@ -105,7 +109,8 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
   borrar                    : boolean
   accion                    : TAccionesSobreLinea  
   qtyTotal                  : number
-  bodegaId                  : number  
+  bodegaId                  : number
+  bodega                    : IBodega
 
   // */ /////////////////// Comisiones
   comsionX100Division       : number
@@ -132,6 +137,7 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
     this.comision_c2        = new ComisionLinea( "comercial 2" )
     this.qtyTotal           = 0
     this.bodegaId           = 0
+    this.bodega             = new Bodega()
   }
 
   // * /////////////////////////////////////////////////////////////////////////////// Tipo de linea
@@ -368,10 +374,10 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
       for (const linea of lineaApi) {
         linea.id            = +linea.id
         linea.padreId       = padreId
-        linea.precioBase    = parseFloat( linea.precioBase    )
-        linea.costo         = parseFloat( linea.costo         )
-        linea.iva           = parseFloat( linea.iva           )
-        linea.descuentoX100 = parseFloat( linea.descuentoX100 )
+        linea.precioBase    = parseFloat( linea?.precioBase     ?? 0 )
+        linea.costo         = parseFloat( linea?.costo          ?? 0 )
+        linea.iva           = parseFloat( linea?.iva            ?? 0 )
+        linea.descuentoX100 = parseFloat( linea?.descuentoX100  ?? 0 )
 
         linea.tipo          = +linea.tipo
         linea.lineaId       = +linea.lineaId
@@ -383,8 +389,19 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
         if(!!linea.sigla)
           linea.categoria   = await getCategoriaDB( linea.sigla  )
         linea.imagen        = !!linea.imagen ? linea.imagen : imagenDefault
+        linea.bodegaId      = linea?.bodegaId ?? 0
+        linea.qtyTotal      = linea?.qtyTotal ?? 0
+
         const lineaFinal    = Object.assign( new LineaAcuerdo(), linea ) as ILineaAcuerdo
-        lineaFinal.comsionX100Division = +linea?.divisionComision ?? 100
+        lineaFinal.comsionX100Division = +(linea?.divisionComision ?? 100)
+
+
+        if(!!lineaFinal.bodegaId)
+        {
+          lineaFinal.bodega = await getBodegaDB( lineaFinal.bodegaId )
+          //console.log("lineaFinal.bodega: ", lineaFinal.bodega);
+        }
+
         lineas.push( lineaFinal )
       }
     }

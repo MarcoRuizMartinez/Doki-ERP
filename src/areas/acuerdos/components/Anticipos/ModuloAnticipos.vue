@@ -1,10 +1,10 @@
 <template>
   <ventana
     v-bind                      ="$attrs"
-    titulo                      ="Anticipos"
+    titulo                      ="Anticipos / Autorización"
     class-contenido             ="column items-center"
     icono                       ="mdi-cash-check"
-    mensaje-sin-resultados      ="Sin anticipos"
+    mensaje-sin-resultados      ="Sin anticipos o autorizacion"
     icono-sin-resultados        ="mdi-cash"
     size-icon-carga             ="6.5em"    
     :padding-contenido          ="modo == 'normal' ? '0' : '12px' "
@@ -14,13 +14,12 @@
       <!-- //* ///////////////  Nuevo anticipo  -->
       <q-btn        
         v-bind                  ="btnBaseSm"
-        label                   ="Anticipo"
         color                   ="positive"
-        icon                    ="mdi-cash-plus"        
+        icon                    ="mdi-plus"        
         :disable                ="modo == 'buscando'"
         @click                  ="mostrarFormulario( 'nuevo' )"
         >
-        <Tooltip label          ="Subir anticipo"/>
+        <Tooltip label          ="Subir anticipo o autorización"/>
       </q-btn>
       <q-btn                    round dense flat
         icon                    ="mdi-refresh"

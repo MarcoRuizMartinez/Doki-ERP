@@ -55,6 +55,11 @@
           options-sort          ="nombre"
           :options              ="categorias"          
         />
+        <!-- //* /////////////////////////////////////////////////////////////  Con Total -->
+        <q-toggle               
+          v-model               ="busqueda.c.activo"
+          label                 ="Solo activo"
+        />        
       </fieldset-filtro> 
       <fieldset-filtro
         v-if                    ="false"

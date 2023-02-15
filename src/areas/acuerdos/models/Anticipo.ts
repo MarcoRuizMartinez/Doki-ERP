@@ -29,12 +29,14 @@ export enum TIPO_ANTICIPO
 {
   PAGO                        = 1,
   DEVOLUCION                  = 2,
+  AUTORIZACION                = 3,
 }
 
 export enum TIPO_ANTICIPO_LABEL
 {
   PAGO                        = "💵Pago",
   DEVOLUCION                  = "💸Devolución",
+  AUTORIZACION                = "✍🏻Autorización",
 }
 
 export type TTipoFileAnticipo = "cliente" | "interno" 
@@ -200,5 +202,6 @@ export class Anticipo implements IAnticipo
   static tipos = [
     {label: TIPO_ANTICIPO_LABEL.PAGO,         value: TIPO_ANTICIPO.PAGO },
     {label: TIPO_ANTICIPO_LABEL.DEVOLUCION,   value: TIPO_ANTICIPO.DEVOLUCION },
+    {label: TIPO_ANTICIPO_LABEL.AUTORIZACION, value: TIPO_ANTICIPO.AUTORIZACION },
   ]
 }

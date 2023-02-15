@@ -21,6 +21,7 @@ export interface IQueryAcuerdo {
   formaPago            ?: string
   entrega              ?: string
   estadoAnticipo       ?: string
+  tipoAnticipo         ?: string
   fechaDesde           ?: string
   fechaHasta           ?: string
   proveedorId          ?: number
@@ -54,6 +55,7 @@ export interface IBusquedaAcuerdo {
   formaPago             : ILabelValue[]
   entrega               : ILabelValue[]
   estadoAnticipo        : ILabelValue[]
+  tipoAnticipo          : ILabelValue[]
   area                  : ILabelValue
   facturado             : ILabelValue
   conIva                : ILabelValue
@@ -86,6 +88,7 @@ export class BusquedaAcuerdo implements IBusquedaAcuerdo
   formaPago             : ILabelValue[]
   entrega               : ILabelValue[]
   estadoAnticipo        : ILabelValue[]
+  tipoAnticipo          : ILabelValue[]
   area                  : ILabelValue
   facturado             : ILabelValue
   conIva                : ILabelValue
@@ -115,6 +118,7 @@ export class BusquedaAcuerdo implements IBusquedaAcuerdo
     this.formaPago        = []
     this.entrega          = []
     this.estadoAnticipo   = []
+    this.tipoAnticipo     = []
     this.area             = labelValueNulo
     this.facturado        = labelValueNulo
     this.conIva           = labelValueNulo
@@ -148,6 +152,7 @@ export class BusquedaAcuerdo implements IBusquedaAcuerdo
     if(!!this.formaPago.length)       q.formaPago       = this.formaPago      .map( e => e.value ).join("_")
     if(!!this.entrega.length)         q.entrega         = this.entrega        .map( e => e.value ).join("_")
     if(!!this.estadoAnticipo.length)  q.estadoAnticipo  = this.estadoAnticipo .map( e => e.value ).join("_")
+    if(!!this.tipoAnticipo.length)    q.tipoAnticipo    = this.tipoAnticipo   .map( e => e.value ).join("_")
 
     if(!!this.area.label)         q.area                = this.area.value
     if(!!this.facturado.label)    q.facturado           = this.facturado.value

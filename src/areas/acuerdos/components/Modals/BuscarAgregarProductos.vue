@@ -318,9 +318,10 @@
     if(!!categoria.value.value      ) q.sigla     = categoria.value.sigla
     if(!!precioMinQuery.value       ) q.minimo    = precioMinQuery.value
     if(!!precioMaxQuery.value       ) q.maximo    = precioMaxQuery.value
-    if(soloConImagen.value          ) q.soloConImg= 1
+    if(soloConImagen.value          ) q.soloConImg= 1 
 
     q.tipo                    = "busqueda"
+    q.activo                  = 1
     return q
   }
 

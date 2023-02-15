@@ -122,7 +122,7 @@ export function useControlAcuerdo()
       //verificarPermisosLectura()
       await buscarTerceroDolibarr ( acuerdo.value.terceroId   )
       await buscarProyecto        ( acuerdo.value.proyectoId  )
-      //await buscarEntregasPedido  ( acuerdo.value.id          )
+      await buscarEntregasPedido  ( acuerdo.value.id          )
     }
     else
     {

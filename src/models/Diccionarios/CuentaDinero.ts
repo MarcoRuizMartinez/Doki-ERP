@@ -32,7 +32,7 @@ export class CuentaDinero implements ICuentaDinero
     this.ref          = ""
     this.label        = ""
     this.tipoId       = 0
-    this.logoUrl      = ""
+    this.logoUrl      = "defecto.png"
     this.virtual      = false
   }
   

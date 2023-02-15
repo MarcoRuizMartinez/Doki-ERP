@@ -114,8 +114,9 @@
     if(ok && Array.isArray( data ) && !!data.length)
     {
       enlaces.length      = 0
-      for (const item of data){
-        const enlace = EnlaceAnticipo.enlaceApiToEnlace( item )
+      for (const item of data)
+      {
+        const enlace      = EnlaceAnticipo.enlaceApiToEnlace( item )
         enlaces.push( enlace )      
       }
     }
@@ -149,7 +150,7 @@
       acuerdos.value.push( ...acuerdosI )
     }
     
-    console.log("acuerdos.value: ", acuerdos.value);
+    //console.log("acuerdos.value: ", acuerdos.value);
 
     function getIds( tipo : TTipoAcuerdo ) :string
     {
