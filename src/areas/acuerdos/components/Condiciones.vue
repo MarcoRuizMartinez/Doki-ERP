@@ -18,7 +18,7 @@
       v-model                 ="acuerdo.fechaValidacion"
       label                   ="Fecha validación"
       class                   ="col-md-6 col-12"
-    />           
+    />
     <!-- //* ///////////////////////////////////////////////// Fecha Fin de validez -->
     <fecha-vencimiento
       v-if                    ="acuerdo.esCotizacion"

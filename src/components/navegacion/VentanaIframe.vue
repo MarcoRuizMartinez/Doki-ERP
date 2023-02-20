@@ -28,13 +28,13 @@
         <Tooltip label  ="Recargar"/>
       </q-btn>
       <q-btn            flat round dense
-        v-if            ="!!link"
+        v-if            ="!!link || esFormulario"
         color           ="white"
         icon            ="mdi-open-in-new"
         type            ="a"
         class           ="op40 op100-hover q-ml-xs"
         target          ="_blank"
-        :href           ="link"
+        :href           ="!!link ? link : src"
         >
         <Tooltip label  ="Ir a enlace"/>
       </q-btn>
@@ -79,13 +79,13 @@
   const emits         = defineEmits(["cerrar"])
 
   const props         = defineProps({
-    src:            { type: String,                             required: true },
-    titulo:         { type: String,                             required: true },
-    icono:          { type: String,                             default: "mdi-book-open-variant" },
-    srcFormulario:  { type: String,                             default: "" },
-    link:           { type: String,                             default: "" },    
-    esFormulario:   { type: Boolean,                            default: false },
-    cargando:       { type: Boolean,                            default: false },
+    src:            { type: String,   required: true },
+    titulo:         { type: String,   required: true },
+    icono:          { type: String,   default: "mdi-book-open-variant" },
+    srcFormulario:  { type: String,   default: "" },
+    link:           { type: String,   default: "" },    
+    esFormulario:   { type: Boolean,  default: false },
+    cargando:       { type: Boolean,  default: false },
   })
   
   const { src,

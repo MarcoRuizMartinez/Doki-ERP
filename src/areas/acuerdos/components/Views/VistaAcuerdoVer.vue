@@ -17,6 +17,7 @@
     @click-recargar         ="recargar"
     @click-entregado        ="cerrarPedido"
     @click-comisiones       ="modales.comisiones = true"
+    
   />
   <tercero-y-contacto       scroll
     class                   ="col-md-4 col-12"

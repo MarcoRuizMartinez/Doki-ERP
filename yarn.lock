@@ -1205,10 +1205,10 @@
     selfsigned "^2.0.0"
     update-notifier "^6.0.2"
 
-"@quasar/extras@^1.15.9":
-  version "1.15.10"
-  resolved "https://registry.npmjs.org/@quasar/extras/-/extras-1.15.10.tgz"
-  integrity sha512-6w8e+wPNfcWhzW43tlnJPHOrcNwAgaaNJ3zBz8k+BMqpenA3fHZhFhxCYEVRZVqPFE2IK/8nRiPBp4t9xlW5tA==
+"@quasar/extras@^1.15.11":
+  version "1.15.11"
+  resolved "https://registry.yarnpkg.com/@quasar/extras/-/extras-1.15.11.tgz#a54d60b14446b850a1e5fccab3f381a2e447a73f"
+  integrity sha512-EEXL10EJQmL9jNs5fp0Kd/nyonG8hTODolj+qpYNPG3qEEoy3txr05Pdmp9qJYaXIzP9rOS9FGhFe9Mnq6MBBg==
 
 "@quasar/fastclick@1.1.5":
   version "1.1.5"
@@ -5018,10 +5018,10 @@ qs@6.11.0:
   dependencies:
     side-channel "^1.0.4"
 
-quasar@^2.11.5:
-  version "2.11.5"
-  resolved "https://registry.npmjs.org/quasar/-/quasar-2.11.5.tgz"
-  integrity sha512-rX4Rwp9wlCeB9A6RQUxEx/q84LMBVVm6WTECkoq8r/+NBgl9aHVexzZQBnRn2i61D0BJpdX5VcnMxAnJkTx/kA==
+quasar@^2.11.6:
+  version "2.11.6"
+  resolved "https://registry.yarnpkg.com/quasar/-/quasar-2.11.6.tgz#9d200a0de44dc235915fee3ea3ff5673045fdcbc"
+  integrity sha512-jJniWqTtfLHDuAT1YNx6ZZdZU7nM8vwscyM7IxmijaHq+fDpgjaujDQUlJWgn5ZMkqe3Yvg93MgSxjcL71oJIw==
 
 queue-microtask@^1.2.2:
   version "1.2.3"

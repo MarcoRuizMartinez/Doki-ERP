@@ -108,14 +108,11 @@
             color             ="positive"
             icon              ="mdi-truck-fast"
             :label            ="esMobil ? '' : 'Nueva entrega'"
-            :disable          ="envioInactivo"
             :loading          ="loading.anular"
-            target            ="_blank"
-            :href             ="acuerdo.urlDolibarrNuevoEnvio"
-            >
-            <Tooltip>
-              <template v-if="envioInactivo">Fecha de compromiso y método de entrega requeridos</template>
-              <template v-else>Generar nueva entrega</template>
+            @click            ="emit('clickNuevaEntrega')"
+            > 
+            <Tooltip>              
+              <template>Generar nueva entrega</template>
             </Tooltip>   
           </q-btn>
       
@@ -276,10 +273,12 @@
   const { usuario     } = storeToRefs( useStoreUser() )          
 
   const { esMobil     } = useTools()
-  const emit            = defineEmits(["clickPdf","clickAprobar", "clickAnular", "clickValidar", "clickEditar", "clickBorrar", "clickRemision", "clickReabrir", "clickRecargar", "clickEntregado", "clickComisiones"])
+  const emit            = defineEmits([ "clickPdf",       "clickAprobar",   "clickAnular",      "clickValidar",
+                                        "clickEditar",    "clickBorrar",    "clickRemision",    "clickReabrir",
+                                        "clickRecargar",  "clickEntregado", "clickComisiones",  "clickNuevaEntrega"])
   const cargandoAlgo    = computed(()=> Object.values(loading.value).some( ( estado : boolean )=> !!estado ) )
   const totalNotas      = computed(()=> ( !!acuerdo.value.notaPrivada ? 1 : 0 ) + ( !!acuerdo.value.notaPublica ? 1 : 0 )  )
-  const envioInactivo   = computed(()=> cargandoAlgo.value || !acuerdo.value.metodoEntrega.id || !acuerdo.value.fechaEntregaCorta )
+  //const envioInactivo   = computed(()=> cargandoAlgo.value || !acuerdo.value.metodoEntrega.id || !acuerdo.value.fechaEntregaCorta )
   const mostrarEditar   = computed(()=>   !acuerdo.value.esEstadoEdicion
                                           &&
                                           (

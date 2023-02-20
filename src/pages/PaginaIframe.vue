@@ -10,6 +10,8 @@
 
 <script setup lang="ts">
   // * /////////////////////////////////////////////////////////////////////// Core
+  import {  toRefs, watch } from 'vue'
+  import {  useTitle      } from "@vueuse/core"
   import    ventanaIframe   from "src/components/navegacion/VentanaIframe.vue"
 
   const props = defineProps({
@@ -20,5 +22,9 @@
     link:           { type: String, default: "" },
   })
 
+  const { titulo }  = toRefs( props )
+
+
+  watch( titulo, ( newTitulo )=> useTitle( newTitulo ), { immediate: true }) 
 
 </script>

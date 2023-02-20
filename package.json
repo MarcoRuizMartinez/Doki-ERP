@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@quasar/cli": "^2.0.0",
-    "@quasar/extras": "^1.15.9",
+    "@quasar/extras": "^1.15.11",
     "@types/canvas-confetti": "^1.4.3",
     "@vueuse/core": "^9.1.1",
     "@vueuse/math": "^9.1.1",
@@ -22,7 +22,7 @@
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.5.25",
     "pinia": "^2.0.11",
-    "quasar": "^2.11.5",
+    "quasar": "^2.11.6",
     "vue": "^3.0.0",
     "vue-router": "^4.0.0",
     "vue3-apexcharts": "^1.4.1"
