@@ -4,21 +4,23 @@
     :color-right              ="acuerdo.estadoColor"  
     >
     <!-- //* ///////////////////////////////////////////////////////// SLOT LEFT -->
-    <template #left>
+    <template                 #left>
       <!-- //* /////////////////////////////////////////////////// Icono Boton Cotizacion -->
       <q-btn                  push dense
         class                 ="q-mr-sm"
         padding               ="0"
         @click                ="emit('click')"
         >
-<!--         <q-img
+        <!--         
+        <q-img
           position            ="0"
           fit                 ="contain"
           spinner-color       ="white"
           width               ="51px"
           height              ="63px"
           
-        /> -->        
+        />
+        -->        
         <img
           v-if                ="!!acuerdo.imagen"
           :src                ="`images/iconos/${acuerdo.imagen}`" />
@@ -29,7 +31,7 @@
       </q-btn>
     </template>
     <!-- //* ///////////////////////////////////////////////////////// SLOT CENTER -->
-    <template                 #center>
+    <template               #center>
       <!-- <fx-out-down-group> -->
       <div
         v-if                ="!!acuerdo.id || acuerdo.esNuevo"
@@ -44,6 +46,7 @@
           <span class       ="titulo-xl sombra-3d fuente-gruesa text-capitalize">
             {{acuerdo.label}}
           </span>
+          dfdf
         </q-btn>
         <!-- //* ////////////////////////////////////////////////////// Titulo  -->
         <div

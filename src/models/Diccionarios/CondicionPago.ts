@@ -1,21 +1,21 @@
 export interface ICondicionPago
 {
-  id:                 number  
-  label:              string  
-  descripcion:        string
-  dias:               number
-  value:              number
-  facturable:         number
-  esFacturable:       boolean
+  id                  : number  
+  label               : string  
+  descripcion         : string
+  dias                : number
+  value               : number
+  facturable          : number
+  esFacturable        : boolean
 }
 
 export class CondicionPago implements ICondicionPago
 {
-  id:                 number  
-  label:              string  
-  descripcion:        string
-  dias:               number
-  facturable:         number
+  id                  : number
+  label               : string
+  descripcion         : string
+  dias                : number
+  facturable          : number
   
   constructor()
   {

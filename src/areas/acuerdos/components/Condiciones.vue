@@ -49,6 +49,8 @@
       label                   ="Fecha compromiso"
       titulo                  ="Fecha compromiso entrega"
       class                   ="col-md-6 col-12"
+      error-message           ="Es necesaria una fecha de entrega"
+      :error                  ="errorFecha"
       :loading                ="loading.fechaEntrega"
       @update:model-value     ="editarFechaEntrega"
     />
@@ -76,17 +78,19 @@
       @select                 ="editarFormaPago"
     />
     <!-- //* ///////////////////////////////////////////////// Metodo entrega -->
-    <select-label-value
+    <select-label-value 
       v-model                 ="acuerdo.metodoEntrega"
       label                   ="Método de entrega"
       icon                    ="mdi-truck-delivery"
       class                   ="col-md-6 col-12"
+      error-message           ="Indique un método de entrega"
+      :error                  ="errorMetodo"
       :options                ="entregas"
       :loading                ="loading.metodoEntrega"
       @select                 ="editarMetodoEntrega"
     />
     <!-- //* ///////////////////////////////////////////////// Tiempo entrega -->
-    <select-label-value       clearable
+    <select-label-value       clearable 
       v-if                    ="acuerdo.esCotizacion"
       v-model                 ="acuerdo.tiempoEntrega"
       label                   ="Tiempo de entrega"
@@ -105,6 +109,8 @@
   </ventana>
 </template>
 <script setup lang="ts">
+  //* ///////////////////////////////////////////////////////////////////////////////// Core
+  import {  ref                   } from "vue"
   // * ///////////////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs           } from 'pinia'                            
   import {  useStoreAcuerdo       } from 'src/stores/acuerdo'  
@@ -112,6 +118,7 @@
   import {  useControlAcuerdo  } from "src/areas/acuerdos/controllers/ControlAcuerdos"
   import {  dexieCondicionesPago,
             dexieFormasPago,
+            dexieBodegas,
             dexieMetodosEntrega,
             dexieTiemposEntrega   } from "src/services/useDexie"
   import {  TIPOS_CONTACTO        } from "src/areas/terceros/models/Contacto"  
@@ -122,12 +129,14 @@
   import    fechaVencimiento        from "src/areas/acuerdos/components/tools/FechaValidezCtz.vue"
   import    selectContacto          from "src/areas/terceros/components/contactos/SelectContacto.vue"
   import    tablaEnvio              from "src/areas/acuerdos/components/tools/TablaEnvio.vue"                                          
+import { boolean } from 'yargs'
 
   const { acuerdo, loading        } = storeToRefs( useStoreAcuerdo() )
   //* //////////////////////      ///////////////////////////////////////// Tablas Dexie
   const condicPago                  = dexieCondicionesPago()
   const formadPago                  = dexieFormasPago()
   const entregas                    = dexieMetodosEntrega()
+  const bodegas                     = dexieBodegas()
   const tiempoEntrega               = dexieTiemposEntrega()
   const { editarTiempoEntrega,
           editarMetodoEntrega,
@@ -140,4 +149,17 @@
           desvincularContactoAcuerdo,
           editarDatosEntregaSistemaViejo
                                   } = useControlAcuerdo()
+
+  const errorFecha                  = ref<boolean>(false)
+  const errorMetodo                 = ref<boolean>(false)
+
+  defineExpose({  validar })  
+
+  function validar() : boolean
+  {
+    errorFecha.value  = !acuerdo.value.fechaEntrega
+    errorMetodo.value = !acuerdo.value.metodoEntrega.id
+    return !errorFecha.value && !errorMetodo.value
+  }
+
 </script>

@@ -175,6 +175,7 @@ export interface IModales {
   pdfCotizacion   ?: boolean
   pdfRemision     ?: boolean
   comisiones      ?: boolean
+  nuevaEntrega    ?: boolean
 }
 
 export const ModalesDefault = {
@@ -184,4 +185,5 @@ export const ModalesDefault = {
   pdfCotizacion   : false,
   pdfRemision     : false,
   comisiones      : false,
+  nuevaEntrega    : false
 }

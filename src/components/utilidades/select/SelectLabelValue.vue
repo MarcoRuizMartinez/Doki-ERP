@@ -2,6 +2,8 @@
   <div>
     <q-select                 dense options-dense hide-bottom-space borderless
       v-model                 ="modelo"
+      :error                  ="error"
+      :error-message          ="errorMessage"
       options-selected-class  ="text-weight-bold"
       class                   ="text-caption selector"
       popup-content-class     ="panel-blur"
@@ -72,6 +74,8 @@
     readonly:     { default: false,           type: Boolean                             },
     useInput:     { default: false,           type: Boolean                             },
     hundido:      { default: false,           type: Boolean                             },
+    error:        { default: false,           type: Boolean                             },
+    errorMessage: { default: "Valor invalido",type: String                              },    
     icon:         { default: "",              type: String                              },
     options:      { required: true,           type: Array   as PropType<ILabelValue[]>  },
     clearable:    { default: false,           type: Boolean                             },

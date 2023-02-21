@@ -111,11 +111,8 @@
             :loading          ="loading.anular"
             @click            ="emit('clickNuevaEntrega')"
             > 
-            <Tooltip>              
-              <template>Generar nueva entrega</template>
-            </Tooltip>   
+            <Tooltip label    ="Generar nueva entrega"/>
           </q-btn>
-      
         </q-btn-group>    
       <!-- //* //////////////////////////////////////////////////////////  Boton Remision -->
   <!--     <efecto efecto          ="Down">      

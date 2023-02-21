@@ -17,13 +17,14 @@
     @click-recargar         ="recargar"
     @click-entregado        ="cerrarPedido"
     @click-comisiones       ="modales.comisiones = true"
-    
+    @click-nueva-entrega    ="clickNuevaEntrega"
   />
   <tercero-y-contacto       scroll
     class                   ="col-md-4 col-12"
     height-card             ="260px"
   />
   <condiciones              scroll
+    ref                     ="moduloCondiciones"
     class                   ="col-md-4 col-12"
     height-card             ="260px"
   />
@@ -71,13 +72,21 @@
     nombre-pdf              ="Cotizacion"
     @click-descargar        ="guardarPDF"
   />
-    <!-- //* ///////////////////////////////////////////////////////////// Modal Buscar productos -->
-    <q-dialog
-      v-model               ="modales.comisiones"
-      v-bind                ="dialogDefault"      
-      >
-      <comisiones style     ="max-width: initial;"/>
-    </q-dialog>  
+  <!-- //* ///////////////////////////////////////////////////////////// Modal Buscar productos -->
+  <q-dialog
+    v-model                 ="modales.comisiones"
+    v-bind                  ="dialogDefault"      
+    >
+    <comisiones style       ="max-width: initial;"/>
+  </q-dialog>
+  <q-dialog
+    v-model                 ="modales.nuevaEntrega"
+    v-bind                  ="dialogDefault"      
+    >
+    <nueva-entrega />
+  </q-dialog>
+
+    
     <!-- <remision v-model:visible ="modales.pdfRemision"/> -->
     <!--   <div id="capture" style="padding: 10px; background: #f5da55">
     <h4 style="color: #000; ">Hello world!</h4>
@@ -117,6 +126,7 @@
   import    productos               from "src/areas/acuerdos/components/ProductosAcuerdo.vue"
   import    enlaces                 from "src/areas/acuerdos/components/EnlacesAcuerdos.vue"
   import    contactos               from "src/areas/acuerdos/components/Contactos.vue"
+  import    nuevaEntrega            from "src/areas/acuerdos/components/Modals/NuevaEntregaSelectBodega.vue"
   import    anticipos               from "src/areas/acuerdos/components/Anticipos/ModuloAnticipos.vue"
   //import    remision                from "src/areas/acuerdos/components/PDF/RemisionPDF.vue"
   import    documentos              from "components/archivos/ModuloArchivos.vue"
@@ -139,7 +149,8 @@
                             } = useControlAcuerdo()
   const minimizadoTodo        = ref< boolean  >(false)
   const srcPDF                = ref< string   >("")
-  const moduloEnlaces         = ref<InstanceType<typeof enlaces> | null>(null)
+  const moduloEnlaces         = ref<InstanceType<typeof enlaces>      | null>(null)
+  const moduloCondiciones     = ref<InstanceType<typeof condiciones>  | null>(null)
 
   const props                 = defineProps({
     id:   { required: true, type: String },
@@ -224,4 +235,12 @@ const disableBtnValidar     = computed( () =>{
       router.push("/error")
     }
   } */
+
+  function clickNuevaEntrega()
+  {
+    const fechaYmetodoOk = moduloCondiciones.value?.validar()
+    if(fechaYmetodoOk)
+      modales.value.nuevaEntrega = true      
+  }
+
 </script>
