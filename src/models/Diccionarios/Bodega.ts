@@ -1,3 +1,5 @@
+import {  AREA              } from "src/models/TiposVarios"
+
 export interface IBodega
 {
   id                  : number
@@ -11,6 +13,7 @@ export interface IBodega
 
   label               : string
   value               : number
+  area                : AREA
 }
 
 export class Bodega implements IBodega
@@ -22,7 +25,8 @@ export class Bodega implements IBodega
   padre_id            : number
   proyecto_id         : number
   descripcion         : string
-  direccion           : string  
+  direccion           : string
+  area                : AREA  
 
   constructor()
   {
@@ -34,6 +38,7 @@ export class Bodega implements IBodega
     this.proyecto_id  = 0
     this.descripcion  = ""
     this.direccion    = ""
+    this.area         = AREA.NULO
   }
 
   get value() : number  { return this.id  }

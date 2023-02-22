@@ -11,7 +11,7 @@
       icon                    ="mdi-package-variant-closed"
       options-sort            ="label"
       class                   ="col-10"
-      :options                ="bodegas.filter( (b)=> !!(+b.padre_id) )"
+      :options                ="bodegas.filter( (b)=> !(+b.padre_id) )"
     />
     <!-- //* ///////////////////////////////////////////////////////////// Boton ir-->
     <q-btn                    flat
@@ -57,7 +57,4 @@
   {
     window.open( acuerdo.value.urlDolibarrNuevoEnvio + "&entrepot_id=" + modelo.value.value, '_blank')
   }
-  
-
-
 </script>

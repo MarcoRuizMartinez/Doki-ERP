@@ -79,13 +79,13 @@
     >
     <comisiones style       ="max-width: initial;"/>
   </q-dialog>
-  <q-dialog
+<!--   <q-dialog
     v-model                 ="modales.nuevaEntrega"
     v-bind                  ="dialogDefault"      
     >
     <nueva-entrega />
   </q-dialog>
-
+ -->
     
     <!-- <remision v-model:visible ="modales.pdfRemision"/> -->
     <!--   <div id="capture" style="padding: 10px; background: #f5da55">
@@ -109,12 +109,14 @@
   //import {  Acuerdo, TIPO_ACUERDO } from "../../models/Acuerdo"
   import {  LineaAcuerdo          } from "src/areas/acuerdos/models/LineaAcuerdo"
   import {  IArchivo              } from "src/models/Archivo"
+  import {  AREA                  } from "src/models/TiposVarios"
   //* ///////////////////////////////////////////////////////////////////////////////// Componibles
   import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"
   import {  useCotizacionPDF      } from "src/areas/acuerdos/composables/useCotizacionPDF"
   //import {  useControlProductos   } from "src/areas/acuerdos/controllers/ControlLineasProductos"
   import {  TTipoAcuerdo          } from "src/areas/acuerdos/models/ConstantesAcuerdos"
   import {  dialogDefault         } from "src/useSimpleOk/useEstilos"  
+  import {  dexieBodegas          } from "src/services/useDexie"  
   //* ///////////////////////////////////////////////////////////////////////////////// Componentes
   import    visorPdf                from "components/utilidades/VisorPDF.vue"
   import    notas                   from "src/areas/acuerdos/components/Notas.vue"
@@ -126,7 +128,7 @@
   import    productos               from "src/areas/acuerdos/components/ProductosAcuerdo.vue"
   import    enlaces                 from "src/areas/acuerdos/components/EnlacesAcuerdos.vue"
   import    contactos               from "src/areas/acuerdos/components/Contactos.vue"
-  import    nuevaEntrega            from "src/areas/acuerdos/components/Modals/NuevaEntregaSelectBodega.vue"
+  //import    nuevaEntrega            from "src/areas/acuerdos/components/Modals/NuevaEntregaSelectBodega.vue"
   import    anticipos               from "src/areas/acuerdos/components/Anticipos/ModuloAnticipos.vue"
   //import    remision                from "src/areas/acuerdos/components/PDF/RemisionPDF.vue"
   import    documentos              from "components/archivos/ModuloArchivos.vue"
@@ -151,6 +153,7 @@
   const srcPDF                = ref< string   >("")
   const moduloEnlaces         = ref<InstanceType<typeof enlaces>      | null>(null)
   const moduloCondiciones     = ref<InstanceType<typeof condiciones>  | null>(null)
+  const bodegas               = dexieBodegas()
 
   const props                 = defineProps({
     id:   { required: true, type: String },
@@ -239,8 +242,22 @@ const disableBtnValidar     = computed( () =>{
   function clickNuevaEntrega()
   {
     const fechaYmetodoOk = moduloCondiciones.value?.validar()
-    if(fechaYmetodoOk)
-      modales.value.nuevaEntrega = true      
+    if(!fechaYmetodoOk) return 
+    const url = acuerdo.value.urlDolibarrNuevoEnvio + "&entrepot_id=" + getIdBodegaByArea( acuerdo.value.tercero.area )
+    console.log("url: ", url);
+    window.open(url, '_blank')
+
+
+
+    function getIdBodegaByArea( area : AREA ) : number
+    {
+      
+      console.log("bodegas: ", bodegas.value);
+      const idBodega  = bodegas.value.find( b => b.padre_id == 0 && b.area == area )?.id ?? 0
+      console.log("idBodega: ", idBodega);
+
+      return idBodega
+    }
   }
 
 </script>

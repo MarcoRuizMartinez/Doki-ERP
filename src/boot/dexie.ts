@@ -59,7 +59,7 @@ export class DBSimpleOk extends Dexie
       [TABLAS.PROVEEDORES]      : "++id, nombre, alias, codigo",
       [TABLAS.CUENTA_DINERO]    : "++id, ref, label, tipoId, logoUrl, virtual",
       [TABLAS.REGLA_COMISION]   : "++id, nombre, descripcion, alfa, a, b, c, d, e",
-      [TABLAS.BODEGA]           : "++id, ref, nombre, estado, padre_id, proyecto_id, descripcion, direccion",
+      [TABLAS.BODEGA]           : "++id, ref, nombre, estado, padre_id, proyecto_id, descripcion, direccion, area",
     })
 
     this[TABLAS.MUNICIPIOS]       = this.table( TABLAS.MUNICIPIOS )

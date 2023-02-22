@@ -10,7 +10,14 @@
           v-for   ="(linea, index) of lineas.filter(( l )=> l.tipo !== 9)"
           :index  ="index"
           >
-          <td><div class="qty"  >{{linea.qty}}</div></td>
+          <td>
+            <div class="qty" >
+              {{linea.qty}}
+              <template v-if="linea.qtyTotal >= 1">
+              de {{ linea.qtyTotal }}
+              </template>
+            </div>
+          </td>
           <td><div class="ellipsis linea">x {{linea.nombre}}</div></td>
         </tr>
         <!--<tr> <td><b>Subtotal :  </b> </td> <td>{{ formatoPrecio( cotizacion.totalConDescu ) }}</td> </tr>
@@ -31,6 +38,7 @@
 
 .qty{
   text-align: right;
+  min-width: max-content;
 }
 
 .linea{

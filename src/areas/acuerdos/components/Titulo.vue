@@ -44,9 +44,9 @@
           @click            ="emit('click')"
           >
           <span class       ="titulo-xl sombra-3d fuente-gruesa text-capitalize">
-            {{acuerdo.label}}
+            {{acuerdo.labelEspecial}}
           </span>
-          dfdf
+          <Tooltip class="text-capitalize">{{ acuerdo.label }}</Tooltip>
         </q-btn>
         <!-- //* ////////////////////////////////////////////////////// Titulo  -->
         <div

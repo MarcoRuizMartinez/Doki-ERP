@@ -74,6 +74,7 @@ export interface IAcuerdo
 {
   tipo:                       TIPO_ACUERDO
   label:                      string
+  labelEspecial:              string
   labelPlural:                string
   ruta:                       string
   emoji:                      string
@@ -382,14 +383,13 @@ export class Acuerdo implements IAcuerdo
   } */
 
   get label()       : string { 
-    let label = Acuerdo.getTipoAcuerdoSingular  ( this.tipo )
-    if(this.esPedido && !this.condicionPago.esFacturable)
-    {
-      label = this.condicionPago.label
-    }
-
-    return label
+    return  Acuerdo.getTipoAcuerdoSingular( this.tipo )
   }
+  get labelEspecial()       : string { 
+    return this.esPedido ? this.condicionPago.label : this.label
+  }  
+
+  
 
   get labelPlural() : string { return Acuerdo.getTipoAcuerdoPlural    ( this.tipo ) }
   get icono()       : string { return Acuerdo.getIconoAcuerdo         ( this.tipo ) }
