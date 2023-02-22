@@ -138,12 +138,19 @@ export function useMenu()
                           }),
         }, 
         { ...new ItemMenu({
-                            label:      "Crear pedido",
-                            icon:       "mdi-cart-plus",
-                            to:         "/pedidos/cliente/crear",
+                            label:      "Entregas",
+                            icon:       "mdi-truck-delivery",
+                            to:         "/entregas/cliente",
                             visible:    permisos.value.terceros_ver
                           }),
         },
+/*         { ...new ItemMenu({
+                            label:      "Crear pedido",
+                            icon:       "mdi-cart-plus",
+                            to:         "/pedidos/cliente/crear",
+                            visible:    false,
+                          }),
+        }, */
         { ...new ItemMenu({
                               label:    "Garantías",
                               icon:     "mdi-lifebuoy",

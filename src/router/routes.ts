@@ -149,6 +149,8 @@ const routes: RouteRecordRaw[] = [
       },
     ],
   },
+  //* //////////////////////////////////////////////////////////////////
+  //* ////////////////////////////////////////////////////////// Pedidos  
   {
     path:           '/pedidos',
     component:      () => import('layouts/LayoutPrincipal.vue'),
@@ -191,6 +193,31 @@ const routes: RouteRecordRaw[] = [
       },
     ],
   },
+  //* //////////////////////////////////////////////////////////////////
+  //* ////////////////////////////////////////////////////////// Entregas
+  {
+    path:           '/entregas',
+    component:      () => import('layouts/LayoutPrincipal.vue'),
+    children:
+    [
+      //* ////////////////////////////////////////////////////////////////// Entregas cliente Buscar 
+      {
+        path:       'cliente',
+        name:       'entregas',
+        props:      () => ({ tipo: TIPO_ACUERDO.ENTREGA_CLI }),
+        component:  () => import('src/areas/acuerdos/pages/PageAcuerdoBuscar.vue'),
+      },
+      //* ////////////////////////////////////////////////////////////////// Entrega cliente Ver 
+      {
+        path:       'cliente/:id',
+        name:       'entrega',
+        props:      route => ({ tipo: TIPO_ACUERDO.ENTREGA_CLI, id: route.params.id }),
+        component:  () => import('src/areas/acuerdos/pages/PageAcuerdoVer.vue')
+      }
+    ]
+  },
+  //* //////////////////////////////////////////////////////////////////
+  //* ////////////////////////////////////////////////////////// Facturas
   {
     path: '/facturas',
     component: () => import('layouts/LayoutPrincipal.vue'),
