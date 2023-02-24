@@ -77,7 +77,7 @@ export function servicesAcuerdos()
                                                     },
                                                     {
                                                       mensaje:  "cargar cotización",
-                                                      tiempoEspera: 10000
+                                                      tiempoEspera: 10_000
                                                     }
                                                     )
       if(ok && typeof data == "object" )
@@ -103,13 +103,12 @@ export function servicesAcuerdos()
                                                     },
                                                     {
                                                       mensaje:      "buscar " + query.acuerdo,
-                                                      tiempoEspera: 10000,
+                                                      tiempoEspera: 15_000,
                                                       dataEsArray:  true
                                                     }
                                                   )
       const acuerdos : IAcuerdo[]   = []
 
-      console.log("data: ", data);
       if(ok && Array.isArray( data ))
       {
         for (const item of data)

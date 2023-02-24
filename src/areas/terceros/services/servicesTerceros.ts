@@ -11,7 +11,7 @@ export interface IBusquedaTercero {
   //idEspecial?:  number
   orden?:       "ASC" | "DESC"
 }
-
+ 
 import {  getURL,
           getFormData     } from "src/services/APIMaco"
 import {  useFetch        } from "src/useSimpleOk/useFetch"
@@ -19,10 +19,14 @@ import {  useFetch        } from "src/useSimpleOk/useFetch"
 import {  ITercero,
           Tercero,
                           } from "src/areas/terceros/models/Tercero"
+import {  useRouter       } from 'vue-router'
+import {  useQuasar       } from 'quasar'
 
 export function servicesTerceros() 
 {
-  const { miFetch           } = useFetch()
+  const { miFetch } = useFetch()
+  const { notify  } = useQuasar()
+  const router      = useRouter()  
   //const { usuario           } = useUsuario()
 
 
@@ -85,6 +89,49 @@ export function servicesTerceros()
       }
     })
   }
+
+  async function vericarDocumentoEnDolibarr( numero : string ) : Promise< boolean >
+  {
+    let existe = await ejecutarBusqueda( "documentoExiste" )
+
+    if( existe) return true
+        existe = await ejecutarBusqueda( "documentoExisteContactos" )    
+
+    return existe
+
+    async function ejecutarBusqueda( endpoint : string ) : Promise< boolean >
+    {
+      const { ok : existe, data}  = await miFetch(  getURL( "listas", "varios"),
+                                                    {
+                                                      method: "POST",
+                                                      body:   getFormData( endpoint, { numero } )
+                                                    },
+                                                    { mensaje: "buscar si existe numero de documento" }
+                                                  )
+      const resultado : any       = data
+      console.log("data: ", data);
+      if(existe && !!resultado && resultado.hasOwnProperty("vendedor") && !Array.isArray(resultado))
+      {
+        console.log(resultado.vendedor);
+        const vendedor            = JSON.parse(resultado.vendedor)[0].name
+        console.log("vendedor: ", vendedor);
+
+        notify({
+          color:                  "negative",
+          textColor:              "white",
+          icon:                   "mdi-account-alert",
+          position:               "top",
+          timeout:                5000,
+          message:                "Este tercero ya ha sido creado por " + vendedor,
+          actions: [
+            { label: 'Ir a tercero', color: 'white', handler: () => { router.push("/tercero/" + resultado.id ) } }
+          ]
+        })
+      }
+
+      return !!existe ? true : false
+    }
+  }  
 
   async function getNota( idTercero : string) : Promise< string >
   {
@@ -152,6 +199,7 @@ export function servicesTerceros()
     getNota,
     setNota,
     moverContactoAOtroTercero,
+    vericarDocumentoEnDolibarr,
   }
 }
 

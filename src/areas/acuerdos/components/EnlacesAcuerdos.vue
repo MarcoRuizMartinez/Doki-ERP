@@ -61,8 +61,8 @@
   //* ///////////////////////////////////////////////////////////////////////////////////// Modelos
   import {  TTipoAcuerdo, 
             TIPO_ACUERDO          } from "src/areas/acuerdos/models/ConstantesAcuerdos"
-  import {  EnlaceAnticipo, 
-            IEnlaceAnticipo       } from "src/areas/acuerdos/models/EnlaceAnticipo"
+  import {  EnlaceAcuerdo, 
+            IEnlaceAcuerdo       } from "src/areas/acuerdos/models/EnlaceAcuerdo"
   //* /////////////////////////////////////////////////////////////////////////////////// Componibles
   import {  servicesAcuerdos      } from "src/areas/acuerdos/services/servicesAcuerdos"
   import {  useFetch              } from "src/useSimpleOk/useFetch"
@@ -79,7 +79,7 @@
   const { miFetch           }       = useFetch()
   const modo                        = ref< ModosVentana >("esperando-busqueda")
   const endPoint                    = getURL("listas", "varios")
-  const enlaces : IEnlaceAnticipo[] = []
+  const enlaces : IEnlaceAcuerdo[] = []
   
   const columnas: IColumna[]  = [
     new Columna({ name: "ref"       }),
@@ -111,12 +111,13 @@
                                                 { method: "POST", body: getFormData( "buscarEnlacesAcuerdo", objeto ) },
                                                 { dataEsArray: true, mensaje: "buscar enlaces" }
                                               )
+    console.log("data: ", data);
     if(ok && Array.isArray( data ) && !!data.length)
     {
       enlaces.length      = 0
       for (const item of data)
       {
-        const enlace      = EnlaceAnticipo.enlaceApiToEnlace( item )
+        const enlace      = EnlaceAcuerdo.enlaceApiToEnlace( item )
         enlaces.push( enlace )      
       }
     }
@@ -154,9 +155,9 @@
 
     function getIds( tipo : TTipoAcuerdo ) :string
     {
-      const enla                = enlaces.filter( e => e.tipo === tipo )
+      const enla                = enlaces.filter( e => e.destinoTipo === tipo )
       return  !!enla.length
-              ? enla.flatMap( ( enla )=> enla.id_objeto ).join(",")
+              ? enla.flatMap( ( enla )=> enla.destinoId ).join(",") 
               : ""
     }
   }

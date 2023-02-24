@@ -144,7 +144,7 @@ export function useMenu()
                             visible:    permisos.value.terceros_ver
                           }),
         },
-/*         { ...new ItemMenu({
+        /*{ ...new ItemMenu({
                             label:      "Crear pedido",
                             icon:       "mdi-cart-plus",
                             to:         "/pedidos/cliente/crear",

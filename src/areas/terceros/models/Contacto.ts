@@ -49,6 +49,7 @@ export interface IContacto {
     empresa:              string // para cotizaciones - nota publica en Dolibarr
     cargo:                string
     correo:               string
+    documento:            number
     telefono:             string
     telefono_2:           string
     extension:            string
@@ -80,6 +81,7 @@ export class Contacto implements IContacto
   empresa:                string
   cargo:                  string
   correo:                 string
+  documento:              number
   telefono:               string
   telefono_2:             string
   extension:              string  
@@ -102,6 +104,7 @@ export class Contacto implements IContacto
     this.empresa          = ""
     this.cargo            = ""
     this.correo           = ""
+    this.documento        = 0
     this.telefono         = ""
     this.telefono_2       = ""
     this.extension        = ""
@@ -171,7 +174,8 @@ export class Contacto implements IContacto
                       roles:        {},
                       array_options:
                       {
-                        "options_municipio_id": this.municipio.id
+                        "options_municipio_id": this.municipio.id,
+                        "options_documento":    this.documento.toString(),
                       },
                   }
     return contacto
@@ -196,6 +200,7 @@ export class Contacto implements IContacto
     contacto.fechaCreado      = getDateToApiDolibarr( contactoApi?.date_creation      ?? "" )
     contacto.fechaModificado  = getDateToApiDolibarr( contactoApi?.date_modification  ?? "" )
     contacto.activo           = Boolean(  parseInt( contactoApi.statut            ) )
+    contacto.documento        = +(contactoApi?.array_options?.options_documento ?? "0")
 
     if( contactoApi.hasOwnProperty("array_options") )
     {

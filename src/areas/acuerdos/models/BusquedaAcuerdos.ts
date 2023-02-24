@@ -36,7 +36,8 @@ export interface IQueryAcuerdo {
   offset               ?: number
   area                 ?: string
   orden                ?: "ASC" | "DESC"
-  municipio            ?: number  
+  municipio            ?: number
+  municipioContacto    ?: number
   //idEspecial?:       number
 }
 
@@ -64,6 +65,7 @@ export interface IBusquedaAcuerdo {
   conOrdenes            : ILabelValue
   proveedores           : ILabelValue  
   municipio             : IMunicipio
+  municipioContacto     : IMunicipio
   comercial            ?: IUsuario
   creador              ?: IUsuario
   resultadosXPage       : number
@@ -71,6 +73,7 @@ export interface IBusquedaAcuerdo {
   esCotizacion          : boolean
   esPedido              : boolean
   esOCProveedor         : boolean
+  esEntrega             : boolean
   busquedaVacia         : boolean
 }
 export class BusquedaAcuerdo implements IBusquedaAcuerdo
@@ -97,6 +100,7 @@ export class BusquedaAcuerdo implements IBusquedaAcuerdo
   conOrdenes            : ILabelValue
   proveedores           : ILabelValue
   municipio             : IMunicipio
+  municipioContacto     : IMunicipio
   comercial            ?: IUsuario
   creador              ?: IUsuario
   resultadosXPage       : number
@@ -127,6 +131,7 @@ export class BusquedaAcuerdo implements IBusquedaAcuerdo
     this.conOrdenes       = labelValueNulo
     this.proveedores      = labelValueNulo
     this.municipio        = new Municipio()
+    this.municipioContacto= new Municipio()
     this.resultadosXPage  = 25
     this.pagina           = 1
     this.busquedaVacia    = true
@@ -134,7 +139,8 @@ export class BusquedaAcuerdo implements IBusquedaAcuerdo
 
   get esCotizacion()  : boolean { return this.acuerdo === TIPO_ACUERDO.COTIZACION_CLI   }
   get esPedido()      : boolean { return this.acuerdo === TIPO_ACUERDO.PEDIDO_CLI       }
-  get esOCProveedor() : boolean { return this.acuerdo === TIPO_ACUERDO.PEDIDO_PRO }
+  get esOCProveedor() : boolean { return this.acuerdo === TIPO_ACUERDO.PEDIDO_PRO       }
+  get esEntrega()     : boolean { return this.acuerdo === TIPO_ACUERDO.ENTREGA_CLI      }
 
   get query() : IQueryAcuerdo
   {
@@ -154,18 +160,19 @@ export class BusquedaAcuerdo implements IBusquedaAcuerdo
     if(!!this.estadoAnticipo.length)  q.estadoAnticipo  = this.estadoAnticipo .map( e => e.value ).join("_")
     if(!!this.tipoAnticipo.length)    q.tipoAnticipo    = this.tipoAnticipo   .map( e => e.value ).join("_")
 
-    if(!!this.area.label)         q.area                = this.area.value
-    if(!!this.facturado.label)    q.facturado           = this.facturado.value
-    if(!!this.conIva.label)       q.conIva              = this.conIva.value
-    if(!!this.totalizado.label)   q.conTotal            = this.totalizado.value
-    if(!!this.tipoTercero.label)  q.interno             = this.tipoTercero.value
-    if(!!this.municipio.id)       q.municipio           = this.municipio.id
-    if(!!this.conOrdenes.label)   q.conOrdenes          = this.conOrdenes.value
-    if(!!this.creador)            q.creador             = this.creador.id
+    if(!!this.area.label)           q.area                = this.area.value
+    if(!!this.facturado.label)      q.facturado           = this.facturado.value
+    if(!!this.conIva.label)         q.conIva              = this.conIva.value
+    if(!!this.totalizado.label)     q.conTotal            = this.totalizado.value
+    if(!!this.tipoTercero.label)    q.interno             = this.tipoTercero.value
+    if(!!this.municipio.id)         q.municipio           = this.municipio.id
+    if(!!this.municipioContacto.id) q.municipioContacto   = this.municipioContacto.id
+    if(!!this.conOrdenes.label)     q.conOrdenes          = this.conOrdenes.value
+    if(!!this.creador)              q.creador             = this.creador.id
     if(this.esOCProveedor && !!this.proveedores.label)
-                                  q.proveedorId         = this.proveedores.value
+                                    q.proveedorId         = this.proveedores.value
     if(!this.esOCProveedor && !!this.comercial)
-                                  q.comercial           = this.comercial.id
+                                    q.comercial           = this.comercial.id
 
     if(this.desde instanceof Date && !isNaN(this.desde.valueOf()))  q.fechaDesde  = this.desde.toLocaleDateString('sv-SE')
     if(this.hasta instanceof Date && !isNaN(this.hasta.valueOf()))  q.fechaHasta  = this.hasta.toLocaleDateString('sv-SE')

@@ -165,11 +165,7 @@
         color                 ="positive"
         :icon                 ="acuerdo.esEstadoEntregado ? 'mdi-lock-open-variant' : 'mdi-check-circle-outline'"
         :label                ="esMobil ? '' : acuerdo.esEstadoEntregado ? 'Reabrir' : 'Validar'"
-        :disable              ="cargandoAlgo
-                                || !acuerdo.proGrupos.length
-                                || !acuerdo.proGrupos[0].productos.length
-                                || (!acuerdo.contactoComercial.id && (acuerdo.tercero.esEmpresa || acuerdo.esTerceroCtz))
-                              "
+        :disable              ="disableBtnValidar"
         :loading              ="loading.validar"
         @click                ="emit('clickValidar')"
         >
@@ -291,6 +287,20 @@
                                             )
                                           )
                                   )
+
+  const disableBtnValidar = computed(()=>
+                                    cargandoAlgo.value
+                                || !acuerdo.value.proGrupos.length
+                                || !acuerdo.value.proGrupos[0].productos.length
+                                || (  !acuerdo.value.contactoComercial.id
+                                      &&
+                                      (
+                                        acuerdo.value.tercero.esEmpresa
+                                        ||
+                                        acuerdo.value.esTerceroCtz
+                                      )
+                                    )
+                              )
   function clickEnNotas()
   {
     window.scrollTo({ top: document.body.scrollHeight,  behavior: 'smooth'})

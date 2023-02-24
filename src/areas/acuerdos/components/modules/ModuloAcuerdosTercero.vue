@@ -59,8 +59,8 @@
   import {  ref,
             toRefs,
             PropType,
-            computed,
-            onMounted             } from "vue"
+            watch,
+                                  } from "vue"
   import {  useRouter             } from 'vue-router'
   // * /////////////////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs           } from 'pinia'
@@ -100,7 +100,9 @@
   const { tercero, tipo }     = toRefs( props )
   const acuerdos              = ref< IAcuerdo[] >([])
 
-  onMounted( buscar )
+  //onMounted( buscar )
+
+  watch(tercero, buscar, { immediate: true })
 
   async function buscar()
   {

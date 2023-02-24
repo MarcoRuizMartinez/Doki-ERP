@@ -244,18 +244,11 @@ const disableBtnValidar     = computed( () =>{
     const fechaYmetodoOk = moduloCondiciones.value?.validar()
     if(!fechaYmetodoOk) return 
     const url = acuerdo.value.urlDolibarrNuevoEnvio + "&entrepot_id=" + getIdBodegaByArea( acuerdo.value.tercero.area )
-    console.log("url: ", url);
     window.open(url, '_blank')
-
-
 
     function getIdBodegaByArea( area : AREA ) : number
     {
-      
-      console.log("bodegas: ", bodegas.value);
       const idBodega  = bodegas.value.find( b => b.padre_id == 0 && b.area == area )?.id ?? 0
-      console.log("idBodega: ", idBodega);
-
       return idBodega
     }
   }

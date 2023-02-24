@@ -45,6 +45,14 @@
           />
         </q-td>
       </template>
+      <!-- //* ///////////////  Columna Ref  -->
+      <template #body-cell-pedidoId="props">
+        <q-td   :props          ="props">
+          <router-link :to      ="'/pedidos/cliente/' + props.value">      
+              {{ props.value }}
+          </router-link>
+        </q-td>
+      </template>      
       <!-- //* ///////////////  Columna Tercero  -->
       <template
         #body-cell-tercero      ="props">
@@ -214,6 +222,7 @@
     return    busqueda.value.esCotizacion   ? ALMACEN_LOCAL.COL_COTIZACIONES
             : busqueda.value.esPedido       ? ALMACEN_LOCAL.COL_PEDIDOS
             : busqueda.value.esOCProveedor  ? ALMACEN_LOCAL.COL_OC_PROVEE
+            : busqueda.value.esEntrega      ? ALMACEN_LOCAL.COL_ENTREGAS
             : ""
   })
   const columnas                  = ref< IColumna[] >([])
@@ -279,35 +288,73 @@
     buscarTerceroDolibarr( acuerdo.value.terceroId )
   }
 
-  function crearColumnas(){
-    columnas.value                = [
-      new Columna({ name: "ref"                                                   }),      
-      new Columna({ name: "estado"                                                }),
-      new Columna({ name: "tercero"                                               }),
-      new Columna({ name: "municipioTercero",         label: "Municipio tercero"  }),      
-      new Columna({ name: "fechaCreacionCorta",       label: "Creado"             }),
-      new Columna({ name: "fechaValidacionCorta",     label: "Validado"           }),
-      new Columna({ name: "creador"                                               }),
-      Columna.ColumnaPrecio ({ name: "totalConDescu", label: "Subtotal",          clase: "text-bold"  }),      
-      Columna.ColumnaPrecio ({ name: "ivaValor",      label: "IVA",               clase: "text-bold"  }),
-      Columna.ColumnaPrecio ({ name: "totalConIva",   label: "Total",             clase: "text-bold"  }),
+  function crearColumnas()
+  {
+    columnas.value = [
+      new Columna(            { name: "ref"                                                                   }),
+      new Columna(            { name: "estado"                                                                }),
+      new Columna(            { name: "pedidoId",             label: "Pedido ID"                              }),
+      new Columna(            { name: "tercero"                                                               }),
+      new Columna(            { name: "refCliente",           label: "Ref cliente"                            }),
+      new Columna(            { name: "comercial",            label: "Asesor"                                 }),
+      new Columna(            { name: "contactoSmart",        label: "Contacto"                               }),
+      new Columna(            { name: "contactoSmartMun",     label: "Municipio contacto"                     }),
+      new Columna(            { name: "contactoSmartDir",     label: "Dirección contacto"                     }),
+      new Columna(            { name: "contactoSmartTel",     label: "Teléfono contacto"                      }),
+      new Columna(            { name: "metodoEntregaLabel",   label: "Entrega"                                }), 
+      new Columna(            { name: "condicionPagoLabel",   label: "Condiciones"                            }), 
+      new Columna(            { name: "formaPagoLabel",       label: "Forma de pago"                          }), 
+      Columna.ColumnaSiNo   ( { name: "facturado",            label: "Facturado"                              }),
+      new Columna(            { name: "area",                 label: "Área"                                   }),
+      new Columna(            { name: "municipioTercero",     label: "Municipio tercero"                      }),
+      new Columna(            { name: "origenContactoLabel",  label: "Origen"                                 }), 
+      new Columna(            { name: "creador"                                                               }),
+      new Columna(            { name: "fechaCreacionCorta",   label: "Creado"                                 }),
+      new Columna(            { name: "fechaValidacionCorta", label: "Validado"                               }),
+      Columna.ColumnaPrecio ( { name: "subTotalLimpio",       label: "Subtotal comisión", clase: "text-bold"  }),
+      Columna.ColumnaPrecio ( { name: "totalConDescu",        label: "Subtotal",          clase: "text-bold"  }),
+      Columna.ColumnaPrecio ( { name: "ivaValor",             label: "IVA",               clase: "text-bold"  }),
+      Columna.ColumnaPrecio ( { name: "totalConIva",          label: "Total",             clase: "text-bold"  }),
     ]
-    if(!busqueda.value.esOCProveedor){
-      columnas.value.splice(1, 0,  new Columna({ name: "refCliente",          label: "Ref cliente"    }) )
-      columnas.value.splice(4, 0,  new Columna({ name: "comercial",           label: "Asesor"         }) )
-      columnas.value.splice(5, 0,  new Columna({ name: "contactoSmart",       label: "Contacto"       }) )
-      columnas.value.splice(7, 0,  new Columna({ name: "condicionPagoLabel",  label: "Condiciones"    }) )
-      columnas.value.splice(8, 0,  new Columna({ name: "formaPagoLabel",      label: "Forma de pago"  }) )
-      columnas.value.splice(9, 0,  new Columna({ name: "metodoEntregaLabel",  label: "Entrega"        }) )
-      columnas.value.splice(10, 0, new Columna({ name: "origenContactoLabel", label: "Origen"         }) )
-      columnas.value.splice(14, 0, Columna.ColumnaPrecio ({ name: "subTotalLimpio",label: "Subtotal comisión", clase: "text-bold"  }) )
-      columnas.value.splice(11, 0, new Columna({ name: "area",                label: "Área"           }) )     
+
+    const colsEli = busqueda.value.esCotizacion   ? ["facturado", "pedidoId"]
+                  : busqueda.value.esPedido       ? ["pedidoId"]
+                  : busqueda.value.esEntrega      ? ["facturado", "condicionPagoLabel", "formaPagoLabel", "origenContactoLabel", "subTotalLimpio", "totalConDescu", "ivaValor", "totalConIva"]
+                  : busqueda.value.esOCProveedor  ? ["refCliente", "comercial", "metodoEntregaLabel", "facturado", "origenContactoLabel", "subTotalLimpio", "pedidoId" ]
+                  : []
+    eliminarColums( colsEli )
+
+    const colHide = ["refCliente", "contactoSmartDir", "contactoSmartTel", "formaPagoLabel", "area", "municipioTercero", "creador", "fechaCreacionCorta", "fechaValidacionCorta", "subTotalLimpio", "ivaValor", "totalConIva"]
+    const colsOcu = busqueda.value.esCotizacion   ? [...colHide, "metodoEntregaLabel",]
+                  : busqueda.value.esPedido       ? [...colHide]
+                  : busqueda.value.esEntrega      ? [...colHide]
+                  : busqueda.value.esOCProveedor  ? [...colHide]
+                  : [...colHide]
+      ocultarColums( colsOcu )
+    
+    columnasVisibles.value  = columnas.value.filter(c => c.visible ).map( c => c.name )
+
+    function eliminarCol( name : string )
+    {
+      const index = columnas.value.findIndex( c => c.name === name )
+      columnas.value.splice( index, 1 )
     }
 
-    if(busqueda.value.esPedido)
-      columnas.value.push( Columna.ColumnaSiNo({ name: "facturado",         label: "Facturado"      }) )
+    function ocultarCol( name : string )
+    {
+      const index = columnas.value.findIndex( c => c.name === name )
+      if(index === -1 ) return 
+      columnas.value[index].visible = false
+    }
 
-    columnasVisibles.value  = columnas.value.filter(c => c.visible ).map( c => c.name )       
+
+    function eliminarColums( cols : string[] ){
+      for (const col of cols) eliminarCol( col )
+    }
+
+    function ocultarColums( cols : string[] ){
+      for (const col of cols) ocultarCol( col )
+    }    
   } 
 
   function descargarAcuerdos()

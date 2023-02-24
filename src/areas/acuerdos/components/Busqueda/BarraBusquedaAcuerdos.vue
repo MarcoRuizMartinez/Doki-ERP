@@ -69,9 +69,17 @@
           icon                  ="mdi-label"
           :options              ="estados"
         />
+        <!-- //* ///////////////////////////////////////////////// Métodos de entrega -->
+        <multi-label-value
+          v-model               ="busqueda.entrega"
+          label                 ="Entrega"
+          class                 ="width160"
+          icon                  ="mdi-truck-delivery"
+          :options              ="metodosEntrega"
+        />
         <!-- //* ///////////////////////////////////////////////// Condiciones pago -->
         <multi-label-value
-          v-if                  ="!busqueda.esOCProveedor"
+          v-if                  ="!busqueda.esOCProveedor && !busqueda.esEntrega"
           v-model               ="busqueda.condiciones"
           label                 ="Condiciones"
           class                 ="width160"
@@ -99,6 +107,14 @@
           :grupos               ="busqueda.esOCProveedor ? [GRUPO_USUARIO.PRODUCCION] : []"
           :readonly             ="!permisos.acceso_total"
         />
+        <!-- //* ///////////////////////////////////////////////// Municipio contacto -->
+        <municipios             hundido
+          v-if                  ="busqueda.esEntrega"
+          v-model               ="busqueda.municipioContacto"
+          class                 ="width160"
+          label                 ="Lugar envió"
+          tooltip               ="Municipio contacto"
+        />        
         <!-- //* ///////////////////////////////////////////////// Pedido facturado -->
         <select-label-value     use-input hundido clearable flat bordered
           v-if                  ="busqueda.esPedido"
@@ -203,6 +219,7 @@
         >
         <!-- //* ///////////////////////////////////////////////// Forma de pago -->
         <multi-label-value
+          v-if                  ="!busqueda.esEntrega"
           v-model               ="busqueda.formaPago"
           label                 ="Pago"
           class                 ="width160"
@@ -211,6 +228,7 @@
         />
         <!-- //* ///////////////////////////////////////////////// Métodos de entrega -->
         <multi-label-value
+          v-if                  ="!busqueda.esEntrega"
           v-model               ="busqueda.entrega"
           label                 ="Entrega"
           class                 ="width160"
@@ -219,6 +237,7 @@
         />
         <!-- //* ///////////////////////////////////////////////// Origen contacto -->
         <multi-label-value
+          v-if                  ="!busqueda.esEntrega"
           v-model               ="busqueda.origenes"
           label                 ="Origen"
           class                 ="width160"
@@ -294,7 +313,8 @@
           :options              ="opcionesOrdenesProv"
         />         
       </fieldset-filtro>
-      <fieldset-filtro      
+      <fieldset-filtro
+        v-if                    ="!busqueda.esEntrega"
         titulo                  ="Subtotal"
         class-conenido          ="column q-gutter-xs"
         >
@@ -318,6 +338,7 @@
         />
       </fieldset-filtro>
       <fieldset-filtro
+        v-if                    ="!busqueda.esEntrega"
         titulo                  ="Totales"
         class-conenido          ="column q-gutter-xs"
         >
@@ -380,7 +401,9 @@
             IBusquedaAcuerdo    } from "src/areas/acuerdos/models/BusquedaAcuerdos"
   import {  estadosCtz,
             estadosPed,
-            estadosOC,          } from "src/areas/acuerdos/models/ConstantesAcuerdos"
+            estadosOC,
+            estadosEnt
+                                } from "src/areas/acuerdos/models/ConstantesAcuerdos"
   import {  GRUPO_USUARIO       } from "src/models/TiposVarios"
   import {  Anticipo            } from "src/areas/acuerdos/models/Anticipo"  
   // * /////////////////////////////////////////////////////////////////////// Componentes
@@ -417,6 +440,7 @@
   const estados                   = computed(()=>   busqueda.value.esCotizacion ? estadosCtz.filter(e => e.value >= -1)
                                                   : busqueda.value.esPedido     ? estadosPed.filter(e => e.value >= -1)
                                                   : busqueda.value.esOCProveedor? estadosOC .filter(e => e.value >= -1)
+                                                  : busqueda.value.esEntrega    ? estadosEnt.filter(e => e.value >= -1)
                                                   : [] )
   
   const autoSelectComercial       = computed(()=> Object.keys(queryURL).length === 0 ? true : getQueryRouterNumber( queryURL.comercial  ) ?? false )
@@ -481,8 +505,10 @@
     busqueda.value.condiciones    = getQueryRouterLabelValueArray ( queryURL.condiciones,     condicionesPago.value )
     busqueda.value.origenes       = getQueryRouterLabelValueArray ( queryURL.origenes,        origenes.value        )
     if(!!queryURL.municipio)
-      busqueda.value.municipio    = await getMunicipioDB( Array.isArray(queryURL.municipio) ? 0 : +queryURL.municipio ) 
-    
+      busqueda.value.municipio          = await getMunicipioDB( Array.isArray(queryURL.municipio)         ? 0 : +queryURL.municipio ) 
+    if(!!queryURL.municipioContacto)
+      busqueda.value.municipioContacto  = await getMunicipioDB( Array.isArray(queryURL.municipioContacto) ? 0 : +queryURL.municipioContacto ) 
+        
       bloqueoInicio                 = false
   }
 
@@ -504,12 +530,14 @@
   )
 
   function checkAlertTabs( b : IBusquedaAcuerdo ){
-    tabs.value.alerts[0]  = ( !!b.tercero           || !!b.contacto           || fechaValida( b.desde ) || fechaValida( b.hasta ) ||
-                              !!b.estados.length    || !!b.condiciones.length || !!b.facturado.label    || !!b.comercial          || !!b.creador 
+    tabs.value.alerts[0]  = ( !!b.tercero           || !!b.contacto           || fechaValida( b.desde ) || fechaValida( b.hasta ) || !!b.municipioContacto.id ||
+                              !!b.estados.length    || !!b.condiciones.length || !!b.facturado.label    || !!b.comercial          || !!b.creador                ||
+                              ( !!b.entrega.length  && busqueda.value.esEntrega)
                             )
-    tabs.value.alerts[1]  = ( !!b.formaPago.length  || !!b.entrega.length     || !!b.origenes.length    || !!b.conIva.label           ||  
-                              !!b.area.label        || !!b.municipio.id       || !!b.totalizado.label   || !!b.estadoAnticipo.length  || !!b.tipoAnticipo.length || 
-                              !!b.tipoTercero.label ||!!b.conOrdenes.label    ||!!b.precioMinimo        || !!b.precioMaximo
+    tabs.value.alerts[1]  = ( !!b.formaPago.length  || !!b.origenes.length    || !!b.conIva.label           ||  !!b.area.label          || 
+                              !!b.municipio.id      || !!b.totalizado.label   || !!b.estadoAnticipo.length  || !!b.tipoAnticipo.length  || 
+                              !!b.tipoTercero.label ||!!b.conOrdenes.label    ||!!b.precioMinimo            || !!b.precioMaximo         ||
+                              ( !!b.entrega.length  && !busqueda.value.esEntrega)
                             )
   }
 

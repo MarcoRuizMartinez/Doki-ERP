@@ -59,6 +59,7 @@ import {  IFormaPago,       FormaPago       } from "src/models/Diccionarios/Form
 import {  IMetodoEntrega,   MetodoEntrega   } from "src/models/Diccionarios/MetodoEntrega"
 import {  IOrigenContacto,  OrigenContacto  } from "src/models/Diccionarios/OrigenContacto"
 import {  ITiempoEntrega,   TiempoEntrega   } from "src/models/Diccionarios/TiempoEntrega"
+import {  IEnlaceAcuerdo,   EnlaceAcuerdo   } from "src/areas/acuerdos/models/EnlaceAcuerdo"
 import {  IArchivo                          } from "src/models/Archivo"
 import {  X100,
           fechaCorta,
@@ -87,6 +88,7 @@ export interface IAcuerdo
   esPedido:                   boolean
   esOCProveedor:              boolean
   esFactura:                  boolean
+  esEntrega:                  boolean
   esNuevo:                    boolean
   id:                         number
 
@@ -105,7 +107,7 @@ export interface IAcuerdo
   tercero:                    ITercero
   //terceroNombre:              string
   area:                       string
-  enlaces:                    string
+  enlaces:                    IEnlaceAcuerdo[]
   municipioTercero:           string
   fechaCreacion:              Date
   fechaCreacionCorta:         string
@@ -183,6 +185,10 @@ export interface IAcuerdo
   contactoEntrega:            IContacto
   contactoContable:           IContacto
   contactoSmart:              IContacto
+  contactoSmartMun:           string
+  contactoSmartDir:           string
+  contactoSmartTel:           string
+
   productos:                  ILineaAcuerdo[]
   proGrupos:                  IGrupoLineas[]
 
@@ -225,6 +231,7 @@ export interface IAcuerdo
   entregas                    : IAcuerdo[]
   transportadoraId            : number
   numeroGuia                  : string
+  pedidoId                    : number
 }
 
 export class Acuerdo implements IAcuerdo
@@ -240,7 +247,7 @@ export class Acuerdo implements IAcuerdo
   tercero:                    ITercero
   anticipos:                  IAnticipo[]
   archivos:                   IArchivo[]
-  enlaces:                    string
+  enlaces:                    IEnlaceAcuerdo[]
   fechaCreacion:              Date
   fechaValidacion:            Date
   fechaCierre:                Date
@@ -303,7 +310,7 @@ export class Acuerdo implements IAcuerdo
     this.archivos             = []
     this.proyectoId           = 0
     this.proyecto             = new Proyecto()
-    this.enlaces              = ""
+    this.enlaces              = []
     this.fechaCreacion        = new Date()
     this.fechaValidacion      = new Date()
     this.fechaCierre          = new Date(0)
@@ -419,8 +426,8 @@ export class Acuerdo implements IAcuerdo
             : ""
   }
 
-  get urlDolibarrNuevoEnvio() : string {
-
+  get urlDolibarrNuevoEnvio() : string
+  {
     const url   = process.env.URL_DOLIBARR.concat(
                   "/expedition/card.php?action=create&origin=commande&",
                   `shipping_method_id=${this.metodoEntrega.id}&`,
@@ -428,6 +435,8 @@ export class Acuerdo implements IAcuerdo
                   (!!this.proyecto.id ? `projectid=${this.proyecto.id}&` : ''),
                   `ref_client=${this.refCliente}&`,
                   `note_public=${this.notaPublica}&`,
+                  `options_comercial_id=${this.comercial.id}&`,
+                  `options_contacto_id=${this.contactoEntrega.id}&`,
                   `note_private=${this.notaPrivada}`
                 )
     return  this.esPedido ? url : ""
@@ -496,6 +505,7 @@ https://dolibarr.mublex.com/fichinter/card.php?
   get esPedido()          : boolean { return this.tipo === TIPO_ACUERDO.PEDIDO_CLI      }
   get esOCProveedor()     : boolean { return this.tipo === TIPO_ACUERDO.PEDIDO_PRO      }
   get esFactura()         : boolean { return this.tipo === TIPO_ACUERDO.FACTURA_CLI     }
+  get esEntrega()         : boolean { return this.tipo === TIPO_ACUERDO.ENTREGA_CLI     }
   get municipioTercero()  : string  { return this.tercero.municipio.label               }
   get area()              : string  { return this.tercero.areaNombre                    }
   get vinculado()         : boolean { return !!this.enlaces.length                      }
@@ -687,6 +697,10 @@ https://dolibarr.mublex.com/fichinter/card.php?
       inicio              = 9
       final               = 29
     }
+    if(this.esEntrega){
+      inicio              = 8
+      final               = 18
+    }
 
     return this.ref.length > 10 ? this.ref.slice( inicio, final ) : this.ref
   }
@@ -822,17 +836,31 @@ https://dolibarr.mublex.com/fichinter/card.php?
   }
 
   get contactoSmart() : IContacto {
-    if(this.esPedido && !!this.contactoEntrega.id)
+    if
+    (
+      ( this.esPedido && !!this.contactoEntrega.id )
+      ||
+      this.esEntrega
+    )
       return this.contactoEntrega
+    else 
 
     return this.contactoComercial
   }
+
+  get contactoSmartMun() : string{ return this.contactoSmart.municipio.label  }
+  get contactoSmartDir() : string{ return this.contactoSmart.direccion        }
+  get contactoSmartTel() : string{ return this.contactoSmart.telefono         }
 
   get usuarioEsDueño() : boolean {
     const { usuario }   = storeToRefs( useStoreUser() )
     return this.comercial.id === usuario.value.id 
   }
 
+
+  get pedidoId()  : number{
+    return this.enlaces.find( e => e.origenTipo === TIPO_ACUERDO.PEDIDO_CLI  ).origenId ?? 0
+  }
 
   static getTipoAcuerdoSingular( tipo : TTipoAcuerdo ) : string {
     const label                   = tipo === TIPO_ACUERDO.COTIZACION_CLI  ? "cotización"
@@ -890,7 +918,7 @@ https://dolibarr.mublex.com/fichinter/card.php?
     return ruta
   }
 
-  // * ///////////////////////////////////////////////////// static convertir data de API en new Cotizacion
+  // * ///////////////////////////////////////////////////// static convertir data de API en new acuerdo
   static async convertirDataApiToAcuerdo( acuApi : any, tipo : TTipoAcuerdo ) : Promise < IAcuerdo >
   {
     acuApi.id                 = +acuApi.id
@@ -899,8 +927,7 @@ https://dolibarr.mublex.com/fichinter/card.php?
 
     acuApi.creadorId          = +acuApi.usuariId
     acuApi.estado             = +acuApi.estado
-
-    acuApi.enlaces            = acuApi.enlaces ?? ""
+    
     acuApi.facturado          = Boolean( +acuApi.facturado )
     acuApi.conTotal           = Boolean( +acuApi.conTotal )
 
@@ -930,6 +957,7 @@ https://dolibarr.mublex.com/fichinter/card.php?
     acu.esNuevo               = false
     acu.tipo                  = tipo
     acu.creador               = await getUsuarioDB          ( acu.creadorId )
+    acu.enlaces               = EnlaceAcuerdo.enlacesApiToEnlaces( acuApi?.enlaces ?? "" )
 
     if(!!acu.comercialId){
       acu.comercial           = await getUsuarioDB        ( acu.comercialId )

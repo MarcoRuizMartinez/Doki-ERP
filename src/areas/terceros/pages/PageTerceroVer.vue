@@ -70,6 +70,7 @@ height-card         ="210px"
   //* ///////////////////////////////////////////////////////////////////////////////////// Core
   import {  ref,
             toRefs,
+            watch,
             provide,
             computed,
             onMounted,
@@ -126,6 +127,8 @@ height-card         ="210px"
 
   onMounted( evaluarID_y_buscar )
   provide("tercero",  tercero )
+
+  watch(id, evaluarID_y_buscar)
 
   //* ////////////////////////////////////////////////////////////////////////////////// Inicio Motor de carga de tercero
   function evaluarID_y_buscar()

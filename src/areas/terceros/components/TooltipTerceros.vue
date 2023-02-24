@@ -25,23 +25,23 @@
           <td>{{tercero.documento.tipo.nombre}}</td>
           <td>{{tercero.documento.numero}} {{tercero.documento.digito}}</td>
         </tr>
-        <tr v-if="!!tercero.documento.numero">
+        <tr v-if="!!tercero.telefono">
           <td>Teléfono</td>
           <td>{{tercero.telefono}}</td>
         </tr>
-        <tr v-if="!!tercero.documento.numero">
+        <tr v-if="!!tercero.correo">
           <td>Correo</td>
           <td>{{tercero.correo}}</td>
         </tr>
-        <tr v-if="!!tercero.documento.numero">
+        <tr v-if="!!tercero.municipio.id">
           <td>Municipio</td>
           <td>{{tercero.municipio.label}}</td>
         </tr>
-        <tr v-if="!!tercero.documento.numero">
+        <tr v-if="!!tercero.direccion">
           <td>Dirección</td>
           <td>{{tercero.direccion}}</td>
         </tr>
-        <tr v-if="!!tercero.documento.numero">
+        <tr v-if="!!tercero.fechaCreado">
           <td>Creación</td>
           <td>{{tercero.fechaCreadoCorta}}</td>
         </tr>

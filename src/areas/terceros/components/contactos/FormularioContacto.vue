@@ -60,13 +60,28 @@
         v-if                    ="esTerceroCtz"
         label                   ="Empresa"
         v-model                 ="contacto.empresa"
-        class                   ="col-12"
+        class                   ="col-md-8 col-12"
         icon                    ="mdi-office-building"
         :rules                  ="[ validarExisteEmpresa ]"
         :estadoCheck            ="estaCheckEmpresa"
         :readonly               ="readonly"
         @alert                  ="mostrarClientesExistentes"
         @blur                   ="vericarExisteEmpresa"
+      />
+      <!-- //* //////////////   Documento  -->
+      <input-number             solo-positivo 
+        v-if                    ="esTerceroCtz"
+        v-model                 ="contacto.documento"
+        label                   ="Documento"
+        icon                    ="mdi-card-account-details"
+        class                   ="col-md-4 col-12"
+        separador-mil           ="punto"
+        max-enteros             ="18"
+        retorno                 ="String"
+        :readonly               ="readonly"
+        :estadoCheck            ="estaCheckDocumento"
+        :rules                  ="[ reglaExisteNumero ]"
+        @blur                   ="verificarDocumentoExiste"
       />
       <!-- //* //////////////   Cargo  -->
       <input-text               AZ
@@ -200,7 +215,7 @@
                 label           ="Copiar de otros contactos"
                 @click          ="ventanaCopiarContacto = true"
               />
-            </div>
+            </div> 
           </q-menu>            
         </q-btn>
       </div>
@@ -289,6 +304,7 @@
   import {  EstadoVerificar } from "src/models/TiposVarios"
   // * /////////////////////////////////////////////////////////////////////////////////// Componibles
   import {  useApiDolibarr  } from "src/services/useApiDolibarr"
+  import {  servicesTerceros} from "src/areas/terceros/services/servicesTerceros"  
   import {  useTools,
             esCorreoFamoso,
             mayusculasPrimeraLetraAll
@@ -302,9 +318,12 @@
   // * /////////////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana           from "components/utilidades/Ventana.vue"
   import    municipios        from "components/utilidades/select/SelectMunicipios.vue"
-  import    inputText         from "src/components/utilidades/input/InputFormText.vue"
-  import    contactos         from "src/areas/terceros/components/contactos/ModuloContactos.vue"
+  import    inputText         from "components/utilidades/input/InputFormText.vue"
+  import    inputNumber       from "components/utilidades/input/InputFormNumber.vue"
+  import    contactos         from "src/areas/terceros/components/contactos/ModuloContactos.vue"  
 
+  const { vericarDocumentoEnDolibarr
+                            } = servicesTerceros()  
   const { dialog            } = useQuasar()
   const { apiDolibarr       } = useApiDolibarr()
   const { permisos          } = storeToRefs( useStoreUser() )
@@ -481,6 +500,7 @@
   const estaCheckEmail        = ref<EstadoVerificar>("off")  
   const estaCheckCel          = ref<EstadoVerificar>("off")
   const estaCheckTel          = ref<EstadoVerificar>("off")
+  const estaCheckDocumento    = ref<EstadoVerificar>("off")
 
   const validarExisteEmpresa  = () => validarExiste(estaCheckEmpresa)
   const validarExisteEmail    = () => validarExiste(estaCheckEmail)
@@ -627,7 +647,48 @@
     if(!acuerdo.value.tercero.esEmpresa)
       contacto.value.apellidos    = acuerdo.value.tercero.nombre
   }
+
+  async function verificarDocumentoExiste() :Promise< boolean >
+  {
+    const doc = contacto.value.documento.toString()
+
+    if( !doc
+        ||
+        doc.length                < 5
+        ||
+        estaCheckDocumento.value  == "alert"
+      )
+      return
+
+      estaCheckDocumento.value    = "verificando"
+
+    const existe                  = await vericarDocumentoEnDolibarr( doc )
+    estaCheckDocumento.value      = existe ? "alert" : "check" 
+
+    return existe
+  }    
   
+  function reglaExisteNumero( numeroTxt : string ) : boolean | string
+  {
+    let valido                  = true
+    let mensaje                 = ""
+
+    if(estaCheckDocumento.value == "alert")
+    {
+      valido                    = false
+      mensaje                   = "El tercero ya existe"
+    }
+    else
+    if(estaCheckDocumento.value == "verificando" )
+    {
+      valido                    = false
+      mensaje                   = "Verificando si tercero ya existe"
+    }
+
+    return  valido || mensaje
+  }
+
+
   //* ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //* /////////////////////////////////////////////////////////////////////////////////////////////////// FUNCTION VARIAS
   //* ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

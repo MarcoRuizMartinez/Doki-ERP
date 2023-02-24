@@ -59,18 +59,15 @@
             watch,
             onMounted
                               } from 'vue'
-  import {  useQuasar         } from 'quasar'
-  import {  IDocumento,
-            Documento,
-                              } from "src/areas/terceros/models/DocumentoId"
+
+  import {  IDocumento        } from "src/areas/terceros/models/DocumentoId"
 
   import {  ITipoDocumento,
-            TipoDocumento,
             TIPOS_DOCUMENTO
                               } from "src/areas/terceros/models/TiposDocumento"
   import {  EstadoVerificar   } from "src/models/TiposVarios"
   import {  useTools          } from "src/useSimpleOk/useTools"
-  import {  useRouter         } from 'vue-router'
+  
   import {  dexieTiposDocumentos
                               } from "src/services/useDexie"
   import {  useFetch          } from "src/useSimpleOk/useFetch"
@@ -78,13 +75,16 @@
             getFormData       } from "src/services/APIMaco"
   import    inputNumber         from "components/utilidades/input/InputFormNumber.vue"
   import    inputText           from "components/utilidades/input/InputFormText.vue"
+  import {  servicesTerceros  } from "src/areas/terceros/services/servicesTerceros"
+
   const { aviso               } = useTools()
-  const { miFetch             } = useFetch()
-  const { notify              } = useQuasar()
+  const { miFetch             } = useFetch()  
   const lista                   = dexieTiposDocumentos()
-  const tiposDeDocumentos       = computed( () => lista.value as ITipoDocumento [] )
-  const router                  = useRouter()
+  const tiposDeDocumentos       = computed( () => lista.value as ITipoDocumento [] )  
   
+  const { vericarDocumentoEnDolibarr
+                              } = servicesTerceros()
+
   const props                   = defineProps(
     {
       modelValue: { required: true,   type: Object as PropType<IDocumento>  },
@@ -176,6 +176,29 @@
 
     estadoVerificar.value     = estadoVerificar.value  == "alert" ? "off" : estadoVerificar.value
   }
+
+
+  async function verificarDocumentoExiste() :Promise< boolean | null>
+  {
+
+    if( !modelo.value.numero
+        ||
+        modelo.value.numero.length  < 5
+        ||
+        estadoVerificar.value       == "alert"
+        ||
+        modelo.value.numero         == copiaNumero
+      )
+      return null
+
+    estadoVerificar.value       = "verificando"
+
+    const existe                = await vericarDocumentoEnDolibarr( modelo.value.numero )
+    estadoVerificar.value       = existe ? "alert" : "check" 
+
+    return existe
+  }  
+
   
   function cambiarTipo( tipoDocumento : ITipoDocumento )
   {
@@ -274,9 +297,9 @@
 
   async function vericarNumero()
   {
-    const existe = await vericarNumeroEnDolibarr()
+    const existe = await verificarDocumentoExiste()
 
-    if(!existe){
+    if(!existe && existe !== null ){
       await vericarNumeroVerifik()
     }
   }
@@ -353,47 +376,5 @@
     return ok
   }
   
-  async function vericarNumeroEnDolibarr() :Promise< boolean >
-  {
-    if( !modelo.value.numero
-        ||
-        modelo.value.numero.length  < 5
-        ||
-        estadoVerificar.value       == "alert"
-        ||
-        modelo.value.numero         == copiaNumero
-      )
-      return
-
-    estadoVerificar.value       = "verificando"
-    
-    let { ok : existe, data}    = await miFetch(  getURL( "listas", "varios"),
-                                                  {
-                                                    method: "POST",
-                                                    body:   getFormData( "documentoExiste", { numero: modelo.value.numero } )
-                                                  },
-                                                  { mensaje: "buscar si existe numero de documento" }
-                                                )
-    let resultado : any         = data
-    if(existe && !!resultado && resultado.hasOwnProperty("vendedor") && !Array.isArray(resultado))
-    {
-      estadoVerificar.value     = "alert"
-      let vendedor              = JSON.parse(resultado.vendedor)[0].name
-      notify({
-        color:                  "negative",
-        textColor:              "white",
-        icon:                   "mdi-account-alert",
-        position:               "top",
-        timeout:                5000,
-        message:                "Este tercero ya ha sido creado por " + vendedor,
-        actions: [
-          { label: 'Ir a tercero', color: 'white', handler: () => { router.push("/tercero/" + resultado.id ) } }
-        ]
-      })
-    }
-    else
-      estadoVerificar.value   = "check"
-
-    return existe
-  }
+  
 </script>

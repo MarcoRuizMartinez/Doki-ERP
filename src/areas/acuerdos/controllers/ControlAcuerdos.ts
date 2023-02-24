@@ -113,7 +113,6 @@ export function useControlAcuerdo()
     loading.value.carga         = true
     acuerdo.value.productos     = []
     acuerdo.value               = await getAcuerdo( tipo, idOk )
-    //console.log("acuerdo.value: ", JSON.parse( acuerdo.value.enlaces ));
 
     if(!acuerdo.value.proGrupos.length) crearNuevoGrupo()
 
