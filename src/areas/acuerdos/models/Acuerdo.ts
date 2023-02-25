@@ -232,6 +232,7 @@ export interface IAcuerdo
   transportadoraId            : number
   numeroGuia                  : string
   pedidoId                    : number
+  calcularEntregado           : () => void
 }
 
 export class Acuerdo implements IAcuerdo
@@ -389,11 +390,36 @@ export class Acuerdo implements IAcuerdo
     return label
   } */
 
+  calcularEntregado()
+  {
+    if(!this.entregas.length) return
+    
+    for (const lineaP of this.productos)
+    {
+      lineaP.qtyProgramado    = 0
+      lineaP.qtyEntregado     = 0
+
+      for (const entrega of this.entregas)
+      {
+        for (const lineaE of entrega.productos)
+        {
+          if( lineaP.lineaId === lineaE.lineaIdPedido )
+          {
+            lineaP.qtyProgramado += entrega.esEstadoEntregando  ? lineaE.qty : 0
+            lineaP.qtyEntregado  += entrega.esEstadoEntregado   ? lineaE.qty : 0
+          }
+        }
+      }
+    }
+  }
+
   get label()       : string { 
     return  Acuerdo.getTipoAcuerdoSingular( this.tipo )
   }
   get labelEspecial()       : string { 
-    return this.esPedido ? this.condicionPago.label : this.label
+    return    this.esPedido   ? this.condicionPago.label
+            : this.esEntrega  ? this.metodoEntrega.label
+            : this.label
   }  
 
   
@@ -475,7 +501,7 @@ https://dolibarr.mublex.com/fichinter/card.php?
   get imagen() :  string {
     const imagen  = this.tipo === TIPO_ACUERDO.COTIZACION_CLI   ? "iconoCotizacion.webp"
                   : this.tipo === TIPO_ACUERDO.PEDIDO_CLI       ? "iconoPedido.webp"
-                  : this.tipo === TIPO_ACUERDO.ENTREGA_CLI      ? ""
+                  : this.tipo === TIPO_ACUERDO.ENTREGA_CLI      ? "iconoEntrega.webp"
                   : this.tipo === TIPO_ACUERDO.PEDIDO_PRO       ? "iconoOCProveedor.webp"
                   : this.tipo === TIPO_ACUERDO.FACTURA_CLI      ? ""
                   : ""
@@ -611,10 +637,16 @@ https://dolibarr.mublex.com/fichinter/card.php?
   get esEstadoValido      ():boolean { return this.estado   > ESTADO_ACU.BORRADOR     }
   get esEstadoEdicion     ():boolean { return this.estado === ESTADO_ACU.BORRADOR     }
   get esEstadoValidado    ():boolean { return this.estado === ESTADO_ACU.VALIDADO     }
-  get esEstadoEntregando  ():boolean { return this.estado === ESTADO_PED.ENTREGANDO   }
-  get esEstadoEntregado   ():boolean { return this.estado === ESTADO_PED.ENTREGADO    }
   get esEstadoCotizado    ():boolean { return this.estado === ESTADO_CTZ.COTIZADO     }
   get esEstadoFacturado   ():boolean { return this.estado === ESTADO_CTZ.FACTURADO    }
+
+  get esEstadoEntregando  ():boolean { return   ( this.estado === ESTADO_PED.ENTREGANDO && this.esPedido  )
+                                              ||( this.estado === ESTADO_ENT.VALIDADO   && this.esEntrega )  }
+  get esEstadoEntregado   ():boolean { return   ( this.estado === ESTADO_PED.ENTREGADO  && this.esPedido  )
+                                              ||( this.estado === ESTADO_ENT.ENTREGADO  && this.esEntrega )  }
+  
+
+  
 
   get esEstadoAbierto     ():boolean
   {
@@ -859,7 +891,7 @@ https://dolibarr.mublex.com/fichinter/card.php?
 
 
   get pedidoId()  : number{
-    return this.enlaces.find( e => e.origenTipo === TIPO_ACUERDO.PEDIDO_CLI  ).origenId ?? 0
+    return this.enlaces.find( e => e.origen.tipo === TIPO_ACUERDO.PEDIDO_CLI  ).origen.id ?? 0
   }
 
   static getTipoAcuerdoSingular( tipo : TTipoAcuerdo ) : string {
@@ -957,7 +989,7 @@ https://dolibarr.mublex.com/fichinter/card.php?
     acu.esNuevo               = false
     acu.tipo                  = tipo
     acu.creador               = await getUsuarioDB          ( acu.creadorId )
-    acu.enlaces               = EnlaceAcuerdo.enlacesApiToEnlaces( acuApi?.enlaces ?? "" )
+    acu.enlaces               = EnlaceAcuerdo.enlacesApiToEnlaces( acuApi?.enlaces ?? "", tipo )
 
     if(!!acu.comercialId){
       acu.comercial           = await getUsuarioDB        ( acu.comercialId )

@@ -79,14 +79,11 @@ export class Archivo implements IArchivo
   }
 
   get modulepart() : string {
-    // slice o substring extrae
-    // indexOf extra el indice de lo buscado. Derecha a izquierda
-    // lastIndexOf igual que indexOf pero de izquierda a derecha
-    // match array de busqueda de exprecion regular 
-    // search devuelve el indice de lo que encuentra
-    // split devuelve un array con lo buscado 
-    let arrayPath           = this.path.split( "/" )
-    return arrayPath[arrayPath.length - 2]
+    const doc = "/documents/"
+    const i1 = this.path.indexOf(doc)
+    const i2 = this.path.lastIndexOf("/")
+    const arrayPath           = this.path.slice(i1 + doc.length, i2).split( "/" )
+    return arrayPath[0]
   }
 
   get original_file() : string {

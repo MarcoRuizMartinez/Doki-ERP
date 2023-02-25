@@ -60,6 +60,7 @@ export function useApiDolibarr()
       case "proyecto"       : endPoint = "projects";            break;
       case "pedidoPro"      : endPoint = "supplierorders";      break;
       case "entregasPedido" : endPoint = "orders";              break;
+      case "entrega"        : endPoint = "shipments";           break;
       default: break;
     }
 
@@ -177,6 +178,8 @@ export function useApiDolibarr()
           resolver( { codigo: CODES_FETCH.sinConexion, ok: false } )
         }
         
+        //console.log({metodo}, {endPoint}, {objeto} )
+
         idTimeout             = setTimeout( abortarSiDemora, 20000)
         cargando              = true
         let resultado
@@ -185,7 +188,7 @@ export function useApiDolibarr()
         else
           resultado           = await apiDolibarrAxios[metodo](endPoint, objeto, { headers: getHeadersAxios(), cancelToken: cancelTokenSource.token })
 
-        //console.log({metodo}, {endPoint}, {objeto} )
+        
         //console.log("useApiDoliabrr Resultado: ", resultado);
 
         if(!!resultado.data)

@@ -93,6 +93,7 @@
     <!-- //* ////////////////////////////////////////////////////////////// Footer activar subtotal -->
     <template                   #bottom>
       <subtotal-toggle
+        v-if                    ="!acuerdo.esEntrega"
         :grupo                  ="grupo"
         :disable                ="!acuerdo.puedeCrearSubtotal"
       />
@@ -101,7 +102,10 @@
 </template>
 <script setup lang="ts">
   // ////////////////////////////////////////////////////////////////////// Core
-  import {  toRefs, PropType  } from "vue"
+  import {  ref,
+            toRefs,
+            watch,
+            PropType          } from "vue"
   // ////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs       } from 'pinia'
   import {  useStoreAcuerdo   } from 'src/stores/acuerdo'
@@ -136,15 +140,30 @@
     grupo:      { required: true,   type: Object as PropType< IGrupoLineas >  },
   })
   const { grupo               } = toRefs( props )
-  const columnas: IColumna[]    = [
-    new Columna           ({ name: "ref",           label: "Productos", sortable: false }),
-    new Columna           ({ name: "qtyUnd",        label: "Cant",      sortable: false,  align: "right"}),
-    //new Columna           ({ name: "orden",                             sortable: false }),
-    Columna.ColumnaPrecio ({ name: "precioBase",    label: "Precio",    sortable: false,  clase: "text-grey-7"  }),
-    Columna.ColumnaX100   ({ name: "descuentoX100", label: "Descu",     sortable: false  }),
-    Columna.ColumnaPrecio ({ name: "precioFinal",   label: "$ Final",   sortable: false  }),
-    Columna.ColumnaPrecio ({ name: "totalConDescu", label: "Total",     sortable: false,  clase: "text-bold"    }),
-  ]
+  const columnas                = ref< IColumna[] >([])
+
+  watch( () => acuerdo.value.tipo, crearColumnas, { immediate: true } )  
+
+  function crearColumnas()
+  {
+    columnas.value              = [
+      new Columna           ({ name: "ref",           label: "Productos", sortable: false }),
+      new Columna           ({ name: "qtyUnd",        label: "Cant",      sortable: false,  align: "right"}),
+      Columna.ColumnaPrecio ({ name: "precioBase",    label: "Precio",    sortable: false,  clase: "text-grey-7"  }),
+      Columna.ColumnaX100   ({ name: "descuentoX100", label: "Descu",     sortable: false  }),
+      Columna.ColumnaPrecio ({ name: "precioFinal",   label: "$ Final",   sortable: false  }),
+      Columna.ColumnaPrecio ({ name: "totalConDescu", label: "Total",     sortable: false,  clase: "text-bold"    }),      
+    ]
+
+    if(acuerdo.value.esEntrega)
+    {
+      Columna.eliminarColums( ["qtyUnd", "precioBase", "descuentoX100", "precioFinal", "totalConDescu"], columnas.value )
+      columnas.value.push( new Columna({ name: "qtyDeTotal",  label: "Cantidad",  sortable: false } ) )
+      columnas.value.push( new Columna({ name: "bodegaLabel", label: "Bodega",  sortable: false } ) )
+    }
+  }
+
+
 
   function mostrarFormulario( linea : ILineaAcuerdo ){
     if(acuerdo.value.esEstadoValido) return

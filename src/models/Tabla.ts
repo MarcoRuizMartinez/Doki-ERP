@@ -39,7 +39,7 @@ export class Columna implements IColumna
   classes?:       string
   headerStyle?:   string
   headerClasses?: string
-
+ 
   constructor({
                 name      = "",
                 label     = "",
@@ -98,5 +98,27 @@ export class Columna implements IColumna
         col.classes       = clase + " fuente-mono"
 
     return col
-  }  
+  }
+  
+  static eliminarCol( name : string, columnas : IColumna[] )
+  {
+    const index = columnas.findIndex( c => c.name === name )
+    columnas.splice( index, 1 )
+  }
+
+  static ocultarCol( name : string, cols : IColumna[] )
+  {
+    const index = cols.findIndex( c => c.name === name )
+    if(index === -1 ) return 
+    cols[index].visible = false
+  }
+
+
+  static eliminarColums( cols : string[], columnas : IColumna[] ){
+    for (const col of cols) Columna.eliminarCol( col, columnas )
+  }
+
+  static ocultarColums( cols : string[], columnas : IColumna[]  ){
+    for (const col of cols) Columna.ocultarCol( col, columnas )
+  }    
 }

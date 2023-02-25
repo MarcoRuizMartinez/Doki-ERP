@@ -29,7 +29,7 @@ import {  IFormaPago            } from "src/models/Diccionarios/FormaPago"
 import {  IMetodoEntrega        } from "src/models/Diccionarios/MetodoEntrega"
 import {  ITiempoEntrega        } from "src/models/Diccionarios/TiempoEntrega"
 import {  IProyecto, Proyecto   } from "src/areas/proyectos/models/Proyecto"
-import {  Acuerdo               } from "src/areas/acuerdos/models/Acuerdo"  
+import {  IAcuerdo, Acuerdo     } from "src/areas/acuerdos/models/Acuerdo"  
 import {  IContacto,
           Contacto,
           TTipoContacto,
@@ -49,6 +49,7 @@ export function useControlAcuerdo()
           setMetodoEntrega,
           setTiempoEntrega,
           getAcuerdo,
+          getAcuerdos,
           setOrigenContacto,
           setRefCliente,
           setComercial,
@@ -121,7 +122,7 @@ export function useControlAcuerdo()
       //verificarPermisosLectura()
       await buscarTerceroDolibarr ( acuerdo.value.terceroId   )
       await buscarProyecto        ( acuerdo.value.proyectoId  )
-      await buscarEntregasPedido  ( acuerdo.value.id          )
+      //await buscarEntregasPedido  ( acuerdo.value.id          )
     }
     else
     {
@@ -175,15 +176,47 @@ export function useControlAcuerdo()
   //* ////////////////////////////////////////////////////////////////////// Cambiar contacto
   async function cambiarContactoAcuerdo( contacto : IContacto, idOld : number, tipo : TTipoContacto )
   {
-    if(!acuerdo.value.id) cambiarContactoAcuerdo
-    await desvincularContactoAcuerdo( idOld, tipo )
-    await vincularContactoAcuerdo   ( contacto, tipo )
+    if(!acuerdo.value.id) return
+
+    if(!acuerdo.value.esEntrega)
+    {
+      await desvincularContactoAcuerdo( idOld, tipo )
+      await vincularContactoAcuerdo   ( contacto, tipo )
+    }
+    else
+    {
+      await cambiarContactoEntrega( contacto.id )
+    }
   }
+
+
+  //* ////////////////////////////////////////////////////////////////////// Cambiar contacto entrega
+  async function cambiarContactoEntrega( contacto_id : number)
+  {
+    const endPoint              = getURL("servicios", "acuerdos")
+    const objeto                = { contacto_id, entrega_id: acuerdo.value.id, acuerdo: acuerdo.value.tipo }
+    const objetoForData         = { body: getFormData("editarContactoEntrega", objeto), method: "POST"}
+    const { ok  }               = await miFetch( endPoint, objetoForData, { mensaje: "contacto de entrega" } )        
+    
+    if(ok){
+      aviso("positive", `Contacto de entrega cambiado 👌🏼`)
+    }
+    else
+      aviso("negative", `Error cambiar contacto de ${acuerdo.value.tipo}`)
+  }
+
 
   //* ////////////////////////////////////////////////////////////////////// Asignar nuevo contacto
   async function vincularContactoAcuerdo( contacto : IContacto, tipo : TTipoContacto )
   {
     if(!acuerdo.value.id) return
+
+    if(acuerdo.value.esEntrega)
+    {
+      await cambiarContactoEntrega( contacto.id )
+      return
+    }
+
     //* ///////////////////////////////// Vincular contacto a acuerdo
     const { ok : vinculado      } = await apiDolibarr("contacto-vincular", acuerdo.value.tipo,
                                                         { id:   contacto.id,
@@ -631,6 +664,54 @@ export function useControlAcuerdo()
     loading.value.conIVA        = false
   }
 
+  async function buscarAcuerdoEnlazados() : Promise< IAcuerdo[] >
+  {
+    const pedi            = getIds(   TIPO_ACUERDO.PEDIDO_CLI       )
+    const coti            = getIds(   TIPO_ACUERDO.COTIZACION_CLI   )
+    const oc_p            = getIds(   TIPO_ACUERDO.PEDIDO_PRO       )
+    const en_c            = getIds(   TIPO_ACUERDO.ENTREGA_CLI      )
+
+    const paquete         = [ { ids:  pedi, tipo: TIPO_ACUERDO.PEDIDO_CLI       },
+                              { ids:  coti, tipo: TIPO_ACUERDO.COTIZACION_CLI   },
+                              { ids:  oc_p, tipo: TIPO_ACUERDO.PEDIDO_PRO       },
+                              { ids:  en_c, tipo: TIPO_ACUERDO.ENTREGA_CLI      },
+                            ]
+    const acuerdos : IAcuerdo[] = []
+    acuerdo.value.entregas= []
+
+    for (const item of paquete )
+    {
+      if( !item.ids ) continue
+      const query               = {
+                                    acuerdo:    item.tipo,
+                                    tipo:       "busqueda",
+                                    ids:        item.ids,
+                                    limite:     50,
+                                    offset:     0
+                                  }
+      const acuerdosI           = await getAcuerdos( query )
+      acuerdos.push( ...acuerdosI )
+
+      if( acuerdo.value.esPedido && item.tipo === TIPO_ACUERDO.ENTREGA_CLI )
+      {
+        acuerdo.value.entregas.push( ...acuerdosI )
+      }
+    }
+    
+    if( acuerdo.value.esPedido  )    
+      acuerdo.value.calcularEntregado()
+
+    return acuerdos
+
+    function getIds( tipo : TTipoAcuerdo ) :string
+    {
+      const enla                = acuerdo.value.enlaces.filter( e => e.destinoSmart.tipo === tipo )
+      return  !!enla.length
+              ? enla.flatMap( ( enla )=> enla.destinoSmart.id ).join(",") 
+              : ""
+    }
+  }
+
 
 
   //* /////////////////////////////////////////////////////////////// Return
@@ -666,5 +747,6 @@ export function useControlAcuerdo()
     vincularContactoAcuerdo,
     desvincularContactoAcuerdo,
     editarDatosEntregaSistemaViejo,
+    buscarAcuerdoEnlazados,
   }
 }

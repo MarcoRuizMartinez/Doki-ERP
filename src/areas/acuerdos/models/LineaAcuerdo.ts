@@ -92,6 +92,14 @@ export interface ILineaAcuerdo extends IProductoDoli {
   qtyTotal                  : number
   bodegaId                  : number
   bodega                    : IBodega
+  qtyDeTotal                : string  // 2 de 4
+  bodegaLabel               : string
+  lineaIdPedido             : number
+  // */ /////////////////// Para pedido pero se calcula con las entregas
+  qtyProgramado             : number
+  qtyEntregado              : number
+  entregaTotalOk            : boolean
+  entregaProgramadoOk       : boolean
 }
 
 
@@ -108,9 +116,13 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
   precioBase                : number
   borrar                    : boolean
   accion                    : TAccionesSobreLinea  
+  // */ /////////////////// Entrega
   qtyTotal                  : number
   bodegaId                  : number
   bodega                    : IBodega
+  lineaIdPedido             : number
+  qtyProgramado             : number
+  qtyEntregado              : number
 
   // */ /////////////////// Comisiones
   comsionX100Division       : number
@@ -138,7 +150,13 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
     this.qtyTotal           = 0
     this.bodegaId           = 0
     this.bodega             = new Bodega()
+    this.lineaIdPedido      = 0
+    this.qtyProgramado      = 0
+    this.qtyEntregado       = 0
   }
+
+  get entregaTotalOk()      : boolean { return !!this.qty && this.qty === this.qtyEntregado }
+  get entregaProgramadoOk() : boolean { return !!this.qty && this.qty === this.qtyProgramado }
 
   // * /////////////////////////////////////////////////////////////////////////////// Tipo de linea
   get tipoLinea() : TipoLinea {
@@ -325,6 +343,13 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
     return x100s
   }
 
+  get qtyDeTotal () : string{
+    return `${this.qty} de ${this.qtyTotal}`
+  }
+  get bodegaLabel() : string{
+    return this.bodega.label
+  }
+
   // * /////////////////////////////////////////////////////////////////////////////// Destacar con clase
   destacar( accion  : TAccionDestacar = "seleccionar",
             mostrar : "mostrar" | "ocultar"             = "mostrar"
@@ -389,12 +414,12 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
         if(!!linea.sigla)
           linea.categoria   = await getCategoriaDB( linea.sigla  )
         linea.imagen        = !!linea.imagen ? linea.imagen : imagenDefault
-        linea.bodegaId      = linea?.bodegaId ?? 0
-        linea.qtyTotal      = linea?.qtyTotal ?? 0
+        linea.bodegaId      = linea?.bodegaId       ?? 0
+        linea.qtyTotal      = linea?.qtyTotal       ?? 0
+        linea.lineaIdPedido = linea?.lineaIdPedido  ?? 0
 
         const lineaFinal    = Object.assign( new LineaAcuerdo(), linea ) as ILineaAcuerdo
         lineaFinal.comsionX100Division = +(linea?.divisionComision ?? 100)
-
 
         if(!!lineaFinal.bodegaId)
         {

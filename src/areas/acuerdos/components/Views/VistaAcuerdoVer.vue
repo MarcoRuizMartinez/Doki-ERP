@@ -29,21 +29,23 @@
     height-card             ="260px"
   />
   <totales                  scroll
+    v-if                    ="!acuerdo.esEntrega"
     class                   ="col-md-4 col-12"
     height-card-min         ="260px"
   />
   <contactos
-    v-if                    ="acuerdo.tercero.esEmpresa"
+    v-if                    ="acuerdo.tercero.esEmpresa && !acuerdo.esEntrega"
     class                   ="col-12"
   />
   <enlaces                  minimizar
     ref                     ="moduloEnlaces"
     class                   ="col-md-4 col-12"
-    height-card             ="220px"
+    height-card             ="220px"    
   />
   <documentos               minimizar
     class                   ="col-md-4 col-12"
     height-card-min         ="164px"
+    :class                  ="{ 'order-1' : acuerdo.esEntrega }"
     :modulo                 ="acuerdo.modulo"
     :modulo-id              ="acuerdo.id ?? 0"
     :modulo-ref             ="acuerdo.ref"
@@ -59,7 +61,7 @@
   <notas
     class                   ="col-md-4 col-12"
     height-card             ="220px"
-    :class                  ="{ 'order-1' : acuerdo.esPedido }"
+    :class                  ="{ 'order-1' : acuerdo.esPedido || acuerdo.esEntrega }"
   />
   <productos
     class                   ="col-12"

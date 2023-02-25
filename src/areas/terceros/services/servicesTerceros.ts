@@ -109,12 +109,10 @@ export function servicesTerceros()
                                                     { mensaje: "buscar si existe numero de documento" }
                                                   )
       const resultado : any       = data
-      console.log("data: ", data);
+
       if(existe && !!resultado && resultado.hasOwnProperty("vendedor") && !Array.isArray(resultado))
       {
-        console.log(resultado.vendedor);
         const vendedor            = JSON.parse(resultado.vendedor)[0].name
-        console.log("vendedor: ", vendedor);
 
         notify({
           color:                  "negative",

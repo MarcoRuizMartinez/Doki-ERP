@@ -7,14 +7,14 @@
     >
     <!-- //* ///////////////////////////////////////////////// Fecha Creacion -->
     <input-fecha              readonly
-      v-if                    ="!acuerdo.esNuevo && !acuerdo.esPedido"
+      v-if                    ="!acuerdo.esNuevo && !acuerdo.esPedido && !acuerdo.esEntrega"
       v-model                 ="acuerdo.fechaCreacion"
       label                   ="Fecha creación"
       class                   ="col-md-6 col-12"
     />
     <!-- //* ///////////////////////////////////////////////// Fecha Validacion -->
     <input-fecha              readonly
-      v-if                    ="!acuerdo.esNuevo && !acuerdo.esPedido"
+      v-if                    ="!acuerdo.esNuevo && !acuerdo.esPedido && !acuerdo.esEntrega"
       v-model                 ="acuerdo.fechaValidacion"
       label                   ="Fecha validación"
       class                   ="col-md-6 col-12"
@@ -30,17 +30,18 @@
       @update:model-value     ="editarFechaFinValidez"
     />
     <!-- //* ///////////////////////////////////////////////// Contacto entrega -->
-    <select-contacto          quitar-contacto tipo-entrega
-      v-if                    ="!acuerdo.esNuevo && acuerdo.esPedido && !acuerdo.tercero.esEmpresa"
+    <select-contacto          tipo-entrega
+      v-if                    ="acuerdo.esEntrega || (!acuerdo.esNuevo && acuerdo.esPedido && !acuerdo.tercero.esEmpresa)"
       class                   ="col-12"
       v-model:contacto        ="acuerdo.contactoEntrega"
       label                   ="Contacto entrega"
       icon                    ="mdi-truck-delivery"
+      :quitar-contacto        ="!acuerdo.esEntrega"
       :tercero                ="acuerdo.tercero"
       :disable                ="!acuerdo.tercero.id"
       @contacto-nuevo         =" c => vincularContactoAcuerdo           ( c,        TIPOS_CONTACTO.ENTREGA  )"
       @quitar-contacto        =" c => desvincularContactoAcuerdo        ( c.id,     TIPOS_CONTACTO.ENTREGA, true)"
-      @contacto-cambio        ="( c, idOld ) => cambiarContactoAcuerdo ( c, idOld, TIPOS_CONTACTO.ENTREGA  )"
+      @contacto-cambio        ="( c, idOld ) => cambiarContactoAcuerdo  ( c, idOld, TIPOS_CONTACTO.ENTREGA  )"
       @update:contacto        ="editarDatosEntregaSistemaViejo"
     />
     <!-- //* ///////////////////////////////////////////////// Fecha entrega -->
@@ -56,7 +57,7 @@
     />
     <!-- //* ///////////////////////////////////////////////// Condiciones pago -->
     <select-label-value
-      v-if                    ="!acuerdo.esPedido || acuerdo.esNuevo"
+      v-if                    ="acuerdo.esNuevo || (!acuerdo.esPedido && !acuerdo.esEntrega)"
       v-model                 ="acuerdo.condicionPago"
       label                   ="Condiciones de pago"
       icon                    ="mdi-account-cash"
@@ -68,7 +69,7 @@
     />
     <!-- //* ///////////////////////////////////////////////// Forma de pago -->
     <select-label-value
-      v-if                    ="!acuerdo.esPedido"
+      v-if                    ="!acuerdo.esPedido && !acuerdo.esEntrega"
       v-model                 ="acuerdo.formaPago"
       label                   ="Forma de pago"
       icon                    ="mdi-cash-refund"
@@ -101,7 +102,7 @@
       @select                 ="editarTiempoEntrega"
     />
     <div
-      v-if                    ="acuerdo.esPedido && !!acuerdo.contactoEntrega.id"
+      v-if                    ="(acuerdo.esPedido || acuerdo.esEntrega) && !!acuerdo.contactoEntrega.id"
       class                   ="col-12"
       >
       <tabla-envio/>

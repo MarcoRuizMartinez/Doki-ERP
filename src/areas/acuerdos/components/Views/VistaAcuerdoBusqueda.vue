@@ -322,7 +322,7 @@
                   : busqueda.value.esEntrega      ? ["facturado", "condicionPagoLabel", "formaPagoLabel", "origenContactoLabel", "subTotalLimpio", "totalConDescu", "ivaValor", "totalConIva"]
                   : busqueda.value.esOCProveedor  ? ["refCliente", "comercial", "metodoEntregaLabel", "facturado", "origenContactoLabel", "subTotalLimpio", "pedidoId" ]
                   : []
-    eliminarColums( colsEli )
+    Columna.eliminarColums( colsEli, columnas.value )
 
     const colHide = ["refCliente", "contactoSmartDir", "contactoSmartTel", "formaPagoLabel", "area", "municipioTercero", "creador", "fechaCreacionCorta", "fechaValidacionCorta", "subTotalLimpio", "ivaValor", "totalConIva"]
     const colsOcu = busqueda.value.esCotizacion   ? [...colHide, "metodoEntregaLabel",]
@@ -330,31 +330,9 @@
                   : busqueda.value.esEntrega      ? [...colHide]
                   : busqueda.value.esOCProveedor  ? [...colHide]
                   : [...colHide]
-      ocultarColums( colsOcu )
+    Columna.ocultarColums( colsOcu, columnas.value )
     
     columnasVisibles.value  = columnas.value.filter(c => c.visible ).map( c => c.name )
-
-    function eliminarCol( name : string )
-    {
-      const index = columnas.value.findIndex( c => c.name === name )
-      columnas.value.splice( index, 1 )
-    }
-
-    function ocultarCol( name : string )
-    {
-      const index = columnas.value.findIndex( c => c.name === name )
-      if(index === -1 ) return 
-      columnas.value[index].visible = false
-    }
-
-
-    function eliminarColums( cols : string[] ){
-      for (const col of cols) eliminarCol( col )
-    }
-
-    function ocultarColums( cols : string[] ){
-      for (const col of cols) ocultarCol( col )
-    }    
   } 
 
   function descargarAcuerdos()

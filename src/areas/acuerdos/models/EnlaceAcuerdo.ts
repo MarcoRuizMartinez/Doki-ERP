@@ -1,33 +1,45 @@
 import {  TTipoAcuerdo, 
           TIPO_ACUERDO          } from "src/areas/acuerdos/models/ConstantesAcuerdos"
 
+import {  getNumberValido,
+          getStringValido,      } from "src/useSimpleOk/useTools"
+
+interface IIdTipo 
+{
+  id     : number
+  tipo   : TTipoAcuerdo
+}
+
 export interface IEnlaceAcuerdo
 { 
-  enlaceId      : number
-  destinoId     : number
-  destinoTipo   : TTipoAcuerdo
-  origenId      : number
-  origenTipo    : TTipoAcuerdo  
+  enlace        : IIdTipo
+  destino       : IIdTipo
+  origen        : IIdTipo
+  destinoSmart  : IIdTipo
 }
 
 export class EnlaceAcuerdo implements IEnlaceAcuerdo
 {
-  enlaceId      : number
-  destinoId     : number
-  destinoTipo   : TTipoAcuerdo
-  origenId      : number
-  origenTipo    : TTipoAcuerdo  
+  enlace        : IIdTipo
+  destino       : IIdTipo
+  origen        : IIdTipo  
 
-  constructor()
+  constructor( id : number, padre : TTipoAcuerdo )
   {
-    this.enlaceId           = 0
-    this.destinoId          = 0
-    this.destinoTipo        = TIPO_ACUERDO.NULO
-    this.origenId           = 0
-    this.origenTipo         = TIPO_ACUERDO.NULO
+    this.enlace   = { id, tipo: padre              }
+    this.destino  = { id: 0, tipo: TIPO_ACUERDO.NULO  }
+    this.origen   = { id: 0, tipo: TIPO_ACUERDO.NULO  }
+    this.destino  = { id: 0, tipo: TIPO_ACUERDO.NULO  }
   }
 
-  static enlacesApiToEnlaces( enlacesApi : any  ) : IEnlaceAcuerdo[]
+  get destinoSmart() : IIdTipo  
+  {
+    return    this.origen.tipo  === this.enlace.tipo  ? { id: this.destino.id,  tipo: this.destino.tipo }
+            : this.destino.tipo === this.enlace.tipo  ? { id: this.origen.id,   tipo: this.origen.tipo  }
+            :                                           { id: 0,                tipo: TIPO_ACUERDO.NULO }
+  }
+
+  static enlacesApiToEnlaces( enlacesApi : any, padre : TTipoAcuerdo ) : IEnlaceAcuerdo[]
   {
     if(typeof enlacesApi != "string" || !enlacesApi ) return []
     
@@ -35,20 +47,22 @@ export class EnlaceAcuerdo implements IEnlaceAcuerdo
 
     const json = JSON.parse( enlacesApi )
     for (const link of json)
-      enlaces.push( EnlaceAcuerdo.enlaceApiToEnlace( link ) )
+      enlaces.push( EnlaceAcuerdo.enlaceApiToEnlace( link, padre ) )
     return enlaces
   }
 
-  static enlaceApiToEnlace( enlaceApi : any  ) : IEnlaceAcuerdo
+  static enlaceApiToEnlace( eApi : any, padre : TTipoAcuerdo ) : IEnlaceAcuerdo
   {
-    enlaceApi.enlaceId      = +enlaceApi.enlaceId
-    enlaceApi.destinoId     = +enlaceApi.destinoId
-    enlaceApi.origenId      = +enlaceApi.origenId
-    enlaceApi.destinoTipo   = getTipo( enlaceApi.destinoTipo )
-    enlaceApi.origenTipo    = getTipo( enlaceApi.origenTipo )
+    const enlace        = new EnlaceAcuerdo( getNumberValido(eApi, "enlaceId" ),  padre )
+    enlace.destino      = getIdTipo( getNumberValido(eApi, "destinoId" ), getStringValido(eApi, "destinoTipo") )
+    enlace.origen       = getIdTipo( getNumberValido(eApi, "origenId" ),  getStringValido(eApi, "origenTipo") )
 
-    const enlace            = Object.assign( new EnlaceAcuerdo(), enlaceApi ) as IEnlaceAcuerdo
     return enlace
+
+    function getIdTipo( id : number, tipo : string) : IIdTipo
+    {
+      return { id, tipo: getTipo( tipo ) }
+    }
 
     function getTipo( tipo : string) : TTipoAcuerdo
     {

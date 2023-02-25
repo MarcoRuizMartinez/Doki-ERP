@@ -6,6 +6,7 @@
     <q-card
       :style                  ="estiloAncho"
       class                   ="clase-ventana"
+      style="height: 100%;"
       > <!-- //?* class ="miCard shadow-5" :class="clase"  --> 
       <!-- //?* //////////////////////////////////////////////////////////////// Barra superior justify-between --> 
       <q-card-section         

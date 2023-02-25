@@ -32,7 +32,7 @@
       class                   ="col-12"
       :con-tercero-especial   ="acuerdo.esCotizacion"
       v-model:tercero         ="acuerdo.tercero"
-      :readonly               ="acuerdo.esEstadoValido || acuerdo.vinculado"
+      :readonly               ="acuerdo.esEstadoValido || acuerdo.vinculado || acuerdo.esEntrega"
       @update:tercero         ="actualizarTercero"
     />
     <!-- //* ///////////////////////////////////////////////// Contacto -->
@@ -67,6 +67,7 @@
       :grupos                 ="[GRUPO_USUARIO.COMERCIALES]"
       :autoselect             ="acuerdo.esNuevo"
       :loading                ="loading.comercial"
+      :readonly               ="acuerdo.esEntrega"
       @select                 ="editarComercialPrincial"
     />
     <!-- //* ///////////////////////////////////////////////// Comercial apoyo -->
@@ -78,12 +79,14 @@
       :grupos                 ="[GRUPO_USUARIO.COMERCIALES]"
       :loading                ="loading.comercial"
       :ids-negativos          ="[ acuerdo.comercial.id ]"
+      :readonly               ="acuerdo.esEntrega"
       @select                 ="editarComercialApoyo"
       @clear                  ="borrarComercialApoyo"
     />
     <!-- {{ typeof acuerdo.comercial.comision.comision_alfa }} -->
     <!-- //* ///////////////////////////////////////////////// Origen -->
     <select-label-value
+      v-if                    ="!acuerdo.esEntrega"
       v-model                 ="acuerdo.origenContacto"
       label                   ="Origen contacto"
       icon                    ="mdi-source-branch"

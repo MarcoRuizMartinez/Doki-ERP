@@ -3,7 +3,7 @@
     <!-- //* ////////////////////////////////////////////////////////////////////  Lado izquierdo -->
     <div class                ="row gap-sm">
       <q-btn
-        v-if                  ="!acuerdo.esEstadoBoceto && ( acuerdo.usuarioEsDueño || usuario.esGerencia || usuario.esContable )"
+        v-if                  ="acuerdo.esPedido && !acuerdo.esEstadoBoceto && ( acuerdo.usuarioEsDueño || usuario.esGerencia || usuario.esContable )"
         v-bind                ="btnBaseMd"
         color                 ="primary"
         icon                  ="mdi-account-details"
@@ -73,7 +73,7 @@
       <!-- //* //////////////////////////////////////////////////////////  Boton PDF -->
       <efecto efecto          ="Down">      
         <q-btn
-          v-if                ="acuerdo.esCotizacion && acuerdo.esEstadoValido"
+          v-if                ="( acuerdo.esCotizacion || acuerdo.esEntrega ) && acuerdo.esEstadoValido"
           v-bind              ="btnBaseMd"
           color               ="primary"
           icon                ="mdi-pdf-box"
@@ -148,13 +148,13 @@
           <q-btn 
             v-bind            ="btnBaseMd"
             color             ="deep-purple-10"
-            icon              ="mdi-snowflake"
-            :label            ="esMobil ? '' : 'Anular'"
+            icon              ="mdi-close-circle"
+            :label            ="esMobil ? '' : (acuerdo.esCotizacion ? 'Cerrar' : 'Anular')"
             :disable          ="cargandoAlgo"
             :loading          ="loading.anular"
             >
             <confirmar  @ok   ="emit('clickAnular')" :con-label="!esMobil"/>
-            <Tooltip :label   ="`Anular ${acuerdo.label}`"/>
+            <Tooltip :label   ="`Cerrar ${acuerdo.label}`"/>
           </q-btn>
         </q-btn-group>
       <!-- </efecto> -->
@@ -292,7 +292,10 @@
                                     cargandoAlgo.value
                                 || !acuerdo.value.proGrupos.length
                                 || !acuerdo.value.proGrupos[0].productos.length
-                                || (  !acuerdo.value.contactoComercial.id
+                                || (  
+                                      ( acuerdo.value.esPedido || acuerdo.value.esCotizacion )
+                                      &&
+                                      !acuerdo.value.contactoComercial.id
                                       &&
                                       (
                                         acuerdo.value.tercero.esEmpresa

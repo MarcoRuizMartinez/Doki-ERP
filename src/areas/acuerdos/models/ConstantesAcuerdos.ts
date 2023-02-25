@@ -112,7 +112,7 @@ export class EstadosAcuerdos
       valor                     = estado == ESTADO_ENT.NO_GUARDADO      ? "Boceto"
                                 : estado == ESTADO_ENT.CANCELADO        ? "Cancelado"
                                 : estado == ESTADO_ENT.BORRADOR         ? "Borrador"
-                                : estado == ESTADO_ENT.VALIDADO         ? "Validado"
+                                : estado == ESTADO_ENT.VALIDADO         ? "Programado"
                                 : estado == ESTADO_ENT.ENTREGADO        ? "Entregado"
                                 : ""
     }
@@ -210,7 +210,7 @@ export class EstadosAcuerdos
       icono                     = estado == ESTADO_ENT.NO_GUARDADO      ? "mdi-eraser-variant"
                                 : estado == ESTADO_ENT.CANCELADO        ? "mdi-close-circle"
                                 : estado == ESTADO_ENT.BORRADOR         ? "mdi-circle-edit-outline"
-                                : estado == ESTADO_ENT.VALIDADO         ? "mdi-check-bold"
+                                : estado == ESTADO_ENT.VALIDADO         ? "mdi-calendar-check"
                                 : estado == ESTADO_ENT.ENTREGADO        ? "mdi-truck-check"
                                 : ""
     }

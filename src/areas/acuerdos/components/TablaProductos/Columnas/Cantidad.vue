@@ -21,7 +21,40 @@
       :minimo             ="0.1"
       @enter              ="scope.set"
     />
-  </q-popup-edit> 
+  </q-popup-edit>
+  <div>
+  <template v-if="!!linea.qtyEntregado || !!linea.qtyProgramado">
+    <div
+      class               ="text-green text-center"
+      >
+      <q-icon :name="linea.entregaTotalOk ? 'mdi-check-all' : 'mdi-check'"/> {{ linea.qtyEntregado }}
+    </div>
+    <div
+      v-if                ="!!linea.qtyProgramado"
+      class               ="text-orange text-center"
+      >
+      <q-icon :name="linea.entregaProgramadoOk ? 'mdi-check-all' : 'mdi-calendar-clock'"/> {{ linea.qtyProgramado }}
+    </div>  
+    <Tooltip>
+      <table  class       ="tabla-tooltip">
+        <tr>
+          <td>Total:</td>
+          <td>{{linea.qty}}</td>
+        </tr>
+        <template v-if    ="!!linea.qtyProgramado">
+          <tr>
+            <td>Programado:</td>
+            <td>{{ linea.qtyProgramado }}</td>
+          </tr>
+        </template>
+        <tr>
+          <td>Entregado:</td>
+          <td>{{ linea.qtyEntregado }}</td>
+        </tr>
+      </table>    
+    </Tooltip>
+  </template>
+</div>
 </template>
 <script lang="ts" setup>
   import {  ref,

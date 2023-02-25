@@ -58,113 +58,60 @@
   import {  IColumna,
             Columna               } from "src/models/Tabla"
   import {  IAcuerdo              } from "src/areas/acuerdos/models/Acuerdo"  
-  //* ///////////////////////////////////////////////////////////////////////////////////// Modelos
-  import {  TTipoAcuerdo, 
-            TIPO_ACUERDO          } from "src/areas/acuerdos/models/ConstantesAcuerdos"
-  import {  EnlaceAcuerdo, 
-            IEnlaceAcuerdo       } from "src/areas/acuerdos/models/EnlaceAcuerdo"
   //* /////////////////////////////////////////////////////////////////////////////////// Componibles
-  import {  servicesAcuerdos      } from "src/areas/acuerdos/services/servicesAcuerdos"
-  import {  useFetch              } from "src/useSimpleOk/useFetch"
-  import {  getURL,
-            getFormData           } from "src/services/APIMaco"
-  import {  pausa                 } from "src/useSimpleOk/useTools"            
+  import {  pausa                 } from "src/useSimpleOk/useTools"
+  import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"  
   //* /////////////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana                 from "components/utilidades/Ventana.vue"
   import    refAcuerdo              from "src/areas/acuerdos/components/Busqueda/Columnas/RefAcuerdo.vue"
   import    estado                  from "src/areas/acuerdos/components/Busqueda/Columnas/Estado.vue"
   
-  const { getAcuerdos       }       = servicesAcuerdos()
-  const { acuerdo           }       = storeToRefs( useStoreAcuerdo() )
-  const { miFetch           }       = useFetch()
+  const { buscarAcuerdoEnlazados  } = useControlAcuerdo()
+  const { acuerdo                 } = storeToRefs( useStoreAcuerdo() )
   const modo                        = ref< ModosVentana >("esperando-busqueda")
-  const endPoint                    = getURL("listas", "varios")
-  const enlaces : IEnlaceAcuerdo[] = []
   
   const columnas: IColumna[]  = [
     new Columna({ name: "ref"       }),
     new Columna({ name: "estado"    }),
-    //Columna.ColumnaPrecio ({ name: "totalConDescu", label: "Subtotal",    clase: "text-bold"    }),
   ]
   const acuerdos              = ref< IAcuerdo[] >([])
 
   watch( ()=>acuerdo.value.ref, async ( ref )=> {
     if(!ref) return
-    await pausa(800)
+
+    await pausa(600)
     buscar()
-  })
+  }, { immediate: true})
   
   defineExpose({  buscar })  
 
   async function buscar()
   {
     modo.value                = "buscando"
-    await buscarEnlaces()
-    await buscarAcuerdo()
+    acuerdos.value            = await buscarAcuerdoEnlazados()
     modo.value                = !!acuerdos.value.length ? "normal" : "sin-resultados"
   }
 
+/* 
   async function buscarEnlaces()
   {
     const objeto          = { ref: acuerdo.value.ref, id: acuerdo.value.id }
+    
     const { ok, data }    = await miFetch(  endPoint,
                                                 { method: "POST", body: getFormData( "buscarEnlacesAcuerdo", objeto ) },
                                                 { dataEsArray: true, mensaje: "buscar enlaces" }
                                               )
-    console.log("data: ", data);
     if(ok && Array.isArray( data ) && !!data.length)
     {
-      enlaces.length      = 0
+      //enlaces.length      = 0
       for (const item of data)
       {
-        const enlace      = EnlaceAcuerdo.enlaceApiToEnlace( item )
-        enlaces.push( enlace )      
+        const enlace      = EnlaceAcuerdo.enlaceApiToEnlace( item, acuerdo.value.tipo )
+        //enlaces.push( enlace )      
       }
     }
-  }  
-
-  async function buscarAcuerdo()
-  {
-    const pedi            = getIds(   TIPO_ACUERDO.PEDIDO_CLI       )
-    const coti            = getIds(   TIPO_ACUERDO.COTIZACION_CLI   )
-    const oc_p            = getIds(   TIPO_ACUERDO.PEDIDO_PRO       )
-    const en_c            = getIds(   TIPO_ACUERDO.ENTREGA_CLI      )
-
-    const paquete         = [ { ids:  pedi, tipo: TIPO_ACUERDO.PEDIDO_CLI       },
-                              { ids:  coti, tipo: TIPO_ACUERDO.COTIZACION_CLI   },
-                              { ids:  oc_p, tipo: TIPO_ACUERDO.PEDIDO_PRO       },
-                              { ids:  en_c, tipo: TIPO_ACUERDO.ENTREGA_CLI      },
-                            ]
-    acuerdos.value        = []                            
-
-    for (const item of paquete )
-    {
-      if( !item.ids ) continue
-      const query               = {
-                                    acuerdo:    item.tipo,
-                                    tipo:       "busqueda",
-                                    ids:        item.ids,
-                                    limite:     50,
-                                    offset:     0
-                                  }
-      const acuerdosI           = await getAcuerdos( query )
-      acuerdos.value.push( ...acuerdosI )
-    }
-    
-    //console.log("acuerdos.value: ", acuerdos.value);
-
-    function getIds( tipo : TTipoAcuerdo ) :string
-    {
-      const enla                = enlaces.filter( e => e.destinoTipo === tipo )
-      return  !!enla.length
-              ? enla.flatMap( ( enla )=> enla.destinoId ).join(",") 
-              : ""
-    }
   }
+*/
+
+
 </script>
-<style>
-.fecha{
-  width: 80px;
-  display: inline-block;
-}
-</style>
