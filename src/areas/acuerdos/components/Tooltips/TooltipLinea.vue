@@ -4,7 +4,7 @@
     >
     <q-img
       :src                ="modelValue.imagen100px"
-      class               ="imagen-woo-sm cursor-pointer q-mr-sm"
+      class               ="imagen-woo-md cursor-pointer q-mr-sm"
       spinner-color       ="white"
     />
 <!--     

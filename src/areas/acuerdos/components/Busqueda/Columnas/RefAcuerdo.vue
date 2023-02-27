@@ -44,7 +44,8 @@
     </q-btn>
     <div>
       <router-link
-        class           ="fuente-mono"
+        class           ="fuente-mono q-ml-sm"
+        :class          ="{ 'text-white' : white }"
         :to             ="`/${acuerdo.ruta}/${acuerdo.id}`"
         @click          ="clickLink"
         >
@@ -65,6 +66,7 @@
     vistaRapida:    { default:  false,  type: Boolean },
     refLarga:       { default:  false,  type: Boolean },
     conSubTotal:    { default:  false,  type: Boolean },
+    white:          { default:  false,  type: Boolean },
   })
   const emit                  = defineEmits<{
     (e: "vistaRapida",  value: void     ): void

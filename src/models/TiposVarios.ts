@@ -131,6 +131,7 @@ export interface ILoading {
   notaPrivada     ?: boolean
   url             ?: boolean
   proyecto        ?: boolean
+  enlaces         ?: boolean
 }
 
 export const LoadingDefault = {
@@ -167,6 +168,7 @@ export const LoadingDefault = {
   notaPrivada     : false,
   url             : false,
   proyecto        : false,
+  enlaces         : false,
 }
 
 

@@ -1,7 +1,7 @@
 <template>
   <q-img
     :src                ="producto.imagen100px"
-    class               ="imagen-woo-xs q-mr-md"
+    class               ="imagen-woo-sm q-mr-md"
     ratio               ="1"
     :class              ="{ 'op40' : !producto.activo  }"
     >

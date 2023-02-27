@@ -66,6 +66,11 @@
   <productos
     class                   ="col-12"
   />
+  <entregas
+    v-if                    ="acuerdo.esPedido && !acuerdo.esEstadoBoceto"
+    class                   ="col-8"
+    @click-nueva-entrega    ="clickNuevaEntrega"
+  />
   <!-- //* /////////////////  Visor PDF  -->
   <visor-pdf                descargar
     v-if                    ="acuerdo.esCotizacion"
@@ -121,18 +126,19 @@
   import {  dexieBodegas          } from "src/services/useDexie"  
   //* ///////////////////////////////////////////////////////////////////////////////// Componentes
   import    visorPdf                from "components/utilidades/VisorPDF.vue"
-  import    notas                   from "src/areas/acuerdos/components/Notas.vue"
-  import    titulo                  from "src/areas/acuerdos/components/Titulo.vue"
-  import    totales                 from "src/areas/acuerdos/components/Totales.vue"
-  import    botonera                from "src/areas/acuerdos/components/Botonera.vue"
-  import    terceroYContacto        from "src/areas/acuerdos/components/TerceroYcontacto.vue"
-  import    condiciones             from "src/areas/acuerdos/components/Condiciones.vue"
-  import    productos               from "src/areas/acuerdos/components/ProductosAcuerdo.vue"
-  import    enlaces                 from "src/areas/acuerdos/components/EnlacesAcuerdos.vue"
-  import    contactos               from "src/areas/acuerdos/components/Contactos.vue"
-  //import    nuevaEntrega            from "src/areas/acuerdos/components/Modals/NuevaEntregaSelectBodega.vue"
-  import    anticipos               from "src/areas/acuerdos/components/Anticipos/ModuloAnticipos.vue"
-  //import    remision                from "src/areas/acuerdos/components/PDF/RemisionPDF.vue"
+  import    notas                   from ".././Notas.vue"
+  import    titulo                  from ".././Titulo.vue"
+  import    totales                 from ".././Totales.vue"
+  import    botonera                from ".././Botonera.vue"
+  import    terceroYContacto        from ".././TerceroYcontacto.vue"
+  import    condiciones             from ".././Condiciones.vue"
+  import    productos               from ".././ProductosAcuerdo.vue"
+  import    enlaces                 from ".././EnlacesAcuerdos.vue"
+  import    contactos               from ".././Contactos.vue"
+  import    entregas                from ".././Entregas.vue"
+  import    anticipos               from ".././Anticipos/ModuloAnticipos.vue"
+  //import    nuevaEntrega          from ".././Modals/NuevaEntregaSelectBodega.vue"
+  //import    remision              from ".././PDF/RemisionPDF.vue"
   import    documentos              from "components/archivos/ModuloArchivos.vue"
   import    comisiones              from "./../Modals/Comisiones.vue"
 

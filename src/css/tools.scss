@@ -17,6 +17,7 @@
   transition: all 0.2s ease;
 }
 
+.width20  { width: 20px;  }
 .width60  { width: 60px;  }
 .width120 { width: 120px; }
 .width130 { width: 130px; }
@@ -59,10 +60,15 @@
 }
 
 .imagen-woo-xs{
+  height: 32px;
+  width:  32px;
+}
+
+.imagen-woo-sm{
   height: 48px;
   width:  48px;
 }
-.imagen-woo-sm{
+.imagen-woo-md{
   height: 72px;
   width: 72px;
 }

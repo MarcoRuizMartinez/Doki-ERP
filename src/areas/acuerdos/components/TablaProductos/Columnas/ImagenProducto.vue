@@ -1,12 +1,12 @@
 <template>
   <div
     v-if                  ="!!linea.imagen"
-    class                 ="float-left-xxx"
-    :class                ="$attrs.class"
+    :class                ="[ $attrs.class, { 'float-left' : float }]"
     >
     <q-img
       :src                ="linea.imagen100px"
-      class               ="imagen-woo-sm cursor-pointer"
+      class               ="cursor-pointer"
+      :class              ="mini ? 'imagen-woo-xs' : 'imagen-woo-md'"
       spinner-color       ="white"
       @click              ="clickImagen( linea )"
       >
@@ -41,7 +41,9 @@
   type  TImagenBig          = { src : string, titulo: string }
   const imagenBig           = ref< TImagenBig >( { titulo: "", src: "" } )
   const props               = defineProps({
-    linea: { required: true, type: Object as PropType< ILineaAcuerdo > },
+    linea:  { required: true,   type: Object as PropType< ILineaAcuerdo > },
+    float:  { default:  false,  type: Boolean },
+    mini:   { default:  false,  type: Boolean },
   })
   function clickImagen( linea : ILineaAcuerdo ){
     imagenBig.value         = { titulo: linea.nombre, src: linea.imagenFull }

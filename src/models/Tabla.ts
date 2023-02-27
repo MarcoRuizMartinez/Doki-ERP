@@ -48,6 +48,7 @@ export class Columna implements IColumna
                 sortable  = true,
                 align     = "left",
                 clase     = "",
+                style     = "",
                 format    = ( val : any ) => val
               } = {} )
   {
@@ -64,7 +65,7 @@ export class Columna implements IColumna
     this.value            = align
     this.visible          = visible
     this.format           = format
-    this.style            = ""
+    this.style            = style
     this.classes          = clase
     this.headerStyle      = ""
     this.headerClasses    = ""

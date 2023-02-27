@@ -105,7 +105,7 @@
       v-if                    ="(acuerdo.esPedido || acuerdo.esEntrega) && !!acuerdo.contactoEntrega.id"
       class                   ="col-12"
       >
-      <tabla-envio/>
+      <tabla-envio :acuerdo   ="acuerdo"/>
     </div>
   </ventana>
 </template>
@@ -130,7 +130,6 @@
   import    fechaVencimiento        from "src/areas/acuerdos/components/tools/FechaValidezCtz.vue"
   import    selectContacto          from "src/areas/terceros/components/contactos/SelectContacto.vue"
   import    tablaEnvio              from "src/areas/acuerdos/components/tools/TablaEnvio.vue"                                          
-import { boolean } from 'yargs'
 
   const { acuerdo, loading        } = storeToRefs( useStoreAcuerdo() )
   //* //////////////////////      ///////////////////////////////////////// Tablas Dexie

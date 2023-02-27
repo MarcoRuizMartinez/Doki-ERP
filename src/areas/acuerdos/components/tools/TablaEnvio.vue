@@ -1,5 +1,10 @@
 <template>
-  <table  class           ="tabla-info text-1em bg-grey-3 rounded-borders q-px-sm min-w-100">
+        <h6>{{ acuerdo.metodoEntrega.label }}</h6>
+  <table 
+      class           ="tabla-info text-1em q-px-sm min-w-100"
+      :class          ="{ 'bg-grey-3 rounded-borders' : !dark }"
+      >
+
       <tbody>
         <tr>
           <td>Contacto</td>
@@ -46,8 +51,13 @@
     </table>
 </template>
 <script setup lang="ts">
-  // * ///////////////////////////////////////////////////////////////////////////////// Store
-  import {  storeToRefs     } from 'pinia'                            
-  import {  useStoreAcuerdo } from 'src/stores/acuerdo'
-  const { acuerdo           } = storeToRefs( useStoreAcuerdo() )
+  // * ///////////////////////////////////////////////////////////////////////////////// Core
+  import {  PropType        } from "vue"    
+  // * ///////////////////////////////////////////////////////////////////////////////// Modelos
+  import {  IAcuerdo        } from "src/areas/acuerdos/models/Acuerdo"
+
+  const props               = defineProps({
+    acuerdo:  { required: true,   type: Object as PropType< IAcuerdo > },
+    dark:     { default:  false,  type: Boolean },
+  })
 </script>

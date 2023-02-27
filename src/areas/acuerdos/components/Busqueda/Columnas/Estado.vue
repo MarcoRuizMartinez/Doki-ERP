@@ -5,6 +5,11 @@
     :style              ="'background-color: ' + acuerdo.estadoColor"
     >
     {{ acuerdo.estadoLabel }}
+    <q-icon
+      v-if              ="conIcono"
+      color             ="white"
+      :name             ="acuerdo.estadoIcono"
+    />
   </span>
 </template>
 <script lang="ts" setup>
@@ -12,6 +17,7 @@
   import {  IAcuerdo        } from "src/areas/acuerdos/models/Acuerdo"
 
   const props               = defineProps({
-    acuerdo:  { required: true, type: Object as PropType< IAcuerdo > },
+    acuerdo:  { required: true,   type: Object as PropType< IAcuerdo > },
+    conIcono: { default:  false,  type: Boolean },
   })
 </script>

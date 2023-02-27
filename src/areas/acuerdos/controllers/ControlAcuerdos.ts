@@ -666,6 +666,7 @@ export function useControlAcuerdo()
 
   async function buscarAcuerdoEnlazados() : Promise< IAcuerdo[] >
   {
+    loading.value.enlaces = true
     const pedi            = getIds(   TIPO_ACUERDO.PEDIDO_CLI       )
     const coti            = getIds(   TIPO_ACUERDO.COTIZACION_CLI   )
     const oc_p            = getIds(   TIPO_ACUERDO.PEDIDO_PRO       )
@@ -701,6 +702,7 @@ export function useControlAcuerdo()
     if( acuerdo.value.esPedido  )    
       acuerdo.value.calcularEntregado()
 
+    loading.value.enlaces = false
     return acuerdos
 
     function getIds( tipo : TTipoAcuerdo ) :string
