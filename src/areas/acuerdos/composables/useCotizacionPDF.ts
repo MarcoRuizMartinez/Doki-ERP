@@ -33,7 +33,7 @@ export function useCotizacionPDF()
                               }
   const doc   : IUtilPDF    = new UtilPDF( setup )
 
-  async function generarPDF( cotizacion : IAcuerdo ) : Promise<string>
+  async function getQuotePDF( cotizacion : IAcuerdo ) : Promise<string>
   {
           limpiar()
           mostrarAviso()
@@ -60,7 +60,7 @@ export function useCotizacionPDF()
     //autoTable(pdf,  { head: [['']] })
   }
 
-  function guardarPDF()
+  function saveQuotePDF()
   {
     const correo  =   !!quote.pdfCorreo
                     ? " " + quote.pdfCorreo
@@ -598,7 +598,7 @@ export function useCotizacionPDF()
   }
 
   return {
-    generarPDF,
-    guardarPDF
+    getQuotePDF,
+    saveQuotePDF
   }
 }

@@ -176,8 +176,9 @@ export interface IModales {
   formulario      ?: boolean
   editarEnLote    ?: boolean
   añadirProductos ?: boolean
-  pdfCotizacion   ?: boolean
-  pdfRemision     ?: boolean
+  pdf             ?: boolean
+  remision        ?: boolean
+  rotulos         ?: boolean
   comisiones      ?: boolean
   nuevaEntrega    ?: boolean
 }
@@ -186,8 +187,9 @@ export const ModalesDefault = {
   formulario      : false,
   editarEnLote    : false,
   añadirProductos : false,
-  pdfCotizacion   : false,
-  pdfRemision     : false,
+  pdf             : false,
+  remision        : false,
+  rotulos         : false,
   comisiones      : false,
   nuevaEntrega    : false
 }

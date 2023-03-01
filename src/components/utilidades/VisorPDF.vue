@@ -29,9 +29,10 @@
     </template>
     <div class                ="fit">
       <q-pdfviewer
-        type                  ="pdfjs"
+        type                  ="html5"
         :src                  ="srcModel"
       />
+      <!-- pdfjs -->
     </div>
     </ventana>
   </q-dialog>

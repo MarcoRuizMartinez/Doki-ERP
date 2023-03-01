@@ -77,6 +77,8 @@
   const acuerdos              = ref< IAcuerdo[] >([])
 
   watch( ()=>acuerdo.value.ref, async ( ref )=> {
+    acuerdos.value            = []
+    modo.value                = "sin-resultados"
     if(!ref) return
 
     await pausa(600)

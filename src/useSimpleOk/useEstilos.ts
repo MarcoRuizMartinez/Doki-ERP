@@ -26,6 +26,13 @@ export const btnFlatSm = {
   padding:  "2px 8px"
 }
 
+export const btnFlatMd = {
+  noCaps:   true,
+  flat:     true,
+  dense:    true,  
+  padding:  "2px 8px"
+}
+
 export const btnRedondo = {
   dense:      true,
   push:       true,

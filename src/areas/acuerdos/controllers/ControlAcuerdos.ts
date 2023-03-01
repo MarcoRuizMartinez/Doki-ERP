@@ -714,6 +714,21 @@ export function useControlAcuerdo()
     }
   }
 
+    //* /////////////////////////////////////////////////////////////// Editar metodo de entrega
+  async function actualizarPreciosAcuerdo()
+  {
+    const endPoint              = getURL("servicios", "acuerdos")
+    const objeto                = { id: acuerdo.value.id, acuerdo: acuerdo.value.tipo }
+    const objetoForData         = { body: getFormData("actualizarPrecios", objeto), method: "POST"}
+    const { ok  }               = await miFetch( endPoint, objetoForData, { mensaje: "actualizar precios" } )        
+    
+    if(ok){
+      aviso("positive", `Precios actualizados`)
+      await buscarAcuerdo( acuerdo.value.tipo, acuerdo.value.id.toString() )
+    }
+    else
+      aviso("negative", `Error al actualizar precios`)
+  }
 
 
   //* /////////////////////////////////////////////////////////////// Return
@@ -750,5 +765,6 @@ export function useControlAcuerdo()
     desvincularContactoAcuerdo,
     editarDatosEntregaSistemaViejo,
     buscarAcuerdoEnlazados,
+    actualizarPreciosAcuerdo
   }
 }

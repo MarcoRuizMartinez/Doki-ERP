@@ -1,10 +1,10 @@
 <template>
-        <h6>{{ acuerdo.metodoEntrega.label }}</h6>
-  <table 
-      class           ="tabla-info text-1em q-px-sm min-w-100"
-      :class          ="{ 'bg-grey-3 rounded-borders' : !dark }"
+  <div
+    class           ="q-px-sm"
+    :class          ="{ 'bg-grey-3 rounded-borders' : !dark }"
+    >
+    <table  class   ="tabla-info text-1em min-w-100"      
       >
-
       <tbody>
         <tr>
           <td>Contacto</td>
@@ -41,14 +41,15 @@
             {{ acuerdo.contactoEntrega.municipio.label }}
           </td>
         </tr>
-        <tr>
-          <td>Indicaciones:</td>
-          <td>
-            {{ acuerdo.contactoEntrega.nota.length > 3 ? acuerdo.contactoEntrega.nota : '❕' }}
-          </td>
-        </tr>
       </tbody>
     </table>
+    <div class="q-ml-xs">
+      <div class="text-bold">Indicaciones: </div>
+      <div>
+        {{ acuerdo.contactoEntrega.nota.length > 3 ? acuerdo.contactoEntrega.nota : 'Sin indicaciones' }}
+      </div>
+    </div>
+  </div>  
 </template>
 <script setup lang="ts">
   // * ///////////////////////////////////////////////////////////////////////////////// Core

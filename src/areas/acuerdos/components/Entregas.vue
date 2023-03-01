@@ -39,19 +39,19 @@
         <!-- //* ///////////////////////////////////////////////////////////// Slot cabezote expansion item-->
         <template               #header>
           <q-item-section       avatar class="hidden"></q-item-section>
-          <q-item-section class ="">
-            <div class="row q-my-none" style="height: fit-content;">
-            <ref-acuerdo        ref-larga white
-              class             ="col-6"
-              :acuerdo          ="entrega"
-            />
-            <span class="col-3">dfdf</span>
+          <q-item-section>
+            <div class=         "row items-center h-40px full-width">
+              <ref-acuerdo      ref-larga white
+                class           ="col-auto"
+                :acuerdo        ="entrega"
+              />
+              <span class="col text-center">{{ entrega.metodoEntrega.label }}</span>
             </div>
           </q-item-section>
           <q-item-section       side>
             <div class          ="row items-center">
               <span class       ="q-mr-sm text-grey-5">
-                {{ entrega.metodoEntrega.label }}
+                {{ entrega.contactoEntrega.municipio.label }}
               </span>
               <!-- //* /////////////////////////////////////////////////////// Boton agregar producto  -->
               <estado :acuerdo  ="entrega" con-icono/>
@@ -83,7 +83,8 @@
                     </div>
                     <div class="col-4 text-grey-7 text-0_8em text-right q-ma-none q-pa-none">
                       {{props.row.bodega.label}}
-                      <q-icon name="mdi-home-city"/>
+                      <q-icon name  ="mdi-home-city"/>
+                      <Tooltip :label="'Bodega: ' + props.row.bodega.label"/>
                     </div>
                   </div>
                   <div>{{props.row.nombre}}</div>
@@ -92,7 +93,27 @@
             </q-table>
           </div>
           <!-- //* /////////////////////////////////////////////////////////// Lado derecho   -->
-          <div  class           ="col-6 side-left">
+          <div  class             ="col-6 side-left">
+            <div class            ="row justify-center full-width">
+              <!-- //* ////////////////////////////////////////////////////////// Boton Remision -->            
+              <q-btn              dense
+                v-bind            ="btnFlatMd"
+                color             ="grey-4"
+                icon              ="mdi-pdf-box"
+                label             ="Remisión"
+                :loading          ="loading.editar"
+                @click            ="emit('clickRemision', entrega)"
+              />
+              <!-- //* ////////////////////////////////////////////////////////// Boton Rotulo -->
+              <q-btn              dense
+                v-bind            ="btnFlatMd"
+                color             ="grey-4"
+                icon              ="mdi-pdf-box"
+                label             ="Rotulo"
+                :loading          ="loading.editar"                
+              />
+            </div>
+            <!-- //* ////////////////////////////////////////////////////////// Info de envio -->
             <tabla-envio        dark
               :acuerdo          ="entrega"
             />
@@ -112,11 +133,11 @@
   import {  ModosVentana          } from "src/models/TiposVarios"
   import {  IColumna,
             Columna               } from "src/models/Tabla"
+  import {  IAcuerdo              } from "../models/Acuerdo"  
   //* ///////////////////////////////////////////////////////////////////////////// Componibles  
   import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"
   import {  btnBaseSm, 
-            dialogDefault         } from "src/useSimpleOk/useEstilos"
-  
+            btnFlatMd,            } from "src/useSimpleOk/useEstilos"
   //* ///////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana                 from "components/utilidades/Ventana.vue"
   import    refAcuerdo              from "./Busqueda/Columnas/RefAcuerdo.vue"
@@ -124,7 +145,11 @@
   import    imagenProducto          from "./TablaProductos/Columnas/ImagenProducto.vue"
   import    tablaEnvio              from "src/areas/acuerdos/components/tools/TablaEnvio.vue" 
 
-  const emit                        = defineEmits(["clickNuevaEntrega"])
+  const emit                  = defineEmits<{
+    (e: "clickNuevaEntrega",        ): void
+    (e: "clickRemision",    value: IAcuerdo   ): void
+    (e: "clickRotulo",      value: IAcuerdo[] ): void
+  }>()
 
   const { acuerdo, loading        } = storeToRefs( useStoreAcuerdo() )  
   const { buscarAcuerdoEnlazados  } = useControlAcuerdo()

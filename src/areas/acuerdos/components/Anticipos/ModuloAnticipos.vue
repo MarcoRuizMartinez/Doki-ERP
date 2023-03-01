@@ -101,7 +101,7 @@
       v-model:src               ="srcPDFRecibo"
       v-model:visible           ="ventanaPDFRecibo"
       nombre-pdf                ="ReciboCaja"      
-      @click-descargar          ="guardarPDF"
+      @click-descargar          ="saveReciboCajaPDF"
     />
   </ventana>
   <!-- //* ///////////////////////////////////////////////////////////// Modal Buscar Formulario anticipo -->
@@ -175,8 +175,8 @@
   const srcPDFRecibo          = ref< string     >("")
   const endPoint              = getURL("listas", "varios")
 
-  const { generarPDF,
-          guardarPDF        } = useReciboCajaPDF()
+  const { getReciboCajaPDF,
+          saveReciboCajaPDF   } = useReciboCajaPDF()
 
   const columnas: IColumna[]  = [
     new Columna({ name: "ref"       }),
@@ -341,6 +341,6 @@
   {
     ventanaPDFRecibo.value        = true
     anticipo.value                = anti
-    srcPDFRecibo.value            = await generarPDF()
+    srcPDFRecibo.value            = await getReciboCajaPDF()
   }
 </script>

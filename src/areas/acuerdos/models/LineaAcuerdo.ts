@@ -41,6 +41,18 @@ export interface  ILineaApi {
   array_options             ?: any
 }
 
+export interface ILineaLite
+{
+  id            : number
+  ref           : string
+  nombre        : string
+  estado        : string
+  descripcion   : string
+  descripcionOn : boolean
+  qty           : number
+  qtyTotal      : number
+}
+
 export interface ILineaAcuerdo extends IProductoDoli {
   padreId                   : number      // Id de cotizacion, orden o factura
   lineaId                   : number

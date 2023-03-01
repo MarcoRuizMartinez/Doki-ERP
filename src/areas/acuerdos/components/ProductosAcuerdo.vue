@@ -10,6 +10,16 @@
       >
       <!-- //* ///////////////////////////////////////////////////////////// Boton nuevo grupo   -->
       <q-btn
+        v-if                    ="(acuerdo.esCotizacion || acuerdo.esPedido) && acuerdo.esEstadoEdicion"
+        v-bind                  ="btnBaseSm"
+        label                   ="Actualizar precios"
+        color                   ="positive"
+        icon                    ="mdi-refresh"        
+        >
+        <confirmar  @ok         ="actualizarPreciosAcuerdo"/>
+      </q-btn>
+      <!-- //* ///////////////////////////////////////////////////////////// Boton nuevo grupo   -->
+      <q-btn
         v-bind                  ="btnBaseSm"
         label                   ="Nuevo grupo"
         color                   ="positive"
@@ -91,6 +101,7 @@
   import {  useStoreAcuerdo       } from 'src/stores/acuerdo'
   // * ///////////////////////////////////////////////////////////////////////////// Componibles
   import {  useControlProductos   } from "src/areas/acuerdos/controllers/ControlLineasProductos"
+  import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"
   import {  btnBaseSm, 
             dialogDefault         } from "src/useSimpleOk/useEstilos"
   
@@ -102,10 +113,12 @@
   import    buscarProductos         from "./Modals/BuscarAgregarProductos.vue"
   import    formularioLinea         from "./Modals/FormularioLinea.vue"
   import    editarEnLote            from "./Modals/EditarEnLoteQtyDesc.vue"
+  import    confirmar               from "components/utilidades/MenuConfirmar.vue"
 
   const { destacarLineaElegida,
-          mostrarBuscarProductos
-                              } = useControlProductos()
+          mostrarBuscarProductos    } = useControlProductos()
+  const { actualizarPreciosAcuerdo  } = useControlAcuerdo()  
+                              
   const { acuerdo,
           grupoElegido,
           loading,

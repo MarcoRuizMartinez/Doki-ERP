@@ -1,18 +1,18 @@
 <template>
   <titulo
     class                   ="col-12"
-    @click                  ="generarCotizacionPDF"
+    @click                  ="generarPDF"
     @recargar               ="recargar"
   />
   <botonera
     class                   ="col-12"
-    @click-pdf              ="generarCotizacionPDF"
+    @click-pdf              ="generarPDF"
     @click-aprobar          ="clickAprobarCotizacion"
     @click-anular           ="anularAcuerdo"
     @click-validar          ="validarAcuerdo"
     @click-editar           ="pasarABorradorAcuerdo"
     @click-borrar           ="eliminarAcuerdo"
-    @click-remision         ="generarRemisionPDF"
+    @click-remision         ="abrirModalRemision"
     @click-reabrir          ="reabrirPedido"
     @click-recargar         ="recargar"
     @click-entregado        ="cerrarPedido"
@@ -21,7 +21,7 @@
   />
   <tercero-y-contacto       scroll
     class                   ="col-md-4 col-12"
-    height-card             ="260px"
+    height-card             ="260px" 
   />
   <condiciones              scroll
     ref                     ="moduloCondiciones"
@@ -70,14 +70,14 @@
     v-if                    ="acuerdo.esPedido && !acuerdo.esEstadoBoceto"
     class                   ="col-8"
     @click-nueva-entrega    ="clickNuevaEntrega"
+    @click-remision         ="abrirModalRemision"
   />
   <!-- //* /////////////////  Visor PDF  -->
   <visor-pdf                descargar
-    v-if                    ="acuerdo.esCotizacion"
     v-model:src             ="srcPDF"
-    v-model:visible         ="modales.pdfCotizacion"
+    v-model:visible         ="modales.pdf"
     nombre-pdf              ="Cotizacion"
-    @click-descargar        ="guardarPDF"
+    @click-descargar        ="saveQuotePDF"
   />
   <!-- //* ///////////////////////////////////////////////////////////// Modal Buscar productos -->
   <q-dialog
@@ -86,13 +86,15 @@
     >
     <comisiones style       ="max-width: initial;"/>
   </q-dialog>
-<!--   <q-dialog
-    v-model                 ="modales.nuevaEntrega"
-    v-bind                  ="dialogDefault"      
+  <q-dialog                 maximized
+    v-model                 ="modales.remision"
+    v-bind                  ="dialogDefault"
     >
-    <nueva-entrega />
+    <remision
+      :acuerdo              ="acuerdoRemsion"
+    />
   </q-dialog>
- -->
+
     
     <!-- <remision v-model:visible ="modales.pdfRemision"/> -->
     <!--   <div id="capture" style="padding: 10px; background: #f5da55">
@@ -113,13 +115,14 @@
   import {  storeToRefs           } from 'pinia'
   import {  useStoreAcuerdo       } from 'src/stores/acuerdo'
   //* ///////////////////////////////////////////////////////////////////////////////// Modelos
-  //import {  Acuerdo, TIPO_ACUERDO } from "../../models/Acuerdo"
+  import {  Acuerdo, IAcuerdo              } from "../../models/Acuerdo"
   import {  LineaAcuerdo          } from "src/areas/acuerdos/models/LineaAcuerdo"
   import {  IArchivo              } from "src/models/Archivo"
   import {  AREA                  } from "src/models/TiposVarios"
   //* ///////////////////////////////////////////////////////////////////////////////// Componibles
   import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"
   import {  useCotizacionPDF      } from "src/areas/acuerdos/composables/useCotizacionPDF"
+  
   //import {  useControlProductos   } from "src/areas/acuerdos/controllers/ControlLineasProductos"
   import {  TTipoAcuerdo          } from "src/areas/acuerdos/models/ConstantesAcuerdos"
   import {  dialogDefault         } from "src/useSimpleOk/useEstilos"  
@@ -138,7 +141,7 @@
   import    entregas                from ".././Entregas.vue"
   import    anticipos               from ".././Anticipos/ModuloAnticipos.vue"
   //import    nuevaEntrega          from ".././Modals/NuevaEntregaSelectBodega.vue"
-  //import    remision              from ".././PDF/RemisionPDF.vue"
+  import    remision              from ".././PDF/RemisionPDF.vue"
   import    documentos              from "components/archivos/ModuloArchivos.vue"
   import    comisiones              from "./../Modals/Comisiones.vue"
 
@@ -146,8 +149,9 @@
           modales,
           lineaElegida,
           loading           } = storeToRefs( useStoreAcuerdo() )
-  const { generarPDF,
-          guardarPDF        } = useCotizacionPDF()
+  const { getQuotePDF,
+          saveQuotePDF      } = useCotizacionPDF()
+  
   const { aprobarCotizacion,
           anularAcuerdo,
           pasarABorradorAcuerdo,
@@ -159,6 +163,7 @@
                             } = useControlAcuerdo()
   const minimizadoTodo        = ref< boolean  >(false)
   const srcPDF                = ref< string   >("")
+  const acuerdoRemsion        = ref< IAcuerdo >( new Acuerdo() )
   const moduloEnlaces         = ref<InstanceType<typeof enlaces>      | null>(null)
   const moduloCondiciones     = ref<InstanceType<typeof condiciones>  | null>(null)
   const bodegas               = dexieBodegas()
@@ -169,6 +174,7 @@
   })
 
   const { id, tipo }          = toRefs( props )
+  
 
   watch ( [()=>acuerdo.value.id, ()=>acuerdo.value.tipo],
           ()=> {
@@ -178,25 +184,6 @@
         )
 
   provide('superminimizado', minimizadoTodo)
-
-  async function generarCotizacionPDF()
-  {
-    if(!acuerdo.value.esCotizacion) return
-
-    loading.value.pdf           = true
-    modales.value.pdfCotizacion = true
-    srcPDF.value                = await generarPDF( acuerdo.value )
-    loading.value.pdf           = false
-  }
-
-  async function generarRemisionPDF()
-  {
-    if(!acuerdo.value.esPedido) return
-
-    //loading.value.pdf           = true
-    modales.value.pdfRemision   = true
-  }
-
 
   async function recargar(){
     await buscarAcuerdo( tipo.value, id.value )
@@ -209,6 +196,46 @@
   }
 
   function cargarArchivos( files : IArchivo[] ) { acuerdo.value.archivos = files }
+
+  function clickNuevaEntrega()
+  {
+    const fechaYmetodoOk = moduloCondiciones.value?.validar()
+    if(!fechaYmetodoOk) {
+      window.scrollTo({ top: 0, behavior: 'smooth'})
+      return 
+    }
+    const url = acuerdo.value.urlDolibarrNuevoEnvio + "&entrepot_id=" + getIdBodegaByArea( acuerdo.value.tercero.area )
+    window.open(url, '_blank')
+
+    function getIdBodegaByArea( area : AREA ) : number
+    {
+      const idBodega  = bodegas.value.find( b => b.padre_id == 0 && b.area == area )?.id ?? 0
+      return idBodega
+    }
+  }
+
+
+  async function generarPDF()
+  {
+    loading.value.pdf           = true
+    modales.value.pdf           = true    
+
+    if(acuerdo.value.esCotizacion)
+      srcPDF.value              = await getQuotePDF( acuerdo.value )
+
+    loading.value.pdf           = false
+  }
+
+
+  function abrirModalRemision( acu : IAcuerdo )
+  {
+    modales.value.remision      = true
+    acuerdoRemsion.value        = acu    
+  }
+
+
+
+
 /*
 import {  useRouter             } from 'vue-router'
 const router                = useRouter()
@@ -245,20 +272,5 @@ const disableBtnValidar     = computed( () =>{
     {
       router.push("/error")
     }
-  } */
-
-  function clickNuevaEntrega()
-  {
-    const fechaYmetodoOk = moduloCondiciones.value?.validar()
-    if(!fechaYmetodoOk) return 
-    const url = acuerdo.value.urlDolibarrNuevoEnvio + "&entrepot_id=" + getIdBodegaByArea( acuerdo.value.tercero.area )
-    window.open(url, '_blank')
-
-    function getIdBodegaByArea( area : AREA ) : number
-    {
-      const idBodega  = bodegas.value.find( b => b.padre_id == 0 && b.area == area )?.id ?? 0
-      return idBodega
-    }
-  }
-
+  } */  
 </script>
