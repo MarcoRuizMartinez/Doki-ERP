@@ -100,39 +100,40 @@ export function useRemisionPDF()
 
 
     //*                 ////////////////////////////////////////////////////////////////////// Cliente 
+    doc.margen1         = doc.margenIzq + 6
+    doc.margen2         = doc.margenIzq + 60
     doc.y               += 12
-    doc.setFont         ( 11, 0 )
-    pdf.text            ("CLIENTE:", doc.margenIzq + 2, doc.y, { align: "left", renderingMode: 'fillThenStroke' } )
-    const margen2       = doc.margenIzq + 60
-    let cliente         = acuerdo.tercero.nombre
-    let clienteSplit    = pdf.splitTextToSize(cliente, 170)
+    doc.setFont         ( 10, 0 )
+    pdf.text            ("CLIENTE:", doc.margen1, doc.y, { align: "left", renderingMode: 'fillThenStroke' } )
+
+    const cliente       = "Cliente con nombre muy 1 largo very largo vergo 5 la sadf adsf sds ds d dsf sdf fsdf sd dsfsdf ds asdf sd dfdsf "//acuerdo.tercero.nombre
+    const clienteSplit  = pdf.splitTextToSize(cliente, 360)
     pdf.setFontSize    ( SIZE_FONT(cliente) ) 
-    pdf.text           ( clienteSplit, margen2, doc.y, { align: "left", renderingMode: 'fillThenStroke' } )
+    pdf.text           ( clienteSplit, doc.margen2, doc.y, { align: "left", renderingMode: 'fillThenStroke' } )
 
-      //*                 ////////////////////////////////////////////////////////////////////// DIRECCIÓN 
-/*       doc.y               += 9
-      pdf.setFontSize    (10)
-      pdf.text           ("DIRECCIÓN:", doc.margenIzq + 2, doc.y)
+    //*                 ////////////////////////////////////////////////////////////////////// DIRECCIÓN 
+    doc.y               += getEspaciado( clienteSplit )
+    pdf.setFontSize     (10)
+    pdf.text            ("DIRECCIÓN:", doc.margen1, doc.y, { align: "left", renderingMode: 'fillThenStroke' })
 
-       */
-/*       let direccion       = acuerdo.contactoEntrega.municipio.label + " " + acuerdo.contactoEntrega.direccion
-      let direccionSplit  = pdf.splitTextToSize(direccion, WIDTH_BOX_FONT(direccion) )
-      pdf.setFontSize    ( SIZE_FONT(direccion) ) 
-      pdf.text           (direccionSplit, doc.margenIzq + 30, doc.y)
- */
-      //*                 ////////////////////////////////////////////////////////////////////// INDICACIONES
-/*       doc.y               += 9
+    
+    const direccion     = acuerdo.contactoEntrega.municipio.label + " " + acuerdo.contactoEntrega.direccion + " asdf sdf asdf sd adsf sdfd fsdf ds  asdfasdf asdf sadf asdf sdf dfsdf  safd asdf asdff"
+    const dirSplit      = pdf.splitTextToSize(direccion, 360 )
+    pdf.setFontSize     ( SIZE_FONT(direccion) ) 
+    pdf.text            ( dirSplit, doc.margen2, doc.y )
+
+    //*                 ////////////////////////////////////////////////////////////////////// INDICACIONES
+    doc.y               += getEspaciado( dirSplit )
+    
+    pdf.setFontSize     (10)
+    pdf.text            ("INDICACIONES:", doc.margen1, doc.y, { align: "left", renderingMode: 'fillThenStroke' })
       
-      pdf.setFontSize    (10)
-      pdf.text           ("INDICACIONES:", doc.margenIzq + 2, doc.y)
-       */
-      
-/*       let indicacion      = acuerdo.contactoEntrega.nota
-      let indicacionSplit = pdf.splitTextToSize(indicacion, WIDTH_BOX_FONT(indicacion) )
-      pdf.setFontSize    ( SIZE_FONT(indicacion) ) 
-      pdf.text           (indicacionSplit, doc.margenIzq + 30, doc.y)
+    const indicacion    = acuerdo.contactoEntrega.nota
+    const indicaSplit   = pdf.splitTextToSize(indicacion, WIDTH_BOX_FONT( indicacion ) )
+    pdf.setFontSize     ( SIZE_FONT( indicacion ) ) 
+    pdf.text            ( indicaSplit, doc.margen2, doc.y )
 
- */
+    doc.y               += getEspaciado( indicaSplit )
 
     //*                 ////////////////////////////////////////////////////////////////////// Cliente 
 /*     doc.y               += 12
@@ -228,6 +229,10 @@ export function useRemisionPDF()
     pdf.text           ("FIRMA AUTORIZADA\nGrupo Escom SAS",  doc.anchoMitad - 110, doc.y, { align: "center" })
     pdf.text           ("NOMBRE Y FIRMA DE QUIEN RECIBE\nCC Y CARGO",     doc.anchoMitad + 90, doc.y, { align: "center" })
   }
+
+  function getEspaciado( arreglo : any[] ) : number {
+    return 12 + ( arreglo.length * 3 )
+  }
   
   function WIDTH_BOX_FONT(texto : string) : number
   {
@@ -237,13 +242,13 @@ export function useRemisionPDF()
     if(largo            <= 45)
       size              = 180
     else if(largo       <= 60)
-      size              = 180
+      size              = 360
     else if(largo       <= 80)
-      size              = 180
+      size              = 360
     else if(largo       <= 110)
-      size              = 168
+      size              = 360
     else
-      size              = 178
+      size              = 390
 
     return size
   }
@@ -256,9 +261,9 @@ export function useRemisionPDF()
     if(largo            <= 45)
       size              = 14
     else if(largo       <= 60)
-      size              = 12
+      size              = 13
     else if(largo       <= 80)
-      size              = 10
+      size              = 12
     else if(largo       <= 150)
       size              = 10
     else

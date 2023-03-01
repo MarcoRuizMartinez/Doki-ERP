@@ -37,6 +37,8 @@ export interface IUtilPDF extends IInicioPDF {
   anchoMitad:           number
   altoMitad:            number
   margenDerX:           number
+  margen1:              number
+  margen2:              number
   posXMargenDerecha:    number
   empresaNit:           string
   urlPoliticas:         string
@@ -82,6 +84,8 @@ export class UtilPDF implements IUtilPDF {
   headAlto:         number
   margenIzq:        number
   margenDer:        number
+  margen1:          number
+  margen2:          number
   pie:              number
   pdf:              jsPDF
 
@@ -95,6 +99,8 @@ export class UtilPDF implements IUtilPDF {
     this.path       = inicio.path
     this.margenIzq  = inicio.margenIzq
     this.margenDer  = inicio.margenDer
+    this.margen1    = 0
+    this.margen2    = 0
     this.pie        = inicio.pie
     this.area       = AREA.NULO
     this.fontBase   = ""
