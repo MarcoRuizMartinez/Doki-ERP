@@ -29,10 +29,10 @@
     </template>
     <div class                ="fit">
       <q-pdfviewer
-        type                  ="html5"
+        :type                 ="esMobil ? 'pdfjs' : 'html5'"
         :src                  ="srcModel"
       />
-      <!-- pdfjs -->
+      <!--  -->
     </div>
     </ventana>
   </q-dialog>
@@ -58,7 +58,7 @@
     enBase64:     { required: false,      type: Boolean },
     descargar:    { default:  false,      type: Boolean }
   })
-  const { aviso               } = useTools()
+  const { aviso, esMobil    } = useTools()
   const cargando              = ref< boolean >(true)
   const modo                  = ref< ModosVentana >("buscando")
   const { src,

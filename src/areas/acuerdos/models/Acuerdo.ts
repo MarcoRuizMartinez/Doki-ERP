@@ -228,6 +228,7 @@ export interface IAcuerdo
   retenciones:                IRetenciones
 
   /* Solo para entregas */
+  acuerdosEnlazados           : IAcuerdo[]
   entregas                    : IAcuerdo[]
   transportadoraId            : number
   numeroGuia                  : string
@@ -285,6 +286,7 @@ export class Acuerdo implements IAcuerdo
   origenContacto:             IOrigenContacto
   tiempoEntrega:              ITiempoEntrega
   conIVA:                     boolean
+  acuerdosEnlazados:          IAcuerdo[]
 
   /* Solo para cotizaciones */
   titulo:                     string
@@ -294,7 +296,6 @@ export class Acuerdo implements IAcuerdo
   /* Solo para pedidos */
   facturado:                  boolean
   /* Solo para entregas */
-  entregas                    : IAcuerdo[]
   transportadoraId            : number
   numeroGuia                  : string
 
@@ -312,6 +313,7 @@ export class Acuerdo implements IAcuerdo
     this.proyectoId           = 0
     this.proyecto             = new Proyecto()
     this.enlaces              = []
+    this.acuerdosEnlazados    = []
     this.fechaCreacion        = new Date()
     this.fechaValidacion      = new Date()
     this.fechaCierre          = new Date(0)
@@ -358,7 +360,6 @@ export class Acuerdo implements IAcuerdo
     this.facturado            = false
 
     /* Solo para entregas */
-    this.entregas             = []
     this.transportadoraId     = 0
     this.numeroGuia           = ""
   }
@@ -644,10 +645,6 @@ https://dolibarr.mublex.com/fichinter/card.php?
                                               ||( this.estado === ESTADO_ENT.VALIDADO   && this.esEntrega )  }
   get esEstadoEntregado   ():boolean { return   ( this.estado === ESTADO_PED.ENTREGADO  && this.esPedido  )
                                               ||( this.estado === ESTADO_ENT.ENTREGADO  && this.esEntrega )  }
-  
-
-  
-
   get esEstadoAbierto     ():boolean
   {
     let abierto           = false
@@ -820,6 +817,8 @@ https://dolibarr.mublex.com/fichinter/card.php?
   get saldo()             : number { return this.totalConIva - this.totalAnticipos }
   get retenciones()       : IRetenciones { return new  Retenciones( this.totalConDescu, this.totalAnticipos, this.ivaValor ) }
 
+
+
   getAcuerdoForApi( usuarioId : number ) : any {
     const acuForApi : any = {
       socid:                  this.tercero.id,
@@ -902,6 +901,17 @@ https://dolibarr.mublex.com/fichinter/card.php?
                                   : tipo === TIPO_ACUERDO.FACTURA_CLI     ? "factura"
                                   : ""
     return label
+  }
+
+  get entregas() : IAcuerdo[] {
+    return this.acuerdosEnlazados.filter( a => a.tipo === TIPO_ACUERDO.ENTREGA_CLI )
+
+/*     if( acuerdo.value.esPedido && item.tipo === TIPO_ACUERDO.ENTREGA_CLI )
+    {
+      
+      acuerdo.value.entregas.push( ...acuerdosI )
+    }
+ */
   }
 
   static  getTipoAcuerdoPlural( tipo : TTipoAcuerdo ) : string {

@@ -1,113 +1,113 @@
 <template>
-  <ventana                    cerrar full-screen scroll
-    titulo                    ="Remisión"
-    icono                     ="mdi-pdf-box"
-    class-contenido           ="row justify-start"
-    padding-contenido         ="0"        
+  <ventana                          cerrar full-screen scroll
+    titulo                          ="Remisión"
+    icono                           ="mdi-pdf-box"
+    class-contenido                 ="row justify-start"
+    padding-contenido               ="0"        
     >
-    <template                 #barra>
+    <template                       #barra>
       <q-btn
-        v-if                  ="!!srcPDF"
-        v-bind                ="btnBaseSm"
-        icon                  ="mdi-download"
-        label                 ="Descargar"
-        @click                ="saveRemisionPDF"
+        v-if                        ="!!srcPDF"
+        v-bind                      ="btnBaseSm"
+        icon                        ="mdi-download"
+        label                       ="Descargar"
+        @click                      ="saveRemisionPDF"
       />
     </template>    
     <!-- //?* //////////////////////////////////////////////////////////// Lado izquierdo -->
-    <div  class               ="col-5 full-height">
+    <div  class                     ="col-5 full-height">
       <!-- //?* ////////////////////////////////////////////////////////// Datos remisión -->
-      <div    class           ="datos-remision q-pa-lg">
-        <div class             ="nombre text-weight-bold">{{ acuerdo.tercero.nombre }}</div>
+      <div    class                 ="datos-remision q-pa-lg">
+        <div class                  ="nombre text-weight-bold">{{ acuerdo.tercero.nombre }}</div>
 
-        <div class             ="text-weight-bold">Dirección:</div>
-        <div class             ="celda-full">
+        <div class                  ="text-weight-bold">Dirección:</div>
+        <div class                  ="celda-full">
           {{ acuerdo.contactoEntrega.municipio.label  }}: {{ acuerdo.contactoEntrega.direccion  }}
         </div>
 
-        <div class             ="text-weight-bold">Contacto:</div>
-        <div class             ="celda-full">
+        <div class                  ="text-weight-bold">Contacto:</div>
+        <div class                  ="celda-full">
           {{ acuerdo.contactoEntrega.nombreCompleto }} - {{ acuerdo.contactoEntrega.telefono  }}
         </div>
                 
-        <div class             ="text-weight-bold">Indicaciones:</div>
-        <div class             ="celda-full">
+        <div class                  ="text-weight-bold">Indicaciones:</div>
+        <div class                  ="celda-full">
           {{ indicaciones }}
-          <q-popup-edit         v-model="indicaciones" auto-save @save="generarPDF">
-            <q-input            v-model="indicaciones" dense autofocus/>
+          <q-popup-edit             v-model="indicaciones" auto-save @save="generarPDF">
+            <q-input                v-model="indicaciones" dense autofocus @update:model-value="generarPDF"/>
           </q-popup-edit>
         </div>
-        <div class             ="text-weight-bold">Fecha:</div>
+        <div class                  ="text-weight-bold">Fecha:</div>
         <!-- //?* ////////////////////////////////////////////////////////////// Campo Fecha llegada --> 
-        <q-input                dense filled hide-bottom-space
-          type                  ="date"
-          v-model               ="fechaEntrega"
-          @input                ="generarPDF"
-        />
+        <q-input                    dense filled hide-bottom-space
+          type                      ="date"
+          v-model                   ="fechaEntrega"
+          @update:model-value       ="generarPDF"
+        />  
         <div>
-          <q-toggle             dense
-            label               ="Mostrar descripción"
-            v-model             ="mostrarDescripciones"
-            style               ="width: 200px"
-            @update:model-value ="toggleMostrarDescripciones"
+          <q-toggle                 dense
+            label                   ="Mostrar descripción"
+            v-model                 ="mostrarDescripciones"
+            style                   ="width: 200px"
+            @update:model-value     ="toggleMostrarDescripciones"
           />
         </div>
       </div>
       <!-- //?* ///////////////////////////////////////////////////////// Items remisión -->
-      <div class                ="row col-12 q-px-lg">
+      <div class                    ="row col-12 q-px-lg">
         <div
-          v-for                 ="(linea, index) of lineas"
-          :index                ="index"
-          class                 ="row col-12 bg-grey-2 q-mb-xs"
+          v-for                     ="(linea, index) of lineas"
+          :index                    ="index"
+          class                     ="row col-12 bg-grey-2 q-mb-xs"
           >
           <!-- //?* ///////////////////////////////////////////////////// Ref nombre y nota -->
-          <div class            ="col-10 q-mt-xs">
-            <span class         ="text-weight-bold q-pl-sm q-mr-md">
+          <div class                ="col-10 q-mt-xs">
+            <span class             ="text-weight-bold q-pl-sm q-mr-md">
               {{linea.ref}}
             </span>
             {{linea.qty}} x {{linea.nombre}}
           </div>
           <!-- //?* ///////////////////////////////////////////////////// Estado -->
           <div>
-            <q-btn              flat round dense
-              color             ="grey-10"
-              icon              ="mdi-gift"
+            <q-btn                  flat round dense
+              color                 ="grey-10"
+              icon                  ="mdi-gift"
               >
-              <Tooltip :label   ="'Estado: ' + linea.estado"/>
+              <Tooltip :label       ="'Estado: ' + linea.estado"/>
             </q-btn>
-            <q-popup-edit       v-model="linea.estado" auto-save>
-              <q-input          v-model="linea.estado" dense autofocus @input="generarPDF"/>
+            <q-popup-edit           v-model="linea.estado" auto-save>
+              <q-input              v-model="linea.estado" dense autofocus @update:model-value="generarPDF"/>
             </q-popup-edit>
           </div>
           <!-- //?* ///////////////////////////////////////////////////// Descripcion -->
           <div>
-            <q-btn              flat round dense
-              :color            ="linea.descripcionOn ? 'grey-10' : 'grey-6'"
-              icon              ="mdi-clipboard-list"
+            <q-btn                  flat round dense
+              :color                ="linea.descripcionOn ? 'grey-10' : 'grey-6'"
+              icon                  ="mdi-clipboard-list"
               >
-              <Tooltip  label   ="Editar descripción"/>
+              <Tooltip  label       ="Editar descripción"/>
             </q-btn>
-            <q-popup-edit       v-model="linea.descripcion" auto-save>
-              <q-input          dense autofocus
-                v-model         ="linea.descripcion"
-                style           ="width: 300px"
-                type            ="textarea"
-                @input          ="generarPDF"
+            <q-popup-edit           v-model="linea.descripcion" auto-save>
+              <q-input              dense autofocus
+                v-model             ="linea.descripcion"
+                style               ="width: 300px"
+                type                ="textarea"
+                @update:model-value ="generarPDF"
               />
               <q-toggle
-                label           ="Mostrar descripción"
-                v-model         ="linea.descripcionOn"
-                @input          ="generarPDF"
+                label               ="Mostrar descripción"
+                v-model             ="linea.descripcionOn"
+                @update:model-value ="generarPDF"
               />
             </q-popup-edit>
           </div>
         </div>
       </div>      
     </div>
-    <div  class               ="col-7 full-height bg-grey-9 text-white">
+    <div  class                     ="col-7 full-height bg-grey-9 text-white">
       <q-pdfviewer
-        type                  ="html5"
-        :src                  ="srcPDF"
+        :type                       ="esMobil ? 'pdfjs' : 'html5'"
+        :src                        ="srcPDF"
       />
     </div>           
   </ventana>
@@ -121,15 +121,17 @@
   import {  useStoreAcuerdo     } from 'src/stores/acuerdo'
   // * /////////////////////////////////////////////////////////////////////////////////// Modelos
   import {  IAcuerdo            } from "../../models/Acuerdo";
-  import {  ILineaLite          } from "../../models/LineaAcuerdo"
+  import {  ILineaLite          } from "../../models/LineaAcuerdo"  
   // * /////////////////////////////////////////////////////////////////////////////////// Componibles
   import {  useRemisionPDF      } from "src/areas/acuerdos/composables/useRemision"
   import {  btnBaseSm           } from "src/useSimpleOk/useEstilos"
+  import {  useTools            } from "src/useSimpleOk/useTools"
   // * /////////////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana               from "components/utilidades/Ventana.vue"
 
   const { getRemisionPDF,
-          saveRemisionPDF   } = useRemisionPDF()        
+          saveRemisionPDF   } = useRemisionPDF()
+  const {  esMobil          } = useTools()          
   const props                 = defineProps({
     acuerdo:  { required: true, type: Object as PropType< IAcuerdo >  },
   })
@@ -153,8 +155,8 @@
 
   async function generarPDF()
   {
-    console.log("generarPDF: ");
-    srcPDF.value              = await getRemisionPDF( acuerdo.value, lineas.value )
+    console.log("generarPDF: ");    
+    srcPDF.value              = await getRemisionPDF( acuerdo.value, lineas.value, indicaciones.value, fechaEntrega.value )
   }
 
   function toggleMostrarDescripciones( on : boolean )

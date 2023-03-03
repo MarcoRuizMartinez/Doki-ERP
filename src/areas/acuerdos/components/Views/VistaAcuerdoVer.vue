@@ -38,7 +38,6 @@
     class                   ="col-12"
   />
   <enlaces                  minimizar
-    ref                     ="moduloEnlaces"
     class                   ="col-md-4 col-12"
     height-card             ="220px"    
   />
@@ -157,14 +156,15 @@
           pasarABorradorAcuerdo,
           reabrirPedido,
           buscarAcuerdo,
+          buscarEnlacesAcuerdo,
+          buscarAcuerdoEnlazados,
           eliminarAcuerdo,
           validarAcuerdo,
           cerrarPedido,
                             } = useControlAcuerdo()
   const minimizadoTodo        = ref< boolean  >(false)
   const srcPDF                = ref< string   >("")
-  const acuerdoRemsion        = ref< IAcuerdo >( new Acuerdo() )
-  const moduloEnlaces         = ref<InstanceType<typeof enlaces>      | null>(null)
+  const acuerdoRemsion        = ref< IAcuerdo >( new Acuerdo() )  
   const moduloCondiciones     = ref<InstanceType<typeof condiciones>  | null>(null)
   const bodegas               = dexieBodegas()
 
@@ -192,7 +192,8 @@
   async function clickAprobarCotizacion()
   {
     await aprobarCotizacion()
-    moduloEnlaces.value?.buscar()
+    await buscarEnlacesAcuerdo()    
+    await buscarAcuerdoEnlazados()
   }
 
   function cargarArchivos( files : IArchivo[] ) { acuerdo.value.archivos = files }

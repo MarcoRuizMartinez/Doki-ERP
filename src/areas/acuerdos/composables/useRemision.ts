@@ -7,8 +7,8 @@ import {  UtilPDF,
 import {  Acuerdo, IAcuerdo } from "src/areas/acuerdos/models/Acuerdo"
 import {  ILineaLite        } from "src/areas/acuerdos/models/LineaAcuerdo"
 import {  TIPO_ACUERDO      } from "src/areas/acuerdos/models/ConstantesAcuerdos"
-
 import {  fechaLarga,
+          fechaCorta,
           limpiarHTML,
           formatoPrecio,
                             } from "src/useSimpleOk/useTools"
@@ -23,28 +23,32 @@ import {  useStoreUser      } from 'src/stores/user'
 export function useRemisionPDF()
 {
   const { usuario           } = storeToRefs( useStoreUser() )  
-  const pdf     : jsPDF       = new jsPDF('p','px')
-  const setup   : IInicioPDF  = { ancho:      447,
-                                  alto:       631,
-                                  margenIzq:  10,
-                                  margenDer:  10,
-                                  pie:        8,
-                                  path:       "images/pdf/",
-                                  pdf:        pdf
-                                }
-  const doc     : IUtilPDF    = new UtilPDF( setup )
-  let acuerdo   : IAcuerdo    = new Acuerdo()
+  const pdf         : jsPDF       = new jsPDF('p','px')
+  const setup       : IInicioPDF  = { ancho:      447,
+                                      alto:       631,
+                                      margenIzq:  10,
+                                      margenDer:  10,
+                                      pie:        8,
+                                      path:       "images/pdf/",
+                                      pdf:        pdf
+                                    }
+  const doc         : IUtilPDF    = new UtilPDF( setup )
+  let acuerdo       : IAcuerdo    = new Acuerdo()
+  let indicaciones  : string
+  let fecha         : string
 
-  async function getRemisionPDF( acuerdoEntrega : IAcuerdo, lineas : ILineaLite[] ) : Promise<string>
+  async function getRemisionPDF( acuerdoEntrega : IAcuerdo, lineas : ILineaLite[], indicaciones_ : string, fecha_ : string ) : Promise<string>
   {
     acuerdo                   = acuerdoEntrega
+    indicaciones              = indicaciones_
+    fecha                     = !!fecha_ ? fecha_ : fechaCorta( new Date( Date.now() ) )
     doc.limpiarPDF()
     await configurarPDF()
     for(let copia = 1; copia <= 2; copia++)
     {
       doc.y = copia === 1 ? 0 : doc.altoMitad
       generarCabezote()
-      generarCuerpo()
+      //generarCuerpo()
       generarPie()
     }
     
@@ -99,7 +103,8 @@ export function useRemisionPDF()
     pdf.roundedRect     (doc.margenIzq, doc.y, doc.posXMargenDerecha, altoRect, 2, 2 )
 
 
-    //*                 ////////////////////////////////////////////////////////////////////// Cliente 
+    //*                 ////////////////////////////////////////////////////////////////////// Cliente
+
     doc.margen1         = doc.margenIzq + 6
     doc.margen2         = doc.margenIzq + 60
     doc.y               += 12
@@ -128,13 +133,37 @@ export function useRemisionPDF()
     pdf.setFontSize     (10)
     pdf.text            ("INDICACIONES:", doc.margen1, doc.y, { align: "left", renderingMode: 'fillThenStroke' })
       
-    const indicacion    = acuerdo.contactoEntrega.nota
-    const indicaSplit   = pdf.splitTextToSize(indicacion, WIDTH_BOX_FONT( indicacion ) )
-    pdf.setFontSize     ( SIZE_FONT( indicacion ) ) 
+    
+    const indicaSplit   = pdf.splitTextToSize(indicaciones, WIDTH_BOX_FONT( indicaciones ) )
+    pdf.setFontSize     ( SIZE_FONT( indicaciones ) ) 
     pdf.text            ( indicaSplit, doc.margen2, doc.y )
 
-    doc.y               += getEspaciado( indicaSplit )
+    doc.y               += getEspaciado( indicaSplit ) 
 
+    //*                 ////////////////////////////////////////////////////////////////////// INDICACIONES
+ /*    const direccion     = acuerdo.contactoEntrega.municipio.label + " " + acuerdo.contactoEntrega.direccion + " asdf sdf asdf sd adsf sdfd fsdf ds  asdfasdf asdf sadf asdf sdf dfsdf  safd asdf asdff"
+    autoTable(pdf, {      
+      startY:     doc.y + 2,
+      theme:      "plain",
+      styles:     { cellPadding: 2, lineWidth: 0.2,  lineColor: 255, fillColor: [255, 255, 255], textColor: [20,20,20] },
+      margin:     { left: doc.margenIzq + 5, right: doc.margenDer + 5, bottom: 0 },
+      headStyles: { fontStyle: 'bold' },
+      head:       [ ['CLIENTE:', acuerdo.tercero.nombre ]],
+      body:       [ ["DIRECCIÓN:", direccion ], ["INDICACIONES:", indicaciones ] ],
+      columnStyles: { 0: { fontStyle: 'bold' } },
+    })   
+     */
+    
+    
+    autoTable(pdf, {      
+      startY:     doc.y,
+      theme:      "plain",
+      styles:     { halign: 'center',  lineWidth: 0.2,  lineColor: 50, fillColor: [255, 255, 255], textColor: [20,20,20]},
+      margin:     { left: doc.margenIzq, right: doc.margenDer, bottom: 0 },
+      headStyles: { fontStyle: 'bold' },
+      head:       [ ['TELÉFONO', acuerdo.tercero.documento.tipo.label, 'ASESOR', 'FECHA', 'ORDEN', "ELABORO" ]],
+      body:       [ [ acuerdo.tercero.telefono, acuerdo.tercero.numeroDocumento, acuerdo.comercial.nombreCompleto, fecha, acuerdo.refCliente,  usuario.value.nombreCompleto ], ],
+    })    
     //*                 ////////////////////////////////////////////////////////////////////// Cliente 
 /*     doc.y               += 12
     doc.setFont         ( 11, 0 )
@@ -231,7 +260,7 @@ export function useRemisionPDF()
   }
 
   function getEspaciado( arreglo : any[] ) : number {
-    return 12 + ( arreglo.length * 3 )
+    return 12 + ( arreglo.length * 2.5 )
   }
   
   function WIDTH_BOX_FONT(texto : string) : number
@@ -248,7 +277,7 @@ export function useRemisionPDF()
     else if(largo       <= 110)
       size              = 360
     else
-      size              = 390
+      size              = 400
 
     return size
   }

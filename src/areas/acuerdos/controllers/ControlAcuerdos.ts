@@ -30,6 +30,8 @@ import {  IMetodoEntrega        } from "src/models/Diccionarios/MetodoEntrega"
 import {  ITiempoEntrega        } from "src/models/Diccionarios/TiempoEntrega"
 import {  IProyecto, Proyecto   } from "src/areas/proyectos/models/Proyecto"
 import {  IAcuerdo, Acuerdo     } from "src/areas/acuerdos/models/Acuerdo"  
+import {  IEnlaceAcuerdo,
+          EnlaceAcuerdo         } from "src/areas/acuerdos/models/EnlaceAcuerdo"
 import {  IContacto,
           Contacto,
           TTipoContacto,
@@ -68,6 +70,7 @@ export function useControlAcuerdo()
   const { acuerdo,
           loading             } = storeToRefs( useStoreAcuerdo() )
   const reglasComision          = dexieReglaComision()
+  const endPoint                = ( tipo : "servicios" | "listas" ) => getURL(tipo, "acuerdos")
 
   //* /////////////////////////////////////////////////////////////// Crear Acuerdo
   async function crearAcuerdo( idUsuario : number ) : Promise<boolean>
@@ -122,7 +125,7 @@ export function useControlAcuerdo()
       //verificarPermisosLectura()
       await buscarTerceroDolibarr ( acuerdo.value.terceroId   )
       await buscarProyecto        ( acuerdo.value.proyectoId  )
-      //await buscarEntregasPedido  ( acuerdo.value.id          )
+      await buscarAcuerdoEnlazados()
     }
     else
     {
@@ -193,10 +196,9 @@ export function useControlAcuerdo()
   //* ////////////////////////////////////////////////////////////////////// Cambiar contacto entrega
   async function cambiarContactoEntrega( contacto_id : number)
   {
-    const endPoint              = getURL("servicios", "acuerdos")
     const objeto                = { contacto_id, entrega_id: acuerdo.value.id, acuerdo: acuerdo.value.tipo }
     const objetoForData         = { body: getFormData("editarContactoEntrega", objeto), method: "POST"}
-    const { ok  }               = await miFetch( endPoint, objetoForData, { mensaje: "contacto de entrega" } )        
+    const { ok  }               = await miFetch( endPoint("servicios"), objetoForData, { mensaje: "contacto de entrega" } )        
     
     if(ok){
       aviso("positive", `Contacto de entrega cambiado 👌🏼`)
@@ -267,7 +269,6 @@ export function useControlAcuerdo()
 
   async function editarDatosEntregaSistemaViejo() : Promise<boolean>
   {
-    const endPoint              = getURL("servicios", "acuerdos")
     const objeto                = {
                                     pedido_id:    acuerdo.value.id,
                                     acuerdo:      acuerdo.value.tipo,
@@ -276,7 +277,7 @@ export function useControlAcuerdo()
                                     indicaciones: acuerdo.value.contactoEntrega.nota,
                                   }
     const objetoForData         = { body: getFormData("editarEntregaOld", objeto), method: "POST"}
-    const { ok  }               = await miFetch( endPoint, objetoForData, { mensaje: "datos entrega" } )
+    const { ok  }               = await miFetch( endPoint("servicios"), objetoForData, { mensaje: "datos entrega" } )
     return ok
   }
 
@@ -664,7 +665,7 @@ export function useControlAcuerdo()
     loading.value.conIVA        = false
   }
 
-  async function buscarAcuerdoEnlazados() : Promise< IAcuerdo[] >
+  async function buscarAcuerdoEnlazados()
   {
     loading.value.enlaces = true
     const pedi            = getIds(   TIPO_ACUERDO.PEDIDO_CLI       )
@@ -676,9 +677,8 @@ export function useControlAcuerdo()
                               { ids:  coti, tipo: TIPO_ACUERDO.COTIZACION_CLI   },
                               { ids:  oc_p, tipo: TIPO_ACUERDO.PEDIDO_PRO       },
                               { ids:  en_c, tipo: TIPO_ACUERDO.ENTREGA_CLI      },
-                            ]
-    const acuerdos : IAcuerdo[] = []
-    acuerdo.value.entregas= []
+                            ]    
+    acuerdo.value.acuerdosEnlazados = []
 
     for (const item of paquete )
     {
@@ -691,19 +691,15 @@ export function useControlAcuerdo()
                                     offset:     0
                                   }
       const acuerdosI           = await getAcuerdos( query )
-      acuerdos.push( ...acuerdosI )
-
-      if( acuerdo.value.esPedido && item.tipo === TIPO_ACUERDO.ENTREGA_CLI )
-      {
-        acuerdo.value.entregas.push( ...acuerdosI )
-      }
+      acuerdo.value.acuerdosEnlazados.push( ...acuerdosI )
     }
+
+    acuerdo.value.acuerdosEnlazados.forEach( a => a.tercero = acuerdo.value.tercero )
     
     if( acuerdo.value.esPedido  )    
       acuerdo.value.calcularEntregado()
 
-    loading.value.enlaces = false
-    return acuerdos
+    loading.value.enlaces           = false
 
     function getIds( tipo : TTipoAcuerdo ) :string
     {
@@ -714,13 +710,20 @@ export function useControlAcuerdo()
     }
   }
 
+async function buscarEnlacesAcuerdo() 
+{
+  const objeto          = { ref: acuerdo.value.ref, id: acuerdo.value.id }
+  const { ok, data }    = await miFetch( getURL("listas", "varios"), { method: "POST", body: getFormData( "buscarEnlacesAcuerdo", objeto ) }, { mensaje: "buscar enlaces" } )
+  if(ok)
+    acuerdo.value.enlaces = EnlaceAcuerdo.enlacesApiToEnlaces( data, acuerdo.value.tipo )
+}  
+
     //* /////////////////////////////////////////////////////////////// Editar metodo de entrega
-  async function actualizarPreciosAcuerdo()
+  async function actualizarPreciosAcuerdo( soloCosto : 0 | 1 )
   {
-    const endPoint              = getURL("servicios", "acuerdos")
-    const objeto                = { id: acuerdo.value.id, acuerdo: acuerdo.value.tipo }
+    const objeto                = { id: acuerdo.value.id, acuerdo: acuerdo.value.tipo, soloCosto }
     const objetoForData         = { body: getFormData("actualizarPrecios", objeto), method: "POST"}
-    const { ok  }               = await miFetch( endPoint, objetoForData, { mensaje: "actualizar precios" } )        
+    const { ok  }               = await miFetch( endPoint("servicios"), objetoForData, { mensaje: "actualizar precios" } )        
     
     if(ok){
       aviso("positive", `Precios actualizados`)
@@ -765,6 +768,7 @@ export function useControlAcuerdo()
     desvincularContactoAcuerdo,
     editarDatosEntregaSistemaViejo,
     buscarAcuerdoEnlazados,
+    buscarEnlacesAcuerdo,
     actualizarPreciosAcuerdo
   }
 }

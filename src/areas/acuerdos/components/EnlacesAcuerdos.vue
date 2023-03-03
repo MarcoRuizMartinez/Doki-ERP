@@ -22,7 +22,7 @@
     <q-table                    borbordered dense flat hide-bottom
       class                     ="fit tabla-maco"
       row-key                   ="id"
-      :rows                     ="acuerdos"
+      :rows                     ="acuerdo.acuerdosEnlazados"
       :columns                  ="columnas"
       style                     ="min-height: 208px;"
       >
@@ -66,7 +66,8 @@
   import    refAcuerdo              from "src/areas/acuerdos/components/Busqueda/Columnas/RefAcuerdo.vue"
   import    estado                  from "src/areas/acuerdos/components/Busqueda/Columnas/Estado.vue"
   
-  const { buscarAcuerdoEnlazados  } = useControlAcuerdo()
+  const { buscarAcuerdoEnlazados,
+          buscarEnlacesAcuerdo    } = useControlAcuerdo()
   const { acuerdo                 } = storeToRefs( useStoreAcuerdo() )
   const modo                        = ref< ModosVentana >("esperando-busqueda")
   
@@ -74,46 +75,31 @@
     new Columna({ name: "ref"       }),
     new Columna({ name: "estado"    }),
   ]
-  const acuerdos              = ref< IAcuerdo[] >([])
+  
 
-  watch( ()=>acuerdo.value.ref, async ( ref )=> {
-    acuerdos.value            = []
+/*   watch( ()=>acuerdo.value.ref, async ( ref )=> {
     modo.value                = "sin-resultados"
     if(!ref) return
 
     await pausa(600)
     buscar()
-  }, { immediate: true})
+  }, { immediate: true}) */
   
-  defineExpose({  buscar })  
-
+  watch( ()=>acuerdo.value.acuerdosEnlazados.length, ( largo )=> {
+      modo.value    = !!largo                   ? "normal"
+                    : modo.value === "buscando" ? modo.value
+                    : "esperando-busqueda"
+    },
+    { immediate: true}
+  )
+  
+  
   async function buscar()
   {
     modo.value                = "buscando"
-    acuerdos.value            = await buscarAcuerdoEnlazados()
-    modo.value                = !!acuerdos.value.length ? "normal" : "sin-resultados"
+    await buscarEnlacesAcuerdo()
+    await buscarAcuerdoEnlazados()
+    modo.value                = !!acuerdo.value.acuerdosEnlazados.length ? "normal" : "sin-resultados"
   }
-
-/* 
-  async function buscarEnlaces()
-  {
-    const objeto          = { ref: acuerdo.value.ref, id: acuerdo.value.id }
-    
-    const { ok, data }    = await miFetch(  endPoint,
-                                                { method: "POST", body: getFormData( "buscarEnlacesAcuerdo", objeto ) },
-                                                { dataEsArray: true, mensaje: "buscar enlaces" }
-                                              )
-    if(ok && Array.isArray( data ) && !!data.length)
-    {
-      //enlaces.length      = 0
-      for (const item of data)
-      {
-        const enlace      = EnlaceAcuerdo.enlaceApiToEnlace( item, acuerdo.value.tipo )
-        //enlaces.push( enlace )      
-      }
-    }
-  }
-*/
-
 
 </script>

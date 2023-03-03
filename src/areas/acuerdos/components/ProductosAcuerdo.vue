@@ -16,8 +16,23 @@
         color                   ="positive"
         icon                    ="mdi-refresh"        
         >
-        <confirmar  @ok         ="actualizarPreciosAcuerdo"/>
-      </q-btn>
+        <q-menu                 transition-show="jump-down" transition-hide="jump-up" 
+          class                 ="q-ma-xl column transparent panel-blur70 " 
+          >
+          <q-btn
+            v-bind              ="estiloBtn"
+            label               ="Precios"
+            >
+            <confirmar  @ok     ="actualizarPreciosAcuerdo( 0 )"/>
+          </q-btn>
+          <q-btn
+            v-bind              ="estiloBtn"
+            label               ="Solo comisiones"            
+            >
+              <confirmar  @ok   ="actualizarPreciosAcuerdo( 1 )"/>
+            </q-btn>     
+        </q-menu>
+      </q-btn> 
       <!-- //* ///////////////////////////////////////////////////////////// Boton nuevo grupo   -->
       <q-btn
         v-bind                  ="btnBaseSm"
@@ -126,4 +141,11 @@
   const { crearNuevoGrupo     } = useControlProductos()
 
   watch( () => modales.value.formulario, (mostrarForm) => destacarLineaElegida(mostrarForm) )
+
+  const estiloBtn = {
+    flat:     true,
+    dense:    true,
+    noCaps:   true,
+    padding:  "4px 14px"
+  }
 </script>

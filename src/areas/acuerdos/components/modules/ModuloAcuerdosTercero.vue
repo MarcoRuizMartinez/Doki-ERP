@@ -19,6 +19,13 @@
       <Tooltip label            ="Ver listado completo"/>
     </template>    
     <template                   #barra>
+      <q-btn                    round dense flat
+        icon                    ="mdi-refresh"
+        class                   ="op60 op100-hover"
+        @click                  ="buscar"
+        >
+        <Tooltip label          ="Recargar"/>
+      </q-btn>
       <!-- //* ///////////////  Boton crear acuerdo  -->
       <q-btn
         v-if                    ="tipo !== TIPO_ACUERDO.PEDIDO_PRO"

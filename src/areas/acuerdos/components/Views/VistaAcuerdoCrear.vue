@@ -79,7 +79,7 @@
 
   const { acuerdo,
           loading           } = storeToRefs( useStoreAcuerdo() )
-  const { generarPDF        } = useCotizacionPDF()
+  const { getQuotePDF       } = useCotizacionPDF()
   const { crearAcuerdo      } = useControlAcuerdo()
   const { crearNuevoGrupo   } = useControlProductos()
   const { usuario           } = storeToRefs( useStoreUser() )
@@ -115,7 +115,7 @@
     function crearGrupoSiNoHay() {
       if(!acuerdo.value.proGrupos.length)
       crearNuevoGrupo()
-    }    
+    }
   }
 
   onUnmounted(()=>{
@@ -152,7 +152,7 @@
   async function generarPDFAcuerdo(){
     if(acuerdo.value.esCotizacion){
       ventanaPDF.value          = true
-      srcPDF.value              = await generarPDF( acuerdo.value )
+      srcPDF.value              = await getQuotePDF( acuerdo.value )
     }
   }
 
