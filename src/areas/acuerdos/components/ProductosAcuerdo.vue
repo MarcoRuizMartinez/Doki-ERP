@@ -14,19 +14,20 @@
         v-bind                  ="btnBaseSm"
         label                   ="Actualizar precios"
         color                   ="positive"
-        icon                    ="mdi-refresh"        
+        icon                    ="mdi-refresh"
         >
-        <q-menu                 transition-show="jump-down" transition-hide="jump-up" 
-          class                 ="q-ma-xl column transparent panel-blur70 " 
+        <q-menu                 
+          v-bind                ="menuDefault"
+          class                 ="column transparent panel-blur70" 
           >
           <q-btn
-            v-bind              ="estiloBtn"
+            v-bind              ="btnSimple"
             label               ="Precios"
             >
             <confirmar  @ok     ="actualizarPreciosAcuerdo( 0 )"/>
           </q-btn>
           <q-btn
-            v-bind              ="estiloBtn"
+            v-bind              ="btnSimple"
             label               ="Solo comisiones"            
             >
               <confirmar  @ok   ="actualizarPreciosAcuerdo( 1 )"/>
@@ -118,8 +119,9 @@
   import {  useControlProductos   } from "src/areas/acuerdos/controllers/ControlLineasProductos"
   import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"
   import {  btnBaseSm, 
-            dialogDefault         } from "src/useSimpleOk/useEstilos"
-  
+            btnSimple,
+            menuDefault,
+            dialogDefault         } from "src/useSimpleOk/useEstilos"            
   // * ///////////////////////////////////////////////////////////////////////////// Componentes
 
   import    ventana                 from "components/utilidades/Ventana.vue"
@@ -129,6 +131,7 @@
   import    formularioLinea         from "./Modals/FormularioLinea.vue"
   import    editarEnLote            from "./Modals/EditarEnLoteQtyDesc.vue"
   import    confirmar               from "components/utilidades/MenuConfirmar.vue"
+  
 
   const { destacarLineaElegida,
           mostrarBuscarProductos    } = useControlProductos()
@@ -142,10 +145,5 @@
 
   watch( () => modales.value.formulario, (mostrarForm) => destacarLineaElegida(mostrarForm) )
 
-  const estiloBtn = {
-    flat:     true,
-    dense:    true,
-    noCaps:   true,
-    padding:  "4px 14px"
-  }
+
 </script>

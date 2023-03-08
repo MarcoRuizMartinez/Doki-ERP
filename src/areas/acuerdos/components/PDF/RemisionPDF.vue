@@ -16,56 +16,58 @@
     </template>    
     <!-- //?* //////////////////////////////////////////////////////////// Lado izquierdo -->
     <div  class                     ="col-5 full-height">
-      <!-- //?* ////////////////////////////////////////////////////////// Datos remisión -->
-      <div    class                 ="datos-remision q-pa-lg">
-        <div class                  ="nombre text-weight-bold">{{ acuerdo.tercero.nombre }}</div>
-
-        <div class                  ="text-weight-bold">Dirección:</div>
-        <div class                  ="celda-full">
-          {{ acuerdo.contactoEntrega.municipio.label  }}: {{ acuerdo.contactoEntrega.direccion  }}
-        </div>
-
-        <div class                  ="text-weight-bold">Contacto:</div>
-        <div class                  ="celda-full">
-          {{ acuerdo.contactoEntrega.nombreCompleto }} - {{ acuerdo.contactoEntrega.telefono  }}
-        </div>
-                
-        <div class                  ="text-weight-bold">Indicaciones:</div>
-        <div class                  ="celda-full">
-          {{ indicaciones }}
-          <q-popup-edit             v-model="indicaciones" auto-save @save="generarPDF">
-            <q-input                v-model="indicaciones" dense autofocus @update:model-value="generarPDF"/>
-          </q-popup-edit>
-        </div>
-        <div class                  ="text-weight-bold">Fecha:</div>
-        <!-- //?* ////////////////////////////////////////////////////////////// Campo Fecha llegada --> 
-        <q-input                    dense filled hide-bottom-space
-          type                      ="date"
-          v-model                   ="fechaEntrega"
+      <div    class                 ="row q-pa-lg q-col-gutter-sm datos-remision">
+        <div class                  ="col-12 text-h5 text-center text-uppercase">Datos de remisión</div>
+        <!-- //* ///////////////////////////////////////////////// Dirección -->
+        <input-text
+          v-model                   ="datos.direccion"
+          label                     ="Dirección"
+          icon                      ="mdi-office-building-marker"
+          class                     ="col-12"
           @update:model-value       ="generarPDF"
-        />  
-        <div>
-          <q-toggle                 dense
-            label                   ="Mostrar descripción"
-            v-model                 ="mostrarDescripciones"
-            style                   ="width: 200px"
+        />
+        <!-- //* ///////////////////////////////////////////////// Indicaciones -->
+        <input-text
+          v-model                   ="datos.indicaciones"
+          label                     ="Indicaciones"
+          icon                      ="mdi-sign-direction"
+          class                     ="col-12"
+          @update:model-value       ="generarPDF"
+        />
+        <!-- //* ///////////////////////////////////////////////// Fecha Creacion -->
+        <input-fecha                
+          v-model                   ="datos.fechaEntrega"
+          label                     ="Fecha entrega"
+          class                     ="col-4"
+          @update:model-value       ="generarPDF"
+        />        
+        <!-- //?* ////////////////////////////////////////////////////////////// Mostrar Descripciones--> 
+        <div class                  ="col-4 q-pt-md">
+          <q-toggle                   
+            label                   ="Con descripción"
+            v-model                 ="datos.conDescripcion"
             @update:model-value     ="toggleMostrarDescripciones"
+          />
+        </div>
+        <div class                  ="col-4 q-pt-md">
+          <q-toggle                   
+            label                   ="Hoja completa"
+            v-model                 ="datos.dosHojas"
+            @update:model-value     ="generarPDF"
           />
         </div>
       </div>
       <!-- //?* ///////////////////////////////////////////////////////// Items remisión -->
       <div class                    ="row col-12 q-px-lg">
         <div
-          v-for                     ="(linea, index) of lineas"
+          v-for                     ="(linea, index) of datos.lineas"
           :index                    ="index"
           class                     ="row col-12 bg-grey-2 q-mb-xs"
           >
           <!-- //?* ///////////////////////////////////////////////////// Ref nombre y nota -->
-          <div class                ="col-10 q-mt-xs">
-            <span class             ="text-weight-bold q-pl-sm q-mr-md">
-              {{linea.ref}}
-            </span>
-            {{linea.qty}} x {{linea.nombre}}
+          <div class                ="col-10 q-mt-xs row q-col-gutter-sm">
+            <div class              ="col-3 text-weight-bold"> {{linea.ref}} </div>
+            <div  class             ="col-9"> {{linea.qty}} x {{linea.nombre}} </div>            
           </div>
           <!-- //?* ///////////////////////////////////////////////////// Estado -->
           <div>
@@ -75,9 +77,16 @@
               >
               <Tooltip :label       ="'Estado: ' + linea.estado"/>
             </q-btn>
-            <q-popup-edit           v-model="linea.estado" auto-save>
-              <q-input              v-model="linea.estado" dense autofocus @update:model-value="generarPDF"/>
-            </q-popup-edit>
+            <q-popup-edit           auto-save buttons
+              v-model               ="linea.estado" 
+              v-slot                ="scope"
+              @update:model-value ="generarPDF"
+              >
+              <q-input              dense autofocus
+                v-model             ="scope.value"
+                @keyup.enter        ="scope.set"
+              />
+            </q-popup-edit>            
           </div>
           <!-- //?* ///////////////////////////////////////////////////// Descripcion -->
           <div>
@@ -87,18 +96,21 @@
               >
               <Tooltip  label       ="Editar descripción"/>
             </q-btn>
-            <q-popup-edit           v-model="linea.descripcion" auto-save>
+            <q-popup-edit           auto-save buttons
+              v-model               ="linea.descripcion" 
+              v-slot                ="scope"
+              @update:model-value   ="generarPDF"
+              >
               <q-input              dense autofocus
-                v-model             ="linea.descripcion"
+                v-model             ="scope.value"
                 style               ="width: 300px"
                 type                ="textarea"
-                @update:model-value ="generarPDF"
               />
               <q-toggle
                 label               ="Mostrar descripción"
                 v-model             ="linea.descripcionOn"
                 @update:model-value ="generarPDF"
-              />
+              />              
             </q-popup-edit>
           </div>
         </div>
@@ -116,18 +128,17 @@
   // * /////////////////////////////////////////////////////////////////////////////////// Core
   import {  ref, toRefs, watch,
             PropType            } from "vue"
-  // * /////////////////////////////////////////////////////////////////////////////////// Store
-  import {  storeToRefs         } from 'pinia'
-  import {  useStoreAcuerdo     } from 'src/stores/acuerdo'
   // * /////////////////////////////////////////////////////////////////////////////////// Modelos
   import {  IAcuerdo            } from "../../models/Acuerdo";
-  import {  ILineaLite          } from "../../models/LineaAcuerdo"  
   // * /////////////////////////////////////////////////////////////////////////////////// Componibles
-  import {  useRemisionPDF      } from "src/areas/acuerdos/composables/useRemision"
+  import {  IParams,
+            useRemisionPDF      } from "src/areas/acuerdos/composables/pdf/useRemision"
   import {  btnBaseSm           } from "src/useSimpleOk/useEstilos"
   import {  useTools            } from "src/useSimpleOk/useTools"
   // * /////////////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana               from "components/utilidades/Ventana.vue"
+  import    inputFecha            from "components/utilidades/input/InputFecha.vue"
+  import    inputText             from "components/utilidades/input/InputFormText.vue"
 
   const { getRemisionPDF,
           saveRemisionPDF   } = useRemisionPDF()
@@ -137,43 +148,45 @@
   })
 
   const { acuerdo }           = toRefs( props )
-  const fechaEntrega          = ref< string   >( "" )
-  const indicaciones          = ref< string   >( "" )
+  const datos                 = ref< IParams  >( {
+    lineas                    : [],
+    direccion                 : "",
+    indicaciones              : "",
+    fechaEntrega              : new Date(),
+    conDescripcion            : false,
+    dosHojas                  : false,
+    metodo                    : "",
+  } )
   const srcPDF                = ref< string   >( "" )
-  const mostrarDescripciones  = ref< boolean  >( false )
-  const lineas                = ref< ILineaLite[] >( [] )
-
 
   watch(()=> acuerdo.value.ref, ()=>
     {
-      indicaciones.value      = acuerdo.value.contactoEntrega.nota      
+      datos.value.direccion   = acuerdo.value.contactoEntrega.direccion
+      datos.value.indicaciones= acuerdo.value.contactoEntrega.nota
       copiarLineas()
     },
     { immediate: true }
   )
-  
 
-  async function generarPDF()
-  {
-    console.log("generarPDF: ");    
-    srcPDF.value              = await getRemisionPDF( acuerdo.value, lineas.value, indicaciones.value, fechaEntrega.value )
+  async function generarPDF() {
+    datos.value.metodo        = acuerdo.value.metodoEntrega.label
+    srcPDF.value              = await getRemisionPDF( acuerdo.value, datos.value  )
   }
 
-  function toggleMostrarDescripciones( on : boolean )
-  {
-    lineas.value.forEach( l => l.descripcionOn = on )
+  function toggleMostrarDescripciones( on : boolean ) {
+    datos.value.lineas.forEach( l => l.descripcionOn = on )
     generarPDF()
   }
 
   function copiarLineas()
   {
-    lineas.value            = []
+    datos.value.lineas  = []
 
     for (const linea of acuerdo.value.productos)
     {
       if(linea.esTituloOsubTotal) continue
 
-      lineas.value.push( { 
+      datos.value.lineas.push( { 
         id            : linea.lineaId,
         ref           : linea.ref,
         nombre        : linea.nombre,
@@ -189,27 +202,3 @@
   }
 
 </script>
-
-
-<style scoped>
-.datos-remision{
-  display: grid;
-  gap: 0.7rem;
-  grid-template-rows: auto;
-  grid-template-columns: repeat(5, 1fr);
-  width: 100%;
-}
-.datos-remision > div{
-  padding: 5px 10px;
-  background-color: rgb(240, 240, 240);
-}
-.nombre{
-  font-size: 18px;
-  grid-column: 1 / span 5;
-}
-
-.celda-full{
-  grid-column: 2 / 6;
-}
-
-</style>

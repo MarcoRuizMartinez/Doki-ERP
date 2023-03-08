@@ -55,15 +55,6 @@
     },
     {
         "type": "File",
-        "name": "c:\\Users\\estad\\Apps\\SimpleOk-ERP\\src\\areas\\acuerdos\\composables\\useCotizacionPDF.ts",
-        "parent_id": null,
-        "fsPath": "c:\\Users\\estad\\Apps\\SimpleOk-ERP\\src\\areas\\acuerdos\\composables\\useCotizacionPDF.ts",
-        "workspaceRoot": null,
-        "workspacePath": null,
-        "id": "K032GejJvxg7YpCr"
-    },
-    {
-        "type": "File",
         "name": "c:\\Users\\estad\\Apps\\SimpleOk-ERP\\src\\useSimpleOk\\useMenu.ts",
         "parent_id": null,
         "fsPath": "c:\\Users\\estad\\Apps\\SimpleOk-ERP\\src\\useSimpleOk\\useMenu.ts",

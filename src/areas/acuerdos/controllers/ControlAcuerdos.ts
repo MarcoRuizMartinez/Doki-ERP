@@ -665,9 +665,10 @@ export function useControlAcuerdo()
     loading.value.conIVA        = false
   }
 
-  async function buscarAcuerdoEnlazados()
+  async function buscarAcuerdoEnlazados( buscarEnlaces : boolean = false )
   {
     loading.value.enlaces = true
+    if( buscarEnlaces )   await buscarEnlacesAcuerdo()
     const pedi            = getIds(   TIPO_ACUERDO.PEDIDO_CLI       )
     const coti            = getIds(   TIPO_ACUERDO.COTIZACION_CLI   )
     const oc_p            = getIds(   TIPO_ACUERDO.PEDIDO_PRO       )
@@ -768,7 +769,6 @@ async function buscarEnlacesAcuerdo()
     desvincularContactoAcuerdo,
     editarDatosEntregaSistemaViejo,
     buscarAcuerdoEnlazados,
-    buscarEnlacesAcuerdo,
     actualizarPreciosAcuerdo
   }
 }

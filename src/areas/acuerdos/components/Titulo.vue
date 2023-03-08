@@ -9,7 +9,7 @@
       <q-btn                  push dense
         class                 ="q-mr-sm"
         padding               ="0"
-        @click                ="emit('click')"
+        @click                ="clickBtn"
         >
         <!--         
         <q-img
@@ -41,7 +41,7 @@
         <!-- //* ////////////////////////////////////////////////////// Boton 3D -->
         <q-btn              push no-caps
           padding           ="0"
-          @click            ="emit('click')"
+          @click            ="clickBtn"
           >
           <span class       ="titulo-xl sombra-3d fuente-gruesa text-capitalize">
             {{acuerdo.labelEspecial}}
@@ -149,20 +149,29 @@
   import {  useTools              } from "src/useSimpleOk/useTools"
   import    titulo                  from "components/utilidades/Titulo.vue"
   import    efecto                  from "components/utilidades/Efecto.vue"
+  import {  TTipoPDF              } from "src/areas/acuerdos/composables/pdf/useCotizacion"
   import {  storeToRefs           } from 'pinia'
   import {  useStoreAcuerdo       } from 'src/stores/acuerdo'  
 
   const { acuerdo           } = storeToRefs( useStoreAcuerdo() )  
   const { esMobil, aviso    } = useTools()
   const { setTitulo         } = servicesAcuerdos()
-  const emit                  = defineEmits(["click", "recargar"])
+
+  const emit = defineEmits<{
+    (e: 'click',    value: TTipoPDF ): void
+    (e: 'recargar',                 ): void
+  }>()
+
 
   async function editarTitulo( titulo : string )
   {
     let ok                    = await setTitulo( acuerdo.value.id, titulo, acuerdo.value.tipo )
     aviso("positive", "Titulo editado", "comment")
   }
-</script>
-<style>
+  
+  function clickBtn()
+  {
+    emit('click', acuerdo.value.esCotizacion ? 'quote' : 'cuentaCobro')
+  }
 
-</style>
+</script>

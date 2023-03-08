@@ -66,7 +66,7 @@
   import {  btnBaseMd             } from "src/useSimpleOk/useEstilos"
   import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"
   import {  useControlProductos   } from "src/areas/acuerdos/controllers/ControlLineasProductos"
-  import {  useCotizacionPDF      } from "src/areas/acuerdos/composables/useCotizacionPDF"
+  import {  useCotizacionPDF      } from "src/areas/acuerdos/composables/pdf/useCotizacion"
   // * /////////////////////////////////////////////////////////////////////////////////// Componentes
   import    barra                   from "components/utilidades/Barra.vue"
   import    visorPdf                from "components/utilidades/VisorPDF.vue"

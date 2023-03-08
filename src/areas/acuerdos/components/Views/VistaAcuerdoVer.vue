@@ -18,6 +18,7 @@
     @click-entregado        ="cerrarPedido"
     @click-comisiones       ="modales.comisiones = true"
     @click-nueva-entrega    ="clickNuevaEntrega"
+    @click-cuenta-cobro     ="generarPDF"
   />
   <tercero-y-contacto       scroll
     class                   ="col-md-4 col-12"
@@ -75,7 +76,7 @@
   <visor-pdf                descargar
     v-model:src             ="srcPDF"
     v-model:visible         ="modales.pdf"
-    nombre-pdf              ="Cotizacion"
+    :nombre-pdf             ="nombrePDF"
     @click-descargar        ="saveQuotePDF"
   />
   <!-- //* ///////////////////////////////////////////////////////////// Modal Buscar productos -->
@@ -114,18 +115,20 @@
   import {  storeToRefs           } from 'pinia'
   import {  useStoreAcuerdo       } from 'src/stores/acuerdo'
   //* ///////////////////////////////////////////////////////////////////////////////// Modelos
-  import {  Acuerdo, IAcuerdo              } from "../../models/Acuerdo"
+  import {  Acuerdo, IAcuerdo     } from "../../models/Acuerdo"
   import {  LineaAcuerdo          } from "src/areas/acuerdos/models/LineaAcuerdo"
   import {  IArchivo              } from "src/models/Archivo"
   import {  AREA                  } from "src/models/TiposVarios"
   //* ///////////////////////////////////////////////////////////////////////////////// Componibles
   import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"
-  import {  useCotizacionPDF      } from "src/areas/acuerdos/composables/useCotizacionPDF"
+  import {  useCotizacionPDF,
+            TTipoPDF              } from "src/areas/acuerdos/composables/pdf/useCotizacion"
   
   //import {  useControlProductos   } from "src/areas/acuerdos/controllers/ControlLineasProductos"
   import {  TTipoAcuerdo          } from "src/areas/acuerdos/models/ConstantesAcuerdos"
   import {  dialogDefault         } from "src/useSimpleOk/useEstilos"  
   import {  dexieBodegas          } from "src/services/useDexie"  
+  import {  pausa                 } from "src/useSimpleOk/useTools"
   //* ///////////////////////////////////////////////////////////////////////////////// Componentes
   import    visorPdf                from "components/utilidades/VisorPDF.vue"
   import    notas                   from ".././Notas.vue"
@@ -156,7 +159,6 @@
           pasarABorradorAcuerdo,
           reabrirPedido,
           buscarAcuerdo,
-          buscarEnlacesAcuerdo,
           buscarAcuerdoEnlazados,
           eliminarAcuerdo,
           validarAcuerdo,
@@ -164,6 +166,7 @@
                             } = useControlAcuerdo()
   const minimizadoTodo        = ref< boolean  >(false)
   const srcPDF                = ref< string   >("")
+  const nombrePDF             = ref< string   >("")
   const acuerdoRemsion        = ref< IAcuerdo >( new Acuerdo() )  
   const moduloCondiciones     = ref<InstanceType<typeof condiciones>  | null>(null)
   const bodegas               = dexieBodegas()
@@ -192,13 +195,12 @@
   async function clickAprobarCotizacion()
   {
     await aprobarCotizacion()
-    await buscarEnlacesAcuerdo()    
-    await buscarAcuerdoEnlazados()
+    await buscarAcuerdoEnlazados( true )
   }
 
   function cargarArchivos( files : IArchivo[] ) { acuerdo.value.archivos = files }
 
-  function clickNuevaEntrega()
+  async function clickNuevaEntrega()
   {
     const fechaYmetodoOk = moduloCondiciones.value?.validar()
     if(!fechaYmetodoOk) {
@@ -208,6 +210,9 @@
     const url = acuerdo.value.urlDolibarrNuevoEnvio + "&entrepot_id=" + getIdBodegaByArea( acuerdo.value.tercero.area )
     window.open(url, '_blank')
 
+    await pausa( 16_000 )
+    await buscarAcuerdoEnlazados( true )
+
     function getIdBodegaByArea( area : AREA ) : number
     {
       const idBodega  = bodegas.value.find( b => b.padre_id == 0 && b.area == area )?.id ?? 0
@@ -216,15 +221,21 @@
   }
 
 
-  async function generarPDF()
+  async function generarPDF( tipo : TTipoPDF = "quote")
   {
-    loading.value.pdf           = true
-    modales.value.pdf           = true    
+    if(acuerdo.value.esCotizacion || acuerdo.value.esPedido ){
+      loading.value.pdf         = true
+      modales.value.pdf         = true
+      nombrePDF.value           = tipo == "quote" ? 'Cotizacion' : 'Cuenta de cobro'
+      srcPDF.value              = await getQuotePDF( acuerdo.value, tipo )
+      loading.value.pdf         = false
+    }
+    else
+    if(acuerdo.value.esEntrega){
+      abrirModalRemision( acuerdo.value )
+    }
 
-    if(acuerdo.value.esCotizacion)
-      srcPDF.value              = await getQuotePDF( acuerdo.value )
-
-    loading.value.pdf           = false
+    
   }
 
 

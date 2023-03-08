@@ -140,7 +140,7 @@
   import {  btnBaseSm,
             dialogDefault         } from "src/useSimpleOk/useEstilos"
   import {  useApiDolibarr        } from "src/services/useApiDolibarr"
-  import {  useReciboCajaPDF      } from "src/areas/acuerdos/composables/useReciboCajaPDF"
+  import {  useReciboCajaPDF      } from "src/areas/acuerdos/composables/pdf/useReciboCaja"
   import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"
   import {  dexieCondicionesPago,
             dexieFormasPago       } from "src/services/useDexie"

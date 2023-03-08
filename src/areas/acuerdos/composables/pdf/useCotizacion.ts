@@ -16,12 +16,15 @@ import {  jsPDF             } from "jspdf"
 import    autoTable           from 'jspdf-autotable'
 //import    html2canvas         from 'html2canvas';
 
+export type TTipoPDF = "quote" | "cuentaCobro"
+
 export function useCotizacionPDF()
 {
   const { notify          } = useQuasar()
   let aviso   : Function
   let quote   : IAcuerdo    = new Acuerdo( TIPO_ACUERDO.COTIZACION_CLI )
   let algunGrupoConSubTotal = false
+  let tipo    : TTipoPDF    = "quote"
   const pdf   : jsPDF       = new jsPDF('p','px')
   const setup : IInicioPDF  = { ancho:      447,
                                 alto:       631,
@@ -33,12 +36,12 @@ export function useCotizacionPDF()
                               }
   const doc   : IUtilPDF    = new UtilPDF( setup )
 
-  async function getQuotePDF( cotizacion : IAcuerdo ) : Promise<string>
+  async function getQuotePDF( cotizacion : IAcuerdo, tipo_ : TTipoPDF = "cuentaCobro" ) : Promise<string>
   {
           limpiar()
           mostrarAviso()
     quote                   = cotizacion
-          //verificarDatosCorrectos()
+    tipo                    = tipo_
     await configurarPDF()
           generarCabezotePortada()
           generarTitulo()
@@ -69,12 +72,6 @@ export function useCotizacionPDF()
     pdf.save( nombre );
   }
 
-
-  function verificarDatosCorrectos()
-  {
-    
-  }
-
   async function configurarPDF() : Promise<void>
   {
     algunGrupoConSubTotal   = quote.proGrupos.some( g => g.conTotal )   
@@ -82,7 +79,7 @@ export function useCotizacionPDF()
   
     return new Promise(async (resolver) =>{
 
-      const { Candara }       = await import("src/assets/fonts/Candara.js")
+      const { Candara }     = await import("src/assets/fonts/Candara.js")
 
       doc.fontBase          = "Candara"
       pdf.addFileToVFS      ("Candara.ttf",      Candara) // "Identity-H"
@@ -116,8 +113,15 @@ export function useCotizacionPDF()
     //* ///////////////////////////////////// Textos Arriba derecha
     doc.y               = 17
     doc.setFont         ( 16, 60 )
-    const titulo        = quote.esEstadoNoValidado ? "NO VALIDO" : "COTIZACIÓN"
+    const titulo        = quote.esEstadoNoValidado ? "NO VALIDO" : tipo == "quote" ? "COTIZACIÓN" : "CUENTA DE COBRO"
     pdf.text            ( titulo, doc.ancho - 80, doc.y, { align: "center", renderingMode: 'fillThenStroke' } )
+
+    if(tipo             === "cuentaCobro")
+    {
+      const cuentaNota  = "Esta cuenta de cobro\nno es equivalente a una facturas \n ni la fecha ni el consecutivo.".toUpperCase()
+      doc.setFont       ( 12, 60 )
+      pdf.text          ( cuentaNota, doc.anchoMitad, doc.y, { align: "center" })
+    }
 
     //* ///////////////////////////////////// Datos empresa
     doc.y               += 9
@@ -441,7 +445,7 @@ export function useCotizacionPDF()
   {
     const altoImagen          = 440
     const alto                = altoImagen + 20 + 10 + 25
-    const ancho               = 360
+    const ancho               = 420
     const posX                = ( doc.ancho - ancho ) / 2
     if( doc.seNecesitaNuevaHoja( doc.y, alto ) )
       doc.y                   = crearNuevaHoja()
@@ -471,6 +475,10 @@ export function useCotizacionPDF()
     pdf.setTextColor( "#1a0dab" )
     doc.y                     += 42 
     pdf.textWithLink          ('Click para ver políticas de tratamiento de datos', doc.anchoMitad, doc.y, { url: doc.urlPoliticas, align: "center" })
+    if(doc.areaNombre         === "Mublex"){
+      doc.y                   += 10
+      pdf.textWithLink        ('Click para ver políticas de garantías', doc.anchoMitad, doc.y, { url: "https://www.mublex.com/politicas-de-garantia", align: "center" })    
+    }
   }
 
 

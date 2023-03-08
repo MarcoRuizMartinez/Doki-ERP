@@ -3,7 +3,7 @@
     <!-- //* ////////////////////////////////////////////////////////////////////  Lado izquierdo -->
     <div class                ="row gap-sm">
       <q-btn
-        v-if                  ="acuerdo.esPedido && !acuerdo.esEstadoBoceto && ( acuerdo.usuarioEsDueño || usuario.esGerencia || usuario.esContable )"
+        v-if                  ="(acuerdo.esPedido || acuerdo.esCotizacion) && !acuerdo.esEstadoBoceto && ( acuerdo.usuarioEsDueño || usuario.esGerencia || usuario.esContable )"
         v-bind                ="btnBaseMd"
         color                 ="primary"
         icon                  ="mdi-account-details"
@@ -73,16 +73,31 @@
       <!-- //* //////////////////////////////////////////////////////////  Boton PDF -->
       <efecto efecto          ="Down">      
         <q-btn
-          v-if                ="( acuerdo.esCotizacion || acuerdo.esEntrega ) && acuerdo.esEstadoValido"
+          v-if                ="acuerdo.esEstadoValido"
           v-bind              ="btnBaseMd"
           color               ="primary"
           icon                ="mdi-pdf-box"
-          :label              ="esMobil ? '' : 'PDF'"
+          :label              ="esMobil ? '' : acuerdo.esEntrega ? 'Remisión' : 'PDF'"
           :disable            ="cargandoAlgo"
-          :loading            ="loading.pdf"
-          @click              ="emit('clickPdf')"
+          :loading            ="loading.pdf"          
           >
-          <Tooltip label      ="Generar PDF" :hide="loading.pdf"/>
+          <q-menu
+            v-bind            ="menuDefault"
+            class             ="column transparent panel-blur70 " 
+            >
+            <q-btn
+              v-if            ="!!labelBtnPDFDefault"
+              v-bind          ="btnSimple"
+              :label          ="labelBtnPDFDefault"
+              @click          ="pdfDefault"
+            />
+            <q-btn
+              v-if            ="acuerdo.esCotizacion || acuerdo.esPedido"
+              v-bind          ="btnSimple"
+              label           ="Cuenta de cobro"
+              @click          ="emit('clickCuentaCobro', 'cuentaCobro')"
+            />
+          </q-menu>          
         </q-btn>
       </efecto>
         <!-- //* ////////////////////////////////////////////////////////// Botones Instalacion y entrega
@@ -254,7 +269,10 @@
   import {  useStoreAcuerdo } from 'src/stores/acuerdo'
   // * /////////////////////////////////////////////////////////////////////// Componibles
   import {  useTools        } from "src/useSimpleOk/useTools"
-  import {  btnBaseMd       } from "src/useSimpleOk/useEstilos"
+  import {  menuDefault,
+            btnBaseMd,
+            btnSimple       } from "src/useSimpleOk/useEstilos"
+  import {  TTipoPDF        } from "src/areas/acuerdos/composables/pdf/useCotizacion"
   // * /////////////////////////////////////////////////////////////////////// Componentes
   import    barra             from "components/utilidades/Barra.vue"
   import    efecto            from "components/utilidades/Efecto.vue"
@@ -266,9 +284,23 @@
   const { usuario     } = storeToRefs( useStoreUser() )          
 
   const { esMobil     } = useTools()
-  const emit            = defineEmits([ "clickPdf",       "clickAprobar",   "clickAnular",      "clickValidar",
-                                        "clickEditar",    "clickBorrar",    "clickRemision",    "clickReabrir",
-                                        "clickRecargar",  "clickEntregado", "clickComisiones",  "clickNuevaEntrega"])
+
+  const emit = defineEmits<{
+    (e: 'clickPdf',           value: TTipoPDF ): void
+    (e: 'clickAprobar',       ): void
+    (e: 'clickAnular',        ): void  
+    (e: 'clickValidar',       ): void
+    (e: 'clickEditar',        ): void
+    (e: 'clickBorrar',        ): void  
+    (e: 'clickRemision',      ): void
+    (e: 'clickReabrir',       ): void
+    (e: 'clickRecargar',      ): void  
+    (e: 'clickEntregado',     ): void
+    (e: 'clickComisiones',    ): void
+    (e: 'clickNuevaEntrega',  ): void  
+    (e: 'clickCuentaCobro',   value: TTipoPDF ): void 
+  }>()
+
   const cargandoAlgo    = computed(()=> Object.values(loading.value).some( ( estado : boolean )=> !!estado ) )
   const totalNotas      = computed(()=> ( !!acuerdo.value.notaPrivada ? 1 : 0 ) + ( !!acuerdo.value.notaPublica ? 1 : 0 )  )
   //const envioInactivo   = computed(()=> cargandoAlgo.value || !acuerdo.value.metodoEntrega.id || !acuerdo.value.fechaEntregaCorta )
@@ -304,6 +336,20 @@
                                       )
                                     )
                               )
+
+  const labelBtnPDFDefault  = computed(()=>   acuerdo.value.esCotizacion  ? 'Cotizacion' 
+                                            : acuerdo.value.esPedido      ? ""
+                                            : acuerdo.value.esEntrega     ? "Remisión"
+                                            : acuerdo.value.esOCProveedor ? "Orden de compra"
+                                            : ""
+                                      )
+  
+  function pdfDefault()
+  {
+    const tipo : TTipoPDF = acuerdo.value.esCotizacion ? "quote" : "cuentaCobro"
+    emit("clickPdf", tipo)
+  }
+                                      
   function clickEnNotas()
   {
     window.scrollTo({ top: document.body.scrollHeight,  behavior: 'smooth'})

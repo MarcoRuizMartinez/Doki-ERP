@@ -8,7 +8,7 @@
   import {
             //toRefs,
             PropType,
-            onUnmounted,
+            onMounted,
                                   } from "vue"
   // * /////////////////////////////////////////////////////////////////////////////////// Store
   import {  useStoreAcuerdo       } from 'src/stores/acuerdo'
@@ -26,7 +26,8 @@
   //const { tipo              } = toRefs( props )
   const storeAcuerdo          = useStoreAcuerdo()
 
-  onUnmounted(()=>{
+
+  onMounted(()=>{
     storeAcuerdo.cargarNivelesComision()
     //console.log("onUnmounted Page crear")
     //if(acuerdoCreado) return

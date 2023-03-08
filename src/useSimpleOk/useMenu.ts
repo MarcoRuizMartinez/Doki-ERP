@@ -33,7 +33,7 @@ export function useMenu()
       submenu:
       [
         { ...new ItemMenu({
-                              label:    "Politicas",
+                              label:    "Procesos y Politicas",
                               icon:     "mdi-shield-star",
                               to:       "/politicas",
                               visible:  true

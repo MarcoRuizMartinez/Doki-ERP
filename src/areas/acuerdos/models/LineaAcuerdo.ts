@@ -470,23 +470,21 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
 
   static getSubTotal() : ILineaAcuerdo
   {
-    let linea               = new LineaAcuerdo()
-        linea.codeX         = 104777
-        linea.qty           = 99
-        linea.tipo          = 9
+    const linea               = new LineaAcuerdo()
+          linea.codeX         = 104777
+          linea.qty           = 99
+          linea.tipo          = 9
     return linea
   }
 
   static lineaDeProducto( producto : IProductoDoli ) : ILineaAcuerdo
   {
-    let linea : ILineaAcuerdo = Object.assign( new LineaAcuerdo(), producto )
-        // linea.lineaId      = 0
-        // linea.orden        = 0
-        linea.qty             = 1
-        linea.descuentoX100   = !!producto.descuentoCalculado ? producto.descuentoCalculado : 0
-
-        linea.precioBase      = producto.precio_publico
-
+    const linea : ILineaAcuerdo = Object.assign( new LineaAcuerdo(), producto )
+          // linea.lineaId      = 0
+          // linea.orden        = 0
+          linea.qty             = 1
+          linea.descuentoX100   = !!producto.descuentoCalculado ? producto.descuentoCalculado : 0
+          linea.precioBase      = producto.precio_publico
 
     return linea
   }
@@ -496,7 +494,7 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
                             descu     : number | undefined = undefined
                           ) : ILineaAcuerdo[]
   {
-    let lineas : ILineaAcuerdo[] = []
+    const lineas : ILineaAcuerdo[] = []
     if( !productos.length ) return []
 
     for (const producto of productos)

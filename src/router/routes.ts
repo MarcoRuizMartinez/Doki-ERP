@@ -36,7 +36,7 @@ const routes: RouteRecordRaw[] = [
         name: 'politicas',
         props: {
                 src:    "https://airtable.com/embed/shr3RyLFc5ujEGFZt?backgroundColor=cyan&viewControls=on",
-                titulo: "Politicas empresa",
+                titulo: "Procesos y Politicas",
                 icono:  "mdi-shield-star",
                 link:   "https://airtable.com/embed/shr3RyLFc5ujEGFZt/tblY7nRIsN5bctOwZ?backgroundColor=gray&viewControls=on",
               },

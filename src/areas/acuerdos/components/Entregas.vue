@@ -23,7 +23,7 @@
       <q-btn                    round dense flat
         icon                    ="mdi-refresh"
         class                   ="op60 op100-hover"
-        @click                  ="buscarAcuerdoEnlazados"
+        @click                  ="buscarAcuerdoEnlazados( true )"
         >
         <Tooltip label          ="Recargar entregas"/>
       </q-btn>   
@@ -45,7 +45,7 @@
                 class           ="col-auto"
                 :acuerdo        ="entrega"
               />
-              <span class="col text-center">{{ entrega.metodoEntrega.label }}</span>
+              <span class       ="col text-center">{{ entrega.metodoEntrega.label }}</span>
             </div>
           </q-item-section>
           <q-item-section       side>
@@ -97,6 +97,7 @@
             <div class            ="row justify-center full-width">
               <!-- //* ////////////////////////////////////////////////////////// Boton Remision -->            
               <q-btn              dense
+                v-if              ="!!entrega.contactoEntrega.id"
                 v-bind            ="btnFlatMd"
                 color             ="grey-4"
                 icon              ="mdi-pdf-box"
@@ -106,6 +107,7 @@
               />
               <!-- //* ////////////////////////////////////////////////////////// Boton Rotulo -->
               <q-btn              dense
+                v-if              ="!!entrega.contactoEntrega.id"
                 v-bind            ="btnFlatMd"
                 color             ="grey-4"
                 icon              ="mdi-pdf-box"

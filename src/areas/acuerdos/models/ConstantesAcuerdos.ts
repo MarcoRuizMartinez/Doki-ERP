@@ -201,7 +201,7 @@ export class EstadosAcuerdos
                                 : estado == ESTADO_PED.CANCELADO        ? "mdi-close-circle"
                                 : estado == ESTADO_PED.BORRADOR         ? "mdi-circle-edit-outline"
                                 : estado == ESTADO_PED.VALIDADO         ? "mdi-check-bold"
-                                : estado == ESTADO_PED.ENTREGANDO       ? "mdi-airplane-takeoff"
+                                : estado == ESTADO_PED.ENTREGANDO       ? "mdi-truck-delivery"
                                 : estado == ESTADO_PED.ENTREGADO        ? "mdi-truck-check"
                                 : ""
     }

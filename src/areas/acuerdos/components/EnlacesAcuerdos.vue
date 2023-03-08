@@ -66,8 +66,7 @@
   import    refAcuerdo              from "src/areas/acuerdos/components/Busqueda/Columnas/RefAcuerdo.vue"
   import    estado                  from "src/areas/acuerdos/components/Busqueda/Columnas/Estado.vue"
   
-  const { buscarAcuerdoEnlazados,
-          buscarEnlacesAcuerdo    } = useControlAcuerdo()
+  const { buscarAcuerdoEnlazados  } = useControlAcuerdo()
   const { acuerdo                 } = storeToRefs( useStoreAcuerdo() )
   const modo                        = ref< ModosVentana >("esperando-busqueda")
   
@@ -97,8 +96,7 @@
   async function buscar()
   {
     modo.value                = "buscando"
-    await buscarEnlacesAcuerdo()
-    await buscarAcuerdoEnlazados()
+    await buscarAcuerdoEnlazados( true )
     modo.value                = !!acuerdo.value.acuerdosEnlazados.length ? "normal" : "sin-resultados"
   }
 
