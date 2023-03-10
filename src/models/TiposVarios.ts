@@ -181,6 +181,7 @@ export interface IModales {
   rotulos         ?: boolean
   comisiones      ?: boolean
   nuevaEntrega    ?: boolean
+  incentivo       ?: boolean
 }
 
 export const ModalesDefault = {
@@ -191,5 +192,6 @@ export const ModalesDefault = {
   remision        : false,
   rotulos         : false,
   comisiones      : false,
-  nuevaEntrega    : false
+  nuevaEntrega    : false,
+  incentivo       : false,
 }

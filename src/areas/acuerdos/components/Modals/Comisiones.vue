@@ -9,7 +9,7 @@
     :modo                     ="modo"
     :cargando                 ="loading.añadir || loading.borrarLote"
     @cerrar                   ="cerrar"
-    >
+    > 
     <template                 #menu>
       <div class              ="row gap-pa-md">
         <table  class         ="tabla-totales">
@@ -88,8 +88,16 @@
             {{ formatoPrecio( props.row.comision_c1.valor, "decimales-no" ) }}
           </q-td>
         </template>
-    </q-table>    
-  </div>
+      </q-table>
+    </div>
+    <!-- //* ///////////////////////////////////////////////////////////// Modal formulario agregar comision -->
+    <q-dialog
+      v-model                   ="modales.incentivo"
+      v-bind                    ="dialogDefault"
+      :persistent               ="loading.editarLinea || loading.borrarLinea"
+      >
+      <formulario />
+    </q-dialog>
   </ventana>
 </template>
 <script setup lang="ts">
@@ -105,13 +113,16 @@
   import {  ModosVentana        } from "src/models/TiposVarios"
   import {  IColumna, Columna   } from "src/models/Tabla"
   import {  ILineaAcuerdo       } from "src/areas/acuerdos/models/LineaAcuerdo"
-// * /////////////////////////////////////////////////////////////////////////////////// Componibles
+  // * /////////////////////////////////////////////////////////////////////////////////// Componibles
   import {  formatoPrecio       } from "src/useSimpleOk/useTools"
+  import {  dialogDefault       } from "src/useSimpleOk/useEstilos"  
   // * /////////////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana               from "components/utilidades/Ventana.vue"
   import    tooltipLinea          from "./../Tooltips/TooltipLinea.vue"
+  import    formulario            from "./FormularioComision.vue"
   
   const { acuerdo,
+          modales,
           loading           } = storeToRefs( useStoreAcuerdo() )
   const { usuario           } = storeToRefs( useStoreUser() )
   const modo                  = ref< ModosVentana >("normal")
