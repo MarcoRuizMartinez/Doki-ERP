@@ -13,7 +13,7 @@
     <template                   #barra>
       <!-- //* ///////////////  Nuevo anticipo  -->
       <q-btn        
-        v-bind                  ="btnBaseSm"
+        v-bind                  ="style.btnBaseSm"
         color                   ="positive"
         icon                    ="mdi-plus"        
         :disable                ="modo == 'buscando'"
@@ -107,7 +107,7 @@
   <!-- //* ///////////////////////////////////////////////////////////// Modal Buscar Formulario anticipo -->
   <q-dialog
     v-model                     ="ventanaFormulario"
-    v-bind                      ="dialogDefault"
+    v-bind                      ="style.dialogDefault"
     >
     <formulario
       v-model                   ="anticipo"
@@ -137,8 +137,7 @@
             getFormData           } from "src/services/APIMaco"
   import {  useTools, 
             formatoPrecio         } from "src/useSimpleOk/useTools"
-  import {  btnBaseSm,
-            dialogDefault         } from "src/useSimpleOk/useEstilos"
+  import {  style                 } from "src/useSimpleOk/useEstilos"
   import {  useApiDolibarr        } from "src/services/useApiDolibarr"
   import {  useReciboCajaPDF      } from "src/areas/acuerdos/composables/pdf/useReciboCaja"
   import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"

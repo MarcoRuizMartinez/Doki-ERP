@@ -11,7 +11,7 @@
       <!-- //* ///////////////////////////////////////////////////////////// Boton nuevo grupo   -->
       <q-btn
         v-if                    ="(acuerdo.esCotizacion || acuerdo.esPedido) && acuerdo.esEstadoEdicion"
-        v-bind                  ="btnBaseSm"
+        v-bind                  ="style.btnBaseSm"
         label                   ="Actualizar precios"
         color                   ="positive"
         icon                    ="mdi-refresh"
@@ -21,13 +21,13 @@
           class                 ="column transparent panel-blur70" 
           >
           <q-btn
-            v-bind              ="btnSimple"
+            v-bind              ="style.btnSimple"
             label               ="Precios"
             >
             <confirmar  @ok     ="actualizarPreciosAcuerdo( 0 )"/>
           </q-btn>
           <q-btn
-            v-bind              ="btnSimple"
+            v-bind              ="style.btnSimple"
             label               ="Solo comisiones"            
             >
               <confirmar  @ok   ="actualizarPreciosAcuerdo( 1 )"/>
@@ -36,7 +36,7 @@
       </q-btn> 
       <!-- //* ///////////////////////////////////////////////////////////// Boton nuevo grupo   -->
       <q-btn
-        v-bind                  ="btnBaseSm"
+        v-bind                  ="style.btnBaseSm"
         label                   ="Nuevo grupo"
         color                   ="positive"
         icon                    ="mdi-tab-plus"
@@ -66,7 +66,7 @@
             <div class          ="row items-center">
               <!-- //* /////////////////////////////////////////////////////// Boton agregar producto  -->
               <q-btn
-                v-bind          ="btnBaseSm"
+                v-bind          ="style.btnBaseSm"
                 class           ="text-black"
                 color           ="grey-1"
                 label           ="Producto"
@@ -85,7 +85,7 @@
     <!-- //* ///////////////////////////////////////////////////////////// Modal Buscar productos -->
     <q-dialog                   maximized
       v-model                   ="modales.añadirProductos"
-      v-bind                    ="dialogDefault"
+      v-bind                    ="style.dialogDefault"
       :persistent               ="loading.añadir || loading.borrarLote"
       @hide                     ="grupoElegido.noDestacarProductos()"
       >
@@ -94,7 +94,7 @@
     <!-- //* ///////////////////////////////////////////////////////////// Modal formulario edicion Linea   -->
     <q-dialog
       v-model                   ="modales.formulario"
-      v-bind                    ="dialogDefault"
+      v-bind                    ="style.dialogDefault"
       :persistent               ="loading.editarLinea || loading.borrarLinea"
       >
       <formulario-linea />
@@ -102,7 +102,7 @@
     <!-- //* ///////////////////////////////////////////////////////////// Modal editar en lote -->
     <q-dialog
       v-model                   ="modales.editarEnLote"
-      v-bind                    ="dialogDefault"
+      v-bind                    ="style.dialogDefault"
       :persistent               ="loading.editarLote"
       >
       <editar-en-lote />
@@ -118,12 +118,10 @@
   // * ///////////////////////////////////////////////////////////////////////////// Componibles
   import {  useControlProductos   } from "src/areas/acuerdos/controllers/ControlLineasProductos"
   import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"
-  import {  btnBaseSm, 
-            btnSimple,
-            menuDefault,
-            dialogDefault         } from "src/useSimpleOk/useEstilos"            
+  import {  style, 
+            menuDefault           } from "src/useSimpleOk/useEstilos"
+            
   // * ///////////////////////////////////////////////////////////////////////////// Componentes
-
   import    ventana                 from "components/utilidades/Ventana.vue"
   import    editarGrupo             from "src/areas/acuerdos/components/Grupos/EditarGrupo.vue"
   import    tablaProductos          from "./TablaProductos/TablaProductos.vue"

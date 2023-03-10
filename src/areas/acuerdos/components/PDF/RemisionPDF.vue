@@ -8,7 +8,7 @@
     <template                       #barra>
       <q-btn
         v-if                        ="!!srcPDF"
-        v-bind                      ="btnBaseSm"
+        v-bind                      ="style.btnBaseSm"
         icon                        ="mdi-download"
         label                       ="Descargar"
         @click                      ="saveRemisionPDF"
@@ -133,7 +133,7 @@
   // * /////////////////////////////////////////////////////////////////////////////////// Componibles
   import {  IParams,
             useRemisionPDF      } from "src/areas/acuerdos/composables/pdf/useRemision"
-  import {  btnBaseSm           } from "src/useSimpleOk/useEstilos"
+  import {  style               } from "src/useSimpleOk/useEstilos"
   import {  useTools            } from "src/useSimpleOk/useTools"
   // * /////////////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana               from "components/utilidades/Ventana.vue"

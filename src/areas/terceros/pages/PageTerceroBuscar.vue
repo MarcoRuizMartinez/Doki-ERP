@@ -123,7 +123,7 @@
     <!-- //* //////////////////////////////////////////////////////// Busqueda Movil -->
     <q-dialog
       v-model                     ="filtroMovil"
-      v-bind                      ="dialogDefault"
+      v-bind                      ="style.dialogDefault"
       position                    ="bottom"
       >
       <fieldset-filtro
@@ -211,7 +211,7 @@
   import {  IMunicipio,
             Municipio
                             } from "src/models/Municipio"
-  import {  dialogDefault   } from "src/useSimpleOk/useEstilos"            
+  import {  style           } from "src/useSimpleOk/useEstilos"            
 
   const storeUser                 = useStoreUser()
   const { buscarTerceros        } = servicesTerceros()

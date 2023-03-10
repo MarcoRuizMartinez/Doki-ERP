@@ -61,7 +61,7 @@
             :rules          ="[ archivoExistente ]"
           />
           <q-btn
-            v-bind          ="btnBaseSm"
+            v-bind          ="style.btnBaseSm"
             label           ="Pegar"
             color           ="positive"
             icon            ="mdi-clipboard-check"
@@ -98,7 +98,7 @@
                             } from "src/useSimpleOk/UtilFiles"
 
   import {  format          } from "quasar"
-  import {  btnBaseSm,
+  import {  style,
             WYSIWYG_Imagen  } from "src/useSimpleOk/useEstilos"
   import    inputText         from "src/components/utilidades/input/InputFormText.vue"  
   import {  IArchivo        } from "src/models/Archivo"

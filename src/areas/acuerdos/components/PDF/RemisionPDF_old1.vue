@@ -1,7 +1,7 @@
 <template>
   <q-dialog                   maximized 
     v-model                   ="visibleModel"
-    v-bind                    ="dialogDefault"
+    v-bind                    ="style.dialogDefault"
     @escape-key               ="cerrarVentana"
     >
     <ventana                    cerrar full-screen scroll
@@ -61,7 +61,7 @@
   // * /////////////////////////////////////////////////////////////////////////////////// Modelos
 
   // * /////////////////////////////////////////////////////////////////////////////////// Componibles
-  import {  dialogDefault       } from "src/useSimpleOk/useEstilos"            
+  import {  style               } from "src/useSimpleOk/useEstilos"            
 
   // * /////////////////////////////////////////////////////////////////////////////////// Componentes
   import    efecto                from "components/utilidades/Efecto.vue"

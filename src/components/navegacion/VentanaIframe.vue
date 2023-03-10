@@ -52,7 +52,7 @@
     <!-- //* ///////////////////////////////////////////////////////////// Formulario -->
     <q-dialog                   
       v-model           ="formularioOk"
-      v-bind            ="dialogDefault"
+      v-bind            ="style.dialogDefault"
       >
       <formulario-iframe es-formulario
         icono           ="mdi-form-textbox"
@@ -71,7 +71,7 @@
             toRefs,
             watch,                } from "vue"  
   import {  pausa                 } from "src/useSimpleOk/useTools" 
-  import {  dialogDefault         } from "src/useSimpleOk/useEstilos"
+  import {  style                 } from "src/useSimpleOk/useEstilos"
   import    formularioIframe        from "components/navegacion/VentanaIframe.vue"
   import    ventana                 from "components/utilidades/Ventana.vue"
 

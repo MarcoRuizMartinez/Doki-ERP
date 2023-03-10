@@ -63,7 +63,7 @@
                 </q-icon>                  
               </transition>   
               <q-btn
-                v-bind            ="btnBaseMd"
+                v-bind            ="style.btnBaseMd"
                 label             ="Entrar"
                 type              ="submit"
                 color             ="positive"
@@ -73,7 +73,7 @@
               />
               <efecto efecto="UpDown">
                 <q-btn
-                  v-bind          ="btnBaseMd"
+                  v-bind          ="style.btnBaseMd"
                   v-if            ="cargando"
                   class           ="q-ml-md"
                   label           ="Cancelar"
@@ -105,7 +105,7 @@
   import {  useStoreApp       } from 'src/stores/app'  
   // * /////////////////////////////////////////////////////////////////////// Componibles
   import {  useLogin          } from "src/services/useLogin"
-  import {  btnBaseMd         } from "src/useSimpleOk/useEstilos"
+  import {  style             } from "src/useSimpleOk/useEstilos"
   // * /////////////////////////////////////////////////////////////////////// Modelos
   import {  ORIGEN, 
             ALMACEN_LOCAL     } from "src/models/TiposVarios"

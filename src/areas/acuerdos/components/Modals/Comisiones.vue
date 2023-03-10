@@ -11,7 +11,7 @@
     @cerrar                   ="cerrar"
     > 
     <template                 #menu>
-      <div class              ="row gap-pa-md">
+      <div class              ="row gap-pa-md full-width justify-between">
         <table  class         ="tabla-totales">
           <tr>
             <td>Comisión:</td>
@@ -23,6 +23,14 @@
           </tr>          
         </table>
         <!-- //* ///////////////////////////////////////////////////////////// Campo buscar -->
+        <div>
+          <q-btn
+            v-bind              ="style.btnBaseMd"
+            label               ="Añadir"     
+            color               ="primary"       
+            icon                ="mdi-check"
+          />
+        </div>
       </div>
     </template>
     <div  class                 ="bg-grey-3 fit">
@@ -93,7 +101,7 @@
     <!-- //* ///////////////////////////////////////////////////////////// Modal formulario agregar comision -->
     <q-dialog
       v-model                   ="modales.incentivo"
-      v-bind                    ="dialogDefault"
+      v-bind                    ="style.dialogDefault"
       :persistent               ="loading.editarLinea || loading.borrarLinea"
       >
       <formulario />
@@ -115,7 +123,7 @@
   import {  ILineaAcuerdo       } from "src/areas/acuerdos/models/LineaAcuerdo"
   // * /////////////////////////////////////////////////////////////////////////////////// Componibles
   import {  formatoPrecio       } from "src/useSimpleOk/useTools"
-  import {  dialogDefault       } from "src/useSimpleOk/useEstilos"  
+  import {  style               } from "src/useSimpleOk/useEstilos"  
   // * /////////////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana               from "components/utilidades/Ventana.vue"
   import    tooltipLinea          from "./../Tooltips/TooltipLinea.vue"

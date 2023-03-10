@@ -191,7 +191,7 @@
     <!-- //* ///////////////////////////////////////////////////////////// Modal Buscar productos -->
     <q-dialog
       v-model                   ="ventanaClienteExiste"      
-      v-bind                    ="dialogDefault"
+      v-bind                    ="style.dialogDefault"
       >
       <ventana                  cerrar scroll
         titulo                  ="Terceros registrados"
@@ -202,7 +202,7 @@
         <template               #barra>
           <q-btn
             v-if                ="esTerceroInternoDeCoti"
-            v-bind              ="btnBaseSm"
+            v-bind              ="style.btnBaseSm"
             color               ="positive"
             :label              ="consentimientoAsesor ? 'Firmado' : 'Firmar'"
             :icon               ="consentimientoAsesor ? 'mdi-check' : 'mdi-signature'"
@@ -250,8 +250,7 @@
   import {  useFetch        } from "src/useSimpleOk/useFetch"
   import {  getURL,
             getFormData     } from "src/services/APIMaco"
-  import {  btnBaseSm,
-            dialogDefault   } from "src/useSimpleOk/useEstilos"      
+  import {  style           } from "src/useSimpleOk/useEstilos"      
 
   const { dialog            } = useQuasar()
   const { apiDolibarr       } = useApiDolibarr()

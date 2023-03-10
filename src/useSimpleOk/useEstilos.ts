@@ -1,65 +1,76 @@
 import { formatoNumeroCorto, X100_Calcular } from "src/useSimpleOk/useTools"
-
-export const btnBaseSm = {
-  push            : true,
-  noCaps          : true,
-  glossy          : true,
-  dense           : true,
-  size            : "0.8em",
-  padding         : "2px 8px"
-}
-
-export const btnBaseMd = {
-  push            : true,
-  noCaps          : true,
-  glossy          : true,
-  dense           : false,
-  size            : "md",
-  padding         : "2px 8px"
-}
-
-export const btnFlatSm = {
-  noCaps          : true,
-  flat            : true,
-  dense           : true,
-  size            : "0.8em",
-  padding         : "2px 8px"
-}
-
-export const btnFlatMd = {
-  noCaps          : true,
-  flat            : true,
-  dense           : true,  
-  padding         : "2px 8px"
-}
-
-export const btnRedondo = {
-  dense           : true,
-  push            : true,
-  round           : true,
-  glossy          : true,  
-  unelevated      : true,
-  size            : "0.8em",
-  padding         : "2px"
-}
-
-export const btnRedondoFlat = {
-  dense           : true,
-  flat            : true,
-  round           : true,
-  size            : "md",
-  padding         : "none",
-  class           : "op40 op100-hover q-ml-sm"
-}
-
-export const btnSimple = {
-  flat            : true,
-  dense           : true,
-  noCaps          : true,
-  padding         : "4px 14px"
-}
-
 import { QMenuProps } from "quasar"
+
+
+export const style  = {
+  btnBaseSm         : {
+    push            : true,
+    noCaps          : true,
+    glossy          : true,
+    dense           : true,
+    size            : "0.8em",
+    padding         : "2px 8px"
+  },  
+  btnBaseMd         : {
+    push            : true,
+    noCaps          : true,
+    glossy          : true,
+    dense           : false,
+    size            : "md",
+    padding         : "2px 8px"
+  },  
+  btnFlatSm         : {
+    noCaps          : true,
+    flat            : true,
+    dense           : true,
+    size            : "0.8em",
+    padding         : "2px 8px"
+  },  
+  btnFlatMd         : {
+    noCaps          : true,
+    flat            : true,
+    dense           : true,  
+    padding         : "2px 8px"
+  },  
+  btnRedondo        : {
+    dense           : true,
+    push            : true,
+    round           : true,
+    glossy          : true,  
+    unelevated      : true,
+    size            : "0.8em",
+    padding         : "2px"
+  },  
+  btnRedondoFlat    : {
+    dense           : true,
+    flat            : true,
+    round           : true,
+    size            : "md",
+    padding         : "none",
+    class           : "op40 op100-hover q-ml-sm"
+  },
+  btnSimple         : {
+    flat            : true,
+    dense           : true,
+    noCaps          : true,
+    padding         : "4px 14px"
+  },  
+  toggleGris        : {
+    dense           : true,
+    push            : true,
+    glossy          : true, 
+    unelevated      : true, 
+    padding         : "4px",  
+    toggleColor     : "grey-4",
+    textColor       : "grey-6",
+    toggleTextColor : "grey-10",
+  },  
+  dialogDefault     : {
+    transitionShow  : "slide-up",
+    transitionHide  : "slide-down",
+  }
+}
+
 export const menuDefault : QMenuProps = { 
   fit             : true,
   transitionShow  : "jump-down",
@@ -67,23 +78,6 @@ export const menuDefault : QMenuProps = {
   anchor          : "bottom middle",
   self            : "top middle",
 }
-
-export const toggleGris = {
-  dense           : true,
-  push            : true,
-  glossy          : true, 
-  unelevated      : true, 
-  padding         : "4px",  
-  toggleColor     : "grey-4",
-  textColor       : "grey-6",
-  toggleTextColor : "grey-10",
-}
-
-export const dialogDefault = {
-  transitionShow  : "slide-up",
-  transitionHide  : "slide-down",
-}
-
 
 export const WYSIWYG_Limpio  = {
   dense:      true,

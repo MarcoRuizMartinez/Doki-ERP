@@ -13,7 +13,7 @@
       <!-- //* ///////////////  Boton crear  -->
       <q-btn
         v-if                    ="puedeEditar && storeUser.permisos.contactos_crear"
-        v-bind                  ="btnBaseSm"
+        v-bind                  ="style.btnBaseSm"
         label                   ="Crear"
         color                   ="positive"
         icon                    ="mdi-account-plus"
@@ -22,7 +22,7 @@
       />
       <q-dialog
         v-model                 ="ventanaOk"
-        v-bind                  ="dialogDefault"
+        v-bind                  ="style.dialogDefault"
         >
         <!-- //* /////////////  Formulario Contacto  -->
         <form-contacto          borrable
@@ -78,8 +78,7 @@
   import    formContacto      from "src/areas/terceros/components/contactos/FormularioContacto.vue"
   import {  Tercero,
             ITercero        } from "src/areas/terceros/models/Tercero"
-  import {  btnBaseSm, 
-            dialogDefault   } from "src/useSimpleOk/useEstilos"
+  import {  style           } from "src/useSimpleOk/useEstilos"
 
   const { apiDolibarr       } = useApiDolibarr()
   const storeUser             = useStoreUser()

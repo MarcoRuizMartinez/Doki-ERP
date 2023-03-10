@@ -95,7 +95,7 @@
     <!-- //* ///////////////////////////////////////////////////////////// Modal vista rapida -->
     <q-dialog                   maximized
       v-model                   ="ventanaVistaRapida"
-      v-bind                    ="dialogDefault"
+      v-bind                    ="style.dialogDefault"
       :persistent               ="false"
       >
       <ventana                  cerrar scroll full-screen
@@ -162,7 +162,7 @@
   import {  useControlAcuerdo   } from "src/areas/acuerdos/controllers/ControlAcuerdos"
   import {  useTools            } from "src/useSimpleOk/useTools"
   import {  generarCSVDesdeTabla} from "src/useSimpleOk/UtilFiles"
-  import {  dialogDefault       } from "src/useSimpleOk/useEstilos"            
+  import {  style               } from "src/useSimpleOk/useEstilos"            
   // * /////////////////////////////////////////////////////////////////////// Modelos
   import {  BusquedaAcuerdo,
             IQueryAcuerdo       } from "src/areas/acuerdos/models/BusquedaAcuerdos"

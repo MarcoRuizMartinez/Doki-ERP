@@ -4,7 +4,7 @@
     <div class                ="row gap-sm">
       <q-btn
         v-if                  ="(acuerdo.esPedido || acuerdo.esCotizacion) && !acuerdo.esEstadoBoceto && ( acuerdo.usuarioEsDueño || usuario.esGerencia || usuario.esContable )"
-        v-bind                ="btnBaseMd"
+        v-bind                ="style.btnBaseMd"
         color                 ="primary"
         icon                  ="mdi-account-details"
         :label                ="esMobil ? '' : 'Comisiones'"
@@ -59,7 +59,7 @@
       <efecto efecto          ="Down">      
         <q-btn
           v-if                ="acuerdo.esEstadoAbierto && acuerdo.esPedido"
-          v-bind              ="btnBaseMd"
+          v-bind              ="style.btnBaseMd"
           color               ="primary"
           icon                ="mdi-tools"  
           target              ="_blank"
@@ -74,7 +74,7 @@
       <efecto efecto          ="Down">      
         <q-btn
           v-if                ="acuerdo.esEstadoValido"
-          v-bind              ="btnBaseMd"
+          v-bind              ="style.btnBaseMd"
           color               ="primary"
           icon                ="mdi-pdf-box"
           :label              ="esMobil ? '' : acuerdo.esEntrega ? 'Remisión' : 'PDF'"
@@ -87,13 +87,13 @@
             >
             <q-btn
               v-if            ="!!labelBtnPDFDefault"
-              v-bind          ="btnSimple"
+              v-bind          ="style.btnSimple"
               :label          ="labelBtnPDFDefault"
               @click          ="pdfDefault"
             />
             <q-btn
               v-if            ="acuerdo.esCotizacion || acuerdo.esPedido"
-              v-bind          ="btnSimple"
+              v-bind          ="style.btnSimple"
               label           ="Cuenta de cobro"
               @click          ="emit('clickCuentaCobro', 'cuentaCobro')"
             />
@@ -106,7 +106,7 @@
         <q-btn-group  v-if    ="acuerdo.esEstadoAbierto && acuerdo.esPedido && !acuerdo.esTerceroCtz">
           <!-- //* //////////////////////////////////////////////////////// Botones Instalacion -->
           <q-btn
-            v-bind            ="btnBaseMd"
+            v-bind            ="style.btnBaseMd"
             color             ="positive"
             icon              ="mdi-run-fast"
             :label            ="esMobil ? '' : 'Nueva instalación'"
@@ -119,7 +119,7 @@
           </q-btn>
           <!-- //* ////////////////////////////////////////////////////////// Boton Entrega  -->
           <q-btn 
-            v-bind            ="btnBaseMd"
+            v-bind            ="style.btnBaseMd"
             color             ="positive"
             icon              ="mdi-truck-fast"
             :label            ="esMobil ? '' : 'Nueva entrega'"
@@ -133,7 +133,7 @@
   <!--     <efecto efecto          ="Down">      
         <q-btn
           v-if                ="acuerdo.esPedido && acuerdo.esEstadoValido"
-          v-bind              ="btnBaseMd"
+          v-bind              ="style.btnBaseMd"
           color               ="primary"
           icon                ="mdi-format-list-checks"
           :label              ="esMobil ? '' : 'Remisión'"
@@ -149,7 +149,7 @@
         <q-btn-group  v-if    ="acuerdo.esEstadoValidado">        
           <q-btn 
             v-if              ="!acuerdo.esTerceroCtz && acuerdo.esCotizacion"
-            v-bind            ="btnBaseMd"
+            v-bind            ="style.btnBaseMd"
             color             ="positive"
             icon              ="mdi-handshake"
             :label            ="esMobil ? '' : 'Aprobar'"
@@ -161,7 +161,7 @@
           </q-btn>
           <!-- //* //////////////////////////////////////////////////////////  Boton Anular -->
           <q-btn 
-            v-bind            ="btnBaseMd"
+            v-bind            ="style.btnBaseMd"
             color             ="deep-purple-10"
             icon              ="mdi-close-circle"
             :label            ="esMobil ? '' : (acuerdo.esCotizacion ? 'Cerrar' : 'Anular')"
@@ -176,7 +176,7 @@
       <!-- //* ////////////////////////////////////////////////////////// Boton Validar -->
       <q-btn
         v-if                  ="acuerdo.esEstadoNoValidado || ( acuerdo.esPedido && acuerdo.esEstadoEntregado )"
-        v-bind                ="btnBaseMd"
+        v-bind                ="style.btnBaseMd"
         color                 ="positive"
         :icon                 ="acuerdo.esEstadoEntregado ? 'mdi-lock-open-variant' : 'mdi-check-circle-outline'"
         :label                ="esMobil ? '' : acuerdo.esEstadoEntregado ? 'Reabrir' : 'Validar'"
@@ -189,7 +189,7 @@
       <!-- //* ////////////////////////////////////////////////////////// Boton Cerrar pedido -->
       <q-btn
         v-if                  ="acuerdo.esEstadoValidado"
-        v-bind                ="btnBaseMd"
+        v-bind                ="style.btnBaseMd"
         color                 ="blue-7"
         icon                  ="mdi-truck-check"
         :label                ="esMobil ? '' : 'Entrega Ok'"
@@ -202,7 +202,7 @@
       <!-- //* ////////////////////////////////////////////////////////// Boton Editar -->
       <q-btn                  dense
         v-if                  ="mostrarEditar"
-        v-bind                ="btnBaseMd"
+        v-bind                ="style.btnBaseMd"
         color                 ="positive"
         icon                  ="mdi-square-edit-outline"
         :label                ="esMobil ? '' : 'Editar'"
@@ -215,7 +215,7 @@
       <!-- //* ////////////////////////////////////////////////////////// Boton Reabrir -->
       <q-btn
         v-if                  ="acuerdo.esPedido && acuerdo.esEstadoAnulado"
-        v-bind                ="btnBaseMd"
+        v-bind                ="style.btnBaseMd"
         color                 ="positive"
         icon                  ="mdi-lock-open-check"
         :label                ="esMobil ? '' : 'Reabrir'"
@@ -228,7 +228,7 @@
       <!-- //* ////////////////////////////////////////////////////////// Boton borrar -->
       <div>
         <q-btn
-          v-bind              ="btnBaseMd"
+          v-bind              ="style.btnBaseMd"
           color               ="negative"
           class               ="fit"
           icon                ="mdi-trash-can"
@@ -270,8 +270,7 @@
   // * /////////////////////////////////////////////////////////////////////// Componibles
   import {  useTools        } from "src/useSimpleOk/useTools"
   import {  menuDefault,
-            btnBaseMd,
-            btnSimple       } from "src/useSimpleOk/useEstilos"
+            style           } from "src/useSimpleOk/useEstilos"
   import {  TTipoPDF        } from "src/areas/acuerdos/composables/pdf/useCotizacion"
   // * /////////////////////////////////////////////////////////////////////// Componentes
   import    barra             from "components/utilidades/Barra.vue"

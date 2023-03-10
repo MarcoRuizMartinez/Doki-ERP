@@ -82,13 +82,13 @@
   <!-- //* ///////////////////////////////////////////////////////////// Modal Buscar productos -->
   <q-dialog
     v-model                 ="modales.comisiones"
-    v-bind                  ="dialogDefault"      
+    v-bind                  ="style.dialogDefault"      
     >
     <comisiones style       ="max-width: initial;"/>
   </q-dialog>
   <q-dialog                 maximized
     v-model                 ="modales.remision"
-    v-bind                  ="dialogDefault"
+    v-bind                  ="style.dialogDefault"
     >
     <remision
       :acuerdo              ="acuerdoRemsion"
@@ -126,7 +126,7 @@
   
   //import {  useControlProductos   } from "src/areas/acuerdos/controllers/ControlLineasProductos"
   import {  TTipoAcuerdo          } from "src/areas/acuerdos/models/ConstantesAcuerdos"
-  import {  dialogDefault         } from "src/useSimpleOk/useEstilos"  
+  import {  style                 } from "src/useSimpleOk/useEstilos"  
   import {  dexieBodegas          } from "src/services/useDexie"  
   import {  pausa                 } from "src/useSimpleOk/useTools"
   //* ///////////////////////////////////////////////////////////////////////////////// Componentes

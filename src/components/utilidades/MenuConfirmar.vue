@@ -9,13 +9,13 @@
     >
     <q-btn-group>
       <q-btn        v-close-popup
-        v-bind      ="btnBaseSm"
+        v-bind      ="style.btnBaseSm"
         color       ="negative"
         icon        ="mdi-close"
         :label      ="conLabel ? 'No' : ''"
       />
       <q-btn        v-close-popup
-        v-bind      ="btnBaseSm"
+        v-bind      ="style.btnBaseSm"
         color       ="positive"
         icon        ="mdi-check"
         :label      ="conLabel ? 'Si' : ''"
@@ -25,7 +25,7 @@
   </q-menu>
 </template>
 <script setup lang="ts">
-  import { btnBaseSm } from "src/useSimpleOk/useEstilos"
+  import { style } from "src/useSimpleOk/useEstilos"
   const emit        = defineEmits(["ok"])
   const props       = defineProps({
     conLabel:       { default: true, type: Boolean }

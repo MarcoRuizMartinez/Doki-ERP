@@ -42,7 +42,7 @@
       <div class          ="col-2 column">
         <!-- //* //////////////////////////////// Boton subir grupo -->
         <q-btn            v-close-popup
-          v-bind          ="btnFlatSm"
+          v-bind          ="style.btnFlatSm"
           class           ="full-width col-6"
           icon            ="mdi-menu-up"
           :disable        ="grupo.index == 0"
@@ -52,7 +52,7 @@
         </q-btn>
         <!-- //* //////////////////////////////// Boton bajar grupo -->
         <q-btn            v-close-popup
-          v-bind          ="btnFlatSm"
+          v-bind          ="style.btnFlatSm"
           class           ="full-width col-6"
           icon            ="mdi-menu-down"
           :disable        ="grupo.index == acuerdo.proGrupos.length-1"
@@ -65,7 +65,7 @@
       <!-- //* ///////////////////////////////////////////////////// Boton borrar grupo -->
       <div class          ="col-6" v-if="false">
         <q-btn         
-          v-bind          ="btnBaseMd"
+          v-bind          ="style.btnBaseMd"
           label           ="Borrar grupo"
           class           ="q-mt-sm"
           color           ="negative"
@@ -77,14 +77,14 @@
             <div class    ="column q-ma-md gap-md">
               <!-- //* ///////////////////////////////////// Boton borrar mantener productos -->
               <q-btn
-                v-bind    ="btnBaseMd"
+                v-bind    ="style.btnBaseMd"
                 label     ="Mantener productos"
                 class     ="full-width"
                 color     ="positive"
               />
               <!-- //* ///////////////////////////////////// Boton borrar - borrar productos -->
               <q-btn        
-                v-bind    ="btnBaseMd"
+                v-bind    ="style.btnBaseMd"
                 label     ="Borrar productos"
                 class     ="full-width"
                 color     ="negative"
@@ -115,8 +115,7 @@
   import {  useStoreAcuerdo     } from 'src/stores/acuerdo'  
   //* //////////////////////////////////////////////////////////////////////////////// Componibles
   import {  useControlProductos } from "src/areas/acuerdos/controllers/ControlLineasProductos"  
-  import {  btnBaseMd,
-            btnFlatSm           } from "src/useSimpleOk/useEstilos"
+  import {  style               } from "src/useSimpleOk/useEstilos"
   //* //////////////////////////////////////////////////////////////////////////////// Modelos
   import {  IGrupoLineas        } from "src/areas/acuerdos/models/GrupoLineasAcuerdo"
   

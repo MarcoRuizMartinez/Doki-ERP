@@ -1,7 +1,7 @@
 <template>
   <q-dialog                   maximized 
     v-model                   ="visibleModel"
-    v-bind                    ="dialogDefault"
+    v-bind                    ="style.dialogDefault"
     @escape-key               ="cerrarVentana"
     >
     <ventana                  cerrar full-screen scroll
@@ -20,7 +20,7 @@
       <efecto efecto          ="UpDown">
         <q-btn
           v-if                ="descargar && !!srcModel"
-          v-bind              ="btnBaseSm"
+          v-bind              ="style.btnBaseSm"
           icon                ="mdi-download"
           label               ="Descargar"
           @click              ="descargarPDF"
@@ -46,8 +46,7 @@
   import    ventana           from "components/utilidades/Ventana.vue"
   import {  File_B64_ToBlob } from "src/useSimpleOk/UtilFiles"
   import {  useTools        } from "src/useSimpleOk/useTools"
-  import {  btnBaseSm,
-            dialogDefault   } from "src/useSimpleOk/useEstilos"
+  import {  style           } from "src/useSimpleOk/useEstilos"
   import    efecto            from "components/utilidades/Efecto.vue"
 
   const emit                  = defineEmits(["update:visible", "update:src", "clickDescargar"])

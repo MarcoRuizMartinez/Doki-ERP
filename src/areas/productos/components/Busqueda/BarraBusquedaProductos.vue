@@ -14,7 +14,7 @@
         class-conenido          ="column q-gutter-xs"
         >
         <q-btn
-          v-bind                ="btnBaseMd"
+          v-bind                ="style.btnBaseMd"
           label                 ="Crear"
           icon                  ="mdi-layers-plus"
           color                 ="positive"
@@ -211,7 +211,7 @@
   import {  IQueryProducto,
             IBusquedaProducto   } from "src/areas/productos/models/BusquedaProductos"
   // * /////////////////////////////////////////////////////////////////////// Componibles
-  import {  btnBaseMd           } from "src/useSimpleOk/useEstilos"
+  import {  style               } from "src/useSimpleOk/useEstilos"
   // * /////////////////////////////////////////////////////////////////////// Componentes
   import    fieldsetFiltro        from "components/utilidades/Fieldset.vue"
   import    inputNumber           from "components/utilidades/input/InputFormNumber.vue"

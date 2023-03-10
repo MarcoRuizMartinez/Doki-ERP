@@ -41,7 +41,7 @@
   <!-- //* ///////////////////////////////////////////////////////////// Modal formulario producto  -->
   <q-dialog
     v-model                   ="ventanaProducto"
-    v-bind                    ="dialogDefault"      
+    v-bind                    ="style.dialogDefault"      
     :persistent               ="loading.crear || loading.editar"
     >
     <formulario               modo-ventana
@@ -71,7 +71,7 @@
   import {  generarCSVDesdeTabla} from "src/useSimpleOk/UtilFiles"
   import {  IProductoDoli,
             ProductoDoli        } from "src/areas/productos/models/ProductoDolibarr"
-  import {  dialogDefault       } from "src/useSimpleOk/useEstilos"            
+  import {  style               } from "src/useSimpleOk/useEstilos"            
   // * /////////////////////////////////////////////////////////////////////// Modelos
   import {  BusquedaProducto,
             IQueryProducto      } from "src/areas/productos/models/BusquedaProductos"

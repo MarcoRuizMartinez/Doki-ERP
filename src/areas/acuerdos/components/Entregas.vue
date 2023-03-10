@@ -13,7 +13,7 @@
     <template                   #barra>
       <!-- //* ///////////////////////////////////////////////////////////// Boton nuevo grupo   -->
       <q-btn
-        v-bind                  ="btnBaseSm"
+        v-bind                  ="style.btnBaseSm"
         label                   ="Nueva entrega"
         color                   ="positive"
         icon                    ="mdi-truck-fast"
@@ -98,7 +98,7 @@
               <!-- //* ////////////////////////////////////////////////////////// Boton Remision -->            
               <q-btn              dense
                 v-if              ="!!entrega.contactoEntrega.id"
-                v-bind            ="btnFlatMd"
+                v-bind            ="style.btnFlatMd"
                 color             ="grey-4"
                 icon              ="mdi-pdf-box"
                 label             ="Remisión"
@@ -108,7 +108,7 @@
               <!-- //* ////////////////////////////////////////////////////////// Boton Rotulo -->
               <q-btn              dense
                 v-if              ="!!entrega.contactoEntrega.id"
-                v-bind            ="btnFlatMd"
+                v-bind            ="style.btnFlatMd"
                 color             ="grey-4"
                 icon              ="mdi-pdf-box"
                 label             ="Rotulo"
@@ -138,8 +138,7 @@
   import {  IAcuerdo              } from "../models/Acuerdo"  
   //* ///////////////////////////////////////////////////////////////////////////// Componibles  
   import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"
-  import {  btnBaseSm, 
-            btnFlatMd,            } from "src/useSimpleOk/useEstilos"
+  import {  style                 } from "src/useSimpleOk/useEstilos"
   //* ///////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana                 from "components/utilidades/Ventana.vue"
   import    refAcuerdo              from "./Busqueda/Columnas/RefAcuerdo.vue"

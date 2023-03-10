@@ -204,13 +204,13 @@
             >
             <div  class         ="column items-start ">
               <q-btn            v-close-popup
-                v-bind          ="btnFlatSm"
+                v-bind          ="style.btnFlatSm"
                 icon            ="mdi-content-duplicate"
                 label           ="Copiar de tercero"
                 @click          ="copiarDatosTercero"
               />
               <q-btn            v-close-popup
-                v-bind          ="btnFlatSm"
+                v-bind          ="style.btnFlatSm"
                 icon            ="mdi-content-duplicate"
                 label           ="Copiar de otros contactos"
                 @click          ="ventanaCopiarContacto = true"
@@ -243,7 +243,7 @@
     <!-- //* ///////////////////////////////////////////////////////////// Modal consentimiento -->
     <q-dialog
       v-model                   ="ventanaClienteExiste"      
-      v-bind                    ="dialogDefault"
+      v-bind                    ="style.dialogDefault"
       >
       <ventana                  cerrar scroll
         titulo                  ="Terceros registrados"
@@ -254,7 +254,7 @@
         <template               #barra>
           <q-btn
             v-if                ="esTerceroInternoDeCoti"
-            v-bind              ="btnBaseSm"
+            v-bind              ="style.btnBaseSm"
             color               ="positive"
             :label              ="consentimientoAsesor ? 'Firmado' : 'Firmar'"
             :icon               ="consentimientoAsesor ? 'mdi-check' : 'mdi-signature'"
@@ -271,7 +271,7 @@
     </q-dialog>
     <q-dialog
       v-model                   ="ventanaCopiarContacto"      
-      v-bind                    ="dialogDefault"
+      v-bind                    ="style.dialogDefault"
       >
       <contactos                cerrar solo-emitir
         :tercero-id             ="acuerdo.tercero.id"
@@ -312,9 +312,7 @@
   import {  useFetch        } from "src/useSimpleOk/useFetch"
   import {  getURL,
             getFormData     } from "src/services/APIMaco"
-  import {  btnBaseSm,
-            btnFlatSm,
-            dialogDefault   } from "src/useSimpleOk/useEstilos"            
+  import {  style           } from "src/useSimpleOk/useEstilos"            
   // * /////////////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana           from "components/utilidades/Ventana.vue"
   import    municipios        from "components/utilidades/select/SelectMunicipios.vue"

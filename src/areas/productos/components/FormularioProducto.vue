@@ -11,7 +11,7 @@
         <!-- //* //////////////////////////////////////////////////////////  Botones -->
         <q-btn
           v-if                  ="tipo === 'crear'"
-          v-bind                ="btnBaseSm"
+          v-bind                ="style.btnBaseSm"
           color                 ="positive"
           icon                  ="mdi-check"
           label                 ="Crear"
@@ -19,7 +19,7 @@
         />
         <q-btn
           v-else-if             ="readonly && ( usuario.esProduccion || usuario.esGerencia )"
-          v-bind                ="btnBaseSm"
+          v-bind                ="style.btnBaseSm"
           color                 ="positive"
           icon                  ="mdi-lead-pencil"
           label                 ="Editar"
@@ -27,7 +27,7 @@
         />
         <q-btn
           v-else
-          v-bind                ="btnBaseSm"
+          v-bind                ="style.btnBaseSm"
           color                 ="positive"
           icon                  ="mdi-content-save"
           label                 ="Guardar"
@@ -232,7 +232,7 @@
   //* ///////////////////////////////////////////////////////////////////////////////// Componibles
   import {  formatoPrecio,
             confeti               } from "src/useSimpleOk/useTools"
-  import {  btnBaseSm             } from "src/useSimpleOk/useEstilos"
+  import {  style                 } from "src/useSimpleOk/useEstilos"
   import {  useControlProductos   } from "src/areas/productos/controllers/ControlProductosDolibarr"
   import {  dexieUnidades,
             dexieCategoriasProducto

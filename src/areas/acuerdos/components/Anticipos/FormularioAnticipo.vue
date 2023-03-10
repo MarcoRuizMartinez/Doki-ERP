@@ -9,7 +9,7 @@
       <efecto efecto            ="Down">
         <q-btn
           v-if                  ="!modelo.esNuevo"
-          v-bind                ="btnBaseSm"
+          v-bind                ="style.btnBaseSm"
           color                 ="grey-10"
           icon                  ="mdi-close"
           label                 ="Borrar"
@@ -18,7 +18,7 @@
         </q-btn>
       </efecto>       
       <q-btn
-        v-bind                  ="btnBaseSm"
+        v-bind                  ="style.btnBaseSm"
         color                   ="positive"
         icon                    ="mdi-cash-plus"
         :label                  ="modelo.esNuevo ? 'Crear' : 'Guardar'"
@@ -55,7 +55,7 @@
       />
       <div class                ="col-1">
         <q-btn
-          v-bind                ="btnRedondoFlat"
+          v-bind                ="style.btnRedondoFlat"
           icon                  ="mdi-account-cash"
           class                 ="q-mt-sm"
           @click                ="modelo.valor = acuerdo.saldo"
@@ -141,8 +141,7 @@
   // * ///////////////////////////////////////////////////////////////////////////////// Componibles
   import {  useTools            } from "src/useSimpleOk/useTools"  
   import {  useFetch            } from "src/useSimpleOk/useFetch"
-  import {  btnBaseSm,
-            btnRedondoFlat      } from "src/useSimpleOk/useEstilos"
+  import {  style               } from "src/useSimpleOk/useEstilos"
   import {  dexieCuentasDinero  } from "src/services/useDexie"  
   import {  getURL, getFormData } from "src/services/APIMaco"
   // * ///////////////////////////////////////////////////////////////////////////////// Componentes

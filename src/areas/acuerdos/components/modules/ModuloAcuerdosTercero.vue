@@ -29,7 +29,7 @@
       <!-- //* ///////////////  Boton crear acuerdo  -->
       <q-btn
         v-if                    ="tipo !== TIPO_ACUERDO.PEDIDO_PRO"
-        v-bind                  ="btnBaseSm"
+        v-bind                  ="style.btnBaseSm"
         label                   ="Crear"
         color                   ="positive"
         icon                    ="mdi-plus"
@@ -83,7 +83,7 @@
             TIPO_ACUERDO          } from "src/areas/acuerdos/models/ConstantesAcuerdos"
   //* /////////////////////////////////////////////////////////////////////////////////// Componibles
   import {  servicesAcuerdos      } from "src/areas/acuerdos/services/servicesAcuerdos"
-  import {  btnBaseSm             } from "src/useSimpleOk/useEstilos"
+  import {  style                 } from "src/useSimpleOk/useEstilos"
   //* /////////////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana                 from "components/utilidades/Ventana.vue"
   import    refAcuerdo              from "src/areas/acuerdos/components/Busqueda/Columnas/RefAcuerdo.vue"

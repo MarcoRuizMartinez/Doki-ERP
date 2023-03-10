@@ -16,7 +16,7 @@
             Ajustes
           </div>
           <q-btn
-            v-bind        ="btnBaseMd"
+            v-bind        ="style.btnBaseMd"
             :href         ="urlPerfil"
             class         ="q-mb-sm"
             color         ="positive"
@@ -26,7 +26,7 @@
             target        ="_blank"
           />
           <q-btn
-            v-bind        ="btnBaseMd"
+            v-bind        ="style.btnBaseMd"
             class         ="q-mb-sm"
             color         ="accent"
             icon          ="mdi-palette"
@@ -35,7 +35,7 @@
             @click        ="ventanaApariencia = true"
           />
           <q-btn          v-close-popup
-            v-bind        ="btnBaseMd"
+            v-bind        ="style.btnBaseMd"
             color         ="secondary"
             label         ="Limpiar"
             size          ="sm"
@@ -52,7 +52,7 @@
             {{usuario.nombre}}
           </div>
           <q-btn          v-close-popup
-            v-bind        ="btnBaseMd"
+            v-bind        ="style.btnBaseMd"
             color         ="negative"
             label         ="Salir"
             size          ="sm"
@@ -65,7 +65,7 @@
   </q-btn>
   <q-dialog
     v-model               ="ventanaApariencia"
-    v-bind                ="dialogDefault"
+    v-bind                ="style.dialogDefault"
     >
     <apariencia />
   </q-dialog>
@@ -77,8 +77,7 @@
   import    apariencia          from "./Apariencia.vue"
   import {  useStoreUser      } from 'src/stores/user'
   import {  limpiarDB         } from "src/services/useDexie"
-  import {  btnBaseMd,
-            dialogDefault     } from "src/useSimpleOk/useEstilos"
+  import {  style             } from "src/useSimpleOk/useEstilos"
   import {  useRouter         } from 'vue-router'
   import {  pausa             } from "src/useSimpleOk/useTools"
   import {  AlmacenesLimpiar  } from "src/models/TiposVarios"

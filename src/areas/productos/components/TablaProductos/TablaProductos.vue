@@ -39,13 +39,13 @@
         <imagen :producto     ="props.row"/>        
         <template v-if        ="modoBusqueda">
           <q-btn              
-            v-bind            ="btnRedondoFlat"
+            v-bind            ="style.btnRedondoFlat"
             icon              ="mdi-alpha-d-circle"
             target            ="_blank"
             :href             ="props.row.urlDolibarr"
           />
           <q-btn              
-            v-bind            ="btnRedondoFlat"
+            v-bind            ="style.btnRedondoFlat"
             icon              ="mdi-lead-pencil"
             @click            ="emit('clickEditar', props.row)"
           />
@@ -102,7 +102,7 @@
   import {  IProductoDoli       } from "src/areas/productos/models/ProductoDolibarr"  
   // * /////////////////////////////////////////////////////////////////////////////////// Componibles
   import {  formatoPrecio       } from "src/useSimpleOk/useTools"
-  import {  btnRedondoFlat      } from "src/useSimpleOk/useEstilos"  
+  import {  style               } from "src/useSimpleOk/useEstilos"  
   // * /////////////////////////////////////////////////////////////////////////////////// Componentes
   import    tooltipPrecios        from "src/areas/acuerdos/components/Tooltips/TooltipPreciosProducto.vue"
   import    inputFiltroTexto      from "src/areas/productos/components/TablaProductos/HeaderCell/FiltroTexto.vue"

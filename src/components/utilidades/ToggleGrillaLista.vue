@@ -5,7 +5,7 @@
             toRefs,
             PropType,            
                               } from "vue"
-  import {  toggleGris        } from "src/useSimpleOk/useEstilos"
+  import {  style             } from "src/useSimpleOk/useEstilos"
 
   type TTipoLista             = "grilla" | "lista"  
 
@@ -32,7 +32,7 @@
 <template>
   <q-btn-toggle
     v-model               ="tipoVista"
-    v-bind                ="toggleGris"
+    v-bind                ="style.toggleGris"
     :color                ="color"
     :options              ="[
                               { value: 'grilla', slot: 'grilla' },
