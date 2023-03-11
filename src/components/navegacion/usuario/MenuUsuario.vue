@@ -65,7 +65,7 @@
   </q-btn>
   <q-dialog
     v-model               ="ventanaApariencia"
-    v-bind                ="style.dialogDefault"
+    v-bind                ="style.dialogo"
     >
     <apariencia />
   </q-dialog>

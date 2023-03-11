@@ -1,7 +1,7 @@
 <template>
   <q-dialog
     v-model                   ="visibleModel"
-    v-bind                    ="style.dialogDefault"
+    v-bind                    ="style.dialogo"
     :maximized                ="fullScreen"
     @hide                     ="cerrarVentana"    
     >  

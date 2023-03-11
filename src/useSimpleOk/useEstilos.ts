@@ -65,7 +65,7 @@ export const style  = {
     textColor       : "grey-6",
     toggleTextColor : "grey-10",
   },  
-  dialogDefault     : {
+  dialogo     : {
     transitionShow  : "slide-up",
     transitionHide  : "slide-down",
   }

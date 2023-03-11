@@ -107,7 +107,7 @@
   <!-- //* ///////////////////////////////////////////////////////////// Modal Buscar Formulario anticipo -->
   <q-dialog
     v-model                     ="ventanaFormulario"
-    v-bind                      ="style.dialogDefault"
+    v-bind                      ="style.dialogo"
     >
     <formulario
       v-model                   ="anticipo"

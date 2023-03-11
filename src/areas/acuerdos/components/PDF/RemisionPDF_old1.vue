@@ -1,7 +1,7 @@
 <template>
   <q-dialog                   maximized 
     v-model                   ="visibleModel"
-    v-bind                    ="style.dialogDefault"
+    v-bind                    ="style.dialogo"
     @escape-key               ="cerrarVentana"
     >
     <ventana                    cerrar full-screen scroll

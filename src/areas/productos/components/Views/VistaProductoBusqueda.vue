@@ -41,7 +41,7 @@
   <!-- //* ///////////////////////////////////////////////////////////// Modal formulario producto  -->
   <q-dialog
     v-model                   ="ventanaProducto"
-    v-bind                    ="style.dialogDefault"      
+    v-bind                    ="style.dialogo"      
     :persistent               ="loading.crear || loading.editar"
     >
     <formulario               modo-ventana

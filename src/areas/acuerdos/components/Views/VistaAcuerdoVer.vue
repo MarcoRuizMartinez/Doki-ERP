@@ -82,13 +82,13 @@
   <!-- //* ///////////////////////////////////////////////////////////// Modal Buscar productos -->
   <q-dialog
     v-model                 ="modales.comisiones"
-    v-bind                  ="style.dialogDefault"      
+    v-bind                  ="style.dialogo"      
     >
     <comisiones style       ="max-width: initial;"/>
   </q-dialog>
   <q-dialog                 maximized
     v-model                 ="modales.remision"
-    v-bind                  ="style.dialogDefault"
+    v-bind                  ="style.dialogo"
     >
     <remision
       :acuerdo              ="acuerdoRemsion"

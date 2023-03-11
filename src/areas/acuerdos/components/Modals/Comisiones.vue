@@ -1,18 +1,18 @@
 <template>
-  <ventana                    cerrar scroll
-    titulo                    ="Calculo de comisión"
-    icono                     ="mdi-account-details"
-    class-contenido           ="row justify-start"
-    mensaje-sin-resultados    ="No se encontraron productos o servicios"
-    padding-contenido         ="0"
-    size-icon-carga           ="28vw"
-    :modo                     ="modo"
-    :cargando                 ="loading.añadir || loading.borrarLote"
-    @cerrar                   ="cerrar"
+  <ventana                        cerrar scroll
+    titulo                        ="Calculo de comisión"
+    icono                         ="mdi-account-details"
+    class-contenido               ="row justify-start"
+    mensaje-sin-resultados        ="No se encontraron productos o servicios"
+    padding-contenido             ="0"
+    size-icon-carga               ="28vw"
+    :modo                         ="modo"
+    :cargando                     ="loading.añadir || loading.borrarLote"
+    @cerrar                       ="cerrar"
     > 
-    <template                 #menu>
-      <div class              ="row gap-pa-md full-width justify-between">
-        <table  class         ="tabla-totales">
+    <template                     #menu>
+      <div class                  ="row gap-pa-md full-width justify-between">
+        <table  class             ="tabla-totales">
           <tr>
             <td>Comisión:</td>
             <td class="text-bold">{{ formatoPrecio( acuerdo.comision.comercial_1 ) }}</td>
@@ -25,23 +25,25 @@
         <!-- //* ///////////////////////////////////////////////////////////// Campo buscar -->
         <div>
           <q-btn
-            v-bind              ="style.btnBaseMd"
-            label               ="Añadir"     
-            color               ="primary"       
-            icon                ="mdi-check"
+            v-if                  ="showAprobar"
+            v-bind                ="style.btnBaseMd"
+            label                 ="Aprobar"     
+            color                 ="primary"       
+            icon                  ="mdi-account-check"
+            @click                ="modales.incentivo = true"
           />
         </div>
       </div>
     </template>
-    <div  class                 ="bg-grey-3 fit">
+    <div  class                   ="bg-grey-3 fit">
       <!--    -->
-      <q-table                  borbordered dense flat hide-bottom
-        class                   ="tabla-maco"
-        row-key                 ="id"
-        style                   ="min-height: 208px; max-height: 460px;"
-        :rows-per-page-options  ="[100, 200]"
-        :rows                   ="lineas"
-        :columns                ="columnas"
+      <q-table                    borbordered dense flat hide-bottom
+        class                     ="tabla-maco"
+        row-key                   ="id"
+        style                     ="min-height: 208px; max-height: 460px;"
+        :rows-per-page-options    ="[100, 200]"
+        :rows                     ="lineas"
+        :columns                  ="columnas"
         >
         <!-- //* ///////////////  Columna Ref  -->
         <template #body-cell-ref  ="props">
@@ -57,8 +59,8 @@
         </template>
         <!-- //* ///////////////  Columna Nivel  -->
         <template
-          #body-cell-iconoNivel ="props">
-          <q-td     :props      ="props">
+          #body-cell-iconoNivel   ="props">
+          <q-td     :props        ="props">
             <q-icon :name="props.value" color="grey-10" size="sm" class="q-mr-xs"/>
           </q-td>
         </template>
@@ -89,8 +91,8 @@
         </template>
         <!-- //* ///////////////  Columna comision $  -->
         <template
-          #body-cell-comision_c2="props">
-          <q-td     :props      ="props"
+          #body-cell-comision_c2  ="props">
+          <q-td     :props        ="props"
             class="fuente-mono text-right text-bold"
             >
             {{ formatoPrecio( props.row.comision_c1.valor, "decimales-no" ) }}
@@ -100,11 +102,12 @@
     </div>
     <!-- //* ///////////////////////////////////////////////////////////// Modal formulario agregar comision -->
     <q-dialog
-      v-model                   ="modales.incentivo"
-      v-bind                    ="style.dialogDefault"
-      :persistent               ="loading.editarLinea || loading.borrarLinea"
+      v-model                     ="modales.incentivo"
+      v-bind                      ="style.dialogo"
+      :persistent                 ="loading.editarLinea || loading.borrarLinea"
       >
-      <formulario />
+      <formulario
+        :acuerdo                  ="acuerdo" />
     </q-dialog>
   </ventana>
 </template>
@@ -167,7 +170,15 @@
   }
 
   const lineas                = computed(()=> acuerdo.value.productos.filter( p => !p.esTituloOsubTotal) as ILineaAcuerdo[])
-
+  const showAprobar           = computed(()=>
+    acuerdo.value.esPedido
+    &&
+    /* acuerdo.value.esEstadoEntregado
+    &&
+    acuerdo.value.facturado
+    && */
+    (usuario.value.esContable || usuario.value.esGerencia)
+  )
 
 
 

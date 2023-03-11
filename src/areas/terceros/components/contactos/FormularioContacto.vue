@@ -243,7 +243,7 @@
     <!-- //* ///////////////////////////////////////////////////////////// Modal consentimiento -->
     <q-dialog
       v-model                   ="ventanaClienteExiste"      
-      v-bind                    ="style.dialogDefault"
+      v-bind                    ="style.dialogo"
       >
       <ventana                  cerrar scroll
         titulo                  ="Terceros registrados"
@@ -271,7 +271,7 @@
     </q-dialog>
     <q-dialog
       v-model                   ="ventanaCopiarContacto"      
-      v-bind                    ="style.dialogDefault"
+      v-bind                    ="style.dialogo"
       >
       <contactos                cerrar solo-emitir
         :tercero-id             ="acuerdo.tercero.id"

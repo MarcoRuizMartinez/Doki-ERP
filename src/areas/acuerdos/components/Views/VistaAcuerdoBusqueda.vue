@@ -95,7 +95,7 @@
     <!-- //* ///////////////////////////////////////////////////////////// Modal vista rapida -->
     <q-dialog                   maximized
       v-model                   ="ventanaVistaRapida"
-      v-bind                    ="style.dialogDefault"
+      v-bind                    ="style.dialogo"
       :persistent               ="false"
       >
       <ventana                  cerrar scroll full-screen

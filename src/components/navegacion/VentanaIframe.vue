@@ -52,7 +52,7 @@
     <!-- //* ///////////////////////////////////////////////////////////// Formulario -->
     <q-dialog                   
       v-model           ="formularioOk"
-      v-bind            ="style.dialogDefault"
+      v-bind            ="style.dialogo"
       >
       <formulario-iframe es-formulario
         icono           ="mdi-form-textbox"

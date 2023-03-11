@@ -123,7 +123,7 @@
     <!-- //* //////////////////////////////////////////////////////// Busqueda Movil -->
     <q-dialog
       v-model                     ="filtroMovil"
-      v-bind                      ="style.dialogDefault"
+      v-bind                      ="style.dialogo"
       position                    ="bottom"
       >
       <fieldset-filtro

@@ -85,7 +85,7 @@
     <!-- //* ///////////////////////////////////////////////////////////// Modal Buscar productos -->
     <q-dialog                   maximized
       v-model                   ="modales.añadirProductos"
-      v-bind                    ="style.dialogDefault"
+      v-bind                    ="style.dialogo"
       :persistent               ="loading.añadir || loading.borrarLote"
       @hide                     ="grupoElegido.noDestacarProductos()"
       >
@@ -94,7 +94,7 @@
     <!-- //* ///////////////////////////////////////////////////////////// Modal formulario edicion Linea   -->
     <q-dialog
       v-model                   ="modales.formulario"
-      v-bind                    ="style.dialogDefault"
+      v-bind                    ="style.dialogo"
       :persistent               ="loading.editarLinea || loading.borrarLinea"
       >
       <formulario-linea />
@@ -102,7 +102,7 @@
     <!-- //* ///////////////////////////////////////////////////////////// Modal editar en lote -->
     <q-dialog
       v-model                   ="modales.editarEnLote"
-      v-bind                    ="style.dialogDefault"
+      v-bind                    ="style.dialogo"
       :persistent               ="loading.editarLote"
       >
       <editar-en-lote />

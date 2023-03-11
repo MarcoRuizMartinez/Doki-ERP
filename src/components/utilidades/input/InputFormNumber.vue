@@ -91,7 +91,7 @@
   import {  Notify,
             copyToClipboard       } from 'quasar'
   import {  EstadoVerificar       } from "src/models/TiposVarios"
-  import {  style                 } from "src/useSimpleOk/useEstilos"
+  import {  btnNumeroPaso         } from "src/useSimpleOk/useEstilos"
   import {  ValidationRule        } from "quasar"
   import {  valorValido,  
             strOrNumToNum         } from "src/useSimpleOk/useTools"

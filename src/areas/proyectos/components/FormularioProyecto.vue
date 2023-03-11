@@ -191,7 +191,7 @@
     <!-- //* ///////////////////////////////////////////////////////////// Modal Buscar productos -->
     <q-dialog
       v-model                   ="ventanaClienteExiste"      
-      v-bind                    ="style.dialogDefault"
+      v-bind                    ="style.dialogo"
       >
       <ventana                  cerrar scroll
         titulo                  ="Terceros registrados"

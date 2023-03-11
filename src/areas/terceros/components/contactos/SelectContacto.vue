@@ -65,7 +65,7 @@
   </q-select>
   <q-dialog
     v-model                   ="ventanaOk"
-    v-bind                    ="style.dialogDefault"
+    v-bind                    ="style.dialogo"
     >
     <!-- //* /////////////  Formulario Contacto  -->
     <form-contacto

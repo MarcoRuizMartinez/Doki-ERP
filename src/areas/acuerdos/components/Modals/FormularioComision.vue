@@ -1,30 +1,20 @@
 <template>
   <ventana                      cerrar
     class-contenido             ="column items-center"
-    titulo                      ="Anticipo o Autorización"
+    titulo                      ="Revisar comisión"
     icono                       ="mdi-cash"
+    width                       ="360px"
     :cargando                   ="cargando"
     >
     <template                   #barra>
-      <efecto efecto            ="Down">
-        <q-btn
-          v-if                  ="!modelo.esNuevo"
-          v-bind                ="style.btnBaseSm"
-          color                 ="grey-10"
-          icon                  ="mdi-close"
-          label                 ="Borrar"
-          >
-          <confirmar  @ok       ="borrarAnticipo"/>
-        </q-btn>
-      </efecto>       
       <q-btn
         v-bind                  ="style.btnBaseSm"
         color                   ="positive"
-        icon                    ="mdi-cash-plus"
-        :label                  ="modelo.esNuevo ? 'Crear' : 'Guardar'"
+        label                   ="Guardar"
         :disable                ="btnDisable"
-        @click                  ="validar"
-      />        
+        >
+        <confirmar  @ok         ="validar"/>
+      </q-btn>
     </template>
     <!-- //* ///////////////////////////////////////////////////////////////   FORMULARIO  -->
     <q-form
@@ -32,87 +22,39 @@
       @submit                   ="onSubmit"
       class                     ="row q-col-gutter-md"
       >
-      <!-- //* ///////////////////////////////////////////////////////////// Cuenta -->
-      <select-label-value
-        v-model                 ="modelo.cuenta"
-        label                   ="Cuenta"
-        icon                    ="mdi-wallet"
-        class                   ="col-12"
-        :rules                  ="[ reglaCuenta ]"
-        :options                ="cuentas"
-        :loading                ="!cuentas.length"
-      />
+      <!-- //* ///////////////////////////////////////////////////////////// Estado  -->
+      <div class                ="col-12">
+        <q-btn-toggle           push unelevated spread glossy dense
+          v-model               ="modelo.estado"          
+          :options              ="Incentivo.estados"
+        />
+      </div>
       <!-- //* ///////////////////////////////////////////////////////////// Valor -->
-      <input-number             no-undefined alerta solo-positivo 
+      <input-number             no-undefined solo-positivo 
         v-model                 ="modelo.valor"
         label                   ="Valor"
         tipo                    ="precio"
-        class                   ="col-md-5 col-11"
+        class                   ="col-12"
         icon                    ="mdi-cash-usd"
         debounce                ="2500"
-        :rules                  ="[ reglaValor ]"
+        :rules                  ="[ reglaValor ]" 
+        :maximo                 ="acuerdo.comision.comercial_1"
         :minimo                 ="0"
+        @update:model-value     ="revisarValor"
       />
-      <div class                ="col-1">
-        <q-btn
-          v-bind                ="style.btnRedondoFlat"
-          icon                  ="mdi-account-cash"
-          class                 ="q-mt-sm"
-          @click                ="modelo.valor = acuerdo.saldo"
-        />
-      </div>
-      <!-- //* ///////////////////////////////////////////////////////////// Fecha pago -->
-      <input-fecha              no-futuro clearable alerta
-        v-model                 ="modelo.fechaPago"
-        label                   ="Fecha"
-        class                   ="col-md-6 col-12"
-      />
-      <!-- //* ///////////////////////////////////////////////////////////// Estado -->
-      <select-label-value       alerta
-        v-model                 ="modelo.estadoSelect"
-        label                   ="Estado"
-        icon                    ="mdi-cash-check"
-        class                   ="col-md-6 col-12"
-        :defecto                ="ESTADO_ANTICIPO_LABEL.PENDIENTE"
-        :options                ="Anticipo.estados"
-        @update:model-value     ="modelo.estado = modelo.estadoSelect.value"
-      />    
-      <!-- //* ///////////////////////////////////////////////////////////// Tipo -->
-      <select-label-value       alerta
-        v-model                 ="modelo.tipoSelect"
-        label                   ="Tipo"
-        icon                    ="mdi-cash-refund"
-        class                   ="col-md-6 col-12"
-        :defecto                ="TIPO_ANTICIPO_LABEL.PAGO"
-        :options                ="Anticipo.tipos"
-        @update:model-value     ="modelo.tipo = modelo.tipoSelect.value"
-      />  
-      <!-- //* ///////////////////////////////////////////////////////////// Nota -->
-      <input-text               
+      <!-- //* /////////////////////////////////////////////////////////////  Nota  -->
+      <q-input                  filled dense
         v-model                 ="modelo.nota"
         label                   ="Nota"
-        icon                    ="mdi-comment-quote"
+        type                    ="textarea"
         class                   ="col-12"
-        :rules                  ="[ reglaNota ]"
-      />
-      <!-- //* ///////////////////////////////////////////////////////////// Comprobante interno -->
-      <select-label-value       clearable no-loading
-        v-model                 ="modelo.fileInterno"
-        :label                  ="'Comprobante ' + (esAutorizacion ? 'autorización' : 'pago')"
-        icon                    ="mdi-bank"
-        class                   ="col-12"
-        :alerta                 ="modelo.estadoSelect.label === ESTADO_ANTICIPO_LABEL.VERIFICADO"
-        :options                ="acuerdo.archivos"
-        @update:model-value     ="modelo.estadoSelect = {label: ESTADO_ANTICIPO_LABEL.VERIFICADO, value: ESTADO_ANTICIPO.VERIFICADO } "
-      />
-      <!-- //* ///////////////////////////////////////////////////////////// Comprobante Cliente -->
-      <select-label-value       clearable no-loading
-        v-model                 ="modelo.fileCliente"
-        label                   ="Recibo de cliente"
-        icon                    ="mdi-account-cash"
-        class                   ="col-12"
-        :options                ="acuerdo.archivos"
-      />
+        debounce                ="400"
+        :rules                  ="[ reglaNota ]" 
+        > 
+        <template #prepend >
+          <q-icon name          ="mdi-comment-quote" />
+        </template>
+      </q-input>
       <q-btn
         v-show                  ="false"
         type                    ="submit"
@@ -127,67 +69,90 @@
             watch,
             computed,
             PropType,
-                                } from "vue"
-  // * ///////////////////////////////////////////////////////////////////////////////// Modelos
-  import {  IAnticipo, Anticipo,
-            TIPO_ANTICIPO,
-            TIPO_ANTICIPO_LABEL,
-            ESTADO_ANTICIPO_LABEL,
-            ESTADO_ANTICIPO
-                                } from "src/areas/acuerdos/models/Anticipo"
-  //* /////////////////////////////////////////////////////////////////////////////////// Store
-  import {  storeToRefs           } from 'pinia'                            
-  import {  useStoreAcuerdo       } from 'stores/acuerdo'
-  // * ///////////////////////////////////////////////////////////////////////////////// Componibles
-  import {  useTools            } from "src/useSimpleOk/useTools"  
-  import {  useFetch            } from "src/useSimpleOk/useFetch"
-  import {  style               } from "src/useSimpleOk/useEstilos"
-  import {  dexieCuentasDinero  } from "src/services/useDexie"  
-  import {  getURL, getFormData } from "src/services/APIMaco"
-  // * ///////////////////////////////////////////////////////////////////////////////// Componentes
-  import    ventana               from "components/utilidades/Ventana.vue"
-  import    inputText             from "src/components/utilidades/input/InputFormText.vue"
-  import    selectLabelValue      from "components/utilidades/select/SelectLabelValue.vue"
-  import    inputNumber           from "components/utilidades/input/InputFormNumber.vue"
-  import    inputFecha            from "src/components/utilidades/input/InputFecha.vue"
-  import    efecto                from "components/utilidades/Efecto.vue"
-  import    confirmar             from "components/utilidades/MenuConfirmar.vue"
+                                  } from "vue"
+  // * /////////////////////////////////////////////////////////////////////////////////// Store
+  import {  storeToRefs         } from 'pinia'
+  import {  useStoreUser        } from 'src/stores/user'
 
-  const { acuerdo           } = storeToRefs( useStoreAcuerdo() )
+  // * ///////////////////////////////////////////////////////////////////////////////// Modelos
+  import {  IIncentivo,
+            Incentivo,
+            INCENTIVO_ESTADO,
+            INCENTIVO_ORIGEN,
+            INCENTIVO_RAZON,
+                                  } from "src/areas/usuarios/models/Incentivo"
+  import {  IAcuerdo              } from "../../models/Acuerdo";
+
+  // * ///////////////////////////////////////////////////////////////////////////////// Componibles
+  import {  useTools              } from "src/useSimpleOk/useTools"  
+  import {  useFetch              } from "src/useSimpleOk/useFetch"
+  import {  style                 } from "src/useSimpleOk/useEstilos"
+  import {  getURL, getFormData   } from "src/services/APIMaco"
+  
+  // * ///////////////////////////////////////////////////////////////////////////////// Componentes
+  import    ventana                 from "components/utilidades/Ventana.vue"
+  import    inputNumber             from "components/utilidades/input/InputFormNumber.vue"
+  import    confirmar               from "components/utilidades/MenuConfirmar.vue"
+
   const { aviso             } = useTools()
   const { miFetch           } = useFetch()
-  const cuentas               = dexieCuentasDinero()
-  const modelo                = ref< IAnticipo  >( new Anticipo() )
+  const { usuario           } = storeToRefs( useStoreUser() )
+
   const cargando              = ref< boolean    >( false )
   const formulario            = ref< any >()
-  const endPoint              = getURL("servicios", "pagos")
-  let   copiaAnticipo         = ""
+  const endPoint              = getURL("servicios", "rrhh")
+  const modelo                = ref< IIncentivo >( new Incentivo() )
+  //let   copiaAnticipo         = ""
 
-/*   const props                 = defineProps({      
-    modelValue:   { required: true,  type: Object as PropType< IAnticipo >  },
+
+  const props                 = defineProps({
+    acuerdo:  { required: true, type: Object as PropType< IAcuerdo >  },
   })
-  const { modelValue }        = toRefs( props ) */
 
+  const { acuerdo }           = toRefs( props ) 
+  const cosa = new Incentivo()
+/*   
   const emit                  = defineEmits<{
     (e: "update:modelValue",  value: IAnticipo ): void
     (e: "creado",             value: IAnticipo ): void
     (e: "borrado",            value: IAnticipo ): void
   }>()
+ */
+  //const modificado            = computed( ()=>  copiaAnticipo !== JSON.stringify( modelo.value ) ) 
+  const btnDisable            = computed( ()=> !modelo.value.estado )
 
-  const modificado            = computed( ()=>  copiaAnticipo !== JSON.stringify( modelo.value ) ) 
-  const btnDisable            = computed( ()=> !modelo.value.esNuevo && !modificado.value)
-  const esAutorizacion        = computed( ()=> modelo.value.tipoSelect.value === TIPO_ANTICIPO.AUTORIZACION  )
+  
+  watch(()=>acuerdo.value.comision.comercial_1, (valor) =>
+    {
+      modelo.value.valor      = valor
+    },
+    { immediate: true }
+  )
+
   const objetoToFetch         = computed( ()=>
     { 
-      modelo.value.index      =   modelo.value.esNuevo
-                                ? acuerdo.value.anticipos.length + 1
-                                : acuerdo.value.anticipos.findIndex( a => a.id == modelo.value.id ) + 1
+      const objeto            = {
+        owner               : usuario.value.id,
+        modified_by         : usuario.value.id,
+        origen_id           : acuerdo.value.id,
+        origen_ref          : acuerdo.value.ref,
+        valor               : modelo.value.valor,
+        pagado              : 0,
+        usuario_id          : acuerdo.value.comercial.id,
+        estado              : modelo.value.estado,
+        razon               : INCENTIVO_RAZON.COMISION,
+        origen_tipo         : INCENTIVO_ORIGEN.PEDIDO_CLI,
+        nota                : modelo.value.nota,
+      }
+      
       return {
-        body:   getFormData( modelo.value.esNuevo ? "nuevoAnticipo" : "editarAnticipo", modelo.value.anticipoToApi ),
+        body:   getFormData( "nuevoIncentivo", objeto ),
         method: "POST"
       }
     }
   )
+
+
 /*   
   watch(modelValue, (newAnticipo) =>
     {
@@ -211,26 +176,26 @@
   {
     cargando.value            = true
     
-    const { data, ok  }       = await miFetch( endPoint, objetoToFetch.value, { mensaje: "guardar anticipo" } )
+    const { data, ok  }       = await miFetch( endPoint, objetoToFetch.value, { mensaje: "guardar comisión" } )
     if(ok)
     {
-      aviso( "positive", "Anticipo guardaro exitosamente" )
+      aviso( "positive", "Comisión guardada" )
 
       if(modelo.value.esNuevo){
         modelo.value.id     = parseInt( data as string )
-        emit("creado", modelo.value)
+        //emit("creado", modelo.value)
       }
       else{
-        emit("update:modelValue", modelo.value)
+        //emit("update:modelValue", modelo.value)
       }
     }
     else
-      aviso( "negative", "Error al guardar anticipo. Por favor vuelve a intentarlo" )
-
+      aviso( "negative", "Error al guardar comisión. Por favor vuelve a intentarlo" )
+ 
     cargando.value            = false
   }
 
-  async function borrarAnticipo()
+/*   async function borrarAnticipo()
   {
     cargando.value            = true
     const { data, ok  }       = await miFetch( endPoint, { body: getFormData( "borrarAnticipo", { id: modelo.value.id } ), method: "POST" }, { mensaje: "borrar anticipo" } )
@@ -244,21 +209,24 @@
       aviso( "negative", "Error al borrado el anticipo", "account" )
 
     cargando.value            = false
-  }
+  } */
 
-  function reglaCuenta() : boolean | string {
-    const cuentaSeleccionada  = !!modelo.value.cuenta.value
-    
-    return (cuentaSeleccionada || esAutorizacion.value )  || "Se debe seleccionar una cuenta"
-  }  
 
-  function reglaValor() : boolean | string {
-    const valorOk             = modelo.value.valor >  0    
-    return (valorOk || esAutorizacion.value )  || "Se debe indicar un valor valido"
+  function reglaValor() : boolean | string {    
+    const valorOk             = modelo.value.valor > 0 
+    return ( valorOk )  || "El valor no puede ser menor o igual a cero  "
   }
 
   function reglaNota() : boolean | string {
     const notaOk              = modelo.value.nota.length >= 7
-    return (notaOk || !esAutorizacion.value )  || "Se debe indicar una razón para la autorización"
+    return (notaOk || modelo.value.estado === INCENTIVO_ESTADO.APROBADO )  || "Se debe indicar una razón para la anulación"
+  }
+
+  function revisarValor()
+  {
+    if( modelo.value.valor < 0 )
+        modelo.value.valor = 0
+    if( modelo.value.valor > acuerdo.value.comision.comercial_1)
+        modelo.value.valor = acuerdo.value.comision.comercial_1
   }
 </script>
