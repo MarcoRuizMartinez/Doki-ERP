@@ -723,7 +723,7 @@ async function buscarEnlacesAcuerdo()
   async function actualizarPreciosAcuerdo( soloCosto : 0 | 1 )
   {
     const objeto                = { id: acuerdo.value.id, acuerdo: acuerdo.value.tipo, soloCosto }
-    const objetoForData         = { body: getFormData("actualizarPrecios", objeto), method: "POST"}
+    const objetoForData         = { body: getFormData("actualizarPrecios", objeto), method: "POST" }
     const { ok  }               = await miFetch( endPoint("servicios"), objetoForData, { mensaje: "actualizar precios" } )        
     
     if(ok){

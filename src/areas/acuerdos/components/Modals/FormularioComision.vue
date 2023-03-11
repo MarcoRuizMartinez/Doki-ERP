@@ -1,14 +1,15 @@
 <template>
   <ventana                      cerrar
     class-contenido             ="column items-center"
-    titulo                      ="Revisar comisión"
+    :titulo                     ="modelo.razonLabel"
     icono                       ="mdi-cash"
     width                       ="360px"
     :cargando                   ="cargando"
     >
     <template                   #barra>
       <q-btn
-        v-bind                  ="style.btnBaseSm"
+        v-if                    ="!readonly"
+        v-bind                  ="style.btnBaseMd"
         color                   ="positive"
         label                   ="Guardar"
         :disable                ="btnDisable"
@@ -27,6 +28,7 @@
         <q-btn-toggle           push unelevated spread glossy dense
           v-model               ="modelo.estado"          
           :options              ="Incentivo.estados"
+          :readonly             ="readonly"
         />
       </div>
       <!-- //* ///////////////////////////////////////////////////////////// Valor -->
@@ -40,6 +42,7 @@
         :rules                  ="[ reglaValor ]" 
         :maximo                 ="acuerdo.comision.comercial_1"
         :minimo                 ="0"
+        :readonly               ="readonly"
         @update:model-value     ="revisarValor"
       />
       <!-- //* /////////////////////////////////////////////////////////////  Nota  -->
@@ -49,6 +52,7 @@
         type                    ="textarea"
         class                   ="col-12"
         debounce                ="400"
+        :readonly               ="readonly"
         :rules                  ="[ reglaNota ]" 
         > 
         <template #prepend >
@@ -77,40 +81,32 @@
   // * ///////////////////////////////////////////////////////////////////////////////// Modelos
   import {  IIncentivo,
             Incentivo,
-            INCENTIVO_ESTADO,
-            INCENTIVO_ORIGEN,
-            INCENTIVO_RAZON,
-                                  } from "src/areas/usuarios/models/Incentivo"
+            INCENTIVO_ESTADO      } from "src/areas/usuarios/models/Incentivo"
   import {  IAcuerdo              } from "../../models/Acuerdo";
 
   // * ///////////////////////////////////////////////////////////////////////////////// Componibles
-  import {  useTools              } from "src/useSimpleOk/useTools"  
-  import {  useFetch              } from "src/useSimpleOk/useFetch"
   import {  style                 } from "src/useSimpleOk/useEstilos"
-  import {  getURL, getFormData   } from "src/services/APIMaco"
+  import {  useControlUsuarios    } from "src/areas/usuarios/controllers/ControlUsuarios"
   
   // * ///////////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana                 from "components/utilidades/Ventana.vue"
   import    inputNumber             from "components/utilidades/input/InputFormNumber.vue"
   import    confirmar               from "components/utilidades/MenuConfirmar.vue"
 
-  const { aviso             } = useTools()
-  const { miFetch           } = useFetch()
   const { usuario           } = storeToRefs( useStoreUser() )
-
-  const cargando              = ref< boolean    >( false )
-  const formulario            = ref< any >()
-  const endPoint              = getURL("servicios", "rrhh")
-  const modelo                = ref< IIncentivo >( new Incentivo() )
-  //let   copiaAnticipo         = ""
-
+  const { nuevoIncentivo    } = useControlUsuarios()
 
   const props                 = defineProps({
-    acuerdo:  { required: true, type: Object as PropType< IAcuerdo >  },
+    acuerdo:    { required: true, type: Object as PropType< IAcuerdo >    },
+    incentivo:  { required: true, type: Object as PropType< IIncentivo >  },
   })
 
-  const { acuerdo }           = toRefs( props ) 
-  const cosa = new Incentivo()
+  const { acuerdo, incentivo }= toRefs( props ) 
+  const cargando              = ref< boolean    >( false )
+  const formulario            = ref< any >()
+  const modelo                = ref< IIncentivo >( new Incentivo() )
+  const readonly              = computed(()=> !!modelo.value.id )
+  //let   copiaAnticipo         = ""  
 /*   
   const emit                  = defineEmits<{
     (e: "update:modelValue",  value: IAnticipo ): void
@@ -120,7 +116,6 @@
  */
   //const modificado            = computed( ()=>  copiaAnticipo !== JSON.stringify( modelo.value ) ) 
   const btnDisable            = computed( ()=> !modelo.value.estado )
-
   
   watch(()=>acuerdo.value.comision.comercial_1, (valor) =>
     {
@@ -129,29 +124,12 @@
     { immediate: true }
   )
 
-  const objetoToFetch         = computed( ()=>
-    { 
-      const objeto            = {
-        owner               : usuario.value.id,
-        modified_by         : usuario.value.id,
-        origen_id           : acuerdo.value.id,
-        origen_ref          : acuerdo.value.ref,
-        valor               : modelo.value.valor,
-        pagado              : 0,
-        usuario_id          : acuerdo.value.comercial.id,
-        estado              : modelo.value.estado,
-        razon               : INCENTIVO_RAZON.COMISION,
-        origen_tipo         : INCENTIVO_ORIGEN.PEDIDO_CLI,
-        nota                : modelo.value.nota,
-      }
-      
-      return {
-        body:   getFormData( "nuevoIncentivo", objeto ),
-        method: "POST"
-      }
+  watch(incentivo, (incen)=>{
+      if(!!incen.id)
+        modelo.value  = Object.assign( new Incentivo(), incen ) 
     }
+    , { immediate: true }
   )
-
 
 /*   
   watch(modelValue, (newAnticipo) =>
@@ -175,42 +153,10 @@
   async function onSubmit()
   {
     cargando.value            = true
-    
-    const { data, ok  }       = await miFetch( endPoint, objetoToFetch.value, { mensaje: "guardar comisión" } )
-    if(ok)
-    {
-      aviso( "positive", "Comisión guardada" )
-
-      if(modelo.value.esNuevo){
-        modelo.value.id     = parseInt( data as string )
-        //emit("creado", modelo.value)
-      }
-      else{
-        //emit("update:modelValue", modelo.value)
-      }
-    }
-    else
-      aviso( "negative", "Error al guardar comisión. Por favor vuelve a intentarlo" )
- 
+    const objeto              = modelo.value.getIncentivoToApi( usuario.value.id, acuerdo.value )
+    const ok                  = nuevoIncentivo( objeto )
     cargando.value            = false
   }
-
-/*   async function borrarAnticipo()
-  {
-    cargando.value            = true
-    const { data, ok  }       = await miFetch( endPoint, { body: getFormData( "borrarAnticipo", { id: modelo.value.id } ), method: "POST" }, { mensaje: "borrar anticipo" } )
-
-    if(ok){
-      aviso( "positive", "Anticipo borrado exitosamente",)
-      emit("borrado", modelo.value)
-
-    }
-    else
-      aviso( "negative", "Error al borrado el anticipo", "account" )
-
-    cargando.value            = false
-  } */
-
 
   function reglaValor() : boolean | string {    
     const valorOk             = modelo.value.valor > 0 

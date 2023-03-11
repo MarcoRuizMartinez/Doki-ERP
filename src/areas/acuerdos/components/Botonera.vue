@@ -11,7 +11,7 @@
         :disable              ="cargandoAlgo"     
         @click                ="emit('clickComisiones')"   
         >
-        <Tooltip label        ="Calculo de comisiones"/>
+        <Tooltip label        ="Calculo de comisiones" v-if="esMobil"/>
       </q-btn>
     </div>
     <!-- //* ////////////////////////////////////////////////////////////////////  Lado Derecho -->

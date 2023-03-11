@@ -266,6 +266,27 @@ const routes: RouteRecordRaw[] = [
       },      
     ],
   },
+  //* //////////////////////////////////////////////////////////////////////
+  //* ////////////////////////////////////////////////////////// Comisiones
+  {
+    path:           '/comisiones',
+    component:      () => import('layouts/LayoutPrincipal.vue'),
+    children:
+    [
+      //* ////////////////////////////////////////////////////////////////// Pedido cliente Buscar 
+      {
+        path:       '',
+        name:       'comisiones',
+        component:  () => import('src/areas/usuarios/pages/comisiones/PageBuscarComisiones.vue'),
+      },
+      //* ////////////////////////////////////////////////////////////////// Pedido cliente Ver 
+      {
+        path:       'pagos/',
+        name:       'pagosComisiones',
+        component:  () => import('src/areas/usuarios/pages/comisiones/PageBuscarPagos.vue'),
+      },
+    ],
+  },  
   /*
   {
     path: '/empresa',

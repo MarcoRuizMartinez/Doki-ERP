@@ -24,12 +24,27 @@
         </table>
         <!-- //* ///////////////////////////////////////////////////////////// Campo buscar -->
         <div>
-          <q-btn
+          <q-chip                 dense
+            v-if                  ="!incentivo.id && !loading.incentivo"
+            icon                  ="mdi-alert-circle"
+            color                 ="deep-orange" 
+            text-color            ="white" 
+            label                 ="Pendiente"
+          />
+          <q-chip                 dense
+            v-else-if             ="incentivo.esEstadoAprobado"
+            icon                  ="mdi-cash-check"
+            color                 ="positive" 
+            text-color            ="white" 
+            :label                ="formatoPrecio( incentivo.valor, 'decimales-no' )"
+          />
+          <q-btn 
             v-if                  ="showAprobar"
             v-bind                ="style.btnBaseMd"
-            label                 ="Aprobar"     
-            color                 ="primary"       
-            icon                  ="mdi-account-check"
+            color                 ="primary"
+            :label                ="!incentivo.id ? 'Aprobar' : incentivo.estadoLabel"
+            :icon                 ="!incentivo.id ? 'mdi-account-check' : undefined"
+            :loading              ="loading.incentivo"
             @click                ="modales.incentivo = true"
           />
         </div>
@@ -53,7 +68,7 @@
               <div>{{ props.row.nombre }}</div>
             </div>
             <tooltip-linea
-              v-model ="props.row"
+              v-model             ="props.row"
             />
           </q-td>
         </template>
@@ -107,7 +122,9 @@
       :persistent                 ="loading.editarLinea || loading.borrarLinea"
       >
       <formulario
-        :acuerdo                  ="acuerdo" />
+        :acuerdo                  ="acuerdo"
+        :incentivo                ="incentivo"
+      />
     </q-dialog>
   </ventana>
 </template>
@@ -124,9 +141,13 @@
   import {  ModosVentana        } from "src/models/TiposVarios"
   import {  IColumna, Columna   } from "src/models/Tabla"
   import {  ILineaAcuerdo       } from "src/areas/acuerdos/models/LineaAcuerdo"
+  import {  IIncentivo,
+            Incentivo,
+            INCENTIVO_ORIGEN    } from "src/areas/usuarios/models/Incentivo"  
   // * /////////////////////////////////////////////////////////////////////////////////// Componibles
   import {  formatoPrecio       } from "src/useSimpleOk/useTools"
   import {  style               } from "src/useSimpleOk/useEstilos"  
+  import {  useControlUsuarios  } from "src/areas/usuarios/controllers/ControlUsuarios"  
   // * /////////////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana               from "components/utilidades/Ventana.vue"
   import    tooltipLinea          from "./../Tooltips/TooltipLinea.vue"
@@ -137,6 +158,8 @@
           loading           } = storeToRefs( useStoreAcuerdo() )
   const { usuario           } = storeToRefs( useStoreUser() )
   const modo                  = ref< ModosVentana >("normal")
+  const { buscarIncentivo   } = useControlUsuarios()
+  const incentivo             = ref< IIncentivo >( new Incentivo() )
 
   const emit = defineEmits<{
     (e: 'cerrar',         value: void           ): void
@@ -150,9 +173,10 @@
     new Columna           ({ name: "comision_c2",   label: "Comision $", align: "right"}),
   ])
 
-  onMounted(()=>{
+  onMounted( async ()=>{
     acuerdo.value.comision.calcular()
     arreglarColumnas()
+    incentivo.value      = await buscarIncentivo( INCENTIVO_ORIGEN.PEDIDO_CLI, acuerdo.value.id )
   })
 
   function arreglarColumnas()
@@ -164,6 +188,11 @@
 
     columnas.value.forEach( c=> c.sortable = false )
   }
+
+  /* function buscar(){
+    buscarIncentivo( INCENTIVO_ORIGEN.PEDIDO_CLI, acuerdo.value.id )
+  } */
+
   
   function cerrar(){
     emit("cerrar")
@@ -179,42 +208,4 @@
     && */
     (usuario.value.esContable || usuario.value.esGerencia)
   )
-
-
-
 </script>
-<!-- 
-* Etapa 1: Mostrar las comisiones
-  Mostrar :
-    1 ✅ Mostrar comisiones y Calculo
-    2 Con permisos
-  Editar :
-    - Division de comisiones 
-  Tareas :
-    - Mostrar comisión por linea 
-    - Mostrar comisión en cada linea por vendedor
-    - Solo pueden ver comisiones, vendedor, en cuestión o personal autorizado    
-    - Comisiones solo en pedidos
-* Etapa 2: Subir insentivo
-  Tareas :
-    - Informar si el pedido ya se ha comisionado
-    - Subir registro a tabla de comisiones 
-    - Pagina independiente de incentivos monetarios
-    - Pagina independiente de búsqueda de incentivos monetarios
-    - Mostrar listado de incentivos aplicados dentro de comisiones 
-    - Agregar otros incentivos dentro de pedido
-    - Clasificar informe pagado
-
-id              : number 
-estado          : "aprobado" | "pagado" | "anulado" | "pospuesto" | "pagado ?"
-usuario_id      : number 
-valor           : number 
-tipo            : "comision" | "bono"
-id_origen       : id de pedido | id  de resultado
-nota            : string
-creador_id      : number
-creacion_fecha  : Date
-edito_id        : number
-edito_fecha     : Date
-edito_razon     : string
--->

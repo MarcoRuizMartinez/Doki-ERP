@@ -1,4 +1,5 @@
 //  ok_rrhh_incentivos_monetarios
+import {  IAcuerdo  } from "src/areas/acuerdos/models/Acuerdo"  
 
 export const enum INCENTIVO_ESTADO { 
   NULO                = 0,
@@ -37,7 +38,12 @@ export interface IIncentivo {
   razon               : INCENTIVO_RAZON
   origenTipo          : INCENTIVO_ORIGEN
   nota                : string
-  esNuevo             : boolean 
+  esNuevo             : boolean
+  esEstadoAprobado    : boolean
+  esEstadoAnulado     : boolean
+  estadoLabel         : string
+  razonLabel          : string
+  getIncentivoToApi   : ( usuarioId : number, acuerdo : IAcuerdo  )=> any
 }
 
 export class Incentivo implements IIncentivo
@@ -70,24 +76,66 @@ export class Incentivo implements IIncentivo
     this.pagado       = 0
     this.usuarioId    = 0
     this.estado       = 0
-    this.razon        = 0
+    this.razon        = INCENTIVO_RAZON.COMISION
     this.origenTipo   = 0
     this.nota         = ""
   }
 
   get esNuevo() { return !this.estado }
 
+  getIncentivoToApi( usuarioId : number, acuerdo : IAcuerdo ) : any
+  {
+    return {
+      owner           : usuarioId,
+      modified_by     : usuarioId,
+      origen_id       : acuerdo.id,
+      origen_ref      : acuerdo.ref,
+      valor           : this.valor,
+      pagado          : 0,
+      usuario_id      : acuerdo.comercial.id,
+      estado          : this.estado,
+      razon           : INCENTIVO_RAZON.COMISION,
+      origen_tipo     : INCENTIVO_ORIGEN.PEDIDO_CLI,
+      nota            : this.nota,
+    }
+  }
+
+  get esEstadoAprobado()  { return this.estado === INCENTIVO_ESTADO.APROBADO  }
+  get esEstadoAnulado()   { return this.estado === INCENTIVO_ESTADO.ANULADO   }
+  get estadoLabel()       { return Incentivo.estados.find( e => e.value === this.estado ).label }
+  get razonLabel()        { return Incentivo.razones.find( e => e.value === this.razon  ).label }
+
+  static getIncentivoToApi( iApi : any) : IIncentivo
+  {
+    iApi.id           = +(iApi?.id           ?? 0)
+    iApi.creadorId    = +(iApi?.creadorId    ?? 0)
+    iApi.modificoId   = +(iApi?.modificoId   ?? 0)
+    iApi.origenId     = +(iApi?.origenId     ?? 0)
+    iApi.valor        = +(iApi?.valor        ?? 0)
+    iApi.pagado       = +(iApi?.pagado       ?? 0)
+    iApi.usuarioId    = +(iApi?.usuarioId    ?? 0)
+    iApi.estado       = +(iApi?.estado       ?? 0)
+    iApi.razon        = +(iApi?.razon        ?? 0)
+    iApi.origenTipo   = +(iApi?.origenTipo   ?? 0)
+    //iApi.creadoEl     = +(iApi?.creadoEl     ?? 0)
+    //iApi.modificadoEl = +(iApi?.modificadoEl ?? 0)
+
+    const inc         = Object.assign( new Incentivo(), iApi )
+    console.log("inc: ", inc);
+    return inc 
+  }
+
   static estados = [
     { value: INCENTIVO_ESTADO.ANULADO,      label: "❌Anulado"      },
     { value: INCENTIVO_ESTADO.APROBADO,     label: "✅Aprobado"     },
   ]
 
-/*   static razones = [
+  static razones = [
     { value: INCENTIVO_RAZON.NULO,          label: "Nulo"         },
     { value: INCENTIVO_RAZON.COMISION,      label: "Comisión"     },
     { value: INCENTIVO_RAZON.BONO,          label: "Bono"         },
     { value: INCENTIVO_RAZON.DESCARGO,      label: "Descargo"     },
-  ]     */
+  ]
 
 /*   static origenes = [
     { value: INCENTIVO_ORIGEN.NULO,         label: "Nulo"             },

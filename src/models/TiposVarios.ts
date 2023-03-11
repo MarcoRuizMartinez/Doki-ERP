@@ -132,6 +132,7 @@ export interface ILoading {
   url             ?: boolean
   proyecto        ?: boolean
   enlaces         ?: boolean
+  incentivo       ?: boolean
 }
 
 export const LoadingDefault = {
@@ -169,6 +170,7 @@ export const LoadingDefault = {
   url             : false,
   proyecto        : false,
   enlaces         : false,
+  incentivo       : false,
 }
 
 

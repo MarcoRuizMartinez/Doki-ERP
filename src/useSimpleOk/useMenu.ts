@@ -100,6 +100,21 @@ export function useMenu()
                             visible:    permisos.value.terceros_ver
                           }),
         },
+        { ...new ItemMenu({ separator: true }), },
+        { ...new ItemMenu({
+                            label:      "Comisiones",
+                            icon:       "mdi-account-details",
+                            to:         "/comisiones",
+                            visible:    permisos.value.terceros_ver
+                          }),
+        },
+        { ...new ItemMenu({
+                            label:      "Pagos de comisiones",
+                            icon:       "mdi-cash-check",
+                            to:         "/comisiones/pagos",
+                            visible:    permisos.value.terceros_ver
+                          }),
+        },                
 /*         
         { ...new ItemMenu({
                             label:      "Informes",
