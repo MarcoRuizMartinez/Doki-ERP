@@ -79,6 +79,19 @@ export class Incentivo implements IIncentivo
     this.razon        = INCENTIVO_RAZON.COMISION
     this.origenTipo   = 0
     this.nota         = ""
+
+ 
+    /*     
+    this.origenRef    = ""                        // 1 Input
+    this.usuarioId    = 0                         // 1 Select usuario
+
+    this.creadoEl     = new Date()                // 2 Rango fechas
+
+    this.valor        = 0                         // 2 Maximo y minimo
+    
+    this.pagado       = 0                         // 1 Pagado, pagado parcial, no pagado    
+    this.estado       = 0                         // 1 Select estado  
+    */
   }
 
   get esNuevo() { return !this.estado }
@@ -137,12 +150,14 @@ export class Incentivo implements IIncentivo
     { value: INCENTIVO_RAZON.DESCARGO,      label: "Descargo"     },
   ]
 
-/*   static origenes = [
+/*   
+  static origenes = [
     { value: INCENTIVO_ORIGEN.NULO,         label: "Nulo"             },
     { value: INCENTIVO_ORIGEN.PEDIDO_CLI,   label: "Pedido cliente"   },
     { value: INCENTIVO_ORIGEN.PEDIDO_PRO,   label: "Pedido proveedor" },
     { value: INCENTIVO_ORIGEN.PROYECTO,     label: "Proyecto"         },
     { value: INCENTIVO_ORIGEN.FACTURA,      label: "Factura"          },
     { value: INCENTIVO_ORIGEN.INFORME,      label: "Informe"          },
-  ]     */
+  ]
+*/
 }

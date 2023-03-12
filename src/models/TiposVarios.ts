@@ -37,6 +37,7 @@ export const enum ALMACEN_LOCAL {
   COL_OC_PROVEE   = "v3-colOcProveedor",
   COL_ENTREGAS    = "v3-colEntregas",
   COL_PRODUCTOS   = "v3-colProductos",
+  COL_INVENTIVOS  = "v3-colProductos",
   FECHA_LISTAS    = "v3-fechaListas",
 }
 
@@ -48,6 +49,7 @@ export const AlmacenesLimpiar  : string[] = [
   ALMACEN_LOCAL.COL_ENTREGAS,
   ALMACEN_LOCAL.COL_OC_PROVEE,  
   ALMACEN_LOCAL.COL_PRODUCTOS,
+  ALMACEN_LOCAL.COL_INVENTIVOS,
   ALMACEN_LOCAL.FECHA_LISTAS
 ]
 

@@ -277,13 +277,13 @@ const routes: RouteRecordRaw[] = [
       {
         path:       '',
         name:       'comisiones',
-        component:  () => import('src/areas/usuarios/pages/comisiones/PageBuscarComisiones.vue'),
+        component:  () => import('src/areas/nomina/pages/PageBuscarIncentivos.vue'),
       },
       //* ////////////////////////////////////////////////////////////////// Pedido cliente Ver 
       {
         path:       'pagos/',
         name:       'pagosComisiones',
-        component:  () => import('src/areas/usuarios/pages/comisiones/PageBuscarPagos.vue'),
+        component:  () => import('src/areas/nomina/pages/PageBuscarIncentivosPagos.vue'),
       },
     ],
   },  

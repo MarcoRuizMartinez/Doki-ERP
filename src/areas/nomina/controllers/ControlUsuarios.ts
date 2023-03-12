@@ -15,7 +15,7 @@ import {  IIncentivo,
           INCENTIVO_ESTADO,
           INCENTIVO_ORIGEN,
           INCENTIVO_RAZON,
-                                } from "src/areas/usuarios/models/Incentivo"
+                                } from "src/areas/nomina/models/Incentivo"
 
 export function useControlUsuarios()
 {
@@ -44,7 +44,10 @@ export function useControlUsuarios()
   async function buscarIncentivo( origen_tipo : INCENTIVO_ORIGEN, origen_id : number  ) : Promise< IIncentivo >
   {
     loading.value.incentivo     = true
-    const { ok, data }          = await miFetch( getURL("listas", "varios"), { method: "POST", body: getFormData( "buscarIncentivo", { origen_tipo, origen_id } ) }, { mensaje: "buscar incentivo" } )
+    const { ok, data }          = await miFetch(  getURL("listas", "varios"),
+                                                  { method: "POST", body: getFormData( "buscarIncentivo", { origen_tipo, origen_id } ) },
+                                                  { mensaje: "buscar incentivo" }
+                                                )
     loading.value.incentivo     = false
 
     if(ok){

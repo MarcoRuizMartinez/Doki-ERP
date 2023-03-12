@@ -30,7 +30,8 @@
   "devDependencies": {
     "@quasar/app-webpack": "^3.7.1",
     "@quasar/quasar-app-extension-qpdfviewer": "^2.0.0-alpha.6",
-    "@types/node": "^12.20.21"
+    "@types/node": "^12.20.21",
+    "quasar-app-extension-qgrid": "^1.0.9"
   },
   "browserslist": [
     "last 10 Chrome versions",

@@ -81,12 +81,12 @@
   // * ///////////////////////////////////////////////////////////////////////////////// Modelos
   import {  IIncentivo,
             Incentivo,
-            INCENTIVO_ESTADO      } from "src/areas/usuarios/models/Incentivo"
+            INCENTIVO_ESTADO      } from "src/areas/nomina/models/Incentivo"
   import {  IAcuerdo              } from "../../models/Acuerdo";
 
   // * ///////////////////////////////////////////////////////////////////////////////// Componibles
   import {  style                 } from "src/useSimpleOk/useEstilos"
-  import {  useControlUsuarios    } from "src/areas/usuarios/controllers/ControlUsuarios"
+  import {  useControlUsuarios    } from "src/areas/nomina/controllers/ControlUsuarios"
   
   // * ///////////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana                 from "components/utilidades/Ventana.vue"

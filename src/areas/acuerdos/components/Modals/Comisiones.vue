@@ -143,11 +143,11 @@
   import {  ILineaAcuerdo       } from "src/areas/acuerdos/models/LineaAcuerdo"
   import {  IIncentivo,
             Incentivo,
-            INCENTIVO_ORIGEN    } from "src/areas/usuarios/models/Incentivo"  
+            INCENTIVO_ORIGEN    } from "src/areas/nomina/models/Incentivo"  
   // * /////////////////////////////////////////////////////////////////////////////////// Componibles
   import {  formatoPrecio       } from "src/useSimpleOk/useTools"
   import {  style               } from "src/useSimpleOk/useEstilos"  
-  import {  useControlUsuarios  } from "src/areas/usuarios/controllers/ControlUsuarios"  
+  import {  useControlUsuarios  } from "src/areas/nomina/controllers/ControlUsuarios"  
   // * /////////////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana               from "components/utilidades/Ventana.vue"
   import    tooltipLinea          from "./../Tooltips/TooltipLinea.vue"
