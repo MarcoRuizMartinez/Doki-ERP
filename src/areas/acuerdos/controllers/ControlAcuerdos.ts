@@ -7,6 +7,8 @@ import {  useStoreAcuerdo       } from 'src/stores/acuerdo'
 import {  useControlProductos   } from "src/areas/acuerdos/controllers/ControlLineasProductos"
 import {  servicesAcuerdos      } from "src/areas/acuerdos/services/servicesAcuerdos"
 import {  servicesTerceros      } from "src/areas/terceros/services/servicesTerceros"
+import {  useControlIncentivos  } from "src/areas/nomina/controllers/ControlIncentivos" 
+import {  IIncentivo, INCENTIVO_ORIGEN      } from "src/areas/nomina/models/Incentivo"  
 import {  useApiDolibarr        } from "src/services/useApiDolibarr"
 import {  useFetch              } from "src/useSimpleOk/useFetch"
 import {  getURL, getFormData   } from "src/services/APIMaco"
@@ -14,6 +16,7 @@ import {  useTools,
           ID_URL_Ok,
           confeti               } from "src/useSimpleOk/useTools"
 import {  dexieReglaComision    } from "src/services/useDexie"
+
 //* ////////////////////////////////////////////////////////////////// Modelos
 import {  ESTADO_CTZ,
           ESTADO_PED,
@@ -66,6 +69,7 @@ export function useControlAcuerdo()
           moverContactoAOtroTercero
                               } = servicesTerceros()
   const { apiDolibarr         } = useApiDolibarr()
+  const { buscarIncentivos    } = useControlIncentivos()
   const { miFetch             } = useFetch()
   const { acuerdo,
           loading             } = storeToRefs( useStoreAcuerdo() )
@@ -126,6 +130,8 @@ export function useControlAcuerdo()
       await buscarTerceroDolibarr ( acuerdo.value.terceroId   )
       await buscarProyecto        ( acuerdo.value.proyectoId  )
       await buscarAcuerdoEnlazados()
+      if( acuerdo.value.comisiona )
+        acuerdo.value.incentivo = await buscarIncentivos( { origenId: acuerdo.value.id, origenTipo: INCENTIVO_ORIGEN.PEDIDO_CLI } ) as IIncentivo
     }
     else
     {

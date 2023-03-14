@@ -44,6 +44,7 @@ import {  TTipoAcuerdo,
           ESTADO_PED,
           ESTADO_ENT,
                                             } from "./ConstantesAcuerdos"
+
 //* ///////////////////////////////////////// Modelos
 import {  IAnticipo                         } from "./Anticipo"
 import {  IRetenciones,     Retenciones     } from "./Retenciones"
@@ -60,6 +61,7 @@ import {  IMetodoEntrega,   MetodoEntrega   } from "src/models/Diccionarios/Meto
 import {  IOrigenContacto,  OrigenContacto  } from "src/models/Diccionarios/OrigenContacto"
 import {  ITiempoEntrega,   TiempoEntrega   } from "src/models/Diccionarios/TiempoEntrega"
 import {  IEnlaceAcuerdo,   EnlaceAcuerdo   } from "src/areas/acuerdos/models/EnlaceAcuerdo"
+import {  IIncentivo,       Incentivo       } from "src/areas/nomina/models/Incentivo"
 import {  IArchivo                          } from "src/models/Archivo"
 import {  X100,
           fechaCorta,
@@ -219,13 +221,14 @@ export interface IAcuerdo
   getAcuerdoForApi:           ( usuarioId : number ) => any
   //reorganizarProductosGrupos: () => void
 
-
   /* Solo para pedidos */
   facturado:                  boolean
   totalAnticipos:             number
   saldo:                      number
   subTotalLimpio:             number
   retenciones:                IRetenciones
+  comisiona:                  boolean
+  incentivo:                  IIncentivo
 
   /* Solo para entregas */
   acuerdosEnlazados           : IAcuerdo[]
@@ -295,6 +298,7 @@ export class Acuerdo implements IAcuerdo
 
   /* Solo para pedidos */
   facturado:                  boolean
+  incentivo:                  IIncentivo
   /* Solo para entregas */
   transportadoraId            : number
   numeroGuia                  : string
@@ -358,6 +362,7 @@ export class Acuerdo implements IAcuerdo
 
     /* Solo para pedidos */
     this.facturado            = false
+    this.incentivo            = new Incentivo()
 
     /* Solo para entregas */
     this.transportadoraId     = 0
@@ -676,6 +681,7 @@ https://dolibarr.mublex.com/fichinter/card.php?
   get estadoLabel(): string { return EstadosAcuerdos.estadoToName( this.tipo, this.estado)  }
   get estadoColor(): string { return EstadosAcuerdos.estadoToColor( this.tipo, this.estado) }
   get estadoIcono(): string { return EstadosAcuerdos.estadoIcono( this.tipo, this.estado)   }
+  get comisiona()  : boolean{ return this.esPedido && this.esEstadoEntregado && this.facturado }
 
   get puedeCrearSubtotal():boolean{
     return this.proGrupos.length > 1 && !!this.proGrupos[1].productos.length

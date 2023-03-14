@@ -112,7 +112,7 @@ export function useMenu()
                             label:      "Pagos de comisiones",
                             icon:       "mdi-cash-check",
                             to:         "/comisiones/pagos",
-                            visible:    permisos.value.terceros_ver
+                            visible:    false //permisos.value.terceros_ver
                           }),
         },                
 /*         

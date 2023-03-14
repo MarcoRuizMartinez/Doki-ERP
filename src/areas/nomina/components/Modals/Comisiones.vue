@@ -22,28 +22,28 @@
             <td>{{ formatoPrecio( acuerdo.totalConDescu ) }}</td>
           </tr>          
         </table>
-        <!-- //* ///////////////////////////////////////////////////////////// Campo buscar -->
-        <div>
+        <!-- //* ///////////////////////////////////////////////////////////// Campo aprobar comision -->
+        <div  v-if                ="acuerdo.comisiona">          
           <q-chip                 dense
-            v-if                  ="!incentivo.id && !loading.incentivo"
+            v-if                  ="!acuerdo.incentivo.id && !loading.incentivo"
             icon                  ="mdi-alert-circle"
             color                 ="deep-orange" 
             text-color            ="white" 
             label                 ="Pendiente"
           />
           <q-chip                 dense
-            v-else-if             ="incentivo.esEstadoAprobado"
+            v-else-if             ="acuerdo.incentivo.esEstadoAprobado"
             icon                  ="mdi-cash-check"
             color                 ="positive" 
             text-color            ="white" 
-            :label                ="formatoPrecio( incentivo.valor, 'decimales-no' )"
-          />
+            :label                ="formatoPrecio( acuerdo.incentivo.valor, 'decimales-no' )"
+          />          
           <q-btn 
             v-if                  ="showAprobar"
             v-bind                ="style.btnBaseMd"
             color                 ="primary"
-            :label                ="!incentivo.id ? 'Aprobar' : incentivo.estadoLabel"
-            :icon                 ="!incentivo.id ? 'mdi-account-check' : undefined"
+            :label                ="!acuerdo.incentivo.id ? 'Aprobar' : acuerdo.incentivo.estadoLabel"
+            :icon                 ="!acuerdo.incentivo.id ? 'mdi-account-check' : undefined"
             :loading              ="loading.incentivo"
             @click                ="modales.incentivo = true"
           />
@@ -123,7 +123,8 @@
       >
       <formulario
         :acuerdo                  ="acuerdo"
-        :incentivo                ="incentivo"
+        :incentivo                ="acuerdo.incentivo"
+        @creado                   ="incentivoCreado"
       />
     </q-dialog>
   </ventana>
@@ -158,8 +159,7 @@
           loading           } = storeToRefs( useStoreAcuerdo() )
   const { usuario           } = storeToRefs( useStoreUser() )
   const modo                  = ref< ModosVentana >("normal")
-  const { buscarIncentivos  } = useControlIncentivos()
-  const incentivo             = ref< IIncentivo >( new Incentivo() )
+  const { buscarIncentivos  } = useControlIncentivos()  
 
   const emit = defineEmits<{
     (e: 'cerrar',         value: void           ): void
@@ -175,8 +175,8 @@
 
   onMounted( async ()=>{
     acuerdo.value.comision.calcular()
-    arreglarColumnas()
-    incentivo.value      = await buscarIncentivos( { origenTipo: INCENTIVO_ORIGEN.PEDIDO_CLI, origenId : acuerdo.value.id } ) as IIncentivo
+    arreglarColumnas()    
+    acuerdo.value.incentivo = await buscarIncentivos( { origenTipo: INCENTIVO_ORIGEN.PEDIDO_CLI, origenId : acuerdo.value.id } ) as IIncentivo
   })
 
   function arreglarColumnas()
@@ -193,6 +193,12 @@
     buscarIncentivos( INCENTIVO_ORIGEN.PEDIDO_CLI, acuerdo.value.id )
   } */
 
+  function incentivoCreado( i : IIncentivo)
+  {
+    acuerdo.value.incentivo   = i
+    modales.value.incentivo   = false  
+  }
+
   
   function cerrar(){
     emit("cerrar")
@@ -200,12 +206,8 @@
 
   const lineas                = computed(()=> acuerdo.value.productos.filter( p => !p.esTituloOsubTotal) as ILineaAcuerdo[])
   const showAprobar           = computed(()=>
-    acuerdo.value.esPedido
-    &&
-    /* acuerdo.value.esEstadoEntregado
-    &&
-    acuerdo.value.facturado
-    && */
-    (usuario.value.esContable || usuario.value.esGerencia)
+    ( !acuerdo.value.incentivo.id && (usuario.value.esContable || usuario.value.esGerencia) )
+    ||
+    acuerdo.value.incentivo.esEstadoAnulado || acuerdo.value.incentivo.esEstadoAprobado
   )
 </script>

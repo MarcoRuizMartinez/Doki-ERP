@@ -16,7 +16,7 @@
         <input-buscar           clearable hundido
           v-model               ="busqueda.tercero"
           label                 ="Búsqueda"
-          class                 ="width220"
+          class                 ="width200"
           icon                  ="mdi-account-search"
         />
         <!-- //* ///////////////////////////////////////////////// Busqueda contacto -->
@@ -25,7 +25,7 @@
           v-model               ="busqueda.contacto"
           label                 ="Contactos"
           icon                  ="mdi-target-account"
-          class                 ="width220"
+          class                 ="width200"
         />
         <!-- //* ///////////////////////////////////////////////// Proveedores -->
         <select-label-value     use-input hundido clearable flat bordered
@@ -312,6 +312,15 @@
           class                 ="width160"
           :options              ="opcionesOrdenesProv"
         />         
+        <!-- //* ///////////////////////////////////////////////// Comision -->
+        <select-label-value     use-input hundido clearable flat bordered
+          v-if                  ="busqueda.esPedido"
+          v-model               ="busqueda.comision"
+          label                 ="Comisión"
+          icon                  ="mdi-cash-check"
+          class                 ="width160"
+          :options              ="Incentivo.estadosPago"
+        />           
       </fieldset-filtro>
       <fieldset-filtro
         v-if                    ="!busqueda.esEntrega"
@@ -323,7 +332,7 @@
           v-model               ="busqueda.precioMinimo"
           label                 ="Mínimo"
           icon                  ="mdi-currency-usd"
-          class                 ="width160"
+          class                 ="width140"
           :minimo               ="0"
           :maximo               ="!!busqueda.precioMaximo ? busqueda.precioMaximo : undefined"
         />
@@ -332,7 +341,7 @@
           v-model               ="busqueda.precioMaximo"
           label                 ="Máximo"
           icon                  ="mdi-currency-usd"
-          class                 ="width160"
+          class                 ="width140"
           :minimo               ="!!busqueda.precioMinimo ? busqueda.precioMinimo : undefined"
           :maximo               ="999_999_999"
         />
@@ -405,7 +414,8 @@
             estadosEnt
                                 } from "src/areas/acuerdos/models/ConstantesAcuerdos"
   import {  GRUPO_USUARIO       } from "src/models/TiposVarios"
-  import {  Anticipo            } from "src/areas/acuerdos/models/Anticipo"  
+  import {  Anticipo            } from "src/areas/acuerdos/models/Anticipo"
+  import {  Incentivo           } from "src/areas/nomina//models/Incentivo"
   // * /////////////////////////////////////////////////////////////////////// Componentes
   import    fieldsetFiltro        from "components/utilidades/Fieldset.vue"
   import    inputNumber           from "components/utilidades/input/InputFormNumber.vue"
@@ -493,6 +503,7 @@
     //busqueda.value.creador        = getQueryRouterNumber    ( queryURL.creador      )
     busqueda.value.area           = getQueryRouterLabelValue( queryURL.area,                  Areas                 )
     busqueda.value.facturado      = getQueryRouterLabelValue( queryURL.facturado,             opcionesFacturado     )
+    busqueda.value.comision       = getQueryRouterLabelValue( queryURL.comision,              Incentivo.estadosPago )
     busqueda.value.conIva         = getQueryRouterLabelValue( queryURL.conIva,                opcionesIVA           )
     busqueda.value.totalizado     = getQueryRouterLabelValue( queryURL.conTotal,              opcionesTotales       )
     busqueda.value.tipoTercero    = getQueryRouterLabelValue( queryURL.interno,               opcionesTerceroTipo   )
@@ -534,10 +545,10 @@
                               !!b.estados.length    || !!b.condiciones.length || !!b.facturado.label    || !!b.comercial          || !!b.creador                ||
                               ( !!b.entrega.length  && busqueda.value.esEntrega)
                             )
-    tabs.value.alerts[1]  = ( !!b.formaPago.length  || !!b.origenes.length    || !!b.conIva.label           ||  !!b.area.label          || 
-                              !!b.municipio.id      || !!b.totalizado.label   || !!b.estadoAnticipo.length  || !!b.tipoAnticipo.length  || 
-                              !!b.tipoTercero.label ||!!b.conOrdenes.label    ||!!b.precioMinimo            || !!b.precioMaximo         ||
-                              ( !!b.entrega.length  && !busqueda.value.esEntrega)
+    tabs.value.alerts[1]  = ( !!b.formaPago.length  || !!b.origenes.length    || !!b.conIva.label           || !!b.area.label           ||
+                              !!b.municipio.id      || !!b.totalizado.label   || !!b.estadoAnticipo.length  || !!b.tipoAnticipo.length  ||
+                              !!b.tipoTercero.label || !!b.conOrdenes.label   || !!b.precioMinimo           || !!b.precioMaximo         || !!b.comision.label || 
+                              ( !!b.entrega.length  && !busqueda.value.esEntrega )
                             )
   }
 

@@ -26,8 +26,10 @@
       </template>
       <!-- //* //////////////////////////////////////////////////////// Tabla resultados-->
       <q-table                  bordered dense flat square
+        v-model:selected        ="seleccion"
         class                   ="fit tabla-maco tabla-alto-min"
         row-key                 ="id"
+        selection               ="multiple"
         :rows                   ="incentivos"
         :columns                ="columnas"
         :visible-columns        ="columnasVisibles"
@@ -122,8 +124,9 @@
   })
   
   const almacenColumnas           = ALMACEN_LOCAL.COL_INVENTIVOS
-  const columnas                  = ref< IColumna[] >([])
-  const columnasVisibles          = ref< string[]   >([])
+  const columnas                  = ref< IColumna[]   >([])
+  const columnasVisibles          = ref< string[]     >([])
+  const seleccion                 = ref< IIncentivo[] >([])
 
   onMounted(iniciar)  
 

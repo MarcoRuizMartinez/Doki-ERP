@@ -56,6 +56,7 @@ export interface IIncentivo {
   origenTipo          : INCENTIVO_ORIGEN
   nota                : string
   esNuevo             : boolean
+  esNulo              : boolean
   esEstadoAprobado    : boolean
   esEstadoAnulado     : boolean
   estadoLabel         : string
@@ -104,7 +105,8 @@ export class Incentivo implements IIncentivo
     this.usuario      = new Usuario()
   }
 
-  get esNuevo() { return !this.estado }
+  get esNuevo() :boolean { return !this.estado }
+  get esNulo()  :boolean { return !this.id }
 
   getIncentivoToApi( usuarioId : number, acuerdo : IAcuerdo ) : any
   {
@@ -187,9 +189,10 @@ export class Incentivo implements IIncentivo
   ]
 
   static estadosPago = [
-    { value: INCENTIVO_ESTADO_PAGO.PENDIENTE ,    label:"✋ Pendiente"    }, 
-    { value: INCENTIVO_ESTADO_PAGO.PAGO_PARCIAL,  label:"🌓 Pago parcial" },
-    { value: INCENTIVO_ESTADO_PAGO.PAGO_TOTAL,    label:"💵 Pagado"       } ,
+    { value: INCENTIVO_ESTADO_PAGO.NULO,          label:"❌ Sin asignar",   visible: false  },
+    { value: INCENTIVO_ESTADO_PAGO.PENDIENTE,     label:"✋ Pendiente",     visible: true   },
+    { value: INCENTIVO_ESTADO_PAGO.PAGO_PARCIAL,  label:"🌓 Pago parcial",  visible: true   },
+    { value: INCENTIVO_ESTADO_PAGO.PAGO_TOTAL,    label:"💵 Pagado",        visible: true   },
   ]
 
   

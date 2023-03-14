@@ -97,6 +97,16 @@ export function anyToNumOStr( v : any ) : number | string
     return ""
 }
 
+export function anyToNum( v : any ) : number
+{
+  if(typeof v === "number")
+    return v
+  else if(typeof v === "string")
+    return strOrNumToNum( v, 0 )
+
+  return 0
+}
+
 export function getMilisecShortForApiDolibarr( fecha : Date ) : number
 {
   return parseInt( fecha.valueOf().toString().slice(0,8) + "00" )

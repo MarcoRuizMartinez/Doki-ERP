@@ -64,7 +64,7 @@
       label                 ="Pago"
       icon                  ="mdi-cash-check"
       class                 ="width180"
-      :options              ="Incentivo.estadosPago"
+      :options              ="Incentivo.estadosPago.filter( e => e.visible )"
     />    
   </fieldset-filtro>  
   <!-- //* ///////////////////////////////////////////////////////////////////// FIELD SET Paginación -->

@@ -13,9 +13,8 @@
         color                   ="positive"
         label                   ="Guardar"
         :disable                ="btnDisable"
-        >
-        <confirmar  @ok         ="validar"/>
-      </q-btn>
+        @click                  ="validar"
+      />
     </template>
     <!-- //* ///////////////////////////////////////////////////////////////   FORMULARIO  -->
     <q-form
@@ -91,7 +90,6 @@
   // * ///////////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana                 from "components/utilidades/Ventana.vue"
   import    inputNumber             from "components/utilidades/input/InputFormNumber.vue"
-  import    confirmar               from "components/utilidades/MenuConfirmar.vue"
 
   const { usuario           } = storeToRefs( useStoreUser() )
   const { nuevoIncentivo    } = useControlIncentivos()
@@ -107,13 +105,14 @@
   const modelo                = ref< IIncentivo >( new Incentivo() )
   const readonly              = computed(()=> !!modelo.value.id )
   //let   copiaAnticipo         = ""  
-/*   
+  
   const emit                  = defineEmits<{
-    (e: "update:modelValue",  value: IAnticipo ): void
-    (e: "creado",             value: IAnticipo ): void
-    (e: "borrado",            value: IAnticipo ): void
+    //(e: "update:modelValue",  value: IAnticipo ): void
+    (e: "creado",   value: IIncentivo ): void
+    //(e: "borrado",            value: IAnticipo ): void
+    //(e: "cerrar" ): void
   }>()
- */
+
   //const modificado            = computed( ()=>  copiaAnticipo !== JSON.stringify( modelo.value ) ) 
   const btnDisable            = computed( ()=> !modelo.value.estado )
   
@@ -154,7 +153,11 @@
   {
     cargando.value            = true
     const objeto              = modelo.value.getIncentivoToApi( usuario.value.id, acuerdo.value )
-    const ok                  = nuevoIncentivo( objeto )
+    const id                  = await nuevoIncentivo( objeto )
+    if(!!id){
+      modelo.value.id         = +id
+      emit("creado", modelo.value )
+    }
     cargando.value            = false
   }
 

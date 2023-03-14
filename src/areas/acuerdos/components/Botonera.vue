@@ -7,7 +7,7 @@
         v-bind                ="style.btnBaseMd"
         color                 ="primary"
         icon                  ="mdi-account-details"
-        :label                ="esMobil ? '' : 'Comisiones'"
+        :label                ="!acuerdo.incentivo.id ? 'Comisiones' : acuerdo.incentivo.estadoLabel"
         :disable              ="cargandoAlgo"     
         @click                ="emit('clickComisiones')"   
         >

@@ -6,6 +6,8 @@ import {  IUsuario        } from "src/areas/usuarios/models/Usuario"
 import {  IMunicipio,
           Municipio
                           } from "src/models/Municipio"
+import {  INCENTIVO_ESTADO_PAGO
+                          } from "src/areas/nomina/models/Incentivo"  
 
 export interface IQueryAcuerdo {
   tipo                 ?: string
@@ -38,6 +40,7 @@ export interface IQueryAcuerdo {
   orden                ?: "ASC" | "DESC"
   municipio            ?: number
   municipioContacto    ?: number
+  comision             ?: INCENTIVO_ESTADO_PAGO
   //idEspecial?:       number
 }
 
@@ -64,6 +67,7 @@ export interface IBusquedaAcuerdo {
   tipoTercero           : ILabelValue
   conOrdenes            : ILabelValue
   proveedores           : ILabelValue  
+  comision              : ILabelValue
   municipio             : IMunicipio
   municipioContacto     : IMunicipio
   comercial            ?: IUsuario
@@ -99,6 +103,7 @@ export class BusquedaAcuerdo implements IBusquedaAcuerdo
   tipoTercero           : ILabelValue
   conOrdenes            : ILabelValue
   proveedores           : ILabelValue
+  comision              : ILabelValue
   municipio             : IMunicipio
   municipioContacto     : IMunicipio
   comercial            ?: IUsuario
@@ -130,6 +135,7 @@ export class BusquedaAcuerdo implements IBusquedaAcuerdo
     this.totalizado       = labelValueNulo
     this.conOrdenes       = labelValueNulo
     this.proveedores      = labelValueNulo
+    this.comision         = labelValueNulo
     this.municipio        = new Municipio()
     this.municipioContacto= new Municipio()
     this.resultadosXPage  = 10
@@ -162,6 +168,7 @@ export class BusquedaAcuerdo implements IBusquedaAcuerdo
 
     if(!!this.area.label)           q.area                = this.area.value
     if(!!this.facturado.label)      q.facturado           = this.facturado.value
+    if(!!this.comision.label)       q.comision            = this.comision.value
     if(!!this.conIva.label)         q.conIva              = this.conIva.value
     if(!!this.totalizado.label)     q.conTotal            = this.totalizado.value
     if(!!this.tipoTercero.label)    q.interno             = this.tipoTercero.value
