@@ -16,8 +16,8 @@ import {  IIncentivo,
           INCENTIVO_ORIGEN,
           INCENTIVO_RAZON,
                                 } from "src/areas/nomina/models/Incentivo"
-
-export function useControlUsuarios()
+import {  IQueryIncentivo       } from "src/areas/nomina//models/BusquedaIncentivos"
+export function useControlIncentivos()
 {
   const router                  = useRouter()
   const { aviso               } = useTools()
@@ -29,8 +29,7 @@ export function useControlUsuarios()
   async function nuevoIncentivo( objeto : any ) : Promise< boolean >
   {
     const objetoApi           = { body: getFormData( "nuevoIncentivo", objeto ), method: "POST" }    
-    const { data, ok  }       = await miFetch( getURL("servicios", "rrhh"), objetoApi, { mensaje: "guardar comisión" } )
-    console.log("nuevoIncentivo: ", data);
+    const { data, ok  }       = await miFetch( getURL("servicios", "nomina"), objetoApi, { mensaje: "guardar comisión" } )
     if(ok)
     {
       aviso( "positive", "Comisión guardada" )
@@ -41,25 +40,25 @@ export function useControlUsuarios()
     return ok
   }
 
-  async function buscarIncentivo( origen_tipo : INCENTIVO_ORIGEN, origen_id : number  ) : Promise< IIncentivo >
+  async function buscarIncentivos( query : IQueryIncentivo, tipo : "unico" | "varios" = "unico" ) : Promise< IIncentivo | IIncentivo[] >
   {
     loading.value.incentivo     = true
-    const { ok, data }          = await miFetch(  getURL("listas", "varios"),
-                                                  { method: "POST", body: getFormData( "buscarIncentivo", { origen_tipo, origen_id } ) },
-                                                  { mensaje: "buscar incentivo" }
+    const comoArray             = tipo === "varios"
+    const { ok, data }          = await miFetch(  getURL("listas", "incentivos"),
+                                                  { method: "POST", body: getFormData( "busqueda", query ) },
+                                                  { mensaje: "buscar incentivo", dataEsArray: comoArray }
                                                 )
     loading.value.incentivo     = false
-
     if(ok){
-      return Incentivo.getIncentivoToApi( data )
+      return comoArray ? Incentivo.getIncentivosToApi( data ) : Incentivo.getIncentivoToApi( data )
     }
 
-    return new Incentivo()
+    return []
   }  
 
   //* /////////////////////////////////////////////////////////////// Return
   return {
     nuevoIncentivo,
-    buscarIncentivo
+    buscarIncentivos
   }
 }

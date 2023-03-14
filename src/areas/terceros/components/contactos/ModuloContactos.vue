@@ -37,7 +37,7 @@
       </q-dialog>
     </template>
     <!-- //* /////////////////  Tabla  -->
-    <q-table                    borbordered dense flat
+    <q-table                    bordered dense flat
       v-if                      ="!!contactos.length"
       class                     ="fit tabla-maco"
       row-key                   ="id"

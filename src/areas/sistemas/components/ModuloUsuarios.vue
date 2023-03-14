@@ -14,7 +14,7 @@
         class                   ="full-width"
       />
     </template>
-    <q-table                    borbordered dense flat
+    <q-table                    bordered dense flat
       class                     ="fit tabla-maco"
       row-key                   ="id"
       :rows                     ="lista"

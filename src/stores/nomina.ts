@@ -10,17 +10,17 @@ import {  IIncentivo,
           INCENTIVO_ESTADO    } from "src/areas/nomina/models/Incentivo"
 
 interface INominaState {
-  loading             : ILoading,
-  modales             : IModales,
-  busqueda            : IBusquedaIncentivo,
-  incentivos          : IIncentivo[]
+  loading               : ILoading,
+  modales               : IModales,
+  incentivosSearch      : IBusquedaIncentivo,
+  incentivos            : IIncentivo[]
 }
 
 export const useStoreNomina = defineStore('nomina', {
   state: () : INominaState => ({
-    loading           : LoadingDefault,
-    modales           : ModalesDefault,
-    busqueda          : new BusquedaIncentivo(),
-    incentivos        : [],
+    loading             : LoadingDefault,
+    modales             : ModalesDefault,
+    incentivosSearch    : new BusquedaIncentivo(),
+    incentivos          : [],
   }),
 });

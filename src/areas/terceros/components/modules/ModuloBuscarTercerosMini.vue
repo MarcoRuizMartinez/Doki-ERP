@@ -15,7 +15,7 @@
         @update:model-value     ="buscar"
       />
     </template>
-    <q-table                    borbordered dense flat
+    <q-table                    bordered dense flat
       class                     ="fit tabla-maco"
       row-key                   ="id"
       :rows                     ="terceros"

@@ -53,7 +53,7 @@
         @select                 ="editarFormaPago"
       />
     </template>    
-    <q-table                    borbordered dense flat grid hide-header hide-pagination
+    <q-table                    bordered dense flat grid hide-header hide-pagination
       class                     ="fit tabla-maco"
       row-key                   ="id"
       style                     ="min-height: 160px;"

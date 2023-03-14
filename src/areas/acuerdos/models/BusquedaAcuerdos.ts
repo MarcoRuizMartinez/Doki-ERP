@@ -132,7 +132,7 @@ export class BusquedaAcuerdo implements IBusquedaAcuerdo
     this.proveedores      = labelValueNulo
     this.municipio        = new Municipio()
     this.municipioContacto= new Municipio()
-    this.resultadosXPage  = 25
+    this.resultadosXPage  = 10
     this.pagina           = 1
     this.busquedaVacia    = true
   }

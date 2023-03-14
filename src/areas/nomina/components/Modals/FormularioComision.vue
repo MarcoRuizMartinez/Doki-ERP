@@ -82,11 +82,11 @@
   import {  IIncentivo,
             Incentivo,
             INCENTIVO_ESTADO      } from "src/areas/nomina/models/Incentivo"
-  import {  IAcuerdo              } from "../../models/Acuerdo";
+  import {  IAcuerdo              } from "src/areas/acuerdos/models/Acuerdo";
 
   // * ///////////////////////////////////////////////////////////////////////////////// Componibles
   import {  style                 } from "src/useSimpleOk/useEstilos"
-  import {  useControlUsuarios    } from "src/areas/nomina/controllers/ControlUsuarios"
+  import {  useControlIncentivos  } from "src/areas/nomina/controllers/ControlIncentivos"
   
   // * ///////////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana                 from "components/utilidades/Ventana.vue"
@@ -94,7 +94,7 @@
   import    confirmar               from "components/utilidades/MenuConfirmar.vue"
 
   const { usuario           } = storeToRefs( useStoreUser() )
-  const { nuevoIncentivo    } = useControlUsuarios()
+  const { nuevoIncentivo    } = useControlIncentivos()
 
   const props                 = defineProps({
     acuerdo:    { required: true, type: Object as PropType< IAcuerdo >    },

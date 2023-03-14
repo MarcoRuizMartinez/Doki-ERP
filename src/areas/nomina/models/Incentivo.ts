@@ -1,5 +1,8 @@
 //  ok_rrhh_incentivos_monetarios
-import {  IAcuerdo  } from "src/areas/acuerdos/models/Acuerdo"  
+import {  IAcuerdo      } from "src/areas/acuerdos/models/Acuerdo"  
+import {  getUsuarioDB  } from "src/services/useDexie"
+import {  IUsuario,
+          Usuario       } from "src/areas/usuarios/models/Usuario"
 
 export const enum INCENTIVO_ESTADO { 
   NULO                = 0,
@@ -23,18 +26,32 @@ export const enum INCENTIVO_ORIGEN {
   INFORME             = 5,
 }
 
+export const enum INCENTIVO_ESTADO_PAGO { 
+  NULO                = 0,
+  PENDIENTE           = 1,
+  PAGO_PARCIAL        = 2,
+  PAGO_TOTAL          = 3,
+}
+
 export interface IIncentivo {
   id                  : number
+  creador             : IUsuario
+  creadorLabel        : string
   creadorId           : number  // owner
   modificoId          : number  // modified_by
   creadoEl            : Date    // created_on
   modificadoEl        : Date    // modified_on  
   origenId            : number
   origenRef           : string
+  origenURL           : string
   valor               : number
   pagado              : number
+  estadoPago          : INCENTIVO_ESTADO_PAGO
+  estadoPagoLabel     : string
+  usuario             : IUsuario
+  usuarioLabel        : string
   usuarioId           : number
-  estado              : INCENTIVO_ESTADO
+  estado              : INCENTIVO_ESTADO  
   razon               : INCENTIVO_RAZON
   origenTipo          : INCENTIVO_ORIGEN
   nota                : string
@@ -44,11 +61,14 @@ export interface IIncentivo {
   estadoLabel         : string
   razonLabel          : string
   getIncentivoToApi   : ( usuarioId : number, acuerdo : IAcuerdo  )=> any
+  esPedidoCli         : boolean
+  esPedidoPro         : boolean
 }
 
 export class Incentivo implements IIncentivo
 {
-  id                  : number
+  id                  : number  
+  creador             : IUsuario
   creadorId           : number  
   modificoId          : number  
   creadoEl            : Date    
@@ -57,6 +77,7 @@ export class Incentivo implements IIncentivo
   origenRef           : string
   valor               : number
   pagado              : number
+  usuario             : IUsuario
   usuarioId           : number
   estado              : INCENTIVO_ESTADO
   razon               : INCENTIVO_RAZON
@@ -79,19 +100,8 @@ export class Incentivo implements IIncentivo
     this.razon        = INCENTIVO_RAZON.COMISION
     this.origenTipo   = 0
     this.nota         = ""
-
- 
-    /*     
-    this.origenRef    = ""                        // 1 Input
-    this.usuarioId    = 0                         // 1 Select usuario
-
-    this.creadoEl     = new Date()                // 2 Rango fechas
-
-    this.valor        = 0                         // 2 Maximo y minimo
-    
-    this.pagado       = 0                         // 1 Pagado, pagado parcial, no pagado    
-    this.estado       = 0                         // 1 Select estado  
-    */
+    this.creador      = new Usuario()
+    this.usuario      = new Usuario()
   }
 
   get esNuevo() { return !this.estado }
@@ -113,12 +123,23 @@ export class Incentivo implements IIncentivo
     }
   }
 
-  get esEstadoAprobado()  { return this.estado === INCENTIVO_ESTADO.APROBADO  }
-  get esEstadoAnulado()   { return this.estado === INCENTIVO_ESTADO.ANULADO   }
-  get estadoLabel()       { return Incentivo.estados.find( e => e.value === this.estado ).label }
-  get razonLabel()        { return Incentivo.razones.find( e => e.value === this.razon  ).label }
+  get esEstadoAprobado  (){ return this.estado === INCENTIVO_ESTADO.APROBADO  }
+  get esEstadoAnulado   (){ return this.estado === INCENTIVO_ESTADO.ANULADO   }
+  get estadoLabel       (){ return Incentivo.estados    .find( e => e.value === this.estado ).label }
+  get razonLabel        (){ return Incentivo.razones    .find( e => e.value === this.razon  ).label }
+  get estadoPago        (){ return    this.pagado === this.valor                  ? INCENTIVO_ESTADO_PAGO.PAGO_TOTAL
+                                    : this.pagado === 0                           ? INCENTIVO_ESTADO_PAGO.PENDIENTE
+                                    : this.pagado > 0 && this.pagado < this.valor ? INCENTIVO_ESTADO_PAGO.PAGO_PARCIAL
+                                    :                                               INCENTIVO_ESTADO_PAGO.NULO
+                          }
+  get estadoPagoLabel   (){ return Incentivo.estadosPago.find( e => e.value === this.estadoPago  ).label }  
+  get usuarioLabel      (){ return this.usuario.nombre }
+  get creadorLabel      (){ return this.creador.nombre }
+  get esPedidoCli       (){ return this.origenTipo === INCENTIVO_ORIGEN.PEDIDO_CLI }
+  get esPedidoPro       (){ return this.origenTipo === INCENTIVO_ORIGEN.PEDIDO_PRO }
+  get origenURL         (){ return ( this.esPedidoCli ? "/pedidos/cliente/" : "" ) + this.origenId }
 
-  static getIncentivoToApi( iApi : any) : IIncentivo
+  static async getIncentivoToApi( iApi : any ) : Promise< IIncentivo >
   {
     iApi.id           = +(iApi?.id           ?? 0)
     iApi.creadorId    = +(iApi?.creadorId    ?? 0)
@@ -133,9 +154,25 @@ export class Incentivo implements IIncentivo
     //iApi.creadoEl     = +(iApi?.creadoEl     ?? 0)
     //iApi.modificadoEl = +(iApi?.modificadoEl ?? 0)
 
-    const inc         = Object.assign( new Incentivo(), iApi )
-    console.log("inc: ", inc);
+    const inc         = Object.assign( new Incentivo(), iApi ) as IIncentivo
+    inc.creador       = await getUsuarioDB ( inc.creadorId )
+    inc.usuario       = await getUsuarioDB ( inc.usuarioId )
     return inc 
+  }
+
+  static async getIncentivosToApi( dataApi : any ) : Promise < IIncentivo[] >
+  {
+    if( !Array.isArray( dataApi) ) return []
+
+    const incentivos : IIncentivo[] = []
+
+    for(const entrega of dataApi)
+    {
+      const i = await Incentivo.getIncentivoToApi( entrega )       
+      incentivos.push( i )
+    }
+
+    return incentivos
   }
 
   static estados = [
@@ -144,12 +181,18 @@ export class Incentivo implements IIncentivo
   ]
 
   static razones = [
-    { value: INCENTIVO_RAZON.NULO,          label: "Nulo"         },
     { value: INCENTIVO_RAZON.COMISION,      label: "Comisión"     },
     { value: INCENTIVO_RAZON.BONO,          label: "Bono"         },
     { value: INCENTIVO_RAZON.DESCARGO,      label: "Descargo"     },
   ]
 
+  static estadosPago = [
+    { value: INCENTIVO_ESTADO_PAGO.PENDIENTE ,    label:"✋ Pendiente"    }, 
+    { value: INCENTIVO_ESTADO_PAGO.PAGO_PARCIAL,  label:"🌓 Pago parcial" },
+    { value: INCENTIVO_ESTADO_PAGO.PAGO_TOTAL,    label:"💵 Pagado"       } ,
+  ]
+
+  
 /*   
   static origenes = [
     { value: INCENTIVO_ORIGEN.NULO,         label: "Nulo"             },

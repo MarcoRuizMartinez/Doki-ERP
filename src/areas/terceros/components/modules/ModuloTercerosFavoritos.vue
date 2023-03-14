@@ -7,7 +7,7 @@
     :padding-contenido          ="modo == 'normal' ? '0' : '12px' "
     :modo                       ="modo"
     >
-    <q-table                    borbordered dense flat
+    <q-table                    bordered dense flat
       class                     ="fit tabla-maco"
       row-key                   ="id"
       :rows                     ="terceros"

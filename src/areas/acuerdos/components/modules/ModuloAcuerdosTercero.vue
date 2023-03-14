@@ -36,7 +36,7 @@
         @click                  ="irACrearAcuerdo"        
       />
     </template>
-    <q-table                    borbordered dense flat hide-bottom
+    <q-table                    bordered dense flat hide-bottom
       class                     ="fit tabla-maco"
       row-key                   ="id"
       :rows                     ="acuerdos"

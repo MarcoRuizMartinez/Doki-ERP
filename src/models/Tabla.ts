@@ -49,13 +49,14 @@ export class Columna implements IColumna
                 align     = "left",
                 clase     = "",
                 style     = "",
+                required  = false,
                 format    = ( val : any ) => val
               } = {} )
   {
     this.name             = name
     this.label            = mayusculasPrimeraLetra( !!label ? label : name )
     this.field            = name
-    this.required         = false
+    this.required         = required
     this.align            =   align == "left"   ? "left"
                             : align == "right"  ? "right"
                             : align == "center" ? "center"

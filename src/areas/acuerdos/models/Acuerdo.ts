@@ -998,7 +998,7 @@ https://dolibarr.mublex.com/fichinter/card.php?
     const acu                 = Object.assign( new Acuerdo( tipo ), acuApi ) as IAcuerdo
     acu.esNuevo               = false
     acu.tipo                  = tipo
-    acu.creador               = await getUsuarioDB          ( acu.creadorId )
+    acu.creador               = await getUsuarioDB        ( acu.creadorId )
     acu.enlaces               = EnlaceAcuerdo.enlacesApiToEnlaces( acuApi?.enlaces ?? "", tipo )
 
     if(!!acu.comercialId){

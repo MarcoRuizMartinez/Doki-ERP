@@ -28,8 +28,8 @@
       </barra-busqueda>
     </template>
     <!-- //* //////////////////////////////////////////////////////// Tabla resultados-->
-    <q-table                    borbordered dense flat
-      class                     ="fit tabla-maco alto-tabla"
+    <q-table                    bordered dense flat
+      class                     ="fit tabla-maco tabla-alto-min"
       row-key                   ="id"
       :rows                     ="acuerdos"
       :columns                  ="columnas"
@@ -90,7 +90,7 @@
         <q-td   :props          ="props">
           <chip-usuario         :usuario="props.value"/>
         </q-td>
-      </template>           
+      </template>
     </q-table>
     <!-- //* ///////////////////////////////////////////////////////////// Modal vista rapida -->
     <q-dialog                   maximized
@@ -343,8 +343,3 @@
     else    aviso("negative", "Error al generar el archivo...", "file")
   }
 </script>
-<style>
-.alto-tabla{
-  min-height: 360px;
-}
-</style>

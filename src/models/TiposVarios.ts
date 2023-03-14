@@ -96,6 +96,7 @@ export const enum GRUPO_USUARIO {
   PRODUCTOS       = "Productos",
   DESARROLLO      = "Desarrollo",
   CONTABLE        = "Contable",
+  EN_NOMINA       = "Nomina",
 }
 
 

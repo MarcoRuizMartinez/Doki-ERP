@@ -1,17 +1,73 @@
 <template>
+  <!-- //* ///////////////////////////////////////////////////////////////////// FIELD SET REF Y USUARIO  -->
   <fieldset-filtro
     titulo                  ="Búsqueda"
     class-conenido          ="column q-gutter-xs"
     >
     <!-- //* ///////////////////////////////////////////////// Busqueda general -->        
     <input-buscar           clearable hundido
-      v-model               ="busqueda.ref"
-      label                 ="Búsqueda"
-      class                 ="width220"
-      icon                  ="mdi-account-search"
+      v-model               ="incentivosSearch.ref"
+      label                 ="Búsqueda Ref"
+      class                 ="width200"
+      icon                  ="mdi-magnify"
+    />
+    <!-- //* ///////////////////////////////////////////////// Usuario -->
+    <select-usuario         hundido clearable
+      v-model               ="incentivosSearch.usuario"
+      class                 ="width200"
+      label                 ="Usuario"
+      :autoselect           ="autoSelectUsuario"
+      :readonly             ="!permisos.acceso_total"
+      :grupos               =[GRUPO_USUARIO.EN_NOMINA]
     />
   </fieldset-filtro>
-  <!-- //* /////////////////////////////////////////////////// Paginación -->
+  <!-- //* ///////////////////////////////////////////////////////////////////// FIELD SET VALOR -->
+  <fieldset-filtro
+    titulo                  ="Valor"
+    class-conenido          ="column q-gutter-xs"
+    >
+    <!-- //* ///////////////////////////////////////////////// Precio Minimo -->
+    <input-number           hundido clearable
+      v-model               ="incentivosSearch.valorMin"
+      label                 ="Mínimo"
+      icon                  ="mdi-currency-usd"
+      class                 ="width160"
+      :minimo               ="0"
+      :maximo               ="!!incentivosSearch.valorMax ? incentivosSearch.valorMax : undefined"
+    />
+    <!-- //* ///////////////////////////////////////////////// Precio Maximo -->
+    <input-number           hundido clearable
+      v-model               ="incentivosSearch.valorMax"
+      label                 ="Máximo"
+      icon                  ="mdi-currency-usd"
+      class                 ="width160"
+      :minimo               ="!!incentivosSearch.valorMin ? incentivosSearch.valorMin : undefined"
+      :maximo               ="999_999_999"
+    />
+  </fieldset-filtro>
+  <!-- //* ///////////////////////////////////////////////////////////////////// FIELD SET ESTADOS -->
+  <fieldset-filtro
+    titulo                  ="Estado"
+    class-conenido          ="column q-gutter-xs"
+    >
+    <!-- //* ///////////////////////////////////////////////// Estado -->
+    <select-label-value     use-input hundido clearable flat bordered
+      v-model               ="incentivosSearch.estado"
+      label                 ="Estado"
+      icon                  ="mdi-file-check"
+      class                 ="width180"
+      :options              ="Incentivo.estados"
+    />
+    <!-- //* ///////////////////////////////////////////////// Pagado -->
+    <select-label-value     use-input hundido clearable flat bordered
+      v-model               ="incentivosSearch.pagado"
+      label                 ="Pago"
+      icon                  ="mdi-cash-check"
+      class                 ="width180"
+      :options              ="Incentivo.estadosPago"
+    />    
+  </fieldset-filtro>  
+  <!-- //* ///////////////////////////////////////////////////////////////////// FIELD SET Paginación -->
   <fieldset-filtro
     titulo                  ="Paginas"
     class-conenido          ="grilla-ribom fit"
@@ -19,19 +75,19 @@
     <!-- //* ///////////////////////////////////////////////// Resultados por pagina -->
     <div>
       <q-btn-toggle         spread push unelevated round
-        v-model             ="busqueda.resultadosXPage"
+        v-model             ="incentivosSearch.resultadosXPage"
         color               ="white"
         text-color          ="grey-8"
         toggle-color        ="primary"
         :options            ="[{label: '25', value: 25},{label: '50', value: 50},{label: '100', value: 100}]"
-        @update:model-value ="busqueda.pagina = 1"
+        @update:model-value ="incentivosSearch.pagina = 1"
       />
       <Tooltip label        ="Resultados por pagina"/>
     </div>
     <!-- //* ///////////////////////////////////////////////// Pagina -->
     <div class              ="row justify-center full-width">
       <q-pagination         dense
-        v-model             ="busqueda.pagina"
+        v-model             ="incentivosSearch.pagina"
         :max                ="siguientePagina"
         :max-pages          ="3"
         :ellipses           ="false"
@@ -71,7 +127,7 @@
           icon                ="mdi-close"
           padding             ="xs"
           color               ="primary"
-          :disable            ="busqueda.busquedaVacia"
+          :disable            ="incentivosSearch.busquedaVacia"
           @click              ="limpiarBusqueda"
           >
           <Tooltip label      ="Limpiar búsqueda"/>
@@ -84,7 +140,7 @@
           icon                ="mdi-microsoft-excel"
           color               ="primary"
           padding             ="xs"
-          :disable            ="busqueda.busquedaVacia"
+          :disable            ="incentivosSearch.busquedaVacia"
           @click              ="emit('exportar')"
           >
           <Tooltip label      ="Descargar"/>
@@ -96,44 +152,30 @@
 <script lang="ts" setup>
   // * /////////////////////////////////////////////////////////////////////// Core
   import {  watch,
-            computed,
-            onMounted           } from "vue"
+            onMounted,
+            computed            } from "vue"
   import {  useRouter           } from "vue-router"
   // * /////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs         } from "pinia"
-  import {  useStoreApp         } from "src/stores/app"
+
   import {  useStoreUser        } from "src/stores/user"
-  import {  useStoreAcuerdo     } from "src/stores/acuerdo"
   import {  useStoreNomina      } from "src/stores/nomina"
 
   // * /////////////////////////////////////////////////////////////////////// Componibles
-  import {  fechaValida,
-            formatoPrecio,
-            getQueryRouterDate,
-            getQueryRouterString,
+  import {  getQueryRouterString,
             getQueryRouterNumber,
             getQueryRouterLabelValue,
-            getQueryRouterLabelValueArray,
                                 } from "src/useSimpleOk/useTools"
 
   // * /////////////////////////////////////////////////////////////////////// Modelos
-  import {  Areas               } from "src/models/TiposVarios"
-  import {  IQueryIncentivo,
-            IBusquedaIncentivo  } from "src/areas/nomina//models/BusquedaIncentivos"
-  import {  estadosCtz,
-            estadosPed,
-            estadosOC,
-            estadosEnt
-                                } from "src/areas/acuerdos/models/ConstantesAcuerdos"
+  import {  IQueryIncentivo     } from "src/areas/nomina//models/BusquedaIncentivos"
+  import {  Incentivo           } from "src/areas/nomina//models/Incentivo"            
   import {  GRUPO_USUARIO       } from "src/models/TiposVarios"
-  import {  Anticipo            } from "src/areas/acuerdos/models/Anticipo"
 
   // * /////////////////////////////////////////////////////////////////////// Componentes
   import    fieldsetFiltro        from "components/utilidades/Fieldset.vue"
   import    inputNumber           from "components/utilidades/input/InputFormNumber.vue"
   import    selectLabelValue      from "components/utilidades/select/SelectLabelValue.vue"
-  import    multiLabelValue       from "components/utilidades/select/SelectLabelValueMulti.vue"
-  import    inputFecha            from "src/components/utilidades/input/InputFecha.vue"
   import    selectUsuario         from "src/areas/usuarios/components/SelectUsuario.vue"
   import    inputBuscar           from "src/components/utilidades/input/InputSimple.vue"
 
@@ -143,89 +185,49 @@
     queryURL                      = q
   })
 
-  const { usuario, permisos     } = storeToRefs( useStoreUser() )
-  const { busqueda              } = storeToRefs( useStoreNomina() )
+  const { permisos              } = storeToRefs( useStoreUser() )
+  const { incentivos,
+          incentivosSearch      } = storeToRefs( useStoreNomina() )
 
-  const opcionesFacturado         = [{value:0, label:'No facturado'},   {value:1, label:'Facturado'   }]
-  const opcionesTotales           = [{value:0, label:'Sin totalizar'},  {value:1, label:'Totalizado'  }]
-  const opcionesIVA               = [{value:0, label:'Sin IVA'},        {value:1, label:'Con IVA'     }]
-  const opcionesTerceroTipo       = [{value:0, label:'Externo'},        {value:1, label:'Interno'     }]
-  const opcionesOrdenesProv       = [{value:0, label:'Sin ordenes'},    {value:1, label:'Con ordenes' }]
-/*   const estados                   = computed(()=>   busqueda.value.esCotizacion ? estadosCtz.filter(e => e.value >= -1)
-                                                  : busqueda.value.esPedido     ? estadosPed.filter(e => e.value >= -1)
-                                                  : busqueda.value.esOCProveedor? estadosOC .filter(e => e.value >= -1)
-                                                  : busqueda.value.esEntrega    ? estadosEnt.filter(e => e.value >= -1)
-                                                  : [] ) */
+  onMounted(asignarQueryRouterACampos)
   
-  //const autoSelectComercial       = computed(()=> Object.keys(queryURL).length === 0 ? true : getQueryRouterNumber( queryURL.comercial  ) ?? false )
-  //const autoSelectCreador         = computed(()=> busqueda.value.esOCProveedor && Object.keys(queryURL).length === 0 ? true : getQueryRouterNumber( queryURL.creador    ) ?? false )
-  const siguientePagina           = 2//computed(()=> busqueda.value.pagina + (acuerdos.value.length >= busqueda.value.resultadosXPage ? 1 : 0) )
-  const haySiguientePagina        = true//computed(()=> busqueda.value.pagina !== siguientePagina.value )
+  const autoSelectUsuario         = computed(()=> Object.keys(queryURL).length === 0 ? true : getQueryRouterNumber( queryURL.usuarioId  ) ?? false )
+  const siguientePagina           = computed(()=> incentivosSearch.value.pagina + (incentivos.value.length >= incentivosSearch.value.resultadosXPage ? 1 : 0) )
+  const haySiguientePagina        = computed(()=> incentivosSearch.value.pagina !== siguientePagina.value )
 
   let   copiaQ                    = ""
   let   bloqueoInicio             = true
 
-/*   watch([estados, origenes, condicionesPago, formasPago], ([es,or,co,fp])=>{
-    // Estan cargados las opciones, para que estas se puedan asignar desde la query de la URL
-    if(!!es.length && !!or.length && !!co.length && !!fp.length ){
-      asignarQueryRouterACampos()
-    }
-  }) */
-
   async function asignarQueryRouterACampos()
   {
-/*     busqueda.value.tercero        = getQueryRouterString    ( queryURL.tercero      )
-    busqueda.value.contacto       = getQueryRouterString    ( queryURL.contacto     )
-    busqueda.value.desde          = getQueryRouterDate      ( queryURL.fechaDesde   )
-    busqueda.value.hasta          = getQueryRouterDate      ( queryURL.fechaHasta   )
-    busqueda.value.precioMinimo   = getQueryRouterNumber    ( queryURL.subtotalMin  )
-    busqueda.value.precioMaximo   = getQueryRouterNumber    ( queryURL.subtotalMax  )
+    incentivosSearch.value.ref      = getQueryRouterString    ( queryURL.ref )
+    incentivosSearch.value.valorMin = getQueryRouterNumber    ( queryURL.valorMin  )
+    incentivosSearch.value.valorMax = getQueryRouterNumber    ( queryURL.valorMax  )
+    incentivosSearch.value.estado   = getQueryRouterLabelValue( queryURL.estado, Incentivo.estados)
+    incentivosSearch.value.pagado   = getQueryRouterLabelValue( queryURL.pagado, Incentivo.estadosPago)
     if(!!queryURL.limite)
-      busqueda.value.resultadosXPage= getQueryRouterNumber    ( queryURL.limite       )
-    //busqueda.value.creador        = getQueryRouterNumber    ( queryURL.creador      )
-    busqueda.value.area           = getQueryRouterLabelValue( queryURL.area,                  Areas                 )
-    busqueda.value.facturado      = getQueryRouterLabelValue( queryURL.facturado,             opcionesFacturado     )
-    busqueda.value.conIva         = getQueryRouterLabelValue( queryURL.conIva,                opcionesIVA           )
-    busqueda.value.totalizado     = getQueryRouterLabelValue( queryURL.conTotal,              opcionesTotales       )
-    busqueda.value.tipoTercero    = getQueryRouterLabelValue( queryURL.interno,               opcionesTerceroTipo   )
-    busqueda.value.conOrdenes     = getQueryRouterLabelValue( queryURL.conOrdenes,            opcionesOrdenesProv   )
-    busqueda.value.estadoAnticipo = getQueryRouterLabelValueArray ( queryURL.estadoAnticipo,  Anticipo.estados      )
-    busqueda.value.tipoAnticipo   = getQueryRouterLabelValueArray ( queryURL.tipoAnticipo,    Anticipo.tipos        )
-    busqueda.value.estados        = getQueryRouterLabelValueArray ( queryURL.estados,         estados.value         )    
-    busqueda.value.formaPago      = getQueryRouterLabelValueArray ( queryURL.formaPago,       formasPago.value      )
-    busqueda.value.entrega        = getQueryRouterLabelValueArray ( queryURL.entrega,         metodosEntrega.value  )
-    busqueda.value.condiciones    = getQueryRouterLabelValueArray ( queryURL.condiciones,     condicionesPago.value )
-    busqueda.value.origenes       = getQueryRouterLabelValueArray ( queryURL.origenes,        origenes.value        )
-    if(!!queryURL.municipio)
-      busqueda.value.municipio          = await getMunicipioDB( Array.isArray(queryURL.municipio)         ? 0 : +queryURL.municipio ) 
-    if(!!queryURL.municipioContacto)
-      busqueda.value.municipioContacto  = await getMunicipioDB( Array.isArray(queryURL.municipioContacto) ? 0 : +queryURL.municipioContacto ) 
-         */
-      bloqueoInicio                 = false
+      incentivosSearch.value.resultadosXPage = getQueryRouterNumber ( queryURL.limite       )
+    
+    bloqueoInicio                 = false
   }
 
   const emit = defineEmits<{
     (e: 'buscar',   value: IQueryIncentivo  ): void
-    (e: 'limpiar',                        ): void
-    (e: 'exportar',                       ): void    
+    (e: 'limpiar',                          ): void
+    (e: 'exportar',                         ): void    
   }>()
 
-  watch(busqueda, (b)=>
+  watch(incentivosSearch, (b)=>
     {
       if(bloqueoInicio) return
-      //checkAlertTabs(b)
-      //if( !permisos.value.acceso_total )
-        //query.idComercial         = usuario.value.id
       buscar()
     },
     { deep: true }
   )
 
-  
-
   function buscar( origen : string = "" )
   {
-    const query         = busqueda.value.query
+    const query         = incentivosSearch.value.query
     const qString       = JSON.stringify(query)
     if(copiaQ           !== qString)
       copiaQ            = qString

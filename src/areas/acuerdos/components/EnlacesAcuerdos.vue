@@ -19,7 +19,7 @@
         <Tooltip label          ="Recargar enlaces"/>
       </q-btn>   
     </template>
-    <q-table                    borbordered dense flat hide-bottom
+    <q-table                    bordered dense flat hide-bottom
       class                     ="fit tabla-maco"
       row-key                   ="id"
       :rows                     ="acuerdo.acuerdosEnlazados"

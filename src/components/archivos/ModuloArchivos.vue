@@ -11,7 +11,7 @@
     :menu-visible               ="puedeSubir"
     >
     <!-- //* ////////////////   Tabla  -->
-    <q-table                    borbordered dense flat
+    <q-table                    bordered dense flat
       v-if                      ="!!archivos.length"
       class                     ="fit tabla-maco"
       row-key                   ="id"

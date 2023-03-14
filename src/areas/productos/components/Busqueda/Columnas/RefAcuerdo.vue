@@ -18,7 +18,6 @@
       @click          ="emit('vistaRapida')"
     />    
     <router-link
-
       class         ="fuente-mono"
       :to           ="`/${acuerdo.labelPlural}/${acuerdo.id}`"
       >

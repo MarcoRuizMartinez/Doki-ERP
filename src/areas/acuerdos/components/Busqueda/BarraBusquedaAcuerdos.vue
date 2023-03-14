@@ -123,7 +123,7 @@
           icon                  ="mdi-file-check"
           class                 ="width160"
           :options              ="opcionesFacturado"
-        />        
+        />
       </fieldset-filtro>
       <!-- //* /////////////////////////////////////////////////// Paginación -->
       <fieldset-filtro
@@ -137,7 +137,7 @@
             color               ="white"
             text-color          ="grey-8"
             toggle-color        ="primary"
-            :options            ="[{label: '25', value: 25},{label: '50', value: 50},{label: '100', value: 100}]"
+            :options            ="[{label: '10', value: 10}, {label: '25', value: 25},{label: '50', value: 50},{label: '100', value: 100}]"
             @update:model-value ="busqueda.pagina = 1"
           />
           <Tooltip label        ="Resultados por pagina"/>
@@ -431,7 +431,7 @@
   const { usuario, permisos     } = storeToRefs( useStoreUser() )
   const { busqueda, acuerdos    } = storeToRefs( useStoreAcuerdo() )
   const { tabs                  } = storeToRefs( useStoreApp() )
-
+  
   const opcionesFacturado         = [{value:0, label:'No facturado'},   {value:1, label:'Facturado'   }]
   const opcionesTotales           = [{value:0, label:'Sin totalizar'},  {value:1, label:'Totalizado'  }]
   const opcionesIVA               = [{value:0, label:'Sin IVA'},        {value:1, label:'Con IVA'     }]
@@ -443,7 +443,7 @@
                                                   : busqueda.value.esEntrega    ? estadosEnt.filter(e => e.value >= -1)
                                                   : [] )
   
-  const autoSelectComercial       = computed(()=> Object.keys(queryURL).length === 0 ? true : getQueryRouterNumber( queryURL.comercial  ) ?? false )
+  const autoSelectComercial       = computed(()=>                                 Object.keys(queryURL).length === 0 ? true : getQueryRouterNumber( queryURL.comercial  ) ?? false )
   const autoSelectCreador         = computed(()=> busqueda.value.esOCProveedor && Object.keys(queryURL).length === 0 ? true : getQueryRouterNumber( queryURL.creador    ) ?? false )
   const siguientePagina           = computed(()=> busqueda.value.pagina + (acuerdos.value.length >= busqueda.value.resultadosXPage ? 1 : 0) )
   const haySiguientePagina        = computed(()=> busqueda.value.pagina !== siguientePagina.value )

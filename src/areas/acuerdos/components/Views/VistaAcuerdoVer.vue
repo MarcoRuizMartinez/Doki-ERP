@@ -143,9 +143,9 @@
   import    entregas                from ".././Entregas.vue"
   import    anticipos               from ".././Anticipos/ModuloAnticipos.vue"
   //import    nuevaEntrega          from ".././Modals/NuevaEntregaSelectBodega.vue"
-  import    remision              from ".././PDF/RemisionPDF.vue"
+  import    remision                from ".././PDF/RemisionPDF.vue"
   import    documentos              from "components/archivos/ModuloArchivos.vue"
-  import    comisiones              from "./../Modals/Comisiones.vue"
+  import    comisiones              from "src/areas/nomina/components/Modals/Comisiones.vue"
 
   const { acuerdo,
           modales,

@@ -95,7 +95,7 @@
         </fieldset-filtro>
       </template>
       <!-- //* //////////////////////////////////////////////////////// Tabla resultados-->
-      <q-table                    borbordered dense flat
+      <q-table                    bordered dense flat
         class                     ="fit tabla-maco"
         row-key                   ="id"
         :filter                   ="filtro"

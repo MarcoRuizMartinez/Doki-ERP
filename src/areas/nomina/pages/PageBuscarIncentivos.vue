@@ -25,22 +25,45 @@
         </barra-busqueda>
       </template>
       <!-- //* //////////////////////////////////////////////////////// Tabla resultados-->
-
+      <q-table                  bordered dense flat square
+        class                   ="fit tabla-maco tabla-alto-min"
+        row-key                 ="id"
+        :rows                   ="incentivos"
+        :columns                ="columnas"
+        :visible-columns        ="columnasVisibles"
+        :rows-per-page-options  ="[100]"
+        >
+        <!-- //* ///////////////  Columna Ref  -->
+        <template               #body-cell-origenRef="props">
+          <q-td   :props        ="props">
+            <router-link
+              class             ="link-limpio"
+              :to               ="props.row.origenURL"
+              >
+              {{ props.value }}
+            </router-link>
+          </q-td>
+        </template>        
+        <!-- //* ///////////////  Columna Usuario  -->
+        <template               #body-cell-usuarioLabel="props">
+          <q-td   :props        ="props"><chip-usuario :usuario="props.row.usuario"/></q-td>
+        </template>    
+        <!-- //* ///////////////  Columna Creador  -->
+        <template               #body-cell-creadorLabel="props">
+          <q-td   :props        ="props"><chip-usuario :usuario="props.row.creador"/></q-td>
+        </template>
+      </q-table>
     </ventana>
   </q-page>
 </template>
 <script setup lang="ts">
   import {  ref,
-            toRefs,
-            watch,
-            PropType,
             computed,
             onMounted,
             onUnmounted         } from "vue"
   // * /////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs         } from 'pinia'                                            
   import {  useStoreUser        } from 'src/stores/user'
-  import {  useStoreAcuerdo     } from 'src/stores/acuerdo'
   import {  useStoreNomina      } from "src/stores/nomina"
   
   // * /////////////////////////////////////////////////////////////////////// Componibles
@@ -49,18 +72,15 @@
   import {  useControlAcuerdo   } from "src/areas/acuerdos/controllers/ControlAcuerdos"
   import {  useTools            } from "src/useSimpleOk/useTools"
   import {  generarCSVDesdeTabla} from "src/useSimpleOk/UtilFiles"
-  import {  style               } from "src/useSimpleOk/useEstilos"
+  import {  useControlIncentivos} from "src/areas/nomina/controllers/ControlIncentivos"  
 
   // * /////////////////////////////////////////////////////////////////////// Modelos
-  import {  BusquedaAcuerdo,
-            IQueryAcuerdo       } from "src/areas/acuerdos/models/BusquedaAcuerdos"
   import {  Columna, IColumna   } from "src/models/Tabla"
   import {  ModosVentana,
             ALMACEN_LOCAL       } from "src/models/TiposVarios"  
-  import {  Acuerdo             } from "src/areas/acuerdos/models/Acuerdo"
-  import {  TTipoAcuerdo        } from "src/areas/acuerdos/models/ConstantesAcuerdos"
   import {  IQueryIncentivo,
-            IBusquedaIncentivo  } from "src/areas/nomina//models/BusquedaIncentivos"
+            BusquedaIncentivo   } from "src/areas/nomina//models/BusquedaIncentivos"
+  import {  IIncentivo          } from "src/areas/nomina/models/Incentivo"  
 
   // * /////////////////////////////////////////////////////////////////////// Componentes
   import    ventana               from "components/utilidades/Ventana.vue"  
@@ -68,42 +88,35 @@
   import    barraBusqueda         from "src/areas/nomina/components/BarraBusquedaIncentivos.vue"
 
   // * ////////////////////////// Columnas
-  import    refAcuerdo            from "src/areas/acuerdos/components/Busqueda/Columnas/RefAcuerdo.vue"
-  import    estado                from "src/areas/acuerdos/components/Busqueda/Columnas/Estado.vue"
   import    chipUsuario           from "src/areas/usuarios/components/ChipUsuario.vue"
 
-    
   useTitle("🧮 Comisiones")
 
   const { usuario, permisos     } = storeToRefs( useStoreUser() )  
-  const { acuerdo               } = storeToRefs( useStoreAcuerdo() )  
-  const { busqueda, 
-          incentivos,
-                                } = storeToRefs( useStoreNomina() )
+  const { incentivos,
+          incentivosSearch      } = storeToRefs( useStoreNomina() )
   const { getAcuerdos           } = servicesAcuerdos()
   const { buscarTerceroDolibarr } = useControlAcuerdo()  
+  const { buscarIncentivos      } = useControlIncentivos()
   const { esMobil, aviso        } = useTools()
   
   const modo                      = ref< ModosVentana >("esperando-busqueda")  
-  const indexSelect               = ref< number >(-1)
-  const ventanaVistaRapida        = ref< boolean >(false)  
-  //const filtroMovil               = ref< boolean >(false)
-  
+  const indexSelect               = ref< number >(-1) 
   const titulo                    = computed(()=>
   {
-    let   titulo                  = "Titulo"
-/*     const largo                   = acuerdos.value.length
+    let   titulo                  = ""
+    const largo                   = incentivos.value.length
 
     if(!largo)
-      titulo                      = `Buscando ${Acuerdo.getTipoAcuerdoPlural(tipo.value)}...`
+      titulo                      = `Buscando comisiones...`
     else
     {
       titulo                      = `Resultado: ${largo} `
       if(largo                    === 1)
-        titulo                    += Acuerdo.getTipoAcuerdoSingular ( tipo.value )
+        titulo                    += "comisión"
       else
-        titulo                    += Acuerdo.getTipoAcuerdoPlural   ( tipo.value )
-    } */
+        titulo                    += "comisiones"
+    }
 
     return titulo
   })
@@ -112,90 +125,56 @@
   const columnas                  = ref< IColumna[] >([])
   const columnasVisibles          = ref< string[]   >([])
 
-  onMounted(iniciar)
+  onMounted(iniciar)  
 
   function iniciar()
   {
-    //useTitle(`${Acuerdo.getEmojiAcuerdo(tipo.value)}🔍 Buscar ${Acuerdo.getTipoAcuerdoPlural(tipo.value)}`)
-    //acuerdos.value                = []
-    //busqueda.value                = new BusquedaAcuerdo( tipo.value )
+    reuniciarBusqueda()
     modo.value                    = "esperando-busqueda"
     crearColumnas()
   }
 
-  onUnmounted(()=>{
-    //acuerdos.value                = []
-    //busqueda.value                = new BusquedaAcuerdo( tipo.value )
-  })  
+  onUnmounted(reuniciarBusqueda)  
 
   async function buscar( query : IQueryIncentivo )
   {
-    console.log("query: ", query);
     incentivos.value              = []
     modo.value                    = "buscando"
-    //incentivos.value              = await getAcuerdos( query )
+    incentivos.value              = await buscarIncentivos( query, "varios" ) as IIncentivo[]
     modo.value                    = !!incentivos.value.length ? "normal" : "sin-resultados"
   }
 
   function limpiarBusqueda()
   {
     modo.value                    = "esperando-busqueda"
-    //acuerdos.value                = []
+    incentivos.value              = []
   }
 
-  function seleccionarAcuerdo( index : number )
-  {    
-    indexSelect.value             = index
-    //acuerdo.value.proGrupos       = []
-    //acuerdo.value                 = acuerdos.value[index]
-    buscarTerceroDolibarr( acuerdo.value.terceroId )
+  function reuniciarBusqueda(){
+    incentivos.value              = []
+    incentivosSearch.value        = new BusquedaIncentivo()
   }
 
   function crearColumnas()
   {
     columnas.value = [
-      new Columna(            { name: "ref"                                                                   }),
-      new Columna(            { name: "estado"                                                                }),
-      new Columna(            { name: "pedidoId",             label: "Pedido ID"                              }),
-      new Columna(            { name: "tercero"                                                               }),
-      new Columna(            { name: "refCliente",           label: "Ref cliente"                            }),
-      Columna.ColumnaSiNo   ( { name: "facturado",            label: "Facturado"                              }),
-      Columna.ColumnaPrecio ( { name: "subTotalLimpio",       label: "Subtotal comisión", clase: "text-bold"  }),
-      Columna.ColumnaPrecio ( { name: "totalConDescu",        label: "Subtotal",          clase: "text-bold"  }),
-      Columna.ColumnaPrecio ( { name: "ivaValor",             label: "IVA",               clase: "text-bold"  }),
-      Columna.ColumnaPrecio ( { name: "totalConIva",          label: "Total",             clase: "text-bold"  }),
+      new Columna(  { name: "origenRef",              label: "Ref" }),
+      new Columna(  { name: "estadoLabel",            label: "Estado" }),
+      Columna.ColumnaPrecio ( { name: "valor",        clase: "text-bold"  }),
+      new Columna(  { name: "estadoPagoLabel",        label: "Pago" }),
+      Columna.ColumnaPrecio ( { name: "pagado",       clase: "text-bold"  }),
+      new Columna(  { name: "usuarioLabel",           label: "Usuario" }),
+      new Columna(  { name: "creadorLabel",           label: "Creador" }),
+      new Columna(  { name: "nota" }),
     ]
-/* 
-    const colsEli = busqueda.value.esCotizacion   ? ["facturado", "pedidoId"]
-                  : busqueda.value.esPedido       ? ["pedidoId"]
-                  : busqueda.value.esEntrega      ? ["facturado", "condicionPagoLabel", "formaPagoLabel", "origenContactoLabel", "subTotalLimpio", "totalConDescu", "ivaValor", "totalConIva"]
-                  : busqueda.value.esOCProveedor  ? ["refCliente", "comercial", "metodoEntregaLabel", "facturado", "origenContactoLabel", "subTotalLimpio", "pedidoId" ]
-                  : []
-    Columna.eliminarColums( colsEli, columnas.value )
-
-    const colHide = ["refCliente", "contactoSmartDir", "contactoSmartTel", "formaPagoLabel", "area", "municipioTercero", "creador", "fechaCreacionCorta", "fechaValidacionCorta", "subTotalLimpio", "ivaValor", "totalConIva"]
-    const colsOcu = busqueda.value.esCotizacion   ? [...colHide, "metodoEntregaLabel",]
-                  : busqueda.value.esPedido       ? [...colHide]
-                  : busqueda.value.esEntrega      ? [...colHide]
-                  : busqueda.value.esOCProveedor  ? [...colHide]
-                  : [...colHide]
-    Columna.ocultarColums( colsOcu, columnas.value ) */
-    
     columnasVisibles.value  = columnas.value.filter(c => c.visible ).map( c => c.name )
-  } 
+  }
 
   function descargarAcuerdos()
   {
-/* 
-    let ok = generarCSVDesdeTabla(  busqueda.value.acuerdo,  columnas.value, acuerdos.value )
+    let ok = generarCSVDesdeTabla( "Informe comisiones", columnas.value, incentivos.value )
 
     if (ok) aviso("positive", "Archivo generado", "file")
     else    aviso("negative", "Error al generar el archivo...", "file")
-     */
   }  
 </script>
-<style>
-.alto-tabla{
-  min-height: 360px;
-}
-</style>

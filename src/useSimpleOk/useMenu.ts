@@ -105,14 +105,14 @@ export function useMenu()
                             label:      "Comisiones",
                             icon:       "mdi-account-details",
                             to:         "/comisiones",
-                            visible:    false//permisos.value.terceros_ver
+                            visible:    permisos.value.terceros_ver
                           }),
         },
         { ...new ItemMenu({
                             label:      "Pagos de comisiones",
                             icon:       "mdi-cash-check",
                             to:         "/comisiones/pagos",
-                            visible:    false//permisos.value.terceros_ver
+                            visible:    permisos.value.terceros_ver
                           }),
         },                
 /*         

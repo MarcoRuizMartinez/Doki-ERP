@@ -1,5 +1,5 @@
 <template>
-  <q-table                    dense borbordered flat
+  <q-table                    dense bordered flat
     v-model:selected          ="seleccion"    
     row-key                   ="id"
     selection                 ="multiple"

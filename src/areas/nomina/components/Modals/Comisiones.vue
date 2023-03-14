@@ -52,7 +52,7 @@
     </template>
     <div  class                   ="bg-grey-3 fit">
       <!--    -->
-      <q-table                    borbordered dense flat hide-bottom
+      <q-table                    bordered dense flat hide-bottom
         class                     ="tabla-maco"
         row-key                   ="id"
         style                     ="min-height: 208px; max-height: 460px;"
@@ -147,10 +147,10 @@
   // * /////////////////////////////////////////////////////////////////////////////////// Componibles
   import {  formatoPrecio       } from "src/useSimpleOk/useTools"
   import {  style               } from "src/useSimpleOk/useEstilos"  
-  import {  useControlUsuarios  } from "src/areas/nomina/controllers/ControlUsuarios"  
+  import {  useControlIncentivos} from "src/areas/nomina/controllers/ControlIncentivos"  
   // * /////////////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana               from "components/utilidades/Ventana.vue"
-  import    tooltipLinea          from "./../Tooltips/TooltipLinea.vue"
+  import    tooltipLinea          from "src/areas/acuerdos/components/Tooltips/TooltipLinea.vue"
   import    formulario            from "./FormularioComision.vue"
   
   const { acuerdo,
@@ -158,7 +158,7 @@
           loading           } = storeToRefs( useStoreAcuerdo() )
   const { usuario           } = storeToRefs( useStoreUser() )
   const modo                  = ref< ModosVentana >("normal")
-  const { buscarIncentivo   } = useControlUsuarios()
+  const { buscarIncentivos  } = useControlIncentivos()
   const incentivo             = ref< IIncentivo >( new Incentivo() )
 
   const emit = defineEmits<{
@@ -176,7 +176,7 @@
   onMounted( async ()=>{
     acuerdo.value.comision.calcular()
     arreglarColumnas()
-    incentivo.value      = await buscarIncentivo( INCENTIVO_ORIGEN.PEDIDO_CLI, acuerdo.value.id )
+    incentivo.value      = await buscarIncentivos( { origenTipo: INCENTIVO_ORIGEN.PEDIDO_CLI, origenId : acuerdo.value.id } ) as IIncentivo
   })
 
   function arreglarColumnas()
@@ -190,7 +190,7 @@
   }
 
   /* function buscar(){
-    buscarIncentivo( INCENTIVO_ORIGEN.PEDIDO_CLI, acuerdo.value.id )
+    buscarIncentivos( INCENTIVO_ORIGEN.PEDIDO_CLI, acuerdo.value.id )
   } */
 
   

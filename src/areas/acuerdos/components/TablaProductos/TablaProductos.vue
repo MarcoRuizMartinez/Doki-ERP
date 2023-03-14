@@ -1,4 +1,28 @@
 <template>
+      <!-- 
+      <q-grid                   dense flat bordered square 
+        class                   ="fit tabla-maco"
+        classes                 ="tabla-alto-min"
+        :columns_filter         ="true"
+        :data                   ="incentivos"
+        :columns                ="columnas"
+        >
+        <template #body         ="props">
+          <q-tr :props          ="props">
+            <q-td key           ="origenRef">
+
+            </q-td>
+            <q-td key           ="estadoLabel">{{ props.row.estadoLabel }}</q-td>
+            <q-td key           ="valor" class="text-bold fuente-mono text-right">{{ formatoPrecio( props.row.valor, 'decimales-no' )  }}</q-td>
+            <q-td key           ="pagado" class="text-bold fuente-mono text-right">{{ formatoPrecio( props.row.pagado, 'decimales-no' )  }}</q-td>
+            <q-td key           ="usuarioLabel"><chip-usuario :usuario="props.row.usuario"/></q-td>
+            <q-td key           ="creadorLabel"><chip-usuario :usuario="props.row.creador"/></q-td>
+            <q-td key           ="nota">{{ props.row.nota }}</q-td>
+          </q-tr>
+        </template>
+      </q-grid> -->
+
+  
   <q-table                      dense flat square wrap-cells
     v-model:selected            ="grupo.seleccion"
     table-header-class          ="bg-gris text-grey-10"
