@@ -191,7 +191,8 @@
   const { usuario, permisos     } = storeToRefs( useStoreUser() )  
   const { acuerdo,
           acuerdos,
-          busqueda              } = storeToRefs( useStoreAcuerdo() )  
+          busqueda,
+          loading               } = storeToRefs( useStoreAcuerdo() )  
   const { getAcuerdos           } = servicesAcuerdos()
   const { buscarTerceroDolibarr } = useControlAcuerdo()  
   const { esMobil, aviso        } = useTools()
@@ -252,7 +253,9 @@
   {
     acuerdos.value                = []            
     modo.value                    = "buscando"
-    acuerdos.value                = await getAcuerdos( query )
+    loading.value.carga           = true
+    acuerdos.value                = await getAcuerdos( query )  
+    loading.value.carga           = false
     modo.value                    = !!acuerdos.value.length ? "normal" : "sin-resultados"
   }
 

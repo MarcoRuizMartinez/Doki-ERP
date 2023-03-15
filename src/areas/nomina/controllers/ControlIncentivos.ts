@@ -3,6 +3,7 @@ import {  useRouter             } from 'vue-router'
 //* ////////////////////////////////////////////////////////////////// Store
 import {  storeToRefs           } from 'pinia'
 import {  useStoreAcuerdo       } from 'src/stores/acuerdo'
+import {  useStoreNomina      } from "src/stores/nomina"
 //* ////////////////////////////////////////////////////////////////// Componibles
 import {  useApiDolibarr        } from "src/services/useApiDolibarr"
 import {  useFetch              } from "src/useSimpleOk/useFetch"
@@ -19,7 +20,9 @@ export function useControlIncentivos()
   const { aviso               } = useTools()
   const { apiDolibarr         } = useApiDolibarr()
   const { miFetch             } = useFetch()
-  const { loading             } = storeToRefs( useStoreAcuerdo() )
+  const { loading : loadAcu   } = storeToRefs( useStoreAcuerdo() )
+  const { loading             } = storeToRefs( useStoreNomina() )
+  
 
   async function nuevoIncentivo( objeto : any ) : Promise< boolean | number >
   {
@@ -40,13 +43,15 @@ export function useControlIncentivos()
 
   async function buscarIncentivos( query : IQueryIncentivo, tipo : "unico" | "varios" = "unico" ) : Promise< IIncentivo | IIncentivo[] >
   {
-    loading.value.incentivo     = true
+    loadAcu.value.incentivo     = true
+    loading.value.carga         = true
     const comoArray             = tipo === "varios"
     const { ok, data }          = await miFetch(  getURL("listas", "incentivos"),
                                                   { method: "POST", body: getFormData( "busqueda", query ) },
                                                   { mensaje: "buscar incentivo", dataEsArray: comoArray }
                                                 )
-    loading.value.incentivo     = false
+    loadAcu.value.incentivo     = false
+    loading.value.carga         = false
     if(ok){
       return comoArray ? Incentivo.getIncentivosToApi( data ) : Incentivo.getIncentivoToApi( data )
     }

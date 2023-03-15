@@ -206,6 +206,7 @@
           </div>
         </div>
       </fieldset-filtro>
+      <inner-loading v-model      ="loading.carga"/>
     </q-tab-panel>
     <!-- //* ///////////////////////////////////////////////////// Tab 2 -->
     <q-tab-panel
@@ -373,6 +374,7 @@
             </tr>
           </tbody>
         </table>
+        <inner-loading v-model  ="loading.carga"/>
       </fieldset-filtro>
     </q-tab-panel>
   </q-tab-panels>
@@ -425,6 +427,7 @@
   import    inputFecha            from "src/components/utilidades/input/InputFecha.vue"
   import    selectUsuario         from "src/areas/usuarios/components/SelectUsuario.vue"
   import    inputBuscar           from "src/components/utilidades/input/InputSimple.vue"
+  import    innerLoading          from "src/components/utilidades/InnerLoading.vue"
 
   const router                    = useRouter()
   let queryURL                    = router.currentRoute.value.query
@@ -439,7 +442,9 @@
   const proveedores               = dexieProveedores()
 
   const { usuario, permisos     } = storeToRefs( useStoreUser() )
-  const { busqueda, acuerdos    } = storeToRefs( useStoreAcuerdo() )
+  const { busqueda, 
+          acuerdos,
+          loading               } = storeToRefs( useStoreAcuerdo() )
   const { tabs                  } = storeToRefs( useStoreApp() )
   
   const opcionesFacturado         = [{value:0, label:'No facturado'},   {value:1, label:'Facturado'   }]
@@ -480,6 +485,7 @@
   let   bloqueoInicio             = true
 
   onMounted(()=>{
+    loading.value.carga           = true
     tabs.value                    = { activa : "tab_1", alerts: [ false, true]}
   })
 
@@ -520,7 +526,8 @@
     if(!!queryURL.municipioContacto)
       busqueda.value.municipioContacto  = await getMunicipioDB( Array.isArray(queryURL.municipioContacto) ? 0 : +queryURL.municipioContacto ) 
         
-      bloqueoInicio                 = false
+    bloqueoInicio                 = false
+    loading.value.carga           = false
   }
 
   const emit = defineEmits<{

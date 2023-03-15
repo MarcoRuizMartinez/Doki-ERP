@@ -1,153 +1,156 @@
 <template>
-  <!-- //* ///////////////////////////////////////////////////////////////////// FIELD SET REF Y USUARIO  -->
-  <fieldset-filtro
-    titulo                  ="Búsqueda"
-    class-conenido          ="column q-gutter-xs"
-    >
-    <!-- //* ///////////////////////////////////////////////// Busqueda general -->        
-    <input-buscar           clearable hundido
-      v-model               ="incentivosSearch.ref"
-      label                 ="Búsqueda Ref"
-      class                 ="width200"
-      icon                  ="mdi-magnify"
-    />
-    <!-- //* ///////////////////////////////////////////////// Usuario -->
-    <select-usuario         hundido clearable
-      v-model               ="incentivosSearch.usuario"
-      class                 ="width200"
-      label                 ="Usuario"
-      :autoselect           ="autoSelectUsuario"
-      :readonly             ="!permisos.acceso_total"
-      :grupos               =[GRUPO_USUARIO.EN_NOMINA]
-    />
-  </fieldset-filtro>
-  <!-- //* ///////////////////////////////////////////////////////////////////// FIELD SET VALOR -->
-  <fieldset-filtro
-    titulo                  ="Valor"
-    class-conenido          ="column q-gutter-xs"
-    >
-    <!-- //* ///////////////////////////////////////////////// Precio Minimo -->
-    <input-number           hundido clearable
-      v-model               ="incentivosSearch.valorMin"
-      label                 ="Mínimo"
-      icon                  ="mdi-currency-usd"
-      class                 ="width160"
-      :minimo               ="0"
-      :maximo               ="!!incentivosSearch.valorMax ? incentivosSearch.valorMax : undefined"
-    />
-    <!-- //* ///////////////////////////////////////////////// Precio Maximo -->
-    <input-number           hundido clearable
-      v-model               ="incentivosSearch.valorMax"
-      label                 ="Máximo"
-      icon                  ="mdi-currency-usd"
-      class                 ="width160"
-      :minimo               ="!!incentivosSearch.valorMin ? incentivosSearch.valorMin : undefined"
-      :maximo               ="999_999_999"
-    />
-  </fieldset-filtro>
-  <!-- //* ///////////////////////////////////////////////////////////////////// FIELD SET ESTADOS -->
-  <fieldset-filtro
-    titulo                  ="Estado"
-    class-conenido          ="column q-gutter-xs"
-    >
-    <!-- //* ///////////////////////////////////////////////// Estado -->
-    <select-label-value     use-input hundido clearable flat bordered
-      v-model               ="incentivosSearch.estado"
-      label                 ="Estado"
-      icon                  ="mdi-file-check"
-      class                 ="width180"
-      :options              ="Incentivo.estados"
-    />
-    <!-- //* ///////////////////////////////////////////////// Pagado -->
-    <select-label-value     use-input hundido clearable flat bordered
-      v-model               ="incentivosSearch.pagado"
-      label                 ="Pago"
-      icon                  ="mdi-cash-check"
-      class                 ="width180"
-      :options              ="Incentivo.estadosPago.filter( e => e.visible )"
-    />    
-  </fieldset-filtro>  
-  <!-- //* ///////////////////////////////////////////////////////////////////// FIELD SET Paginación -->
-  <fieldset-filtro
-    titulo                  ="Paginas"
-    class-conenido          ="grilla-ribom fit"
-    >
-    <!-- //* ///////////////////////////////////////////////// Resultados por pagina -->
-    <div>
-      <q-btn-toggle         spread push unelevated round
-        v-model             ="incentivosSearch.resultadosXPage"
-        color               ="white"
-        text-color          ="grey-8"
-        toggle-color        ="primary"
-        :options            ="[{label: '25', value: 25},{label: '50', value: 50},{label: '100', value: 100}]"
-        @update:model-value ="incentivosSearch.pagina = 1"
+  <div class                  ="full-width relative-position row q-pa-none no-wrap scroll">
+    <!-- //* ///////////////////////////////////////////////////////////////////// FIELD SET REF Y USUARIO  -->
+    <fieldset-filtro
+      titulo                  ="Búsqueda"
+      class-conenido          ="column q-gutter-xs"
+      >
+      <!-- //* ///////////////////////////////////////////////// Busqueda general -->        
+      <input-buscar           clearable hundido
+        v-model               ="incentivosSearch.ref"
+        label                 ="Búsqueda Ref"
+        class                 ="width200"
+        icon                  ="mdi-magnify"
       />
-      <Tooltip label        ="Resultados por pagina"/>
-    </div>
-    <!-- //* ///////////////////////////////////////////////// Pagina -->
-    <div class              ="row justify-center full-width">
-      <q-pagination         dense
-        v-model             ="incentivosSearch.pagina"
-        :max                ="siguientePagina"
-        :max-pages          ="3"
-        :ellipses           ="false"
-        :boundary-numbers   ="false"
+      <!-- //* ///////////////////////////////////////////////// Usuario -->
+      <select-usuario         hundido clearable
+        v-model               ="incentivosSearch.usuario"
+        class                 ="width200"
+        label                 ="Usuario"
+        :autoselect           ="autoSelectUsuario" 
+        :readonly             ="!permisos.acceso_total"
+        :grupos               =[GRUPO_USUARIO.EN_NOMINA]
       />
-      <Tooltip label        ="Pagina"/>
-      <q-spinner-puff
-        v-if                ="haySiguientePagina"
-        color               ="primary"
-        size                ="2em"
-        class               ="q-mt-xs"
-      />          
-    </div>
-  </fieldset-filtro>
-  <fieldset-filtro
-    titulo                  ="Opciones"
-    class-conenido          ="grilla-ribom"
-    >
-    <!-- //* ///////////////////////////////////////////////// Slot Columnas -->
-    <slot></slot>
-    <!-- //* ///////////////////////////////////////////////// Botones -->
-    <div class                ="row justify-around q-mt-sm">
-      <!-- //* /////////////////////////////////////////////// Boton recargar -->
+    </fieldset-filtro>
+    <!-- //* ///////////////////////////////////////////////////////////////////// FIELD SET VALOR -->
+    <fieldset-filtro
+      titulo                  ="Valor"
+      class-conenido          ="column q-gutter-xs"
+      >
+      <!-- //* ///////////////////////////////////////////////// Precio Minimo -->
+      <input-number           hundido clearable
+        v-model               ="incentivosSearch.valorMin"
+        label                 ="Mínimo"
+        icon                  ="mdi-currency-usd"
+        class                 ="width160"
+        :minimo               ="0"
+        :maximo               ="!!incentivosSearch.valorMax ? incentivosSearch.valorMax : undefined"
+      />
+      <!-- //* ///////////////////////////////////////////////// Precio Maximo -->
+      <input-number           hundido clearable
+        v-model               ="incentivosSearch.valorMax"
+        label                 ="Máximo"
+        icon                  ="mdi-currency-usd"
+        class                 ="width160"
+        :minimo               ="!!incentivosSearch.valorMin ? incentivosSearch.valorMin : undefined"
+        :maximo               ="999_999_999"
+      />
+    </fieldset-filtro>
+    <!-- //* ///////////////////////////////////////////////////////////////////// FIELD SET ESTADOS -->
+    <fieldset-filtro
+      titulo                  ="Estado"
+      class-conenido          ="column q-gutter-xs"
+      >
+      <!-- //* ///////////////////////////////////////////////// Estado -->
+      <select-label-value     use-input hundido clearable flat bordered
+        v-model               ="incentivosSearch.estado"
+        label                 ="Estado"
+        icon                  ="mdi-file-check"
+        class                 ="width180"
+        :options              ="Incentivo.estados"
+      />
+      <!-- //* ///////////////////////////////////////////////// Pagado -->
+      <select-label-value     use-input hundido clearable flat bordered
+        v-model               ="incentivosSearch.pagado"
+        label                 ="Pago"
+        icon                  ="mdi-cash-check"
+        class                 ="width180"
+        :options              ="Incentivo.estadosPago.filter( e => e.visible )"
+      />    
+    </fieldset-filtro>  
+    <!-- //* ///////////////////////////////////////////////////////////////////// FIELD SET Paginación -->
+    <fieldset-filtro
+      titulo                  ="Paginas"
+      class-conenido          ="grilla-ribom fit"
+      >
+      <!-- //* ///////////////////////////////////////////////// Resultados por pagina -->
       <div>
-        <q-btn                round push glossy
-          icon                ="mdi-refresh"
-          padding             ="xs"
-          color               ="primary"
-          @click              ="buscar('btnRecargar')"
-          >
-          <Tooltip label      ="Recargar"/>
-        </q-btn>
+        <q-btn-toggle         spread push unelevated round
+          v-model             ="incentivosSearch.resultadosXPage"
+          color               ="white"
+          text-color          ="grey-8"
+          toggle-color        ="primary"
+          :options            ="[{label: '25', value: 25},{label: '50', value: 50},{label: '100', value: 100}]"
+          @update:model-value ="incentivosSearch.pagina = 1"
+        />
+        <Tooltip label        ="Resultados por pagina"/>
       </div>
-      <!-- //* /////////////////////////////////////////////// Boton limpiar -->
-      <div>
-        <q-btn                round push glossy
-          icon                ="mdi-close"
-          padding             ="xs"
+      <!-- //* ///////////////////////////////////////////////// Pagina -->
+      <div class              ="row justify-center full-width">
+        <q-pagination         dense
+          v-model             ="incentivosSearch.pagina"
+          :max                ="siguientePagina"
+          :max-pages          ="3"
+          :ellipses           ="false"
+          :boundary-numbers   ="false"
+        />
+        <Tooltip label        ="Pagina"/>
+        <q-spinner-puff
+          v-if                ="haySiguientePagina"
           color               ="primary"
-          :disable            ="incentivosSearch.busquedaVacia"
-          @click              ="limpiarBusqueda"
-          >
-          <Tooltip label      ="Limpiar búsqueda"/>
-        </q-btn>
+          size                ="2em"
+          class               ="q-mt-xs"
+        />          
       </div>
-      <!-- //* /////////////////////////////////////////////// Boton exportar -->
-      <div>
-        <q-btn                round push glossy
-          v-if                ="permisos.terceros_exportar"
-          icon                ="mdi-microsoft-excel"
-          color               ="primary"
-          padding             ="xs"
-          :disable            ="incentivosSearch.busquedaVacia"
-          @click              ="emit('exportar')"
-          >
-          <Tooltip label      ="Descargar"/>
-        </q-btn>
+    </fieldset-filtro>
+    <fieldset-filtro
+      titulo                  ="Opciones"
+      class-conenido          ="grilla-ribom"
+      >
+      <!-- //* ///////////////////////////////////////////////// Slot Columnas -->
+      <slot></slot>
+      <!-- //* ///////////////////////////////////////////////// Botones -->
+      <div class                ="row justify-around q-mt-sm">
+        <!-- //* /////////////////////////////////////////////// Boton recargar -->
+        <div>
+          <q-btn                round push glossy
+            icon                ="mdi-refresh"
+            padding             ="xs"
+            color               ="primary"
+            @click              ="buscar('btnRecargar')"
+            >
+            <Tooltip label      ="Recargar"/>
+          </q-btn>
+        </div>
+        <!-- //* /////////////////////////////////////////////// Boton limpiar -->
+        <div>
+          <q-btn                round push glossy
+            icon                ="mdi-close"
+            padding             ="xs"
+            color               ="primary"
+            :disable            ="incentivosSearch.busquedaVacia"
+            @click              ="limpiarBusqueda"
+            >
+            <Tooltip label      ="Limpiar búsqueda"/>
+          </q-btn>
+        </div>
+        <!-- //* /////////////////////////////////////////////// Boton exportar -->
+        <div>
+          <q-btn                round push glossy
+            v-if                ="permisos.terceros_exportar"
+            icon                ="mdi-microsoft-excel"
+            color               ="primary"
+            padding             ="xs"
+            :disable            ="incentivosSearch.busquedaVacia"
+            @click              ="emit('exportar')"
+            >
+            <Tooltip label      ="Descargar"/>
+          </q-btn>
+        </div>
       </div>
-    </div>
-  </fieldset-filtro>
+    </fieldset-filtro>
+    <inner-loading v-model      ="loading.carga"/>
+  </div>
 </template>
 <script lang="ts" setup>
   // * /////////////////////////////////////////////////////////////////////// Core
@@ -157,7 +160,6 @@
   import {  useRouter           } from "vue-router"
   // * /////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs         } from "pinia"
-
   import {  useStoreUser        } from "src/stores/user"
   import {  useStoreNomina      } from "src/stores/nomina"
 
@@ -178,6 +180,7 @@
   import    selectLabelValue      from "components/utilidades/select/SelectLabelValue.vue"
   import    selectUsuario         from "src/areas/usuarios/components/SelectUsuario.vue"
   import    inputBuscar           from "src/components/utilidades/input/InputSimple.vue"
+  import    innerLoading          from "src/components/utilidades/InnerLoading.vue"
 
   const router                    = useRouter()
   let queryURL                    = router.currentRoute.value.query
@@ -187,9 +190,15 @@
 
   const { permisos              } = storeToRefs( useStoreUser() )
   const { incentivos,
+          loading,
           incentivosSearch      } = storeToRefs( useStoreNomina() )
 
-  onMounted(asignarQueryRouterACampos)
+  onMounted(()=>
+    {
+      loading.value.carga         = true
+      asignarQueryRouterACampos()
+    }
+  )
   
   const autoSelectUsuario         = computed(()=> Object.keys(queryURL).length === 0 ? true : getQueryRouterNumber( queryURL.usuarioId  ) ?? false )
   const siguientePagina           = computed(()=> incentivosSearch.value.pagina + (incentivos.value.length >= incentivosSearch.value.resultadosXPage ? 1 : 0) )
@@ -209,6 +218,7 @@
       incentivosSearch.value.resultadosXPage = getQueryRouterNumber ( queryURL.limite       )
     
     bloqueoInicio                 = false
+    loading.value.carga           = false
   }
 
   const emit = defineEmits<{
