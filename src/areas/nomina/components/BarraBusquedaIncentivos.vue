@@ -17,8 +17,8 @@
         v-model               ="b.f.usuario"
         class                 ="width200"
         label                 ="Usuario"
-        :autoselect           ="!usuario.esGerencia && !usuario.esContable && !b.hayUsuarioInicio" 
-        :readonly             ="!permisos.acceso_total"
+        :autoselect           ="b.autoSelectUsuario"
+        :readonly             ="!b.puedeCambiarUser"
         :grupos               =[GRUPO_USUARIO.EN_NOMINA]
       />
     </fieldset-filtro>
@@ -138,7 +138,6 @@
         <!-- //* /////////////////////////////////////////////// Boton exportar -->
         <div>
           <q-btn                round push glossy
-            v-if                ="permisos.terceros_exportar"
             icon                ="mdi-microsoft-excel"
             color               ="primary"
             padding             ="xs"
@@ -156,9 +155,7 @@
 <script lang="ts" setup>
   // * /////////////////////////////////////////////////////////////////////// Core
   import {  watch,
-            onMounted,
             computed            } from "vue"
-  import {  useRouter           } from "vue-router"
   // * /////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs         } from "pinia"
   import {  useStoreUser        } from "src/stores/user"
@@ -183,8 +180,6 @@
           incentivosSearch : b  } = storeToRefs( useStoreNomina() )
 
   // * /////////////////////////////////////////////////////////////////////// Router
-  const router                    = useRouter()
-  watch(()=>b.value.montadoOk, (ok)=> { if(ok) b.value.iniciarOpciones( router.currentRoute.value.query ) } )
     
   const emit = defineEmits<{
     (e: 'buscar',   value: IQuery ): void
@@ -194,30 +189,29 @@
 
   watch(()=>b.value.f, ()=>
     {
-      if(b.value.puedeBuscar) buscar()
+      if(b.value.puedeBuscar && !b.value.queryVacia) 
+        buscar()
+      else if(b.value.queryVacia) {
+        limpiarBusqueda()
+      }
     },
     { deep: true }
   )
 
   function buscar()
   {
-    if(!b.value.queryVacia)
-    {
-      const query       = b.value.query
-      router.replace({ query: { ...query }  })
-      query.acuerdo     = b.value.acuerdo
-      query.tipo        = "busqueda"
-      emit("buscar", query)
-    }
-    else limpiarBusqueda()
+    b.value.copiarQueryARourter()
+    const query       = b.value.query
+    query.tipo        = "busqueda"
+    emit("buscar", query)
   }
 
   function limpiarBusqueda(){
-    router.replace({ query: {} })
-    b.value.copiarQueryACampos( "limpiar" )
-    emit("limpiar")
+    const todoLimpio  = b.value.limpiarQueryDeRouter()
+    if(todoLimpio) emit("limpiar")
   }
-  
+
+
 
   // * /////////////////////////////////////////////////////////////////////// Computed
   const siguientePagina           = computed(()=> b.value.siguientePagina( incentivos.value.length ) )

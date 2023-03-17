@@ -22,7 +22,7 @@
         label               ="Con IVA"
         class               ="col-4"
         :icon               ="loading.conIVA ? 'mdi-loading mdi-spin' : ''"
-        :disable            ="acuerdo.tercero.aplicaIVA || loading.conIVA " 
+        :disable            ="acuerdo.tercero.aplicaIVA || loading.conIVA || acuerdo.esEstadoValido" 
         @update:model-value ="editarConIVA"
       />
       <!-- //* /////////////////////////////////////////////////////////////  Con AIU -->

@@ -152,6 +152,7 @@
             computed,
             onMounted,
             onUnmounted         } from "vue"
+  import {  useRouter           } from "vue-router"            
   // * /////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs         } from 'pinia'                                            
   import {  useStoreUser        } from 'src/stores/user'
@@ -195,6 +196,7 @@
   const { getAcuerdos           } = servicesAcuerdos()
   const { buscarTerceroDolibarr } = useControlAcuerdo()  
   const { esMobil, aviso        } = useTools()
+  const router                    = useRouter()
   
   const modo                      = ref< ModosVentana >("esperando-busqueda")  
   const indexSelect               = ref< number >(-1)
@@ -234,11 +236,11 @@
 
   onMounted(iniciar)
 
-  function iniciar()
+  async function iniciar()
   {
     useTitle(`${Acuerdo.getEmojiAcuerdo(tipo.value)}🔍 Buscar ${Acuerdo.getTipoAcuerdoPlural(tipo.value)}`)
     acuerdos.value                = []
-    busqueda.value.montarBusqueda( tipo.value )
+    await busqueda.value.montarBusqueda( usuario.value.id, router, usuario.value.esComercial, permisos.value.acceso_total, tipo.value )
     modo.value                    = "esperando-busqueda"
     crearColumnas()
   }

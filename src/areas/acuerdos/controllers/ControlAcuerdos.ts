@@ -29,6 +29,7 @@ import {  IUsuario              } from "src/areas/usuarios/models/Usuario"
 import {  ITercero              } from "src/areas/terceros/models/Tercero"
 import {  ICondicionPago        } from "src/models/Diccionarios/CondicionPago"
 import {  IFormaPago            } from "src/models/Diccionarios/FormaPago"
+import {  LineaAcuerdo          } from "src/areas/acuerdos/models/LineaAcuerdo"
 import {  IMetodoEntrega        } from "src/models/Diccionarios/MetodoEntrega"
 import {  ITiempoEntrega        } from "src/models/Diccionarios/TiempoEntrega"
 import {  IProyecto, Proyecto   } from "src/areas/proyectos/models/Proyecto"
@@ -658,7 +659,8 @@ export function useControlAcuerdo()
       const iva                 = parseInt( process.env.IVA ?? "0" )
       linea.iva                 =  on ? iva : 0
       const lineaEdit           = { id: linea.lineaId, tva_tx: linea.iva }
-      const {ok}                = await apiDolibarr("editar-linea", acuerdo.value.tipo, lineaEdit, acuerdo.value.id )
+      const lineaAPI              = LineaAcuerdo.lineaToLineaApi( linea )
+      const {ok}                = await apiDolibarr("editar-linea", acuerdo.value.tipo, lineaAPI, acuerdo.value.id )
       if (!ok){
         const error             = "Error al cambiar el IVA del producto"
         console.trace()

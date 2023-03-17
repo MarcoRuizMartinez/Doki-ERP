@@ -195,14 +195,7 @@
   import {  useStoreProducto    } from 'src/stores/producto'
   // * /////////////////////////////////////////////////////////////////////// Componibles
   //import {                      } from "src/services/useDexie"
-  import {  fechaValida,
-            formatoPrecio,
-            getQueryRouterDate,
-            getQueryRouterString,
-            getQueryRouterNumber,
-            getQueryRouterLabelValue,
-            getQueryRouterLabelValueArray,
-                                } from "src/useSimpleOk/useTools"
+  import {  getQueryRouterString} from "src/useSimpleOk/useTools"
   import {  dexieCategoriasProducto,
             getCategoriaDB,
                                 } from "src/services/useDexie"                                

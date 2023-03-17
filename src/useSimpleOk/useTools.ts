@@ -14,7 +14,6 @@ export function useTools()
   const quasar                  = useQuasar()
   const { notify              } = quasar
   const esMobil                 = !!quasar.platform.is.mobile
-  
 
   function aviso
   (

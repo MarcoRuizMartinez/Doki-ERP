@@ -63,11 +63,11 @@
             computed,
             onMounted,
             onUnmounted         } from "vue"
+  import {  useRouter           } from "vue-router"                  
   // * /////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs         } from 'pinia'                                            
   import {  useStoreUser        } from 'src/stores/user'
   import {  useStoreNomina      } from "src/stores/nomina"
-  
   // * /////////////////////////////////////////////////////////////////////// Componibles
   import {  useTitle            } from "@vueuse/core"
   import {  servicesAcuerdos    } from "src/areas/acuerdos/services/servicesAcuerdos"
@@ -100,6 +100,7 @@
   const { buscarTerceroDolibarr } = useControlAcuerdo()  
   const { buscarIncentivos      } = useControlIncentivos()
   const { esMobil, aviso        } = useTools()
+  const router                    = useRouter()
   
   const modo                      = ref< ModosVentana >("esperando-busqueda")  
   const indexSelect               = ref< number >(-1) 
@@ -129,10 +130,11 @@
 
   onMounted(iniciar)  
 
-  function iniciar()
+  async function iniciar()
   {    
     incentivos.value              = []
-    b.value.montarBusqueda()
+    const esEspecial              = usuario.value.esGerencia || usuario.value.esContable
+    await b.value.montarBusqueda( usuario.value.id, router, !esEspecial, esEspecial )
     modo.value                    = "esperando-busqueda"
     crearColumnas()
   }

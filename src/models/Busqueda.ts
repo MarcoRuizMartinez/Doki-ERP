@@ -109,9 +109,12 @@ interface               ICampos {
   pagina                : number  
 }
 
+import {  Router           } from "vue-router"
 
 export interface        IBusqueda {
   query                 : IQuery
+  usuarioId             : number        // id de usuario que busca
+  router                : Router
   rourterQ              : LocationQuery
   acuerdo               : TTipoAcuerdo
   f                     : ICampos       // f de fiels
@@ -119,42 +122,52 @@ export interface        IBusqueda {
   usuarioIdInicio       : number
   haySiguientePagina    : boolean
   montadoOk             : boolean
+  puedeCambiarUser      : boolean
+  haceAutoSelect        : boolean
 
   // * /////////////////  Geters
   queryVacia            : boolean
-  hayUsuarioInicio      : boolean
   esCotizacion          : boolean
   esPedido              : boolean
   esOCProveedor         : boolean
   esEntrega             : boolean
   puedeBuscar           : boolean
+  autoSelectUsuario     : boolean
+  camposVacios          : boolean
+
   // * /////////////////  Metodos
-  inicializarBusqueda   : ()=>void
-  iniciarOpciones       : ( q : LocationQuery )=>void
-  copiarQueryACampos    : ( limpiar? : "limpiar" | "" )=>void
-  montarBusqueda        : ( acuerdoTipo? : TTipoAcuerdo )=>void
+  initClass             : ()=>void
+  iniciarOpciones       : ()=>void
+  copiarQueryACampos    : ()=>void
   desmontarBusqueda     : ()=>void
+  copiarQueryARourter   : ()=>void
+  limpiarQueryDeRouter  : ()=>Promise< boolean >
   siguientePagina       : ( largo : number )=>number
+  montarBusqueda        : ( idUsuario : number, r : Router, autoSelect : boolean, canChangeUser : boolean, acuerdoTipo? : TTipoAcuerdo )=>void
 }
 
 export class Busqueda implements IBusqueda
 {
   rourterQ              : LocationQuery
-  acuerdo               : TTipoAcuerdo  
-  f                     : ICampos;
+  acuerdo               : TTipoAcuerdo 
+  usuarioId             : number
+  f                     : ICampos
   o                     : IOpciones
   usuarioIdInicio       : number
   haySiguientePagina    : boolean
   montadoOk             : boolean
+  puedeCambiarUser      : boolean
+  haceAutoSelect        : boolean  
+  router                : Router
 
   constructor()
   {
     this.acuerdo          = TIPO_ACUERDO.NULO
     this.montadoOk        = false
-    this.inicializarBusqueda()
+    this.initClass()
   }
 
-  inicializarBusqueda()
+  initClass()
   {    
     this.rourterQ         = {}
     this.usuarioIdInicio  = 0
@@ -202,10 +215,9 @@ export class Busqueda implements IBusqueda
     }   
   }
   
-  async iniciarOpciones( q : LocationQuery )
+  async iniciarOpciones()
   {
     this.o.opcionesOk                       = false
-    this.rourterQ                           = q
     this.o.origenes                         = await getOrigenesContactoDB()
     this.o.condicionesPago                  = await getCondicionesPagoDB()
     this.o.formasPago                       = await getFormasPagoDB()
@@ -218,15 +230,12 @@ export class Busqueda implements IBusqueda
     if(this.esOCProveedor)
       this.o.proveedores                    = await getProveedoresDB()
 
-    this.usuarioIdInicio                    = getQueryRouterNumber( this.rourterQ.usuario ) ?? 0
     this.o.opcionesOk                       = true
-    await this.copiarQueryACampos()
   }
 
-  async copiarQueryACampos( limpiar : "limpiar" | "" = "" )
+  async copiarQueryACampos()
   {
     this.f.copiando           = true
-    if(!!limpiar)             this.rourterQ = {}
     this.f.buscar             = getQueryRouterString    ( this.rourterQ .buscar       )
     this.f.contacto           = getQueryRouterString    ( this.rourterQ .contacto     )
     this.f.desde              = getQueryRouterDate      ( this.rourterQ .fechaDesde   )
@@ -259,35 +268,79 @@ export class Busqueda implements IBusqueda
     const municipioContId     = getQueryRouterNumber( this.rourterQ .municipioContacto ) 
     this.f.municipioContacto  = !!municipioContId ? await getMunicipioDB( municipioContId ) : new Municipio()
 
-    const usuarioId           = getQueryRouterNumber( this.rourterQ.usuario  )
-    this.f.usuario            = usuarioId > 0 ? await getUsuarioDB( usuarioId ) : new Usuario()
-
     const creadorlId          = getQueryRouterNumber( this.rourterQ.creador )
     this.f.creador            = creadorlId > 0 ? await getUsuarioDB( creadorlId ) : new Usuario()
-
+    await this.setUsuario()
     this.f.copiando           = false
   }
 
-  montarBusqueda( acuerdoTipo : TTipoAcuerdo = TIPO_ACUERDO.NULO )
+  async setUsuario()
   {
-    this.montadoOk          = false
-    const cambioTipo        = this.acuerdo != acuerdoTipo
+    if(!this.montadoOk) // Pasa cuando se monta
+    {
+      if( this.puedeCambiarUser )
+      {
+        if( !!this.usuarioIdInicio && !this.f.usuario.label ){
+          this.f.usuario        = await getUsuarioDB( this.usuarioIdInicio )
+        }
+        // else se asume que se hizo auto select y hay un usuario ya asignado 
+      }
+      else
+      {
+        if( this.usuarioId != this.usuarioIdInicio )
+          this.f.usuario        = await getUsuarioDB( this.usuarioId )
+      }
+    }
+    else // Solo pasa cuando se limpia
+    {
+      if(this.puedeCambiarUser)
+        this.f.usuario        = new Usuario()
+    }
+    
+  }
+
+  async montarBusqueda( idUsuario : number, r : Router, autoSelect : boolean, canChangeUser : boolean, acuerdoTipo : TTipoAcuerdo = TIPO_ACUERDO.NULO )
+  {
+    this.montadoOk            = false
+    this.haceAutoSelect       = autoSelect
+    this.puedeCambiarUser     = canChangeUser
+    this.usuarioId            = idUsuario
+    this.initClass()
+    this.router               = r
+    this.rourterQ             = this.router.currentRoute.value.query
+    this.usuarioIdInicio      = getQueryRouterNumber( this.rourterQ.usuario ) ?? 0
+    const cambioTipo          = this.acuerdo != acuerdoTipo
     if(cambioTipo)
-      this.acuerdo          = acuerdoTipo
+      this.acuerdo            = acuerdoTipo
 
-    this.inicializarBusqueda()
-
-    if(cambioTipo)
-      this.iniciarOpciones({})
-
+    await this.iniciarOpciones()
+    await this.copiarQueryACampos()
+    
     this.montadoOk          = true
   }
+
+  copiarQueryARourter()
+  {
+    this.router.replace({ query: { ...this.query }  })
+  }
+
+  async limpiarQueryDeRouter() : Promise< boolean >
+  {
+    if(!this.montadoOk) return false
+    this.rourterQ = {}
+    if(!this.camposVacios)
+      await this.copiarQueryACampos()
+    this.router.replace({ query: {} })
+
+    return true
+  }
+
 
   desmontarBusqueda()
   {
     this.montadoOk          = false
     this.acuerdo            = TIPO_ACUERDO.NULO
-    this.inicializarBusqueda()
+    this.initClass()
   }
 
   siguientePagina( largo : number ) : number
@@ -300,13 +353,32 @@ export class Busqueda implements IBusqueda
     return pagNext
   }
 
-  get puedeBuscar         () : boolean { return this.o.opcionesOk && !this.f.copiando         }
+  get camposVacios        () : boolean {    
+    for(const [key, value] of Object.entries( this.f ))
+    {
+      if(key == "copiando" || key == "resultadosXPage" || key == "pagina" ) continue
+
+      if( ( !!value && ( typeof value === "string" || typeof value === "boolean" || typeof value === "number" ) )
+          ||
+          ( Array.isArray(value) && !!value.length )
+          ||
+          ( typeof value === "object" && "label" in value && !!value.label  )
+      )
+      {
+        return false
+      } 
+    }
+
+    return true
+  }
+
+  get puedeBuscar         () : boolean { return this.o.opcionesOk && !this.f.copiando && !this.camposVacios }
   get queryVacia          () : boolean { return !Object.keys(this.query).length               }
-  get hayUsuarioInicio    () : boolean { return !!this.usuarioIdInicio                        }
   get esCotizacion        () : boolean { return this.acuerdo === TIPO_ACUERDO.COTIZACION_CLI  }
   get esPedido            () : boolean { return this.acuerdo === TIPO_ACUERDO.PEDIDO_CLI      }
   get esOCProveedor       () : boolean { return this.acuerdo === TIPO_ACUERDO.PEDIDO_PRO      }
   get esEntrega           () : boolean { return this.acuerdo === TIPO_ACUERDO.ENTREGA_CLI     }
+  get autoSelectUsuario   () : boolean { return this.haceAutoSelect && !this.usuarioIdInicio }
 
   get query() : IQuery
   {

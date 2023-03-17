@@ -311,7 +311,7 @@
                                             )
                                             ||
                                             (     acuerdo.value.esPedido
-                                              &&  !acuerdo.value.facturado
+                                              //&&  !acuerdo.value.facturado
                                               &&  !acuerdo.value.esEstadoNoValidado
                                               &&  !acuerdo.value.esEstadoAnulado
                                               &&  !acuerdo.value.esEstadoEntregado
