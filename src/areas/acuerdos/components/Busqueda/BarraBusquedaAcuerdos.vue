@@ -440,10 +440,11 @@
       query.tipo        = "busqueda"
       emit("buscar", query)
     }
-    else router.replace({ query: {} })
+    else limpiarBusqueda()
   }
 
   function limpiarBusqueda(){
+    router.replace({ query: {} })
     b.value.copiarQueryACampos( "limpiar" )
     emit("limpiar")
   }

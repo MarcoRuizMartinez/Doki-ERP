@@ -128,6 +128,7 @@ export interface        IBusqueda {
   esOCProveedor         : boolean
   esEntrega             : boolean
   puedeBuscar           : boolean
+  // * /////////////////  Metodos
   inicializarBusqueda   : ()=>void
   iniciarOpciones       : ( q : LocationQuery )=>void
   copiarQueryACampos    : ( limpiar? : "limpiar" | "" )=>void
@@ -269,8 +270,16 @@ export class Busqueda implements IBusqueda
 
   montarBusqueda( acuerdoTipo : TTipoAcuerdo = TIPO_ACUERDO.NULO )
   {
-    this.acuerdo            = acuerdoTipo
+    this.montadoOk          = false
+    const cambioTipo        = this.acuerdo != acuerdoTipo
+    if(cambioTipo)
+      this.acuerdo          = acuerdoTipo
+
     this.inicializarBusqueda()
+
+    if(cambioTipo)
+      this.iniciarOpciones({})
+
     this.montadoOk          = true
   }
 

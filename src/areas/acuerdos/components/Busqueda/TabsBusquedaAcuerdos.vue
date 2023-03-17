@@ -30,18 +30,18 @@
   const   { tabs                } = storeToRefs( useStoreApp() )
   const   { busqueda : b        } = storeToRefs( useStoreAcuerdo() )
 
-  watch(b, ()=> { if(b.value.inicioOk) checkAlertTabs() }, { deep: true } )
+  watch(b, ()=> { if(b.value.puedeBuscar) checkAlertTabs() }, { deep: true } )
   watch(()=>b.value.acuerdo, ()=>{ tabs.value = { activa : "tab_1", alerts: [ false, true ]} })
 
   function checkAlertTabs()
   {
-    tabs.value.alerts[0]  = ( !!b.value.f.tercero           || !!b.value.f.contacto           || fechaValida( b.value.f.desde ) || !!b.value.f.facturado.label  || !!b.value.f.municipioContacto.id ||
-                              !!b.value.f.estados.length    || !!b.value.f.condiciones.length || fechaValida( b.value.f.hasta ) || !!b.value.f.comercial        || !!b.value.f.creador              ||
+    tabs.value.alerts[0]  = ( !!b.value.f.buscar            || !!b.value.f.contacto           || fechaValida( b.value.f.desde ) || !!b.value.f.facturado.label  || !!b.value.f.municipioContacto.id ||
+                              !!b.value.f.estados.length    || !!b.value.f.condiciones.length || fechaValida( b.value.f.hasta ) || !!b.value.f.usuario          || !!b.value.f.creador              ||
                             ( !!b.value.f.entrega.length    && b.value.esEntrega )
                             )
     tabs.value.alerts[1]  = ( !!b.value.f.formaPago.length  || !!b.value.f.origenes.length    || !!b.value.f.conIva.label           || !!b.value.f.area.label           ||
                               !!b.value.f.municipio.id      || !!b.value.f.totalizado.label   || !!b.value.f.estadoAnticipo.length  || !!b.value.f.tipoAnticipo.length  ||
-                              !!b.value.f.tipoTercero.label || !!b.value.f.conOrdenes.label   || !!b.value.f.precioMinimo           || !!b.value.f.precioMaximo         || !!b.value.f.comision.label || 
+                              !!b.value.f.tipoTercero.label || !!b.value.f.conOrdenes.label   || !!b.value.f.valorMin               || !!b.value.f.valorMax             || !!b.value.f.incPago.label || 
                             ( !!b.value.f.entrega.length  && !b.value.esEntrega )
                             )
   }
