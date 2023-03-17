@@ -6,7 +6,7 @@
     icono                       ="mdi-cash-check"
     mensaje-sin-resultados      ="Sin anticipos o autorizacion"
     icono-sin-resultados        ="mdi-cash"
-    size-icon-carga             ="6.5em"    
+    size-icon-carga             ="6.5em"
     :padding-contenido          ="modo == 'normal' ? '0' : '12px' "
     :modo                       ="modo"
     >
@@ -37,8 +37,7 @@
         label                   ="Condiciones de pago"
         icon                    ="mdi-account-cash"
         class                   ="col-md-6 col-12"
-        defecto                 ="Anticipo 100%"
-        :options                ="condicPago.filter( c => c.esFacturable || !acuerdo.esCotizacion )"
+        :options                ="condicPago"
         :loading                ="loading.condicionPago"
         @select                 ="editarCondicionPago"
       />
@@ -53,7 +52,7 @@
         @select                 ="editarFormaPago"
       />
     </template>    
-    <q-table                    bordered dense flat grid hide-header hide-pagination
+    <q-table                    bordered dense flat grid hide-header hide-pagination hide-bottom
       class                     ="fit tabla-maco"
       row-key                   ="id"
       style                     ="min-height: 160px;"
@@ -69,9 +68,9 @@
           @click-anticipo       ="mostrarFormulario"
           @click-recibo         ="generarReciboCaja"
         />
-      </template>
+      </template>    
       <!-- //* ///////////////////////////////////////////////////// Vista Card de producto -->
-      <template                 #bottom>
+      <template                 #top>
         <div  class             ="text-center full-width text-1_1em">
           <span class           ="text-grey-10">
             Total anticipos:

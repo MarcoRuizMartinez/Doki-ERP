@@ -28,9 +28,9 @@ https://dolibarr.mublex.com/fichinter/card.php?
 */
 //* ///////////////////////////////////////// Core
 import {  date                              } from "quasar"
-import {  getCondicionesPagoDB,
-          getFormasPagoDB,
-          getMetodosEntregaDB,
+import {  getCondicionDePagoDB,
+          getFormaDePagoDB,
+          getMetodoDeEntregaDB,
           getOrigenContactoDB,
           getTiempoEntregaDB,
           getUsuarioDB,
@@ -678,9 +678,9 @@ https://dolibarr.mublex.com/fichinter/card.php?
     return anulado
   }
 
-  get estadoLabel(): string { return EstadosAcuerdos.estadoToName( this.tipo, this.estado)  }
-  get estadoColor(): string { return EstadosAcuerdos.estadoToColor( this.tipo, this.estado) }
-  get estadoIcono(): string { return EstadosAcuerdos.estadoIcono( this.tipo, this.estado)   }
+  get estadoLabel(): string { return EstadosAcuerdos.estadoToName ( this.tipo, this.estado )}
+  get estadoColor(): string { return EstadosAcuerdos.estadoToColor( this.tipo, this.estado )}
+  get estadoIcono(): string { return EstadosAcuerdos.estadoIcono  ( this.tipo, this.estado )}
   get comisiona()  : boolean{ return this.esPedido && this.esEstadoEntregado && this.facturado }
 
   get puedeCrearSubtotal():boolean{
@@ -1041,9 +1041,11 @@ https://dolibarr.mublex.com/fichinter/card.php?
       }
     }
 
-    acu.condicionPago     = await getCondicionesPagoDB  ( acu.condicionPagoId   )
-    acu.formaPago         = await getFormasPagoDB       ( acu.formaPagoId       )
-    acu.metodoEntrega     = await getMetodosEntregaDB   ( acu.metodoEntregaId   )
+    if(!!acu.condicionPagoId)
+      acu.condicionPago   = await getCondicionDePagoDB  ( acu.condicionPagoId   )
+    
+    acu.formaPago         = await getFormaDePagoDB       ( acu.formaPagoId       )
+    acu.metodoEntrega     = await getMetodoDeEntregaDB   ( acu.metodoEntregaId   )
     acu.origenContacto    = await getOrigenContactoDB   ( acu.origenContactoId  )
     acu.tiempoEntrega     = await getTiempoEntregaDB    ( acu.tiempoEntregaId   )
 
@@ -1079,7 +1081,7 @@ https://dolibarr.mublex.com/fichinter/card.php?
 
     const entre           = Object.assign( new Acuerdo( TIPO_ACUERDO.ENTREGA_CLI ), e ) as IAcuerdo
 
-    entre.metodoEntrega   = await getMetodosEntregaDB( entre.metodoEntregaId )
+    entre.metodoEntrega   = await getMetodoDeEntregaDB( entre.metodoEntregaId )
     return entre
   }
 

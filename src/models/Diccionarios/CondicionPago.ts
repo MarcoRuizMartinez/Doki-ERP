@@ -7,6 +7,7 @@ export interface ICondicionPago
   value               : number
   facturable          : number
   esFacturable        : boolean
+  esGarantia          : boolean
 }
 
 export class CondicionPago implements ICondicionPago
@@ -19,8 +20,8 @@ export class CondicionPago implements ICondicionPago
   
   constructor()
   {
-    this.id           = 0  
-    this.label        = ""  
+    this.id           = 0
+    this.label        = "⚠️Error - Sin condiciones"
     this.descripcion  = ""
     this.dias         = 0
     this.facturable   = 0 // Es boolean
@@ -28,4 +29,5 @@ export class CondicionPago implements ICondicionPago
 
   get value()       : number  { return this.id }
   get esFacturable(): boolean { return !!this.facturable ? Boolean( +this.facturable ) : false }
+  get esGarantia()  : boolean { return this.label.includes("arant") }
 }

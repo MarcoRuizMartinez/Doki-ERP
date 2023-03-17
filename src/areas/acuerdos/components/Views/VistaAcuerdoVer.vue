@@ -56,7 +56,7 @@
   <anticipos                minimizar scroll
     v-if                    ="acuerdo.esPedido"
     class                   ="col-md-4 col-12"
-    height-card-min         ="140px"
+    
   />
   <notas
     class                   ="col-md-4 col-12"

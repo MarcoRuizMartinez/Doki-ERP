@@ -1,7 +1,7 @@
 <template>
   <!-- //?* ////////////////////////////////////////////////////////////// Cargando... spinner --> 
   <q-inner-loading
-    :showing    ="modelValue"
+    :showing    ="cargando"
     :label      ="mensaje"
     >
     <q-spinner-dots
@@ -12,7 +12,7 @@
 </template>
 <script lang="ts" setup>
   const props   = defineProps({
-    modelValue: { required: true,           type: Boolean },
+    cargando:   { required: true,           type: Boolean },
     mensaje:    { default:  "Cargando...",  type: String  },
     size:       { default:  "5em",          type: String  },
   })

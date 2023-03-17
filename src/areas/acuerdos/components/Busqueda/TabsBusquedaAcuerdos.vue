@@ -9,7 +9,6 @@
       icon            ="mdi-magnify"
       :alert          ="!!tabs.alerts[0] ? 'red' : false"
       >
-      <!-- <Tooltip label  ="Validar"/> -->
     </q-tab>
     <q-tab
       label           ="Otros"
@@ -19,20 +18,31 @@
       >
       <Tooltip label  ="Mas opciones"/>
     </q-tab>
-    <!--
-    <q-tab
-      label           ="Filtros"
-      name            ="tab_3"
-      icon            ="mdi-filter"
-      >
-      <Tooltip label  ="Validar"/>
-    </q-tab>
-    -->
   </q-tabs>  
 </template>
 
 <script setup lang="ts">
+  import  { watch               } from "vue"
   import  { storeToRefs         } from 'pinia'                                            
   import  { useStoreApp         } from 'src/stores/app'
+  import  { useStoreAcuerdo     } from 'src/stores/acuerdo'  
+  import  { fechaValida         } from "src/useSimpleOk/useTools"  
   const   { tabs                } = storeToRefs( useStoreApp() )
+  const   { busqueda : b        } = storeToRefs( useStoreAcuerdo() )
+
+  watch(b, ()=> { if(b.value.inicioOk) checkAlertTabs() }, { deep: true } )
+  watch(()=>b.value.acuerdo, ()=>{ tabs.value = { activa : "tab_1", alerts: [ false, true ]} })
+
+  function checkAlertTabs()
+  {
+    tabs.value.alerts[0]  = ( !!b.value.f.tercero           || !!b.value.f.contacto           || fechaValida( b.value.f.desde ) || !!b.value.f.facturado.label  || !!b.value.f.municipioContacto.id ||
+                              !!b.value.f.estados.length    || !!b.value.f.condiciones.length || fechaValida( b.value.f.hasta ) || !!b.value.f.comercial        || !!b.value.f.creador              ||
+                            ( !!b.value.f.entrega.length    && b.value.esEntrega )
+                            )
+    tabs.value.alerts[1]  = ( !!b.value.f.formaPago.length  || !!b.value.f.origenes.length    || !!b.value.f.conIva.label           || !!b.value.f.area.label           ||
+                              !!b.value.f.municipio.id      || !!b.value.f.totalizado.label   || !!b.value.f.estadoAnticipo.length  || !!b.value.f.tipoAnticipo.length  ||
+                              !!b.value.f.tipoTercero.label || !!b.value.f.conOrdenes.label   || !!b.value.f.precioMinimo           || !!b.value.f.precioMaximo         || !!b.value.f.comision.label || 
+                            ( !!b.value.f.entrega.length  && !b.value.esEntrega )
+                            )
+  }
 </script>

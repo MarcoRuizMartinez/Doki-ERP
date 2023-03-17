@@ -178,6 +178,10 @@
       Columna.ColumnaPrecio ({ name: "precioFinal",   label: "$ Final",   sortable: false  }),
       Columna.ColumnaPrecio ({ name: "totalConDescu", label: "Total",     sortable: false,  clase: "text-bold"    }),      
     ]
+    
+    if(acuerdo.value.esPedido && acuerdo.value.condicionPago.esGarantia){
+      Columna.eliminarColums( ["precioBase", "descuentoX100", "precioFinal", "totalConDescu"], columnas.value )
+    }
 
     if(acuerdo.value.esEntrega)
     {
@@ -185,6 +189,8 @@
       columnas.value.push( new Columna({ name: "qtyDeTotal",  label: "Cantidad",  sortable: false } ) )
       columnas.value.push( new Columna({ name: "bodegaLabel", label: "Bodega",  sortable: false } ) )
     }
+
+
   }
 
 

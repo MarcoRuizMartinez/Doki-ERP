@@ -78,7 +78,7 @@
       v-model                 ="acuerdo.comercial2"
       :grupos                 ="[GRUPO_USUARIO.COMERCIALES]"
       :loading                ="loading.comercial"
-      :ids-negativos          ="[ acuerdo.comercial.id ]"
+      :ids-negativos          ="[ acuerdo.comercial?.id ?? 0 ]"
       :readonly               ="acuerdo.esEntrega"
       @select                 ="editarComercialApoyo"
       @clear                  ="borrarComercialApoyo"

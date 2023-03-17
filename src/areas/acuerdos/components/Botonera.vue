@@ -3,7 +3,7 @@
     <!-- //* ////////////////////////////////////////////////////////////////////  Lado izquierdo -->
     <div class                ="row gap-sm">
       <q-btn
-        v-if                  ="(acuerdo.esPedido || acuerdo.esCotizacion) && !acuerdo.esEstadoBoceto && ( acuerdo.usuarioEsDueño || usuario.esGerencia || usuario.esContable )"
+        v-if                  ="mostrarComisiones"
         v-bind                ="style.btnBaseMd"
         color                 ="primary"
         icon                  ="mdi-account-details"
@@ -335,6 +335,15 @@
                                       )
                                     )
                               )
+  const mostrarComisiones   = computed(()=> 
+    !acuerdo.value.condicionPago.esGarantia
+    &&
+    (acuerdo.value.esPedido || acuerdo.value.esCotizacion)
+    &&
+    !acuerdo.value.esEstadoBoceto
+    &&
+    ( acuerdo.value.usuarioEsDueño || usuario.value.esGerencia || usuario.value.esContable )
+  )
 
   const labelBtnPDFDefault  = computed(()=>   acuerdo.value.esCotizacion  ? 'Cotizacion' 
                                             : acuerdo.value.esPedido      ? ""

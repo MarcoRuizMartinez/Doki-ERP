@@ -73,11 +73,12 @@
             />
           </q-popup-edit> 
         </div>
+        <div>
         <!-- //* ////////////////////////////////////////////////////// Ref  -->
         <span
           v-if              ="!acuerdo.esNuevo"
-          class             ="fuente-delicada titulo-lg"
-          :class            ="esMobil ? 'q-ma-none q-pa-none' : 'q-mt-sm'"
+          class             ="fuente-delicada"
+          :class            ="[ esMobil ? 'q-ma-none q-pa-none' : 'q-mt-sm', acuerdo.facturado ? 'titulo-md' : 'titulo-lg' ]"
           >
           <a
             :href           ="acuerdo.urlDolibarr"
@@ -99,6 +100,13 @@
           </q-btn>
           -->
         </span>
+        <div
+          v-if              ="acuerdo.facturado"
+          class             ="text-1_2em text-right text-uppercase">
+          <q-icon name      ="mdi-shield-check" size="sm"/>
+          Facturado
+        </div>
+      </div>
       </div>
       <!-- //* ///////////////////////////////////////////////////////// Spiner cargando -->
       <div

@@ -45,7 +45,7 @@
       class               ="card-producto"
       :class              ="[ { 'select-producto' : selected   },
                               { 'cursor-pointer'  : producto.activo || selectedAll },
-                              { 'op40'           : !producto.activo  },
+                              { 'op40'            : !producto.activo  },
                             ]"
       @click              ="()=> { if( producto.activo || selectedAll ) emit('update:selected', !selected) }"
       v-touch-hold.mouse  ="()=> mouseLargo( producto )"

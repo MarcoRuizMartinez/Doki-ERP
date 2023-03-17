@@ -14,28 +14,28 @@
         >
         <!-- //* ///////////////////////////////////////////////// Busqueda general -->        
         <input-buscar           clearable hundido
-          v-model               ="busqueda.tercero"
+          v-model               ="b.f.tercero"
           label                 ="Búsqueda"
           class                 ="width200"
           icon                  ="mdi-account-search"
         />
         <!-- //* ///////////////////////////////////////////////// Busqueda contacto -->
         <input-buscar           clearable hundido
-          v-if                  ="!busqueda.esOCProveedor"
-          v-model               ="busqueda.contacto"
+          v-if                  ="!b.esOCProveedor"
+          v-model               ="b.f.contacto"
           label                 ="Contactos"
           icon                  ="mdi-target-account"
           class                 ="width200"
         />
         <!-- //* ///////////////////////////////////////////////// Proveedores -->
         <select-label-value     use-input hundido clearable flat bordered
-          v-if                  ="busqueda.esOCProveedor"
-          v-model               ="busqueda.proveedores"
+          v-if                  ="b.esOCProveedor"
+          v-model               ="b.f.proveedores"
           label                 ="Proveedores"
           icon                  ="mdi-storefront"
           class                 ="width220"
-          :options              ="proveedores"
-        />        
+          :options              ="b.o.proveedores"
+        />
       </fieldset-filtro>
       <!-- //* /////////////////////////////////////////////////// Fecha creacion -->
       <fieldset-filtro
@@ -44,17 +44,17 @@
         >
         <!-- //* ///////////////////////////////////////////////// Fecha desde -->
         <input-fecha            hundido no-futuro clearable
-          v-model               ="busqueda.desde"
+          v-model               ="b.f.desde"
           label                 ="Desde"
           class                 ="width160"
-          :hasta                ="busqueda.hasta"
+          :hasta                ="b.f.hasta"
         />
         <!-- //* ///////////////////////////////////////////////// Fecha hasta -->
         <input-fecha            hundido no-futuro clearable
-          v-model               ="busqueda.hasta"
+          v-model               ="b.f.hasta"
           label                 ="Hasta"
           class                 ="width160"
-          :desde                ="busqueda.desde"
+          :desde                ="b.f.desde"
         />
       </fieldset-filtro>
       <fieldset-filtro
@@ -63,66 +63,65 @@
         >
         <!-- //* ///////////////////////////////////////////////// Estado acuerdo -->
         <multi-label-value
-          v-model               ="busqueda.estados"
+          v-model               ="b.f.estados"
           label                 ="Estado"
           class                 ="width160"
           icon                  ="mdi-label"
-          :options              ="estados"
+          :options              ="b.o.estados"
         />
         <!-- //* ///////////////////////////////////////////////// Métodos de entrega -->
         <multi-label-value
-          v-model               ="busqueda.entrega"
+          v-model               ="b.f.entrega"
           label                 ="Entrega"
           class                 ="width160"
           icon                  ="mdi-truck-delivery"
-          :options              ="metodosEntrega"
+          :options              ="b.o.metodosEntrega"
         />
         <!-- //* ///////////////////////////////////////////////// Condiciones pago -->
         <multi-label-value
-          v-if                  ="!busqueda.esOCProveedor && !busqueda.esEntrega"
-          v-model               ="busqueda.condiciones"
+          v-if                  ="!b.esOCProveedor && !b.esEntrega"
+          v-model               ="b.f.condiciones"
           label                 ="Condiciones"
           class                 ="width160"
           icon                  ="mdi-account-cash"
-          :options              ="condicionesPago.filter( c => c.esFacturable || !busqueda.esCotizacion )"
+          :options              ="b.o.condicionesPago"
         />
         <!-- //* ///////////////////////////////////////////////// Comercial Acuerdo -->
         <select-usuario         hundido clearable
-          v-if                  ="!busqueda.esOCProveedor"
-          v-model               ="busqueda.comercial"
+          v-if                  ="!b.esOCProveedor"
+          v-model               ="b.f.comercial"
           class                 ="width160"
           label                 ="Asesor"
-          :autoselect           ="autoSelectComercial"
+          :autoselect           ="usuario.esComercial && !b.hayComercialInicio"  
           :area                 ="usuario.area"
           :grupos               =[GRUPO_USUARIO.COMERCIALES]
           :readonly             ="!permisos.acceso_total"
         />
         <!-- //* ///////////////////////////////////////////////// Creador -->
         <select-usuario         hundido clearable
-          v-model               ="busqueda.creador"
+          v-model               ="b.f.creador"
           class                 ="width160"
           label                 ="Creador"
-          :autoselect           ="autoSelectCreador"
           :area                 ="usuario.area"
-          :grupos               ="busqueda.esOCProveedor ? [GRUPO_USUARIO.PRODUCCION] : []"
+          :grupos               ="b.esOCProveedor ? [GRUPO_USUARIO.PRODUCCION] : []"
           :readonly             ="!permisos.acceso_total"
         />
         <!-- //* ///////////////////////////////////////////////// Municipio contacto -->
         <municipios             hundido
-          v-if                  ="busqueda.esEntrega"
-          v-model               ="busqueda.municipioContacto"
+          v-if                  ="b.esEntrega"
+          v-model               ="b.f.municipioContacto"
           class                 ="width160"
           label                 ="Lugar envió"
           tooltip               ="Municipio contacto"
         />        
         <!-- //* ///////////////////////////////////////////////// Pedido facturado -->
         <select-label-value     use-input hundido clearable flat bordered
-          v-if                  ="busqueda.esPedido"
-          v-model               ="busqueda.facturado"
+          v-if                  ="b.esPedido"
+          v-model               ="b.f.facturado"
           label                 ="Facturado"
           icon                  ="mdi-file-check"
           class                 ="width160"
-          :options              ="opcionesFacturado"
+          :options              ="BusquedaAcuerdo.listaFacturado"
         />
       </fieldset-filtro>
       <!-- //* /////////////////////////////////////////////////// Paginación -->
@@ -133,19 +132,19 @@
         <!-- //* ///////////////////////////////////////////////// Resultados por pagina -->
         <div>
           <q-btn-toggle         spread push unelevated round
-            v-model             ="busqueda.resultadosXPage"
+            v-model             ="b.f.resultadosXPage"
             color               ="white"
             text-color          ="grey-8"
             toggle-color        ="primary"
             :options            ="[{label: '10', value: 10}, {label: '25', value: 25},{label: '50', value: 50},{label: '100', value: 100}]"
-            @update:model-value ="busqueda.pagina = 1"
+            @update:model-value ="b.f.pagina = 1"
           />
           <Tooltip label        ="Resultados por pagina"/>
         </div>
         <!-- //* ///////////////////////////////////////////////// Pagina -->
         <div class              ="row justify-center full-width">
           <q-pagination         dense
-            v-model             ="busqueda.pagina"
+            v-model             ="b.f.pagina"
             :max                ="siguientePagina"
             :max-pages          ="3"
             :ellipses           ="false"
@@ -174,18 +173,19 @@
               icon                ="mdi-refresh"
               padding             ="xs"
               color               ="primary"
-              @click              ="buscar('btnRecargar')"
+              :disable            ="b.queryVacia"
+              @click              ="buscar"
               >
               <Tooltip label      ="Recargar"/>
             </q-btn>
           </div>
-          <!-- //* /////////////////////////////////////////////// Boton limpiar -->
+          <!-- //* /////////////////////////////////////////////// Boton limpiar 'btnRecargar -->
           <div>
             <q-btn                round push glossy
               icon                ="mdi-close"
               padding             ="xs"
               color               ="primary"
-              :disable            ="busqueda.busquedaVacia"
+              :disable            ="b.queryVacia"
               @click              ="limpiarBusqueda"
               >
               <Tooltip label      ="Limpiar búsqueda"/>
@@ -198,7 +198,7 @@
               icon                ="mdi-microsoft-excel"
               color               ="primary"
               padding             ="xs"
-              :disable            ="busqueda.busquedaVacia"
+              :disable            ="b.queryVacia"
               @click              ="emit('exportar')"
               >
               <Tooltip label      ="Descargar"/>
@@ -206,7 +206,7 @@
           </div>
         </div>
       </fieldset-filtro>
-      <inner-loading v-model      ="loading.carga"/>
+      <inner-loading :cargando    ="loading.carga || b.f.copiando"/>
     </q-tab-panel>
     <!-- //* ///////////////////////////////////////////////////// Tab 2 -->
     <q-tab-panel
@@ -214,141 +214,147 @@
       class                     ="row q-pa-none no-wrap scroll"
       >
       <fieldset-filtro
-        v-if                    ="!busqueda.esOCProveedor"
+        v-if                    ="!b.esOCProveedor"
         titulo                  ="Opciones"
         class-conenido          ="grilla-ribom"
         >
         <!-- //* ///////////////////////////////////////////////// Forma de pago -->
         <multi-label-value
-          v-if                  ="!busqueda.esEntrega"
-          v-model               ="busqueda.formaPago"
+          v-if                  ="!b.esEntrega"
+          v-model               ="b.f.formaPago"
           label                 ="Pago"
           class                 ="width160"
           icon                  ="mdi-cash-refund"
-          :options              ="formasPago"
+          :options              ="b.o.formasPago"
         />
         <!-- //* ///////////////////////////////////////////////// Métodos de entrega -->
         <multi-label-value
-          v-if                  ="!busqueda.esEntrega"
-          v-model               ="busqueda.entrega"
+          v-if                  ="!b.esEntrega"
+          v-model               ="b.f.entrega"
           label                 ="Entrega"
           class                 ="width160"
           icon                  ="mdi-truck-delivery"
-          :options              ="metodosEntrega"
+          :options              ="b.o.metodosEntrega"
         />
         <!-- //* ///////////////////////////////////////////////// Origen contacto -->
         <multi-label-value
-          v-if                  ="!busqueda.esEntrega"
-          v-model               ="busqueda.origenes"
+          v-if                  ="!b.esEntrega"
+          v-model               ="b.f.origenes"
           label                 ="Origen"
           class                 ="width160"
           icon                  ="mdi-source-branch"
-          :options              ="origenes"
+          :options              ="b.o.origenes"
         />
+<!--         <select-origenes
+          v-if                  ="!b.esEntrega"
+          ref                   ="comOrigenes"
+          v-model               ="b.origenes"
+          class                 ="width160"
+        /> -->
         <!-- //* ///////////////////////////////////////////////// Con IVA o sin IVA -->
         <select-label-value     use-input hundido clearable flat bordered
-          v-if                  ="busqueda.esCotizacion"
-          v-model               ="busqueda.conIva"
+          v-if                  ="b.esCotizacion"
+          v-model               ="b.f.conIva"
           label                 ="IVA"
           icon                  ="mdi-bank"
           class                 ="width160"
-          :options              ="opcionesIVA"
+          :options              ="BusquedaAcuerdo.listaIVA"
         />
         <!-- //* ///////////////////////////////////////////////// Con total y sin total -->
         <select-label-value     use-input hundido clearable flat bordered
-          v-if                  ="busqueda.esCotizacion"
-          v-model               ="busqueda.totalizado"
+          v-if                  ="b.esCotizacion"
+          v-model               ="b.f.totalizado"
           label                 ="Totalizar"
           icon                  ="mdi-counter"
           class                 ="width160"
-          :options              ="opcionesTotales"
+          :options              ="BusquedaAcuerdo.listaTotales"
         />
         <!-- //* ///////////////////////////////////////////////// Área o departamento -->
         <select-label-value     use-input hundido clearable flat bordered
-          v-model               ="busqueda.area"
+          v-model               ="b.f.area"
           label                 ="Área"
           icon                  ="mdi-google-circles-extended"
           class                 ="width160"
-          :options              ="Areas"
+          :options              ="BusquedaAcuerdo.listaAreas"
         />
         <!-- //* ///////////////////////////////////////////////// Municipio -->
         <municipios             hundido
-          v-model               ="busqueda.municipio"
+          v-model               ="b.f.municipio"
           class                 ="width160"
           tooltip               ="Municipio tercero"
         />
         <!-- //* ///////////////////////////////////////////////// Tercero interno o externo -->
         <select-label-value     use-input hundido clearable flat bordered
-          v-model               ="busqueda.tipoTercero"
+          v-model               ="b.f.tipoTercero"
           label                 ="Tipo tercero"
           icon                  ="mdi-circle-multiple"
           class                 ="width160"
-          :options              ="opcionesTerceroTipo"
+          :options              ="BusquedaAcuerdo.listaTerceroTipo"
         />    
         <!-- //* ///////////////////////////////////////////////// Forma de pago -->
         <!-- //* ///////////////////////////////////////////////// Estado Anticipo -->
         <multi-label-value
-          v-if                  ="busqueda.esPedido"
-          v-model               ="busqueda.estadoAnticipo"
+          v-if                  ="b.esPedido"
+          v-model               ="b.f.estadoAnticipo"
           label                 ="Estado anticipo"
           icon                  ="mdi-cash-check"
           class                 ="width160"
-          :options              ="Anticipo.estados"
+          :options              ="BusquedaAcuerdo.listaAnticipoEstados"
         />
         <!-- //* ///////////////////////////////////////////////// Estado Anticipo -->
         <multi-label-value
-          v-if                  ="busqueda.esPedido"
-          v-model               ="busqueda.tipoAnticipo"
+          v-if                  ="b.esPedido"
+          v-model               ="b.f.tipoAnticipo"
           label                 ="Tipo anticipo"
           icon                  ="mdi-cash"
           class                 ="width160"
-          :options              ="Anticipo.tipos"
+          :options              ="BusquedaAcuerdo.listaAnticipoTipos"
         />
         <!-- //* ///////////////////////////////////////////////// Con pedidos a proveedor -->
         <select-label-value     use-input hundido clearable flat bordered
-          v-if                  ="busqueda.esPedido"
-          v-model               ="busqueda.conOrdenes"
+          v-if                  ="b.esPedido"
+          v-model               ="b.f.conOrdenes"
           label                 ="OC proveedor"
           icon                  ="mdi-factory"
           class                 ="width160"
-          :options              ="opcionesOrdenesProv"
+          :options              ="BusquedaAcuerdo.listaOrdenesProv"
         />         
         <!-- //* ///////////////////////////////////////////////// Comision -->
         <select-label-value     use-input hundido clearable flat bordered
-          v-if                  ="busqueda.esPedido"
-          v-model               ="busqueda.comision"
+          v-if                  ="b.esPedido"
+          v-model               ="b.f.comision"
           label                 ="Comisión"
           icon                  ="mdi-cash-check"
           class                 ="width160"
-          :options              ="Incentivo.estadosPago"
+          :options              ="BusquedaAcuerdo.listaEstadosPago"
         />           
       </fieldset-filtro>
       <fieldset-filtro
-        v-if                    ="!busqueda.esEntrega"
+        v-if                    ="!b.esEntrega"
         titulo                  ="Subtotal"
         class-conenido          ="column q-gutter-xs"
         >
         <!-- //* ///////////////////////////////////////////////// Precio Minimo -->
         <input-number           hundido clearable
-          v-model               ="busqueda.precioMinimo"
+          v-model               ="b.f.precioMinimo"
           label                 ="Mínimo"
           icon                  ="mdi-currency-usd"
           class                 ="width140"
           :minimo               ="0"
-          :maximo               ="!!busqueda.precioMaximo ? busqueda.precioMaximo : undefined"
+          :maximo               ="!!b.f.precioMaximo ? b.f.precioMaximo : undefined"
         />
         <!-- //* ///////////////////////////////////////////////// Precio Maximo -->
         <input-number           hundido clearable
-          v-model               ="busqueda.precioMaximo"
+          v-model               ="b.f.precioMaximo"
           label                 ="Máximo"
           icon                  ="mdi-currency-usd"
           class                 ="width140"
-          :minimo               ="!!busqueda.precioMinimo ? busqueda.precioMinimo : undefined"
+          :minimo               ="!!b.f.precioMinimo ? b.f.precioMinimo : undefined"
           :maximo               ="999_999_999"
         />
       </fieldset-filtro>
       <fieldset-filtro
-        v-if                    ="!busqueda.esEntrega"
+        v-if                    ="!b.esEntrega"
         titulo                  ="Totales"
         class-conenido          ="column q-gutter-xs"
         >
@@ -360,7 +366,7 @@
                 {{ formatoPrecio( sumaAcuerdosSubtotal ) }}
               </td>
             </tr>
-            <tr v-if            ="busqueda.esPedido">
+            <tr v-if            ="b.esPedido">
               <td>Sin fletes:</td>
               <td class         ="text-bold fuente-mono">
                 {{ formatoPrecio( sumaAcuerdosSubtotalLimpio ) }}
@@ -374,7 +380,7 @@
             </tr>
           </tbody>
         </table>
-        <inner-loading v-model  ="loading.carga"/>
+        <inner-loading :cargando="loading.carga"/>
       </fieldset-filtro>
     </q-tab-panel>
   </q-tab-panels>
@@ -383,7 +389,7 @@
   // * /////////////////////////////////////////////////////////////////////// Core
   import {  watch,
             computed,
-            onMounted           } from "vue"
+                                } from "vue"
   import {  useRouter           } from "vue-router"
   // * /////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs         } from 'pinia'
@@ -391,33 +397,11 @@
   import {  useStoreUser        } from 'src/stores/user'
   import {  useStoreAcuerdo     } from 'src/stores/acuerdo'
   // * /////////////////////////////////////////////////////////////////////// Componibles
-  import {  dexieOrigenesContacto,
-            dexieCondicionesPago,
-            dexieFormasPago,
-            dexieMetodosEntrega,
-            dexieProveedores,
-            getMunicipioDB
-                                } from "src/services/useDexie"
-  import {  fechaValida,
-            formatoPrecio,
-            getQueryRouterDate,
-            getQueryRouterString,
-            getQueryRouterNumber,
-            getQueryRouterLabelValue,
-            getQueryRouterLabelValueArray,
-                                } from "src/useSimpleOk/useTools"
-  // * /////////////////////////////////////////////////////////////////////// Modelos
-  import {  Areas               } from "src/models/TiposVarios"
+  import {  formatoPrecio       } from "src/useSimpleOk/useTools"
+  // * ///////////////////////////////////////////////.//////////////////////// Modelos  
   import {  IQueryAcuerdo,
-            IBusquedaAcuerdo    } from "src/areas/acuerdos/models/BusquedaAcuerdos"
-  import {  estadosCtz,
-            estadosPed,
-            estadosOC,
-            estadosEnt
-                                } from "src/areas/acuerdos/models/ConstantesAcuerdos"
+            BusquedaAcuerdo     } from "src/areas/acuerdos/models/BusquedaAcuerdos"
   import {  GRUPO_USUARIO       } from "src/models/TiposVarios"
-  import {  Anticipo            } from "src/areas/acuerdos/models/Anticipo"
-  import {  Incentivo           } from "src/areas/nomina//models/Incentivo"
   // * /////////////////////////////////////////////////////////////////////// Componentes
   import    fieldsetFiltro        from "components/utilidades/Fieldset.vue"
   import    inputNumber           from "components/utilidades/input/InputFormNumber.vue"
@@ -429,39 +413,58 @@
   import    inputBuscar           from "src/components/utilidades/input/InputSimple.vue"
   import    innerLoading          from "src/components/utilidades/InnerLoading.vue"
 
-  const router                    = useRouter()
-  let queryURL                    = router.currentRoute.value.query
-  watch( ()=> router.currentRoute.value.query, (q) => {
-    queryURL                      = q
-  })
-
-  const origenes                  = dexieOrigenesContacto()
-  const condicionesPago           = dexieCondicionesPago()
-  const formasPago                = dexieFormasPago()
-  const metodosEntrega            = dexieMetodosEntrega()
-  const proveedores               = dexieProveedores()
-
+  // * /////////////////////////////////////////////////////////////////////// Importaciones 
   const { usuario, permisos     } = storeToRefs( useStoreUser() )
-  const { busqueda, 
+  const { busqueda : b, 
           acuerdos,
           loading               } = storeToRefs( useStoreAcuerdo() )
   const { tabs                  } = storeToRefs( useStoreApp() )
+
+  // * /////////////////////////////////////////////////////////////////////// Router
+  const router                    = useRouter()
+  watch(  ()=> b.value.acuerdo,
+          ()=> b.value.iniciarOpciones( router.currentRoute.value.query )
+        )
+
+  const emit = defineEmits<{
+    (e: 'buscar',   value: IQueryAcuerdo  ): void
+    (e: 'limpiar',                        ): void
+    (e: 'exportar',                       ): void    
+  }>()
+
+  watch(()=>b.value.f, ()=>
+    {
+      //console.log(">>>>>>>>b.value.f,: ", b.value.f.copiando, !b.value.copiandoACampos);
+      //if(b.value.f.camposOk && !b.value.copiandoACampos) buscar()      
+
+      console.log("puedeBuscar. ", b.value.puedeBuscar, b.value.o.opcionesOk, !b.value.f.copiando);
+      if(b.value.puedeBuscar) buscar()
+    },
+    { deep: true }
+  )
+
+  function buscar()
+  {
+    if(!b.value.queryVacia)
+    {
+      const query       = b.value.query
+      router.replace({ query: { ...query }  })
+      query.acuerdo     = b.value.acuerdo
+      query.tipo        = "busqueda"
+      emit("buscar", query)
+    }
+    else router.replace({ query: {} })
+  }
+
+  function limpiarBusqueda(){
+    b.value.copiarQueryACampos( "limpiar" )
+    emit("limpiar")
+  }
   
-  const opcionesFacturado         = [{value:0, label:'No facturado'},   {value:1, label:'Facturado'   }]
-  const opcionesTotales           = [{value:0, label:'Sin totalizar'},  {value:1, label:'Totalizado'  }]
-  const opcionesIVA               = [{value:0, label:'Sin IVA'},        {value:1, label:'Con IVA'     }]
-  const opcionesTerceroTipo       = [{value:0, label:'Externo'},        {value:1, label:'Interno'     }]
-  const opcionesOrdenesProv       = [{value:0, label:'Sin ordenes'},    {value:1, label:'Con ordenes' }]
-  const estados                   = computed(()=>   busqueda.value.esCotizacion ? estadosCtz.filter(e => e.value >= -1)
-                                                  : busqueda.value.esPedido     ? estadosPed.filter(e => e.value >= -1)
-                                                  : busqueda.value.esOCProveedor? estadosOC .filter(e => e.value >= -1)
-                                                  : busqueda.value.esEntrega    ? estadosEnt.filter(e => e.value >= -1)
-                                                  : [] )
-  
-  const autoSelectComercial       = computed(()=>                                 Object.keys(queryURL).length === 0 ? true : getQueryRouterNumber( queryURL.comercial  ) ?? false )
-  const autoSelectCreador         = computed(()=> busqueda.value.esOCProveedor && Object.keys(queryURL).length === 0 ? true : getQueryRouterNumber( queryURL.creador    ) ?? false )
-  const siguientePagina           = computed(()=> busqueda.value.pagina + (acuerdos.value.length >= busqueda.value.resultadosXPage ? 1 : 0) )
-  const haySiguientePagina        = computed(()=> busqueda.value.pagina !== siguientePagina.value )
+
+  // * /////////////////////////////////////////////////////////////////////// Computed
+  const siguientePagina           = computed(()=> b.value.f.pagina + (acuerdos.value.length >= b.value.f.resultadosXPage ? 1 : 0) )
+  const haySiguientePagina        = computed(()=> b.value.f.pagina !== siguientePagina.value )
   const sumaAcuerdosSubtotal      = computed(()=> { 
     let suma                      = 0
     if(!!acuerdos.value && !!acuerdos.value.length)
@@ -479,111 +482,5 @@
     if(!!acuerdos.value && !!acuerdos.value.length)
       suma                        = acuerdos.value.map( a => a.totalConIva ).reduce((acu, now) => (acu ?? 0) + now)
     return suma
-  })  
-
-  let   copiaQ                    = ""
-  let   bloqueoInicio             = true
-
-  onMounted(()=>{
-    loading.value.carga           = true
-    tabs.value                    = { activa : "tab_1", alerts: [ false, true]}
   })
-
-  watch([estados, origenes, condicionesPago, formasPago], ([es,or,co,fp])=>{
-    // Estan cargados las opciones, para que estas se puedan asignar desde la query de la URL
-    if(!!es.length && !!or.length && !!co.length && !!fp.length ){
-      asignarQueryRouterACampos()
-    }
-  })
-
-  async function asignarQueryRouterACampos()
-  {
-    busqueda.value.tercero        = getQueryRouterString    ( queryURL.tercero      )
-    busqueda.value.contacto       = getQueryRouterString    ( queryURL.contacto     )
-    busqueda.value.desde          = getQueryRouterDate      ( queryURL.fechaDesde   )
-    busqueda.value.hasta          = getQueryRouterDate      ( queryURL.fechaHasta   )
-    busqueda.value.precioMinimo   = getQueryRouterNumber    ( queryURL.subtotalMin  )
-    busqueda.value.precioMaximo   = getQueryRouterNumber    ( queryURL.subtotalMax  )
-    if(!!queryURL.limite)
-      busqueda.value.resultadosXPage= getQueryRouterNumber    ( queryURL.limite       )
-    //busqueda.value.creador        = getQueryRouterNumber    ( queryURL.creador      )
-    busqueda.value.area           = getQueryRouterLabelValue( queryURL.area,                  Areas                 )
-    busqueda.value.facturado      = getQueryRouterLabelValue( queryURL.facturado,             opcionesFacturado     )
-    busqueda.value.comision       = getQueryRouterLabelValue( queryURL.comision,              Incentivo.estadosPago )
-    busqueda.value.conIva         = getQueryRouterLabelValue( queryURL.conIva,                opcionesIVA           )
-    busqueda.value.totalizado     = getQueryRouterLabelValue( queryURL.conTotal,              opcionesTotales       )
-    busqueda.value.tipoTercero    = getQueryRouterLabelValue( queryURL.interno,               opcionesTerceroTipo   )
-    busqueda.value.conOrdenes     = getQueryRouterLabelValue( queryURL.conOrdenes,            opcionesOrdenesProv   )
-    busqueda.value.estadoAnticipo = getQueryRouterLabelValueArray ( queryURL.estadoAnticipo,  Anticipo.estados      )
-    busqueda.value.tipoAnticipo   = getQueryRouterLabelValueArray ( queryURL.tipoAnticipo,    Anticipo.tipos        )
-    busqueda.value.estados        = getQueryRouterLabelValueArray ( queryURL.estados,         estados.value         )    
-    busqueda.value.formaPago      = getQueryRouterLabelValueArray ( queryURL.formaPago,       formasPago.value      )
-    busqueda.value.entrega        = getQueryRouterLabelValueArray ( queryURL.entrega,         metodosEntrega.value  )
-    busqueda.value.condiciones    = getQueryRouterLabelValueArray ( queryURL.condiciones,     condicionesPago.value )
-    busqueda.value.origenes       = getQueryRouterLabelValueArray ( queryURL.origenes,        origenes.value        )
-    if(!!queryURL.municipio)
-      busqueda.value.municipio          = await getMunicipioDB( Array.isArray(queryURL.municipio)         ? 0 : +queryURL.municipio ) 
-    if(!!queryURL.municipioContacto)
-      busqueda.value.municipioContacto  = await getMunicipioDB( Array.isArray(queryURL.municipioContacto) ? 0 : +queryURL.municipioContacto ) 
-        
-    bloqueoInicio                 = false
-    loading.value.carga           = false
-  }
-
-  const emit = defineEmits<{
-    (e: 'buscar',   value: IQueryAcuerdo  ): void
-    (e: 'limpiar',                        ): void
-    (e: 'exportar',                       ): void    
-  }>()
-
-  watch(busqueda, (b)=>
-    {
-      if(bloqueoInicio) return
-      checkAlertTabs(b)
-      //if( !permisos.value.acceso_total )
-        //query.idComercial         = usuario.value.id
-      buscar()
-    },
-    { deep: true }
-  )
-
-  function checkAlertTabs( b : IBusquedaAcuerdo ){
-    tabs.value.alerts[0]  = ( !!b.tercero           || !!b.contacto           || fechaValida( b.desde ) || fechaValida( b.hasta ) || !!b.municipioContacto.id ||
-                              !!b.estados.length    || !!b.condiciones.length || !!b.facturado.label    || !!b.comercial          || !!b.creador                ||
-                              ( !!b.entrega.length  && busqueda.value.esEntrega)
-                            )
-    tabs.value.alerts[1]  = ( !!b.formaPago.length  || !!b.origenes.length    || !!b.conIva.label           || !!b.area.label           ||
-                              !!b.municipio.id      || !!b.totalizado.label   || !!b.estadoAnticipo.length  || !!b.tipoAnticipo.length  ||
-                              !!b.tipoTercero.label || !!b.conOrdenes.label   || !!b.precioMinimo           || !!b.precioMaximo         || !!b.comision.label || 
-                              ( !!b.entrega.length  && !busqueda.value.esEntrega )
-                            )
-  }
-
-
-  function buscar( origen : string = "" )
-  {
-    const query         = busqueda.value.query
-    const qString       = JSON.stringify(query)
-    if(copiaQ           !== qString)
-      copiaQ            = qString
-    else if(origen      === "")
-      return
-
-    if(!!Object.keys(query).length)
-    {
-      router.replace({ query: {...query }  })
-      query.acuerdo     = busqueda.value.acuerdo
-      query.tipo        = "busqueda"
-      emit("buscar", query)
-    }
-    else{
-      router.replace({ query: {} })
-    }
-  }
-
-  function limpiarBusqueda(){
-    queryURL = {}
-    asignarQueryRouterACampos()
-    emit("limpiar")
-  }
 </script>

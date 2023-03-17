@@ -39,7 +39,7 @@ export const useStoreAcuerdo = defineStore('acuerdo', {
     lineaElegida      : new LineaAcuerdo(),
     modales           : ModalesDefault,
     acuerdos          : [],
-    busqueda          : new BusquedaAcuerdo( TIPO_ACUERDO.NULO ),
+    busqueda          : new BusquedaAcuerdo(),
     anticipo          : new Anticipo(),
     nivelesComision   : new NivelesComision(),
   }),

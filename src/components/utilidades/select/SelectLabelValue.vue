@@ -105,7 +105,6 @@
   watch( options,   (n, o)=>
   {
     if(!!n.length && n.length === o.length) return
-
     copiarOptionsToOpciones()
     setDefecto()
   })
@@ -156,10 +155,13 @@
 
   function setDefecto()
   {
-    if(!defecto.value || (!!modelo.value && !!modelo.value.label )) return
+    if(!options.value.length || !defecto.value || (!!modelValue.value && !!modelValue.value.value )) 
+      return
+    
     const opcionDefecto   = options.value.find( i => i.label == defecto.value)
-    if(!!opcionDefecto)
+    if(!!opcionDefecto){
       modelo.value        = opcionDefecto
+    }
   }
 
   function seleccionarEntreOpciones( value : any ) : ILabelValue {

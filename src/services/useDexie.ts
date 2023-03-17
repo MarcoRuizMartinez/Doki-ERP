@@ -454,7 +454,7 @@ export async function getUsuarioDB( id : number ) : Promise < IUsuario >
   )
 }
 
-export async function getCondicionesPagoDB( id : number ) : Promise < ICondicionPago >
+export async function getCondicionDePagoDB( id : number ) : Promise < ICondicionPago >
 {
   return db.transaction('r', db[ TABLAS.CONDICION_PAGO ], async () =>
     {
@@ -467,7 +467,14 @@ export async function getCondicionesPagoDB( id : number ) : Promise < ICondicion
   )
 }
 
-export async function getFormasPagoDB( id : number ) : Promise < IFormaPago >
+
+export async function getCondicionesPagoDB() : Promise < ICondicionPago[] >
+{
+  return db.transaction('r', db[ TABLAS.CONDICION_PAGO ], async () => await db[ TABLAS.CONDICION_PAGO ].toArray()
+  )
+}
+
+export async function getFormaDePagoDB( id : number ) : Promise < IFormaPago >
 {
   return db.transaction('r', db[ TABLAS.FORMA_PAGO ], async () =>
     {
@@ -480,7 +487,13 @@ export async function getFormasPagoDB( id : number ) : Promise < IFormaPago >
   )
 }
 
-export async function getMetodosEntregaDB( id : number ) : Promise < IMetodoEntrega >
+export async function getFormasPagoDB() : Promise < IFormaPago[] >
+{
+  return db.transaction('r', db[ TABLAS.FORMA_PAGO ], async () => await db[ TABLAS.FORMA_PAGO ].toArray() )
+}
+
+
+export async function getMetodoDeEntregaDB( id : number ) : Promise < IMetodoEntrega >
 {
   return db.transaction('r', db[ TABLAS.METODO_ENTREGA ], async () =>
     {
@@ -491,6 +504,13 @@ export async function getMetodosEntregaDB( id : number ) : Promise < IMetodoEntr
         return new MetodoEntrega()
     }
   )
+}
+
+
+
+export async function getMetodosEntregaDB() : Promise < IMetodoEntrega[] >
+{
+  return db.transaction('r', db[ TABLAS.METODO_ENTREGA ], async () => await db[ TABLAS.METODO_ENTREGA ].toArray())
 }
 
 export async function getOrigenContactoDB( id : number ) : Promise < IOrigenContacto >
@@ -505,6 +525,12 @@ export async function getOrigenContactoDB( id : number ) : Promise < IOrigenCont
     }
   )
 }
+
+export async function getOrigenesContactoDB() : Promise < IOrigenContacto[] >
+{
+  return db.transaction('r', db[ TABLAS.ORIGEN_CONTACTO ], async () => await db[ TABLAS.ORIGEN_CONTACTO ].toArray() )
+}
+
 
 export async function getUnidadDB( id : number ) : Promise < IUnidad >
 {
@@ -556,6 +582,11 @@ export async function getProveedorDB( id : number ) : Promise < IProveedor >
         return new Proveedor()
     }
   )
+}
+
+export async function getProveedoresDB() : Promise < IProveedor[] >
+{
+  return db.transaction('r', db[ TABLAS.PROVEEDORES ], async () => await db[ TABLAS.PROVEEDORES ].toArray() )
 }
 
 export async function getCuentasDineroDB( id : number ) : Promise < ICuentaDinero >

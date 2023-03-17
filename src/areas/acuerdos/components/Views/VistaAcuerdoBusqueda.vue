@@ -239,14 +239,14 @@
   {
     useTitle(`${Acuerdo.getEmojiAcuerdo(tipo.value)}🔍 Buscar ${Acuerdo.getTipoAcuerdoPlural(tipo.value)}`)
     acuerdos.value                = []
-    busqueda.value                = new BusquedaAcuerdo( tipo.value )
+    busqueda.value.montarBusqueda( tipo.value )
     modo.value                    = "esperando-busqueda"
     crearColumnas()
   }
 
   onUnmounted(()=>{
     acuerdos.value                = []
-    busqueda.value                = new BusquedaAcuerdo( tipo.value )
+    busqueda.value.desmontarBusqueda()
   })  
 
   async function buscar( query : IQueryAcuerdo )

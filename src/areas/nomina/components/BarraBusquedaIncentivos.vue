@@ -149,7 +149,7 @@
         </div>
       </div>
     </fieldset-filtro>
-    <inner-loading v-model      ="loading.carga"/>
+    <inner-loading :cargando    ="loading.carga"/>
   </div>
 </template>
 <script lang="ts" setup>
