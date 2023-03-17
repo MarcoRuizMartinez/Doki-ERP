@@ -118,6 +118,7 @@ export interface        IBusqueda {
   o                     : IOpciones     // o de opciones
   usuarioIdInicio       : number
   haySiguientePagina    : boolean
+  montadoOk             : boolean
 
   // * /////////////////  Geters
   queryVacia            : boolean
@@ -143,10 +144,12 @@ export class Busqueda implements IBusqueda
   o                     : IOpciones
   usuarioIdInicio       : number
   haySiguientePagina    : boolean
+  montadoOk             : boolean
 
   constructor()
   {
     this.acuerdo          = TIPO_ACUERDO.NULO
+    this.montadoOk        = false
     this.inicializarBusqueda()
   }
 
@@ -268,10 +271,12 @@ export class Busqueda implements IBusqueda
   {
     this.acuerdo            = acuerdoTipo
     this.inicializarBusqueda()
+    this.montadoOk          = true
   }
 
   desmontarBusqueda()
   {
+    this.montadoOk          = false
     this.acuerdo            = TIPO_ACUERDO.NULO
     this.inicializarBusqueda()
   }
@@ -313,7 +318,7 @@ export class Busqueda implements IBusqueda
     if(!!this.f.facturado.label)        q.facturado         = this.f.facturado.value
     if(!!this.f.incPago.label)          q.incPago           = this.f.incPago.value
     if(!!this.f.incEstado.label)        q.incEstado         = this.f.incEstado.value
-    if(!!this.f.incRazon.label)         q.incRazon          = this.f.incRazon.value
+    if(!!this.f.incRazon.label)         q.incRazon          = this.f.incRazon.value 
     if(!!this.f.incOrigen.label)        q.incOrigen         = this.f.incOrigen.value   
     if(!!this.f.conIva.label)           q.conIva            = this.f.conIva.value
     if(!!this.f.totalizado.label)       q.conTotal          = this.f.totalizado.value
@@ -327,7 +332,7 @@ export class Busqueda implements IBusqueda
       q.creador                                           = this.f.creador.id
     if(this.esOCProveedor && !!this.f.proveedores.label)
       q.proveedorId                                       = this.f.proveedores.value
-
+    // proveedores
     if(this.f.desde instanceof Date && !isNaN(this.f.desde.valueOf()))  q.fechaDesde  = this.f.desde.toLocaleDateString('sv-SE')
     if(this.f.hasta instanceof Date && !isNaN(this.f.hasta.valueOf()))  q.fechaHasta  = this.f.hasta.toLocaleDateString('sv-SE')
 
@@ -335,10 +340,6 @@ export class Busqueda implements IBusqueda
       q.limite                    = this.f.resultadosXPage
       q.offset                    = q.limite * (this.f.pagina - 1)
     }
-
-    // proveedores
-
-
     return q
   }
 

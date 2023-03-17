@@ -80,7 +80,7 @@
   import {  Columna, IColumna   } from "src/models/Tabla"
   import {  ModosVentana,
             ALMACEN_LOCAL       } from "src/models/TiposVarios"  
-  import {  IQuery, Busqueda    } from "src/models/Busqueda"
+  import {  IQuery              } from "src/models/Busqueda"
   import {  IIncentivo          } from "src/areas/nomina/models/Incentivo"  
   
   // * /////////////////////////////////////////////////////////////////////// Componentes
@@ -130,7 +130,7 @@
   onMounted(iniciar)  
 
   function iniciar()
-  {
+  {    
     incentivos.value              = []
     b.value.montarBusqueda()
     modo.value                    = "esperando-busqueda"

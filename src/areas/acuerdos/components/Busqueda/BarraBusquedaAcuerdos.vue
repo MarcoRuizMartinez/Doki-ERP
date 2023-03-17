@@ -415,9 +415,7 @@
 
   // * /////////////////////////////////////////////////////////////////////// Router
   const router                    = useRouter()
-  watch(  ()=> b.value.acuerdo,
-          ()=> b.value.iniciarOpciones( router.currentRoute.value.query )
-        )
+  watch(()=>b.value.montadoOk, (ok)=> { if(ok) b.value.iniciarOpciones( router.currentRoute.value.query ) } )
 
   const emit = defineEmits<{
     (e: 'buscar',   value: IQuery ): void

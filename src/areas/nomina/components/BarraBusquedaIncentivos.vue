@@ -184,8 +184,8 @@
 
   // * /////////////////////////////////////////////////////////////////////// Router
   const router                    = useRouter()
-  onMounted(()=> { b.value.iniciarOpciones( router.currentRoute.value.query ) } )
-
+  watch(()=>b.value.montadoOk, (ok)=> { if(ok) b.value.iniciarOpciones( router.currentRoute.value.query ) } )
+    
   const emit = defineEmits<{
     (e: 'buscar',   value: IQuery ): void
     (e: 'limpiar',                ): void
@@ -205,6 +205,7 @@
     {
       const query       = b.value.query
       router.replace({ query: { ...query }  })
+      query.acuerdo     = b.value.acuerdo
       query.tipo        = "busqueda"
       emit("buscar", query)
     }
