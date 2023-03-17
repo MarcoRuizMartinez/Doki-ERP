@@ -131,7 +131,7 @@ export function useControlAcuerdo()
       await buscarProyecto        ( acuerdo.value.proyectoId  )
       await buscarAcuerdoEnlazados()
       if( acuerdo.value.comisiona )
-        acuerdo.value.incentivo = await buscarIncentivos( { origenId: acuerdo.value.id, origenTipo: INCENTIVO_ORIGEN.PEDIDO_CLI } ) as IIncentivo
+        acuerdo.value.incentivo = await buscarIncentivos( { origenId: acuerdo.value.id, incOrigen: INCENTIVO_ORIGEN.PEDIDO_CLI } ) as IIncentivo
     }
     else
     {

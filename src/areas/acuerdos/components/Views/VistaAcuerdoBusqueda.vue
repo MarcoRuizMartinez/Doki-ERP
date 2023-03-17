@@ -164,8 +164,7 @@
   import {  generarCSVDesdeTabla} from "src/useSimpleOk/UtilFiles"
   import {  style               } from "src/useSimpleOk/useEstilos"            
   // * /////////////////////////////////////////////////////////////////////// Modelos
-  import {  BusquedaAcuerdo,
-            IQueryAcuerdo       } from "src/areas/acuerdos/models/BusquedaAcuerdos"
+  import {  IQuery              } from "src/models/Busqueda"
   import {  Columna, IColumna   } from "src/models/Tabla"
   import {  ModosVentana,
             ALMACEN_LOCAL       } from "src/models/TiposVarios"  
@@ -249,7 +248,7 @@
     busqueda.value.desmontarBusqueda()
   })  
 
-  async function buscar( query : IQueryAcuerdo )
+  async function buscar( query : IQuery )
   {
     acuerdos.value                = []            
     modo.value                    = "buscando"

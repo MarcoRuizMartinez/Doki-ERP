@@ -80,10 +80,9 @@
   import {  Columna, IColumna   } from "src/models/Tabla"
   import {  ModosVentana,
             ALMACEN_LOCAL       } from "src/models/TiposVarios"  
-  import {  IQueryIncentivo,
-            BusquedaIncentivo   } from "src/areas/nomina//models/BusquedaIncentivos"
+  import {  IQuery, Busqueda    } from "src/models/Busqueda"
   import {  IIncentivo          } from "src/areas/nomina/models/Incentivo"  
-
+  
   // * /////////////////////////////////////////////////////////////////////// Componentes
   import    ventana               from "components/utilidades/Ventana.vue"  
   import    selectColumnas        from "components/utilidades/select/SelectColumnas.vue"
@@ -96,7 +95,7 @@
 
   const { usuario, permisos     } = storeToRefs( useStoreUser() )  
   const { incentivos,
-          incentivosSearch      } = storeToRefs( useStoreNomina() )
+          incentivosSearch : b  } = storeToRefs( useStoreNomina() )
   const { getAcuerdos           } = servicesAcuerdos()
   const { buscarTerceroDolibarr } = useControlAcuerdo()  
   const { buscarIncentivos      } = useControlIncentivos()
@@ -132,14 +131,18 @@
 
   function iniciar()
   {
-    reuniciarBusqueda()
+    incentivos.value              = []
+    b.value.montarBusqueda()
     modo.value                    = "esperando-busqueda"
     crearColumnas()
   }
 
-  onUnmounted(reuniciarBusqueda)  
+  onUnmounted(()=>{
+    incentivos.value              = []
+    b.value.desmontarBusqueda()
+  })
 
-  async function buscar( query : IQueryIncentivo )
+  async function buscar( query : IQuery )
   {
     incentivos.value              = []
     modo.value                    = "buscando"
@@ -151,11 +154,6 @@
   {
     modo.value                    = "esperando-busqueda"
     incentivos.value              = []
-  }
-
-  function reuniciarBusqueda(){
-    incentivos.value              = []
-    incentivosSearch.value        = new BusquedaIncentivo()
   }
 
   function crearColumnas()

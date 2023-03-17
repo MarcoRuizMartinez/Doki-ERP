@@ -267,7 +267,6 @@
   })
 
   const emit                  = defineEmits<{
-    //(e: 'buscar',   value: IQueryAcuerdo  ): void
     (e: "creado",   value: IProductoDoli  ): void
     (e: "editado",  value: IProductoDoli  ): void
   }>()

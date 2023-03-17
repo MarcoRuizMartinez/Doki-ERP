@@ -9,14 +9,13 @@ import {  GrupoLineas,
           IGrupoLineas      } from "src/areas/acuerdos/models/GrupoLineasAcuerdo"
 import {  ILineaAcuerdo,
           LineaAcuerdo      } from "src/areas/acuerdos/models/LineaAcuerdo"
-import {  BusquedaAcuerdo,
-          IBusquedaAcuerdo  } from "src/areas/acuerdos/models/BusquedaAcuerdos"
+import {  Busqueda,
+          IBusqueda         } from "src/models/Busqueda"
 import {  Anticipo,
           IAnticipo         } from "src/areas/acuerdos/models/Anticipo"
 import {  NivelesComision,
           INivelesComision  } from "src/areas/acuerdos/models/Comisiones/NivelesComision"
-import {  useConstantes,
-          CONSTANTES        } from "src/models/Diccionarios/Constante"
+import {  CONSTANTES        } from "src/models/Diccionarios/Constante"
 import {  getConstanteDB    } from "src/services/useDexie"
 
 interface IAcuerdoState {
@@ -26,7 +25,7 @@ interface IAcuerdoState {
   lineaElegida        : ILineaAcuerdo,
   modales             : IModales,
   acuerdos            : IAcuerdo[],
-  busqueda            : IBusquedaAcuerdo,
+  busqueda            : IBusqueda,
   anticipo            : IAnticipo,
   nivelesComision     : INivelesComision,
 }
@@ -39,7 +38,7 @@ export const useStoreAcuerdo = defineStore('acuerdo', {
     lineaElegida      : new LineaAcuerdo(),
     modales           : ModalesDefault,
     acuerdos          : [],
-    busqueda          : new BusquedaAcuerdo(),
+    busqueda          : new Busqueda(),
     anticipo          : new Anticipo(),
     nivelesComision   : new NivelesComision(),
   }),

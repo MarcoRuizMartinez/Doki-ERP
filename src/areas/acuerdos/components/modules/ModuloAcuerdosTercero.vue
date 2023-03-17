@@ -135,42 +135,6 @@
       query:  { origen: "tercero"},
     })
   }
-
-
-
-  /*
-export interface IQueryAcuerdo {
-  tipo                 ?: string
-  acuerdo              ?: TTipoAcuerdo
-  comercial            ?: string | number
-  creador              ?: string | number
-  tercero              ?: string
-  contacto             ?: string
-  estados              ?: string
-  origenes             ?: string
-  condiciones          ?: string
-  formaPago            ?: string
-  entrega              ?: string
-  fechaDesde           ?: string
-  fechaHasta           ?: string
-  proveedorId          ?: number
-  subtotalMin          ?: number
-  subtotalMax          ?: number
-  facturado            ?: number
-  conIva               ?: number
-  conTotal             ?: number
-  interno              ?: number
-  conOrdenes           ?: number
-  limite               ?: number
-  offset               ?: number
-  area                 ?: string
-  orden                ?: "ASC" | "DESC"
-  municipio            ?: number  
-  estadoAnticipo       ?: number
-  //idEspecial?:       number
-}
-
-  */
 </script>
 <style>
 .fecha{

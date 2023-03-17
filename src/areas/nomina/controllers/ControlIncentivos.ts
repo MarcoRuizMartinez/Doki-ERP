@@ -12,7 +12,7 @@ import {  useTools, anyToNum    } from "src/useSimpleOk/useTools"
 //* ////////////////////////////////////////////////////////////////// Modelos
 import {  IIncentivo,
           Incentivo             } from "src/areas/nomina/models/Incentivo"
-import {  IQueryIncentivo       } from "src/areas/nomina//models/BusquedaIncentivos"
+import {  IQuery                } from "src/models/Busqueda"
 
 export function useControlIncentivos()
 {
@@ -41,7 +41,7 @@ export function useControlIncentivos()
     return false
   }
 
-  async function buscarIncentivos( query : IQueryIncentivo, tipo : "unico" | "varios" = "unico" ) : Promise< IIncentivo | IIncentivo[] >
+  async function buscarIncentivos( query : IQuery, tipo : "unico" | "varios" = "unico" ) : Promise< IIncentivo | IIncentivo[] >
   {
     loadAcu.value.incentivo     = true
     loading.value.carga         = true

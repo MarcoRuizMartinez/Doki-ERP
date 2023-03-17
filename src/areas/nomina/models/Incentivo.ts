@@ -194,9 +194,7 @@ export class Incentivo implements IIncentivo
     { value: INCENTIVO_ESTADO_PAGO.PAGO_PARCIAL,  label:"🌓 Pago parcial",  visible: true   },
     { value: INCENTIVO_ESTADO_PAGO.PAGO_TOTAL,    label:"💵 Pagado",        visible: true   },
   ]
-
   
-/*   
   static origenes = [
     { value: INCENTIVO_ORIGEN.NULO,         label: "Nulo"             },
     { value: INCENTIVO_ORIGEN.PEDIDO_CLI,   label: "Pedido cliente"   },
@@ -205,5 +203,5 @@ export class Incentivo implements IIncentivo
     { value: INCENTIVO_ORIGEN.FACTURA,      label: "Factura"          },
     { value: INCENTIVO_ORIGEN.INFORME,      label: "Informe"          },
   ]
-*/
+
 }

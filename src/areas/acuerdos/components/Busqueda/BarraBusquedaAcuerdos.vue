@@ -14,7 +14,7 @@
         >
         <!-- //* ///////////////////////////////////////////////// Busqueda general -->        
         <input-buscar           clearable hundido
-          v-model               ="b.f.tercero"
+          v-model               ="b.f.buscar"
           label                 ="Búsqueda"
           class                 ="width200"
           icon                  ="mdi-account-search"
@@ -89,10 +89,10 @@
         <!-- //* ///////////////////////////////////////////////// Comercial Acuerdo -->
         <select-usuario         hundido clearable
           v-if                  ="!b.esOCProveedor"
-          v-model               ="b.f.comercial"
+          v-model               ="b.f.usuario"
           class                 ="width160"
           label                 ="Asesor"
-          :autoselect           ="usuario.esComercial && !b.hayComercialInicio"  
+          :autoselect           ="usuario.esComercial && !b.hayUsuarioInicio"
           :area                 ="usuario.area"
           :grupos               =[GRUPO_USUARIO.COMERCIALES]
           :readonly             ="!permisos.acceso_total"
@@ -121,7 +121,7 @@
           label                 ="Facturado"
           icon                  ="mdi-file-check"
           class                 ="width160"
-          :options              ="BusquedaAcuerdo.listaFacturado"
+          :options              ="Busqueda.listaFacturado"
         />
       </fieldset-filtro>
       <!-- //* /////////////////////////////////////////////////// Paginación -->
@@ -136,7 +136,7 @@
             color               ="white"
             text-color          ="grey-8"
             toggle-color        ="primary"
-            :options            ="[{label: '10', value: 10}, {label: '25', value: 25},{label: '50', value: 50},{label: '100', value: 100}]"
+            :options            ="Busqueda.listaResultadosXPag"
             @update:model-value ="b.f.pagina = 1"
           />
           <Tooltip label        ="Resultados por pagina"/>
@@ -152,7 +152,7 @@
           />
           <Tooltip label        ="Pagina"/>
           <q-spinner-puff
-            v-if                ="haySiguientePagina"
+            v-if                ="b.haySiguientePagina"
             color               ="primary"
             size                ="2em"
             class               ="q-mt-xs"
@@ -245,12 +245,6 @@
           icon                  ="mdi-source-branch"
           :options              ="b.o.origenes"
         />
-<!--         <select-origenes
-          v-if                  ="!b.esEntrega"
-          ref                   ="comOrigenes"
-          v-model               ="b.origenes"
-          class                 ="width160"
-        /> -->
         <!-- //* ///////////////////////////////////////////////// Con IVA o sin IVA -->
         <select-label-value     use-input hundido clearable flat bordered
           v-if                  ="b.esCotizacion"
@@ -258,7 +252,7 @@
           label                 ="IVA"
           icon                  ="mdi-bank"
           class                 ="width160"
-          :options              ="BusquedaAcuerdo.listaIVA"
+          :options              ="Busqueda.listaIVA"
         />
         <!-- //* ///////////////////////////////////////////////// Con total y sin total -->
         <select-label-value     use-input hundido clearable flat bordered
@@ -267,7 +261,7 @@
           label                 ="Totalizar"
           icon                  ="mdi-counter"
           class                 ="width160"
-          :options              ="BusquedaAcuerdo.listaTotales"
+          :options              ="Busqueda.listaTotales"
         />
         <!-- //* ///////////////////////////////////////////////// Área o departamento -->
         <select-label-value     use-input hundido clearable flat bordered
@@ -275,7 +269,7 @@
           label                 ="Área"
           icon                  ="mdi-google-circles-extended"
           class                 ="width160"
-          :options              ="BusquedaAcuerdo.listaAreas"
+          :options              ="Busqueda.listaAreas"
         />
         <!-- //* ///////////////////////////////////////////////// Municipio -->
         <municipios             hundido
@@ -289,8 +283,8 @@
           label                 ="Tipo tercero"
           icon                  ="mdi-circle-multiple"
           class                 ="width160"
-          :options              ="BusquedaAcuerdo.listaTerceroTipo"
-        />    
+          :options              ="Busqueda.listaTerceroTipo"
+        /> 
         <!-- //* ///////////////////////////////////////////////// Forma de pago -->
         <!-- //* ///////////////////////////////////////////////// Estado Anticipo -->
         <multi-label-value
@@ -299,7 +293,7 @@
           label                 ="Estado anticipo"
           icon                  ="mdi-cash-check"
           class                 ="width160"
-          :options              ="BusquedaAcuerdo.listaAnticipoEstados"
+          :options              ="Busqueda.listaAnticipoEstados"
         />
         <!-- //* ///////////////////////////////////////////////// Estado Anticipo -->
         <multi-label-value
@@ -308,7 +302,7 @@
           label                 ="Tipo anticipo"
           icon                  ="mdi-cash"
           class                 ="width160"
-          :options              ="BusquedaAcuerdo.listaAnticipoTipos"
+          :options              ="Busqueda.listaAnticipoTipos"
         />
         <!-- //* ///////////////////////////////////////////////// Con pedidos a proveedor -->
         <select-label-value     use-input hundido clearable flat bordered
@@ -317,16 +311,16 @@
           label                 ="OC proveedor"
           icon                  ="mdi-factory"
           class                 ="width160"
-          :options              ="BusquedaAcuerdo.listaOrdenesProv"
+          :options              ="Busqueda.listaOrdenesProv"
         />         
         <!-- //* ///////////////////////////////////////////////// Comision -->
         <select-label-value     use-input hundido clearable flat bordered
           v-if                  ="b.esPedido"
-          v-model               ="b.f.comision"
+          v-model               ="b.f.incPago"
           label                 ="Comisión"
           icon                  ="mdi-cash-check"
           class                 ="width160"
-          :options              ="BusquedaAcuerdo.listaEstadosPago"
+          :options              ="Busqueda.listaEstadosPago"
         />           
       </fieldset-filtro>
       <fieldset-filtro
@@ -336,20 +330,20 @@
         >
         <!-- //* ///////////////////////////////////////////////// Precio Minimo -->
         <input-number           hundido clearable
-          v-model               ="b.f.precioMinimo"
+          v-model               ="b.f.valorMin"
           label                 ="Mínimo"
           icon                  ="mdi-currency-usd"
           class                 ="width140"
           :minimo               ="0"
-          :maximo               ="!!b.f.precioMaximo ? b.f.precioMaximo : undefined"
+          :maximo               ="!!b.f.valorMax ? b.f.valorMax : undefined"
         />
         <!-- //* ///////////////////////////////////////////////// Precio Maximo -->
         <input-number           hundido clearable
-          v-model               ="b.f.precioMaximo"
+          v-model               ="b.f.valorMax"
           label                 ="Máximo"
           icon                  ="mdi-currency-usd"
           class                 ="width140"
-          :minimo               ="!!b.f.precioMinimo ? b.f.precioMinimo : undefined"
+          :minimo               ="!!b.f.valorMin ? b.f.valorMin : undefined"
           :maximo               ="999_999_999"
         />
       </fieldset-filtro>
@@ -398,9 +392,8 @@
   import {  useStoreAcuerdo     } from 'src/stores/acuerdo'
   // * /////////////////////////////////////////////////////////////////////// Componibles
   import {  formatoPrecio       } from "src/useSimpleOk/useTools"
-  // * ///////////////////////////////////////////////.//////////////////////// Modelos  
-  import {  IQueryAcuerdo,
-            BusquedaAcuerdo     } from "src/areas/acuerdos/models/BusquedaAcuerdos"
+  // * /////////////////////////////////////////////////////////////////////// Modelos  
+  import {  IQuery, Busqueda    } from "src/models/Busqueda"
   import {  GRUPO_USUARIO       } from "src/models/TiposVarios"
   // * /////////////////////////////////////////////////////////////////////// Componentes
   import    fieldsetFiltro        from "components/utilidades/Fieldset.vue"
@@ -427,17 +420,13 @@
         )
 
   const emit = defineEmits<{
-    (e: 'buscar',   value: IQueryAcuerdo  ): void
-    (e: 'limpiar',                        ): void
-    (e: 'exportar',                       ): void    
+    (e: 'buscar',   value: IQuery ): void
+    (e: 'limpiar',                ): void
+    (e: 'exportar',               ): void    
   }>()
 
   watch(()=>b.value.f, ()=>
     {
-      //console.log(">>>>>>>>b.value.f,: ", b.value.f.copiando, !b.value.copiandoACampos);
-      //if(b.value.f.camposOk && !b.value.copiandoACampos) buscar()      
-
-      console.log("puedeBuscar. ", b.value.puedeBuscar, b.value.o.opcionesOk, !b.value.f.copiando);
       if(b.value.puedeBuscar) buscar()
     },
     { deep: true }
@@ -463,8 +452,7 @@
   
 
   // * /////////////////////////////////////////////////////////////////////// Computed
-  const siguientePagina           = computed(()=> b.value.f.pagina + (acuerdos.value.length >= b.value.f.resultadosXPage ? 1 : 0) )
-  const haySiguientePagina        = computed(()=> b.value.f.pagina !== siguientePagina.value )
+  const siguientePagina           = computed(()=> b.value.siguientePagina( acuerdos.value.length ) )  
   const sumaAcuerdosSubtotal      = computed(()=> { 
     let suma                      = 0
     if(!!acuerdos.value && !!acuerdos.value.length)

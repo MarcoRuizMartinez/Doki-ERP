@@ -4,7 +4,10 @@ import {  Areas,
           labelValueNulo                } from "src/models/TiposVarios"
 import {  IUsuario, Usuario             } from "src/areas/usuarios/models/Usuario"
 import {  IMunicipio, Municipio         } from "src/models/Municipio"
-import {  INCENTIVO_ESTADO_PAGO         } from "src/areas/nomina/models/Incentivo"  
+import {  INCENTIVO_ESTADO,
+          INCENTIVO_RAZON,
+          INCENTIVO_ORIGEN,
+          INCENTIVO_ESTADO_PAGO         } from "src/areas/nomina/models/Incentivo"
 import {  Anticipo                      } from "src/areas/acuerdos/models/Anticipo"
 import {  Incentivo                     } from "src/areas/nomina//models/Incentivo"
 import {  estadosCtz, estadosPed,
@@ -23,12 +26,13 @@ import {  getQueryRouterDate,
           getQueryRouterLabelValue,
           getQueryRouterLabelValueArray } from "src/useSimpleOk/useTools"
 
-export interface      IQueryAcuerdo {
+export interface      IQuery {
   tipo                 ?: string
+  id                   ?: number
   acuerdo              ?: TTipoAcuerdo
-  comercial            ?: string | number
+  usuario              ?: string | number
   creador              ?: string | number
-  tercero              ?: string
+  buscar               ?: string
   idTercero            ?: number
   contacto             ?: string
   estados              ?: string
@@ -41,8 +45,6 @@ export interface      IQueryAcuerdo {
   fechaDesde           ?: string
   fechaHasta           ?: string
   proveedorId          ?: number
-  subtotalMin          ?: number
-  subtotalMax          ?: number
   facturado            ?: number
   conIva               ?: number
   conTotal             ?: number
@@ -54,10 +56,16 @@ export interface      IQueryAcuerdo {
   orden                ?: "ASC" | "DESC"
   municipio            ?: number
   municipioContacto    ?: number
-  comision             ?: INCENTIVO_ESTADO_PAGO
+  origenId             ?: number
+  valorMin             ?: number
+  valorMax             ?: number 
+  incEstado            ?: INCENTIVO_ESTADO
+  incRazon             ?: INCENTIVO_RAZON
+  incOrigen            ?: INCENTIVO_ORIGEN
+  incPago              ?: INCENTIVO_ESTADO_PAGO
 }
 
-interface IOpciones {
+interface               IOpciones {
   opcionesOk            : boolean
   condicionesPago       : ILabelValue[]
   formasPago            : ILabelValue[]
@@ -67,14 +75,14 @@ interface IOpciones {
   estados               : ILabelValue[]
 }
 
-interface ICampos {
+interface               ICampos {
   copiando              : boolean
-  tercero               : string
+  buscar                : string
   contacto              : string
   desde                 : Date | string
   hasta                 : Date | string  
-  precioMinimo          : number | undefined
-  precioMaximo          : number | undefined  
+  valorMin              : number | undefined
+  valorMax              : number | undefined  
   estados               : ILabelValue[]
   origenes              : ILabelValue[]
   condiciones           : ILabelValue[]
@@ -89,47 +97,52 @@ interface ICampos {
   tipoTercero           : ILabelValue
   conOrdenes            : ILabelValue
   proveedores           : ILabelValue  
-  comision              : ILabelValue
+  incPago               : ILabelValue
+  incEstado             : ILabelValue
+  incRazon              : ILabelValue
+  incOrigen             : ILabelValue  
   municipio             : IMunicipio
   municipioContacto     : IMunicipio
-  comercial            ?: IUsuario
+  usuario              ?: IUsuario
   creador              ?: IUsuario
   resultadosXPage       : number
-  pagina                : number
+  pagina                : number  
 }
 
 
-export interface        IBusquedaAcuerdo {
-  query                 : IQueryAcuerdo
+export interface        IBusqueda {
+  query                 : IQuery
   rourterQ              : LocationQuery
   acuerdo               : TTipoAcuerdo
   f                     : ICampos       // f de fiels
   o                     : IOpciones     // o de opciones
-  comercialIdInicio     : number
+  usuarioIdInicio       : number
+  haySiguientePagina    : boolean
 
   // * /////////////////  Geters
   queryVacia            : boolean
-  hayComercialInicio    : boolean
+  hayUsuarioInicio      : boolean
   esCotizacion          : boolean
   esPedido              : boolean
   esOCProveedor         : boolean
   esEntrega             : boolean
   puedeBuscar           : boolean
-
   inicializarBusqueda   : ()=>void
   iniciarOpciones       : ( q : LocationQuery )=>void
   copiarQueryACampos    : ( limpiar? : "limpiar" | "" )=>void
-  montarBusqueda        : ( acuerdoTipo : TTipoAcuerdo )=>void
+  montarBusqueda        : ( acuerdoTipo? : TTipoAcuerdo )=>void
   desmontarBusqueda     : ()=>void
+  siguientePagina       : ( largo : number )=>number
 }
 
-export class BusquedaAcuerdo implements IBusquedaAcuerdo
+export class Busqueda implements IBusqueda
 {
   rourterQ              : LocationQuery
   acuerdo               : TTipoAcuerdo  
   f                     : ICampos;
   o                     : IOpciones
-  comercialIdInicio     : number
+  usuarioIdInicio       : number
+  haySiguientePagina    : boolean
 
   constructor()
   {
@@ -140,7 +153,7 @@ export class BusquedaAcuerdo implements IBusquedaAcuerdo
   inicializarBusqueda()
   {    
     this.rourterQ         = {}
-    this.comercialIdInicio= 0
+    this.usuarioIdInicio  = 0
     this.o                = {
       opcionesOk          : false,
       condicionesPago     : [],
@@ -152,12 +165,12 @@ export class BusquedaAcuerdo implements IBusquedaAcuerdo
     }
     this.f                = {
       copiando            : false,
-      tercero             : "",
+      buscar              : "",
       contacto            : "",
       desde               : "",
       hasta               : ""    ,
-      precioMinimo        : undefined,
-      precioMaximo        : undefined,
+      valorMin            : undefined,
+      valorMax            : undefined,
       estados             : [],
       origenes            : [],
       condiciones         : [],
@@ -172,19 +185,21 @@ export class BusquedaAcuerdo implements IBusquedaAcuerdo
       totalizado          : labelValueNulo,
       conOrdenes          : labelValueNulo,
       proveedores         : labelValueNulo,
-      comision            : labelValueNulo,
+      incPago             : labelValueNulo,
+      incEstado           : labelValueNulo,
+      incRazon            : labelValueNulo,
+      incOrigen           : labelValueNulo,
       municipio           : new Municipio(),
       municipioContacto   : new Municipio(),
       resultadosXPage     : 10,
       pagina              : 1,
-      comercial           : new Usuario(),
+      usuario             : new Usuario(),
       creador             : new Usuario(),
     }   
   }
   
   async iniciarOpciones( q : LocationQuery )
   {
-    console.log("iniciarOpciones: ");
     this.o.opcionesOk                       = false
     this.rourterQ                           = q
     this.o.origenes                         = await getOrigenesContactoDB()
@@ -199,7 +214,7 @@ export class BusquedaAcuerdo implements IBusquedaAcuerdo
     if(this.esOCProveedor)
       this.o.proveedores                    = await getProveedoresDB()
 
-    this.comercialIdInicio                  = getQueryRouterNumber( this.rourterQ.comercial ) ?? 0
+    this.usuarioIdInicio                    = getQueryRouterNumber( this.rourterQ.usuario ) ?? 0
     this.o.opcionesOk                       = true
     await this.copiarQueryACampos()
   }
@@ -208,28 +223,31 @@ export class BusquedaAcuerdo implements IBusquedaAcuerdo
   {
     this.f.copiando           = true
     if(!!limpiar)             this.rourterQ = {}
-    this.f.tercero            = getQueryRouterString    ( this.rourterQ .tercero      )
+    this.f.buscar             = getQueryRouterString    ( this.rourterQ .buscar       )
     this.f.contacto           = getQueryRouterString    ( this.rourterQ .contacto     )
     this.f.desde              = getQueryRouterDate      ( this.rourterQ .fechaDesde   )
     this.f.hasta              = getQueryRouterDate      ( this.rourterQ .fechaHasta   )
-    this.f.precioMinimo       = getQueryRouterNumber    ( this.rourterQ .subtotalMin  )
-    this.f.precioMaximo       = getQueryRouterNumber    ( this.rourterQ .subtotalMax  )
+    this.f.valorMin           = getQueryRouterNumber    ( this.rourterQ .valorMin     )
+    this.f.valorMax           = getQueryRouterNumber    ( this.rourterQ .valorMax     )
     if(!!this.rourterQ .limite)
       this.f.resultadosXPage  = getQueryRouterNumber    ( this.rourterQ .limite       )
-    this.f.area               = getQueryRouterLabelValue( this.rourterQ .area,                  Areas                         )
-    this.f.facturado          = getQueryRouterLabelValue( this.rourterQ .facturado,             BusquedaAcuerdo.listaFacturado )
-    this.f.comision           = getQueryRouterLabelValue( this.rourterQ .comision,              Incentivo.estadosPago )
-    this.f.conIva             = getQueryRouterLabelValue( this.rourterQ .conIva,                BusquedaAcuerdo.listaIVA           )
-    this.f.totalizado         = getQueryRouterLabelValue( this.rourterQ .conTotal,              BusquedaAcuerdo.listaTotales       )
-    this.f.tipoTercero        = getQueryRouterLabelValue( this.rourterQ .interno,               BusquedaAcuerdo.listaTerceroTipo   )
-    this.f.conOrdenes         = getQueryRouterLabelValue( this.rourterQ .conOrdenes,            BusquedaAcuerdo.listaOrdenesProv   )
-    this.f.estadoAnticipo     = getQueryRouterLabelValueArray ( this.rourterQ .estadoAnticipo,  Anticipo.estados      )
-    this.f.tipoAnticipo       = getQueryRouterLabelValueArray ( this.rourterQ .tipoAnticipo,    Anticipo.tipos        )
-    this.f.estados            = getQueryRouterLabelValueArray ( this.rourterQ .estados,         this.o.estados          )    
-    this.f.formaPago          = getQueryRouterLabelValueArray ( this.rourterQ .formaPago,       this.o.formasPago       )
-    this.f.entrega            = getQueryRouterLabelValueArray ( this.rourterQ .entrega,         this.o.metodosEntrega   )
-    this.f.condiciones        = getQueryRouterLabelValueArray ( this.rourterQ .condiciones,     this.o.condicionesPago  )
-    this.f.origenes           = getQueryRouterLabelValueArray ( this.rourterQ .origenes,        this.o.origenes         )
+    this.f.area               = getQueryRouterLabelValue( this.rourterQ .area,                  Areas                     )
+    this.f.facturado          = getQueryRouterLabelValue( this.rourterQ .facturado,             Busqueda.listaFacturado   )
+    this.f.incPago            = getQueryRouterLabelValue( this.rourterQ .incPago,               Incentivo.estadosPago     )
+    this.f.incEstado          = getQueryRouterLabelValue( this.rourterQ .incEstado,             Incentivo.estados         )
+    this.f.incRazon           = getQueryRouterLabelValue( this.rourterQ .incRazon,              Incentivo.razones         )
+    this.f.incOrigen          = getQueryRouterLabelValue( this.rourterQ .incOrigen,             Incentivo.origenes        )    
+    this.f.conIva             = getQueryRouterLabelValue( this.rourterQ .conIva,                Busqueda.listaIVA         )
+    this.f.totalizado         = getQueryRouterLabelValue( this.rourterQ .conTotal,              Busqueda.listaTotales     )
+    this.f.tipoTercero        = getQueryRouterLabelValue( this.rourterQ .interno,               Busqueda.listaTerceroTipo )
+    this.f.conOrdenes         = getQueryRouterLabelValue( this.rourterQ .conOrdenes,            Busqueda.listaOrdenesProv )
+    this.f.estadoAnticipo     = getQueryRouterLabelValueArray ( this.rourterQ .estadoAnticipo,  Anticipo.estados          )
+    this.f.tipoAnticipo       = getQueryRouterLabelValueArray ( this.rourterQ .tipoAnticipo,    Anticipo.tipos            )
+    this.f.estados            = getQueryRouterLabelValueArray ( this.rourterQ .estados,         this.o.estados            )    
+    this.f.formaPago          = getQueryRouterLabelValueArray ( this.rourterQ .formaPago,       this.o.formasPago         )
+    this.f.entrega            = getQueryRouterLabelValueArray ( this.rourterQ .entrega,         this.o.metodosEntrega     )
+    this.f.condiciones        = getQueryRouterLabelValueArray ( this.rourterQ .condiciones,     this.o.condicionesPago    )
+    this.f.origenes           = getQueryRouterLabelValueArray ( this.rourterQ .origenes,        this.o.origenes           )
 
     const municipioId         = getQueryRouterNumber( this.rourterQ .municipio ) 
     this.f.municipio          = !!municipioId     ? await getMunicipioDB( municipioId )     : new Municipio()
@@ -237,8 +255,8 @@ export class BusquedaAcuerdo implements IBusquedaAcuerdo
     const municipioContId     = getQueryRouterNumber( this.rourterQ .municipioContacto ) 
     this.f.municipioContacto  = !!municipioContId ? await getMunicipioDB( municipioContId ) : new Municipio()
 
-    const comercialId         = getQueryRouterNumber( this.rourterQ.comercial  )
-    this.f.comercial          = comercialId > 0 ? await getUsuarioDB( comercialId ) : new Usuario()
+    const usuarioId           = getQueryRouterNumber( this.rourterQ.usuario  )
+    this.f.usuario            = usuarioId > 0 ? await getUsuarioDB( usuarioId ) : new Usuario()
 
     const creadorlId          = getQueryRouterNumber( this.rourterQ.creador )
     this.f.creador            = creadorlId > 0 ? await getUsuarioDB( creadorlId ) : new Usuario()
@@ -246,7 +264,7 @@ export class BusquedaAcuerdo implements IBusquedaAcuerdo
     this.f.copiando           = false
   }
 
-  montarBusqueda( acuerdoTipo : TTipoAcuerdo )
+  montarBusqueda( acuerdoTipo : TTipoAcuerdo = TIPO_ACUERDO.NULO )
   {
     this.acuerdo            = acuerdoTipo
     this.inicializarBusqueda()
@@ -258,22 +276,32 @@ export class BusquedaAcuerdo implements IBusquedaAcuerdo
     this.inicializarBusqueda()
   }
 
-  get puedeBuscar         () : boolean { return this.o.opcionesOk && !this.f.copiando }
-  get queryVacia          () : boolean { return !Object.keys(this.query).length   }
-  get hayComercialInicio  () : boolean { return !!this.comercialIdInicio          }
-  get esCotizacion        () : boolean { return this.acuerdo === TIPO_ACUERDO.COTIZACION_CLI   }
-  get esPedido            () : boolean { return this.acuerdo === TIPO_ACUERDO.PEDIDO_CLI       }
-  get esOCProveedor       () : boolean { return this.acuerdo === TIPO_ACUERDO.PEDIDO_PRO       }
-  get esEntrega           () : boolean { return this.acuerdo === TIPO_ACUERDO.ENTREGA_CLI      }
-
-  get query() : IQueryAcuerdo
+  siguientePagina( largo : number ) : number
   {
-    const q : IQueryAcuerdo       = {}
+    const resultadosATope   = largo >= this.f.resultadosXPage
+    const aumentoPagina     = resultadosATope ? 1 : 0
+    const pagNow            = this.f.pagina
+    const pagNext           = pagNow + aumentoPagina
+    this.haySiguientePagina = pagNext > pagNow
+    return pagNext
+  }
 
-    if(this.f.tercero.length  > 3)      q.tercero           = this.f.tercero
+  get puedeBuscar         () : boolean { return this.o.opcionesOk && !this.f.copiando         }
+  get queryVacia          () : boolean { return !Object.keys(this.query).length               }
+  get hayUsuarioInicio    () : boolean { return !!this.usuarioIdInicio                        }
+  get esCotizacion        () : boolean { return this.acuerdo === TIPO_ACUERDO.COTIZACION_CLI  }
+  get esPedido            () : boolean { return this.acuerdo === TIPO_ACUERDO.PEDIDO_CLI      }
+  get esOCProveedor       () : boolean { return this.acuerdo === TIPO_ACUERDO.PEDIDO_PRO      }
+  get esEntrega           () : boolean { return this.acuerdo === TIPO_ACUERDO.ENTREGA_CLI     }
+
+  get query() : IQuery
+  {
+    const q : IQuery       = {}
+
+    if(this.f.buscar.length  > 3)       q.buscar            = this.f.buscar
     if(this.f.contacto.length > 3)      q.contacto          = this.f.contacto
-    if(!!this.f.precioMinimo)           q.subtotalMin       = this.f.precioMinimo
-    if(!!this.f.precioMaximo)           q.subtotalMax       = this.f.precioMaximo
+    if(!!this.f.valorMin)               q.valorMin          = this.f.valorMin
+    if(!!this.f.valorMax)               q.valorMax          = this.f.valorMax
     if(!!this.f.estados.length)         q.estados           = this.f.estados        .map( e => e.value ).join("_")
     if(!!this.f.origenes.length)        q.origenes          = this.f.origenes       .map( e => e.value ).join("_")
     if(!!this.f.condiciones.length)     q.condiciones       = this.f.condiciones    .map( e => e.value ).join("_")
@@ -283,15 +311,18 @@ export class BusquedaAcuerdo implements IBusquedaAcuerdo
     if(!!this.f.tipoAnticipo.length)    q.tipoAnticipo      = this.f.tipoAnticipo   .map( e => e.value ).join("_")
     if(!!this.f.area.label)             q.area              = this.f.area.value
     if(!!this.f.facturado.label)        q.facturado         = this.f.facturado.value
-    if(!!this.f.comision.label)         q.comision          = this.f.comision.value
+    if(!!this.f.incPago.label)          q.incPago           = this.f.incPago.value
+    if(!!this.f.incEstado.label)        q.incEstado         = this.f.incEstado.value
+    if(!!this.f.incRazon.label)         q.incRazon          = this.f.incRazon.value
+    if(!!this.f.incOrigen.label)        q.incOrigen         = this.f.incOrigen.value   
     if(!!this.f.conIva.label)           q.conIva            = this.f.conIva.value
     if(!!this.f.totalizado.label)       q.conTotal          = this.f.totalizado.value
     if(!!this.f.tipoTercero.label)      q.interno           = this.f.tipoTercero.value
     if(!!this.f.municipio.id)           q.municipio         = this.f.municipio.id
     if(!!this.f.municipioContacto.id)   q.municipioContacto = this.f.municipioContacto.id
     if(!!this.f.conOrdenes.label)       q.conOrdenes        = this.f.conOrdenes.value
-    if(!!this.f.comercial && this.f.comercial.id  > 0 && !this.esOCProveedor )
-      q.comercial                                         = this.f.comercial.id     
+    if(!!this.f.usuario && this.f.usuario.id  > 0 && !this.esOCProveedor )
+      q.usuario                                             = this.f.usuario.id     
     if(!!this.f.creador   && this.f.creador.id    > 0)
       q.creador                                           = this.f.creador.id
     if(this.esOCProveedor && !!this.f.proveedores.label)
@@ -304,6 +335,10 @@ export class BusquedaAcuerdo implements IBusquedaAcuerdo
       q.limite                    = this.f.resultadosXPage
       q.offset                    = q.limite * (this.f.pagina - 1)
     }
+
+    // proveedores
+
+
     return q
   }
 
@@ -317,4 +352,9 @@ export class BusquedaAcuerdo implements IBusquedaAcuerdo
   static listaEstadosPago         = Incentivo.estadosPago
   static listaAnticipoEstados     = Anticipo.estados
   static listaAnticipoTipos       = Anticipo.tipos  
+  static listaResultadosXPag      = [ {label: '10',   value: 10   },
+                                      {label: '25',   value: 25   },
+                                      {label: '50',   value: 50   },
+                                      {label: '100',  value: 100  }
+                                    ]
 } 

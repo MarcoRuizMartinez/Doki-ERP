@@ -7,17 +7,17 @@
       >
       <!-- //* ///////////////////////////////////////////////// Busqueda general -->        
       <input-buscar           clearable hundido
-        v-model               ="incentivosSearch.ref"
+        v-model               ="b.f.buscar"
         label                 ="Búsqueda Ref"
         class                 ="width200"
         icon                  ="mdi-magnify"
       />
       <!-- //* ///////////////////////////////////////////////// Usuario -->
       <select-usuario         hundido clearable
-        v-model               ="incentivosSearch.usuario"
+        v-model               ="b.f.usuario"
         class                 ="width200"
         label                 ="Usuario"
-        :autoselect           ="autoSelectUsuario" 
+        :autoselect           ="!usuario.esGerencia && !usuario.esContable && !b.hayUsuarioInicio" 
         :readonly             ="!permisos.acceso_total"
         :grupos               =[GRUPO_USUARIO.EN_NOMINA]
       />
@@ -29,20 +29,20 @@
       >
       <!-- //* ///////////////////////////////////////////////// Precio Minimo -->
       <input-number           hundido clearable
-        v-model               ="incentivosSearch.valorMin"
+        v-model               ="b.f.valorMin"
         label                 ="Mínimo"
         icon                  ="mdi-currency-usd"
         class                 ="width160"
         :minimo               ="0"
-        :maximo               ="!!incentivosSearch.valorMax ? incentivosSearch.valorMax : undefined"
+        :maximo               ="!!b.f.valorMax ? b.f.valorMax : undefined"
       />
       <!-- //* ///////////////////////////////////////////////// Precio Maximo -->
       <input-number           hundido clearable
-        v-model               ="incentivosSearch.valorMax"
+        v-model               ="b.f.valorMax"
         label                 ="Máximo"
         icon                  ="mdi-currency-usd"
         class                 ="width160"
-        :minimo               ="!!incentivosSearch.valorMin ? incentivosSearch.valorMin : undefined"
+        :minimo               ="!!b.f.valorMin ? b.f.valorMin : undefined"
         :maximo               ="999_999_999"
       />
     </fieldset-filtro>
@@ -53,7 +53,7 @@
       >
       <!-- //* ///////////////////////////////////////////////// Estado -->
       <select-label-value     use-input hundido clearable flat bordered
-        v-model               ="incentivosSearch.estado"
+        v-model               ="b.f.incEstado"
         label                 ="Estado"
         icon                  ="mdi-file-check"
         class                 ="width180"
@@ -61,7 +61,7 @@
       />
       <!-- //* ///////////////////////////////////////////////// Pagado -->
       <select-label-value     use-input hundido clearable flat bordered
-        v-model               ="incentivosSearch.pagado"
+        v-model               ="b.f.incPago"
         label                 ="Pago"
         icon                  ="mdi-cash-check"
         class                 ="width180"
@@ -76,19 +76,19 @@
       <!-- //* ///////////////////////////////////////////////// Resultados por pagina -->
       <div>
         <q-btn-toggle         spread push unelevated round
-          v-model             ="incentivosSearch.resultadosXPage"
+          v-model             ="b.f.resultadosXPage"
           color               ="white"
           text-color          ="grey-8"
           toggle-color        ="primary"
-          :options            ="[{label: '25', value: 25},{label: '50', value: 50},{label: '100', value: 100}]"
-          @update:model-value ="incentivosSearch.pagina = 1"
+          :options            ="Busqueda.listaResultadosXPag"
+          @update:model-value ="b.f.pagina = 1"
         />
         <Tooltip label        ="Resultados por pagina"/>
       </div>
       <!-- //* ///////////////////////////////////////////////// Pagina -->
       <div class              ="row justify-center full-width">
         <q-pagination         dense
-          v-model             ="incentivosSearch.pagina"
+          v-model             ="b.f.pagina"
           :max                ="siguientePagina"
           :max-pages          ="3"
           :ellipses           ="false"
@@ -96,7 +96,7 @@
         />
         <Tooltip label        ="Pagina"/>
         <q-spinner-puff
-          v-if                ="haySiguientePagina"
+          v-if                ="b.haySiguientePagina"
           color               ="primary"
           size                ="2em"
           class               ="q-mt-xs"
@@ -117,7 +117,8 @@
             icon                ="mdi-refresh"
             padding             ="xs"
             color               ="primary"
-            @click              ="buscar('btnRecargar')"
+            :disable            ="b.queryVacia"
+            @click              ="buscar"
             >
             <Tooltip label      ="Recargar"/>
           </q-btn>
@@ -128,7 +129,7 @@
             icon                ="mdi-close"
             padding             ="xs"
             color               ="primary"
-            :disable            ="incentivosSearch.busquedaVacia"
+            :disable            ="b.queryVacia"
             @click              ="limpiarBusqueda"
             >
             <Tooltip label      ="Limpiar búsqueda"/>
@@ -141,13 +142,13 @@
             icon                ="mdi-microsoft-excel"
             color               ="primary"
             padding             ="xs"
-            :disable            ="incentivosSearch.busquedaVacia"
+            :disable            ="b.queryVacia"
             @click              ="emit('exportar')"
             >
             <Tooltip label      ="Descargar"/>
           </q-btn>
         </div>
-      </div>
+      </div> 
     </fieldset-filtro>
     <inner-loading :cargando    ="loading.carga"/>
   </div>
@@ -163,16 +164,10 @@
   import {  useStoreUser        } from "src/stores/user"
   import {  useStoreNomina      } from "src/stores/nomina"
 
-  // * /////////////////////////////////////////////////////////////////////// Componibles
-  import {  getQueryRouterString,
-            getQueryRouterNumber,
-            getQueryRouterLabelValue,
-                                } from "src/useSimpleOk/useTools"
-
   // * /////////////////////////////////////////////////////////////////////// Modelos
-  import {  IQueryIncentivo     } from "src/areas/nomina//models/BusquedaIncentivos"
   import {  Incentivo           } from "src/areas/nomina//models/Incentivo"            
   import {  GRUPO_USUARIO       } from "src/models/TiposVarios"
+  import {  IQuery, Busqueda    } from "src/models/Busqueda"
 
   // * /////////////////////////////////////////////////////////////////////// Componentes
   import    fieldsetFiltro        from "components/utilidades/Fieldset.vue"
@@ -182,83 +177,45 @@
   import    inputBuscar           from "src/components/utilidades/input/InputSimple.vue"
   import    innerLoading          from "src/components/utilidades/InnerLoading.vue"
 
-  const router                    = useRouter()
-  let queryURL                    = router.currentRoute.value.query
-  watch( ()=> router.currentRoute.value.query, (q) => {
-    queryURL                      = q
-  })
-
-  const { permisos              } = storeToRefs( useStoreUser() )
+  const { usuario, permisos     } = storeToRefs( useStoreUser() )
   const { incentivos,
           loading,
-          incentivosSearch      } = storeToRefs( useStoreNomina() )
+          incentivosSearch : b  } = storeToRefs( useStoreNomina() )
 
-  onMounted(()=>
-    {
-      loading.value.carga         = true
-      asignarQueryRouterACampos()
-    }
-  )
-  
-  const autoSelectUsuario         = computed(()=> Object.keys(queryURL).length === 0 ? true : getQueryRouterNumber( queryURL.usuarioId  ) ?? false )
-  const siguientePagina           = computed(()=> incentivosSearch.value.pagina + (incentivos.value.length >= incentivosSearch.value.resultadosXPage ? 1 : 0) )
-  const haySiguientePagina        = computed(()=> incentivosSearch.value.pagina !== siguientePagina.value )
-
-  let   copiaQ                    = ""
-  let   bloqueoInicio             = true
-
-  async function asignarQueryRouterACampos()
-  {
-    incentivosSearch.value.ref      = getQueryRouterString    ( queryURL.ref )
-    incentivosSearch.value.valorMin = getQueryRouterNumber    ( queryURL.valorMin  )
-    incentivosSearch.value.valorMax = getQueryRouterNumber    ( queryURL.valorMax  )
-    incentivosSearch.value.estado   = getQueryRouterLabelValue( queryURL.estado, Incentivo.estados)
-    incentivosSearch.value.pagado   = getQueryRouterLabelValue( queryURL.pagado, Incentivo.estadosPago)
-    if(!!queryURL.limite)
-      incentivosSearch.value.resultadosXPage = getQueryRouterNumber ( queryURL.limite       )
-    
-    bloqueoInicio                 = false
-    loading.value.carga           = false
-  }
+  // * /////////////////////////////////////////////////////////////////////// Router
+  const router                    = useRouter()
+  onMounted(()=> { b.value.iniciarOpciones( router.currentRoute.value.query ) } )
 
   const emit = defineEmits<{
-    (e: 'buscar',   value: IQueryIncentivo  ): void
-    (e: 'limpiar',                          ): void
-    (e: 'exportar',                         ): void    
+    (e: 'buscar',   value: IQuery ): void
+    (e: 'limpiar',                ): void
+    (e: 'exportar',               ): void    
   }>()
 
-  watch(incentivosSearch, (b)=>
+  watch(()=>b.value.f, ()=>
     {
-      if(bloqueoInicio) return
-      buscar()
+      if(b.value.puedeBuscar) buscar()
     },
     { deep: true }
   )
 
-  function buscar( origen : string = "" )
+  function buscar()
   {
-    const query         = incentivosSearch.value.query
-    const qString       = JSON.stringify(query)
-    if(copiaQ           !== qString)
-      copiaQ            = qString
-    else if(origen      === "")
-      return
-
-    if(!!Object.keys(query).length)
+    if(!b.value.queryVacia)
     {
-      router.replace({ query: {...query }  })
-      
+      const query       = b.value.query
+      router.replace({ query: { ...query }  })
       query.tipo        = "busqueda"
       emit("buscar", query)
     }
-    else{
-      router.replace({ query: {} })
-    }
+    else router.replace({ query: {} })
   }
 
   function limpiarBusqueda(){
-    queryURL = {}
-    asignarQueryRouterACampos()
+    b.value.copiarQueryACampos( "limpiar" )
     emit("limpiar")
   }
+
+  // * /////////////////////////////////////////////////////////////////////// Computed
+  const siguientePagina           = computed(()=> b.value.siguientePagina( incentivos.value.length ) )
 </script>
