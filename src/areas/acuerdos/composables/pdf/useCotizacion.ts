@@ -323,7 +323,7 @@ export function useCotizacionPDF()
     if(!quote.conTotal) return
 
     const altoBarra             = 16
-    const altoTotales           = 66
+    const altoTotales           = quote.aiuOn ? 100 : 66
     const nuevaPagina           = doc.seNecesitaNuevaHoja( doc.y, altoBarra + altoTotales )
     if( nuevaPagina )
       doc.y                     = crearNuevaHoja() + 10
@@ -339,9 +339,10 @@ export function useCotizacionPDF()
 
     // * //////////////////////////////////////////////// Nombre de Valores
     let nombreValores           = quote.hayDescuento
-                                  ? "Subtotal bruto:\nDescuento:\nSubtotal neto:\n"
-                                  : "Subtotal:\n"
-    nombreValores               += "IVA:\nTotal:"
+                                  ? "Subtotal bruto :\nDescuento :\nSubtotal neto :\n"
+                                  : "Subtotal :\n"
+    nombreValores               += quote.aiuOn ? `Administración ${quote.aiuAdmin}% :\nImprevistos ${quote.aiuImpre}% :\nUtilidad ${quote.aiuUtili}% :\n` : ""
+    nombreValores               += "IVA :\nTotal :"
     doc.setFont                 ( 11, 90 )
     posY                        += 16
     pdf.text                    ( nombreValores, doc.margenDerX - 5, posY, { align: "right", lineHeightFactor: 1.4, renderingMode: 'fillThenStroke' })
@@ -372,6 +373,11 @@ export function useCotizacionPDF()
     if(quote.hayDescuento){
       valores                   += formatoPrecio(quote.descuentoValor,  "decimales-si") + "\n"
       valores                   += formatoPrecio(quote.totalConDescu,   "decimales-si") + "\n"
+    }
+    if(quote.aiuOn){
+      valores                   += formatoPrecio(quote.aiuAdminValor,   "decimales-si") + "\n"
+      valores                   += formatoPrecio(quote.aiuImpreValor,   "decimales-si") + "\n"
+      valores                   += formatoPrecio(quote.aiuUtiliValor,   "decimales-si") + "\n"
     }
     valores                     += formatoPrecio(quote.ivaValor,        "decimales-si") + "\n"
     valores                     += formatoPrecio(quote.totalConIva,     "decimales-si")

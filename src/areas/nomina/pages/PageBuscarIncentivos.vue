@@ -109,15 +109,18 @@
     let   titulo                  = ""
     const largo                   = incentivos.value.length
 
+    if(modo.value                 === "esperando-busqueda")
+      titulo                      = `Buscador de bonos`
+    else
     if(!largo)
-      titulo                      = `Buscando comisiones...`
+      titulo                      = `Buscando bonos...`
     else
     {
       titulo                      = `Resultado: ${largo} `
       if(largo                    === 1)
-        titulo                    += "comisión"
+        titulo                    += "bono"
       else
-        titulo                    += "comisiones"
+        titulo                    += "bonos"
     }
 
     return titulo

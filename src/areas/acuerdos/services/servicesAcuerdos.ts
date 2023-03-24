@@ -97,7 +97,7 @@ export function servicesAcuerdos()
     {
       const { data, ok  }           = await miFetch(  getURL("listas", "acuerdos"),
                                                     {
-                                                      body:   getFormData( "", query ),
+                                                      body:   getFormData( "busqueda", query ),
                                                       method: "POST"
                                                     },
                                                     {

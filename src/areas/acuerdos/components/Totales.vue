@@ -14,6 +14,7 @@
         label               ="Con Total"
         class               ="col-4"
         :icon               ="loading.conTotal ? 'mdi-loading mdi-spin' : ''"
+        :disable            ="acuerdo.esEstadoValido"
         @update:model-value ="editarConTotal"
       />
       <!-- //* /////////////////////////////////////////////////////////////  Con IVA -->
@@ -22,7 +23,7 @@
         label               ="Con IVA"
         class               ="col-4"
         :icon               ="loading.conIVA ? 'mdi-loading mdi-spin' : ''"
-        :disable            ="acuerdo.tercero.aplicaIVA || loading.conIVA || acuerdo.esEstadoValido" 
+        :disable            ="acuerdo.tercero.aplicaIVA || loading.conIVA || acuerdo.esEstadoValido || loading.conAIU" 
         @update:model-value ="editarConIVA"
       />
       <!-- //* /////////////////////////////////////////////////////////////  Con AIU -->
@@ -31,6 +32,7 @@
         label               ="Con AIU"
         class               ="col-4"
         :icon               ="loading.conAIU ? 'mdi-loading mdi-spin' : ''"
+        :disable            ="acuerdo.esEstadoValido || loading.conAIU || loading.conIVA "
         @update:model-value ="editarConAIU"
       />
     </div>
@@ -46,6 +48,7 @@
             v-model         ="acuerdo.aiuAdmin"
             label           ="Administración"
             :paso           ="0.1"
+            :disable        ="acuerdo.esEstadoValidado"
             @update:model-value="(valor : number )=> editarValorAIU(valor, 'aiuAdmin')"
           />
           <div  class       ="fuente-mono text-grey-8 text-center"
@@ -59,6 +62,7 @@
             v-model         ="acuerdo.aiuImpre"
             label           ="Imprevistos"
             :paso           ="0.1"
+            :disable        ="acuerdo.esEstadoValidado"
             @update:model-value="(valor : number)=> editarValorAIU(valor, 'aiuImpre')"
           />
           <div  class       ="fuente-mono text-grey-8 text-center"
@@ -72,6 +76,7 @@
             v-model         ="acuerdo.aiuUtili"
             label           ="Utilidad"
             :paso           ="0.1"
+            :disable        ="acuerdo.esEstadoValidado"
             @update:model-value="(valor : number)=> editarValorAIU(valor, 'aiuUtili')"
           />
           <div  class       ="fuente-mono text-grey-8 text-center"

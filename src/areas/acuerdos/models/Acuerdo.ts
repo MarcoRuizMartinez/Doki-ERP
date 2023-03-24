@@ -229,6 +229,9 @@ export interface IAcuerdo
   retenciones:                IRetenciones
   comisiona:                  boolean
   incentivo:                  IIncentivo
+  fechaListo:                 Date      // Productos listos para entregar
+  fechaListoCorta:            string
+  listoEntregar:              boolean
 
   /* Solo para entregas */
   acuerdosEnlazados           : IAcuerdo[]
@@ -299,6 +302,7 @@ export class Acuerdo implements IAcuerdo
   /* Solo para pedidos */
   facturado:                  boolean
   incentivo:                  IIncentivo
+  fechaListo:                 Date
   /* Solo para entregas */
   transportadoraId            : number
   numeroGuia                  : string
@@ -363,6 +367,7 @@ export class Acuerdo implements IAcuerdo
     /* Solo para pedidos */
     this.facturado            = false
     this.incentivo            = new Incentivo()
+    this.fechaListo           = new Date(0)
 
     /* Solo para entregas */
     this.transportadoraId     = 0
@@ -543,6 +548,7 @@ https://dolibarr.mublex.com/fichinter/card.php?
   get vinculado()         : boolean { return !!this.enlaces.length                      }
   get hayServicios()      : boolean { return this.productos.some( p => p.esServicio )   }
   get hayProductos()      : boolean { return this.productos.some( p => p.esProducto )   }
+  get listoEntregar()     : boolean { return !!this.fechaListo.valueOf()   }
 
   //get comercialNombre() : string { return this.comercial.nombreCompleto }
   //get terceroNombre() : string { return this.tercero.nombre }
@@ -582,7 +588,7 @@ https://dolibarr.mublex.com/fichinter/card.php?
   // * /////////////////////////////////////////////////////////////////////////////// AIU Administracion
   get aiuAdminValor(): number {
     let admin               = 0
-    if(this.aiuOn           && !!this.aiuAdmin)
+    if(this.aiuOn && !!this.aiuAdmin)
       admin                 = X100( this.totalConDescu, this.aiuAdmin )
 
     return admin
@@ -591,7 +597,7 @@ https://dolibarr.mublex.com/fichinter/card.php?
   // * /////////////////////////////////////////////////////////////////////////////// AIU Imprevistos
   get aiuImpreValor(): number {
     let impre               = 0
-    if(this.aiuOn           && !!this.aiuImpre)
+    if(this.aiuOn && !!this.aiuImpre)
       impre                 = X100( this.totalConDescu, this.aiuImpre )
 
     return impre
@@ -600,7 +606,7 @@ https://dolibarr.mublex.com/fichinter/card.php?
   // * /////////////////////////////////////////////////////////////////////////////// AIU Utilidad
   get aiuUtiliValor(): number {
     let utili               = 0
-    if(this.aiuOn           && !!this.aiuUtili)
+    if(this.aiuOn && !!this.aiuUtili)
       utili                 = X100( this.totalConDescu, this.aiuUtili )
 
     return utili
@@ -622,7 +628,7 @@ https://dolibarr.mublex.com/fichinter/card.php?
     if( ( this.conIVA       && !this.aiuOn ) || this.esOCProveedor)
       ivaTotal              = X100( this.totalConDescu, ivaX100 )
     else
-    if(this.conIVA          && this.aiuOn)
+    if(this.aiuOn)
       ivaTotal              = X100( this.aiuUtiliValor, ivaX100 )
 
     return ivaTotal
@@ -810,6 +816,7 @@ https://dolibarr.mublex.com/fichinter/card.php?
   get fechaValidacionCorta()  : string { return fechaCorta( this.fechaValidacion  ) }
   get fechaCierreCorta()      : string { return fechaCorta( this.fechaCierre      ) }
   get fechaEntregaCorta()     : string { return fechaCorta( this.fechaEntrega     ) }
+  get fechaListoCorta()       : string { return fechaCorta( this.fechaListo       ) }
 
   get totalAnticipos()        : number {
     if(!this.anticipos.length) return 0
@@ -978,7 +985,6 @@ https://dolibarr.mublex.com/fichinter/card.php?
     
     acuApi.facturado          = Boolean( +acuApi.facturado )
     acuApi.conTotal           = Boolean( +acuApi.conTotal )
-
     acuApi.conIVA             = Boolean( +acuApi.conIVA )
     acuApi.aiuOn              = Boolean( +acuApi.aiu )
 
@@ -999,11 +1005,13 @@ https://dolibarr.mublex.com/fichinter/card.php?
     acuApi.fechaValidacion    = getDateToStr( acuApi.fechaValidacion  )
     acuApi.fechaCierre        = getDateToStr( acuApi.fechaCierre      )
     acuApi.fechaFinValidez    = getDateToStr( acuApi.fechaFinValidez  )
-    acuApi.fechaEntrega       = getDateToStr( acuApi.fechaEntrega, "UTC")
+    acuApi.fechaEntrega       = getDateToStr( acuApi.fechaEntrega,  "UTC")
+    acuApi.fechaListo         = getDateToStr( acuApi.fechaListo,    "UTC")
 
     const acu                 = Object.assign( new Acuerdo( tipo ), acuApi ) as IAcuerdo
     acu.esNuevo               = false
     acu.tipo                  = tipo
+    acu.conTotal              = acu.esCotizacion ? acu.conTotal : true
     acu.creador               = await getUsuarioDB        ( acu.creadorId )
     acu.enlaces               = EnlaceAcuerdo.enlacesApiToEnlaces( acuApi?.enlaces ?? "", tipo )
 

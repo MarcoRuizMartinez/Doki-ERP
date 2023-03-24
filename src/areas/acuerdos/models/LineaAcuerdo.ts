@@ -490,17 +490,20 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
   }
 
   static lineasDeProductos( productos : IProductoDoli[],
-                            qty       : number | undefined = undefined,
-                            descu     : number | undefined = undefined
+                            qty       : number  | undefined = undefined,
+                            iva_      : boolean | undefined = undefined
+
                           ) : ILineaAcuerdo[]
   {
-    const lineas : ILineaAcuerdo[] = []
+    const lineas  : ILineaAcuerdo[] = []
+    const iva     : number          = !!iva_ ? parseInt( process.env.IVA ?? "0" ) : 0
     if( !productos.length ) return []
 
     for (const producto of productos)
     {
       let linea               = LineaAcuerdo.lineaDeProducto(producto)
           linea.qty           = !qty || (typeof qty === "number" && qty < 0 ) ? 1 : qty
+          linea.iva           = iva
           //linea.descuentoX100 = descu ?? 0
       lineas.push( linea )
     }

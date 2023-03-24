@@ -27,7 +27,7 @@ import {  getQueryRouterDate,
           getQueryRouterLabelValueArray } from "src/useSimpleOk/useTools"
 
 export interface      IQuery {
-  tipo                 ?: string
+  //tipo                 ?: string
   id                   ?: number
   acuerdo              ?: TTipoAcuerdo
   usuario              ?: string | number
@@ -132,7 +132,6 @@ export interface        IBusqueda {
   esOCProveedor         : boolean
   esEntrega             : boolean
   puedeBuscar           : boolean
-  autoSelectUsuario     : boolean
   camposVacios          : boolean
 
   // * /////////////////  Metodos
@@ -280,16 +279,14 @@ export class Busqueda implements IBusqueda
     {
       if( this.puedeCambiarUser )
       {
-        if( !!this.usuarioIdInicio && !this.f.usuario.label ){
-          this.f.usuario        = await getUsuarioDB( this.usuarioIdInicio )
-        }
-        // else se asume que se hizo auto select y hay un usuario ya asignado 
+        if( !!this.usuarioIdInicio )
+          this.f.usuario      = await getUsuarioDB( this.usuarioIdInicio )          
+        else
+        if( this.haceAutoSelect )
+          this.f.usuario      = await getUsuarioDB( this.usuarioId )
       }
       else
-      {
-        if( this.usuarioId != this.usuarioIdInicio )
-          this.f.usuario        = await getUsuarioDB( this.usuarioId )
-      }
+        this.f.usuario        = await getUsuarioDB( this.usuarioId )
     }
     else // Solo pasa cuando se limpia
     {
@@ -372,17 +369,22 @@ export class Busqueda implements IBusqueda
     return true
   }
 
-  get puedeBuscar         () : boolean { return this.o.opcionesOk && !this.f.copiando && !this.camposVacios }
   get queryVacia          () : boolean { return !Object.keys(this.query).length               }
   get esCotizacion        () : boolean { return this.acuerdo === TIPO_ACUERDO.COTIZACION_CLI  }
   get esPedido            () : boolean { return this.acuerdo === TIPO_ACUERDO.PEDIDO_CLI      }
   get esOCProveedor       () : boolean { return this.acuerdo === TIPO_ACUERDO.PEDIDO_PRO      }
   get esEntrega           () : boolean { return this.acuerdo === TIPO_ACUERDO.ENTREGA_CLI     }
-  get autoSelectUsuario   () : boolean { return this.haceAutoSelect && !this.usuarioIdInicio }
+  get puedeBuscar         () : boolean
+  {
+    return    this.o.opcionesOk 
+          && !this.f.copiando 
+          && !this.camposVacios
+  }
 
   get query() : IQuery
-  {
+  { 
     const q : IQuery       = {}
+    if( this.camposVacios ) return q
 
     if(this.f.buscar.length  > 3)       q.buscar            = this.f.buscar
     if(this.f.contacto.length > 3)      q.contacto          = this.f.contacto
@@ -421,6 +423,7 @@ export class Busqueda implements IBusqueda
       q.limite                    = this.f.resultadosXPage
       q.offset                    = q.limite * (this.f.pagina - 1)
     }
+
     return q
   }
 

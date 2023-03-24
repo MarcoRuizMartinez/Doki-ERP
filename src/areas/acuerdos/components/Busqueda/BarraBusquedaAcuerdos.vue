@@ -92,7 +92,6 @@
           v-model               ="b.f.usuario"
           class                 ="width160"
           label                 ="Asesor"
-          :autoselect           ="b.autoSelectUsuario"
           :area                 ="usuario.area"
           :grupos               =[GRUPO_USUARIO.COMERCIALES]
           :readonly             ="!b.puedeCambiarUser"
@@ -419,11 +418,8 @@
 
   watch(()=>b.value.f, ()=>
     {
-      if(b.value.puedeBuscar && !b.value.queryVacia) 
-        buscar()
-      else if(b.value.queryVacia) {
-        limpiarBusqueda()
-      }
+            if(b.value.puedeBuscar) buscar()
+      else  if(b.value.queryVacia ) limpiarBusqueda()
     },
     { deep: true }
   )
@@ -433,7 +429,6 @@
     b.value.copiarQueryARourter()
     const query       = b.value.query
     query.acuerdo     = b.value.acuerdo
-    query.tipo        = "busqueda"
     emit("buscar", query)
   }
 

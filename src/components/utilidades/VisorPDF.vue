@@ -79,9 +79,9 @@
     }
   })
 
-  watch(visible, (newValue, oldValue) =>{
+  watch(visible, (newValue) =>{
     visibleModel.value        = newValue
-  })
+  }, { immediate: true })
 
   function cerrarVentana()
   {

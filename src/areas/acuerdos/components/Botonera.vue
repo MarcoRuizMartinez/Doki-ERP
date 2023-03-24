@@ -64,12 +64,25 @@
           icon                ="mdi-tools"  
           target              ="_blank"
           :href               ="acuerdo.urlDolibarrOC"
-          :label              ="esMobil ? '' : 'OC Proveedor'"
-          :disable            ="cargandoAlgo"        
+          :disable            ="cargandoAlgo"
           >
           <Tooltip label      ="Generar pedidos a proveedor"/>
         </q-btn>
-      </efecto>    
+      </efecto>
+      <!-- //* //////////////////////////////////////////////////////////  Boton Listo entregar -->
+      <efecto efecto          ="Down">      
+        <q-btn
+          v-if                ="acuerdo.esPedido && acuerdo.esEstadoValido && !acuerdo.esEstadoEntregado"
+          v-bind              ="style.btnBaseMd"
+          color               ="primary"
+          icon                ="mdi-hand-okay"
+          :disable            ="cargandoAlgo"
+          :class              ="{'op50' : !acuerdo.listoEntregar}"
+          @click              ="clickListoEntregar"
+          >
+          <Tooltip :label     ="'Listo para entregar: '+ siNo(acuerdo.listoEntregar)"/>
+        </q-btn>
+      </efecto>      
       <!-- //* //////////////////////////////////////////////////////////  Boton PDF -->
       <efecto efecto          ="Down">      
         <q-btn
@@ -268,7 +281,7 @@
   import {  useStoreUser    } from 'src/stores/user'
   import {  useStoreAcuerdo } from 'src/stores/acuerdo'
   // * /////////////////////////////////////////////////////////////////////// Componibles
-  import {  useTools        } from "src/useSimpleOk/useTools"
+  import {  siNo, useTools  } from "src/useSimpleOk/useTools"
   import {  menuDefault,
             style           } from "src/useSimpleOk/useEstilos"
   import {  TTipoPDF        } from "src/areas/acuerdos/composables/pdf/useCotizacion"
@@ -297,6 +310,7 @@
     (e: 'clickEntregado',     ): void
     (e: 'clickComisiones',    ): void
     (e: 'clickNuevaEntrega',  ): void  
+    (e: 'clickListoEntregar', ): void
     (e: 'clickCuentaCobro',   value: TTipoPDF ): void 
   }>()
 
@@ -361,5 +375,11 @@
   function clickEnNotas()
   {
     window.scrollTo({ top: document.body.scrollHeight,  behavior: 'smooth'})
+  }
+
+  function clickListoEntregar()
+  {
+    if(usuario.value.esProduccion)
+      emit('clickListoEntregar')    
   }
 </script>

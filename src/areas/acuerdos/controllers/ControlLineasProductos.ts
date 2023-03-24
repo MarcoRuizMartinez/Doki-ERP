@@ -82,13 +82,13 @@ export function useControlProductos()
     const productosAñadidos   : ILineaAcuerdo[] = []
 
     // * !productosAdd.length es porque es ejecutado desde, Cambiarle nombre al grupo.
-    // El unico grupo que no tiene titulo creado es el primero. Solo se crea cuando se edita el nombre...
-    // ... pero como por defecto, este titulo no se crea, de alguna forma toca saber cuando toca crearlo
+    // * El unico grupo que no tiene titulo creado es el primero. Solo se crea cuando se edita el nombre...
+    // * ... pero como por defecto, este titulo no se crea, de alguna forma toca saber cuando toca crearlo
     if(grupoElegido.value.hayQueCrearTitulo || !productosAdd.length)
       productosAñadidos.push( LineaAcuerdo.getTitulo( grupoElegido.value.titulo ) )
 
     if(!!productosAdd.length)
-      productosAñadidos.push(...LineaAcuerdo.lineasDeProductos( productosAdd.filter(p => p.activo), cantidad ))
+      productosAñadidos.push(...LineaAcuerdo.lineasDeProductos( productosAdd.filter(p => p.activo), cantidad, acuerdo.value.conIVA ))
 
     let mayorOrden            = Math.max( ...grupoElegido.value.productos.map( p => p.orden ) )
         mayorOrden            = mayorOrden === -Infinity ? 0 : mayorOrden
@@ -96,7 +96,7 @@ export function useControlProductos()
     for (const [i, linea] of productosAñadidos.entries())
     {
       linea.orden             = mayorOrden + i + 1 // Luego se vuelve a ordenar
-      linea.iva               = acuerdo.value.tercero.aplicaIVA ? +process.env.IVA : 0
+      //linea.iva               = acuerdo.value.tercero.aplicaIVA ? +process.env.IVA : 0
 
       if(!acuerdo.value.esEstadoBoceto){
         linea.lineaId         = await crearLineaEnApi( linea )
@@ -144,8 +144,8 @@ export function useControlProductos()
   {
     if(acuerdo.value.esEstadoBoceto) return 0
 
-    let lineaAPI          = LineaAcuerdo.lineaToLineaApi( nuevaLinea )
-    let { data, ok }      = await apiDolibarr("crear-linea", acuerdo.value.tipo, lineaAPI, acuerdo.value.id)
+    const lineaAPI        = LineaAcuerdo.lineaToLineaApi( nuevaLinea )
+    const { data, ok }    = await apiDolibarr("crear-linea", acuerdo.value.tipo, lineaAPI, acuerdo.value.id)
     if(ok){
       const newId : number= !!data ? +data : 0
       return newId
@@ -157,10 +157,10 @@ export function useControlProductos()
   async function editarLinea( linea : ILineaAcuerdo ) : Promise<boolean>
   {
     loading.value.editarLinea   = true
-    let lineaForAPI             = LineaAcuerdo.lineaToLineaApi( linea )
+    const lineaForAPI           = LineaAcuerdo.lineaToLineaApi( linea )
     let seguir                  = true
     if(!acuerdo.value.esEstadoBoceto){
-      let {ok, data}            = await apiDolibarr("editar-linea", acuerdo.value.tipo, lineaForAPI, acuerdo.value.id )
+      const {ok}                = await apiDolibarr("editar-linea", acuerdo.value.tipo, lineaForAPI, acuerdo.value.id )
       seguir                    = ok
       if(!ok){
         modalYLoadingOff()

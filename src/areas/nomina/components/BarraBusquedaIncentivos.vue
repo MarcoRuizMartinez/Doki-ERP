@@ -17,7 +17,6 @@
         v-model               ="b.f.usuario"
         class                 ="width200"
         label                 ="Usuario"
-        :autoselect           ="b.autoSelectUsuario"
         :readonly             ="!b.puedeCambiarUser"
         :grupos               =[GRUPO_USUARIO.EN_NOMINA]
       />
@@ -174,7 +173,6 @@
   import    inputBuscar           from "src/components/utilidades/input/InputSimple.vue"
   import    innerLoading          from "src/components/utilidades/InnerLoading.vue"
 
-  const { usuario, permisos     } = storeToRefs( useStoreUser() )
   const { incentivos,
           loading,
           incentivosSearch : b  } = storeToRefs( useStoreNomina() )
@@ -188,12 +186,9 @@
   }>()
 
   watch(()=>b.value.f, ()=>
-    {
-      if(b.value.puedeBuscar && !b.value.queryVacia) 
-        buscar()
-      else if(b.value.queryVacia) {
-        limpiarBusqueda()
-      }
+  {
+            if(b.value.puedeBuscar) buscar()
+      else  if(b.value.queryVacia ) limpiarBusqueda()
     },
     { deep: true }
   )
@@ -201,18 +196,13 @@
   function buscar()
   {
     b.value.copiarQueryARourter()
-    const query       = b.value.query
-    query.tipo        = "busqueda"
-    emit("buscar", query)
+    emit("buscar", b.value.query)
   }
 
   function limpiarBusqueda(){
     const todoLimpio  = b.value.limpiarQueryDeRouter()
     if(todoLimpio) emit("limpiar")
-  }
+  }  
 
-
-
-  // * /////////////////////////////////////////////////////////////////////// Computed
   const siguientePagina           = computed(()=> b.value.siguientePagina( incentivos.value.length ) )
 </script>

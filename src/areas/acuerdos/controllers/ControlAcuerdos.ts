@@ -627,7 +627,20 @@ export function useControlAcuerdo()
   {
     loading.value.conAIU        = true
     const ok                    = await setAiu( acuerdo.value.id, +on, "aiu", acuerdo.value.tipo)
-    if(ok) aviso("positive", "AIU " + ( on ? "activado" : "desactivado" ))
+    const okIVA                 = await editarConIVA( !on )
+    let totalOk                 = true
+    if(okIVA) 
+      acuerdo.value.conIVA      = !on
+    if(!acuerdo.value.conTotal && acuerdo.value.esCotizacion && on){
+      totalOk                   = await editarConTotal( true )
+      acuerdo.value.conTotal    = totalOk
+    }
+
+    if(ok && okIVA && totalOk)
+      aviso("positive", "AIU " + ( on ? "activado" : "desactivado" ))
+    else
+      aviso("negative", "Error al actualizar AIU")
+
     loading.value.conAIU        = false
   }
 
@@ -640,17 +653,19 @@ export function useControlAcuerdo()
   }
 
   //* /////////////////////////////////////////////////////////////// Editar con Total
-  async function editarConTotal( on : boolean )
+  async function editarConTotal( on : boolean ) : Promise <boolean>
   {
     loading.value.conTotal      = true
     const ok                    = await setTotal( acuerdo.value.id, on, acuerdo.value.tipo)
     if(ok) aviso("positive", "Total " + ( on ? "activado" : "desactivado" ))
     loading.value.conTotal      = false
+    return ok
   }
 
   //* /////////////////////////////////////////////////////////////// Editar con IVA
-  async function editarConIVA( on : boolean )
+  async function editarConIVA( on : boolean ) : Promise <boolean>
   {
+    let todoOk                  = true
     loading.value.conIVA        = true
     const conIVAEditado         = await setConIVA( acuerdo.value.id, on, acuerdo.value.tipo)
 
@@ -666,11 +681,18 @@ export function useControlAcuerdo()
         console.trace()
         console.error(error)
         aviso("negative", error)
+        todoOk                  = false
       }
     }
 
-    if(conIVAEditado) aviso("positive", "IVA " + ( on ? "activado" : "desactivado" ))
+    if(conIVAEditado)
+      aviso("positive", "IVA " + ( on ? "activado" : "desactivado" ))
+    else
+    todoOk                      = false
+
     loading.value.conIVA        = false
+
+    return todoOk
   }
 
   async function buscarAcuerdoEnlazados( buscarEnlaces : boolean = false )
@@ -719,15 +741,15 @@ export function useControlAcuerdo()
     }
   }
 
-async function buscarEnlacesAcuerdo() 
-{
-  const objeto          = { ref: acuerdo.value.ref, id: acuerdo.value.id }
-  const { ok, data }    = await miFetch( getURL("listas", "varios"), { method: "POST", body: getFormData( "buscarEnlacesAcuerdo", objeto ) }, { mensaje: "buscar enlaces" } )
-  if(ok)
-    acuerdo.value.enlaces = EnlaceAcuerdo.enlacesApiToEnlaces( data, acuerdo.value.tipo )
-}  
+  async function buscarEnlacesAcuerdo() 
+  {
+    const objeto          = { ref: acuerdo.value.ref, id: acuerdo.value.id }
+    const { ok, data }    = await miFetch( getURL("listas", "varios"), { method: "POST", body: getFormData( "buscarEnlacesAcuerdo", objeto ) }, { mensaje: "buscar enlaces" } )
+    if(ok)
+      acuerdo.value.enlaces = EnlaceAcuerdo.enlacesApiToEnlaces( data, acuerdo.value.tipo )
+  }  
 
-    //* /////////////////////////////////////////////////////////////// Editar metodo de entrega
+  //* /////////////////////////////////////////////////////////////// Editar metodo de entrega
   async function actualizarPreciosAcuerdo( soloCosto : 0 | 1 )
   {
     const objeto                = { id: acuerdo.value.id, acuerdo: acuerdo.value.tipo, soloCosto }
@@ -741,6 +763,20 @@ async function buscarEnlacesAcuerdo()
     else
       aviso("negative", `Error al actualizar precios`)
   }
+
+  async function setListoEntregar()
+  {
+    const objeto                = { on: +!acuerdo.value.listoEntregar, id: acuerdo.value.id, acuerdo: acuerdo.value.tipo }
+    const objetoForData         = { body: getFormData("listoEntregar", objeto), method: "POST"}
+    const { ok  }               = await miFetch( endPoint("servicios"), objetoForData, { mensaje: "listo para entregar" } )        
+    if(ok){
+      acuerdo.value.fechaListo  = acuerdo.value.listoEntregar ? new Date( 0 ) : new Date() 
+      aviso("positive", "Listo para entregar 👌🏼")
+    }
+    else
+      aviso("negative", `Error al camabiar listo para entregar`)
+  }
+
 
 
   //* /////////////////////////////////////////////////////////////// Return
@@ -777,6 +813,7 @@ async function buscarEnlacesAcuerdo()
     desvincularContactoAcuerdo,
     editarDatosEntregaSistemaViejo,
     buscarAcuerdoEnlazados,
-    actualizarPreciosAcuerdo
+    actualizarPreciosAcuerdo,
+    setListoEntregar
   }
 }

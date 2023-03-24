@@ -12,7 +12,7 @@
       <!-- //* /////////////////////////////////////////////////////// Link a acuerdo -->
       <router-link
         class                   ="link-limpio text-white"
-        :to                     ="`/${Acuerdo.getRuta( tipo )}/?tercero=${tercero.documento.numero}`"
+        :to                     ="`/${Acuerdo.getRuta( tipo )}/?buscar=${tercero.documento.numero}`" 
         >
         Ver {{ Acuerdo.getTipoAcuerdoPlural( tipo )}}
       </router-link>  

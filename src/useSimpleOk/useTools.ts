@@ -67,9 +67,8 @@ export function mayusculasPrimeraLetraAll( texto : string ) : string
 
 export function getDateToStr( fechaStr : string, tipo : "UTC" | "local" = "local" ) : Date
 {
-  let miliExtras    = tipo == "UTC" ? new Date().getTimezoneOffset() * 60 * 1000 : 0
-  let milisegundos  = !!fechaStr ? Date.parse( fechaStr ) + miliExtras : 0
-
+  const miliExtras    = tipo == "UTC" ? new Date().getTimezoneOffset() * 60 * 1000 : 0
+  const milisegundos  = !!fechaStr ? Date.parse( fechaStr ) + miliExtras : 0
   return new Date ( milisegundos )
 }
 

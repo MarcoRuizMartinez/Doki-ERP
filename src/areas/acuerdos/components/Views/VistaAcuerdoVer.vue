@@ -19,6 +19,7 @@
     @click-comisiones       ="modales.comisiones = true"
     @click-nueva-entrega    ="clickNuevaEntrega"
     @click-cuenta-cobro     ="generarPDF"
+    @click-listo-entregar   ="setListoEntregar"
   />
   <tercero-y-contacto       scroll
     class                   ="col-md-4 col-12"
@@ -163,6 +164,7 @@
           eliminarAcuerdo,
           validarAcuerdo,
           cerrarPedido,
+          setListoEntregar,
                             } = useControlAcuerdo()
   const minimizadoTodo        = ref< boolean  >(false)
   const srcPDF                = ref< string   >("")
@@ -244,9 +246,6 @@
     modales.value.remision      = true
     acuerdoRemsion.value        = acu    
   }
-
-
-
 
 /*
 import {  useRouter             } from 'vue-router'

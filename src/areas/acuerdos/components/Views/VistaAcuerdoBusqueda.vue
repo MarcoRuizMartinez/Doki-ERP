@@ -207,6 +207,9 @@
     let   titulo                  = ""
     const largo                   = acuerdos.value.length
 
+    if(modo.value                 === "esperando-busqueda")
+      titulo                      = `Buscador de ${Acuerdo.getTipoAcuerdoPlural(tipo.value)}`
+    else
     if(!largo)
       titulo                      = `Buscando ${Acuerdo.getTipoAcuerdoPlural(tipo.value)}...`
     else
@@ -240,8 +243,8 @@
   {
     useTitle(`${Acuerdo.getEmojiAcuerdo(tipo.value)}🔍 Buscar ${Acuerdo.getTipoAcuerdoPlural(tipo.value)}`)
     acuerdos.value                = []
-    await busqueda.value.montarBusqueda( usuario.value.id, router, usuario.value.esComercial, permisos.value.acceso_total, tipo.value )
     modo.value                    = "esperando-busqueda"
+    await busqueda.value.montarBusqueda( usuario.value.id, router, usuario.value.esComercial, permisos.value.acceso_total, tipo.value )
     crearColumnas()
   }
 
@@ -252,7 +255,7 @@
 
   async function buscar( query : IQuery )
   {
-    acuerdos.value                = []            
+    acuerdos.value                = []
     modo.value                    = "buscando"
     loading.value.carga           = true
     acuerdos.value                = await getAcuerdos( query )  
@@ -315,16 +318,17 @@
       new Columna(            { name: "creador"                                                               }),
       new Columna(            { name: "fechaCreacionCorta",   label: "Creado"                                 }),
       new Columna(            { name: "fechaValidacionCorta", label: "Validado"                               }),
+      new Columna(            { name: "fechaListoCorta",      label: "Fecha listo"                            }),
       Columna.ColumnaPrecio ( { name: "subTotalLimpio",       label: "Subtotal comisión", clase: "text-bold"  }),
       Columna.ColumnaPrecio ( { name: "totalConDescu",        label: "Subtotal",          clase: "text-bold"  }),
       Columna.ColumnaPrecio ( { name: "ivaValor",             label: "IVA",               clase: "text-bold"  }),
       Columna.ColumnaPrecio ( { name: "totalConIva",          label: "Total",             clase: "text-bold"  }),
     ]
 
-    const colsEli = busqueda.value.esCotizacion   ? ["facturado", "pedidoId"]
+    const colsEli = busqueda.value.esCotizacion   ? ["facturado", "pedidoId", "fechaListoCorta"]
                   : busqueda.value.esPedido       ? ["pedidoId"]
-                  : busqueda.value.esEntrega      ? ["facturado", "condicionPagoLabel", "formaPagoLabel", "origenContactoLabel", "subTotalLimpio", "totalConDescu", "ivaValor", "totalConIva"]
-                  : busqueda.value.esOCProveedor  ? ["refCliente", "comercial", "metodoEntregaLabel", "facturado", "origenContactoLabel", "subTotalLimpio", "pedidoId" ]
+                  : busqueda.value.esEntrega      ? ["facturado", "condicionPagoLabel", "formaPagoLabel", "origenContactoLabel", "subTotalLimpio", "totalConDescu", "ivaValor", "totalConIva", "fechaListoCorta"]
+                  : busqueda.value.esOCProveedor  ? ["refCliente", "comercial", "metodoEntregaLabel", "facturado", "origenContactoLabel", "subTotalLimpio", "pedidoId", "fechaListoCorta"]
                   : []
     Columna.eliminarColums( colsEli, columnas.value )
 

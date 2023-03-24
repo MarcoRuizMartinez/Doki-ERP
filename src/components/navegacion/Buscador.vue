@@ -39,9 +39,9 @@
 
   function buscar( tipo : string )
   {
-    let patch       =   tipo  === BUSQUEDAS.PEDIDOS       ? "/pedidos?tercero="
-                      : tipo  === BUSQUEDAS.COTIZACIONES  ? "/cotizaciones?tercero="
-                      : tipo  === BUSQUEDAS.PEDIDO_PRO  ? "/pedidos-proveedor?tercero="
+    let patch       =   tipo  === BUSQUEDAS.PEDIDOS       ? "/pedidos?buscar=" 
+                      : tipo  === BUSQUEDAS.COTIZACIONES  ? "/cotizaciones?buscar="
+                      : tipo  === BUSQUEDAS.PEDIDO_PRO  ? "/pedidos-proveedor?buscar="
                       : tipo  === BUSQUEDAS.PRODUCTOS     ? "/productos?busqueda="
                       : ""
     if(!patch) return
