@@ -190,7 +190,7 @@ export class GrupoLineas implements IGrupoLineas
   // Tambien reorganiza los productos de los grupos
   static getProductosDesdeGrupos( grupos :IGrupoLineas[] ) : ILineaAcuerdo[]
   {
-    let productos : ILineaAcuerdo[] = []
+    const productos : ILineaAcuerdo[] = []
     let cuentaGrupos      = 0
     let orden             = 0
 

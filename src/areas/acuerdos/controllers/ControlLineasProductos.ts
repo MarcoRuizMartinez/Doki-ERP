@@ -42,6 +42,11 @@ export function useControlProductos()
     modales.value.añadirProductos   = true
   }
 
+  function mostrarOrdenarProductos( grupo : IGrupoLineas ){
+    grupoElegido.value              = grupo
+    modales.value.ordenar           = true
+  }
+
   async function deGruposAProductos()
   {    
     await borrarGruposSinProductos()
@@ -477,6 +482,7 @@ export function useControlProductos()
     editarEnLoteQtyYDescu,
     mostrarFormularioLinea,
     mostrarBuscarProductos,
+    mostrarOrdenarProductos,
     destacarLineaElegida,
     editarTituloGrupo,
     moverGrupo,

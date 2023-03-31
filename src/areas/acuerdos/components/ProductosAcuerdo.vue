@@ -64,6 +64,18 @@
             v-if                ="acuerdo.esEstadoNoValidado"
             >
             <div class          ="row items-center">
+              <!-- //* /////////////////////////////////////////////////////// Boton ordenar productos  -->
+              <q-btn
+                v-if            ="!acuerdo.esEstadoBoceto"
+                v-bind          ="style.btnBaseSm"
+                class           ="text-black q-mr-sm"
+                color           ="grey-1"
+                label           ="Ordenar"
+                icon            ="mdi-sort-alphabetical-ascending"
+                @click          ="mostrarOrdenarProductos(grupo)"
+                >
+                <Tooltip label  ="Ordenar productos"/>
+              </q-btn>                    
               <!-- //* /////////////////////////////////////////////////////// Boton agregar producto  -->
               <q-btn
                 v-bind          ="style.btnBaseSm"
@@ -90,7 +102,7 @@
       @hide                     ="grupoElegido.noDestacarProductos()"
       >
       <buscar-productos />
-    </q-dialog>
+    </q-dialog> 
     <!-- //* ///////////////////////////////////////////////////////////// Modal formulario edicion Linea   -->
     <q-dialog
       v-model                   ="modales.formulario"
@@ -106,6 +118,14 @@
       :persistent               ="loading.editarLote"
       >
       <editar-en-lote />
+    </q-dialog>
+    <!-- //* ///////////////////////////////////////////////////////////// Modal ordenar lineas -->
+    <q-dialog
+      v-model                   ="modales.ordenar"
+      v-bind                    ="style.dialogo"
+      :persistent               ="loading.ordenando"
+      >
+      <ordenar />
     </q-dialog>
   </ventana>
 </template>
@@ -128,11 +148,13 @@
   import    buscarProductos         from "./Modals/BuscarAgregarProductos.vue"
   import    formularioLinea         from "./Modals/FormularioLinea.vue"
   import    editarEnLote            from "./Modals/EditarEnLoteQtyDesc.vue"
+  import    ordenar                 from "./Modals/OrdenarLineas.vue"
   import    confirmar               from "components/utilidades/MenuConfirmar.vue"
   
 
   const { destacarLineaElegida,
-          mostrarBuscarProductos    } = useControlProductos()
+          mostrarBuscarProductos,
+          mostrarOrdenarProductos   } = useControlProductos()
   const { actualizarPreciosAcuerdo  } = useControlAcuerdo()  
                               
   const { acuerdo,

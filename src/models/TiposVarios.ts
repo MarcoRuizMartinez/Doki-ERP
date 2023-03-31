@@ -127,6 +127,7 @@ export interface ILoading {
   borrarLinea     ?: boolean
   editarLinea     ?: boolean
   editarLote      ?: boolean
+  ordenando       ?: boolean
   borrarLote      ?: boolean
   editarGrupo     ?: boolean
   subtotal        ?: boolean
@@ -165,6 +166,7 @@ export const LoadingDefault = {
   borrarLinea     : false,
   editarLinea     : false,
   editarLote      : false,
+  ordenando       : false,
   borrarLote      : false,
   editarGrupo     : false,
   subtotal        : false,
@@ -181,6 +183,7 @@ export interface IModales {
   formulario      ?: boolean
   editarEnLote    ?: boolean
   añadirProductos ?: boolean
+  ordenar         ?: boolean
   pdf             ?: boolean
   remision        ?: boolean
   rotulos         ?: boolean
@@ -193,6 +196,7 @@ export const ModalesDefault = {
   formulario      : false,
   editarEnLote    : false,
   añadirProductos : false,
+  ordenar         : false,
   pdf             : false,
   remision        : false,
   rotulos         : false,

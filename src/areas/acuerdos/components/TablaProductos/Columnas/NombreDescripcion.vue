@@ -17,7 +17,7 @@
       >
     </span>
     <Tooltip v-if       ="false">
-      <table  class     ="tabla-info text-1em rounded-borders q-px-sm min-w-100">
+      <table  class     ="tabla-info text-1em rounded-borders q-px-sm min-w-x100">
         <tbody>
           <tr>
             <td>Costo</td>

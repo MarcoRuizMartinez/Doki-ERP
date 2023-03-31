@@ -3,7 +3,7 @@
     class           ="q-px-sm"
     :class          ="{ 'bg-grey-3 rounded-borders' : !dark }"
     >
-    <table  class   ="tabla-info text-1em min-w-100"      
+    <table  class   ="tabla-info text-1em min-w-x100"      
       >
       <tbody>
         <tr>

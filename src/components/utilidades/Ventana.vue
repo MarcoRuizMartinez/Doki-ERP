@@ -6,7 +6,7 @@
     <q-card
       :style                  ="estiloAncho"
       class                   ="clase-ventana"
-      style="height: 100%;"
+      style                   ="height: 100%;"
       > <!-- //?* class ="miCard shadow-5" :class="clase"  --> 
       <!-- //?* //////////////////////////////////////////////////////////////// Barra superior justify-between --> 
       <q-card-section         
@@ -192,6 +192,11 @@
       heightCard:           { default: 'auto',  type: [Number, String] as PropType<number | string>},
       heightCardMin:        { default: 'auto',  type: [Number, String] as PropType<number | string>},
       heightCardMax:        { default: '',      type: [Number, String] as PropType<number | string>},
+      minWidth:
+      {
+        default:            0,
+        type:               [Number, String] as PropType<number | string>
+      },
       width:            
       {
         default:            0,
@@ -211,6 +216,7 @@
   const { modo,
           width,
           height,
+          minWidth,
           minimizado,
           heightCard,
           heightCardMin,
@@ -258,20 +264,25 @@
     let estiloFinal :string   = ""
 
     if(!width.value)
-    {
       estiloFinal             = ""
-    }
     else
     if(typeof width.value     === "string")
-    {
-      estiloFinal             = "width: " + width.value + "; max-width: " + width.value + ";"
-    }
+      estiloFinal             = "width: " + width.value + "; max-width: " + width.value + "; "
     else
     if(typeof width.value     === "number")
-    {
-      estiloFinal             = !!width ? "width: " + width.value + "px; max-width: " + width.value + "px;" : ""
-    }
+      estiloFinal             = !!width.value ? "width: " + width.value + "px; max-width: " + width.value + "px; " : ""
+      
 
+    if(!minWidth.value)
+      estiloFinal             += ""
+    else
+    if(typeof minWidth.value  === "string")
+      estiloFinal             += "min-width: " + minWidth.value + ";"
+    else
+    if(typeof minWidth.value  === "number")
+      estiloFinal             += !!minWidth.value ? "min-width: " + minWidth.value + "px;" : ""
+            
+    
     return estiloFinal
     
   })

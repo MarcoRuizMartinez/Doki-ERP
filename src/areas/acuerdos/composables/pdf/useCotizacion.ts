@@ -496,7 +496,7 @@ export function useCotizacionPDF()
         let retorno           = 0        
               if( a.esRefEspecial && !b.esRefEspecial ) retorno =  1
         else  if(!a.esRefEspecial &&  b.esRefEspecial ) retorno = -1
-        else  if( a.esRefEspecial === b.esRefEspecial ) retorno = a.precioFinal - b.precioFinal
+        //else  if( a.esRefEspecial === b.esRefEspecial ) retorno = a.precioFinal - b.precioFinal
         return retorno 
       })
     })
