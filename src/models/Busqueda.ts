@@ -63,6 +63,7 @@ export interface      IQuery {
   incRazon             ?: INCENTIVO_RAZON
   incOrigen            ?: INCENTIVO_ORIGEN
   incPago              ?: INCENTIVO_ESTADO_PAGO
+  origenTipo           ?: number
 }
 
 interface               IOpciones {
