@@ -152,8 +152,7 @@
   </titulo>
 </template>
 <script setup lang="ts">
-  import {  computed              } from "vue"
-  import {  servicesAcuerdos      } from "src/areas/acuerdos/services/servicesAcuerdos"
+  import {  servicesAcuerdos      } from "src/areas/acuerdos/controllers/servicesAcuerdos"
   import {  useTools              } from "src/useSimpleOk/useTools"
   import    titulo                  from "components/utilidades/Titulo.vue"
   import    efecto                  from "components/utilidades/Efecto.vue"

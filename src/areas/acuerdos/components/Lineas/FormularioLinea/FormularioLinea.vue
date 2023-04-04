@@ -201,7 +201,7 @@
   import    selectLabelValue      from "components/utilidades/select/SelectLabelValue.vue"
   import    numeroPaso            from "components/utilidades/input/InputNumeroPaso.vue"
   import    inputNumber           from "components/utilidades/input/InputFormNumber.vue"
-  import    sliderDescuento       from "src/areas/acuerdos/components/Modals/FormularioLinea/SliderDescuento.vue"
+  import    sliderDescuento       from "./SliderDescuento.vue"
 
   const { dialog              } = useQuasar()
   const { aviso               } = useTools()  

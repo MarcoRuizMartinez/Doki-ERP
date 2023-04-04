@@ -159,7 +159,7 @@
   import {  useStoreAcuerdo     } from 'src/stores/acuerdo'
   // * /////////////////////////////////////////////////////////////////////// Componibles
   import {  useTitle            } from "@vueuse/core"
-  import {  servicesAcuerdos    } from "src/areas/acuerdos/services/servicesAcuerdos"
+  import {  servicesAcuerdos    } from "src/areas/acuerdos/controllers/servicesAcuerdos"
   import {  useControlAcuerdo   } from "src/areas/acuerdos/controllers/ControlAcuerdos"
   import {  useTools            } from "src/useSimpleOk/useTools"
   import {  generarCSVDesdeTabla} from "src/useSimpleOk/UtilFiles"
@@ -176,12 +176,12 @@
   import    selectColumnas        from "components/utilidades/select/SelectColumnas.vue"
   import    linkTercero           from "src/areas/terceros/components/LinkTercero.vue"
   import    tooltipContacto       from "src/areas/terceros/components/contactos/TooltipContacto.vue"
-  import    tabsBusqueda          from "src/areas/acuerdos/components/Busqueda/TabsBusquedaAcuerdos.vue"
-  import    barraBusqueda         from "src/areas/acuerdos/components/Busqueda/BarraBusquedaAcuerdos.vue"
-  import    vistaAcuerdo          from "src/areas/acuerdos/components/Views/VistaAcuerdoVer.vue"  
+  import    tabsBusqueda          from "./Busqueda/TabsBusquedaAcuerdos.vue"
+  import    barraBusqueda         from "./Busqueda/BarraBusquedaAcuerdos.vue"
+  import    vistaAcuerdo          from "./VistaAcuerdoVer.vue"
   // * ////////////////////////// Columnas
-  import    refAcuerdo            from "src/areas/acuerdos/components/Busqueda/Columnas/RefAcuerdo.vue"
-  import    estado                from "src/areas/acuerdos/components/Busqueda/Columnas/Estado.vue"
+  import    refAcuerdo            from "src/areas/acuerdos/components/Tools/RefAcuerdo.vue"
+  import    estado                from "src/areas/acuerdos/components/Tools/Estado.vue"
   import    chipUsuario           from "src/areas/usuarios/components/ChipUsuario.vue"
   
   const props                     = defineProps({

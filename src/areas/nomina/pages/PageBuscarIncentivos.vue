@@ -70,7 +70,7 @@
   import {  useStoreNomina      } from "src/stores/nomina"
   // * /////////////////////////////////////////////////////////////////////// Componibles
   import {  useTitle            } from "@vueuse/core"
-  import {  servicesAcuerdos    } from "src/areas/acuerdos/services/servicesAcuerdos"
+  import {  servicesAcuerdos    } from "src/areas/acuerdos/controllers/servicesAcuerdos"
   import {  useControlAcuerdo   } from "src/areas/acuerdos/controllers/ControlAcuerdos"
   import {  useTools            } from "src/useSimpleOk/useTools"
   import {  generarCSVDesdeTabla} from "src/useSimpleOk/UtilFiles"

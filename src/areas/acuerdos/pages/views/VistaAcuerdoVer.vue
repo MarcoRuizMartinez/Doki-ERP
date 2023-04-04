@@ -64,7 +64,7 @@
     height-card             ="220px"
     :class                  ="{ 'order-1' : acuerdo.esPedido || acuerdo.esEntrega }"
   />
-  <productos
+  <lineas
     class                   ="col-12"
   />
   <entregas
@@ -116,7 +116,7 @@
   import {  storeToRefs           } from 'pinia'
   import {  useStoreAcuerdo       } from 'src/stores/acuerdo'
   //* ///////////////////////////////////////////////////////////////////////////////// Modelos
-  import {  Acuerdo, IAcuerdo     } from "../../models/Acuerdo"
+  import {  Acuerdo, IAcuerdo     } from "src/areas/acuerdos/models/Acuerdo"
   import {  LineaAcuerdo          } from "src/areas/acuerdos/models/LineaAcuerdo"
   import {  IArchivo              } from "src/models/Archivo"
   import {  AREA                  } from "src/models/TiposVarios"
@@ -132,19 +132,19 @@
   import {  pausa                 } from "src/useSimpleOk/useTools"
   //* ///////////////////////////////////////////////////////////////////////////////// Componentes
   import    visorPdf                from "components/utilidades/VisorPDF.vue"
-  import    notas                   from ".././Notas.vue"
-  import    titulo                  from ".././Titulo.vue"
-  import    totales                 from ".././Totales.vue"
-  import    botonera                from ".././Botonera.vue"
-  import    terceroYContacto        from ".././TerceroYcontacto.vue"
-  import    condiciones             from ".././Condiciones.vue"
-  import    productos               from ".././ProductosAcuerdo.vue"
-  import    enlaces                 from ".././EnlacesAcuerdos.vue"
-  import    contactos               from ".././Contactos.vue"
-  import    entregas                from ".././Entregas.vue"
-  import    anticipos               from ".././Anticipos/ModuloAnticipos.vue"
+  import    notas                   from "src/areas/acuerdos/components/Modulos/ModuloNotas.vue"
+  import    titulo                  from "src/areas/acuerdos/components/Modulos/ModuloTitulo.vue"
+  import    totales                 from "src/areas/acuerdos/components/Modulos/ModuloTotales.vue"
+  import    botonera                from "src/areas/acuerdos/components/Modulos/ModuloBotonera.vue"
+  import    terceroYContacto        from "src/areas/acuerdos/components/Modulos/ModuloTercero.vue"
+  import    condiciones             from "src/areas/acuerdos/components/Modulos/ModuloCondiciones.vue"
+  import    lineas                  from "src/areas/acuerdos/components/Modulos/ModuloLineas.vue"
+  import    enlaces                 from "src/areas/acuerdos/components/Modulos/ModuloEnlaces.vue"
+  import    contactos               from "src/areas/acuerdos/components/Modulos/ModuloContactos.vue"
+  import    entregas                from "src/areas/acuerdos/components/Modulos/ModuloEntregas.vue"
+  import    anticipos               from "src/areas/acuerdos/components/Modulos/ModuloAnticipos.vue"
   //import    nuevaEntrega          from ".././Modals/NuevaEntregaSelectBodega.vue"
-  import    remision                from ".././PDF/RemisionPDF.vue"
+  import    remision                from "src/areas/acuerdos/components/PDF/RemisionPDF.vue"
   import    documentos              from "components/archivos/ModuloArchivos.vue"
   import    comisiones              from "src/areas/nomina/components/Modals/Comisiones.vue"
 

@@ -127,9 +127,9 @@
   import    ventana                 from "components/utilidades/Ventana.vue"
   import    inputFecha              from "components/utilidades/input/InputFecha.vue"
   import    selectLabelValue        from "components/utilidades/select/SelectLabelValue.vue"
-  import    fechaVencimiento        from "src/areas/acuerdos/components/tools/FechaValidezCtz.vue"
   import    selectContacto          from "src/areas/terceros/components/contactos/SelectContacto.vue"
-  import    tablaEnvio              from "src/areas/acuerdos/components/tools/TablaEnvio.vue"                                          
+  import    fechaVencimiento        from "src/areas/acuerdos/components/Tools/FechaValidezCtz.vue"
+  import    tablaEnvio              from "src/areas/acuerdos/components/Tools/TablaEnvio.vue"                                          
 
   const { acuerdo, loading        } = storeToRefs( useStoreAcuerdo() )
   //* //////////////////////      ///////////////////////////////////////// Tablas Dexie

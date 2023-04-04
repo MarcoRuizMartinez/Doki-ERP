@@ -63,8 +63,8 @@
   import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"  
   //* /////////////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana                 from "components/utilidades/Ventana.vue"
-  import    refAcuerdo              from "src/areas/acuerdos/components/Busqueda/Columnas/RefAcuerdo.vue"
-  import    estado                  from "src/areas/acuerdos/components/Busqueda/Columnas/Estado.vue"
+  import    refAcuerdo              from "src/areas/acuerdos/components/Tools/RefAcuerdo.vue"
+  import    estado                  from "src/areas/acuerdos/components/Tools/Estado.vue"
   
   const { buscarAcuerdoEnlazados  } = useControlAcuerdo()
   const { acuerdo                 } = storeToRefs( useStoreAcuerdo() )

@@ -143,15 +143,14 @@
             
   // * ///////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana                 from "components/utilidades/Ventana.vue"
-  import    editarGrupo             from "src/areas/acuerdos/components/Grupos/EditarGrupo.vue"
-  import    tablaProductos          from "./TablaProductos/TablaProductos.vue"
-  import    buscarProductos         from "./Modals/BuscarAgregarProductos.vue"
-  import    formularioLinea         from "./Modals/FormularioLinea.vue"
-  import    editarEnLote            from "./Modals/EditarEnLoteQtyDesc.vue"
-  import    ordenar                 from "./Modals/OrdenarLineas.vue"
+  import    editarGrupo             from "../Lineas/EditarGrupo.vue"
+  import    tablaProductos          from "../Lineas/TablaLineas.vue"
+  import    formularioLinea         from "../Lineas/FormularioLinea/FormularioLinea.vue"
+  import    editarEnLote            from "../Lineas/EditarEnLoteQtyDesc.vue"
+  import    ordenar                 from "../Lineas/OrdenarLineas.vue"
+  import    buscarProductos         from "../Lineas/BuscarAgregarProductos.vue"
   import    confirmar               from "components/utilidades/MenuConfirmar.vue"
   
-
   const { destacarLineaElegida,
           mostrarBuscarProductos,
           mostrarOrdenarProductos   } = useControlProductos()

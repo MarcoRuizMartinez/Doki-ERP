@@ -60,7 +60,6 @@
     </q-table>
   </ventana>
 </template>
-
 <script setup lang="ts">
   //* /////////////////////////////////////////////////////////////////////////////////// Core
   import {  ref,
@@ -82,12 +81,12 @@
   import {  TTipoAcuerdo, 
             TIPO_ACUERDO          } from "src/areas/acuerdos/models/ConstantesAcuerdos"
   //* /////////////////////////////////////////////////////////////////////////////////// Componibles
-  import {  servicesAcuerdos      } from "src/areas/acuerdos/services/servicesAcuerdos"
+  import {  servicesAcuerdos      } from "src/areas/acuerdos/controllers/servicesAcuerdos"
   import {  style                 } from "src/useSimpleOk/useEstilos"
   //* /////////////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana                 from "components/utilidades/Ventana.vue"
-  import    refAcuerdo              from "src/areas/acuerdos/components/Busqueda/Columnas/RefAcuerdo.vue"
-  import    estado                  from "src/areas/acuerdos/components/Busqueda/Columnas/Estado.vue"
+  import    refAcuerdo              from "src/areas/acuerdos/components/Tools/RefAcuerdo.vue"
+  import    estado                  from "src/areas/acuerdos/components/Tools/Estado.vue"
   
   const { getAcuerdos       } = servicesAcuerdos()
   const router                = useRouter()

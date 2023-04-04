@@ -135,16 +135,16 @@
   import {  ModosVentana          } from "src/models/TiposVarios"
   import {  IColumna,
             Columna               } from "src/models/Tabla"
-  import {  IAcuerdo              } from "../models/Acuerdo"  
+  import {  IAcuerdo              } from "../../models/Acuerdo"  
   //* ///////////////////////////////////////////////////////////////////////////// Componibles  
   import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"
   import {  style                 } from "src/useSimpleOk/useEstilos"
   //* ///////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana                 from "components/utilidades/Ventana.vue"
-  import    refAcuerdo              from "./Busqueda/Columnas/RefAcuerdo.vue"
-  import    estado                  from "./Busqueda/Columnas/Estado.vue"
-  import    imagenProducto          from "./TablaProductos/Columnas/ImagenProducto.vue"
-  import    tablaEnvio              from "src/areas/acuerdos/components/tools/TablaEnvio.vue" 
+  import    refAcuerdo              from "src/areas/acuerdos/components/Tools/RefAcuerdo.vue"
+  import    estado                  from "src/areas/acuerdos/components/Tools/Estado.vue"
+  import    imagenProducto          from "src/areas/acuerdos/components/Lineas/Columnas/ImagenProducto.vue"
+  import    tablaEnvio              from "src/areas/acuerdos/components/Tools/TablaEnvio.vue" 
 
   const emit                  = defineEmits<{
     (e: "clickNuevaEntrega",        ): void

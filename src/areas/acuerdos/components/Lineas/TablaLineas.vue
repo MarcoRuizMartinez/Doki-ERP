@@ -129,26 +129,26 @@
   import {  ref,
             toRefs,
             watch,
-            PropType          } from "vue"
+            PropType            } from "vue"
   // ////////////////////////////////////////////////////////////////////// Store
-  import {  storeToRefs       } from 'pinia'
-  import {  useStoreAcuerdo   } from 'src/stores/acuerdo'
+  import {  storeToRefs         } from 'pinia'
+  import {  useStoreAcuerdo     } from 'src/stores/acuerdo'
   // ////////////////////////////////////////////////////////////////////// Models
-  import {  IGrupoLineas      } from "src/areas/acuerdos/models/GrupoLineasAcuerdo"
+  import {  IGrupoLineas        } from "src/areas/acuerdos/models/GrupoLineasAcuerdo"
   import {  ILineaAcuerdo,
-            LineaAcuerdo      } from "src/areas/acuerdos/models/LineaAcuerdo"
+            LineaAcuerdo        } from "src/areas/acuerdos/models/LineaAcuerdo"
   import {  IColumna,
-            Columna           } from "src/models/Tabla"
+            Columna             } from "src/models/Tabla"
   // ////////////////////////////////////////////////////////////////////// Componibles
   import {  useControlProductos } from "src/areas/acuerdos/controllers/ControlLineasProductos"
   // ////////////////////////////////////////////////////////////////////// Componentes
-  import    btnEditarLote       from "./BotonesEditarEnLote.vue"
-  import    subtotalToggle      from "./SubtotalToggle.vue"
-  import    precioTabla         from "src/areas/productos/components/Tools/PrecioProducto.vue"
-  import    imagenProducto      from "./Columnas/ImagenProducto.vue"
-  import    nombreDescripcion   from "./Columnas/NombreDescripcion.vue"
-  import    cantidad            from "./Columnas/Cantidad.vue"
-  import    descuento           from "./Columnas/Descuento.vue"
+  import    precioTabla           from "src/areas/productos/components/Tools/PrecioProducto.vue"
+  import    btnEditarLote         from "./Tools/BotonesEditarEnLote.vue"
+  import    subtotalToggle        from "./Tools/SubtotalToggle.vue"
+  import    imagenProducto        from "./Columnas/ImagenProducto.vue"
+  import    nombreDescripcion     from "./Columnas/NombreDescripcion.vue"
+  import    cantidad              from "./Columnas/Cantidad.vue"
+  import    descuento             from "./Columnas/Descuento.vue"
 
   const { borrarLinea,
           borrarLineas,

@@ -8,9 +8,9 @@
   // * /////////////////////////////////////////////////////////////////////////////////// Core
   import {  PropType,
             onUnmounted       } from "vue"
-  import {  useStoreAcuerdo       } from 'src/stores/acuerdo'
+  import {  useStoreAcuerdo   } from 'src/stores/acuerdo'
   import {  TTipoAcuerdo      } from "src/areas/acuerdos/models/ConstantesAcuerdos"
-  import    vistaBusqueda       from "src/areas/acuerdos/components/Views/VistaAcuerdoBusqueda.vue"
+  import    vistaBusqueda       from "./views/VistaAcuerdoBusqueda.vue"
   //* /////////////////////////////////////////////////////////////// Props
   const props                 = defineProps({
     tipo:       { required: true, type: String as PropType< TTipoAcuerdo > },

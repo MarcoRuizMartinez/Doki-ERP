@@ -144,8 +144,8 @@
             dexieFormasPago       } from "src/services/useDexie"
   //* /////////////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana                 from "components/utilidades/Ventana.vue"
-  import    cardAnticipo            from "./CardAnticipo.vue"
-  import    formulario              from "./FormularioAnticipo.vue"
+  import    cardAnticipo            from "../Anticipos/CardAnticipo.vue"
+  import    formulario              from "../Anticipos/FormularioAnticipo.vue"
   import    visorPdf                from "components/utilidades/VisorPDF.vue"  
   import    visorImagen             from "components/utilidades/VisorImagen.vue"
   import    selectLabelValue        from "components/utilidades/select/SelectLabelValue.vue"

@@ -9,7 +9,6 @@
     :grid-header              ="tipoVista === 'grilla'"
     :rows                     ="productosFil"
     :columns                  ="columnas"
-    
     :filter                   ="busqueda.f.filtroTexto"
     :hide-bottom              ="productos.length < 25"
     :rows-per-page-options    ="[100, 200, 500]"
@@ -104,7 +103,7 @@
   import {  formatoPrecio       } from "src/useSimpleOk/useTools"
   import {  style               } from "src/useSimpleOk/useEstilos"  
   // * /////////////////////////////////////////////////////////////////////////////////// Componentes
-  import    tooltipPrecios        from "src/areas/acuerdos/components/Tooltips/TooltipPreciosProducto.vue"
+  //import    tooltipPrecios        from "src/areas/acuerdos/components/Tools/Tooltips/TooltipPreciosProducto.vue"
   import    inputFiltroTexto      from "src/areas/productos/components/TablaProductos/HeaderCell/FiltroTexto.vue"
   import    inputFiltroPrecios    from "src/areas/productos/components/TablaProductos/HeaderCell/FiltroPrecios.vue"
   import    cardProducto          from "src/areas/productos/components/TablaProductos/Columnas/CardProducto.vue"

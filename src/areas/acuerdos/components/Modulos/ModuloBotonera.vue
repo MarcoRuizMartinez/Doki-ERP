@@ -289,7 +289,7 @@
   import    barra             from "components/utilidades/Barra.vue"
   import    efecto            from "components/utilidades/Efecto.vue"
   import    confirmar         from "components/utilidades/MenuConfirmar.vue"
-  import    tooltipAcuerdo    from "src/areas/acuerdos/components/Tooltips/TooltipAcuerdo.vue"
+  import    tooltipAcuerdo    from "src/areas/acuerdos/components/Tools/Tooltips/TooltipAcuerdo.vue"
 
   const { acuerdo,
           loading     } = storeToRefs( useStoreAcuerdo() )

@@ -36,8 +36,8 @@
 <script lang="ts" setup>
   import {  PropType        } from "vue"    
   import {  IAcuerdo        } from "src/areas/acuerdos/models/Acuerdo"
-  import    tooltipLineas     from "src/areas/acuerdos/components/Tooltips/TooltipLineas.vue"
-  import    tooltipAcuerdo    from "src/areas/acuerdos/components/Tooltips/TooltipAcuerdo.vue"
+  import    tooltipLineas     from "src/areas/acuerdos/components/Tools/Tooltips/TooltipLineas.vue"
+  import    tooltipAcuerdo    from "src/areas/acuerdos/components/Tools/Tooltips/TooltipAcuerdo.vue"
 
   const props               = defineProps({
     acuerdo:  { required: true, type: Object as PropType< IAcuerdo > },

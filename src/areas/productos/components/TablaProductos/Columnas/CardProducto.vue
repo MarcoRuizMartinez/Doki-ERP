@@ -10,7 +10,7 @@
                                 } from "src/useSimpleOk/useTools"  
   // * /////////////////////////////////////////////////////////////////////////////////// Componentes
   import    efecto                from "components/utilidades/Efecto.vue"
-  import    tooltipPrecios        from "src/areas/acuerdos/components/Tooltips/TooltipPreciosProducto.vue"
+  import    tooltipPrecios        from "src/areas/acuerdos/components/Tools/Tooltips/TooltipPreciosProducto.vue"
 
   const props                 = defineProps({      
     producto:         { required: true,  type: Object as PropType< IProductoDoli >  },  

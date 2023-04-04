@@ -3,7 +3,7 @@ import {  storeToRefs           } from 'pinia'
 import {  useStoreAcuerdo       } from 'src/stores/acuerdo'
 // * //////////////////////////////////////////////////////////////////////////////// Componibles
 import {  useApiDolibarr        } from "src/services/useApiDolibarr"
-import {  servicesAcuerdos      } from "src/areas/acuerdos/services/servicesAcuerdos"
+import {  servicesAcuerdos      } from "src/areas/acuerdos/controllers/servicesAcuerdos"
 // * //////////////////////////////////////////////////////////////////////////////// Modelos
 import {  IProductoDoli         } from "src/areas/productos/models/ProductoDolibarr"
 import {  IGrupoLineas,

@@ -97,7 +97,7 @@ height-card         ="210px"
   import  contactos             from "src/areas/terceros/components/contactos/ModuloContactos.vue"
   import  notas                 from "src/areas/terceros/components/helper/ModuloNotasTercero.vue"
   import  formularioTercero     from "src/areas/terceros/components/formularioTercero/FormularioTercero.vue"
-  import  acuerdos              from "src/areas/acuerdos/components/modules/ModuloAcuerdosTercero.vue"  
+  import  acuerdos              from "src/areas/terceros/components/modules/ModuloAcuerdosTercero.vue"
 
   const { usuario, permisos } = storeToRefs( useStoreUser() )
   const { acuerdo           } = storeToRefs( useStoreAcuerdo() )
@@ -174,9 +174,4 @@ height-card         ="210px"
       router.push("/error")
     }
   }
-
-
-
-
-
 </script>

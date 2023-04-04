@@ -151,7 +151,7 @@
   import {  useControlIncentivos} from "src/areas/nomina/controllers/ControlIncentivos"  
   // * /////////////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana               from "components/utilidades/Ventana.vue"
-  import    tooltipLinea          from "src/areas/acuerdos/components/Tooltips/TooltipLinea.vue"
+  import    tooltipLinea          from "src/areas/acuerdos/components/Tools/Tooltips/TooltipLinea.vue"
   import    formulario            from "./FormularioComision.vue"
   
   const { acuerdo,
@@ -175,7 +175,7 @@
 
   onMounted( async ()=>{
     acuerdo.value.comision.calcular()
-    arreglarColumnas()    
+    arreglarColumnas()
     acuerdo.value.incentivo = await buscarIncentivos( { origenTipo: INCENTIVO_ORIGEN.PEDIDO_CLI, origenId : acuerdo.value.id } ) as IIncentivo
   })
 

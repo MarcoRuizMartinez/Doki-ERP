@@ -19,7 +19,7 @@
   import {  useControlProductos   } from "src/areas/acuerdos/controllers/ControlLineasProductos"
   import {  TTipoAcuerdo          } from "src/areas/acuerdos/models/ConstantesAcuerdos"
   //* ///////////////////////////////////////////////////////////////////////////////// Componentes
-  import    vistaAcuerdo            from "src/areas/acuerdos/components/Views/VistaAcuerdoVer.vue"
+  import    vistaAcuerdo            from "./views/VistaAcuerdoVer.vue"
 
   const { buscarAcuerdo     } = useControlAcuerdo()
   const { copiarProductos,

@@ -16,7 +16,7 @@
   //import {  Acuerdo               } from "src/areas/acuerdos/models/Acuerdo"
   import {  TTipoAcuerdo          } from "src/areas/acuerdos/models/ConstantesAcuerdos"
   // * /////////////////////////////////////////////////////////////////////////////////// Componentes
-  import    vistaAcuerdoCrear       from "src/areas/acuerdos/components/Views/VistaAcuerdoCrear.vue"
+  import    vistaAcuerdoCrear       from "./views/VistaAcuerdoCrear.vue"
   //const {   acuerdo         } = storeToRefs( useStoreAcuerdo() )
   //* /////////////////////////////////////////////////////////////// Props
   const props                 = defineProps({

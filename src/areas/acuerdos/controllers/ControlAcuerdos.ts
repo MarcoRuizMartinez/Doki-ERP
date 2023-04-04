@@ -5,7 +5,7 @@ import {  storeToRefs           } from 'pinia'
 import {  useStoreAcuerdo       } from 'src/stores/acuerdo'
 //* ////////////////////////////////////////////////////////////////// Componibles
 import {  useControlProductos   } from "src/areas/acuerdos/controllers/ControlLineasProductos"
-import {  servicesAcuerdos      } from "src/areas/acuerdos/services/servicesAcuerdos"
+import {  servicesAcuerdos      } from "src/areas/acuerdos/controllers/servicesAcuerdos"
 import {  servicesTerceros      } from "src/areas/terceros/services/servicesTerceros"
 import {  useControlIncentivos  } from "src/areas/nomina/controllers/ControlIncentivos" 
 import {  IIncentivo, INCENTIVO_ORIGEN      } from "src/areas/nomina/models/Incentivo"  

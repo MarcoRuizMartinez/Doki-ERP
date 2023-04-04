@@ -28,7 +28,7 @@
     class                   ="col-md-4 col-12 full-height"
     height-card             ="220px"
   />
-  <productos
+  <lineas
     class                   ="col-12"
   />
   <notas
@@ -70,12 +70,12 @@
   // * /////////////////////////////////////////////////////////////////////////////////// Componentes
   import    barra                   from "components/utilidades/Barra.vue"
   import    visorPdf                from "components/utilidades/VisorPDF.vue"
-  import    notas                   from "src/areas/acuerdos/components/Notas.vue"
-  import    titulo                  from "src/areas/acuerdos/components/Titulo.vue"
-  import    productos               from "src/areas/acuerdos/components/ProductosAcuerdo.vue"
-  import    terceroYContacto        from "src/areas/acuerdos/components/TerceroYcontacto.vue"
-  import    totales                 from "src/areas/acuerdos/components/Totales.vue"
-  import    condiciones             from "src/areas/acuerdos/components/Condiciones.vue"
+  import    notas                   from "src/areas/acuerdos/components/Modulos/ModuloNotas.vue"
+  import    titulo                  from "src/areas/acuerdos/components/Modulos/ModuloTitulo.vue"
+  import    lineas                  from "src/areas/acuerdos/components/Modulos/ModuloLineas.vue"
+  import    terceroYContacto        from "src/areas/acuerdos/components/Modulos/ModuloTercero.vue"
+  import    totales                 from "src/areas/acuerdos/components/Modulos/ModuloTotales.vue"
+  import    condiciones             from "src/areas/acuerdos/components/Modulos/ModuloCondiciones.vue"
 
   const { acuerdo,
           loading           } = storeToRefs( useStoreAcuerdo() )

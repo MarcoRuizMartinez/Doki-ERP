@@ -2,7 +2,7 @@
 import {  Tiempo,
           IApexSerie          } from "src/models/TiposInformes"
 import {  ISerieCtz           } from "src/areas/acuerdos/models/SeriesCotizacion"          
-import {  servicesAcuerdos     } from "src/areas/acuerdos/services/servicesAcuerdos"
+import {  servicesAcuerdos     } from "src/areas/acuerdos/controllers/servicesAcuerdos"
 import {  ref
                               } from "vue"
 import {  sortArray           } from "src/useSimpleOk/useTools"
