@@ -184,6 +184,8 @@
     if(usuario.value.esGerencia){      
       columnas.value.splice(2, 0,  Columna.ColumnaPrecio ({ name: "costo" }) )
       columnas.value.splice(3, 0,  Columna.ColumnaPrecio ({ name: "utilidad" }) )
+      columnas.value.splice(4, 0,  Columna.ColumnaX100 ({ name: "aumentoFromCosto", label: "Aumento", decimales: 1 }) )
+      
     }
 
     columnas.value.forEach( c=> c.sortable = false )

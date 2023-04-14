@@ -21,7 +21,6 @@ export interface IColumna {
   headerClasses?: string
 }
 
-
 export class Columna implements IColumna
 {
   name:           string
@@ -39,7 +38,7 @@ export class Columna implements IColumna
   classes?:       string
   headerStyle?:   string
   headerClasses?: string
- 
+
   constructor({
                 name      = "",
                 label     = "",
@@ -82,10 +81,14 @@ export class Columna implements IColumna
     return col
   }
 
-  static ColumnaX100({ name = "", label = "",  sortable = true, clase = "" }) : IColumna 
+  static ColumnaX100({ name = "", label = "",  sortable = true, clase = "", decimales = 2 }) : IColumna 
   {
     let col               = new Columna({ name : name, label : label, sortable : sortable, clase: clase })
-        col.format        = val => val + "%"
+        col.format        = val => {
+                                      const x100 : string =  parseFloat( val ).toFixed( decimales )
+                                      console.log("x100: ", x100);
+                                      return x100 + "%"
+                                    }
         col.align         = "right"
         col.classes       = clase + " fuente-mono"
 
@@ -114,7 +117,6 @@ export class Columna implements IColumna
     if(index === -1 ) return 
     cols[index].visible = false
   }
-
 
   static eliminarColums( cols : string[], columnas : IColumna[] ){
     for (const col of cols) Columna.eliminarCol( col, columnas )

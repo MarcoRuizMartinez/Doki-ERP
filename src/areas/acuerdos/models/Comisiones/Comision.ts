@@ -42,7 +42,5 @@ export class Comision implements IComision
       linea.comision_c1.calcular( nivel, subTotal, regla, modificador, divisor )
       this.comercial_1 += linea.comision_c1.valor
     }
-
-
   }
 }
