@@ -146,7 +146,7 @@
   //import    nuevaEntrega          from ".././Modals/NuevaEntregaSelectBodega.vue"
   import    remision                from "src/areas/acuerdos/components/PDF/RemisionPDF.vue"
   import    documentos              from "components/archivos/ModuloArchivos.vue"
-  import    comisiones              from "src/areas/nomina/components/Modals/Comisiones.vue"
+  import    comisiones              from "src/areas/nomina/components/Modals/CalculoComisiones.vue" 
 
   const { acuerdo,
           modales,

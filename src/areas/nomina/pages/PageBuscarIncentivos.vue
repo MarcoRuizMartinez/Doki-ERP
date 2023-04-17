@@ -45,7 +45,18 @@
               {{ props.value }}
             </router-link>
           </q-td>
-        </template>        
+        </template>
+        <!-- //* ///////////////  Columna Valor  -->
+        <template               #body-cell-valor="props">
+          <q-td   :props        ="props" class="text-right">
+            <span               
+              class             ="fuente-mono text-bold"              
+              :class            ="{ 'text-red' :  props.row.valor < 0 }"
+              >
+              {{ formatoPrecio( props.row.valor, "decimales-no") }}
+            </span>
+          </q-td>
+        </template>            
         <!-- //* ///////////////  Columna Usuario  -->
         <template               #body-cell-usuarioLabel="props">
           <q-td   :props        ="props"><chip-usuario :usuario="props.row.usuario"/></q-td>
@@ -72,9 +83,10 @@
   import {  useTitle            } from "@vueuse/core"
   import {  servicesAcuerdos    } from "src/areas/acuerdos/controllers/servicesAcuerdos"
   import {  useControlAcuerdo   } from "src/areas/acuerdos/controllers/ControlAcuerdos"
-  import {  useTools            } from "src/useSimpleOk/useTools"
+  import {  useTools, 
+            formatoPrecio       } from "src/useSimpleOk/useTools"
   import {  generarCSVDesdeTabla} from "src/useSimpleOk/UtilFiles"
-  import {  useControlIncentivos} from "src/areas/nomina/controllers/ControlIncentivos"  
+  import {  useControlIncentivos} from "src/areas/nomina/controllers/ControlIncentivos"
 
   // * /////////////////////////////////////////////////////////////////////// Modelos
   import {  Columna, IColumna   } from "src/models/Tabla"
@@ -165,8 +177,8 @@
   {
     columnas.value = [
       new Columna(  { name: "origenRef",              label: "Ref" }),
-      new Columna(  { name: "estadoLabel",            label: "Estado" }),
-      Columna.ColumnaPrecio ( { name: "valor",        clase: "text-bold"  }),
+      new Columna(  { name: "estadoLabel",            label: "Estado"  }),
+      new Columna(  { name: "valor"                                    }),
       new Columna(  { name: "estadoPagoLabel",        label: "Pago" }),
       Columna.ColumnaPrecio ( { name: "pagado",       clase: "text-bold"  }),
       new Columna(  { name: "usuarioLabel",           label: "Usuario" }),

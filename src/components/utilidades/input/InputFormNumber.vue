@@ -19,6 +19,7 @@
       :readonly           ="readonly"
       :clearable          ="clearable"
       :prefix             ="tipo == 'precio'      ? '$' : ''"
+      :bg-color           ="bgColor"
       :suffix             ="tipo == 'porcentaje'  ? '%' : ''"
       :maxlength          ="maxlength"
       :disable            ="disable"
@@ -76,7 +77,6 @@
       </template>
     </q-input>
   </div>
-  
 </template>
 <script setup lang="ts">
 // // !(tercero.documento == null || tercero.documento == '' || lectura || enfocado || verificando)
@@ -108,6 +108,7 @@
       hundido:      { default:  false,            type: Boolean             },
       icon:         { default:  "",               type: String              },
       label:        { default:  "",               type: String              },
+      bgColor:      { default:  undefined,        type: String              },
       clearable:    { default:  false,            type: Boolean             },
       noUndefined:  { default:  false,            type: Boolean             },
       readonly:     { default:  false,            type: Boolean             },

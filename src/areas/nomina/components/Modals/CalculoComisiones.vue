@@ -34,7 +34,7 @@
           <q-chip                 dense
             v-else-if             ="acuerdo.incentivo.esEstadoAprobado"
             icon                  ="mdi-cash-check"
-            color                 ="positive" 
+            :color                ="acuerdo.incentivo.valor > 0 ? 'positive' : 'warning'" 
             text-color            ="white" 
             :label                ="formatoPrecio( acuerdo.incentivo.valor, 'decimales-no' )"
           />          
@@ -72,6 +72,33 @@
             />
           </q-td>
         </template>
+        <!-- //* ///////////////  Columna Subtotal  -->
+        <template #body-cell-totalConDescu  ="props">
+          <q-td   :props          ="props">
+            <dos-precios
+              :precio_1 ="{ label:'Precio unidad',  value: props.row.precioFinal}"
+              :precio_2 ="{ label:'Subtotal',       value: props.row.totalConDescu}"
+            />  
+          </q-td>
+        </template>
+        <!-- //* ///////////////  Columna costo  -->
+        <template #body-cell-costo  ="props">
+          <q-td   :props          ="props">
+            <dos-precios
+              :precio_1 ="{ label:'Costo unidad',   value: props.row.costo}"
+              :precio_2 ="{ label:'Costo total',    value: props.row.costoTotal}"
+            />
+          </q-td>
+        </template>
+        <!-- //* ///////////////  Columna costo  -->
+        <template #body-cell-utilidad="props">
+          <q-td   :props          ="props">
+            <dos-precios
+              :precio_1 ="{ label:'Utilidad unidad',  value: props.row.utilidad}"
+              :precio_2 ="{ label:'Utilidad total',   value: props.row.utilidadTotal}"
+            />
+          </q-td>
+        </template>          
         <!-- //* ///////////////  Columna Nivel  -->
         <template
           #body-cell-iconoNivel   ="props">
@@ -143,7 +170,6 @@
   import {  IColumna, Columna   } from "src/models/Tabla"
   import {  ILineaAcuerdo       } from "src/areas/acuerdos/models/LineaAcuerdo"
   import {  IIncentivo,
-            Incentivo,
             INCENTIVO_ORIGEN    } from "src/areas/nomina/models/Incentivo"  
   // * /////////////////////////////////////////////////////////////////////////////////// Componibles
   import {  formatoPrecio       } from "src/useSimpleOk/useTools"
@@ -152,7 +178,8 @@
   // * /////////////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana               from "components/utilidades/Ventana.vue"
   import    tooltipLinea          from "src/areas/acuerdos/components/Tools/Tooltips/TooltipLinea.vue"
-  import    formulario            from "./FormularioComision.vue"
+  import    formulario            from "./FormularioIncentivo.vue"
+  import    dosPrecios            from "components/utilidades/DosPrecios.vue"
   
   const { acuerdo,
           modales,
@@ -167,7 +194,7 @@
 
   const columnas              = ref< IColumna[] >([
     new Columna           ({ name: "ref",           label: "Producto"   }),
-    Columna.ColumnaPrecio ({ name: "totalConDescu", label: "Subtotal"   }),
+    Columna.ColumnaPrecio ({ name: "totalConDescu", label: "Precio"   }), 
     new Columna           ({ name: "iconoNivel",    label: "Nivel"      }),
     new Columna           ({ name: "comision_c1",   label: "Comision %", align: "right"}),
     new Columna           ({ name: "comision_c2",   label: "Comision $", align: "right"}),

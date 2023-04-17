@@ -178,8 +178,8 @@ export class Incentivo implements IIncentivo
   }
 
   static estados = [
-    { value: INCENTIVO_ESTADO.ANULADO,      label: "❌Anulado"      },
-    { value: INCENTIVO_ESTADO.APROBADO,     label: "✅Aprobado"     },
+    { value: INCENTIVO_ESTADO.ANULADO,      label: "🧊Congelado"      },
+    { value: INCENTIVO_ESTADO.APROBADO,     label: "✅Aplica"     },
   ]
 
   static razones = [

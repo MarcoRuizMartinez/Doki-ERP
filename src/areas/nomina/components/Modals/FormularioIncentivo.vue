@@ -1,7 +1,7 @@
 <template>
   <ventana                      cerrar
     class-contenido             ="column items-center"
-    :titulo                     ="modelo.razonLabel"
+    :titulo                     ="incentivoModel.razonLabel"
     icono                       ="mdi-cash"
     width                       ="360px"
     :cargando                   ="cargando"
@@ -25,34 +25,34 @@
       <!-- //* ///////////////////////////////////////////////////////////// Estado  -->
       <div class                ="col-12">
         <q-btn-toggle           push unelevated spread glossy dense
-          v-model               ="modelo.estado"          
+          v-model               ="incentivoModel.estado"          
           :options              ="Incentivo.estados"
           :readonly             ="readonly"
         />
       </div>
       <!-- //* ///////////////////////////////////////////////////////////// Valor -->
-      <input-number             no-undefined solo-positivo 
-        v-model                 ="modelo.valor"
+      <input-number             no-undefined
+        v-model                 ="incentivoModel.valor"
         label                   ="Valor"
         tipo                    ="precio"
         class                   ="col-12"
         icon                    ="mdi-cash-usd"
         debounce                ="2500"
-        :rules                  ="[ reglaValor ]" 
+        :bg-color               ="incentivoModel.valor < 0 ? 'deep-orange-3' : undefined"
+        :rules                  ="[ reglaValorValido ]" 
         :maximo                 ="acuerdo.comision.comercial_1"
         :minimo                 ="0"
-        :readonly               ="readonly"
-        @update:model-value     ="revisarValor"
+        :readonly               ="readonly"        
       />
       <!-- //* /////////////////////////////////////////////////////////////  Nota  -->
       <q-input                  filled dense
-        v-model                 ="modelo.nota"
+        v-model                 ="incentivoModel.nota"
         label                   ="Nota"
         type                    ="textarea"
         class                   ="col-12"
         debounce                ="400"
         :readonly               ="readonly"
-        :rules                  ="[ reglaNota ]" 
+        :rules                  ="[ reglaNotaVacia, reglaCambioEnValor ]" 
         > 
         <template #prepend >
           <q-icon name          ="mdi-comment-quote" />
@@ -86,6 +86,7 @@
   // * ///////////////////////////////////////////////////////////////////////////////// Componibles
   import {  style                 } from "src/useSimpleOk/useEstilos"
   import {  useControlIncentivos  } from "src/areas/nomina/controllers/ControlIncentivos"
+  import {  valorValido           } from "src/useSimpleOk/useTools"  
   
   // * ///////////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana                 from "components/utilidades/Ventana.vue"
@@ -102,8 +103,8 @@
   const { acuerdo, incentivo }= toRefs( props ) 
   const cargando              = ref< boolean    >( false )
   const formulario            = ref< any >()
-  const modelo                = ref< IIncentivo >( new Incentivo() )
-  const readonly              = computed(()=> !!modelo.value.id )
+  const incentivoModel        = ref< IIncentivo >( new Incentivo() )
+  const readonly              = computed(()=> !!incentivoModel.value.id )
   //let   copiaAnticipo         = ""  
   
   const emit                  = defineEmits<{
@@ -114,21 +115,21 @@
   }>()
 
   //const modificado            = computed( ()=>  copiaAnticipo !== JSON.stringify( modelo.value ) ) 
-  const btnDisable            = computed( ()=> !modelo.value.estado )
+  const btnDisable            = computed( ()=> !incentivoModel.value.estado )
   
   watch(()=>acuerdo.value.comision.comercial_1, (valor) =>
     {
-      modelo.value.valor      = valor
+      incentivoModel.value.valor  = valor
     },
     { immediate: true }
   )
 
-  watch(incentivo, (incen)=>{
+/*   watch(incentivo, (incen)=>{
       if(!!incen.id)
-        modelo.value  = Object.assign( new Incentivo(), incen ) 
+      incentivoModel.value        = Object.assign( new Incentivo(), incen ) 
     }
     , { immediate: true }
-  )
+  ) */
 
 /*   
   watch(modelValue, (newAnticipo) =>
@@ -152,30 +153,36 @@
   async function onSubmit()
   {
     cargando.value            = true
-    const objeto              = modelo.value.getIncentivoToApi( usuario.value.id, acuerdo.value )
+    const objeto              = incentivoModel.value.getIncentivoToApi( usuario.value.id, acuerdo.value )
     const id                  = await nuevoIncentivo( objeto )
     if(!!id){
-      modelo.value.id         = +id
-      emit("creado", modelo.value )
+      incentivoModel.value.id = +id
+      emit("creado", incentivoModel.value )
     }
     cargando.value            = false
   }
 
-  function reglaValor() : boolean | string {    
-    const valorOk             = modelo.value.valor > 0 
-    return ( valorOk )  || "El valor no puede ser menor o igual a cero  "
+  function reglaValorValido() : boolean | string {    
+    const valorOk             = valorValido( incentivoModel.value.valor )
+    return ( valorOk )  || "Valor invalido"
   }
 
-  function reglaNota() : boolean | string {
-    const notaOk              = modelo.value.nota.length >= 7
-    return (notaOk || modelo.value.estado === INCENTIVO_ESTADO.APROBADO )  || "Se debe indicar una razón para la anulación"
+  function reglaNotaVacia() : boolean | string {
+    const notaOk              = incentivoModel.value.nota.length >= 7
+    return (notaOk || incentivoModel.value.estado === INCENTIVO_ESTADO.APROBADO )  || "Se debe indicar una razón"
   }
 
-  function revisarValor()
+  function reglaCambioEnValor() : boolean | string {
+    const comisionIgual       = acuerdo.value.comision.comercial_1 === incentivoModel.value.valor
+    const notaOk              = incentivoModel.value.nota.length >= 7
+    return ( notaOk || comisionIgual )  || "Indicar razón de cambio en valor"
+  }  
+
+/*   function revisarValor()
   {
-    if( modelo.value.valor < 0 )
-        modelo.value.valor = 0
-    if( modelo.value.valor > acuerdo.value.comision.comercial_1)
-        modelo.value.valor = acuerdo.value.comision.comercial_1
-  }
+    if( incentivoModel.value.valor < 0 )
+        incentivoModel.value.valor = 0
+    if( incentivoModel.value.valor > acuerdo.value.comision.comercial_1)
+        incentivoModel.value.valor = acuerdo.value.comision.comercial_1
+  } */
 </script>

@@ -132,5 +132,14 @@
         "workspaceRoot": null,
         "workspacePath": null,
         "id": "mw7gI3xlkoJiXqTD"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\estad\\Apps\\SimpleOk-ERP\\src\\areas\\acuerdos\\models\\LineaAcuerdo.ts",
+        "parent_id": null,
+        "fsPath": "c:\\Users\\estad\\Apps\\SimpleOk-ERP\\src\\areas\\acuerdos\\models\\LineaAcuerdo.ts",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "wJEtbYd1K5U0MNGq"
     }
 ]

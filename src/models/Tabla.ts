@@ -86,7 +86,6 @@ export class Columna implements IColumna
     let col               = new Columna({ name : name, label : label, sortable : sortable, clase: clase })
         col.format        = val => {
                                       const x100 : string =  parseFloat( val ).toFixed( decimales )
-                                      console.log("x100: ", x100);
                                       return x100 + "%"
                                     }
         col.align         = "right"

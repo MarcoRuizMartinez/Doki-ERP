@@ -86,9 +86,11 @@ export interface ILineaAcuerdo extends IProductoDoli {
   destacar                  : ( accion? : TAccionDestacar , mostrar? : "mostrar" | "ocultar" ) => void
   accion                    : TAccionesSobreLinea
   aumentoFromCosto          : number  
+  costoTotal                : number
   //descuX100Round:           number      // Descuento redondeado
 
   utilidad                  : number
+  utilidadTotal             : number
 
   // */ /////////////////// Comisiones
   comsionX100Division       : number  /*  Si hay 2 comerciales, esto determina cuando le corresponde a cada comercial
@@ -277,6 +279,9 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
     this.descuentoX100      = +( diferencia * 100 / this.precioBase ).toFixed(2)
   }
 
+  // * /////////////////////////////////////////////////////////////////////////////// Costo total
+  get costoTotal() : number { return this.costo * this.qty }
+
   // * /////////////////////////////////////////////////////////////////////////////// Total sin descuento
   get totalSinDescu() : number {
     return this.precioBase * this.qty
@@ -310,9 +315,8 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
     return this.qty + " " + this.unidad.codigo
   }
 
-  get utilidad() : number {
-    return ( this.precioFinal - this.costo ) * this.qty
-  }
+  get utilidad()      : number { return this.precioFinal - this.costo  }
+  get utilidadTotal() : number { return this.utilidad * this.qty }  
 
   // * /////////////////////////////////////////////////////////////////////////////////// COMISIONES
   // * /////////////////////////////////////////////////////////////////////////////// Nivel Precios comision
