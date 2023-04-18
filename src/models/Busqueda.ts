@@ -70,6 +70,10 @@ export interface      IQuery {
   favorito             ?: number
   destacado            ?: number  
   tipoTercero          ?: number
+  esCliente            ?: number
+  esProveedor          ?: number
+  color                ?: number
+  activo               ?: string
 }
 
 interface               IOpciones {
@@ -109,6 +113,7 @@ interface               ICampos {
   incEstado             : ILabelValue
   incRazon              : ILabelValue
   incOrigen             : ILabelValue  
+  activo                : ILabelValue  
   municipio             : IMunicipio
   municipioContacto     : IMunicipio
   usuario              ?: IUsuario
@@ -117,6 +122,7 @@ interface               ICampos {
   pagina                : number  
   favorito              : boolean
   destacado             : boolean
+  color                 : boolean
 }
 
 import {  Router           } from "vue-router"
@@ -222,6 +228,7 @@ export class Busqueda implements IBusqueda
       incEstado           : labelValueNulo,
       incRazon            : labelValueNulo,
       incOrigen           : labelValueNulo,
+      activo              : labelValueNulo,
       municipio           : new Municipio(),
       municipioContacto   : new Municipio(),
       resultadosXPage     : 10,
@@ -230,6 +237,7 @@ export class Busqueda implements IBusqueda
       creador             : new Usuario(),
       favorito            : false,
       destacado           : false,
+      color               : false,
     }   
   }
   
@@ -260,6 +268,7 @@ export class Busqueda implements IBusqueda
     this.f.hasta              = getQueryRouterDate      ( this.rourterQ .fechaHasta   )
     this.f.destacado          = getQueryRouterBoolean   ( this.rourterQ .destacado    )
     this.f.favorito           = getQueryRouterBoolean   ( this.rourterQ .favorito     )
+    this.f.color              = getQueryRouterBoolean   ( this.rourterQ .color        )
     this.f.valorMin           = getQueryRouterNumber    ( this.rourterQ .valorMin     )
     this.f.valorMax           = getQueryRouterNumber    ( this.rourterQ .valorMax     )
     if(!!this.rourterQ .limite)
@@ -275,6 +284,7 @@ export class Busqueda implements IBusqueda
     this.f.terceroInterno     = getQueryRouterLabelValue( this.rourterQ .interno,               Busqueda.listaTerceroInterno  )
     this.f.conOrdenes         = getQueryRouterLabelValue( this.rourterQ .conOrdenes,            Busqueda.listaOrdenesProv     )
     this.f.tipoTercero        = getQueryRouterLabelValue( this.rourterQ .tipoTercero,           Busqueda.listaTipoTercero     )
+    this.f.activo             = getQueryRouterLabelValue( this.rourterQ .activo,                Busqueda.listaActivo          )
     this.f.estadoAnticipo     = getQueryRouterLabelValueArray ( this.rourterQ .estadoAnticipo,  Anticipo.estados              )
     this.f.tipoAnticipo       = getQueryRouterLabelValueArray ( this.rourterQ .tipoAnticipo,    Anticipo.tipos                )
     this.f.estados            = getQueryRouterLabelValueArray ( this.rourterQ .estados,         this.o.estados                )    
@@ -421,6 +431,7 @@ export class Busqueda implements IBusqueda
     if(this.f.contacto.length > 3)      q.contacto          = this.f.contacto
     if(this.f.destacado)                q.destacado         = 1
     if(this.f.favorito)                 q.favorito          = 1
+    if(this.f.color)                    q.color             = 1
     if(!!this.f.valorMin)               q.valorMin          = this.f.valorMin
     if(!!this.f.valorMax)               q.valorMax          = this.f.valorMax
     if(!!this.f.estados.length)         q.estados           = this.f.estados        .map( e => e.value ).join("_")
@@ -443,6 +454,7 @@ export class Busqueda implements IBusqueda
     if(!!this.f.municipioContacto.id)   q.municipioContacto = this.f.municipioContacto.id
     if(!!this.f.conOrdenes.label)       q.conOrdenes        = this.f.conOrdenes.value
     if(!!this.f.tipoTercero.label)      q.tipoTercero       = this.f.tipoTercero.value
+    if(!!this.f.activo.label)           q.activo            = this.f.activo.value
     if(!!this.f.usuario && this.f.usuario.id  > 0 && !this.esOCProveedor )
       q.usuario                                             = this.f.usuario.id     
     if(!!this.f.creador   && this.f.creador.id    > 0)
@@ -467,6 +479,7 @@ export class Busqueda implements IBusqueda
   static listaIVA                 = [{value:0, label:'Sin IVA'},        {value:1, label:'Con IVA'     }]
   static listaTerceroInterno      = [{value:0, label:'Externo'},        {value:1, label:'Interno'     }]
   static listaOrdenesProv         = [{value:0, label:'Sin ordenes'},    {value:1, label:'Con ordenes' }]  
+  static listaActivo              = [{value:1, label:'Activo'},         {value:0, label:'Inactivo'    }]  
   static listaAreas               = Areas  
   static listaEstadosPago         = Incentivo.estadosPago
   static listaAnticipoEstados     = Anticipo.estados

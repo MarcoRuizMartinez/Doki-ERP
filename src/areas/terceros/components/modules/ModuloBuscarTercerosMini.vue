@@ -42,6 +42,7 @@
   import    linkTercero       from "src/areas/terceros/components/LinkTercero.vue"
   import    ventana           from "components/utilidades/Ventana.vue"
   import    inputBuscar       from "src/components/utilidades/input/InputSimple.vue"
+  import {  IQuery          } from "src/models/Busqueda"
   import {  ITercero,
             Tercero         } from "src/areas/terceros/models/Tercero"
   
@@ -59,9 +60,9 @@
     if(busqueda.length < 2 )  return
 
     modo.value                = "buscando"
-    let query : any           = { like: busqueda, limite: 10 }
+    let query : IQuery        = { buscar: busqueda, limite: 10, offset: 0 }
     if( !storeUser.permisos.acceso_total )
-        query.idUsuarios      = storeUser.usuario.id
+        query.usuario         = storeUser.usuario.id
     terceros.value            = await buscarTerceros( query )
     modo.value                = !!terceros.value.length ? "normal" : "sin-resultados"    
   }

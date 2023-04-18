@@ -23,15 +23,15 @@
 </template>
 <script setup lang="ts">
 
-  import {  servicesTerceros,
-            IBusquedaTercero} from "src/areas/terceros/services/servicesTerceros"
-  import {  useStoreUser    } from 'src/stores/user'
+  import {  servicesTerceros  } from "src/areas/terceros/services/servicesTerceros"
+  import {  useStoreUser      } from 'src/stores/user'
+  import {  IQuery            } from "src/models/Busqueda"
   import {  ref,
             toRefs,
             PropType,
             watch
-                            } from "vue"
-  import {  ITercero        } from "src/areas/terceros/models/Tercero"
+                              } from "vue"
+  import {  ITercero          } from "src/areas/terceros/models/Tercero"
 
   const terceros              = ref< ITercero[] > ([])
   const modelo                = ref< ITercero >()
@@ -64,8 +64,8 @@
     if(busqueda.length        > 0)
       virgen.value            = false
 
-    let query :IBusquedaTercero
-    let terce :ITercero[]     = []
+    let   query :IQuery       = {}
+    const terce :ITercero[]   = []
 
     if((!busqueda || busqueda.length < 2) && !virgen.value)
     {
@@ -79,14 +79,14 @@
       if(!!storeUser.usuario.terceroIdCtz && conTerceroEspecial.value)
         terce.push( await buscarTercero( storeUser.usuario.terceroIdCtz ) )
 
-      query                   = { idUsuarios: storeUser.usuario.id, limite: 10, orden: "DESC", esCliente: 1 }
+      query                   = { usuario: storeUser.usuario.id, limite: 10, offset: 0, orden: "DESC", esCliente: 1 }
     }
     else
     {
       cargando.value          = false
-      query                   = { like: busqueda, esCliente: 1, limite: 30 }
+      query                   = { buscar: busqueda, esCliente: 1, limite: 30, offset: 0 }
       if( !storeUser.permisos.acceso_total )
-          query.idUsuarios    = storeUser.usuario.id
+          query.usuario       = storeUser.usuario.id
     }
 
     cargando.value            = true

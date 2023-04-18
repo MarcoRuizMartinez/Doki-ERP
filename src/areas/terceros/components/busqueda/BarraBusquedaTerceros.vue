@@ -47,7 +47,7 @@
           v-model               ="b.f.area"
           label                 ="Área"
           icon                  ="mdi-google-circles-extended"
-          class                 ="width200"
+          class                 ="width140"
           :options              ="Busqueda.listaAreas"
         />
         <!-- //* ///////////////////////////////////////////////// Tercero interno o externo -->
@@ -55,9 +55,22 @@
           v-model               ="b.f.terceroInterno"
           label                 ="Interno Externo"
           icon                  ="mdi-circle-multiple"
-          class                 ="width200"
+          class                 ="width140"
           :options              ="Busqueda.listaTerceroInterno"
-        />                 
+        />
+        <!-- //* ///////////////////////////////////////////////// Tercero Activo o Inactivo -->
+        <select-label-value     use-input hundido clearable flat bordered
+          v-model               ="b.f.activo"
+          label                 ="Activo"
+          icon                  ="mdi-toggle-switch"
+          class                 ="width140"
+          :options              ="Busqueda.listaActivo"
+        />
+        <!-- //* ///////////////////////////////////////////////////// Con titulo  -->
+        <q-toggle
+          v-model               ="b.f.color"
+          label                 ="Color"
+        />
       </fieldset-filtro>
       <fieldset-filtro
         titulo                  ="Especiales"

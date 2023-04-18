@@ -35,20 +35,12 @@
         :visible-columns          ="columnasVisibles"
         :rows-per-page-options    ="[100]"
         >
-        <template #body           ="props">
-          <q-tr :props            ="props">
-            <q-td key="nombre"    :props="props"> 
-              <linkTercero        :tercero="( props.row as Tercero ) "/>
-            </q-td>
-            <q-td
-              v-for               ="item of columnas.filter( c => c.iterable )"
-              :key                ="item.name"
-              :props              ="props"
-              >
-              {{props.row[item.name]}}
-            </q-td>
-          </q-tr>
-        </template>
+      <!-- //* ///////////////////////////////////////////////////// Ref con link -->
+      <template #body-cell-nombre ="props">
+        <q-td :props              ="props">
+          <linkTercero            :tercero="( props.row as Tercero ) "/>
+        </q-td>
+      </template>
       </q-table>
     </ventana>
   </q-page>
@@ -112,6 +104,7 @@
     columnas.value = [
       new Columna({name: "nombre",            iterable: false       }),
       new Columna({name: "responsablesLista", label: "Responsables" }),
+      new Columna({name: "color"                                   }),
       new Columna({name: "ciudad"                                   }),
       new Columna({name: "correo",                                  visible: false  }),
       new Columna({name: "alias",                                   visible: false  }),

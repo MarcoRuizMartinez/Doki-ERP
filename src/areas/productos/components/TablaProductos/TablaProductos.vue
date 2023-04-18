@@ -66,7 +66,7 @@
           >
           {{props.row.ref}}
         </router-link>
-      </q-td>    
+      </q-td>
     </template>
     <!-- //* ///////////////////////////////////////////////////// Columna precio  -->
     <template #body-cell-precio="props">
