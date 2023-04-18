@@ -23,6 +23,7 @@ import {  LocationQuery                 } from "vue-router"
 import {  getQueryRouterDate,
           getQueryRouterNumber,
           getQueryRouterString,
+          getQueryRouterBoolean,
           getQueryRouterLabelValue,
           getQueryRouterLabelValueArray } from "src/useSimpleOk/useTools"
 
@@ -64,6 +65,11 @@ export interface      IQuery {
   incOrigen            ?: INCENTIVO_ORIGEN
   incPago              ?: INCENTIVO_ESTADO_PAGO
   origenTipo           ?: number
+
+  // * //////////////   Terceros
+  favorito             ?: number
+  destacado            ?: number  
+  tipoTercero          ?: number
 }
 
 interface               IOpciones {
@@ -96,6 +102,7 @@ interface               ICampos {
   conIva                : ILabelValue
   totalizado            : ILabelValue
   tipoTercero           : ILabelValue
+  terceroInterno        : ILabelValue
   conOrdenes            : ILabelValue
   proveedores           : ILabelValue  
   incPago               : ILabelValue
@@ -108,6 +115,8 @@ interface               ICampos {
   creador              ?: IUsuario
   resultadosXPage       : number
   pagina                : number  
+  favorito              : boolean
+  destacado             : boolean
 }
 
 import {  Router           } from "vue-router"
@@ -136,14 +145,20 @@ export interface        IBusqueda {
   camposVacios          : boolean
 
   // * /////////////////  Metodos
-  initClass             : ()=>void
-  iniciarOpciones       : ()=>void
-  copiarQueryACampos    : ()=>void
-  desmontarBusqueda     : ()=>void
-  copiarQueryARourter   : ()=>void
-  limpiarQueryDeRouter  : ()=>Promise< boolean >
+  initClass             : ()=> void
+  iniciarOpciones       : ()=> Promise<void>
+  copiarQueryACampos    : ()=> Promise<void>
+  desmontarBusqueda     : ()=> void
+  copiarQueryARourter   : ()=> void
+  limpiarQueryDeRouter  : ()=> Promise< boolean >
   siguientePagina       : ( largo : number )=>number
-  montarBusqueda        : ( idUsuario : number, r : Router, autoSelect : boolean, canChangeUser : boolean, acuerdoTipo? : TTipoAcuerdo )=>void
+  montarBusqueda        : ( idUsuario         : number,
+                            r                 : Router,
+                            autoSelect        : boolean,
+                            canChangeUser     : boolean,
+                            resultadosXPage?  : number,
+                            acuerdoTipo?      : TTipoAcuerdo 
+                          ) => Promise<void>
 }
 
 export class Busqueda implements IBusqueda
@@ -198,6 +213,7 @@ export class Busqueda implements IBusqueda
       area                : labelValueNulo,
       facturado           : labelValueNulo,
       conIva              : labelValueNulo,
+      terceroInterno      : labelValueNulo,
       tipoTercero         : labelValueNulo,
       totalizado          : labelValueNulo,
       conOrdenes          : labelValueNulo,
@@ -212,10 +228,12 @@ export class Busqueda implements IBusqueda
       pagina              : 1,
       usuario             : new Usuario(),
       creador             : new Usuario(),
+      favorito            : false,
+      destacado           : false,
     }   
   }
   
-  async iniciarOpciones()
+  async iniciarOpciones() : Promise<void>
   {
     this.o.opcionesOk                       = false
     this.o.origenes                         = await getOrigenesContactoDB()
@@ -233,34 +251,37 @@ export class Busqueda implements IBusqueda
     this.o.opcionesOk                       = true
   }
 
-  async copiarQueryACampos()
+  async copiarQueryACampos() : Promise<void>
   {
     this.f.copiando           = true
     this.f.buscar             = getQueryRouterString    ( this.rourterQ .buscar       )
     this.f.contacto           = getQueryRouterString    ( this.rourterQ .contacto     )
     this.f.desde              = getQueryRouterDate      ( this.rourterQ .fechaDesde   )
     this.f.hasta              = getQueryRouterDate      ( this.rourterQ .fechaHasta   )
+    this.f.destacado          = getQueryRouterBoolean   ( this.rourterQ .destacado    )
+    this.f.favorito           = getQueryRouterBoolean   ( this.rourterQ .favorito     )
     this.f.valorMin           = getQueryRouterNumber    ( this.rourterQ .valorMin     )
     this.f.valorMax           = getQueryRouterNumber    ( this.rourterQ .valorMax     )
     if(!!this.rourterQ .limite)
       this.f.resultadosXPage  = getQueryRouterNumber    ( this.rourterQ .limite       )
-    this.f.area               = getQueryRouterLabelValue( this.rourterQ .area,                  Areas                     )
-    this.f.facturado          = getQueryRouterLabelValue( this.rourterQ .facturado,             Busqueda.listaFacturado   )
-    this.f.incPago            = getQueryRouterLabelValue( this.rourterQ .incPago,               Incentivo.estadosPago     )
-    this.f.incEstado          = getQueryRouterLabelValue( this.rourterQ .incEstado,             Incentivo.estados         )
-    this.f.incRazon           = getQueryRouterLabelValue( this.rourterQ .incRazon,              Incentivo.razones         )
-    this.f.incOrigen          = getQueryRouterLabelValue( this.rourterQ .incOrigen,             Incentivo.origenes        )    
-    this.f.conIva             = getQueryRouterLabelValue( this.rourterQ .conIva,                Busqueda.listaIVA         )
-    this.f.totalizado         = getQueryRouterLabelValue( this.rourterQ .conTotal,              Busqueda.listaTotales     )
-    this.f.tipoTercero        = getQueryRouterLabelValue( this.rourterQ .interno,               Busqueda.listaTerceroTipo )
-    this.f.conOrdenes         = getQueryRouterLabelValue( this.rourterQ .conOrdenes,            Busqueda.listaOrdenesProv )
-    this.f.estadoAnticipo     = getQueryRouterLabelValueArray ( this.rourterQ .estadoAnticipo,  Anticipo.estados          )
-    this.f.tipoAnticipo       = getQueryRouterLabelValueArray ( this.rourterQ .tipoAnticipo,    Anticipo.tipos            )
-    this.f.estados            = getQueryRouterLabelValueArray ( this.rourterQ .estados,         this.o.estados            )    
-    this.f.formaPago          = getQueryRouterLabelValueArray ( this.rourterQ .formaPago,       this.o.formasPago         )
-    this.f.entrega            = getQueryRouterLabelValueArray ( this.rourterQ .entrega,         this.o.metodosEntrega     )
-    this.f.condiciones        = getQueryRouterLabelValueArray ( this.rourterQ .condiciones,     this.o.condicionesPago    )
-    this.f.origenes           = getQueryRouterLabelValueArray ( this.rourterQ .origenes,        this.o.origenes           )
+    this.f.area               = getQueryRouterLabelValue( this.rourterQ .area,                  Areas                         )
+    this.f.facturado          = getQueryRouterLabelValue( this.rourterQ .facturado,             Busqueda.listaFacturado       )
+    this.f.incPago            = getQueryRouterLabelValue( this.rourterQ .incPago,               Incentivo.estadosPago         )
+    this.f.incEstado          = getQueryRouterLabelValue( this.rourterQ .incEstado,             Incentivo.estados             )
+    this.f.incRazon           = getQueryRouterLabelValue( this.rourterQ .incRazon,              Incentivo.razones             )
+    this.f.incOrigen          = getQueryRouterLabelValue( this.rourterQ .incOrigen,             Incentivo.origenes            )    
+    this.f.conIva             = getQueryRouterLabelValue( this.rourterQ .conIva,                Busqueda.listaIVA             )
+    this.f.totalizado         = getQueryRouterLabelValue( this.rourterQ .conTotal,              Busqueda.listaTotales         )
+    this.f.terceroInterno     = getQueryRouterLabelValue( this.rourterQ .interno,               Busqueda.listaTerceroInterno  )
+    this.f.conOrdenes         = getQueryRouterLabelValue( this.rourterQ .conOrdenes,            Busqueda.listaOrdenesProv     )
+    this.f.tipoTercero        = getQueryRouterLabelValue( this.rourterQ .tipoTercero,           Busqueda.listaTipoTercero     )
+    this.f.estadoAnticipo     = getQueryRouterLabelValueArray ( this.rourterQ .estadoAnticipo,  Anticipo.estados              )
+    this.f.tipoAnticipo       = getQueryRouterLabelValueArray ( this.rourterQ .tipoAnticipo,    Anticipo.tipos                )
+    this.f.estados            = getQueryRouterLabelValueArray ( this.rourterQ .estados,         this.o.estados                )    
+    this.f.formaPago          = getQueryRouterLabelValueArray ( this.rourterQ .formaPago,       this.o.formasPago             )
+    this.f.entrega            = getQueryRouterLabelValueArray ( this.rourterQ .entrega,         this.o.metodosEntrega         )
+    this.f.condiciones        = getQueryRouterLabelValueArray ( this.rourterQ .condiciones,     this.o.condicionesPago        )
+    this.f.origenes           = getQueryRouterLabelValueArray ( this.rourterQ .origenes,        this.o.origenes               )
 
     const municipioId         = getQueryRouterNumber( this.rourterQ .municipio ) 
     this.f.municipio          = !!municipioId     ? await getMunicipioDB( municipioId )     : new Municipio()
@@ -297,13 +318,21 @@ export class Busqueda implements IBusqueda
     
   }
 
-  async montarBusqueda( idUsuario : number, r : Router, autoSelect : boolean, canChangeUser : boolean, acuerdoTipo : TTipoAcuerdo = TIPO_ACUERDO.NULO )
+  async montarBusqueda(
+    idUsuario                 : number,
+    r                         : Router,
+    autoSelect                : boolean,
+    canChangeUser             : boolean, 
+    resultadosXPage           : number        = 10,
+    acuerdoTipo               : TTipoAcuerdo  = TIPO_ACUERDO.NULO 
+  ) : Promise<void>
   {
     this.montadoOk            = false
     this.haceAutoSelect       = autoSelect
     this.puedeCambiarUser     = canChangeUser
     this.usuarioId            = idUsuario
     this.initClass()
+    this.f.resultadosXPage    = resultadosXPage
     this.router               = r
     this.rourterQ             = this.router.currentRoute.value.query
     this.usuarioIdInicio      = getQueryRouterNumber( this.rourterQ.usuario ) ?? 0
@@ -325,10 +354,11 @@ export class Busqueda implements IBusqueda
   async limpiarQueryDeRouter() : Promise< boolean >
   {
     if(!this.montadoOk) return false
-    this.rourterQ = {}
+    this.rourterQ           = {}
     if(!this.camposVacios)
       await this.copiarQueryACampos()
     this.router.replace({ query: {} })
+    this.f.pagina           = 1
 
     return true
   }
@@ -389,6 +419,8 @@ export class Busqueda implements IBusqueda
 
     if(this.f.buscar.length  > 3)       q.buscar            = this.f.buscar
     if(this.f.contacto.length > 3)      q.contacto          = this.f.contacto
+    if(this.f.destacado)                q.destacado         = 1
+    if(this.f.favorito)                 q.favorito          = 1
     if(!!this.f.valorMin)               q.valorMin          = this.f.valorMin
     if(!!this.f.valorMax)               q.valorMax          = this.f.valorMax
     if(!!this.f.estados.length)         q.estados           = this.f.estados        .map( e => e.value ).join("_")
@@ -406,10 +438,11 @@ export class Busqueda implements IBusqueda
     if(!!this.f.incOrigen.label)        q.incOrigen         = this.f.incOrigen.value   
     if(!!this.f.conIva.label)           q.conIva            = this.f.conIva.value
     if(!!this.f.totalizado.label)       q.conTotal          = this.f.totalizado.value
-    if(!!this.f.tipoTercero.label)      q.interno           = this.f.tipoTercero.value
+    if(!!this.f.terceroInterno.label)   q.interno           = this.f.terceroInterno.value
     if(!!this.f.municipio.id)           q.municipio         = this.f.municipio.id
     if(!!this.f.municipioContacto.id)   q.municipioContacto = this.f.municipioContacto.id
     if(!!this.f.conOrdenes.label)       q.conOrdenes        = this.f.conOrdenes.value
+    if(!!this.f.tipoTercero.label)      q.tipoTercero       = this.f.tipoTercero.value
     if(!!this.f.usuario && this.f.usuario.id  > 0 && !this.esOCProveedor )
       q.usuario                                             = this.f.usuario.id     
     if(!!this.f.creador   && this.f.creador.id    > 0)
@@ -432,15 +465,20 @@ export class Busqueda implements IBusqueda
   static listaFacturado           = [{value:0, label:'No facturado'},   {value:1, label:'Facturado'   }]
   static listaTotales             = [{value:0, label:'Sin totalizar'},  {value:1, label:'Totalizado'  }]
   static listaIVA                 = [{value:0, label:'Sin IVA'},        {value:1, label:'Con IVA'     }]
-  static listaTerceroTipo         = [{value:0, label:'Externo'},        {value:1, label:'Interno'     }]
+  static listaTerceroInterno      = [{value:0, label:'Externo'},        {value:1, label:'Interno'     }]
   static listaOrdenesProv         = [{value:0, label:'Sin ordenes'},    {value:1, label:'Con ordenes' }]  
   static listaAreas               = Areas  
   static listaEstadosPago         = Incentivo.estadosPago
   static listaAnticipoEstados     = Anticipo.estados
   static listaAnticipoTipos       = Anticipo.tipos  
-  static listaResultadosXPag      = [ {label: '10',   value: 10   },
-                                      {label: '25',   value: 25   },
-                                      {label: '50',   value: 50   },
-                                      {label: '100',  value: 100  }
+  static listaResultadosXPag      = [ {value: 10,     label: '10',   },
+                                      {value: 25,     label: '25',   },
+                                      {value: 50,     label: '50',   },
+                                      {value: 100,    label: '100',  }
+                                    ]
+  static listaTipoTercero         = [ {value: 0,      label: 'Es cliente'               },
+                                      {value: 1,      label: 'Es proveedor'             },
+                                      {value: 2,      label: 'Cliente y Proveedor'      },
+                                      {value: 3,      label: 'Ni cliente ni proveedor'  },
                                     ]
 } 

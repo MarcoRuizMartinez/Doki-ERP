@@ -1,29 +1,29 @@
 <template>
   <ventana
-    class                     ="col-12"
-    class-contenido           ="column items-center"
-    height                    ="100%"
-    size-icon-carga           ="22em"
-    :modo                     ="modo"
-    :icono                    ="Acuerdo.getIconoAcuerdo(tipo)"
-    :titulo                   ="titulo"
-    :padding-contenido        ="modo === 'normal' ? '0' : '12px' "
-    :mensaje-sin-resultados   ="`No se encontraron ${Acuerdo.getTipoAcuerdoPlural( tipo)}`"
+    class                       ="col-12"
+    class-contenido             ="column items-center"
+    height                      ="100%"
+    size-icon-carga             ="22em"
+    :modo                       ="modo"
+    :icono                      ="Acuerdo.getIconoAcuerdo(tipo)"
+    :titulo                     ="titulo"
+    :padding-contenido          ="modo === 'normal' ? '0' : '12px' "
+    :mensaje-sin-resultados     ="`No se encontraron ${Acuerdo.getTipoAcuerdoPlural( tipo)}`"
     >
-    <template                 #barra>
+    <template                   #barra>
       <tabs-busqueda/>
     </template>
-    <template                 #menu>
+    <template                   #menu>
       <barra-busqueda
-        @buscar               ="buscar"
-        @limpiar              ="limpiarBusqueda"
-        @exportar             ="descargarAcuerdos"
+        @buscar                 ="buscar"
+        @limpiar                ="limpiarBusqueda"
+        @exportar               ="descargarAcuerdos"
         >
         <select-columnas
-          v-model             ="columnasVisibles"
-          label               ="Columnas"
-          :almacen            ="almacenColumnas"
-          :options            ="columnas"
+          v-model               ="columnasVisibles"
+          label                 ="Columnas"
+          :almacen              ="almacenColumnas"
+          :options              ="columnas"
         />
       </barra-busqueda>
     </template>
@@ -244,7 +244,7 @@
     useTitle(`${Acuerdo.getEmojiAcuerdo(tipo.value)}🔍 Buscar ${Acuerdo.getTipoAcuerdoPlural(tipo.value)}`)
     acuerdos.value                = []
     modo.value                    = "esperando-busqueda"
-    await busqueda.value.montarBusqueda( usuario.value.id, router, usuario.value.esComercial, permisos.value.acceso_total, tipo.value )
+    await busqueda.value.montarBusqueda( usuario.value.id, router, usuario.value.esComercial, permisos.value.acceso_total, 10, tipo.value )
     crearColumnas()
   }
 

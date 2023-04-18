@@ -509,6 +509,14 @@ export function getQueryRouterNumber(paramQuery  : LocationQueryValue  | Locatio
     return undefined
 }
 
+export function getQueryRouterBoolean(paramQuery  : LocationQueryValue  | LocationQueryValue[]) : boolean
+{
+  if(paramQuery === undefined || Array.isArray(paramQuery) )
+    return false
+
+  return Boolean( parseInt( paramQuery as string ) )
+}
+
 export function getQueryRouterDate(paramQuery  : LocationQueryValue  | LocationQueryValue[]) : Date | ""
 {
   if(Array.isArray(paramQuery) || paramQuery === undefined )

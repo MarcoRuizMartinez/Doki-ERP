@@ -302,13 +302,6 @@
 
 
   function checkAlertTabs( b : IBusquedaProducto ){
-    /*
-    tabs.value.alerts[0]  = ( !!b.tercero           || !!b.contacto           || fechaValida( b.desde ) || fechaValida( b.hasta ) ||
-                              !!b.estados.length    || !!b.condiciones.length || !!b.facturado.label    || !!b.comercial
-                            )
-    tabs.value.alerts[1]  = ( !!b.formaPago.length  || !!b.entrega.length     || !!b.origenes.length    || !!b.conIva.label       ||  
-                              !!b.area.label        || !!b.creador            || !!b.municipio.id       || !!b.totalizado.label   ||  
-                              !!b.tipoTercero.label ||!!b.conOrdenes.label    ||!!b.precioMinimo        || !!b.precioMaximo
-                            ) */
+
   }  
 </script>

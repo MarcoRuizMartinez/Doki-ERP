@@ -55,8 +55,6 @@
 <script setup lang="ts">  
   // * /////////////////////////////////////////////////////////////////////// Core
   import {  ref,
-            toRefs,
-            PropType,
             computed,
             onMounted,
             onUnmounted         } from "vue"
@@ -66,7 +64,6 @@
   import {  useStoreProducto    } from 'src/stores/producto'
   // * /////////////////////////////////////////////////////////////////////// Componibles
   import {  servicesProductos   } from "src/areas/productos/services/servicesProductos"
-  import {  useControlProductos } from "src/areas/productos/controllers/ControlProductosDolibarr"
   import {  useTools            } from "src/useSimpleOk/useTools"
   import {  generarCSVDesdeTabla} from "src/useSimpleOk/UtilFiles"
   import {  IProductoDoli,
@@ -84,8 +81,7 @@
   import    tabsBusqueda          from "src/areas/productos/components/Busqueda/TabsBusquedaProductos.vue"
   import    barraBusqueda         from "src/areas/productos/components/Busqueda/BarraBusquedaProductos.vue"
   import    tabla                 from "src/areas/productos/components/TablaProductos/TablaProductos.vue"  
-  import    formulario            from "src/areas/productos/components/FormularioProducto.vue"
-  
+  import    formulario            from "src/areas/productos/components/FormularioProducto.vue"  
 
   // * ////////////////////////// Columnas
   const { buscarProductos       } = servicesProductos()

@@ -108,8 +108,6 @@
   const { usuario, permisos     } = storeToRefs( useStoreUser() )  
   const { incentivos,
           incentivosSearch : b  } = storeToRefs( useStoreNomina() )
-  const { getAcuerdos           } = servicesAcuerdos()
-  const { buscarTerceroDolibarr } = useControlAcuerdo()  
   const { buscarIncentivos      } = useControlIncentivos()
   const { esMobil, aviso        } = useTools()
   const router                    = useRouter()
@@ -149,7 +147,7 @@
   {    
     incentivos.value              = []
     const esEspecial              = usuario.value.esGerencia || usuario.value.esContable
-    await b.value.montarBusqueda( usuario.value.id, router, !esEspecial, esEspecial )
+    await b.value.montarBusqueda( usuario.value.id, router, !esEspecial, esEspecial, 100 )
     modo.value                    = "esperando-busqueda"
     crearColumnas()
   }

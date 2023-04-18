@@ -3,7 +3,7 @@
     v-model:selected          ="seleccion"    
     row-key                   ="id"
     selection                 ="multiple"
-    class                     ="fit tabla-maco"
+    class                     ="fit tabla-maco tabla-alto-min"
     table-header-class        ="q-my-md bg-gris text-bold shadow-1"
     :grid                     ="tipoVista === 'grilla'"
     :grid-header              ="tipoVista === 'grilla'"

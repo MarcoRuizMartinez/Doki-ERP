@@ -24,12 +24,12 @@
     TERCEROS        = "Terceros",
     PEDIDOS         = "Pedidos",
     COTIZACIONES    = "Cotizaciones",
-    PEDIDO_PRO    = "Ordenes proveedores",
+    PEDIDO_PRO      = "Ordenes proveedores",
     PRODUCTOS       = "Productos",
   }
 
   const router      = useRouter()
-  const busquedas   = [ BUSQUEDAS.PEDIDOS, BUSQUEDAS.COTIZACIONES, BUSQUEDAS.PEDIDO_PRO, BUSQUEDAS.PRODUCTOS ]
+  const busquedas   = [ BUSQUEDAS.TERCEROS, BUSQUEDAS.PEDIDOS, BUSQUEDAS.COTIZACIONES, BUSQUEDAS.PEDIDO_PRO, BUSQUEDAS.PRODUCTOS ]
   const modelo      = ref<string>("")
   let busqueda      = ""
 
@@ -39,9 +39,10 @@
 
   function buscar( tipo : string )
   {
-    let patch       =   tipo  === BUSQUEDAS.PEDIDOS       ? "/pedidos?buscar=" 
+    let patch       =   tipo  === BUSQUEDAS.TERCEROS      ? "/terceros?buscar=" 
+                      : tipo  === BUSQUEDAS.PEDIDOS       ? "/pedidos?buscar=" 
                       : tipo  === BUSQUEDAS.COTIZACIONES  ? "/cotizaciones?buscar="
-                      : tipo  === BUSQUEDAS.PEDIDO_PRO  ? "/pedidos-proveedor?buscar="
+                      : tipo  === BUSQUEDAS.PEDIDO_PRO    ? "/pedidos-proveedor?buscar="
                       : tipo  === BUSQUEDAS.PRODUCTOS     ? "/productos?busqueda="
                       : ""
     if(!patch) return

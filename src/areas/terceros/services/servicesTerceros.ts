@@ -1,4 +1,4 @@
-export interface IBusquedaTercero {
+/* export interface IBusquedaTercero {
   like?:        string
   limite?:      number
   idUsuarios?:  string | number
@@ -10,8 +10,8 @@ export interface IBusquedaTercero {
   area?:        string
   //idEspecial?:  number
   orden?:       "ASC" | "DESC"
-}
- 
+} */
+
 import {  getURL,
           getFormData     } from "src/services/APIMaco"
 import {  useFetch        } from "src/useSimpleOk/useFetch"
@@ -21,6 +21,7 @@ import {  ITercero,
                           } from "src/areas/terceros/models/Tercero"
 import {  useRouter       } from 'vue-router'
 import {  useQuasar       } from 'quasar'
+import {  IQuery          } from "src/models/Busqueda"
 
 export function servicesTerceros() 
 {
@@ -57,7 +58,7 @@ export function servicesTerceros()
   }
 
   
-  async function buscarTerceros( query : IBusquedaTercero ) : Promise< ITercero[] >
+  async function buscarTerceros( query : IQuery ) : Promise< ITercero[] >
   {
     return new Promise( async (resolver, rechazar ) =>
     {

@@ -277,11 +277,11 @@
         />
         <!-- //* ///////////////////////////////////////////////// Tercero interno o externo -->
         <select-label-value     use-input hundido clearable flat bordered
-          v-model               ="b.f.tipoTercero"
+          v-model               ="b.f.terceroInterno"
           label                 ="Tipo tercero"
           icon                  ="mdi-circle-multiple"
           class                 ="width160"
-          :options              ="Busqueda.listaTerceroTipo"
+          :options              ="Busqueda.listaTerceroInterno"
         /> 
         <!-- //* ///////////////////////////////////////////////// Forma de pago -->
         <!-- //* ///////////////////////////////////////////////// Estado Anticipo -->
