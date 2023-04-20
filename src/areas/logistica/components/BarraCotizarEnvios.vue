@@ -1,6 +1,26 @@
 <template>
   <div class                  ="full-width relative-position row q-pa-none no-wrap scroll">
-    <!-- //* ///////////////////////////////////////////////////////////////////// FIELD SET REF Y USUARIO  -->
+    <!-- //* /////////////////////////////////////////////////// Cotizarion -->
+    <fieldset-filtro
+      titulo                  ="Cotizacion"
+      class-conenido          ="grilla-ribom fit"
+      >
+      <!-- //* ///////////////////////////////////////////////// Slot -->
+      <div>
+        <slot></slot>
+      </div>
+      
+      <div >
+        <!-- //* ///////////////////////////////////////////////// Tipo de producto -->        
+        <input-buscar         clearable hundido
+          v-model             ="b.f.nombre"
+          label               ="Tipo de producto"
+          class               ="width160"
+          icon                ="mdi-printer-3d"
+        />
+      </div>
+    </fieldset-filtro>       
+    <!-- //* ///////////////////////////////////////////////////////////////////// FIELD SET LUGARES  -->
     <fieldset-filtro
       titulo                  ="Lugares"
       class-conenido          ="grilla-ribom"
@@ -8,181 +28,183 @@
       <!-- //* ///////////////////////////////////////////////// Origen -->
       <municipios             hundido alerta
         v-model               ="b.f.municipio"
-        class                 ="width200"
+        class                 ="width190"
         label                 ="Origen"
       />
       <!-- //* ///////////////////////////////////////////////// Destino -->
       <municipios             hundido alerta
         v-model               ="b.f.municipioContacto"
-        class                 ="width200"
+        class                 ="width190"
         label                 ="Destino"
       />
     </fieldset-filtro>
     <!-- //* ///////////////////////////////////////////////////////////////////// FIELD SET VALOR -->
     <fieldset-filtro
-      titulo                  ="Peso y Valor"
+      titulo                  ="Valor y cantidad"
       class-conenido          ="grilla-ribom"
       >
-      <!-- //* ///////////////////////////////////////////////// Peso -->
-      <numero-paso            hundido alerta
-        v-model               ="b.f.peso"
-        label                 ="Peso KG"
-        :debounce             ="600"    
-        modo                  ="right"
-        class                 ="width160"
-        :minimo               ="1"        
-      /> 
+
       <!-- //* ///////////////////////////////////////////////// Valor envio -->
-      <input-number           hundido clearable
+      <input-number           hundido alerta
         v-model               ="b.f.valorMax"
         label                 ="Valor"
         icon                  ="mdi-currency-usd"
-        class                 ="width160"
+        class                 ="width130"
         :minimo               ="1000"
         :maximo               ="999_999_999"
       />
+      <!-- //* ///////////////////////////////////////////////// Cantidad -->
+      <input-number
+        v-model               ="b.f.qty"
+        v-bind                ="estiloBoton"
+        label                 ="Cantidad"
+        icon                  ="mdi-counter"
+        class                 ="width130"
+      />            
     </fieldset-filtro>
-    <!-- //* ///////////////////////////////////////////////////////////////////// FIELD SET ESTADOS -->
+    <!-- //* ///////////////////////////////////////////////////////////////////// FIELD SET MEDIDAS -->
     <fieldset-filtro
       titulo                  ="Medidas"
       class-conenido          ="grilla-ribom"
       >
-      <!-- //* ///////////////////////////////////////////////// Precio Maximo -->
-      <input-number           hundido clearable
-        v-model               ="b.f.altura"
-        label                 ="Altura CM"
-        icon                  ="mdi-tape-measure"
-        class                 ="width160"
-        :minimo               ="10"
-        :maximo               ="1000"
-      />
-      <!-- //* ///////////////////////////////////////////////// Precio Maximo -->
-      <input-number           hundido clearable
-        v-model               ="b.f.largo"
-        label                 ="Largo CM"
-        icon                  ="mdi-tape-measure"
-        class                 ="width160"
-        :minimo               ="10"
-        :maximo               ="1000"
-      />
-      <!-- //* ///////////////////////////////////////////////// Precio Maximo -->
-      <input-number           hundido clearable
+      <!-- //* ///////////////////////////////////////////////// Ancho -->
+      <input-number           hundido
+        v-model               ="b.f.peso"
+        v-bind                ="estiloBoton"
+        label                 ="Peso KG"
+        icon                  ="mdi-weight-kilogram"
+        class                 ="width130"
+      />      
+      <!-- //* ///////////////////////////////////////////////// Ancho -->
+      <input-number           hundido
         v-model               ="b.f.ancho"
+        v-bind                ="estiloBoton"
         label                 ="Ancho CM"
         icon                  ="mdi-tape-measure"
-        class                 ="width160"
-        :minimo               ="10"
-        :maximo               ="1000"
-      />             
+        class                 ="width130"        
+      />
+      <!-- //* ///////////////////////////////////////////////// Altura -->
+      <input-number           hundido
+        v-model               ="b.f.altura"
+        v-bind                ="estiloBoton"
+        label                 ="Altura CM"
+        icon                  ="mdi-tape-measure"
+        class                 ="width130"
+      />      
+      <!-- //* ///////////////////////////////////////////////// Fondo -->
+      <input-number           hundido
+        v-model               ="b.f.fondo"
+        v-bind                ="estiloBoton"
+        label                 ="Fondo CM"
+        icon                  ="mdi-tape-measure"
+        class                 ="width130"
+      />
     </fieldset-filtro>  
-    <!-- //* ///////////////////////////////////////////////////////////////////// FIELD SET Paginación -->
-    <fieldset-filtro
-      titulo                  ="Paginas"
-      class-conenido          ="grilla-ribom fit"
-      >
-      <!-- //* ///////////////////////////////////////////////// Resultados por pagina -->
-      <div>
-        <q-btn-toggle         spread push unelevated round
-          v-model             ="b.f.resultadosXPage"
-          color               ="white"
-          text-color          ="grey-8"
-          toggle-color        ="primary"
-          :options            ="Busqueda.listaResultadosXPag"
-          @update:model-value ="b.f.pagina = 1"
-        />
-        <Tooltip label        ="Resultados por pagina"/>
-      </div>
-      <!-- //* ///////////////////////////////////////////////// Pagina -->
-      <div class              ="row justify-center full-width">
-        <q-pagination         dense
-          v-model             ="b.f.pagina"
-          :max                ="siguientePagina"
-          :max-pages          ="3"
-          :ellipses           ="false"
-          :boundary-numbers   ="false"
-        />
-        <Tooltip label        ="Pagina"/>
-        <q-spinner-puff
-          v-if                ="b.haySiguientePagina"
-          color               ="primary"
-          size                ="2em"
-          class               ="q-mt-xs"
-        />          
-      </div>
-    </fieldset-filtro>
+  
     <fieldset-filtro
       titulo                  ="Opciones"
       class-conenido          ="grilla-ribom"
       >
       <!-- //* ///////////////////////////////////////////////// Slot Columnas -->
-      <slot></slot>
+      <slot name              ="columnas"></slot>
       <!-- //* ///////////////////////////////////////////////// Botones -->
-      <div class                ="row justify-around q-mt-sm">
+      <div class              ="row justify-around q-mt-sm">
         <!-- //* /////////////////////////////////////////////// Boton recargar -->
         <div>
-          <q-btn                round push glossy
-            icon                ="mdi-refresh"
-            padding             ="xs"
-            color               ="primary"
-            :disable            ="b.queryVacia"
-            @click              ="buscar"
+          <q-btn              round push glossy
+            icon              ="mdi-refresh"
+            padding           ="xs"
+            color             ="primary"
+            :disable          ="b.queryVacia"
+            @click            ="buscar"
             >
-            <Tooltip label      ="Recargar"/>
+            <Tooltip label    ="Recargar"/>
           </q-btn>
         </div>
         <!-- //* /////////////////////////////////////////////// Boton limpiar -->
         <div>
-          <q-btn                round push glossy
-            icon                ="mdi-close"
-            padding             ="xs"
-            color               ="primary"
-            :disable            ="b.queryVacia"
-            @click              ="limpiarBusqueda"
+          <q-btn              round push glossy
+            icon              ="mdi-close"
+            padding           ="xs"
+            color             ="primary"
+            :disable          ="b.queryVacia"
+            @click            ="limpiarBusqueda"
             >
-            <Tooltip label      ="Limpiar búsqueda"/>
+            <Tooltip label    ="Limpiar búsqueda"/>
           </q-btn>
         </div>
         <!-- //* /////////////////////////////////////////////// Boton exportar -->
         <div>
-          <q-btn                round push glossy
-            icon                ="mdi-microsoft-excel"
-            color               ="primary"
-            padding             ="xs"
-            :disable            ="b.queryVacia"
-            @click              ="emit('exportar')"
+          <q-btn              round push glossy
+            icon              ="mdi-microsoft-excel"
+            color             ="primary"
+            padding           ="xs"
+            :disable          ="b.queryVacia"
+            @click            ="emit('exportar')"
             >
-            <Tooltip label      ="Descargar"/>
+            <Tooltip label    ="Descargar"/>
           </q-btn>
         </div>
       </div> 
-    </fieldset-filtro>
-    <inner-loading :cargando    ="loading.carga"/>
+    </fieldset-filtro>   
+    <fieldset-filtro
+      v-if                    ="!b.esEntrega"
+      titulo                  ="Totales"
+      class-conenido          ="column q-gutter-xs"
+      >
+      <table>
+        <tbody>
+          <tr>
+            <td>Total sin IVA:</td>
+            <td class         ="text-bold fuente-mono">
+              {{ formatoPrecio( totalSinIVA ) }}
+            </td>
+          </tr>
+          <tr>
+            <td>Total con IVA:</td>
+            <td class         ="text-bold fuente-mono">
+              {{ formatoPrecio( totalConIVA ) }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </fieldset-filtro>    
+    <inner-loading :cargando  ="loading.carga"/>
   </div>
 </template>
 <script lang="ts" setup>
   // * /////////////////////////////////////////////////////////////////////// Core
   import {  watch,
+            toRefs,
+            PropType,
             computed            } from "vue"
+
   // * /////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs         } from "pinia"  
-  import {  useStoreNomina      } from "src/stores/nomina"
+  import {  useStoreAcuerdo     } from "src/stores/acuerdo"
 
   // * /////////////////////////////////////////////////////////////////////// Modelos
-  import {  IQuery, Busqueda    } from "src/models/Busqueda"
+  import {  IQuery              } from "src/models/Busqueda"
+  import {  formatoPrecio       } from "src/useSimpleOk/useTools"
+  import {  ICostoEnvio         } from "src/areas/logistica/models/CostoEnvio"
+  import {  X100_Aumento        } from "src/useSimpleOk/useTools"
 
   // * /////////////////////////////////////////////////////////////////////// Componentes
   import    fieldsetFiltro        from "components/utilidades/Fieldset.vue"
-  import    inputNumber           from "components/utilidades/input/InputFormNumber.vue"  
-  import    numeroPaso            from "components/utilidades/input/InputNumeroPaso.vue"
   import    innerLoading          from "components/utilidades/InnerLoading.vue"
+  import    inputBuscar           from "components/utilidades/input/InputSimple.vue"
+  import    inputNumber           from "components/utilidades/input/InputFormNumber.vue"  
   import    municipios            from "components/utilidades/select/SelectMunicipios.vue"
+  
 
-  const { incentivos,
-          loading,
-          incentivosSearch : b  } = storeToRefs( useStoreNomina() )
+  const props                 = defineProps({      
+    quote: { required: true,  type: Array as PropType< ICostoEnvio[] >  },
+  })
+  const { quote }             = toRefs(props)
 
-  // * /////////////////////////////////////////////////////////////////////// Router
-    
+  const { busqueda : b,
+          loading               } = storeToRefs( useStoreAcuerdo() )
+
   const emit = defineEmits<{
     (e: 'buscar',   value: IQuery ): void
     (e: 'limpiar',                ): void
@@ -202,19 +224,42 @@
     b.value.copiarQueryARourter()
     if(!busquedaCompleta.value) return
     
-    b.value.query.municipio         = b.value.f.municipio         .codigoDianLargo
-    b.value.query.municipioContacto = b.value.f.municipioContacto .codigoDianLargo
-    const cosa = Object.assign( {}, b.value.query)
-    cosa.municipio         = b.value.f.municipio         .codigoDianLargo
-    cosa.municipioContacto = b.value.f.municipioContacto .codigoDianLargo
-    emit("buscar", cosa)
+    const q                 = Object.assign( {}, b.value.query)
+    q.municipio             = b.value.f.municipio         .codigoDianLargo
+    q.municipioContacto     = b.value.f.municipioContacto .codigoDianLargo
+    emit("buscar", q)
   }
 
   function limpiarBusqueda(){
     const todoLimpio  = b.value.limpiarQueryDeRouter()
     if(todoLimpio) emit("limpiar")
+  }  
+
+  const busquedaCompleta          = computed(()=> ( "municipio"         in b.value.query &&
+                                                    "municipioContacto" in b.value.query &&
+                                                    "peso"              in b.value.query &&
+                                                    "valorMax"          in b.value.query
+                                                  )
+                                            )
+
+  type TEstilo = { colores : "verde-rojo", iconos: "suma", hundido? : boolean, debounce : string, paso : number, minimo : number, maximo : number}
+  
+  const estiloBoton : TEstilo = { 
+    hundido   : true,
+    colores   : "verde-rojo",
+    iconos    : "suma",
+    debounce  : "2500",
+    paso      : 1,
+    minimo    : 1,
+    maximo    : 1000,
   }
 
-  const siguientePagina           = computed(()=> b.value.siguientePagina( incentivos.value.length ) )
-  const busquedaCompleta          = computed(()=> ("municipio" in b.value.query && "municipioContacto" in b.value.query && "peso" in b.value.query) )
+
+  const totalSinIVA      = computed(()=> { 
+    let suma                      = 0
+    if(!!quote.value && !!quote.value.length)
+      suma                        = quote.value.map( c=> c.totalSinIVA ?? 0 ).reduce((cos, now) => (cos ?? 0) + now)
+    return suma
+  })
+  const totalConIVA     = computed(()=>  X100_Aumento( totalSinIVA.value, parseInt( process.env.IVA ?? "0" )) )
 </script>

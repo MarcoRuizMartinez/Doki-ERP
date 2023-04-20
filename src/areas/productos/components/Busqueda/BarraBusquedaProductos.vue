@@ -167,7 +167,7 @@
             toggle-text-color     ="white"            
           />
         </div>     
-      </fieldset-filtro>      
+      </fieldset-filtro>
     </q-tab-panel>
     <!-- //* ///////////////////////////////////////////////////// Tab 2 -->
     <!-- <q-tab-panel

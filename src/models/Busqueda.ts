@@ -75,11 +75,13 @@ export interface      IQuery {
   color                ?: number
   activo               ?: string
 
-  // * //////////////   Tamaño
+  // * //////////////   Producto
+  nombre               ?: string
+  qty                  ?: number
   peso                 ?: number
   altura               ?: number
-  largo                ?: number
   ancho                ?: number
+  fondo                 ?: number
 }
 
 interface               IOpciones {
@@ -129,10 +131,12 @@ interface               ICampos {
   favorito              : boolean
   destacado             : boolean
   color                 : boolean
+  nombre                : string
+  qty                   : number | undefined
   peso                  : number | undefined
   altura                : number | undefined
-  largo                 : number | undefined
   ancho                 : number | undefined
+  fondo                 : number | undefined
 }
 
 import {  Router           } from "vue-router"
@@ -248,10 +252,12 @@ export class Busqueda implements IBusqueda
       favorito            : false,
       destacado           : false,
       color               : false,
-      peso                : undefined,
+      nombre              : "",
+      qty                 : 0,
+      peso                : 0,
       altura              : undefined,
-      largo               : undefined,
       ancho               : undefined,
+      fondo               : undefined,
     }   
   }
   
@@ -280,12 +286,14 @@ export class Busqueda implements IBusqueda
     this.f.hasta              = getQueryRouterDate      ( this.rourterQ .fechaHasta   )
     this.f.buscar             = getQueryRouterString    ( this.rourterQ .buscar       )
     this.f.contacto           = getQueryRouterString    ( this.rourterQ .contacto     )
+    this.f.nombre             = getQueryRouterString    ( this.rourterQ .nombre       )
     this.f.valorMin           = getQueryRouterNumber    ( this.rourterQ .valorMin     )
     this.f.valorMax           = getQueryRouterNumber    ( this.rourterQ .valorMax     )
+    this.f.qty                = getQueryRouterNumber    ( this.rourterQ .qty          )
     this.f.peso               = getQueryRouterNumber    ( this.rourterQ .peso         )
     this.f.altura             = getQueryRouterNumber    ( this.rourterQ .altura       )
-    this.f.largo              = getQueryRouterNumber    ( this.rourterQ .largo        )
     this.f.ancho              = getQueryRouterNumber    ( this.rourterQ .ancho        )
+    this.f.fondo              = getQueryRouterNumber    ( this.rourterQ .fondo        )
     this.f.destacado          = getQueryRouterBoolean   ( this.rourterQ .destacado    )
     this.f.favorito           = getQueryRouterBoolean   ( this.rourterQ .favorito     )
     this.f.color              = getQueryRouterBoolean   ( this.rourterQ .color        )    
@@ -447,15 +455,17 @@ export class Busqueda implements IBusqueda
 
     if(this.f.buscar.length  > 3)       q.buscar            = this.f.buscar
     if(this.f.contacto.length > 3)      q.contacto          = this.f.contacto
+    if(this.f.nombre.length > 3)        q.nombre            = this.f.nombre
     if(this.f.destacado)                q.destacado         = 1
     if(this.f.favorito)                 q.favorito          = 1
     if(this.f.color)                    q.color             = 1
     if(!!this.f.valorMin)               q.valorMin          = this.f.valorMin
     if(!!this.f.valorMax)               q.valorMax          = this.f.valorMax
     if(!!this.f.peso)                   q.peso              = this.f.peso
+    if(!!this.f.qty)                    q.qty               = this.f.qty
     if(!!this.f.altura)                 q.altura            = this.f.altura
-    if(!!this.f.largo)                  q.largo             = this.f.largo
     if(!!this.f.ancho)                  q.ancho             = this.f.ancho
+    if(!!this.f.fondo)                  q.fondo             = this.f.fondo
     if(!!this.f.estados.length)         q.estados           = this.f.estados        .map( e => e.value ).join("_")
     if(!!this.f.origenes.length)        q.origenes          = this.f.origenes       .map( e => e.value ).join("_")
     if(!!this.f.condiciones.length)     q.condiciones       = this.f.condiciones    .map( e => e.value ).join("_")

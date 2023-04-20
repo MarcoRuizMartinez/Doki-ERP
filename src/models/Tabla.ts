@@ -71,12 +71,13 @@ export class Columna implements IColumna
     this.headerClasses    = ""
   }
 
-  static ColumnaPrecio({ name = "", label = "",  sortable = true, clase = "" }) : IColumna 
+  static ColumnaPrecio({ name = "", label = "",  sortable = true, clase = "", visible = true }) : IColumna 
   {
     let col               = new Columna({ name: name, label: label, sortable: sortable, clase: clase })
         col.format        = val => formatoPrecio( val, "decimales-no" )// + "\r\n" + formatoPrecio( val *1.19, "decimales-no" )
         col.align         = "right"
         col.classes       = clase + " fuente-mono"
+        col.visible       = visible
 
     return col
   }
