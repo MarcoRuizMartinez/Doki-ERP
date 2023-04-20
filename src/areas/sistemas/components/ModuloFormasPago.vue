@@ -30,7 +30,7 @@
     import {  IColumna,
               Columna             } from "src/models/Tabla"
     import    ventana               from "components/utilidades/Ventana.vue"
-    import    inputBuscar           from "src/components/utilidades/input/InputSimple.vue"
+    import    inputBuscar           from "components/utilidades/input/InputSimple.vue"
     import {  dexieFormasPago     } from "src/services/useDexie"
 
     const filtro                = ref< string >("")

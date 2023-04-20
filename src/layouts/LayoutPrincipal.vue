@@ -89,10 +89,10 @@
   import {  useTools          } from "src/useSimpleOk/useTools"
   ///////////////////////////////////////////////////////////////////////// Componentes
   import    online              from "components/navegacion/IconOnline.vue";
-  import    menuTop             from "src/components/navegacion/menus/MenuTop.vue";
+  import    menuTop             from "components/navegacion/menus/MenuTop.vue";
   import    menuUsuario         from "components/navegacion/usuario/MenuUsuario.vue";
-  import    menuExpandible      from "src/components/navegacion/menus/MenuLateralLeft.vue"
-  import    buscador            from "src/components/navegacion/Buscador.vue"
+  import    menuExpandible      from "components/navegacion/menus/MenuLateralLeft.vue"
+  import    buscador            from "components/navegacion/Buscador.vue"
 
 
   useMenu()

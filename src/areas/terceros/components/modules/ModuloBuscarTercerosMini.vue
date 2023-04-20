@@ -41,7 +41,7 @@
             Columna         } from "src/models/Tabla"
   import    linkTercero       from "src/areas/terceros/components/LinkTercero.vue"
   import    ventana           from "components/utilidades/Ventana.vue"
-  import    inputBuscar       from "src/components/utilidades/input/InputSimple.vue"
+  import    inputBuscar       from "components/utilidades/input/InputSimple.vue"
   import {  IQuery          } from "src/models/Busqueda"
   import {  ITercero,
             Tercero         } from "src/areas/terceros/models/Tercero"

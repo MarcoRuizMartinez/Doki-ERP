@@ -57,7 +57,7 @@
   import {  useControlProductos } from "src/areas/acuerdos/controllers/ControlLineasProductos"
   ////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana               from "components/utilidades/Ventana.vue"
-  import    inputNumber           from "src/components/utilidades/input/InputFormNumber.vue"  
+  import    inputNumber           from "components/utilidades/input/InputFormNumber.vue"  
 
   const { editarEnLoteQtyYDescu}= useControlProductos()  
 

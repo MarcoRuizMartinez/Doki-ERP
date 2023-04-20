@@ -2,70 +2,78 @@
   <div class                  ="full-width relative-position row q-pa-none no-wrap scroll">
     <!-- //* ///////////////////////////////////////////////////////////////////// FIELD SET REF Y USUARIO  -->
     <fieldset-filtro
-      titulo                  ="Búsqueda"
-      class-conenido          ="column q-gutter-xs"
+      titulo                  ="Lugares"
+      class-conenido          ="grilla-ribom"
       >
-      <!-- //* ///////////////////////////////////////////////// Busqueda general -->        
-      <input-buscar           clearable hundido
-        v-model               ="b.f.buscar"
-        label                 ="Búsqueda Ref"
+      <!-- //* ///////////////////////////////////////////////// Origen -->
+      <municipios             hundido alerta
+        v-model               ="b.f.municipio"
         class                 ="width200"
-        icon                  ="mdi-magnify"
+        label                 ="Origen"
       />
-      <!-- //* ///////////////////////////////////////////////// Usuario -->
-      <select-usuario         hundido clearable
-        v-model               ="b.f.usuario"
+      <!-- //* ///////////////////////////////////////////////// Destino -->
+      <municipios             hundido alerta
+        v-model               ="b.f.municipioContacto"
         class                 ="width200"
-        label                 ="Usuario"
-        :readonly             ="!b.puedeCambiarUser"
-        :grupos               =[GRUPO_USUARIO.EN_NOMINA]
+        label                 ="Destino"
       />
     </fieldset-filtro>
     <!-- //* ///////////////////////////////////////////////////////////////////// FIELD SET VALOR -->
     <fieldset-filtro
-      titulo                  ="Valor"
-      class-conenido          ="column q-gutter-xs"
+      titulo                  ="Peso y Valor"
+      class-conenido          ="grilla-ribom"
       >
-      <!-- //* ///////////////////////////////////////////////// Precio Minimo -->
-      <input-number           hundido clearable
-        v-model               ="b.f.valorMin"
-        label                 ="Mínimo"
-        icon                  ="mdi-currency-usd"
+      <!-- //* ///////////////////////////////////////////////// Peso -->
+      <numero-paso            hundido alerta
+        v-model               ="b.f.peso"
+        label                 ="Peso KG"
+        :debounce             ="600"    
+        modo                  ="right"
         class                 ="width160"
-        :minimo               ="0"
-        :maximo               ="!!b.f.valorMax ? b.f.valorMax : undefined"
-      />
-      <!-- //* ///////////////////////////////////////////////// Precio Maximo -->
+        :minimo               ="1"        
+      /> 
+      <!-- //* ///////////////////////////////////////////////// Valor envio -->
       <input-number           hundido clearable
         v-model               ="b.f.valorMax"
-        label                 ="Máximo"
+        label                 ="Valor"
         icon                  ="mdi-currency-usd"
         class                 ="width160"
-        :minimo               ="!!b.f.valorMin ? b.f.valorMin : undefined"
+        :minimo               ="1000"
         :maximo               ="999_999_999"
       />
     </fieldset-filtro>
     <!-- //* ///////////////////////////////////////////////////////////////////// FIELD SET ESTADOS -->
     <fieldset-filtro
-      titulo                  ="Estado"
-      class-conenido          ="column q-gutter-xs"
+      titulo                  ="Medidas"
+      class-conenido          ="grilla-ribom"
       >
-      <!-- //* ///////////////////////////////////////////////// Estado -->
-      <select-label-value     use-input hundido clearable flat bordered
-        v-model               ="b.f.incEstado"
-        label                 ="Estado"
-        icon                  ="mdi-file-check"
-        class                 ="width180"
-        :options              ="Incentivo.estados"
+      <!-- //* ///////////////////////////////////////////////// Precio Maximo -->
+      <input-number           hundido clearable
+        v-model               ="b.f.altura"
+        label                 ="Altura CM"
+        icon                  ="mdi-tape-measure"
+        class                 ="width160"
+        :minimo               ="10"
+        :maximo               ="1000"
       />
-      <!-- //* ///////////////////////////////////////////////// Pagado -->
-      <select-label-value     use-input hundido clearable flat bordered
-        v-model               ="b.f.incPago"
-        label                 ="Pago"
-        icon                  ="mdi-cash-check"
-        class                 ="width180"
-        :options              ="Incentivo.estadosPago.filter( e => e.visible )"
-      />    
+      <!-- //* ///////////////////////////////////////////////// Precio Maximo -->
+      <input-number           hundido clearable
+        v-model               ="b.f.largo"
+        label                 ="Largo CM"
+        icon                  ="mdi-tape-measure"
+        class                 ="width160"
+        :minimo               ="10"
+        :maximo               ="1000"
+      />
+      <!-- //* ///////////////////////////////////////////////// Precio Maximo -->
+      <input-number           hundido clearable
+        v-model               ="b.f.ancho"
+        label                 ="Ancho CM"
+        icon                  ="mdi-tape-measure"
+        class                 ="width160"
+        :minimo               ="10"
+        :maximo               ="1000"
+      />             
     </fieldset-filtro>  
     <!-- //* ///////////////////////////////////////////////////////////////////// FIELD SET Paginación -->
     <fieldset-filtro
@@ -156,22 +164,18 @@
   import {  watch,
             computed            } from "vue"
   // * /////////////////////////////////////////////////////////////////////// Store
-  import {  storeToRefs         } from "pinia"
-  import {  useStoreUser        } from "src/stores/user"
+  import {  storeToRefs         } from "pinia"  
   import {  useStoreNomina      } from "src/stores/nomina"
 
   // * /////////////////////////////////////////////////////////////////////// Modelos
-  import {  Incentivo           } from "src/areas/nomina//models/Incentivo"            
-  import {  GRUPO_USUARIO       } from "src/models/TiposVarios"
   import {  IQuery, Busqueda    } from "src/models/Busqueda"
 
   // * /////////////////////////////////////////////////////////////////////// Componentes
   import    fieldsetFiltro        from "components/utilidades/Fieldset.vue"
-  import    inputNumber           from "components/utilidades/input/InputFormNumber.vue"
-  import    selectLabelValue      from "components/utilidades/select/SelectLabelValue.vue"
-  import    selectUsuario         from "src/areas/usuarios/components/SelectUsuario.vue"
-  import    inputBuscar           from "components/utilidades/input/InputSimple.vue"
+  import    inputNumber           from "components/utilidades/input/InputFormNumber.vue"  
+  import    numeroPaso            from "components/utilidades/input/InputNumeroPaso.vue"
   import    innerLoading          from "components/utilidades/InnerLoading.vue"
+  import    municipios            from "components/utilidades/select/SelectMunicipios.vue"
 
   const { incentivos,
           loading,
@@ -194,15 +198,23 @@
   )
 
   function buscar()
-  {
+  {    
     b.value.copiarQueryARourter()
-    emit("buscar", b.value.query)
+    if(!busquedaCompleta.value) return
+    
+    b.value.query.municipio         = b.value.f.municipio         .codigoDianLargo
+    b.value.query.municipioContacto = b.value.f.municipioContacto .codigoDianLargo
+    const cosa = Object.assign( {}, b.value.query)
+    cosa.municipio         = b.value.f.municipio         .codigoDianLargo
+    cosa.municipioContacto = b.value.f.municipioContacto .codigoDianLargo
+    emit("buscar", cosa)
   }
 
   function limpiarBusqueda(){
     const todoLimpio  = b.value.limpiarQueryDeRouter()
     if(todoLimpio) emit("limpiar")
-  }  
+  }
 
   const siguientePagina           = computed(()=> b.value.siguientePagina( incentivos.value.length ) )
+  const busquedaCompleta          = computed(()=> ("municipio" in b.value.query && "municipioContacto" in b.value.query && "peso" in b.value.query) )
 </script>

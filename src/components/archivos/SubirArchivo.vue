@@ -100,7 +100,7 @@
   import {  format          } from "quasar"
   import {  style,
             WYSIWYG_Imagen  } from "src/useSimpleOk/useEstilos"
-  import    inputText         from "src/components/utilidades/input/InputFormText.vue"  
+  import    inputText         from "components/utilidades/input/InputFormText.vue"  
   import {  IArchivo        } from "src/models/Archivo"
 
   const { apiDolibarr       } = useApiDolibarr()

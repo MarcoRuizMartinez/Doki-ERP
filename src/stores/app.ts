@@ -1,5 +1,5 @@
 import { defineStore  } from 'pinia';
-import { iItemMenu    } from "src/components/navegacion/menus/iItemMenu"
+import { iItemMenu    } from "components/navegacion/menus/iItemMenu"
 //import { IUsuario     } from "src/areas/usuarios/models/Usuario"
 
 export interface ITab {

@@ -213,7 +213,13 @@ const routes: RouteRecordRaw[] = [
         name:       'entrega',
         props:      route => ({ tipo: TIPO_ACUERDO.ENTREGA_CLI, id: route.params.id }),
         component:  () => import('src/areas/acuerdos/pages/PageAcuerdoVer.vue')
-      }
+      },
+      //* ////////////////////////////////////////////////////////////////// Cotizar Envios
+      {
+        path:       'cotizar',
+        name:       'cotizarEnvio',        
+        component:  () => import('src/areas/logistica/pages/PageCotizarEnvio.vue')
+      }      
     ]
   },
   //* //////////////////////////////////////////////////////////////////

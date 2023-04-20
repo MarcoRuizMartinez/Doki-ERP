@@ -245,7 +245,7 @@
                             } from "src/areas/terceros/models/Contacto"
   import    ventana           from "components/utilidades/Ventana.vue"
   import    municipios        from "components/utilidades/select/SelectMunicipios.vue"
-  import    inputText         from "src/components/utilidades/input/InputFormText.vue"
+  import    inputText         from "components/utilidades/input/InputFormText.vue"
   import {  EstadoVerificar } from "src/models/TiposVarios"
   import {  useFetch        } from "src/useSimpleOk/useFetch"
   import {  getURL,

@@ -44,7 +44,7 @@ export class DBSimpleOk extends Dexie
 
     this.version(1).stores(
     {
-      [TABLAS.MUNICIPIOS]       : "++id, municipio, departamento, departamentoSigla, departamentoId, indicativo",
+      [TABLAS.MUNICIPIOS]       : "++id, municipio, departamento, departamentoSigla, departamentoId, indicativo, codigoDian",
       [TABLAS.USUARIOS]         : "++id, nombre, apellido, puesto, foto, tipo, area, estado, gruposString, terceroIdCtz, cel, correo, reglaComisionId",
       [TABLAS.TIPOS_DOCUMENTOS] : "++id, codigo, nombre",
       [TABLAS.CONDICION_PAGO]   : "++id, label, descripcion, dias",

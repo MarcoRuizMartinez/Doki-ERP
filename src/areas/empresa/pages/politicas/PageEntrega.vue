@@ -7,7 +7,7 @@
 </template>
 
 <script setup lang="ts">
-  import    paginaIframe from "src/components/navegacion/VentanaIframe.vue"
+  import    paginaIframe from "components/navegacion/VentanaIframe.vue"
   import {  useTitle            } from "@vueuse/core"
   const titulo  = "Políticas de entrega de productos"
   const title   = useTitle("📖 " + titulo)

@@ -398,10 +398,10 @@
   import    selectLabelValue      from "components/utilidades/select/SelectLabelValue.vue"
   import    municipios            from "components/utilidades/select/SelectMunicipios.vue"
   import    multiLabelValue       from "components/utilidades/select/SelectLabelValueMulti.vue"
-  import    inputFecha            from "src/components/utilidades/input/InputFecha.vue"
+  import    inputFecha            from "components/utilidades/input/InputFecha.vue"
   import    selectUsuario         from "src/areas/usuarios/components/SelectUsuario.vue"
-  import    inputBuscar           from "src/components/utilidades/input/InputSimple.vue"
-  import    innerLoading          from "src/components/utilidades/InnerLoading.vue"
+  import    inputBuscar           from "components/utilidades/input/InputSimple.vue"
+  import    innerLoading          from "components/utilidades/InnerLoading.vue"
 
   // * /////////////////////////////////////////////////////////////////////// Importaciones 
   const { usuario, permisos     } = storeToRefs( useStoreUser() )

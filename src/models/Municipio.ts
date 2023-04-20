@@ -8,6 +8,8 @@ export interface IMunicipio
   label:                    string
   value:                    number
   indicativo:               string
+  codigoDian:               string
+  codigoDianLargo:          string
 }
 
 export class Municipio implements IMunicipio
@@ -18,6 +20,7 @@ export class Municipio implements IMunicipio
   departamentoSigla:        string
   departamentoId:           string
   indicativo:               string
+  codigoDian:               string
 
   constructor()
   {
@@ -27,12 +30,11 @@ export class Municipio implements IMunicipio
     this.departamentoSigla  = ""
     this.departamentoId     = ""
     this.indicativo         = ""
+    this.codigoDian         = ""
   }
 
-  get departamentoIdInt():number
-  {
-    return parseInt( this.departamentoId )
-  }
+  get departamentoIdInt():number { return parseInt( this.departamentoId ) }
+  get codigoDianLargo() : string { return this.codigoDian + "000" }
 
   
   get label():string {

@@ -146,10 +146,10 @@
   import {  getURL, getFormData } from "src/services/APIMaco"
   // * ///////////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana               from "components/utilidades/Ventana.vue"
-  import    inputText             from "src/components/utilidades/input/InputFormText.vue"
+  import    inputText             from "components/utilidades/input/InputFormText.vue"
   import    selectLabelValue      from "components/utilidades/select/SelectLabelValue.vue"
   import    inputNumber           from "components/utilidades/input/InputFormNumber.vue"
-  import    inputFecha            from "src/components/utilidades/input/InputFecha.vue"
+  import    inputFecha            from "components/utilidades/input/InputFecha.vue"
   import    efecto                from "components/utilidades/Efecto.vue"
   import    confirmar             from "components/utilidades/MenuConfirmar.vue"
 

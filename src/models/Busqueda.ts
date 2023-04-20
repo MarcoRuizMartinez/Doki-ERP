@@ -55,11 +55,11 @@ export interface      IQuery {
   offset               ?: number
   area                 ?: string
   orden                ?: "ASC" | "DESC"
-  municipio            ?: number
-  municipioContacto    ?: number
+  municipio            ?: number | string
+  municipioContacto    ?: number | string
   origenId             ?: number
   valorMin             ?: number
-  valorMax             ?: number 
+  valorMax             ?: number
   incEstado            ?: INCENTIVO_ESTADO
   incRazon             ?: INCENTIVO_RAZON
   incOrigen            ?: INCENTIVO_ORIGEN
@@ -74,6 +74,12 @@ export interface      IQuery {
   esProveedor          ?: number
   color                ?: number
   activo               ?: string
+
+  // * //////////////   Tamaño
+  peso                 ?: number
+  altura               ?: number
+  largo                ?: number
+  ancho                ?: number
 }
 
 interface               IOpciones {
@@ -91,9 +97,9 @@ interface               ICampos {
   buscar                : string
   contacto              : string
   desde                 : Date | string
-  hasta                 : Date | string  
+  hasta                 : Date | string
   valorMin              : number | undefined
-  valorMax              : number | undefined  
+  valorMax              : number | undefined
   estados               : ILabelValue[]
   origenes              : ILabelValue[]
   condiciones           : ILabelValue[]
@@ -123,6 +129,10 @@ interface               ICampos {
   favorito              : boolean
   destacado             : boolean
   color                 : boolean
+  peso                  : number | undefined
+  altura                : number | undefined
+  largo                 : number | undefined
+  ancho                 : number | undefined
 }
 
 import {  Router           } from "vue-router"
@@ -238,6 +248,10 @@ export class Busqueda implements IBusqueda
       favorito            : false,
       destacado           : false,
       color               : false,
+      peso                : undefined,
+      altura              : undefined,
+      largo               : undefined,
+      ancho               : undefined,
     }   
   }
   
@@ -262,15 +276,20 @@ export class Busqueda implements IBusqueda
   async copiarQueryACampos() : Promise<void>
   {
     this.f.copiando           = true
-    this.f.buscar             = getQueryRouterString    ( this.rourterQ .buscar       )
-    this.f.contacto           = getQueryRouterString    ( this.rourterQ .contacto     )
     this.f.desde              = getQueryRouterDate      ( this.rourterQ .fechaDesde   )
     this.f.hasta              = getQueryRouterDate      ( this.rourterQ .fechaHasta   )
-    this.f.destacado          = getQueryRouterBoolean   ( this.rourterQ .destacado    )
-    this.f.favorito           = getQueryRouterBoolean   ( this.rourterQ .favorito     )
-    this.f.color              = getQueryRouterBoolean   ( this.rourterQ .color        )
+    this.f.buscar             = getQueryRouterString    ( this.rourterQ .buscar       )
+    this.f.contacto           = getQueryRouterString    ( this.rourterQ .contacto     )
     this.f.valorMin           = getQueryRouterNumber    ( this.rourterQ .valorMin     )
     this.f.valorMax           = getQueryRouterNumber    ( this.rourterQ .valorMax     )
+    this.f.peso               = getQueryRouterNumber    ( this.rourterQ .peso         )
+    this.f.altura             = getQueryRouterNumber    ( this.rourterQ .altura       )
+    this.f.largo              = getQueryRouterNumber    ( this.rourterQ .largo        )
+    this.f.ancho              = getQueryRouterNumber    ( this.rourterQ .ancho        )
+    this.f.destacado          = getQueryRouterBoolean   ( this.rourterQ .destacado    )
+    this.f.favorito           = getQueryRouterBoolean   ( this.rourterQ .favorito     )
+    this.f.color              = getQueryRouterBoolean   ( this.rourterQ .color        )    
+
     if(!!this.rourterQ .limite)
       this.f.resultadosXPage  = getQueryRouterNumber    ( this.rourterQ .limite       )
     this.f.area               = getQueryRouterLabelValue( this.rourterQ .area,                  Areas                         )
@@ -373,7 +392,6 @@ export class Busqueda implements IBusqueda
     return true
   }
 
-
   desmontarBusqueda()
   {
     this.montadoOk          = false
@@ -434,6 +452,10 @@ export class Busqueda implements IBusqueda
     if(this.f.color)                    q.color             = 1
     if(!!this.f.valorMin)               q.valorMin          = this.f.valorMin
     if(!!this.f.valorMax)               q.valorMax          = this.f.valorMax
+    if(!!this.f.peso)                   q.peso              = this.f.peso
+    if(!!this.f.altura)                 q.altura            = this.f.altura
+    if(!!this.f.largo)                  q.largo             = this.f.largo
+    if(!!this.f.ancho)                  q.ancho             = this.f.ancho
     if(!!this.f.estados.length)         q.estados           = this.f.estados        .map( e => e.value ).join("_")
     if(!!this.f.origenes.length)        q.origenes          = this.f.origenes       .map( e => e.value ).join("_")
     if(!!this.f.condiciones.length)     q.condiciones       = this.f.condiciones    .map( e => e.value ).join("_")

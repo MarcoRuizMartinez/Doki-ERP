@@ -159,6 +159,13 @@ export function useMenu()
                             visible:    permisos.value.terceros_ver
                           }),
         },
+        { ...new ItemMenu({
+                            label:      "Cotizar envío",
+                            icon:       "mdi-truck-check",
+                            to:         "/entregas/cotizar",
+                            visible:    permisos.value.terceros_ver
+                          }),
+        },
         /*{ ...new ItemMenu({
                             label:      "Crear pedido",
                             icon:       "mdi-cart-plus",

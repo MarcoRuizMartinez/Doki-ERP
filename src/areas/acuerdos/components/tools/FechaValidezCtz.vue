@@ -17,7 +17,7 @@
             watch,
             onMounted
                               } from "vue"
-  import    inputFecha          from "src/components/utilidades/input/InputFecha.vue"
+  import    inputFecha          from "components/utilidades/input/InputFecha.vue"
   import {  useConstantes,
             CONSTANTES        } from "src/models/Diccionarios/Constante"
   import {  date              } from 'quasar'

@@ -12,7 +12,7 @@
   // * /////////////////////////////////////////////////////////////////////// Core
   import {  toRefs, watch } from 'vue'
   import {  useTitle      } from "@vueuse/core"
-  import    ventanaIframe   from "src/components/navegacion/VentanaIframe.vue"
+  import    ventanaIframe   from "components/navegacion/VentanaIframe.vue"
 
   const props = defineProps({
     src:            { type: String, required: true },

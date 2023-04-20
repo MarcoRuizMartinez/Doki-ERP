@@ -7,13 +7,17 @@
         :disable                    ="disableResta || readonly"
       />
     </div>
-    <q-input                        dense filled hide-bottom-space borderless
+    <q-input                        dense hide-bottom-space
       v-model.number                ="model"
       style                         ="order: 2; min-width: 50px;"
       type                          ="number"
-      class                         ="text-1_2em text-center col"
+      class                         ="text-1_2em text-center col transi"
       input-class                   ="fuente-mono"
-      :label                        ="label"
+      :debounce                     ="debounce"
+      :class                        ="{ 'campo-hundido' : hundido }"
+      :filled                       ="!hundido"
+      :borderless                   ="!hundido"
+      :label                        =" !!alerta && !readonly ? label + ' *' : label"
       :suffix                       ="porcentaje ? '%' : undefined"
       :readonly                     ="readonly"
       @keyup.enter                  ="emit('enter')"
@@ -21,6 +25,7 @@
     <div
       v-if                          ="modo !== 'center'"
       class                         ="column"
+      :class                        ="{'ml--6' : hundido}"
       :style                        ="'order: ' + (modo == 'left' ? 1 : 3 ) + ';'"
       >
       <q-btn
@@ -67,7 +72,10 @@ conDecimales
     minimo:     { default:  1,            type: Number },
     paso:       { default:  1,            type: Number },
     porcentaje: { default:  false,        type: Boolean},
+    hundido:    { default:  false,        type: Boolean},
     readonly:   { default:  false,        type: Boolean},
+    alerta:     { default:  false,        type: Boolean},
+    debounce:   { default:  100,          type: [String, Number]    },
     iconos:     { default:  "suma",       type: String as PropType< "suma"  | "flecha" >            },
     colores:    { default:  "verde-rojo", type: String as PropType< "gris"  | "verde-rojo" >        },
     modo:       { default:  "center",     type: String as PropType< "right" | "left" | "center" >   },
@@ -112,5 +120,11 @@ conDecimales
 <style>
 .text-center input{
   text-align: center;
+}
+</style>
+<style>
+
+.ml--6{
+  margin-left: -6px;
 }
 </style>

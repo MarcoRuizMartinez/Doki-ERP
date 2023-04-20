@@ -211,7 +211,7 @@
   import    selectLabelValue      from "components/utilidades/select/SelectLabelValue.vue"
   import    multiLabelValue       from "components/utilidades/select/SelectLabelValueMulti.vue"
   import    selectUsuario         from "src/areas/usuarios/components/SelectUsuario.vue"
-  import    inputBuscar           from "src/components/utilidades/input/InputSimple.vue"
+  import    inputBuscar           from "components/utilidades/input/InputSimple.vue"
   import    grillaLista           from "components/utilidades/ToggleGrillaLista.vue"
 
   const router                    = useRouter()

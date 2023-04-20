@@ -4,7 +4,7 @@
     v-model                 ="model"
     input-debounce          ="0"
     class                   ="text-caption"
-    :label                  ="label"
+    :label                  =" !!alerta && !readonly ? label + ' *' : label"
     display-value           =""
     :filled                 ="!hundido"
     options-selected-class  ="text-weight-bold"
@@ -53,7 +53,7 @@
 
   const model                 = ref< IMunicipio >( new Municipio() )
   const lista                 = dexieMunicipios()
-  const  municipios           = ref< IMunicipio [] > ( lista.value as IMunicipio[] )
+  const municipios            = ref< IMunicipio [] > ( lista.value as IMunicipio[] )
 
   const emit                  = defineEmits(["update:modelValue", "clear"])
   const props                 = defineProps({
@@ -63,6 +63,7 @@
     requerido:  { default:  false,    type: Boolean                           },
     tooltip:    { default:  "",       type: String                            },
     label:      { default:  "Ciudad", type: String                            },
+    alerta:     { default:  false,    type: Boolean                           },
   })
   const { modelValue,
           requerido         } = toRefs( props )
