@@ -49,7 +49,7 @@
   async function buscar()  
   {
     modo.value      = "buscando"
-    terceros.value  = await buscarTerceros( { idUsuarios: storeUser.usuario.id, limite: 20, orden: "DESC" } )
+    terceros.value  = await buscarTerceros( { usuario: storeUser.usuario.id, limite: 20, orden: "DESC" } )
     modo.value      = !!terceros.value.length ? "normal" : "sin-resultados"
   }
 </script>

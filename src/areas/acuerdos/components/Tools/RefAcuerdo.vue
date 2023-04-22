@@ -21,7 +21,7 @@
       <Tooltip  label ="Vista rápida"/>
     </q-btn>
     <q-btn            flat dense round
-      v-if            ="acuerdo.esPedido && vistaRapida"
+      v-if            ="acuerdo.esPedido && vistaRapida && usuario.esProduccion"
       icon            ="mdi-tools"
       class           ="op40 op100-hover q-ml-sm"
       padding         ="none"
@@ -60,6 +60,11 @@
   import {  IAcuerdo        } from "src/areas/acuerdos/models/Acuerdo"
   import    tooltipLineas     from "src/areas/acuerdos/components/Tools/Tooltips/TooltipLineas.vue"
   import    tooltipAcuerdo    from "src/areas/acuerdos/components/Tools/Tooltips/TooltipAcuerdo.vue"
+  // * /////////////////////////////////////////////////////////////////////// Store
+  import {  storeToRefs   } from 'pinia'
+  import {  useStoreUser  } from 'src/stores/user'
+
+  const { usuario         } = storeToRefs( useStoreUser() ) 
 
   const props               = defineProps({
     acuerdo:        { required: true,   type: Object as PropType< IAcuerdo > },

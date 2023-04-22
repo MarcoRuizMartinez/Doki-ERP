@@ -194,7 +194,8 @@
           busqueda,
           loading               } = storeToRefs( useStoreAcuerdo() )  
   const { getAcuerdos           } = servicesAcuerdos()
-  const { buscarTerceroDolibarr } = useControlAcuerdo()  
+  const { buscarTerceroDolibarr,
+          buscarProyecto        } = useControlAcuerdo()  
   const { esMobil, aviso        } = useTools()
   const router                    = useRouter()
   
@@ -287,12 +288,14 @@
     seleccionarAcuerdo( indexSelect.value + 1)
   }
 
-  function seleccionarAcuerdo( index : number )
+  async function seleccionarAcuerdo( index : number )
   {    
     indexSelect.value             = index
     //acuerdo.value.proGrupos       = []
     acuerdo.value                 = acuerdos.value[index]
-    buscarTerceroDolibarr( acuerdo.value.terceroId )
+    await buscarTerceroDolibarr ( acuerdo.value.terceroId )
+    await buscarProyecto        ( acuerdo.value.proyectoId  )
+
   }
 
   function crearColumnas()

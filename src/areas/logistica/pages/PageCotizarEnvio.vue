@@ -17,8 +17,9 @@
           @limpiar              ="limpiarBusqueda"
           @exportar             ="descargarAcuerdos"
           >
-          <q-btn-toggle         spread push unelevated round
+          <q-btn-toggle         spread push unelevated dense
             v-model             ="tipoListado"
+            class               ="q-mb-sm q-mt-none"
             color               ="white"
             text-color          ="grey-8"
             toggle-color        ="primary"
@@ -33,18 +34,29 @@
               :options          ="columnas"
             />
           </template>
+          <template             #filtro>
+          <!-- //* ///////////////////////////////////////////////// Filtro -->        
+            <input-buscar       clearable hundido
+              v-model           ="filtro"
+              label             ="Buscar"
+              class             ="width140"
+              icon              ="mdi-magnify"
+              :disable          ="!costos.length"
+            />
+          </template>
         </barra-busqueda>
       </template>
       <!-- //* //////////////////////////////////////////////////////// Tabla resultados-->
       <q-table                  bordered dense flat square
         class                   ="fit tabla-maco tabla-alto-min"
-        row-key                 ="id"
+        row-key                 ="sku"
+        :filter                 ="filtro"
         :rows                   ="tipoListado === 0 ? costos : quote"
         :columns                ="columnas"
         :visible-columns        ="columnasVisibles"
         :rows-per-page-options  ="[100]"
         >
-        <!-- //* ///////////////  Columna Ref  -->
+        <!-- //* ///////////////  Columna Servicio  -->
         <template               #body-cell-servicio="props">
           <q-td   :props        ="props">
             <q-btn
@@ -54,7 +66,7 @@
             />               
             <span>{{ props.value }}</span>
           </q-td>
-        </template>        
+        </template>
       </q-table>
     </ventana>
   </q-page>
@@ -89,6 +101,7 @@
   
   // * /////////////////////////////////////////////////////////////////////// Componentes
   import    ventana               from "components/utilidades/Ventana.vue"  
+  import    inputBuscar           from "components/utilidades/input/InputSimple.vue"
   import    selectColumnas        from "components/utilidades/select/SelectColumnas.vue"
   import    barraBusqueda         from "src/areas/logistica/components/BarraCotizarEnvios.vue"
 
@@ -101,6 +114,7 @@
   const router                    = useRouter()
   const costos                    = ref< ICostoEnvio[] >([])
   const quote                     = ref< ICostoEnvio[] >([])
+  const filtro                    = ref< string >("")
   
   
   const modo                      = ref< ModosVentana >("esperando-busqueda")  
@@ -204,6 +218,7 @@
     modo.value                    = "esperando-busqueda"
     costos.value                  = []
     quote.value                   = []
+    filtro.value                  = ""
   }
 
   function crearColumnas()
@@ -211,6 +226,7 @@
     columnas.value = [
       new Columna(  { name: "carrier",                label: "transportadora",  clase: "text-bold"}),
       new Columna(  { name: "servicio"}),
+      new Columna(  { name: "producto",               label: "Tipo producto"    }),
       new Columna(  { name: "diasTransito",           label: "Dias transito",   align: "center" }),
       Columna.ColumnaPrecio ( { name: "precio",       label: "Precio sin IVA"   }),
       Columna.ColumnaPrecio ( { name: "precioConIVA", label: "Precio con IVA"   }),
@@ -222,8 +238,7 @@
       new Columna(  { name: "peso",                   label: "Peso KG",         align: "center" }),
       new Columna(  { name: "altura",                 label: "Altura CM",       align: "center" }),
       new Columna(  { name: "ancho",                  label: "Ancho CM",        align: "center" }),
-      new Columna(  { name: "fondo",                  label: "Fondo CM",        align: "center" }),
-      new Columna(  { name: "producto",               label: "Tipo producto"    }),
+      new Columna(  { name: "fondo",                  label: "Fondo CM",        align: "center" }),      
       new Columna(  { name: "origen",                 visible: false            }),
       new Columna(  { name: "destino",                visible: false            }),
       new Columna(  { name: "tipoServicios",          label: "Tipo servicios",  visible: false }),

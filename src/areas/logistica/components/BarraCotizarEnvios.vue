@@ -1,25 +1,5 @@
 <template>
   <div class                  ="full-width relative-position row q-pa-none no-wrap scroll">
-    <!-- //* /////////////////////////////////////////////////// Cotizarion -->
-    <fieldset-filtro
-      titulo                  ="Cotizacion"
-      class-conenido          ="grilla-ribom fit"
-      >
-      <!-- //* ///////////////////////////////////////////////// Slot -->
-      <div>
-        <slot></slot>
-      </div>
-      
-      <div >
-        <!-- //* ///////////////////////////////////////////////// Tipo de producto -->        
-        <input-buscar         clearable hundido
-          v-model             ="b.f.nombre"
-          label               ="Tipo de producto"
-          class               ="width160"
-          icon                ="mdi-printer-3d"
-        />
-      </div>
-    </fieldset-filtro>       
     <!-- //* ///////////////////////////////////////////////////////////////////// FIELD SET LUGARES  -->
     <fieldset-filtro
       titulo                  ="Lugares"
@@ -40,14 +20,13 @@
     </fieldset-filtro>
     <!-- //* ///////////////////////////////////////////////////////////////////// FIELD SET VALOR -->
     <fieldset-filtro
-      titulo                  ="Valor y cantidad"
+      titulo                  ="Valor"
       class-conenido          ="grilla-ribom"
       >
-
       <!-- //* ///////////////////////////////////////////////// Valor envio -->
       <input-number           hundido alerta
         v-model               ="b.f.valorMax"
-        label                 ="Valor"
+        label                 ="Valor por caja"
         icon                  ="mdi-currency-usd"
         class                 ="width130"
         :minimo               ="1000"
@@ -99,8 +78,47 @@
         icon                  ="mdi-tape-measure"
         class                 ="width130"
       />
-    </fieldset-filtro>  
-  
+    </fieldset-filtro>
+    <fieldset-filtro
+      titulo                  ="Buscar y tipo"
+      class-conenido          ="column q-gutter-xs"
+      >
+      <!-- //* ///////////////////////////////////////////////// Tipo de producto -->        
+      <input-buscar           clearable hundido
+        v-model               ="b.f.nombre"
+        label                 ="Producto"
+        class                 ="width140"
+        icon                  ="mdi-printer-3d"
+      />
+      <!-- //* ///////////////////////////////////////////////// Slot Filtro -->
+      <slot name              ="filtro"></slot>
+    </fieldset-filtro>    
+    <!-- //* /////////////////////////////////////////////////// Cotizacion -->
+    <fieldset-filtro
+      titulo                  ="Cotizacion"
+      class-conenido          ="fit"
+      >
+      <!-- //* ///////////////////////////////////////////////// Slot -->
+      <div>
+        <slot></slot>
+      </div>
+      <table>
+        <tbody>
+          <tr>
+            <td>Total sin IVA:</td>
+            <td class         ="text-bold fuente-mono">
+              {{ formatoPrecio( totalSinIVA ) }}
+            </td>
+          </tr>
+          <tr>
+            <td>Total con IVA:</td>
+            <td class         ="text-bold fuente-mono">
+              {{ formatoPrecio( totalConIVA ) }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </fieldset-filtro>
     <fieldset-filtro
       titulo                  ="Opciones"
       class-conenido          ="grilla-ribom"
@@ -146,29 +164,7 @@
           </q-btn>
         </div>
       </div> 
-    </fieldset-filtro>   
-    <fieldset-filtro
-      v-if                    ="!b.esEntrega"
-      titulo                  ="Totales"
-      class-conenido          ="column q-gutter-xs"
-      >
-      <table>
-        <tbody>
-          <tr>
-            <td>Total sin IVA:</td>
-            <td class         ="text-bold fuente-mono">
-              {{ formatoPrecio( totalSinIVA ) }}
-            </td>
-          </tr>
-          <tr>
-            <td>Total con IVA:</td>
-            <td class         ="text-bold fuente-mono">
-              {{ formatoPrecio( totalConIVA ) }}
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </fieldset-filtro>    
+    </fieldset-filtro>      
     <inner-loading :cargando  ="loading.carga"/>
   </div>
 </template>
@@ -185,9 +181,9 @@
 
   // * /////////////////////////////////////////////////////////////////////// Modelos
   import {  IQuery              } from "src/models/Busqueda"
-  import {  formatoPrecio       } from "src/useSimpleOk/useTools"
+  import {  formatoPrecio,
+            X100_Aumento        } from "src/useSimpleOk/useTools"
   import {  ICostoEnvio         } from "src/areas/logistica/models/CostoEnvio"
-  import {  X100_Aumento        } from "src/useSimpleOk/useTools"
 
   // * /////////////////////////////////////////////////////////////////////// Componentes
   import    fieldsetFiltro        from "components/utilidades/Fieldset.vue"

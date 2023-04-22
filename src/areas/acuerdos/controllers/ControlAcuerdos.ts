@@ -161,13 +161,15 @@ export function useControlAcuerdo()
   async function buscarProyecto( id_ : number )
   {
     if(!id_) return
-    const { data, ok }         = await apiDolibarr("ver", "proyecto", {}, id_ )
+    loading.value.proyecto      = true
+    const { data, ok }          = await apiDolibarr("ver", "proyecto", {}, id_ )    
 
     if(ok && typeof data === "object" && !Array.isArray( data )){
       acuerdo.value.proyecto    = Proyecto.convertirDataApiToProyecto( data )
     }
+    loading.value.proyecto      = false
   }
- 
+
   //* ////////////////////////////////////////////////////////////////////// Buscar entregas de pedido
   async function buscarEntregasPedido( id_ : number )
   {
@@ -788,6 +790,7 @@ export function useControlAcuerdo()
     anularAcuerdo,
     buscarAcuerdo,
     buscarTerceroDolibarr,
+    buscarProyecto,
     editarComercial,
     pasarABorradorAcuerdo,
     reabrirPedido,
