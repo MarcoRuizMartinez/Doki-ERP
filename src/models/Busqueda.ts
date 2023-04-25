@@ -9,6 +9,7 @@ import {  INCENTIVO_ESTADO,
           INCENTIVO_ORIGEN,
           INCENTIVO_ESTADO_PAGO         } from "src/areas/nomina/models/Incentivo"
 import {  Anticipo                      } from "src/areas/acuerdos/models/Anticipo"
+import {  Periodo, PERIODO              } from "src/models/TiposInformes"
 import {  Incentivo                     } from "src/areas/nomina//models/Incentivo"
 import {  estadosCtz, estadosPed,
           estadosOC,  estadosEnt        } from "src/areas/acuerdos/models/ConstantesAcuerdos"
@@ -81,7 +82,10 @@ export interface      IQuery {
   peso                 ?: number
   altura               ?: number
   ancho                ?: number
-  fondo                 ?: number
+  fondo                ?: number
+
+  // * //////////////   Informes
+  periodo              ?: Periodo
 }
 
 interface               IOpciones {
@@ -121,7 +125,8 @@ interface               ICampos {
   incEstado             : ILabelValue
   incRazon              : ILabelValue
   incOrigen             : ILabelValue  
-  activo                : ILabelValue  
+  activo                : ILabelValue
+  periodo               : ILabelValue  
   municipio             : IMunicipio
   municipioContacto     : IMunicipio
   usuario              ?: IUsuario
@@ -243,6 +248,7 @@ export class Busqueda implements IBusqueda
       incRazon            : labelValueNulo,
       incOrigen           : labelValueNulo,
       activo              : labelValueNulo,
+      periodo             : labelValueNulo,
       municipio           : new Municipio(),
       municipioContacto   : new Municipio(),
       resultadosXPage     : 10,
@@ -312,6 +318,7 @@ export class Busqueda implements IBusqueda
     this.f.conOrdenes         = getQueryRouterLabelValue( this.rourterQ .conOrdenes,            Busqueda.listaOrdenesProv     )
     this.f.tipoTercero        = getQueryRouterLabelValue( this.rourterQ .tipoTercero,           Busqueda.listaTipoTercero     )
     this.f.activo             = getQueryRouterLabelValue( this.rourterQ .activo,                Busqueda.listaActivo          )
+    this.f.periodo            = getQueryRouterLabelValue( this.rourterQ .periodo,               Busqueda.listaPeriodos        )
     this.f.estadoAnticipo     = getQueryRouterLabelValueArray ( this.rourterQ .estadoAnticipo,  Anticipo.estados              )
     this.f.tipoAnticipo       = getQueryRouterLabelValueArray ( this.rourterQ .tipoAnticipo,    Anticipo.tipos                )
     this.f.estados            = getQueryRouterLabelValueArray ( this.rourterQ .estados,         this.o.estados                )    
@@ -487,6 +494,7 @@ export class Busqueda implements IBusqueda
     if(!!this.f.conOrdenes.label)       q.conOrdenes        = this.f.conOrdenes.value
     if(!!this.f.tipoTercero.label)      q.tipoTercero       = this.f.tipoTercero.value
     if(!!this.f.activo.label)           q.activo            = this.f.activo.value
+    if(!!this.f.periodo.label)          q.periodo           = this.f.periodo.value
     if(!!this.f.usuario && this.f.usuario.id  > 0 && !this.esOCProveedor )
       q.usuario                                             = this.f.usuario.id     
     if(!!this.f.creador   && this.f.creador.id    > 0)
@@ -526,4 +534,9 @@ export class Busqueda implements IBusqueda
                                       {value: 2,      label: 'Cliente y Proveedor'      },
                                       {value: 3,      label: 'Ni cliente ni proveedor'  },
                                     ]
-} 
+  static listaPeriodos            = [ {value: PERIODO.SEMANA,     label: 'Semanal'    },
+                                      {value: PERIODO.MES,        label: 'Mensual'    },
+                                      {value: PERIODO.TRIMESTRE,  label: 'Trimestral' },
+                                      {value: PERIODO.AÑO,        label: 'Anual'      },
+                                    ]
+}

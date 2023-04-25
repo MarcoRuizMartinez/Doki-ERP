@@ -139,14 +139,20 @@ const routes: RouteRecordRaw[] = [
         name:       'crearCotizacion', 
         props:      route => ({ tipo: TIPO_ACUERDO.COTIZACION_CLI }), // , terceroId: route.params.terceroId
         component:  () => import('src/areas/acuerdos/pages/PageAcuerdoCrear.vue'),
-      },
-      //* ////////////////////////////////////////////////////////////////// Cotizacion cliente informes
+      }, 
       {
-        path:       '/cotizaciones/informes',
-        name:       'cotizacionInformes',
+        path:       'cliente/informes',
+        name:       'cotizacionesInforme',
+        props:      () => ({ tipo: TIPO_ACUERDO.COTIZACION_CLI }),
+        component:  () => import('src/areas/acuerdos/pages/PageAcuerdoInformes.vue'),
+      },      
+      //* ////////////////////////////////////////////////////////////////// Cotizacion cliente informes
+/*       {
+        path:       'cliente/informes-old',
+        name:       'cotizacionesInformeOld',
         props:      true,
-        component:  () => import('src/areas/acuerdos/pages/cotizaciones/PageCotizacionesInformes.vue'),
-      },
+        component:  () => import('src/areas/acuerdos/pages/informes/PageInformeCotizaciones.vue.txt'),
+      }, */
     ],
   },
   //* //////////////////////////////////////////////////////////////////

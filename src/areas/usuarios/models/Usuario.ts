@@ -30,6 +30,7 @@ export interface IUsuario {
   value             : number
   nombreCompleto    : string
   permisos          : string // Permisos un array crudo con los permisos
+  color             : string
   gruposString      : string
   grupos            : string[]
   esComercial       : boolean
@@ -60,6 +61,7 @@ export class Usuario implements IUsuario
   area              : AREA
   tipo              : TIPO_USUARIO
   permisos          : string
+  _color            : string  
   gruposString      : string
   reglaComisionId   : number
   comision          : IReglaComision
@@ -78,6 +80,8 @@ export class Usuario implements IUsuario
       this.cedula             = ""
       this.estado             = "0"
       this.permisos           = ""
+      this._color             = ""
+      //this.color              = "#FFF"
       this.gruposString       = ""
       this.cel                = ""
       this.correo             = ""
@@ -98,15 +102,27 @@ export class Usuario implements IUsuario
         this.cedula           = usuario.cedula
         this.estado           = usuario.estado
         this.permisos         = usuario.permisos
+        //this.color            = usuario.color
         this.gruposString     = usuario.gruposString
         this.cel              = usuario.cel
         this.correo           = usuario.correo
       }
   }
-    get grupos() : string[] { return !!this.gruposString ? this.gruposString.split(',') : [] }
-    get activo() : boolean { return Boolean( +this.estado  ) }
+    get grupos()  : string[]  { return !!this.gruposString ? this.gruposString.split(',') : [] }
+    get activo()  : boolean   { return Boolean( +this.estado  ) }
+    get urlFoto() : string    { return process.env.URL_DOLIBARR + "/documents/users/" + this.id }
+    get color()   : string    { return this._color }
 
-    get urlFoto() :string { return process.env.URL_DOLIBARR + "/documents/users/" + this.id }
+    set color( valor : string )
+    {
+      if(!!valor && valor[0] === "#" && valor.length >= 4 && valor.length <= 7) // "#FF5477" o "#FF5"
+        this._color = valor
+      else
+      if(!!valor && valor[0] != "#" && valor.length >= 3 && valor.length <= 6) // "FF5477" o "FF5"        
+        this._color = "#" + valor
+      else
+        this._color = "#FFF"
+    }
 
     get fotoPerfilMini() :string
     {

@@ -175,7 +175,14 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
   // * /////////////////////////////////////////////////////////////////////////////// Tipo de linea
   get tipoLinea() : TipoLinea {
     let tipo  : TipoLinea   = "producto"
-    if(this.tipo            == 0 )  tipo = "producto"
+    if(this.tipo            == 0 )
+    {
+      // Caso extraño de desconocido origen que corrompe los datos de la linea de titulo 
+      if(!!this.nombre && !this.id && !this.iva && !this.qty && !this.descuentoX100 && !this.precioFinal  && !this.codeX && !this.unidadId && !this.ref)
+        tipo                = "titulo"
+      else
+        tipo                = "producto"
+    }
     else
     if(this.tipo            == 1 )  tipo = "servicio"
     else

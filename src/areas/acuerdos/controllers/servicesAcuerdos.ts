@@ -26,15 +26,11 @@ import {  useFetch          } from "src/useSimpleOk/useFetch"
 import {  date              } from "quasar"
 import {  ILineaApi         } from "src/areas/acuerdos/models/LineaAcuerdo"
 import {  TIPOS_CONTACTO_ID } from "src/areas/terceros/models/Contacto"
-import {  ISerieCtz,
-          SerieCtz          } from "src/areas/acuerdos/models/SeriesCotizacion"
 import {  IQuery            } from "src/models/Busqueda"
 import {  TTipoAcuerdo      } from "src/areas/acuerdos/models/ConstantesAcuerdos"
 import {  Acuerdo,
           IAcuerdo,         } from "src/areas/acuerdos/models/Acuerdo"
-import {  pausa,
-          valuesObjectArrayToNumber,
-                            } from "src/useSimpleOk/useTools"
+import {  pausa             } from "src/useSimpleOk/useTools"
 
 export function servicesAcuerdos()
 {
@@ -427,72 +423,7 @@ export function servicesAcuerdos()
     })
   }
 
-  async function getInforme(
-    tipo    : "totales" | "estados",
-    tiempo  : "year"    | "month"   | "week" | "day",
-  ) : Promise< ISerieCtz[] >
-  {
-    return new Promise
-    ( async (resolver, rechazar ) =>
-      {
-        const url               = getURL("informes", "cotizaciones") + `?tipo=${tipo}&tiempo=${tiempo}`
 
-        const { ok, data  }     = await miFetch(url,  { method: "GET" }, { mensaje: "Cargar informe de cotizaciones" })
-
-        let seriesRaw           = []
-        if(!!data && Array.isArray(data) && data.length > 0)
-          seriesRaw             = valuesObjectArrayToNumber(data)
-
-        const series:ISerieCtz[]= []
-
-        for (const serieRaw of seriesRaw) {
-          const serie           = Object.assign(new SerieCtz(), serieRaw) as ISerieCtz
-          serie.tiempo          = tiempo
-          series.push( serie )
-        }
-
-        if(tiempo               === "week") corregirDiasSemana()
-
-
-        function corregirDiasSemana()
-        {
-          const YMWs            = [ ...new Set(
-                                      series.map((s) =>
-                                          s.año.toString()
-                                        + (s.semana < 10 ? "0" + s.semana.toString()  : s.semana.toString())
-                                        + (s.mes    < 10 ? "0" + s.mes.toString()     : s.mes.toString())
-                                      )
-                                    )
-                                  ].sort()
-
-          for (const ymw of YMWs)
-          {
-            const año           = parseInt( ymw.slice(0,4) )
-            const semana        = parseInt( ymw.slice(4,6) )
-            const mes           = parseInt( ymw.slice(6,8) )
-
-            const seriesSemana  = series.filter( s=> s.semana === semana)
-            const listaDias     = seriesSemana.map( s => s.dia)
-            const menorDia      = Math.min(...listaDias)
-            const mayorDia      = Math.max(...listaDias)
-            const diferencia    = mayorDia - menorDia
-            if(diferencia       >= 7){
-              console.error("Un problema con la diferencia de dias en corregirDiasSemana.", diferencia)
-              console.trace()
-            }
-            else
-            if(diferencia       > 0){
-              for (const s of seriesSemana)
-                s.dia           = menorDia
-            }
-          }
-        }
-
-        resolver( series )
-      }
-    )
-
-  }
 
 
   return {
@@ -515,7 +446,6 @@ export function servicesAcuerdos()
     setConIVA,
     getIdEnlaceContacto,
     setComercial,
-    getInforme,
     setCostoLinea,
   }
 }

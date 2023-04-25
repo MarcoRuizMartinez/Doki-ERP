@@ -33,7 +33,8 @@ class-maximizado      ="col-12"
   import    apexchart           from "vue3-apexcharts"
   import {  ModosVentana      } from "src/models/TiposVarios"
   import {  estiloApexChart   } from "src/useSimpleOk/useEstilos"
-  import {  Tiempo, IApexSerie} from "src/models/TiposInformes" 
+  import {  Periodo,
+            IApexSerie        } from "src/models/TiposInformes" 
 
   
   const maximizado        = ref< boolean >(false)
@@ -42,7 +43,7 @@ class-maximizado      ="col-12"
     titulo:   { required: true,                 type: String},
     series:   { required: true,                 type: Array   as PropType<IApexSerie[]> },
     //modo:     { default:  "esperando-busqueda", type: String  as PropType<ModosVentana> },
-    tiempo:   { required: true,                 type: String  as PropType<Tiempo>       },
+    tiempo:   { required: true,                 type: String  as PropType<Periodo>       },
     formato:  { default:  "normal",             type: String  as PropType<formatos>     },
   })
   const { series,

@@ -114,15 +114,22 @@ export function useMenu()
                             to:         "/comisiones/pagos",
                             visible:    false //permisos.value.terceros_ver
                           }),
-        },                
-/*         
+        },
         { ...new ItemMenu({
                             label:      "Informes",
                             icon:       "mdi-chart-areaspline",
-                            to:         "/cotizaciones/informes",
+                            to:         "/cotizaciones/cliente/informes",
+                            visible:    permisos.value.terceros_ver
+                          }),
+        },        
+        { ...new ItemMenu({
+                            label:      "Informes Old",
+                            icon:       "mdi-chart-areaspline",
+                            to:         "/cotizaciones/cliente/informes-old",
                             visible:    permisos.value.terceros_ver
                           }),
         },
+/*        
         { ...new ItemMenu({ separator: true }), },
         { ...new ItemMenu({
                             label:      "Políticas entre comerciales",

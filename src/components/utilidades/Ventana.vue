@@ -1,5 +1,6 @@
 <template>
-  <div
+  <!-- no-scroll -->
+  <div  
     class                     ="ventana transi no-scroll"
     :class                    ="maximizado ? classMaximizado : classRestaurado"
     >
