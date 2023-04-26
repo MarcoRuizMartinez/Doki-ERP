@@ -183,6 +183,12 @@ const routes: RouteRecordRaw[] = [
         props:      route => ({ tipo: TIPO_ACUERDO.PEDIDO_CLI }), // , terceroId: route.params.terceroId
         component:  () => import('src/areas/acuerdos/pages/PageAcuerdoCrear.vue'),
       },
+      {
+        path:       'cliente/informes',
+        name:       'pedidosInforme',
+        props:      () => ({ tipo: TIPO_ACUERDO.PEDIDO_CLI }),
+        component:  () => import('src/areas/acuerdos/pages/PageAcuerdoInformes.vue'),
+      },           
       //* ////////////////////////////////////////////////////////////////// Pedido proveedor Buscar
       {
         path:       'proveedor',

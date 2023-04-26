@@ -1,11 +1,11 @@
 <template>
-  <ventana                       scroll 
+  <ventana                        
     class                       ="col-12"
-    class-contenido             ="column fit justify-start items-center"
+    class-contenido             ="column justify-start items-center"
     height                      ="100%"
     size-icon-carga             ="22em"
-    :modo                       ="modo"
     icono                       ="mdi-chart-areaspline"
+    :modo                       ="modo"
     :titulo                     ="'Informe de ' + Acuerdo.getTipoAcuerdoPlural( tipo )"
     :padding-contenido          ="modo === 'normal' ? '0' : '12px' "
     :mensaje-sin-resultados     ="`No se encontraron datos para ${Acuerdo.getTipoAcuerdoPlural( tipo)}`"
@@ -16,14 +16,54 @@
     <template                   #menu>
       <barra-busqueda
         @buscar                 ="buscar"
-        @limpiar                ="limpiarBusqueda"        
         >
       </barra-busqueda>
     </template>
     <apex-chart
-      titulo                    ="Mi grafico"
+      tipo                      ="line"
+      :titulo                   ="`Cuenta ${sufijoNombreGrafico}`"
       :series                   ="cuentas"
       :periodo                  ="periodo"
+      :categorias               ="categorias"
+    />
+    <apex-chart
+      tipo                      ="bar"
+      :titulo                   ="`Cuenta ${sufijoNombreGrafico}`"
+      :series                   ="cuentas"
+      :periodo                  ="periodo"
+      :categorias               ="categorias"
+    />
+    <apex-chart
+      tipo                      ="bar100%"
+      formato                   ="porcentaje"
+      :titulo                   ="`Cuenta ${sufijoNombreGrafico}`"
+      :series                   ="cuentas"
+      :periodo                  ="periodo"
+      :categorias               ="categorias"
+    />
+    <apex-chart
+      tipo                      ="line"
+      formato                   ="precio"
+      :titulo                   ="`Valor ${sufijoNombreGrafico}`"
+      :series                   ="totales"
+      :periodo                  ="periodo"
+      :categorias               ="categorias"
+    />
+    <apex-chart
+      tipo                      ="bar"
+      formato                   ="precio"
+      :titulo                   ="`Valor ${sufijoNombreGrafico}`"
+      :series                   ="totales"
+      :periodo                  ="periodo"
+      :categorias               ="categorias"
+    />
+    <apex-chart
+      tipo                      ="bar100%"
+      formato                   ="porcentaje"
+      :titulo                   ="`Valor ${sufijoNombreGrafico}`"
+      :series                   ="totales"
+      :periodo                  ="periodo"
+      :categorias               ="categorias"
     />
   </ventana>
 </template>
@@ -33,6 +73,7 @@
   import {  ref,
             toRefs,
             watch,
+            computed,
             PropType,
             onMounted,
             onUnmounted         } from "vue"
@@ -46,11 +87,9 @@
   // * /////////////////////////////////////////////////////////////////////// Componibles
   import {  useTitle            } from "@vueuse/core"
   import {  useControlInformes  } from "src/areas/acuerdos/controllers/ControlInformes"  
-  import {  useTools            } from "src/useSimpleOk/useTools"
-  import {  style               } from "src/useSimpleOk/useEstilos"
   
   // * /////////////////////////////////////////////////////////////////////// Modelos
-  import {  IQuery              } from "src/models/Busqueda"  
+  import {  IQuery, Busqueda    } from "src/models/Busqueda"  
   import {  ModosVentana        } from "src/models/TiposVarios"  
   import {  Acuerdo             } from "src/areas/acuerdos/models/Acuerdo"
   import {  TTipoAcuerdo        } from "src/areas/acuerdos/models/ConstantesAcuerdos"
@@ -72,18 +111,19 @@
   const { acuerdos,
           busqueda,
           loading               } = storeToRefs( useStoreAcuerdo() )    
-  const { esMobil, aviso        } = useTools()
   const router                    = useRouter()
   const { getSeriesTotales      } = useControlInformes()
   
   const modo                      = ref< ModosVentana >("esperando-busqueda")   
   const cuentas                   = ref< IApexSerie [] >([])
   const totales                   = ref< IApexSerie [] >([])
-  const periodo                   = ref< Periodo >( PERIODO.MES )
+  const categorias                = ref< string     [] >([])
+  const periodo                   = ref< Periodo >( PERIODO.SEMANA )
 
   watch(tipo, iniciar)
-
   onMounted(iniciar)
+
+  const sufijoNombreGrafico       = computed(()=> `de ${Acuerdo.getTipoAcuerdoPlural(tipo.value)} por comercial - ${busqueda.value.f.periodo.label}`)
 
   async function iniciar()
   {
@@ -91,6 +131,9 @@
     acuerdos.value                = []
     modo.value                    = "esperando-busqueda"
     await busqueda.value.montarBusqueda( usuario.value.id, router, usuario.value.esComercial, permisos.value.acceso_total, 10, tipo.value )
+    
+    if(!busqueda.value.f.periodo.label)
+      busqueda.value.f.periodo    = Busqueda.listaPeriodos[1]
   }
 
   onUnmounted(()=>{
@@ -103,34 +146,19 @@
     acuerdos.value                = []
     modo.value                    = "buscando"
     loading.value.carga           = true
-    const { cuenta, total }       = await getSeriesTotales( query, "bar" )
+    const { cuenta,
+            total,
+            categorias : cat    } = await getSeriesTotales( query, "bar" )
     cuentas.value                 = cuenta
     totales.value                 = total
-    periodo.value                 = query?.periodo ?? PERIODO.MES
-
-    //console.log("total: ", total);
-    console.log("cuenta: ", cuenta);
+    categorias.value              = cat
     loading.value.carga           = false
     modo.value                    = !!total.length ? "normal" : "sin-resultados"
   }
 
-  async function cargarInformes()  
-  {
- /*    await generarSeriesTotales(tiempo.value)
-
-    if(!comercial.value && !!comerciales.value.length)
-    {
-      const usuarioEstaEnInforme  = comerciales.value.some( c => c === usuario.value.nombre )
-      comercial.value             = usuarioEstaEnInforme ? usuario.value.nombre : comerciales.value[0]
-    } */
-  }
-
-
-
   function limpiarBusqueda()
   {
     modo.value                    = "esperando-busqueda"
-    acuerdos.value                = []
   } 
 
   /*
@@ -144,18 +172,6 @@ Torta de total cotizado
 Vendedor Serie: cotizaciones por estado 
 Vendedor Torta: Estados 
 Vendedor Ratio Efectividad
-/////////////////////////////////////////// General
-Linea de Comparativa total entre vendedores
-Linea de Comparativa cuenta entre vendedores
-
-Barra de Comparativa % total entre vendedores
-Barra de Comparativa % cuenta entre vendedores
-https://apexcharts.com/vue-chart-demos/column-charts/stacked-columns-100/
-
-Barra de Comparativa total entre vendedores
-Barra de Comparativa cuenta entre vendedores
-https://apexcharts.com/vue-chart-demos/column-charts/stacked/
-
 
 */
 </script>

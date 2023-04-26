@@ -7,6 +7,7 @@ import {  EstadosAcuerdos,
           TIPO_ACUERDO        } from "src/areas/acuerdos/models/ConstantesAcuerdos"
 import {  IUsuario, Usuario   } from "src/areas/usuarios/models/Usuario"
 import {  valuesObjectArrayToNumber,
+          agregarZeroANumero1Digito
                               } from "src/useSimpleOk/useTools"
 import {  getUsuarioDB        } from "src/services/useDexie"
 
@@ -20,6 +21,7 @@ export interface ISerieAcu extends ISerie
   estadoId            : number
   estado              : string
   estadoColor         : string
+  xSerie              : string
 }
 
 export class SerieAcu extends Serie implements ISerieAcu
@@ -44,6 +46,20 @@ export class SerieAcu extends Serie implements ISerieAcu
   get nombre()      : string { return this.comercial.nombre }
   get estado()      : string { return EstadosAcuerdos.estadoToName ( TIPO_ACUERDO.COTIZACION_CLI, this.estadoId ) }
   get estadoColor() : string { return EstadosAcuerdos.estadoToColor( TIPO_ACUERDO.COTIZACION_CLI, this.estadoId ) }
+  get xSerie()      : string {
+    let x           = ""
+    switch (this.periodo) {
+      case PERIODO.AÑO:       x = `${this.año}`;                      break;
+      case PERIODO.TRIMESTRE: x = `${this.año} T${this.trimestre}`;   break;
+      case PERIODO.MES:       x = `${this.año}-${ agregarZeroANumero1Digito( this.mes )}`;          break;
+      case PERIODO.SEMANA:    x = `${this.año}-${ agregarZeroANumero1Digito( this.semana )}`;       break;    
+      default:                                                        break;
+    }
+
+    return x
+  }
+
+  
 
   static async getSerieFromApi( data : any, periodo : Periodo ) : Promise <ISerieAcu[]>
   {
@@ -65,7 +81,7 @@ export class SerieAcu extends Serie implements ISerieAcu
       series.push( serie )
     }
 
-    if(periodo              === PERIODO.SEMANA) corregirDiasSemana()
+    //if(periodo              === PERIODO.SEMANA) corregirDiasSemana()
 
     return series
 

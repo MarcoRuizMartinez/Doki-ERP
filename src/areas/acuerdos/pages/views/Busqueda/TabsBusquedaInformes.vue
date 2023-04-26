@@ -35,14 +35,24 @@
 
   function checkAlertTabs()
   {
-    tabs.value.alerts[0]  = ( !!b.value.f.buscar            || !!b.value.f.contacto           || fechaValida( b.value.f.desde ) || !!b.value.f.facturado.label  || !!b.value.f.municipioContacto.id ||
-                              !!b.value.f.estados.length    || !!b.value.f.condiciones.length || fechaValida( b.value.f.hasta ) || !!b.value.f.usuario          || !!b.value.f.creador              ||
-                            ( !!b.value.f.entrega.length    && b.value.esEntrega )
+    tabs.value.alerts[0]  = (     !!b.value.f.buscar
+                              || fechaValida( b.value.f.desde ) 
+                              || fechaValida( b.value.f.hasta ) 
+                              || !!b.value.f.estados.length
+                              || !!b.value.f.origenes.length
+                              || !!b.value.f.totalizado.label
+                              || !!b.value.f.municipio.id
+                              || !!b.value.f.area.label    
+                              || !!b.value.f.condiciones.length 
+                              || !!b.value.f.entrega.length
+                              || !!b.value.f.valorMin
+                              || !!b.value.f.valorMax                              
+                              || !!b.value.f.usuario
+                              || !!b.value.f.facturado.label
                             )
-    tabs.value.alerts[1]  = ( !!b.value.f.formaPago.length  || !!b.value.f.origenes.length    || !!b.value.f.conIva.label           || !!b.value.f.area.label           ||
-                              !!b.value.f.municipio.id      || !!b.value.f.totalizado.label   || !!b.value.f.estadoAnticipo.length  || !!b.value.f.tipoAnticipo.length  ||
-                              !!b.value.f.tipoTercero.label || !!b.value.f.conOrdenes.label   || !!b.value.f.valorMin               || !!b.value.f.valorMax             || !!b.value.f.incPago.label || 
-                            ( !!b.value.f.entrega.length  && !b.value.esEntrega )
+    tabs.value.alerts[1]  = (    !!b.value.f.conIva.label
+                              || !!b.value.f.formaPago.length
+                              || !!b.value.f.terceroInterno.label
                             )
   }
 </script>

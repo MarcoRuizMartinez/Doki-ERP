@@ -318,7 +318,7 @@ export class Busqueda implements IBusqueda
     this.f.conOrdenes         = getQueryRouterLabelValue( this.rourterQ .conOrdenes,            Busqueda.listaOrdenesProv     )
     this.f.tipoTercero        = getQueryRouterLabelValue( this.rourterQ .tipoTercero,           Busqueda.listaTipoTercero     )
     this.f.activo             = getQueryRouterLabelValue( this.rourterQ .activo,                Busqueda.listaActivo          )
-    this.f.periodo            = getQueryRouterLabelValue( this.rourterQ .periodo,               Busqueda.listaPeriodos        )
+    this.f.periodo            = getQueryRouterLabelValue( this.rourterQ .periodo,               Busqueda.listaPeriodos, "string")
     this.f.estadoAnticipo     = getQueryRouterLabelValueArray ( this.rourterQ .estadoAnticipo,  Anticipo.estados              )
     this.f.tipoAnticipo       = getQueryRouterLabelValueArray ( this.rourterQ .tipoAnticipo,    Anticipo.tipos                )
     this.f.estados            = getQueryRouterLabelValueArray ( this.rourterQ .estados,         this.o.estados                )    

@@ -34,7 +34,6 @@ export function useControlInformes()
     const url               = getURL("listas", "informes")
     const objetoForData     = { body: getFormData( tipo, query ), method: "POST" }
     const { data  }         = await miFetch(url, objetoForData, { mensaje: "Cargar informe" })
-    console.log("data: ", data);
     return await SerieAcu.getSerieFromApi( data, query.periodo )
   }
 
@@ -55,8 +54,9 @@ export function useControlInformes()
   }
 
   interface ISeries {
-    cuenta: IApexSerie[]
-    total:  IApexSerie[]
+    cuenta      : IApexSerie[]
+    total       : IApexSerie[]
+    categorias  : string[]
   }
 
   type TipoGrafico        = "area" | "bar" | "line"
@@ -64,84 +64,34 @@ export function useControlInformes()
   async function getSeriesTotales( query : IQuery, tipoGrafico : TipoGrafico ) : Promise< ISeries >
   {
     const seriesCrudas    = await getInforme("totales", query)            
-    console.log("seriesCrudas: ", seriesCrudas);
+    if(!seriesCrudas.length)
+      return { cuenta: [], total: [], categorias: [] }
     const comerciales     = [ ...new Set(seriesCrudas.map((s) => s.comercial.nombre)) ]
-    const cuenta          = getSerie("cuenta",  seriesCrudas, comerciales, "nombre", tipoGrafico )
-    const total           = getSerie("total",   seriesCrudas, comerciales, "nombre", tipoGrafico )
-
-    const cosa = getCategorias( cuenta, query.periodo )
+    const cuenta          = getSerie("cuenta",  seriesCrudas, comerciales, "nombre", query.periodo, tipoGrafico )
+    const total           = getSerie("total",   seriesCrudas, comerciales, "nombre", query.periodo, tipoGrafico )
+    const categorias      = getCategorias( cuenta, query.periodo )
     
-    return { cuenta, total }
+    return { cuenta, total, categorias }
   }
 
-
-  function getCategorias( series : IApexSerie[], periodo : Periodo ) : string[]
-  {
-    const cats : string[] = []
-
-    if( series[0].data.length == 0) return []
-
-    for (const serie of series[0].data )
-    {
-      let fechaStr          = ""
-      let cat               = ""
-      if( typeof serie.x == "string" )
-        fechaStr            = serie.x
-      const fecha           = getDateToStr( fechaStr, "UTC" )      
-      const añoCorto        = new Intl.DateTimeFormat('es', { year: '2-digit' }).format(fecha);      
-
-      if(periodo            === PERIODO.AÑO ){
-        cat                 = fecha.getFullYear().toString()
-      }
-      else  if(periodo      === PERIODO.TRIMESTRE )
-      {
-        const trimestre     = Math.floor((fecha.getMonth() / 3)) + 1;
-        cat                 = `${añoCorto}-T${trimestre}`
-      }
-      else  if(periodo      === PERIODO.MES || periodo === PERIODO.SEMANA )
-      {
-        let mesCorto        = new Intl.DateTimeFormat('es', { month: 'short' }).formatToParts( fecha )[0].value        
-        mesCorto            = mayusculasPrimeraLetra( mesCorto )
-        cat                 = `${añoCorto}-${mesCorto}`
-        if(periodo          === PERIODO.SEMANA)
-        {
-          const nWeek       = new Intl.DateTimeFormat('es', { weekday: 'long' }).format(fecha);
-
-          const firstDiaMes = new Date( fecha.getFullYear(), fecha.getMonth(), 1);
-          console.log("firstDiaMes: ", firstDiaMes);
-          const diff        = (fecha.getDay() - firstDiaMes.getDay() + 7) % 7;
-          const numSemana   = Math.ceil((fecha.getDate() + diff) / 7)
-          cat               += "-" + numSemana.toString()
-          console.log("cat: ", serie.x, cat);
-        }
-      }
-      cats.push( cat )
-    }
-
-    //console.log("cats: ", cats);
-    return cats
-  }
 
   type KeysSeries         = "cuenta" | "total"  
   function getSerie
   (
     key           : KeysSeries,
     seriesCrudas  : ISerieAcu[],
-    keyAgrupar    : string[],
+    usuarios      : string[],
     keyLabel      : "nombre" | "estado",
-    tipoGrafico   : TipoGrafico
+    periodo       : Periodo,
+    tipoGrafico   : TipoGrafico,
   )               : IApexSerie[]
   {
-    const seriesMapeada           = getSerieMapeada()//.filter((i)=>i.name !== "Total")
+    const seriesMapeada           = getSerieMapeada()
     const seriesSincronizadas     = sincronizarSeries( seriesMapeada )
     seriesSincronizadas.push( sumarSeries( seriesSincronizadas ) )
 
     return seriesSincronizadas.reverse()
 
-    function getSerieMapeada() : IApexSerie[]
-    {
-      return keyAgrupar.map( mapApexSerie )
-    }
 
     function sumarSeries( listaSeries : IApexSerie[] ) : IApexSerie
     {
@@ -151,21 +101,28 @@ export function useControlInformes()
         stacked:  false,
         data:     [],
         maximo:   -1,
-        color:    "#B4B4B4"
+        color:    "#000"
       }
 
       
       for (const index in listaSeries[0].data)
       {
-        let suma = 0
+        let suma    = 0
+        let fecha   = ""
         for (const serie of listaSeries)
         {
-          suma += serie.data[index].y ?? 0            
+          suma      += serie.data[index].y ?? 0            
           if(serieTotal.maximo !== undefined && serieTotal.maximo < suma)
-            serieTotal.maximo  = suma
+            serieTotal.maximo   = suma
+          
+          if(!!serie.data[index].fecha)
+            fecha               = serie.data[index].fecha
         }
 
-        serieTotal.data.push({ x: listaSeries[0].data[index].x, y: suma })
+        serieTotal.data.push( { x:      listaSeries[0].data[index].x,
+                                y:      suma,
+                                fecha:  fecha
+                              })
       }
 
       return serieTotal
@@ -175,8 +132,7 @@ export function useControlInformes()
 
     function sincronizarSeries( listaSeries : IApexSerie[] ) : IApexSerie[]
     {
-      const fechasString          = [ ...new Set(seriesCrudas.map((s) => s.fechaCorta)) ].sort()
-      //const fechas                = fechasString.map( f => new Date( f ) )
+      const fechasString          = [ ...new Set( seriesCrudas.map((s) => s.xSerie) ) ].sort()
       for (const fecha of fechasString)
       {
         for (const serieApex of listaSeries )
@@ -184,7 +140,7 @@ export function useControlInformes()
           const existe            = serieApex.data.some( data => data.x === fecha)
           if(!existe)
           {
-            serieApex.data.push( { x: fecha, y: null })
+            serieApex.data.push( { x: fecha, y: null, fecha: "" })
             serieApex.data        = sortArray(serieApex.data, "x", "<")
           }
         }
@@ -193,36 +149,68 @@ export function useControlInformes()
       return listaSeries
     }
     
-    function mapApexSerie( label : string ) : IApexSerie 
+
+    
+    
+    function getSerieMapeada() : IApexSerie[] { return usuarios.map( mapApexSerie ) }
+    function mapApexSerie( user : string ) : IApexSerie
     {
       let color  = ""
       const data =
       [
         ...seriesCrudas
-          .filter ( ( s ) => s[keyLabel] === label)
+          .filter ( ( s ) => s[ keyLabel ] === user)
           .map    ( ( s ) =>
           {
             color = s.color
             return {
-              x:  s.fechaCorta,
-              y:  s[key],
+              x:      s.xSerie,
+              y:      s[key],
+              fecha:  s.fechaCorta
             }
           })
       ]
       const serie : IApexSerie = {
-        name:     label,
-        cosa:     "asdf",
-        type:     tipoGrafico,  //nombre === "Total" ? "area" : "bar", line
-        stacked:  true,   //nombre !== "Total",
+        name:     user,
         color,
         data,
       }
 
       return serie
-    }
-    //function ordenarPorLength( a : IApexSerie, b : IApexSerie ) : number{
-    //  return b.data.length - a.data.length }      
+    } 
   }  
+
+
+  
+  function getCategorias( series : IApexSerie[], periodo : Periodo ) : string[]
+  {
+    const cats : string[] = []
+
+    if( series[0].data.length == 0) return []
+
+    for (const serie of series[0].data )
+    {
+      let cat               = ""
+      let fechaStr          = ""
+      if( typeof serie.x == "string" )
+        fechaStr            = serie.fecha
+        
+      const fecha           = getDateToStr( fechaStr, "UTC" )      
+      const año             = new Intl.DateTimeFormat('es', { year: 'numeric' }).format(fecha);
+      const añoCorto        = new Intl.DateTimeFormat('es', { year: '2-digit' }).format(fecha);
+      const mesCorto        = mayusculasPrimeraLetra( new Intl.DateTimeFormat('es', { month: 'short' }).formatToParts( fecha )[0].value )
+
+      if(periodo            === PERIODO.AÑO || periodo == PERIODO.TRIMESTRE )
+        cat                 = serie.x.toString()
+      else  if(periodo      === PERIODO.MES )
+        cat                 = `${año} ${mesCorto}`
+      else  if(periodo      === PERIODO.SEMANA )
+        cat                 = `${añoCorto} ${mesCorto} S${serie.x.toString().slice( 5, 7)}`
+      cats.push( cat )
+    }
+
+    return cats
+  }
 
   return {
     getSeriesTotales,    

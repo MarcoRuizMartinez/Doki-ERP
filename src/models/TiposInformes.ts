@@ -1,4 +1,4 @@
-import { formatoNumeroCorto, X100_Calcular } from "src/useSimpleOk/useTools"
+import { formatoNumeroCorto, FormatosNumero } from "src/useSimpleOk/useTools"
 
 export enum PERIODO
 {
@@ -16,6 +16,7 @@ export interface ISerie {
   diaCorregido        : number
   mes                 : number
   semana              : number
+  trimestre           : number
   año                 : number
   fecha               : Date
   fechaCorta          : string
@@ -26,6 +27,7 @@ export interface ISerie {
 export interface IApexCoordenada{
   x:                  number | string | Date
   y:                  number | null
+  fecha:              string
   //strokeColor?:       string 
   //fillColor?:         string
 }
@@ -33,7 +35,8 @@ export interface IApexCoordenada{
 
 export interface IApexSerie {
   name               : string
-  data               : IApexCoordenada[]
+  //datos               : number[]
+  data              : IApexCoordenada[]
   type              ?: string
   stacked           ?: boolean
   maximo            ?: number
@@ -46,6 +49,7 @@ export class Serie implements ISerie
   dia                : number
   mes                : number
   semana             : number
+  trimestre          : number
   año                : number
   color              : string
   periodo           ?: Periodo
@@ -55,6 +59,7 @@ export class Serie implements ISerie
     this.dia                = 0
     this.semana             = 0
     this.mes                = 0
+    this.trimestre          = 0
     this.año                = 0
     this.color              = "#FFFFFF"
   }
@@ -90,273 +95,132 @@ export class Serie implements ISerie
   } */
 }  
 
-
-
-
-
-export function estiloApexChart( tiempo : Periodo, nombre : string, maximo : number, formato : "normal" | "precio" | "porcentaje" = "normal" ) : any
+export function estiloApexChartLine( nombre : string, categorias : string[], formato : FormatosNumero ) : any
 {
-  console.log("estiloApexChart: ", maximo);  
   return {
-    chart:
-    {
-      id: nombre.trim().replaceAll(" ", ""),
-      redrawOnWindowResize: true,
-      stacked:      true,
-      zoom: {
-        //type: 'x',
-        enabled: true,
-        autoScaleYaxis: true
-      },
-      animations:
-      {
-        enabled: false,
-        easing: 'easeinout',
-        speed: 1000,
-        animateGradually:
-        {
-            enabled: true,
-            delay: 1000
-        },
-        dynamicAnimation: {
-            enabled: true,
-            speed: 350
-        }
-      },
-      toolbar: {
-        show: true,
-        offsetX: 0,
-        offsetY: 0,
-        tools: {
-          download: true,
-          selection: false,
-          zoom: true,
-          zoomin: true,
-          zoomout: true,
-          pan: true,
-          customIcons: []
-        },
-        export: {
-          csv: {
-            filename: nombre,
-            columnDelimiter: ';',
-            headerCategory: 'Fecha',
-            headerValue: 'value',
-            dateFormatter(timestamp:number) {
-              return  new Date(timestamp).toLocaleDateString('sv-SE') 
-            }
-          },
-          svg: { filename: nombre, },
-          png: { filename: nombre, },
-        },
-      }, 
-    },   
-
-    title: {
-      text: nombre,
-      align: 'center',
-      margin: 10,
-      offsetX: 0,
-      offsetY: 0,
-      floating: false,
-      style: {
-        fontSize:  '14px',
-        fontWeight:  'bold',
-        fontFamily:  undefined,
-        color:  '#263238'
-      },
+    title:        getTitle( nombre ),
+    xaxis:        getXaxis( categorias ),
+    yaxis:        getYaxis( formato ),
+    fill:         fill,
+    grid:         grid,               
+    markers:      { size: 3 },        // Coloca un punto en cada linea     
+    dataLabels:   { enabled: false }, // Agrega el valor en queda eje X en cada linea
+    legend:       legend,
+    chart: {
+      type:       'line',
+      toolbar:    getToolbar( nombre ),
+      animations: animations,
     },
-
-    stroke:
-    {
-      show:         true,
-      width:        2,
-      curve:        'smooth',
-      //colors:     ['black']
+    stroke: {
+      width:      3,
+      curve:      'smooth', // smooth straight stepline
     },
-
-    dataLabels:
-    {
-      enabled:      tiempo !== "day",
-      enabledOnSeries: [0],
-      style: {
-        fontSize:   '12px',
-        //fontFamily: 'Helvetica, Arial, sans-serif',
-        //fontWeight: 'bold',
-        colors: ['#646464']
-      },
-      formatter: function (val : string, opts : any) {
-        return formatoNumeroCorto(val, formato)
-      },
-    },
-
-    markers:        { size: 0 },
-    fill:           { opacity: 1 },
-
-    xaxis: // https://apexcharts.com/docs/options/xaxis/
-    {
-      //title:        { text: nombre }, // Texto en la parte de abajo
-      type:         "category", // category, numeric, datetime
-      tickPlacement: 'between', // on,  between //Ya sea para dibujar las marcas entre los puntos de datos o en los puntos de datos. solo funciona para xaxis.type: gráficos de categoría y no para gráficos de fecha y hora.
-      //axisBorder:   { show: true },
-      //axisTicks:    { show: true },
-      //trim: true,
-      categories: ['Enero', 'Febrero', 'Marzo', 'Abril' ],
-      tickAmount: 7,
-      labels:{
-        //show:       tiempo !== "day",
-        /* formatter: function (value :string , timestamp : number ) {
-          return new Date(timestamp).toLocaleDateString('sv-SE').slice(5,10) 
-        },  */
-        style: {
-          colors: [],
-          fontSize: '12px',
-          fontFamily: 'Helvetica, Arial, sans-serif',
-          fontWeight: 400,
-          cssClass: 'apexcharts-xaxis-label',
-      },        
-        //formatter:  ( value : string )=> !!value ? value.slice(2,10) : "" 
-      },  
-      tooltip: {
-        enabled: true,
-/*         formatter: function (value : number , timestamp : number ) {
-
-          const fecha = new Date(value).setHours(24)
-          return new Intl.DateTimeFormat('es-CO', { weekday: 'long', month: 'long', day: 'numeric' }).format(fecha) //new Date(value).toUTCString('es-CO', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
-        }, */
-
-        formatter: function (value : string , opts : any ) {
-          //console.log("opts: ", opts);
-
-          
-          return value + "dfdf"
-        },        
-      },
-    },
-
-    yaxis: {
-      //title:        { text: '# Cotizaciones'},
-      max:            maximo,
-      labels:{
-        formatter: function (value :string , timestamp : number ) {
-          return formatoNumeroCorto(value, formato)
-        },         
-      },
-    },
-
-    plotOptions:
-    {
-      bar:
-      {
-        horizontal:   false,
-        borderRadius: 3,
-        columnWidth:  '70%',
-        endingShape:  'rounded',
-      },
-    },
-
-    legend:
-    {
-      show:           true,
-      position:       'top',
-      horizontalAlign:'left', 
-      floating:       false,
-    },
-
-    tooltip: {
-      enabled: true,
-      //enabledOnSeries: undefined,
-      shared: true,
-      //followCursor: false,
-      intersect: false,
-      inverseOrder: false,
-      //custom: undefined,
-      fillSeriesColor: false,
-      //theme: false,
-      /* style: {
-        fontSize: '12px',
-        fontFamily: undefined
-      }, */
-      onDatasetHover: {
-          highlightDataSeries: false,
-      },
-      x: {
-          show: true,
-          //format: 'dd MMM',
-/*           formatter: function (value :number , timestamp : number ) {
-            const fecha = new Date(value).setHours(24)
-            return new Intl.DateTimeFormat('es-CO', {  dateStyle: 'full' }).format(fecha) //new Date(value).toUTCString('es-CO', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
-          }, */
-      },
-      y: {
-        formatter:  ( value : number, objectoApex :any ) :string => {
-          let labelX100         = "" 
-          if(typeof objectoApex === "object" && !!objectoApex && formato === "porcentaje")
-          {
-            const indexColumna  = objectoApex?.dataPointIndex as number ?? 0
-            if(indexColumna     === -1) return ""
-            const indexSerie    = objectoApex?.seriesIndex    as number ?? 0            
-            const initialSeries = objectoApex.w.globals.initialSeries as any[]
-            const maximoColumna = initialSeries[0].data[indexColumna].y
-            const valor         = initialSeries[indexSerie].data[indexColumna].y
-            const porcentaje    = X100_Calcular(maximoColumna, value).toFixed(0)
-            if(indexSerie       > 0)
-              labelX100         =  " - " + porcentaje + "%"
-          }          
-          const valor : string  = !!value && typeof value === 'number' ? value.toFixed(0) : "0"
-          return formatoNumeroCorto(valor, formato) + labelX100
-        }
-        //title: { formatter: (seriesName : string) => seriesName  },
-      },
-      //marker: { show: true, },
-      //items: { display: "flex", },
-      /* fixed: {
-          enabled: false,
-          position: 'topRight',
-          offsetX: 0,
-          offsetY: 0,
-      },*/
   }
-  
-    //colors:[ '#B4B4B4', '#E4839B', '#3D79EB' ]
-/* 
-  crosshairs:
-  {
-    fill: {
-      type: 'gradient',
-      gradient: {
-        colorFrom: '#D8E3F0',
-        colorTo: '#BED1E6',
-        stops: [0, 100],
-        opacityFrom: 0.4,
-        opacityTo: 0.5,
-      }
-    }
-  },
-  labels:
-  {
-    style:
-    {
-      fontSize: '16px'
-    }
-  },    
-   */
-/*  
-  responsive:
-  [
-    {
-      breakpoint: 480,
-      options:
-      {
-        legend:
-        {
-          position: 'bottom',
-          offsetX:  -10,
-          offsetY:  0
-        }
-      }
-    }
-  ],
-*/
+}
+
+export function estiloApexChartBar(
+  nombre      : string,
+  categorias  : string[],
+  formato     : FormatosNumero,
+  stackType   : "normal" | "100%",
+  maximo      : number | undefined    = undefined
+)             : any
+{
+  return {
+    title:        getTitle( nombre ),
+    xaxis:        getXaxis( categorias ),
+    yaxis:        getYaxis( formato, maximo ),
+    grid:         grid,
+    legend:       legend,
+    fill:         fill,
+    chart: {
+      type:       'bar',
+      stacked:    true,
+      stackType:  stackType,
+      toolbar:    getToolbar( nombre ),
+      animations: animations,      
+    },
+    dataLabels: {
+      style: {
+        fontSize:   '14px',
+        fontWeight: 'bold',
+        colors:     ['#FFF']
+      },
+      formatter:    (val : string, opts : any) => formatoNumeroCorto(val, formato)
+    },
   }
+}
+
+
+function getTitle( nombre : string ) {
+  return {
+    text:         nombre,
+    align:        'center',
+    margin:       10,
+    offsetX:      0,
+    offsetY:      0,
+    floating:     false,
+    style: {
+      fontSize:   '14px',
+      fontWeight: 'bold',      
+      color:      '#263238'
+    }
+  }
+}
+
+
+function getToolbar( nombre : string ) {
+  return {
+    export:
+    {
+      csv: {
+        filename:         nombre,
+        columnDelimiter:  ';',
+        headerCategory:   'Periodo',
+        headerValue:      'value',
+      },
+      svg: { filename: nombre, },
+      png: { filename: nombre, },
+    }
+  }
+}
+
+
+function getXaxis( cats : string[] ) {
+  return {
+    categories:     cats,      
+    tickPlacement:  "between",  // Activa que se muestren las categorias
+    tickAmount:     10,         // Para que el label en el eje X no este tan saturado
+  }
+}
+function getYaxis( formato : FormatosNumero, maximo : number | undefined = undefined ) {
+  return {
+    max     : maximo,
+    labels  : { formatter: ( value :string , timestamp : number ) => formatoNumeroCorto(value, formato) }
+  }
+}
+
+const animations = {
+  enabled:  false,
+  //easing:   'easeinout',
+  //speed:    600,
+}
+
+const grid = { // Diseño de cada franja eje Y
+  row: {
+    colors: ['#F4F4F4', '#FFF'], 
+    opacity: 1
+  }
+}
+
+const legend = {
+  show:           true,
+  position:       'top',
+  horizontalAlign:'center', 
+  floating:       false,
+}
+
+const fill = {
+  opacity: 1,
+  type: 'solid',
 }

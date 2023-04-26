@@ -121,13 +121,6 @@ export function useMenu()
                             to:         "/cotizaciones/cliente/informes",
                             visible:    permisos.value.terceros_ver
                           }),
-        },        
-        { ...new ItemMenu({
-                            label:      "Informes Old",
-                            icon:       "mdi-chart-areaspline",
-                            to:         "/cotizaciones/cliente/informes-old",
-                            visible:    permisos.value.terceros_ver
-                          }),
         },
 /*        
         { ...new ItemMenu({ separator: true }), },
@@ -180,6 +173,13 @@ export function useMenu()
                             visible:    false,
                           }),
         }, */
+        { ...new ItemMenu({
+                            label:      "Informes",
+                            icon:       "mdi-chart-areaspline",
+                            to:         "/pedidos/cliente/informes",
+                            visible:    permisos.value.terceros_ver
+                          }),
+        },        
         { ...new ItemMenu({
                               label:    "Garantías",
                               icon:     "mdi-lifebuoy",

@@ -176,6 +176,7 @@ export function confeti( total : number = 1 )
   setTimeout(()=> clearInterval(clock), mili * ( total - 1 ) )
 }
 
+export const agregarZeroANumero1Digito = ( numero : number ) : string => numero >= 0 && numero <= 9 ? `0${numero}` : numero.toString()
 
 export function ID_URL_Ok( id : string ) : number
 {
@@ -389,7 +390,8 @@ export const siNo       = ( boleano : boolean, conIconos : boolean = true ) : st
   return retorno
 }
 
-export const formatoNumeroCorto = ( valor : string | number, formato : "normal" | "precio" | "porcentaje" = "normal" ) : string =>
+export type FormatosNumero = "normal" | "precio" | "porcentaje"
+export const formatoNumeroCorto = ( valor : string | number, formato : FormatosNumero = "normal" ) : string =>
 {
   if(!valor) return "0"
 
@@ -412,11 +414,14 @@ export const formatoNumeroCorto = ( valor : string | number, formato : "normal" 
     case 7:   label     = numeroStr.slice(0,1)  + " M"; break; // 1.000.000
     case 8:   label     = numeroStr.slice(0,2)  + " M"; break; // 10.000.000
     case 9:   label     = numeroStr.slice(0,3)  + " M"; break; // 100.000.000
-    case 10:  label     = numeroStr.slice(0,4)  + " M"; break; // 1.000.000.000
+    case 10:  label     = numeroStr.slice(0,1) + "." + numeroStr.slice(1,4) + " M"; break; // 1.000.000.000
+    case 11:  label     = numeroStr.slice(0,2) + "." + numeroStr.slice(2,5) + " M"; break; // 10.000.000.000
     default:  label     = numeroStr;                    break;
   }
 
-  if (formato === "precio") label = "$" + label
+  label                 =   formato === "precio"      ? `$${label}`
+                          : formato === "porcentaje"  ? `${label}%`
+                          : label
 
   return label
 }

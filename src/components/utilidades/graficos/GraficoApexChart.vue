@@ -3,51 +3,89 @@
     <apexchart
       :width              ="1100"
       :height             ="500"
-      :series             ="series"
+      :series             ="seriesM"
       :options            ="options"
     ></apexchart>
   </div>
 </template>
 
 <script setup lang="ts">
-/*
-maximizar
-class-restaurado      ="col-4"
-class-maximizado      ="col-12"
-@maximizar            ="maximizado = !maximizado"
-*/
-  import {  ref,
-            toRefs,
+  import {  toRefs,
             computed,
             PropType          } from "vue"
   import    apexchart           from "vue3-apexcharts"  
   import {  Periodo,
             IApexSerie,
-            estiloApexChart   } from "src/models/TiposInformes" 
+            estiloApexChartBar,
+            estiloApexChartLine,
+                              } from "src/models/TiposInformes" 
+  import {  FormatosNumero    } from "src/useSimpleOk/useTools"
 
-  type  formatos          = "precio" | "normal"
+  type  Formatos         = FormatosNumero
+  type  TipoXCord        = "line" | "bar" | "bar100%" 
+
   const props             = defineProps({
-    titulo:   { required: true,       type: String},
-    series:   { required: true,       type: Array   as PropType<IApexSerie[]> },    
-    periodo:  { required: true,       type: String  as PropType<Periodo>      },
-    formato:  { default:  "normal",   type: String  as PropType<formatos>     },
+    titulo:     { required: true,       type: String},
+    series:     { required: true,       type: Array   as PropType<IApexSerie[]> },    
+    periodo:    { required: true,       type: String  as PropType<Periodo>      },
+    formato:    { default:  "normal",   type: String  as PropType<Formatos>     },
+    categorias: { required: true,       type: Array   as PropType<string[]>     },    
+    tipo:       { required: true,       type: String  as PropType<TipoXCord>     },    
   })
   const { series,
-          periodo,
+          tipo,
           titulo,
-          formato       } = toRefs(props) 
-  const options           = computed(()=> estiloApexChart( periodo.value, titulo.value, getMaximo(series.value), formato.value) )  
+          formato,
+          categorias     }  = toRefs(props) 
+
+  const seriesM             = computed(()=>
+  {
+    const sRaw              =   tipo.value == "bar"
+                            ? series.value
+                            : series.value.filter( s => s.name != "Total" )
+    const seriesFinal       : IApexSerie[] = []
+
+    for(const s of sRaw)
+    {
+      const newSerie        = Object.assign( {}, s )
+      if(( tipo.value == "bar" || tipo.value == "bar100%" ) && s.name !== "Total")
+      {
+        newSerie.type       = "bar"
+        newSerie.stacked    = true
+      }
+      
+      seriesFinal.push( newSerie )
+    }
+
+    return seriesFinal
+  })
+    
+
+/* s */
+  const options           = computed(()=> {
+      let obj =   tipo.value == "bar"
+                ? estiloApexChartBar  ( titulo.value, categorias.value, formato.value, "normal", getMaximo( series.value )) 
+                : tipo.value == "bar100%"
+                ? estiloApexChartBar  ( titulo.value, categorias.value, formato.value, "100%")
+                : tipo.value == "line"
+                ? estiloApexChartLine ( titulo.value, categorias.value, formato.value )                
+                : {}
+      
+      return obj
+    }
+  )  
   function getMaximo( serie : IApexSerie[] ) : number
   {
-    const max = !!serie.length && !!serie[0].maximo ? serie[0].maximo : 0 
-    console.log("max: ", max)
+    const max = !!serie.length && !!serie[0].maximo ? serie[0].maximo : 0     
     return max
   }
+
+
 </script>
 <style>
 .boxChart{
   /* width: 500px; */
   /* height: 500px; */
-  background-color: white;
+  background-color: rgb(255, 255, 255);
 }
 </style>
