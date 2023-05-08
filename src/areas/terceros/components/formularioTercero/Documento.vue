@@ -193,10 +193,10 @@
 
     estadoVerificar.value       = "verificando"
 
-    const existe                = await vericarDocumentoEnDolibarr( modelo.value.numero )
-    estadoVerificar.value       = existe ? "alert" : "check" 
+    const id                    = await vericarDocumentoEnDolibarr( modelo.value.numero )
+    estadoVerificar.value       = !!id ? "alert" : "check" 
 
-    return existe
+    return !!id
   }  
 
   

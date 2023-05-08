@@ -191,7 +191,8 @@ export function useLogin( origen_ : string )
         else
         {
           storeUser.setPermisos(usuarioJson[0].permisos)
-          return  new Usuario( usuarioJson[0] )
+          const user = new Usuario( usuarioJson[0] )
+          return user
         }
 
     } catch(e) {

@@ -173,7 +173,8 @@
   }
 
   function reglaCambioEnValor() : boolean | string {
-    const comisionIgual       = acuerdo.value.comision.comercial_1 === incentivoModel.value.valor
+    const diferencia          = acuerdo.value.comision.comercial_1 - incentivoModel.value.valor
+    const comisionIgual       = diferencia < 100 && diferencia > -100 
     const notaOk              = incentivoModel.value.nota.length >= 7
     return ( notaOk || comisionIgual )  || "Indicar razón de cambio en valor"
   }  

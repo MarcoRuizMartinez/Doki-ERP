@@ -40,9 +40,9 @@
   function buscar( tipo : string )
   {
     let patch       =   tipo  === BUSQUEDAS.TERCEROS      ? "/terceros?buscar=" 
-                      : tipo  === BUSQUEDAS.PEDIDOS       ? "/pedidos?buscar=" 
-                      : tipo  === BUSQUEDAS.COTIZACIONES  ? "/cotizaciones?buscar="
-                      : tipo  === BUSQUEDAS.PEDIDO_PRO    ? "/pedidos-proveedor?buscar="
+                      : tipo  === BUSQUEDAS.PEDIDOS       ? "/pedidos/cliente?buscar=" 
+                      : tipo  === BUSQUEDAS.COTIZACIONES  ? "/cotizaciones/cliente?buscar="
+                      : tipo  === BUSQUEDAS.PEDIDO_PRO    ? "/pedidos/proveedor?buscar="
                       : tipo  === BUSQUEDAS.PRODUCTOS     ? "/productos?busqueda="
                       : ""
     if(!patch) return

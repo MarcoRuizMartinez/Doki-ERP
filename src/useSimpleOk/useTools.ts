@@ -1,4 +1,5 @@
 import {  exportFile,
+          date,
           useQuasar,
           QNotifyAction,
                                   } from "quasar"
@@ -490,9 +491,18 @@ export function fechaValida( fecha : string | Date ) : boolean {
     return !!fecha
   else
     return fecha.toString() !== "Invalid Date"
-
-
 }
+
+export function getArrayInObject( o : any, key : string ) : any[]
+{
+  return typeof o == "object" && key in o && Array.isArray( o[key] ) && !!o[key].length ? o[key] : []
+}
+
+export function getArrayFromAny( a : any ) : any[] 
+{
+  return Array.isArray( a ) && a.length ? a : []
+}
+
 
 
 export function getQueryRouterString(paramQuery  : LocationQueryValue  | LocationQueryValue[]) : string
@@ -566,4 +576,39 @@ export function getStringValido( objeto : any, key : string ) : string {
   const texto : string  = key in objeto && valorValido( objeto[key] ) && typeof objeto[key] === "string"
                           ? objeto[key] : ""
   return texto
+}
+
+type QType = "hours" | "minutes" | "days" | "months" | "years"
+export function diferenciaFechas( fechaOld : number, fechaNew : number ) : string
+{
+    const minDife               = ( fechaNew - fechaOld )  / 1000 / 60
+    let unit : QType           
+
+    if      (minDife < 60)        unit    = "minutes"
+    else  if(minDife < 1440)      unit    = "hours"
+    else  if(minDife < 44640)     unit    = "days"
+    else  if(minDife < 525600)    unit    = "months"
+    else                          unit    = "years"    
+
+    const diferencia            = date.getDateDiff(fechaNew, fechaOld, unit)
+    let unidad                  = ""
+
+    if(diferencia               > 1)
+    {
+        if      (unit == "minutes")   unidad  = "minutos"
+        else if (unit == "hours")     unidad  = "horas"
+        else if (unit == "days")      unidad  = "días" 
+        else if (unit == "months")    unidad  = "meses" 
+        else if (unit == "years")     unidad  = "años"
+    }
+    else
+    {
+        if      (unit == "minutes")   unidad  = "minuto"
+        else if (unit == "hours")     unidad  = "hora"
+        else if (unit == "days")      unidad  = "día" 
+        else if (unit == "months")    unidad  = "mes" 
+        else if (unit == "years")     unidad  = "año"
+    }
+
+    return diferencia + " " + unidad
 }

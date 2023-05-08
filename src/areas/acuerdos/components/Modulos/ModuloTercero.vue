@@ -46,8 +46,8 @@
       :tercero                ="acuerdo.tercero"
       :disable                ="!acuerdo.tercero.id || (!acuerdo.tercero.esEmpresa && !acuerdo.esTerceroCtz)"
       :readonly               ="acuerdo.esEstadoValido"
-      @contacto-nuevo         =" c => vincularContactoAcuerdo           ( c,        TIPOS_CONTACTO.COMERCIAL )"
-      @contacto-cambio        =" ( c, idOld ) => cambiarContactoAcuerdo ( c, idOld, TIPOS_CONTACTO.COMERCIAL )"
+      @contacto-nuevo         =" ( c : IContacto ) => vincularContactoAcuerdo           ( c,        TIPOS_CONTACTO.COMERCIAL )"
+      @contacto-cambio        =" ( c : IContacto, idOld : number ) => cambiarContactoAcuerdo ( c, idOld, TIPOS_CONTACTO.COMERCIAL )"
     />
     <!-- //* ///////////////////////////////////////////////// Proyecto -->
     <select-proyecto
@@ -114,8 +114,10 @@
   import {  dexieOrigenesContacto } from "src/services/useDexie"
   import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"
   import {  GRUPO_USUARIO         } from "src/models/TiposVarios"
+  //* ///////////////////////////////////////////////////////////////////////////// Modelos
   import {  TIPOS_CONTACTO        } from "src/areas/terceros/models/Contacto"
   import {  IUsuario, Usuario     } from "src/areas/usuarios/models/Usuario"
+  import {  IContacto             } from "src/areas/terceros/models/Contacto"  
   //* ///////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana                 from "components/utilidades/Ventana.vue"
   import    inputText               from "components/utilidades/input/InputFormText.vue"

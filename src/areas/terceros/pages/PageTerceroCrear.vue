@@ -6,6 +6,7 @@
       <formulario-tercero
         class                 ="col-md-7 col-12"
         :tipo                 ="tipo"
+        @tercero-creado       ="( id : number ) => router.push('/tercero/' + id )" 
       />
     </transition>
     <acordion-ayudas
@@ -20,6 +21,7 @@
             watch,
             PropType        } from 'vue'
   import {  useTitle        } from "@vueuse/core"
+  import {  useRouter       } from 'vue-router'  
   import    formularioTercero from "src/areas/terceros/components/formularioTercero/FormularioTercero.vue"
   import    acordionAyudas    from "src/areas/terceros/components/helper/ModuloAcordion_.vue"
   const props = defineProps({
@@ -27,6 +29,7 @@
   })
   const { tipo }  = toRefs( props )
   const title     = useTitle()
+  const router    = useRouter()
 
   watch(tipo, ()=>{
     title.value = tipo.value === "crear-cliente" ? "👩‍💼👨‍💼 Crear cliente" : "🏬 Crear proveedor"

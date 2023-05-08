@@ -13,7 +13,8 @@ declare module '@vue/runtime-core' {
 // good idea to move this instance creation inside of the
 // "export default () => {}" function below (which runs individually
 // for each client)
-const apiDolibarrAxios  = axios.create({ baseURL: process.env.URL_DOLIBARR + "/api/index.php/" })
+const apiDolibarrAxios  = axios.create({ baseURL: process.env.URL_DOLIBARR  + "/api/index.php/" })
+//const apiWooAxios       = axios.create({ baseURL: process.env.URL_MUBLEX    + "/wp-json/wc/v3/" })
 
 export default boot(({ app }) => {
   // for use inside Vue files (Options API) through this.$axios and this.$api
@@ -28,5 +29,9 @@ export default boot(({ app }) => {
 });
 
 //export { apiDolibarrAxios };
-export { axios, apiDolibarrAxios }
+export { 
+  axios,
+  apiDolibarrAxios,
+  //apiWooAxios
+}
 

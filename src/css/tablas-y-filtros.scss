@@ -122,3 +122,61 @@ legend{
     max-width: 320px;
     font-size: small;
 }
+
+
+
+.tabla-prop > tbody> tr > td > ul > li, .tabla-prop > tbody> tr > td > ul{
+    margin: 0px;
+}    
+
+.tabla-prop {
+    border-collapse: collapse;
+    margin: 0px auto;
+    font-size: 0.9em;
+    box-shadow: 1px 2px 3px 2px rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    overflow: hidden;
+    min-width: 400px;
+    max-width: 800px;
+    width: 100%;
+}
+
+.tabla-prop thead tr {
+    background-color: #3c3e50;
+    color: #ffffff;
+    text-align: left;
+}
+
+.tabla-prop tbody {
+    background-color: white;
+}
+
+.tabla-prop tbody tr.active-row {
+    font-weight: bold;
+    color: #3c3e50;
+}
+
+.tabla-prop tbody tr {
+    border-bottom: 1px solid #dddddd;
+}
+
+.tabla-prop tbody tr:nth-of-type(even) {
+    background-color: #f3f3f3;
+}
+
+.tabla-prop tr td:first-child { 
+    text-transform: capitalize;
+    font-weight: bold;
+    background-color: rgba(230,  235, 241, 0.5);
+    width: 150px;
+}
+
+/* .tabla-prop tbody tr:last-of-type {
+    border-bottom: 2px solid #3c3e50;
+}
+ */
+
+.tabla-prop th,
+.tabla-prop td {
+    padding: 5px 20px;
+}    

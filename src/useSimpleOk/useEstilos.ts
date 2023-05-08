@@ -45,7 +45,7 @@ export const style  = {
     round           : true,
     size            : "md",
     padding         : "none",
-    class           : "op40 op100-hover q-ml-sm"
+    class           : "op60 op100-hover q-ml-sm"
   },
   btnSimple         : {
     flat            : true,

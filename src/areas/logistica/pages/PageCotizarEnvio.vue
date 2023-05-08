@@ -149,7 +149,7 @@
 
   async function iniciar()
   {    
-    costos.value                  = []    
+    costos.value                  = []
     await b.value.montarBusqueda( usuario.value.id, router, false, false, 100 )
     asignarValoresPorDefecto()
 

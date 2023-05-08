@@ -12,61 +12,29 @@
         class                 ="width200"
         icon                  ="mdi-magnify"
       />
-      <!-- //* ///////////////////////////////////////////////// Usuario -->
-      <select-usuario         hundido clearable
-        v-model               ="b.f.usuario"
-        class                 ="width200"
-        label                 ="Usuario"
-        :readonly             ="!b.puedeCambiarUser"
-        :grupos               =[GRUPO_USUARIO.EN_NOMINA]
-      />
+      
+      <slot name              ="filtro"></slot>
     </fieldset-filtro>
-    <!-- //* ///////////////////////////////////////////////////////////////////// FIELD SET VALOR -->
+    <!-- //* /////////////////////////////////////////////////// Fecha creacion -->
     <fieldset-filtro
-      titulo                  ="Valor"
+      titulo                  ="Creación"
       class-conenido          ="column q-gutter-xs"
       >
-      <!-- //* ///////////////////////////////////////////////// Precio Minimo -->
-      <input-number           hundido clearable
-        v-model               ="b.f.valorMin"
-        label                 ="Mínimo"
-        icon                  ="mdi-currency-usd"
+      <!-- //* ///////////////////////////////////////////////// Fecha desde -->
+      <input-fecha            hundido no-futuro clearable
+        v-model               ="b.f.desde"
+        label                 ="Desde"
         class                 ="width160"
-        :minimo               ="0"
-        :maximo               ="!!b.f.valorMax ? b.f.valorMax : undefined"
+        :hasta                ="b.f.hasta"
       />
-      <!-- //* ///////////////////////////////////////////////// Precio Maximo -->
-      <input-number           hundido clearable
-        v-model               ="b.f.valorMax"
-        label                 ="Máximo"
-        icon                  ="mdi-currency-usd"
+      <!-- //* ///////////////////////////////////////////////// Fecha hasta -->
+      <input-fecha            hundido no-futuro clearable
+        v-model               ="b.f.hasta"
+        label                 ="Hasta"
         class                 ="width160"
-        :minimo               ="!!b.f.valorMin ? b.f.valorMin : undefined"
-        :maximo               ="999_999_999"
+        :desde                ="b.f.desde"
       />
     </fieldset-filtro>
-    <!-- //* ///////////////////////////////////////////////////////////////////// FIELD SET ESTADOS -->
-    <fieldset-filtro
-      titulo                  ="Estado"
-      class-conenido          ="column q-gutter-xs"
-      >
-      <!-- //* ///////////////////////////////////////////////// Estado -->
-      <select-label-value     use-input hundido clearable flat bordered
-        v-model               ="b.f.incEstado"
-        label                 ="Estado"
-        icon                  ="mdi-file-check"
-        class                 ="width180"
-        :options              ="Incentivo.estados"
-      />
-      <!-- //* ///////////////////////////////////////////////// Pagado -->
-      <select-label-value     use-input hundido clearable flat bordered
-        v-model               ="b.f.incPago"
-        label                 ="Pago"
-        icon                  ="mdi-cash-check"
-        class                 ="width180"
-        :options              ="Incentivo.estadosPago.filter( e => e.visible )"
-      />    
-    </fieldset-filtro>  
     <!-- //* ///////////////////////////////////////////////////////////////////// FIELD SET Paginación -->
     <fieldset-filtro
       titulo                  ="Paginas"
@@ -79,7 +47,10 @@
           color               ="white"
           text-color          ="grey-8"
           toggle-color        ="primary"
-          :options            ="Busqueda.listaResultadosXPag"
+          :options            ="[ {value: 5,      label: '5',   },
+                                  {value: 10,     label: '10',   },
+                                  {value: 30,     label: '30',   },                                  
+                                ]"
           @update:model-value ="b.f.pagina = 1"
         />
         <Tooltip label        ="Resultados por pagina"/>
@@ -106,8 +77,6 @@
       titulo                  ="Opciones"
       class-conenido          ="grilla-ribom"
       >
-      <!-- //* ///////////////////////////////////////////////// Slot Columnas -->
-      <slot></slot>
       <!-- //* ///////////////////////////////////////////////// Botones -->
       <div class                ="row justify-around q-mt-sm">
         <!-- //* /////////////////////////////////////////////// Boton recargar -->
@@ -153,12 +122,13 @@
 </template>
 <script lang="ts" setup>
   // * /////////////////////////////////////////////////////////////////////// Core
-  import {  watch,
+  import {  toRefs,
+            watch,
             computed            } from "vue"
   // * /////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs         } from "pinia"
   import {  useStoreUser        } from "src/stores/user"
-  import {  useStoreNomina      } from "src/stores/nomina"
+  import {  useStoreAcuerdo     } from "src/stores/acuerdo"
 
   // * /////////////////////////////////////////////////////////////////////// Modelos
   import {  Incentivo           } from "src/areas/nomina//models/Incentivo"            
@@ -171,14 +141,18 @@
   import    selectLabelValue      from "components/utilidades/select/SelectLabelValue.vue"
   import    selectUsuario         from "src/areas/usuarios/components/SelectUsuario.vue"
   import    inputBuscar           from "components/utilidades/input/InputSimple.vue"
+  import    inputFecha            from "components/utilidades/input/InputFecha.vue"
   import    innerLoading          from "components/utilidades/InnerLoading.vue"
 
-  const { incentivos,
-          loading,
-          incentivosSearch : b  } = storeToRefs( useStoreNomina() )
+  const { loading,
+          busqueda : b  }   = storeToRefs( useStoreAcuerdo() )
 
-  // * /////////////////////////////////////////////////////////////////////// Router
-    
+  const props               = defineProps({
+    largo: { required: true, type: Number },
+  })
+
+  const { largo }           = toRefs( props )
+
   const emit = defineEmits<{
     (e: 'buscar',   value: IQuery ): void
     (e: 'limpiar',                ): void
@@ -205,5 +179,5 @@
     if(todoLimpio) emit("limpiar")
   }  
 
-  const siguientePagina           = computed(()=> b.value.siguientePagina( incentivos.value.length ) )
+  const siguientePagina           = computed(()=> b.value.siguientePagina( largo.value ) )
 </script>

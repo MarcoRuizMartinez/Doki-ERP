@@ -169,6 +169,12 @@ const routes: RouteRecordRaw[] = [
         props:      () => ({ tipo: TIPO_ACUERDO.PEDIDO_CLI }),
         component:  () => import('src/areas/acuerdos/pages/PageAcuerdoBuscar.vue'),
       },
+      //* ////////////////////////////////////////////////////////////////// Pedido cliente Woocommerce 
+      {
+        path:       'tienda',
+        name:       'pedidosTienda',
+        component:  () => import('src/areas/acuerdos/pages/PagePedidosWoo.vue'),
+      },      
       //* ////////////////////////////////////////////////////////////////// Pedido cliente Ver 
       {
         path:       'cliente/:id',

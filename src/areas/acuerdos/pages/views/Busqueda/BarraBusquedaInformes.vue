@@ -283,7 +283,8 @@
 
   watch(()=>b.value.f, ()=>
     {
-            if(b.value.puedeBuscar) buscar()
+      if(b.value.puedeBuscar && b.value.checkPage())
+        buscar()
       else  if(b.value.queryVacia ) limpiarBusqueda()
     },
     { deep: true }

@@ -159,6 +159,7 @@ export interface        IBusqueda {
   montadoOk             : boolean
   puedeCambiarUser      : boolean
   haceAutoSelect        : boolean
+  copiaPagina           : number
 
   // * /////////////////  Geters
   queryVacia            : boolean
@@ -175,14 +176,15 @@ export interface        IBusqueda {
   copiarQueryACampos    : ()=> Promise<void>
   desmontarBusqueda     : ()=> void
   copiarQueryARourter   : ()=> void
+  checkPage             : ()=> boolean
   limpiarQueryDeRouter  : ()=> Promise< boolean >
   siguientePagina       : ( largo : number )=>number
   montarBusqueda        : ( idUsuario         : number,
                             r                 : Router,
-                            autoSelect        : boolean,
-                            canChangeUser     : boolean,
-                            resultadosXPage?  : number,
-                            acuerdoTipo?      : TTipoAcuerdo 
+                            autoSelect       ?: boolean,
+                            canChangeUser    ?: boolean,
+                            resultadosXPage  ?: number,
+                            acuerdoTipo      ?: TTipoAcuerdo 
                           ) => Promise<void>
 }
 
@@ -199,6 +201,7 @@ export class Busqueda implements IBusqueda
   puedeCambiarUser      : boolean
   haceAutoSelect        : boolean  
   router                : Router
+  copiaPagina           : number
 
   constructor()
   {
@@ -211,6 +214,7 @@ export class Busqueda implements IBusqueda
   {    
     this.rourterQ         = {}
     this.usuarioIdInicio  = 0
+    this.copiaPagina      = 1
     this.o                = {
       opcionesOk          : false,
       condicionesPago     : [],
@@ -365,8 +369,8 @@ export class Busqueda implements IBusqueda
   async montarBusqueda(
     idUsuario                 : number,
     r                         : Router,
-    autoSelect                : boolean,
-    canChangeUser             : boolean, 
+    autoSelect                : boolean       = false,
+    canChangeUser             : boolean       = false, 
     resultadosXPage           : number        = 10,
     acuerdoTipo               : TTipoAcuerdo  = TIPO_ACUERDO.NULO 
   ) : Promise<void>
@@ -393,6 +397,20 @@ export class Busqueda implements IBusqueda
   copiarQueryARourter()
   {
     this.router.replace({ query: { ...this.query }  })
+  }
+
+
+  checkPage() : boolean
+  {
+    let sinCorreccion     = true
+    if( this.f.pagina     > 1 && this.copiaPagina === this.f.pagina){
+      this.f.pagina       = 1
+      sinCorreccion       = false
+    }
+
+    this.copiaPagina      = this.f.pagina
+
+    return sinCorreccion
   }
 
   async limpiarQueryDeRouter() : Promise< boolean >

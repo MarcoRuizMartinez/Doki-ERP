@@ -9,7 +9,7 @@
     :options                  ="contactos"
     :disable                  ="disable"
     :readonly                 ="readonly"
-    :option-label             ="(contacto) => !contacto ? '' : contacto.nombreCompleto + ( !!contacto.empresa ? ' - ' + contacto.empresa : '') "
+    :option-label             ="( contacto : IContacto ) => !contacto ? '' : contacto.nombreCompleto + ( !!contacto.empresa ? ' - ' + contacto.empresa : '') "
     @filter                   ="buscar"
     @popup-show               ="virgen = true"
     @update:model-value       ="( conta : any ) => emit('update:contacto', conta )"

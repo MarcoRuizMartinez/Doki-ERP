@@ -43,6 +43,9 @@ export interface IUsuario {
   areaEsGlobal      : boolean
   reglaComisionId   : number
   comision          : IReglaComision
+  wooKey            : string
+  wooSecret         : string
+  wooToken          : string
 }
 
 export class Usuario implements IUsuario
@@ -65,6 +68,8 @@ export class Usuario implements IUsuario
   gruposString      : string
   reglaComisionId   : number
   comision          : IReglaComision
+  wooKey            : string
+  wooSecret         : string  
 
   constructor( usuario? : IUsuario )
   {
@@ -87,6 +92,8 @@ export class Usuario implements IUsuario
       this.correo             = ""
       this.reglaComisionId    = 0
       this.comision           = new ReglaComision()
+      this.wooKey             = ""
+      this.wooSecret          = ""
 
       if(!!usuario)
       {
@@ -106,12 +113,18 @@ export class Usuario implements IUsuario
         this.gruposString     = usuario.gruposString
         this.cel              = usuario.cel
         this.correo           = usuario.correo
+        this.wooKey           = usuario.wooKey
+        this.wooSecret        = usuario.wooSecret
       }
   }
     get grupos()  : string[]  { return !!this.gruposString ? this.gruposString.split(',') : [] }
     get activo()  : boolean   { return Boolean( +this.estado  ) }
     get urlFoto() : string    { return process.env.URL_DOLIBARR + "/documents/users/" + this.id }
     get color()   : string    { return this._color }
+    get wooToken(): string    { return  !!this.wooKey && !!this.wooSecret
+                                        ? 'Basic ' + btoa( this.wooKey + ":" + this.wooSecret )
+                                        : ''
+                              }
 
     set color( valor : string )
     {

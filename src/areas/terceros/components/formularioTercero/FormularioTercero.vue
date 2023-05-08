@@ -256,8 +256,7 @@
             onMounted,
             watch
                             } from "vue"
-  import {  useQuasar       } from 'quasar'
-  import {  useRouter       } from 'vue-router'
+  import {  useQuasar       } from 'quasar'  
   import {  useApiDolibarr  } from "src/services/useApiDolibarr"
   import {  getURL,
             getFormData     } from "src/services/APIMaco"
@@ -276,13 +275,11 @@
   import    direccion         from "./DireccionDian.vue"
   import {  IMunicipio      } from "src/models/Municipio"
 
-
   const { notify }            = useQuasar()
   const { apiDolibarr       } = useApiDolibarr()
   const { miFetch           } = useFetch()
   const storeUser             = useStoreUser()
-  const tercero               = ref<ITercero>(new Tercero())
-  const router                = useRouter()
+  const tercero               = ref<ITercero>(new Tercero())  
   const cargando              = ref< boolean >(false)
   //const codigoError           = ref< CODES_FETCH >( CODES_FETCH.OK )
   const formulario            = ref< any >()
@@ -296,6 +293,10 @@
     terceroCarga: { default: new Tercero(), type: Object as PropType< ITercero >                                    },
     puedeEditar:  { default: false,         type: Boolean                                                           },
   })
+
+  const emit                  = defineEmits<{
+    (e: 'terceroCreado', value: number ): void
+  }>()
 
   const { tipo,
           terceroCarga      } = toRefs( props )
@@ -349,9 +350,11 @@
 
     if(terceroOk)
     {
+      const id                = parseInt( newID.toString() ?? "0" )
       if(storeUser.permisos.acceso_total) // Cuando se tiene acceso total, o ver otros terceros de los otros no asigna usuario a tercero cuando se crea, por eso toca asignarlo                                      
       {
-        const objeto            = { id: newID, responsables: tercero.value.responsablesIDS } 
+        
+        const objeto            = { id, responsables: tercero.value.responsablesIDS } 
         let { ok : okUser }     = await miFetch(  getURL( "servicios", "terceros"),
                                                   {
                                                     method: "POST",
@@ -364,7 +367,7 @@
       }
 
       aviso( "positive", "Tercero creado exitosamente" )
-      router.push("/tercero/" + newID )      
+      emit('terceroCreado', id)
     }
     else
     {
@@ -401,14 +404,17 @@
   //* ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //* /////////////////////////////////////////////////////////////////////////////////// FUNCTION DE CARGAR DE TERCERO
   //* ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  watch(terceroCarga, (newTercero, oldTercero) => {
-    if(!!newTercero.id){
-      tercero.value           = newTercero
-      copiaResponsables       = JSON.stringify( tercero.value.responsables ) // Para luego ver si cambiaron
-      cargando.value          = false
-    }
-  })
-
+  watch(terceroCarga, (newTercero, oldTercero) =>
+    {
+      if(!!newTercero.id || tipo.value == "crear-cliente")
+      {        
+        tercero.value           = newTercero
+        copiaResponsables       = JSON.stringify( tercero.value.responsables ) // Para luego ver si cambiaron
+        cargando.value          = false
+      }
+    },
+    { deep: true, immediate: true }
+  )
   
   //* ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //* /////////////////////////////////////////////////////////////////////////////////////////////////// FUNCTION VARIAS

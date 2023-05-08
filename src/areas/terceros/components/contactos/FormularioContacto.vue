@@ -660,10 +660,10 @@
 
       estaCheckDocumento.value    = "verificando"
 
-    const existe                  = await vericarDocumentoEnDolibarr( doc )
-    estaCheckDocumento.value      = existe ? "alert" : "check" 
+    const id                      = await vericarDocumentoEnDolibarr( doc )
+    estaCheckDocumento.value      = !!id ? "alert" : "check" 
 
-    return existe
+    return !!id
   }    
   
   function reglaExisteNumero( numeroTxt : string ) : boolean | string

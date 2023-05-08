@@ -153,6 +153,13 @@ export function useMenu()
                           }),
         }, 
         { ...new ItemMenu({
+                            label:      "Pedidos Tienda",
+                            icon:       "mdi-store",
+                            to:         "/pedidos/tienda",
+                            visible:    !(usuario.value.areaEsEscom && usuario.value.esComercial)
+                          }),
+        },         
+        { ...new ItemMenu({
                             label:      "Entregas",
                             icon:       "mdi-truck-delivery",
                             to:         "/entregas/cliente",
