@@ -98,7 +98,7 @@ export function useControlPedidosWoo()
   async function buscarPedidosDolibarr( ids : string ) : Promise< IRefId[] >
   {
     const objetoForData       = { body: getFormData("ePaycoRefDolibarr", { ids } ), method: "POST"}
-    const { ok, data  }       = await miFetch( getURL("listas", "pedidos"), objetoForData, { mensaje: "pedidos en sistema" } )
+    const { ok, data  }       = await miFetch( getURL("listas", "pedidos"), objetoForData, { mensaje: "pedidos en sistema", dataEsArray: true } )
     if(!ok) return []
 
     const refIdsRaw           = getArrayFromAny( data )

@@ -77,7 +77,7 @@
         icono.value           = "mdi-credit-card-remove"
         color.value           = "red-10"
         label.value           = "Pago fallido"
-        clickEnable           = false
+        clickEnable           = true
       }    
     }
     , { deep: true, immediate: true }

@@ -5,10 +5,9 @@
     >
     {{ dato }}
   </span>
-  <q-btn
-    v-if          ="dato.toString().length > 2"
-    v-bind        ="style.btnRedondoFlat"
-    class         ="q-ml-none"
+  <q-btn          dense flat round
+    v-if          ="dato.toString().length > 2"    
+    class         ="op60 op100-hover q-ml-sm"
     :size         ="size"
     :icon         ="copiando ? 'mdi-clipboard-check' : 'mdi-content-copy'"
     :color        ="copiando ? 'positive' : 'grey-10'"
@@ -24,17 +23,15 @@
 </template>
 <script lang="ts" setup>
   import {  ref, 
-            toRefs            } from "vue"  
-  
-  import {  style             } from "src/useSimpleOk/useEstilos"
+            toRefs            } from "vue"
   import {  pausa             } from "src/useSimpleOk/useTools"
   import {  copyToClipboard   } from 'quasar'
 
   const props               = defineProps({
     dato:       { required: true,   type: [String, Number]  },
-    size:       { defauld:  "sm",   type: String  },
-    hideLabel:  { defauld:  false,  type: Boolean },
-    disable:    { defauld:  false,  type: Boolean },
+    size:       { default:  "xs",   type: String  },
+    hideLabel:  { default:  false,  type: Boolean },
+    disable:    { default:  false,  type: Boolean },
   })
   const { dato }            = toRefs( props )
   const copiando            = ref<boolean>(false)

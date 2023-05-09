@@ -4,8 +4,8 @@
     >
     <ventana-iframe           show-menu copiar
       icono                   ="mdi-map-marker-path"
+      titulo                  ="Consultar guías de transportadoras"
       :src                    ="src"
-      :titulo                 ="titulo"      
       :link                   ="src"
       :modo                   ="modo"
       >
@@ -69,7 +69,6 @@
   useTitle("📍 Guías de transportadora")
 
   const src                 = ref<string>("")
-  const titulo              = ref<string>("Rastreo Guia")
   const guia                = ref<string>("")  
   const tra                 = ref<ILabelValue>(labelValueNulo)
   const transtTieneGet      = computed(()=> !!tra.value.label && tra.value.value.toString().includes("=") )
@@ -80,12 +79,9 @@
   const modo                = computed(()=> datosOk.value ? "normal" : "esperando-busqueda" )
   const tras:ILabelValue[]  = [
     { label: "Exxe",            value: "https://solex.blulogistics.net/SolexRC/g?Numero=" },
-    { label: "Tnterrapidisimo", value: "https://www.interrapidisimo.com/sigue-tu-envio/?guia=" },
+    { label: "Interrapidisimo", value: "https://www.interrapidisimo.com/sigue-tu-envio/?guia=" },
     { label: "Servientrega",    value: "https://mobile.servientrega.com/WebSitePortal/RastreoEnvioDetalle.html?Guia=" },
-    { label: "Coordinadora",    value: "https://www.coordinadora.com/portafolio-de-servicios/servicios-en-linea/rastrear-guias/?guia=" },
-    { label: "Envia",           value: "https://envia.co/" },
     { label: "Transcarga",      value: "https://siscov.net/zonacliente/Transcarga/web/Modulos/Public/RastreoGuias.aspx" },
-    
   ]
 
   function cargarIframe()

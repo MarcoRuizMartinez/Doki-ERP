@@ -28,13 +28,6 @@
             />          
           </template>
         </busqueda>
-        <!--         <q-btn                      flat round dense
-          icon                      ="mdi-refresh"          
-          class                     ="op40 op100-hover q-ml-xs"
-          @click                    ="buscar"
-          >
-          <Tooltip label            ="Recargar"/>
-        </q-btn> -->
       </template>
       <!-- //* //////////////////////////////////////////////////////// Tabla resultados-->
       <q-table                      bordered dense flat
@@ -187,9 +180,8 @@
   async function consultarPedidosCreados(){
     const ids                 = pedidos.value.map( p => p.id ).join(",") 
     const refIds              = await buscarPedidosDolibarr( ids )
-    for (const p of pedidos.value){
+    for (const p of pedidos.value)
       p.idPedido              = refIds.find( ri => ri.ref === p.id ).id ?? 0
-    }
   }
 
   //* ///////////////////////////////////////////////////////////// Consultar Si existe cliente y Pagos
