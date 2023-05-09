@@ -1,14 +1,18 @@
 <template>
-  <span v-bind    ="$attrs">
+  <span
+    v-if          ="!hideLabel"
+    v-bind        ="$attrs"
+    >
     {{ dato }}
   </span>
   <q-btn
     v-if          ="dato.toString().length > 2"
     v-bind        ="style.btnRedondoFlat"
-    size          ="sm"
     class         ="q-ml-none"
+    :size         ="size"
     :icon         ="copiando ? 'mdi-clipboard-check' : 'mdi-content-copy'"
     :color        ="copiando ? 'positive' : 'grey-10'"
+    :disable      ="disable"
     @click        ="copiar"
     >
     <Tooltip 
@@ -27,7 +31,10 @@
   import {  copyToClipboard   } from 'quasar'
 
   const props               = defineProps({
-    dato: { required: true, type: [String, Number]  },
+    dato:       { required: true,   type: [String, Number]  },
+    size:       { defauld:  "sm",   type: String  },
+    hideLabel:  { defauld:  false,  type: Boolean },
+    disable:    { defauld:  false,  type: Boolean },
   })
   const { dato }            = toRefs( props )
   const copiando            = ref<boolean>(false)

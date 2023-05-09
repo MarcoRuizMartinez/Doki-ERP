@@ -201,7 +201,14 @@ export function useMenu()
                             to:         "/pedidos/proveedor",
                             visible:    permisos.value.terceros_ver
                           }),
-        },                
+        },
+        { ...new ItemMenu({
+                            label:      "Guías",
+                            icon:       "mdi-map-marker-path",
+                            to:         "/guias",
+                            visible:    true
+                          }),
+        },           
       ]
     },
 /*     

@@ -197,7 +197,7 @@
   async function clickAprobarCotizacion()
   {
     await aprobarCotizacion()
-    await buscarAcuerdoEnlazados( true )
+    await buscarAcuerdoEnlazados( /* true */ )
   }
 
   function cargarArchivos( files : IArchivo[] ) { acuerdo.value.archivos = files }
@@ -213,7 +213,7 @@
     window.open(url, '_blank')
 
     await pausa( 16_000 )
-    await buscarAcuerdoEnlazados( true )
+    await buscarAcuerdoEnlazados( /* true */ )
 
     function getIdBodegaByArea( area : AREA ) : number
     {

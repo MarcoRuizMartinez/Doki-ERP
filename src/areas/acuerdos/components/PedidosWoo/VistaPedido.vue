@@ -15,7 +15,7 @@
         color               ="positive"
         icon                ="mdi-plus"
         target              ="_blank"
-        href                ="/pedidos/cliente/crear"
+        href                ="pedidos/cliente/crear"
       />
     </template>
     <table class            ="tabla-prop">

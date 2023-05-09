@@ -5,7 +5,7 @@
       v-bind          ="$attrs"
       lazy-rules      ="ondemand"
       class           ="transi"
-      debounce        ="400"
+      :debounce       ="debounce"
       :class          ="{'campo-hundido' : hundido}"
       :filled         ="!hundido"
       :borderless     ="!hundido"      
@@ -13,6 +13,7 @@
       @blur           ="onBlur"
       @focus          ="campoEnfocado = true"
       @clear          ="emit('clear')"
+      @keydown.enter.prevent="emit('enter')"
       >
       <template #prepend>
         <q-icon :name ="icon" />
@@ -32,10 +33,11 @@
       label:      { type: String,   required: true          },
       icon:       { type: String,   default:  "mdi-magnify" },
       hundido:    { type: Boolean,  default:  false         },
+      debounce:   { type: String,   default:  "400"         },
     }
   )
 
-  const emit            = defineEmits(["update:modelValue", "blur", "clear"])
+  const emit            = defineEmits(["update:modelValue", "blur", "clear", "enter"])
 
   const { modelValue  } = toRefs( props )
   const modelo          = computed({

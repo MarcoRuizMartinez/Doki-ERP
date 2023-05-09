@@ -28,6 +28,15 @@
         <Tooltip label  ="Recargar"/>
       </q-btn>
       <q-btn            flat round dense
+        v-if            ="copiar"
+        color           ="white"
+        icon            ="mdi-content-copy"          
+        class           ="op40 op100-hover q-ml-xs"
+        @click          ="copiarSRC"
+        >
+        <Tooltip label  ="Copiar link"/>
+      </q-btn>      
+      <q-btn            flat round dense
         v-if            ="!!link || esFormulario"
         color           ="white"
         icon            ="mdi-open-in-new"
@@ -38,6 +47,9 @@
         >
         <Tooltip label  ="Ir a enlace"/>
       </q-btn>
+    </template>
+    <template           #menu v-if="showMenu">
+      <slot></slot>
     </template>
     <iframe
       class             ="iframe"
@@ -74,7 +86,7 @@
   import {  style                 } from "src/useSimpleOk/useEstilos"
   import    formularioIframe        from "components/navegacion/VentanaIframe.vue"
   import    ventana                 from "components/utilidades/Ventana.vue"
-
+  import {  copyToClipboard       } from 'quasar'
   const formularioOk  = ref<boolean>(false)
   const emits         = defineEmits(["cerrar"])
 
@@ -86,6 +98,8 @@
     link:           { type: String,   default: "" },    
     esFormulario:   { type: Boolean,  default: false },
     cargando:       { type: Boolean,  default: false },
+    showMenu:       { type: Boolean,  default: false },
+    copiar:         { type: Boolean,  default: false },
   })
   
   const { src,
@@ -112,6 +126,11 @@
     await pausa(5000)
     cargandoModel.value = false
   }
+  async function copiarSRC()
+  {
+    await copyToClipboard( src.value )
+  }
+  
 
 
 

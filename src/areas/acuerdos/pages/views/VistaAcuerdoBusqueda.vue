@@ -195,6 +195,7 @@
           loading               } = storeToRefs( useStoreAcuerdo() )  
   const { getAcuerdos           } = servicesAcuerdos()
   const { buscarTerceroDolibarr,
+          buscarAcuerdoEnlazados,
           buscarProyecto        } = useControlAcuerdo()  
   const { esMobil, aviso        } = useTools()
   const router                    = useRouter()
@@ -273,7 +274,7 @@
   function vistaRapida(index : number)
   {
     seleccionarAcuerdo(index)
-    ventanaVistaRapida.value      = true    
+    ventanaVistaRapida.value      = true
   }
 
   function anteriorAcuerdo()
@@ -295,7 +296,7 @@
     acuerdo.value                 = acuerdos.value[index]
     await buscarTerceroDolibarr ( acuerdo.value.terceroId )
     await buscarProyecto        ( acuerdo.value.proyectoId  )
-
+    await buscarAcuerdoEnlazados()
   }
 
   function crearColumnas()

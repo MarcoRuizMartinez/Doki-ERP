@@ -96,7 +96,7 @@
   async function buscar()
   {
     modo.value                = "buscando"
-    await buscarAcuerdoEnlazados( true )
+    await buscarAcuerdoEnlazados( /* true */ )
     modo.value                = !!acuerdo.value.acuerdosEnlazados.length ? "normal" : "sin-resultados"
   }
 

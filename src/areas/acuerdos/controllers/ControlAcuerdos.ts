@@ -697,10 +697,11 @@ export function useControlAcuerdo()
     return todoOk
   }
 
-  async function buscarAcuerdoEnlazados( buscarEnlaces : boolean = false )
+  async function buscarAcuerdoEnlazados( /* buscarEnlaces : boolean = false  */)
   {
     loading.value.enlaces = true
-    if( buscarEnlaces )   await buscarEnlacesAcuerdo()
+    //if( buscarEnlaces )
+    await buscarEnlacesAcuerdo()
     const pedi            = getIds(   TIPO_ACUERDO.PEDIDO_CLI       )
     const coti            = getIds(   TIPO_ACUERDO.COTIZACION_CLI   )
     const oc_p            = getIds(   TIPO_ACUERDO.PEDIDO_PRO       )

@@ -76,7 +76,12 @@ const routes: RouteRecordRaw[] = [
                 srcFormulario:  "https://airtable.com/embed/shrLfahiij8C8JhJ3?backgroundColor=cyan",
               },
         component: () => import('src/pages/PaginaIframe.vue')
-      },       
+      },
+      {
+        path: 'guias',
+        name: 'guias',
+        component: () => import('src/areas/logistica/pages/PageGuias.vue')
+      },         
 /*       {
         path: 'test',
         name: 'test',
