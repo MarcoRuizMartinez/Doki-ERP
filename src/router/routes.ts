@@ -161,12 +161,18 @@ const routes: RouteRecordRaw[] = [
     ],
   },
   //* //////////////////////////////////////////////////////////////////
-  //* ////////////////////////////////////////////////////////// Pedidos  
+  //* ////////////////////////////////////////////////////////// Pedidos 
   {
     path:           '/pedidos',
     component:      () => import('layouts/LayoutPrincipal.vue'),
     children:
     [
+      //* ////////////////////////////////////////////////////////////////// Pedido cliente Buscar 
+      {
+        path:       '',
+        name:       'portadaLogistica',
+        component:  () => import('src/areas/logistica/pages/PagePortadaLogistica.vue'),
+      },      
       //* ////////////////////////////////////////////////////////////////// Pedido cliente Buscar 
       {
         path:       'cliente',

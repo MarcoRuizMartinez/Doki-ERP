@@ -123,7 +123,7 @@
   watch(tipo, iniciar)
   onMounted(iniciar)
 
-  const sufijoNombreGrafico       = computed(()=> `de ${Acuerdo.getTipoAcuerdoPlural(tipo.value)} por comercial - ${busqueda.value.f.periodo.label}`)
+  const sufijoNombreGrafico       = computed(()=> `de ${Acuerdo.getTipoAcuerdoPlural(tipo.value)} por ${busqueda.value.f.dimension.label.toLocaleLowerCase()} - ${busqueda.value.f.periodo.label}`)
 
   async function iniciar()
   {
@@ -163,19 +163,5 @@
   function limpiarBusqueda()
   {
     modo.value                    = "esperando-busqueda"
-  } 
-
-  /*
-
-/////////////////////////////////////////// Usuario
-
-Torta de cuenta cotizado
-Torta de total cotizado
-
-
-Vendedor Serie: cotizaciones por estado 
-Vendedor Torta: Estados 
-Vendedor Ratio Efectividad
-
-*/
+  }
 </script>

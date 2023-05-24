@@ -142,7 +142,7 @@ export function useMenu()
       ]
     },
     {
-      ...new ItemMenu({ label: "Logistica", icon: "mdi-truck-fast", to: "/pedidos/cliente" }),
+      ...new ItemMenu({ label: "Logistica", icon: "mdi-truck-fast", to: "/pedidos" }),
       submenu:
       [
         { ...new ItemMenu({
