@@ -1,15 +1,10 @@
-// * /////////////////////////////////////////////////////////////////////// Core
-import {  ref                 } from "vue"
-// * /////////////////////////////////////////////////////////////////////// Store
-import {  storeToRefs         } from 'pinia'                                            
-import {  useStoreUser        } from 'src/stores/user'
-import {  useStoreAcuerdo     } from 'src/stores/acuerdo'
 // * /////////////////////////////////////////////////////////////////////// Componibles
 import {  sortArray           } from "src/useSimpleOk/useTools"
 import {  getURL,
           getFormData         } from "src/services/APIMaco"        
 import {  useFetch            } from "src/useSimpleOk/useFetch"
 import {  getDateToStr,
+          colorRandom,
           mayusculasPrimeraLetra  
                               } from "src/useSimpleOk/useTools"
 
@@ -18,72 +13,86 @@ import {  IQuery              } from "src/models/Busqueda"
 import {  Periodo,
           PERIODO,
           IApexSerie          } from "src/models/TiposInformes"  
-import {  SerieAcu, ISerieAcu } from "src/areas/acuerdos/models/SerieAcuerdo"
-import {  EstadosAcuerdos     } from "src/areas/acuerdos/models/ConstantesAcuerdos"
+import {  SerieAcu,
+          ISerieAcu,
+                              } from "src/areas/acuerdos/models/SerieAcuerdo"
+
+type KeysSeries         = "cuenta" | "total"
+
+interface ISeries {
+  cuenta      : IApexSerie[]
+  total       : IApexSerie[]
+  ejeX        : string[]
+}
+
 
 export function useControlInformes()
 {
-  const { miFetch               } = useFetch()  
+  const { miFetch       } = useFetch()  
 
-  async function getInforme(
-    tipo  : "totales" | "estados",
-    query : IQuery,
-  ) : Promise< ISerieAcu[] >
+  async function getSeries( query : IQuery ) : Promise< ISeries >
+  {
+    const seriesCrudas    = await getInforme( query )
+    
+    if(!seriesCrudas.length)
+      return { cuenta: [], total: [], ejeX: [] }
+
+    const nombresLineas   = [ ...new Set( seriesCrudas.map((s) => s.nombre ) ) ]    
+    const cuenta          = getSerie("cuenta",  seriesCrudas, nombresLineas ) // , query.periodo, tipoGrafico )    
+    const total           = getSerie("total",   seriesCrudas, nombresLineas ) // , query.periodo, tipoGrafico )
+    const ejeX            = getPeridosEjeX( cuenta, query.periodo )
+    
+
+    revisarColor()
+    return { cuenta, total, ejeX }
+
+    function revisarColor()
+    {
+      let nombre            = ""
+      for (let i = 0; i < cuenta.length; i++)
+      {        
+        if(!!cuenta[i].color) continue
+
+        nombre              = cuenta[i].name
+        cuenta[i].color     =   hay("hats")     ? "#54C862"   // WhathsApp
+                              : hay("rreo")     ? "#315CF0"   // Correo
+                              : hay("fono")     ? "#2E2893"   // Teléfono
+                              : hay("nline")    ? "#A41C8F"   // Tienda Online
+                              : hay("rrente")   ? "#E03034"   // Cliente recurrente
+                              : hay("exhi")     ? "#F47A00"   // Sala exhibición
+                              : hay("feren")    ? "#F4D600"   // Referenciado
+                              : hay("Mublex")   ? "#EC0000"
+                              : hay("Escom")    ? "#F86708"
+                              : hay("Nivel X")  ? "#323232"
+                              : hay("Nivel E")  ? "#921F70"
+                              : hay("Nivel D")  ? "#F47A00"
+                              : hay("Nivel C")  ? "#FF2FCB"
+                              : hay("Nivel B")  ? "#2733A0"
+                              : hay("Nivel A")  ? "#007DC8"
+                              : hay("Alfa")     ? "#A5EC20"
+                              :                   colorRandom( "lista" )
+        total[i].color      = cuenta[i].color
+      }
+
+      function hay( txt : string ) { return nombre.includes(txt) }
+    }
+  }
+
+  async function getInforme(  query : IQuery ) : Promise< ISerieAcu[] >
   {
     query.periodo           = query?.periodo ?? PERIODO.MES
     const url               = getURL("listas", "informes")
-    const objetoForData     = { body: getFormData( tipo, query ), method: "POST" }
-    const { data  }         = await miFetch(url, objetoForData, { mensaje: "Cargar informe" })
-    return await SerieAcu.getSerieFromApi( data, query.periodo )
+    const objetoForData     = { body: getFormData( "", query ), method: "POST" }
+    const { data  }         = await miFetch(url, objetoForData, { mensaje: "Cargar informe", dataEsArray: true })
+    const informe           = await SerieAcu.getSerieFromApi( data, query )
+    return informe
   }
 
-
-  async function generarSeriesEstados( query : IQuery, comercial : string ) : Promise< void >
-  {
-    const seriesCrudas            = await getInforme( "estados", query )
-
-/*
-    const seriesComercial         = seriesCrudas.filter( s => s.comercial === comercial )
-    const listaEstados            = [ ...new Set(seriesComercial.map((s) => s.estado)) ]
-    estadosCtzSerie.value         = getSerie("total", seriesComercial, listaEstados, "estado")
-    estadosCtzSerie.value.forEach( s => { if( s.name !== "Total" ) s.color = EstadosAcuerdos.estadoStrCtzToColor(s.name) })
-*/
-
-    //comerciales.value             = [ ...new Set(seriesCrudas.map((s) => s.comercial)) ]
-    //estadosCtz.value              = getSerie("cuentaCtz", seriesCrudas)
-  }
-
-  interface ISeries {
-    cuenta      : IApexSerie[]
-    total       : IApexSerie[]
-    categorias  : string[]
-  }
-
-  type TipoGrafico        = "area" | "bar" | "line"
-
-  async function getSeriesTotales( query : IQuery, tipoGrafico : TipoGrafico ) : Promise< ISeries >
-  {
-    const seriesCrudas    = await getInforme("totales", query)            
-    if(!seriesCrudas.length)
-      return { cuenta: [], total: [], categorias: [] }
-    const comerciales     = [ ...new Set(seriesCrudas.map((s) => s.comercial.nombre)) ]
-    const cuenta          = getSerie("cuenta",  seriesCrudas, comerciales, "nombre", query.periodo, tipoGrafico )
-    const total           = getSerie("total",   seriesCrudas, comerciales, "nombre", query.periodo, tipoGrafico )
-    const categorias      = getCategorias( cuenta, query.periodo )
-    
-    return { cuenta, total, categorias }
-  }
-
-
-  type KeysSeries         = "cuenta" | "total"  
   function getSerie
   (
     key           : KeysSeries,
     seriesCrudas  : ISerieAcu[],
-    usuarios      : string[],
-    keyLabel      : "nombre" | "estado",
-    periodo       : Periodo,
-    tipoGrafico   : TipoGrafico,
+    categorias    : string[]
   )               : IApexSerie[]
   {
     const seriesMapeada           = getSerieMapeada()
@@ -103,7 +112,6 @@ export function useControlInformes()
         maximo:   -1,
         color:    "#000"
       }
-
       
       for (const index in listaSeries[0].data)
       {
@@ -111,11 +119,11 @@ export function useControlInformes()
         let fecha   = ""
         for (const serie of listaSeries)
         {
-          suma      += serie.data[index].y ?? 0            
+          suma      += serie.data[index]?.y ?? 0
           if(serieTotal.maximo !== undefined && serieTotal.maximo < suma)
             serieTotal.maximo   = suma
           
-          if(!!serie.data[index].fecha)
+          if(!!serie.data[index]?.fecha ?? false)
             fecha               = serie.data[index].fecha
         }
 
@@ -152,14 +160,14 @@ export function useControlInformes()
 
     
     
-    function getSerieMapeada() : IApexSerie[] { return usuarios.map( mapApexSerie ) }
-    function mapApexSerie( user : string ) : IApexSerie
+    function getSerieMapeada() : IApexSerie[] { return categorias.map( mapApexSerie ) }
+    function mapApexSerie( categoria : string ) : IApexSerie
     {
       let color  = ""
       const data =
       [
         ...seriesCrudas
-          .filter ( ( s ) => s[ keyLabel ] === user)
+          .filter ( ( s ) => s.nombre === categoria)
           .map    ( ( s ) =>
           {
             color = s.color
@@ -171,7 +179,7 @@ export function useControlInformes()
           })
       ]
       const serie : IApexSerie = {
-        name:     user,
+        name:     categoria,
         color,
         data,
       }
@@ -182,7 +190,7 @@ export function useControlInformes()
 
 
   
-  function getCategorias( series : IApexSerie[], periodo : Periodo ) : string[]
+  function getPeridosEjeX( series : IApexSerie[], periodo : Periodo ) : string[]
   {
     const cats : string[] = []
 
@@ -213,6 +221,6 @@ export function useControlInformes()
   }
 
   return {
-    getSeriesTotales,    
+    getSeries,    
   }
 }

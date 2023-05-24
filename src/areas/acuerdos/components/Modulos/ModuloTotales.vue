@@ -37,7 +37,7 @@
       />
     </div>
     <!-- //* ///////////////////////////////////////////////////////////// Valores AIUs -->
-    <transition             enter-active-class="animated fadeInDown" leave-active-class="animated fadeOutDown" mode="out-in">
+    <TransitionGroup        enter-active-class="animated fadeInDown" leave-active-class="animated fadeOutDown" mode="out-in">
       <div
         v-if                ="acuerdo.aiuOn"
         class               ="col-12 row q-col-gutter-sm"
@@ -85,7 +85,7 @@
           </div>          
         </div>
       </div>
-    </transition>
+    </TransitionGroup>
     <!-- //* ///////////////////////////////////////////////////////////// Tabla totales -->
     <div        class       ="col-12">
       <div      class       ="row justify-center bg-grey-3 rounded-borders transi"
@@ -122,19 +122,20 @@
               <td>Pagado:</td>
               <td>{{ formatoPrecio( acuerdo.totalAnticipos )}}</td>
             </tr>
-            <tr :class="  acuerdo.totalAnticipos    === 0 ? 'text-red' 
-                        : acuerdo.saldo             >= 0 && acuerdo.saldo <= 2 ? 'text-green-8'
-                        : acuerdo.saldo             < 0 ? 'text-blue-9'
-                        : 'text-deep-orange-8'">
-            <td>Saldo:</td>
-            <td class="cursor-pointer">
-              <span>{{ formatoPrecio( acuerdo.saldo )}}</span>
-              <Tooltip>
-                <retenciones v-model="acuerdo.retenciones"/>
-              </Tooltip>
-            </td>
-          </tr>
-        </template>
+            <tr :class="  acuerdo.totalAnticipos    === 0                       ? 'text-red' 
+                        : acuerdo.saldo             >= 0 && acuerdo.saldo <= 2  ? 'text-green-8'
+                        : acuerdo.saldo             < 0                         ? 'text-blue-9'
+                        :                                                         'text-deep-orange-8'"
+                        >
+              <td>Saldo:</td>
+              <td class="cursor-pointer">
+                <span>{{ formatoPrecio( acuerdo.saldo )}}</span>
+                <Tooltip>
+                  <retenciones v-model="acuerdo.retenciones"/>
+                </Tooltip>
+              </td>
+            </tr>
+          </template>
         </table>
       </div>
     </div>      

@@ -6,7 +6,7 @@
     <Tooltip>
       <div class      ="column">
         <div
-          v-for       ="(producto, index) of modelValue.line_items"
+          v-for       ="(producto, index) of pedido.line_items"
           :key        ="index"
           class       ="col"
           >
@@ -21,6 +21,6 @@
   import {  IPedidoWoo        } from "src/areas/acuerdos/models/PedidoWoo"      
   import {  style             } from "src/useSimpleOk/useEstilos"
   const props               = defineProps({
-    modelValue: { required: true, type: Object as PropType< IPedidoWoo > },      
+    pedido: { required: true, type: Object as PropType< IPedidoWoo > },      
   })
 </script>

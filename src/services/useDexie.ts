@@ -438,6 +438,19 @@ export async function getUsuariosDB( ids : number[] ) : Promise < IUsuario[] >
   )
 }
 
+export async function getUsuariosByGrupoDB( grupo : string ) : Promise < IUsuario[] >
+{
+  return db.transaction('r', db[ TABLAS.USUARIOS ], async () =>
+    {
+      const usuarios        = await db[ TABLAS.USUARIOS ].filter((u)=>u.gruposString.includes( grupo )).toArray()
+      if(usuarios.length    > 0)
+        return usuarios
+      else
+        return []
+    }
+  )
+}
+
 export async function getUsuarioDB( id : number ) : Promise < IUsuario >
 {
   return db.transaction('r', db[ TABLAS.USUARIOS ], async () =>

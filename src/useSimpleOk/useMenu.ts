@@ -186,7 +186,7 @@ export function useMenu()
                             to:         "/pedidos/cliente/informes",
                             visible:    permisos.value.terceros_ver
                           }),
-        },        
+        },
         { ...new ItemMenu({
                               label:    "Garantías",
                               icon:     "mdi-lifebuoy",

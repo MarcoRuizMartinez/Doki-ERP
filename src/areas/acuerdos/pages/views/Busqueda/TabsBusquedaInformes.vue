@@ -43,14 +43,14 @@
                               || !!b.value.f.totalizado.label
                               || !!b.value.f.municipio.id
                               || !!b.value.f.area.label    
-                              || !!b.value.f.condiciones.length 
-                              || !!b.value.f.entrega.length
+                              || !!b.value.f.condiciones.length                               
                               || !!b.value.f.valorMin
                               || !!b.value.f.valorMax                              
                               || !!b.value.f.usuario
                               || !!b.value.f.facturado.label
                             )
     tabs.value.alerts[1]  = (    !!b.value.f.conIva.label
+                              || !!b.value.f.entrega.length
                               || !!b.value.f.formaPago.length
                               || !!b.value.f.terceroInterno.label
                             )

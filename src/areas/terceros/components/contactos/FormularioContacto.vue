@@ -6,7 +6,7 @@
     :cargando                   ="cargando"
     >
     <template                   #barra>
-      <transition               enter-active-class="animated fadeInDown" leave-active-class="animated fadeOutDown" mode="out-in">
+      <TransitionGroup          enter-active-class="animated fadeInDown" leave-active-class="animated fadeOutDown" mode="out-in">
         <q-btn                  dark push dense glossy
           v-if                  ="!readonly"
           class                 ="desktop-only"
@@ -18,7 +18,7 @@
           :disable              ="btnDisable"
           @click                ="validar"
         />    
-      </transition>
+      </TransitionGroup>
       <q-btn                    flat round dense
         v-if                    ="readonly"
         color                   ="white"
@@ -69,7 +69,7 @@
         @blur                   ="vericarExisteEmpresa"
       />
       <!-- //* //////////////   Documento  -->
-      <input-number             solo-positivo 
+      <input-number
         v-if                    ="esTerceroCtz"
         v-model                 ="contacto.documento"
         label                   ="Documento"
@@ -220,7 +220,7 @@
         </q-btn>
       </div>
       <!-- //* //////////////   Botones Sumit  -->
-      <transition               enter-active-class="animated fadeInDown" leave-active-class="animated fadeOutDown">
+      <TransitionGroup          enter-active-class="animated fadeInDown" leave-active-class="animated fadeOutDown">
         <div
           class                 ="col-12 column mobile-only"
           v-show                ="!readonly"
@@ -233,7 +233,7 @@
             :label              ="tipo == 'ver' ? 'Guardar' : 'Crear'" 
           />
         </div>
-      </transition>
+      </TransitionGroup>
       <!-- //* ///////////////  Boton sumit -->
       <q-btn
         v-show                  ="false"
@@ -648,7 +648,7 @@
 
   async function verificarDocumentoExiste() :Promise< boolean >
   {
-    const doc = contacto.value.documento.toString()
+    const doc                     = contacto.value.documento.toString()
 
     if( !doc
         ||

@@ -1,11 +1,11 @@
 <template>
-  <Transition
+  <TransitionGroup
     mode                  ="out-in"
     :enter-active-class   ="'animated fadeIn'   + fxIn"
     :leave-active-class   ="'animated fadeOut'  + fxOut"
     >  
     <slot></slot>
-  </Transition>
+  </TransitionGroup>
 </template>
 <script lang="ts" setup>
   import { ref, toRefs, PropType, onMounted } from "vue"

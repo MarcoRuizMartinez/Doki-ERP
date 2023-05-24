@@ -6,7 +6,7 @@
     :menu-visible               ="!!tercero.ulrFoto"
     >
     <template                   #barra>
-      <transition               enter-active-class="animated fadeInDown" leave-active-class="animated fadeOutDown" mode="out-in">
+      <TransitionGroup          enter-active-class="animated fadeInDown" leave-active-class="animated fadeOutDown" mode="out-in">
         <q-btn                  dark push dense glossy
           v-if                  ="!readonly"
           class                 ="desktop-only"
@@ -34,7 +34,7 @@
             <Tooltip label      ="Ir a Dolibarr"/>
           </q-btn>
         </span>
-      </transition>
+      </TransitionGroup>
     </template>
     <template                   #menu
       v-if                      ="!!tercero.ulrFoto">
@@ -150,7 +150,7 @@
         />
       </div>
       <!-- //* //////////////   Código proveedor  -->
-      <transition               enter-active-class="animated fadeIn" leave-active-class="animated fadeOut" >
+      <TransitionGroup          enter-active-class="animated fadeIn" leave-active-class="animated fadeOut" >
         <input-text             clearable alerta uppercase AZ09 sin-espacios
           v-if                  ="tercero.esProveedor && !readonly"
           v-model               ="tercero.codigoProveedor"
@@ -160,7 +160,7 @@
           maxlength             ="4"
           :readonly             ="readonly"
         />
-      </transition>
+      </TransitionGroup>
       <!-- //* //////////////   Sujeto a IVA  -->
       <q-checkbox               
         v-if                    ="tercero.esCliente"
@@ -211,7 +211,7 @@
         />
       </div>
       <!-- //* //////////////   Botones Sumit  -->
-      <transition               enter-active-class="animated fadeInDown" leave-active-class="animated fadeOutDown">
+      <TransitionGroup          enter-active-class="animated fadeInDown" leave-active-class="animated fadeOutDown">
         <div
           class                 ="col-12 column mobile-only"
           v-show                ="!readonly"
@@ -223,7 +223,7 @@
             :label              ="tipo == 'ver' ? 'Guardar' : 'Crear'" 
           />
         </div>
-      </transition>
+      </TransitionGroup>
     </q-form>
     <!-- //* /////////////////  Carita triste -->
 <!--     <div v-else class           ="column justify-center items-center" >

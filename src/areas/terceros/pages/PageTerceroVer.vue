@@ -2,7 +2,7 @@
   <q-page                     padding
     class                     ="row justify-start items-start q-col-gutter-md"
     >
-    <transition               appear
+    <TransitionGroup          appear
       enter-active-class      ="animated fadeInDown"
       >
       <div class              ="col-md-6 col-12 row q-col-gutter-sm">
@@ -12,7 +12,7 @@
           :puede-editar       ="puedeModificar"
         />
       </div>
-    </transition>
+    </TransitionGroup>
     <div class                ="col-md-6 col-12 row q-col-gutter-sm">
       <contactos              minimizar
         v-if                  ="permisos.contactos_ver"

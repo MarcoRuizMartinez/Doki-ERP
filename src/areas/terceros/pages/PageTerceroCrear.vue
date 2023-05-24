@@ -2,13 +2,13 @@
   <q-page                     padding
     class                     ="row justify-between items-start q-col-gutter-xl"
     >
-    <transition               appear enter-active-class="animated fadeInDown" leave-active-class="animated fadeOutDown" mode="out-in">
+    <TransitionGroup          appear enter-active-class="animated fadeInDown" leave-active-class="animated fadeOutDown" mode="out-in">
       <formulario-tercero
         class                 ="col-md-7 col-12"
         :tipo                 ="tipo"
         @tercero-creado       ="( id : number ) => router.push('/tercero/' + id )" 
       />
-    </transition>
+    </TransitionGroup>
     <acordion-ayudas
       class                   ="col gt-sm"
     />

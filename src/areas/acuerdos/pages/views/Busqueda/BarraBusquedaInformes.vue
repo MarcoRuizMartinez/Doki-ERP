@@ -13,6 +13,14 @@
         titulo                  ="Búsqueda"
         class-conenido          ="column q-gutter-xs"
         >
+        <!-- //* ///////////////////////////////////////////////// Dimensión -->
+        <select-label-value     fc use-input hundido flat bordered
+          v-model               ="b.f.dimension"
+          label                 ="Dimensión"
+          icon                  ="mdi-axis-arrow"
+          class                 ="width160"
+          :options              ="Busqueda.listaDimensiones"
+        />
         <!-- //* ///////////////////////////////////////////////// Pedido facturado -->
         <select-label-value     use-input hundido flat bordered
           v-model               ="b.f.periodo"
@@ -20,13 +28,6 @@
           icon                  ="mdi-calendar"
           class                 ="width160"
           :options              ="Busqueda.listaPeriodos"
-        />
-        <!-- //* ///////////////////////////////////////////////// Busqueda general -->        
-        <input-buscar           clearable hundido
-          v-model               ="b.f.buscar"
-          label                 ="Búsqueda"
-          class                 ="width160"
-          icon                  ="mdi-account-search"
         />
       </fieldset-filtro>
       <!-- //* /////////////////////////////////////////////////// Fecha  -->
@@ -53,6 +54,15 @@
         titulo                  ="Estado"
         class-conenido          ="grilla-ribom"
         >
+        <!-- //* ///////////////////////////////////////////////// Busqueda general -->        
+        <!--
+        <input-buscar           clearable hundido
+          v-model               ="b.f.buscar"
+          label                 ="Búsqueda"
+          class                 ="width160"
+          icon                  ="mdi-account-search"
+        />
+        -->
         <!-- //* ///////////////////////////////////////////////// Estado acuerdo -->
         <multi-label-value
           v-model               ="b.f.estados"
@@ -85,6 +95,14 @@
           class                 ="width160"
           tooltip               ="Municipio tercero"
         />
+        <!-- //* ///////////////////////////////////////////////// Métodos de entrega -->
+        <multi-label-value
+          v-model               ="b.f.usuarios"
+          label                 ="Comerciales"
+          class                 ="width160"
+          icon                  ="mdi-account-multiple"
+          :options              ="b.o.usuarios"
+        />        
         <!-- //* ///////////////////////////////////////////////// Área o departamento -->
         <select-label-value     use-input hundido clearable flat bordered
           v-model               ="b.f.area"
@@ -122,16 +140,7 @@
           class                 ="width160"
           icon                  ="mdi-account-cash"
           :options              ="b.o.condicionesPago"
-        />        
-        <!-- //* ///////////////////////////////////////////////// Métodos de entrega -->
-        <multi-label-value
-          v-model               ="b.f.entrega"
-          label                 ="Entrega"
-          class                 ="width160"
-          icon                  ="mdi-truck-delivery"
-          :options              ="b.o.metodosEntrega"
         />
-
       </fieldset-filtro>
       <fieldset-filtro
         v-if                    ="!b.esEntrega"
@@ -169,8 +178,14 @@
         titulo                  ="Opciones"
         class-conenido          ="grilla-ribom"
         >
-
-
+        <!-- //* ///////////////////////////////////////////////// Métodos de entrega -->
+        <multi-label-value
+          v-model               ="b.f.entrega"
+          label                 ="Entrega"
+          class                 ="width160"
+          icon                  ="mdi-truck-delivery"
+          :options              ="b.o.metodosEntrega"
+        />
         <!-- //* ///////////////////////////////////////////////// Con IVA o sin IVA -->
         <select-label-value     use-input hundido clearable flat bordered
           v-if                  ="b.esCotizacion"
@@ -190,9 +205,6 @@
           icon                  ="mdi-cash-refund"
           :options              ="b.o.formasPago"
         />
-
-
-
         <!-- //* ///////////////////////////////////////////////// Tercero interno o externo -->
         <select-label-value     use-input hundido clearable flat bordered
           v-model               ="b.f.terceroInterno"
@@ -306,7 +318,8 @@
   }  
 
   const busquedaCompleta          = computed(()=> ( "fechaDesde"  in b.value.query &&
-                                                    "periodo"     in b.value.query
+                                                    "periodo"     in b.value.query &&
+                                                    "dimension"   in b.value.query
                                                   )
                                             )
 

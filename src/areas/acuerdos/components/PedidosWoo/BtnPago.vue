@@ -18,14 +18,14 @@
   import {  style             } from "src/useSimpleOk/useEstilos"
 
   const props               = defineProps({
-    modelValue: { required: true, type: Object as PropType< IPedidoWoo > },      
+    pedido: { required: true, type: Object as PropType< IPedidoWoo > },      
   })
 
   const emit                  = defineEmits<{
     (e: "click"): void
   }>()
 
-  const { modelValue : p }  = toRefs(props)
+  const { pedido : p }        = toRefs(props)
 
   function clickBtn()
   {

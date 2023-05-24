@@ -9,6 +9,7 @@ import {  INCENTIVO_ESTADO,
           INCENTIVO_ORIGEN,
           INCENTIVO_ESTADO_PAGO         } from "src/areas/nomina/models/Incentivo"
 import {  Anticipo                      } from "src/areas/acuerdos/models/Anticipo"
+import {  DIMENSIONES                   } from "src/areas/acuerdos/models/SerieAcuerdo"
 import {  Periodo, PERIODO              } from "src/models/TiposInformes"
 import {  Incentivo                     } from "src/areas/nomina//models/Incentivo"
 import {  estadosCtz, estadosPed,
@@ -18,6 +19,7 @@ import {  getUsuarioDB,
           getFormasPagoDB,
           getProveedoresDB,
           getMetodosEntregaDB,
+          getUsuariosByGrupoDB,
           getCondicionesPagoDB,
           getOrigenesContactoDB         } from "src/services/useDexie"
 import {  LocationQuery                 } from "vue-router"
@@ -33,11 +35,12 @@ export interface      IQuery {
   id                   ?: number
   acuerdo              ?: TTipoAcuerdo
   usuario              ?: string | number
+  usuarios             ?: string  // Array de IDs de usuarios 1_2_4
   creador              ?: string | number
   buscar               ?: string
   idTercero            ?: number
   contacto             ?: string
-  estados              ?: string
+  estados              ?: string  
   origenes             ?: string
   condiciones          ?: string
   formaPago            ?: string
@@ -86,10 +89,12 @@ export interface      IQuery {
 
   // * //////////////   Informes
   periodo              ?: Periodo
+  dimension            ?: string
 }
 
 interface               IOpciones {
   opcionesOk            : boolean
+  usuarios              : ILabelValue[]
   condicionesPago       : ILabelValue[]
   formasPago            : ILabelValue[]
   metodosEntrega        : ILabelValue[]
@@ -108,11 +113,12 @@ interface               ICampos {
   valorMax              : number | undefined
   estados               : ILabelValue[]
   origenes              : ILabelValue[]
+  usuarios              : ILabelValue[]
   condiciones           : ILabelValue[]
   formaPago             : ILabelValue[]
   entrega               : ILabelValue[]
   estadoAnticipo        : ILabelValue[]
-  tipoAnticipo          : ILabelValue[]
+  tipoAnticipo          : ILabelValue[]  
   area                  : ILabelValue
   facturado             : ILabelValue
   conIva                : ILabelValue
@@ -126,6 +132,7 @@ interface               ICampos {
   incRazon              : ILabelValue
   incOrigen             : ILabelValue  
   activo                : ILabelValue
+  dimension             : ILabelValue
   periodo               : ILabelValue  
   municipio             : IMunicipio
   municipioContacto     : IMunicipio
@@ -217,6 +224,7 @@ export class Busqueda implements IBusqueda
     this.copiaPagina      = 1
     this.o                = {
       opcionesOk          : false,
+      usuarios            : [],      
       condicionesPago     : [],
       formasPago          : [],
       metodosEntrega      : [],
@@ -234,11 +242,12 @@ export class Busqueda implements IBusqueda
       valorMax            : undefined,
       estados             : [],
       origenes            : [],
+      usuarios            : [],
       condiciones         : [],
       formaPago           : [],
       entrega             : [],
       estadoAnticipo      : [],
-      tipoAnticipo        : [],
+      tipoAnticipo        : [],      
       area                : labelValueNulo,
       facturado           : labelValueNulo,
       conIva              : labelValueNulo,
@@ -252,6 +261,7 @@ export class Busqueda implements IBusqueda
       incRazon            : labelValueNulo,
       incOrigen           : labelValueNulo,
       activo              : labelValueNulo,
+      dimension           : labelValueNulo,
       periodo             : labelValueNulo,
       municipio           : new Municipio(),
       municipioContacto   : new Municipio(),
@@ -269,11 +279,12 @@ export class Busqueda implements IBusqueda
       ancho               : undefined,
       fondo               : undefined,
     }   
-  }
+  } 
   
   async iniciarOpciones() : Promise<void>
   {
     this.o.opcionesOk                       = false
+    this.o.usuarios                         = await getUsuariosByGrupoDB("Comerci")
     this.o.origenes                         = await getOrigenesContactoDB()
     this.o.condicionesPago                  = await getCondicionesPagoDB()
     this.o.formasPago                       = await getFormasPagoDB()
@@ -310,7 +321,7 @@ export class Busqueda implements IBusqueda
 
     if(!!this.rourterQ .limite)
       this.f.resultadosXPage  = getQueryRouterNumber    ( this.rourterQ .limite       )
-    this.f.area               = getQueryRouterLabelValue( this.rourterQ .area,                  Areas                         )
+    this.f.area               = getQueryRouterLabelValue( this.rourterQ .area,                  Areas                         )    
     this.f.facturado          = getQueryRouterLabelValue( this.rourterQ .facturado,             Busqueda.listaFacturado       )
     this.f.incPago            = getQueryRouterLabelValue( this.rourterQ .incPago,               Incentivo.estadosPago         )
     this.f.incEstado          = getQueryRouterLabelValue( this.rourterQ .incEstado,             Incentivo.estados             )
@@ -322,12 +333,14 @@ export class Busqueda implements IBusqueda
     this.f.conOrdenes         = getQueryRouterLabelValue( this.rourterQ .conOrdenes,            Busqueda.listaOrdenesProv     )
     this.f.tipoTercero        = getQueryRouterLabelValue( this.rourterQ .tipoTercero,           Busqueda.listaTipoTercero     )
     this.f.activo             = getQueryRouterLabelValue( this.rourterQ .activo,                Busqueda.listaActivo          )
-    this.f.periodo            = getQueryRouterLabelValue( this.rourterQ .periodo,               Busqueda.listaPeriodos, "string")
+    this.f.dimension          = getQueryRouterLabelValue( this.rourterQ .dimension,             Busqueda.listaDimensiones,  "string")    
+    this.f.periodo            = getQueryRouterLabelValue( this.rourterQ .periodo,               Busqueda.listaPeriodos,     "string")
     this.f.estadoAnticipo     = getQueryRouterLabelValueArray ( this.rourterQ .estadoAnticipo,  Anticipo.estados              )
     this.f.tipoAnticipo       = getQueryRouterLabelValueArray ( this.rourterQ .tipoAnticipo,    Anticipo.tipos                )
     this.f.estados            = getQueryRouterLabelValueArray ( this.rourterQ .estados,         this.o.estados                )    
     this.f.formaPago          = getQueryRouterLabelValueArray ( this.rourterQ .formaPago,       this.o.formasPago             )
     this.f.entrega            = getQueryRouterLabelValueArray ( this.rourterQ .entrega,         this.o.metodosEntrega         )
+    this.f.usuarios           = getQueryRouterLabelValueArray ( this.rourterQ .usuarios,        this.o.usuarios               )
     this.f.condiciones        = getQueryRouterLabelValueArray ( this.rourterQ .condiciones,     this.o.condicionesPago        )
     this.f.origenes           = getQueryRouterLabelValueArray ( this.rourterQ .origenes,        this.o.origenes               )
 
@@ -493,11 +506,12 @@ export class Busqueda implements IBusqueda
     if(!!this.f.fondo)                  q.fondo             = this.f.fondo
     if(!!this.f.estados.length)         q.estados           = this.f.estados        .map( e => e.value ).join("_")
     if(!!this.f.origenes.length)        q.origenes          = this.f.origenes       .map( e => e.value ).join("_")
+    if(!!this.f.usuarios.length)        q.usuarios          = this.f.usuarios       .map( e => e.value ).join("_")
     if(!!this.f.condiciones.length)     q.condiciones       = this.f.condiciones    .map( e => e.value ).join("_")
     if(!!this.f.formaPago.length)       q.formaPago         = this.f.formaPago      .map( e => e.value ).join("_")
     if(!!this.f.entrega.length)         q.entrega           = this.f.entrega        .map( e => e.value ).join("_")
     if(!!this.f.estadoAnticipo.length)  q.estadoAnticipo    = this.f.estadoAnticipo .map( e => e.value ).join("_")
-    if(!!this.f.tipoAnticipo.length)    q.tipoAnticipo      = this.f.tipoAnticipo   .map( e => e.value ).join("_")
+    if(!!this.f.tipoAnticipo.length)    q.tipoAnticipo      = this.f.tipoAnticipo   .map( e => e.value ).join("_")    
     if(!!this.f.area.label)             q.area              = this.f.area.value
     if(!!this.f.facturado.label)        q.facturado         = this.f.facturado.value
     if(!!this.f.incPago.label)          q.incPago           = this.f.incPago.value
@@ -512,6 +526,7 @@ export class Busqueda implements IBusqueda
     if(!!this.f.conOrdenes.label)       q.conOrdenes        = this.f.conOrdenes.value
     if(!!this.f.tipoTercero.label)      q.tipoTercero       = this.f.tipoTercero.value
     if(!!this.f.activo.label)           q.activo            = this.f.activo.value
+    if(!!this.f.dimension.label)        q.dimension         = this.f.dimension.value
     if(!!this.f.periodo.label)          q.periodo           = this.f.periodo.value
     if(!!this.f.usuario && this.f.usuario.id  > 0 && !this.esOCProveedor )
       q.usuario                                             = this.f.usuario.id     
@@ -552,9 +567,17 @@ export class Busqueda implements IBusqueda
                                       {value: 2,      label: 'Cliente y Proveedor'      },
                                       {value: 3,      label: 'Ni cliente ni proveedor'  },
                                     ]
-  static listaPeriodos            = [ {value: PERIODO.SEMANA,     label: 'Semanal'    },
-                                      {value: PERIODO.MES,        label: 'Mensual'    },
-                                      {value: PERIODO.TRIMESTRE,  label: 'Trimestral' },
-                                      {value: PERIODO.AÑO,        label: 'Anual'      },
+  static listaPeriodos            = [ {value: PERIODO.SEMANA,     label: 'Semanal'      },
+                                      {value: PERIODO.MES,        label: 'Mensual'      },
+                                      {value: PERIODO.TRIMESTRE,  label: 'Trimestral'   },
+                                      {value: PERIODO.AÑO,        label: 'Anual'        },
                                     ]
+  static listaDimensiones         = [ {value: DIMENSIONES.ASESORES,     label: 'Comerciales'      },
+                                      {value: DIMENSIONES.ORIGEN,       label: 'Origen'           },
+                                      {value: DIMENSIONES.ESTADOS,      label: 'Estados'          },
+                                      {value: DIMENSIONES.NIVELES,      label: 'Nivel de precios' },
+                                      {value: DIMENSIONES.CONDICIONES,  label: 'Condiciones'      },
+                                      {value: DIMENSIONES.UNIDAD_N,     label: 'Área'             },
+                                      {value: DIMENSIONES.REGION,       label: 'Municipio'        },
+                                    ]                                    
 }

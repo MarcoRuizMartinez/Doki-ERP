@@ -1,33 +1,46 @@
 import {  ISerie,
           Serie,
-          Periodo,
-          PERIODO,
-          IApexSerie          } from "src/models/TiposInformes"
-import {  EstadosAcuerdos,
-          TIPO_ACUERDO        } from "src/areas/acuerdos/models/ConstantesAcuerdos"
-import {  IUsuario, Usuario   } from "src/areas/usuarios/models/Usuario"
+          PERIODO             } from "src/models/TiposInformes"
+import {  EstadosAcuerdos     } from "src/areas/acuerdos/models/ConstantesAcuerdos"
 import {  valuesObjectArrayToNumber,
           agregarZeroANumero1Digito
                               } from "src/useSimpleOk/useTools"
-import {  getUsuarioDB        } from "src/services/useDexie"
+import {  getUsuarioDB,
+          getMunicipioDB,
+          getOrigenContactoDB,
+          getCondicionDePagoDB,
+                              } from "src/services/useDexie"
+import {  IQuery              } from "src/models/Busqueda"  
+import {  getArea             } from "src/models/TiposVarios"
+
+export const enum DIMENSIONES { 
+  ASESORES            = "asesores",
+  ORIGEN              = "origenes",
+  NIVELES             = "niveles",
+  CONDICIONES         = "condiciones",
+  ESTADOS             = "estados",
+  REGION              = "ciudad",
+  UNIDAD_N            = "area",
+}
 
 export interface ISerieAcu extends ISerie
 {
   nombre              : string
-  comercial           : IUsuario
-  comercialId         : number
+  dimension           : DIMENSIONES | ""
   cuenta              : number
   total               : number
-  estadoId            : number
-  estado              : string
-  estadoColor         : string
   xSerie              : string
+
+  //* /////////////// Dimensiones
+
+  //comercial           : IUsuario
+  //origen              : IOrigenContacto
 }
 
 export class SerieAcu extends Serie implements ISerieAcu
 {
-  comercial           : IUsuario
-  comercialId         : number
+  nombre              : string
+  dimension           : DIMENSIONES | ""
   cuenta              : number  
   total               : number  
   estadoId            : number
@@ -36,16 +49,15 @@ export class SerieAcu extends Serie implements ISerieAcu
   {
     super()
 
-    this.comercial          = new Usuario()
-    this.comercialId        = 0
+    this.nombre             = ""
+    this.dimension          = ""
     this.cuenta             = 0
     this.total              = 0
     this.estadoId           = 0
+    this.color              = ""
   }
 
-  get nombre()      : string { return this.comercial.nombre }
-  get estado()      : string { return EstadosAcuerdos.estadoToName ( TIPO_ACUERDO.COTIZACION_CLI, this.estadoId ) }
-  get estadoColor() : string { return EstadosAcuerdos.estadoToColor( TIPO_ACUERDO.COTIZACION_CLI, this.estadoId ) }
+
   get xSerie()      : string {
     let x           = ""
     switch (this.periodo) {
@@ -59,9 +71,7 @@ export class SerieAcu extends Serie implements ISerieAcu
     return x
   }
 
-  
-
-  static async getSerieFromApi( data : any, periodo : Periodo ) : Promise <ISerieAcu[]>
+  static async getSerieFromApi( data : any, q : IQuery ) : Promise <ISerieAcu[]>
   {
     let seriesRaw           = []
     if(!!data && Array.isArray(data) && data.length > 0){
@@ -75,17 +85,46 @@ export class SerieAcu extends Serie implements ISerieAcu
     for (const serieRaw of seriesRaw)
     {
       const serie           = Object.assign( new SerieAcu(), serieRaw ) as ISerieAcu
-      serie.comercial       = await getUsuarioDB( serie.comercialId )
-      serie.color           = serie.comercial.color
-      serie.periodo         = periodo
+      const d               = parseInt( serie.dimension )
+      if(q.dimension        == DIMENSIONES.ASESORES){
+        const asesor        = await getUsuarioDB( d )
+        serie.nombre        = asesor.nombre
+        serie.color         = asesor.color
+      }
+      else
+      if(q.dimension        == DIMENSIONES.ESTADOS){
+        serie.nombre        = EstadosAcuerdos.estadoToName ( q.acuerdo, d )
+        serie.color         = EstadosAcuerdos.estadoToColor( q.acuerdo, d )
+      }      
+      else 
+      if(q.dimension        == DIMENSIONES.ORIGEN){
+        serie.nombre        = ( await getOrigenContactoDB( d ) ).label
+      }
+      else 
+      if(q.dimension        == DIMENSIONES.CONDICIONES){
+        serie.nombre        = ( await getCondicionDePagoDB( d ) ).label
+      }
+      if(q.dimension        == DIMENSIONES.REGION){
+        serie.nombre        = ( await getMunicipioDB( d ) ).municipio
+      }         
+      else 
+      if(q.dimension        == DIMENSIONES.UNIDAD_N){
+        serie.nombre        = getArea( d.toString() )
+      }
+      else 
+      if(q.dimension        == DIMENSIONES.NIVELES){
+        serie.nombre        = "Nivel " + serie.dimension
+      }
+      
+      serie.periodo         = q.periodo
       series.push( serie )
     }
 
-    //if(periodo              === PERIODO.SEMANA) corregirDiasSemana()
-
+    
     return series
-
-    function corregirDiasSemana()
+    
+    //if(periodo              === PERIODO.SEMANA) corregirDiasSemana()
+    /* function corregirDiasSemana()
     {
       const YMWs            = [ ...new Set(
                                   series.map((s) =>
@@ -115,6 +154,6 @@ export class SerieAcu extends Serie implements ISerieAcu
             s.dia           = menorDia
         }
       }
-    }
+    } */
   }
 }

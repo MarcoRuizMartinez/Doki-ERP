@@ -87,7 +87,7 @@
   // * /////////////////////////////////////////////////////////////////////// Componibles
   import {  useTitle            } from "@vueuse/core"
   import {  useControlInformes  } from "src/areas/acuerdos/controllers/ControlInformes"  
-  
+  import {  getDateToStr        } from "src/useSimpleOk/useTools"       
   // * /////////////////////////////////////////////////////////////////////// Modelos
   import {  IQuery, Busqueda    } from "src/models/Busqueda"  
   import {  ModosVentana        } from "src/models/TiposVarios"  
@@ -95,7 +95,7 @@
   import {  TTipoAcuerdo        } from "src/areas/acuerdos/models/ConstantesAcuerdos"
   import {  Periodo,
             PERIODO,
-            IApexSerie          } from "src/models/TiposInformes" 
+            IApexSerie          } from "src/models/TiposInformes"
   
   // * /////////////////////////////////////////////////////////////////////// Componentes
   import    ventana               from "components/utilidades/Ventana.vue"  
@@ -112,7 +112,7 @@
           busqueda,
           loading               } = storeToRefs( useStoreAcuerdo() )    
   const router                    = useRouter()
-  const { getSeriesTotales      } = useControlInformes()
+  const { getSeries             } = useControlInformes()
   
   const modo                      = ref< ModosVentana >("esperando-busqueda")   
   const cuentas                   = ref< IApexSerie [] >([])
@@ -131,15 +131,19 @@
     acuerdos.value                = []
     modo.value                    = "esperando-busqueda"
     await busqueda.value.montarBusqueda( usuario.value.id, router, usuario.value.esComercial, permisos.value.acceso_total, 10, tipo.value )
-    
+
+    if(!busqueda.value.f.desde)
+      busqueda.value.f.desde      = getDateToStr( `${new Date().getFullYear()}-01-01`, "UTC" )
     if(!busqueda.value.f.periodo.label)
       busqueda.value.f.periodo    = Busqueda.listaPeriodos[1]
+    if(!busqueda.value.f.dimension.label)
+      busqueda.value.f.dimension  = Busqueda.listaDimensiones[0]
   }
 
   onUnmounted(()=>{
     acuerdos.value                = []
     busqueda.value.desmontarBusqueda()
-  })  
+  })
 
   async function buscar( query : IQuery )
   {
@@ -148,10 +152,10 @@
     loading.value.carga           = true
     const { cuenta,
             total,
-            categorias : cat    } = await getSeriesTotales( query, "bar" )
+            ejeX                } = await getSeries( query )
     cuentas.value                 = cuenta
     totales.value                 = total
-    categorias.value              = cat
+    categorias.value              = ejeX
     loading.value.carga           = false
     modo.value                    = !!total.length ? "normal" : "sin-resultados"
   }

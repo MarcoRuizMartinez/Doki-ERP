@@ -82,7 +82,7 @@ export const Areas = [
 { label: "Mublex", value: AREA.MUBLEX   }
 ]
 
-export function getArea( area : AREA ) : string
+export function getArea( area : string ) : string
 {
   return    area === AREA.ESCOM   ? "Escom"
           : area === AREA.MUBLEX  ? "Mublex"

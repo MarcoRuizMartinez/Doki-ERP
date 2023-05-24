@@ -135,15 +135,11 @@ export function nuevoJS()
 {
   let cosa = 0
   cosa  ||= 1 // Si x es falsy, se le asigna y
-  //console.log('%c⧭', 'color: #40fff2', "||=", cosa);
   cosa  &&= 2 // Si x es truthy, se le asigna y
-  //console.log('%c⧭', 'color: #5200cc', "&&=", cosa);
   cosa  ??= 3 // Si x es null o undefined, se le asigna y
-  //console.log('%c⧭', 'color: #f27999', "??=", cosa);
 
 // Equivale
   var importe : number = 1_283_792_189;
-  //console.log('%c⧭', 'color: #607339', "importe", importe);
 }
 
 export function pausa( demora = 0 ) : Promise< any >
@@ -453,7 +449,6 @@ export function getQueryRouterLabelValue
   const valor         = tipoKey === "number" ? parseInt(valorRaw) : valorRaw
   const itemTem       = lista.find( i => i.value == valor || i.id == valor )
   const estadoFinal   = itemTem !== undefined ? itemTem : labelValueNulo
-  //console.log('lista: ', valor, itemTem, lista, estadoFinal);
   return estadoFinal
 }
 
@@ -471,18 +466,13 @@ export function getQueryRouterLabelValueArray
   if( Array.isArray(paramQuery) || paramQuery === undefined )
     return []
 
-  //console.log("aca estoy ")
   const valorRaw      = paramQuery as string
   const arrayRaw      = valorRaw.split(separador)
-  //console.log("arrayRaw: ", arrayRaw);
-  //console.log("lista: ", lista);
   const arrayFinal    = lista.filter( item => arrayRaw.some( valor => valor == item.value )  )
-  //console.log("arrayFinal: ", arrayFinal);
 
   //const valor         = tipoKey === "number" ? arrayRaw.forEach( i => i = +i ) : valorRaw
   //const itemTem       = lista.find( i => i.value == valor || i.id == valor )
   //const estadoFinal   = itemTem !== undefined ? itemTem : labelValueNulo
-  //console.log('lista: ', valor, itemTem, lista, estadoFinal);
   return arrayFinal
 }
 
@@ -611,4 +601,43 @@ export function diferenciaFechas( fechaOld : number, fechaNew : number ) : strin
     }
 
     return diferencia + " " + unidad
+}
+
+export function numberRandom( base : number ) : number 
+{
+  return Math.floor( Math.random() * base )
+}
+
+export function colorRandom( modo : "lista" | "random" ) : string 
+{
+  let color             = ""
+  if(modo               === "random"){
+    const randomColor   = Math.floor(Math.random()*16777215).toString(16)
+    color               = "#" + randomColor
+  }
+  else
+  {
+    const listaColores = [
+      "#00509d",
+      "#8ac926",
+      "#FF8000",
+      "#8d0801",
+      "#095921",
+      "#C19706",
+      "#373094",
+      "#0d1b2a",
+      "#2b9348",
+      "#fdc500",
+      "#ef476f",
+      "#5f0f40",
+      "#9E70C5",
+      "#2a9d8f",
+      "#8D00C4",
+      "#E763AB",
+    ]
+    const i = numberRandom( listaColores.length )
+    color   = listaColores[ i ]
+  }
+  
+  return color
 }

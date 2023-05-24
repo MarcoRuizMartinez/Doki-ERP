@@ -1,5 +1,5 @@
 <template>
-  <transition
+  <TransitionGroup
     appear
     enter-active-class="animated fadeInUp"
     leave-active-class="animated fadeOutDown"
@@ -13,7 +13,7 @@
       <Tooltip
         label     ="Sin conexión"/>
     </q-icon>
-  </transition>
+  </TransitionGroup>
 </template>
 <script setup lang="ts">
   import {    computed            } from 'vue'

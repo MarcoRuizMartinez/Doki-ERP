@@ -48,7 +48,7 @@
               <template #prepend><q-icon name="mdi-onepassword" /></template>
             </q-input>
             <div class            ="row justify-center q-mt-none">
-              <transition
+              <TransitionGroup
                 appear
                 enter-active-class="animated fadeInUp"
                 leave-active-class="animated fadeOutDown"
@@ -61,7 +61,7 @@
                   class           ="q-mr-md">
                   <Tooltip label  ="Sin conexión"/>
                 </q-icon>                  
-              </transition>   
+              </TransitionGroup>   
               <q-btn
                 v-bind            ="style.btnBaseMd"
                 label             ="Entrar"

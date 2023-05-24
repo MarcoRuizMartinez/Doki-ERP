@@ -1,10 +1,10 @@
 <template>
   <div class          ="row fuente-mono width180">
     <btn-productos
-      v-model         ="modelValue"
+      :pedido         ="modelValue"
     />
     <btn-pagos
-      v-model         ="modelValue"
+      :pedido         ="modelValue"
       @click          ="emit('vistaPago', modelValue)"
     />
     <!-- //* //////// Vista Rapida -->
