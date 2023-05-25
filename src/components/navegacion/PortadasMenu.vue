@@ -1,40 +1,31 @@
 <template>
-  <div  class           ="row q-col-gutter-lg">
-    <div                
-      v-for             ="enlace in enlaces"
-      :key              ="enlace.ref"
-      class             ="col-4 box"
+  <div  class             ="row q-col-gutter-lg fit">
+    <div
+      v-for               ="enlace in enlaces"
+      :key                ="enlace.ref"
+      class               ="col-3"
       >
-      <div              v-ripple
-        class           ="bg-white q-pa-md radius-6 shadow-4 panel-blur-70">
-        <span class     ="text-bold fuente-delicada">
-          {{ enlace.question }}
-        </span>
-      </div>      
-    </div>    
+      <item-menu  :enlace ="enlace"/>
+    </div>
   </div>
 </template>
 <script setup lang="ts">
-//:to               ="enlace.array_options.options_url"
-// item-stretch content-start justify-start 
   import {  ref,
-            toRefs,
             onMounted,
             PropType              } from "vue"
   import {  useApiDolibarr        } from "src/services/useApiDolibarr"      
-  ////////////////////////////////////////////////////////////////////////// Store
-  //import {  storeToRefs         } from 'pinia'
-  //import {  useStoreUser        } from 'src/stores/user'
+  import {  sortArray             } from "src/useSimpleOk/useTools"  
+  import {  IItemMenu, ItemMenu   } from "src/models/ItemMenu"
+  import    itemMenu                from "components/navegacion/PortadasMenuItem.vue"
 
-  //const { usuario           } = storeToRefs( useStoreUser() )
+
   const { apiDolibarr       } = useApiDolibarr()
-  const enlaces               = ref<any[]>([])
+  const enlaces               = ref<IItemMenu[]>([])
 
-  const props                 = defineProps({      
-    palabra: { required: true,  type: String  },
+  const { palabras }          = defineProps({      
+    palabras: { required: true,  type: Array as PropType< string[] > },
   })
 
-  const { palabra }          = toRefs( props )
 
   onMounted( cargarEnlaces )
 
@@ -45,7 +36,13 @@
     {
       if(Array.isArray(data))
       {
-        enlaces.value         = data.filter( i => i.question.includes( palabra.value ) )
+        for (const itemMenu of data)
+        {
+          const item    = new ItemMenu( itemMenu )
+          enlaces.value.push( item )
+        }
+        enlaces.value   = enlaces.value.filter( e => palabras.some( p => e.titulo.includes( p ) ) )
+        enlaces.value   = sortArray( enlaces.value, 'orden', "<")
       }
     }
   }

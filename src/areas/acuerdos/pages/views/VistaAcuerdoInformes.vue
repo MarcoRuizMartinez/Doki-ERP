@@ -19,52 +19,68 @@
         >
       </barra-busqueda>
     </template>
-    <apex-chart
-      tipo                      ="line"
-      :titulo                   ="`Cuenta ${sufijoNombreGrafico}`"
-      :series                   ="cuentas"
-      :periodo                  ="periodo"
-      :categorias               ="categorias"
-    />
-    <apex-chart
-      tipo                      ="bar"
-      :titulo                   ="`Cuenta ${sufijoNombreGrafico}`"
-      :series                   ="cuentas"
-      :periodo                  ="periodo"
-      :categorias               ="categorias"
-    />
-    <apex-chart
-      tipo                      ="bar100%"
-      formato                   ="porcentaje"
-      :titulo                   ="`Cuenta ${sufijoNombreGrafico}`"
-      :series                   ="cuentas"
-      :periodo                  ="periodo"
-      :categorias               ="categorias"
-    />
-    <apex-chart
-      tipo                      ="line"
-      formato                   ="precio"
-      :titulo                   ="`Valor ${sufijoNombreGrafico}`"
-      :series                   ="totales"
-      :periodo                  ="periodo"
-      :categorias               ="categorias"
-    />
-    <apex-chart
-      tipo                      ="bar"
-      formato                   ="precio"
-      :titulo                   ="`Valor ${sufijoNombreGrafico}`"
-      :series                   ="totales"
-      :periodo                  ="periodo"
-      :categorias               ="categorias"
-    />
-    <apex-chart
-      tipo                      ="bar100%"
-      formato                   ="porcentaje"
-      :titulo                   ="`Valor ${sufijoNombreGrafico}`"
-      :series                   ="totales"
-      :periodo                  ="periodo"
-      :categorias               ="categorias"
-    />
+    <div class                  ="width400 q-ma-md">
+      <q-btn-toggle             spread push unelevated round no-caps
+        v-model                 ="modelBtn"
+        color                   ="white"
+        text-color              ="grey-8"
+        toggle-color            ="primary"
+        :options="[
+          {label: 'Numero de '      + Acuerdo.getTipoAcuerdoPlural(tipo), value: 'cantidad'},
+          {label: 'Subtotales de '  + Acuerdo.getTipoAcuerdoPlural(tipo), value: 'subtotal'}
+        ]"
+      />
+    </div>
+    <div v-show                 ="modelBtn == 'cantidad'">
+      <apex-chart
+        tipo                    ="line"
+        :titulo                 ="`Cuenta ${sufijoNombreGrafico}`"
+        :series                 ="cuentas"
+        :periodo                ="periodo"
+        :categorias             ="categorias"
+      />
+      <apex-chart
+        tipo                    ="bar"
+        :titulo                 ="`Cuenta ${sufijoNombreGrafico}`"
+        :series                 ="cuentas"
+        :periodo                ="periodo"
+        :categorias             ="categorias"
+      />
+      <apex-chart
+        tipo                    ="bar100%"
+        formato                 ="porcentaje"
+        :titulo                 ="`Cuenta ${sufijoNombreGrafico}`"
+        :series                 ="cuentas"
+        :periodo                ="periodo"
+        :categorias             ="categorias"
+      />
+    </div>
+    <div v-show                 ="modelBtn == 'subtotal'">
+      <apex-chart
+        tipo                    ="line"
+        formato                 ="precio"
+        :titulo                 ="`Valor ${sufijoNombreGrafico}`"
+        :series                 ="totales"
+        :periodo                ="periodo"
+        :categorias             ="categorias"
+      />
+      <apex-chart
+        tipo                    ="bar"
+        formato                 ="precio"
+        :titulo                 ="`Valor ${sufijoNombreGrafico}`"
+        :series                 ="totales"
+        :periodo                ="periodo"
+        :categorias             ="categorias"
+      />
+      <apex-chart
+        tipo                    ="bar100%"
+        formato                 ="porcentaje"
+        :titulo                 ="`Valor ${sufijoNombreGrafico}`"
+        :series                 ="totales"
+        :periodo                ="periodo"
+        :categorias             ="categorias"
+      />
+    </div>
   </ventana>
 </template>
   
@@ -118,6 +134,7 @@
   const cuentas                   = ref< IApexSerie [] >([])
   const totales                   = ref< IApexSerie [] >([])
   const categorias                = ref< string     [] >([])
+  const modelBtn                  = ref< string        >("cantidad")
   const periodo                   = ref< Periodo >( PERIODO.SEMANA )
 
   watch(tipo, iniciar)

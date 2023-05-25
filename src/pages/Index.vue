@@ -17,9 +17,9 @@
       height-card         ="260px"
       size-icon-carga     ="12em"
       />
-    <modulo-enlaces
+    <!-- <modulo-enlaces
       class               ="col-md-4 col-12"
-    />
+    /> -->
     <template v-if        ="storeUser.usuario.esDev">
       <modulo-usuarios            class="col-md-4 col-12" height-card="260px"/>      
       <modulo-bodegas             class="col-md-4 col-12" height-card="260px"/>
@@ -49,7 +49,7 @@
   import    misTerceros               from "src/areas/terceros/components/modules/ModuloMisTerceros.vue"
   import {  useTitle                } from "@vueuse/core"
 
-  import    moduloEnlaces             from "src/areas/sistemas/components/ModuloLinks.vue"
+  //import    moduloEnlaces             from "src/areas/sistemas/components/ModuloLinks.vue"
   import    moduloUsuarios            from "src/areas/sistemas/components/ModuloUsuarios.vue"
   import    moduloProveedores         from "src/areas/sistemas/components/ModuloProveedores.vue"
   import    moduloMunicipios          from "src/areas/sistemas/components/ModuloMunicipios.vue"

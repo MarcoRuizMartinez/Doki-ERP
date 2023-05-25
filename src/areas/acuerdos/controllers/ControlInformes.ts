@@ -50,7 +50,7 @@ export function useControlInformes()
     {
       let nombre            = ""
       for (let i = 0; i < cuenta.length; i++)
-      {        
+      {
         if(!!cuenta[i].color) continue
 
         nombre              = cuenta[i].name
@@ -157,9 +157,6 @@ export function useControlInformes()
       return listaSeries
     }
     
-
-    
-    
     function getSerieMapeada() : IApexSerie[] { return categorias.map( mapApexSerie ) }
     function mapApexSerie( categoria : string ) : IApexSerie
     {
@@ -186,7 +183,7 @@ export function useControlInformes()
 
       return serie
     } 
-  }  
+  }
 
 
   

@@ -417,7 +417,7 @@ export const formatoNumeroCorto = ( valor : string | number, formato : FormatosN
   }
 
   label                 =   formato === "precio"      ? `$${label}`
-                          : formato === "porcentaje"  ? `${label}%`
+                          : formato === "porcentaje" && largo <= 3 ? `${label}%`
                           : label
 
   return label

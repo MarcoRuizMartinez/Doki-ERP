@@ -116,7 +116,7 @@ export function useMenu()
                           }),
         },
         { ...new ItemMenu({
-                            label:      "Informes",
+                            label:      "Informes cotizaciones",
                             icon:       "mdi-chart-areaspline",
                             to:         "/cotizaciones/cliente/informes",
                             visible:    permisos.value.terceros_ver
@@ -181,7 +181,7 @@ export function useMenu()
                           }),
         }, */
         { ...new ItemMenu({
-                            label:      "Informes",
+                            label:      "Informes pedidos",
                             icon:       "mdi-chart-areaspline",
                             to:         "/pedidos/cliente/informes",
                             visible:    permisos.value.terceros_ver

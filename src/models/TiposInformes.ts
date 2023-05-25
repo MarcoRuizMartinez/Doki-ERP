@@ -93,7 +93,7 @@ export class Serie implements ISerie
 
     return 1
   } */
-}  
+}
 
 export function estiloApexChartLine( nombre : string, categorias : string[], formato : FormatosNumero ) : any
 {

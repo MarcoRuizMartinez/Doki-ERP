@@ -3,11 +3,13 @@
     class                 ="row item-stretch content-start justify-start q-col-gutter-lg">
     <titulo
       label               ="Logística"
-      color               ="#524B87"
+      color               ="#800080"
       img                 ="iconoEntrega.webp"
       icono               ="mdi-truck-fast"
     />
-    <menu-enlaces />
+    <menu-enlaces
+      :palabras           ="['edidos', 'arantias', 'guías', 'envíos']"
+    />
   </q-page>
 </template>
 

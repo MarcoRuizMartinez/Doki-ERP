@@ -3,11 +3,12 @@
     class                 ="row item-stretch content-start justify-start q-col-gutter-lg">
     <titulo
       label               ="Gestión Comercial"
-      color               ="#114000"
+      color               ="#0080FF"
       img                 ="iconoCotizacion.webp"
       icono               ="mdi-account-supervisor-circle-outline"
     />
-    <menu-enlaces palabra =""
+    <menu-enlaces
+      :palabras           ="['omision', 'Anticipos', 'facturar', 'Niveles']"
     />
   </q-page>
 </template>
@@ -18,16 +19,3 @@
   import    menuEnlaces               from "components/navegacion/PortadasMenu.vue"
   useTitle("🧑🏽‍💻 Comercial")
 </script>
-A facturar
-Anticipos a verificar
-Comisiones Johana
-Comisiones Ximena
-Comisiones Luisa
-Comisiones Valentina
-Comisiones Gilberto
-
-Pedidos Mublex sin OC a proveedor
-Pedidos Escom sin OC a proveedor
-Pedidos solicitando autorización
-Pedidos Mublex Pendientes
-Pedidos Escom pendientes
