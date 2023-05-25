@@ -19,7 +19,7 @@
       v-if                ="acuerdo.esEstadoNoValidado" 
       v-model             ="grupo.titulo"
       v-slot              ="scope"
-      class               ="row panel-blur70 q-col-gutter-xs"
+      class               ="row panel-blur-70 q-col-gutter-xs"
       max-width           ="320px"
       :persistent         ="loading.editarGrupo"
       @update:model-value ="(titulo : string)=> editarTituloGrupo(titulo, grupo)"
@@ -72,7 +72,7 @@
           icon            ="mdi-trash-can-outline"
           >
           <q-menu         transition-show="jump-down" transition-hide="jump-up"
-            class         ="panel-blur70" auto-close
+            class         ="panel-blur-70" auto-close
             >
             <div class    ="column q-ma-md gap-md">
               <!-- //* ///////////////////////////////////// Boton borrar mantener productos -->

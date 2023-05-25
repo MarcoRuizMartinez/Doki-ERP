@@ -22,22 +22,20 @@
     <template           #right>
       <div  class       ="column items-center q-pt-sm q-pl-sm">
         <q-icon
-          name          ="mdi-truck-check"
           size          ="4em"
+          :name         ="icono"
         />
       </div>
     </template>
   </titulo>
 </template>
 <script setup lang="ts">
-  import {  servicesAcuerdos      } from "src/areas/acuerdos/controllers/servicesAcuerdos"
-  import {  useTools              } from "src/useSimpleOk/useTools"
   import    titulo                  from "components/utilidades/Titulo.vue"
   
   const props                 = defineProps({      
     label:  { required: true,  type: String  },
     color:  { required: true,  type: String  },
-    img:    { required: true,  type: String  },    
+    img:    { required: true,  type: String  },
+    icono:  { required: true,  type: String  },
   })
-
 </script>

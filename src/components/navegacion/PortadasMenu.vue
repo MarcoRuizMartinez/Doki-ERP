@@ -1,17 +1,26 @@
 <template>
-  <div  class           ="row item-stretch content-start justify-start q-col-gutter-lg">
-    <div                v-ripple
+  <div  class           ="row q-col-gutter-lg">
+    <div                
       v-for             ="enlace in enlaces"
       :key              ="enlace.ref"
-      class             ="col-3 box bg-white q-pa-md"
+      class             ="col-4 box"
       >
-      <span>{{ enlace.question }}</span>
+      <div              v-ripple
+        class           ="bg-white q-pa-md radius-6 shadow-4 panel-blur-70">
+        <span class     ="text-bold fuente-delicada">
+          {{ enlace.question }}
+        </span>
+      </div>      
     </div>    
   </div>
 </template>
 <script setup lang="ts">
 //:to               ="enlace.array_options.options_url"
-  import {  ref, onMounted          } from "vue"
+// item-stretch content-start justify-start 
+  import {  ref,
+            toRefs,
+            onMounted,
+            PropType              } from "vue"
   import {  useApiDolibarr        } from "src/services/useApiDolibarr"      
   ////////////////////////////////////////////////////////////////////////// Store
   //import {  storeToRefs         } from 'pinia'
@@ -21,18 +30,23 @@
   const { apiDolibarr       } = useApiDolibarr()
   const enlaces               = ref<any[]>([])
 
-  onMounted(cargarEnlaces)
+  const props                 = defineProps({      
+    palabra: { required: true,  type: String  },
+  })
 
-  async function cargarEnlaces(){
+  const { palabra }          = toRefs( props )
+
+  onMounted( cargarEnlaces )
+
+  async function cargarEnlaces()
+  {
     const { ok, data }        = await apiDolibarr( "buscar", "saber" )
-    if(ok){
+    if(ok)
+    {
       if(Array.isArray(data))
-        enlaces.value = data
+      {
+        enlaces.value         = data.filter( i => i.question.includes( palabra.value ) )
+      }
     }
   }
 </script>
-<style>
-.box{
-
-}
-</style>

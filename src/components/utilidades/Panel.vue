@@ -1,5 +1,5 @@
 <template>
-  <div class  ="column panel-blur70 full-width text-center radius8 q-pa-md">
+  <div class  ="column panel-blur-70 full-width text-center radius-8 q-pa-md">
     <div
       v-if    ="!!titulo"
       class   ="q-mb-sm"

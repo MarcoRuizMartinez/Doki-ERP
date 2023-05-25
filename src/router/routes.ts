@@ -31,6 +31,18 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/PageSinPermisos.vue'),
         props: true
       },
+      //* ////////////////////////////////////////////////////////////////// Portada Logistica
+      {
+        path:       'comercial',
+        name:       'comercial',
+        component:  () => import('src/pages/PagePortadaComercial.vue'),
+      },
+      //* ////////////////////////////////////////////////////////////////// Portada Logistica
+      {
+        path:       'logistica',
+        name:       'logistica',
+        component:  () => import('src/pages/PagePortadaLogistica.vue'),
+      },      
       {
         path: 'politicas',
         name: 'politicas',
@@ -167,12 +179,6 @@ const routes: RouteRecordRaw[] = [
     component:      () => import('layouts/LayoutPrincipal.vue'),
     children:
     [
-      //* ////////////////////////////////////////////////////////////////// Pedido cliente Buscar 
-      {
-        path:       '',
-        name:       'portadaLogistica',
-        component:  () => import('src/areas/logistica/pages/PagePortadaLogistica.vue'),
-      },      
       //* ////////////////////////////////////////////////////////////////// Pedido cliente Buscar 
       {
         path:       'cliente',

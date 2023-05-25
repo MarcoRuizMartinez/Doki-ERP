@@ -96,7 +96,7 @@
           >
           <q-menu
             v-bind            ="menuDefault"
-            class             ="column transparent panel-blur70 " 
+            class             ="column transparent panel-blur-70 " 
             >
             <q-btn
               v-if            ="!!labelBtnPDFDefault"

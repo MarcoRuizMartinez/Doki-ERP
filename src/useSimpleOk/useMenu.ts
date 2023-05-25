@@ -83,7 +83,7 @@ export function useMenu()
       ]
     },
     {
-      ...new ItemMenu({ label: "Comercial", icon: "mdi-rocket-launch", to: "/cotizaciones" }),
+      ...new ItemMenu({ label: "Comercial", icon: "mdi-rocket-launch", to: "/comercial" }),
       submenu:
       [
         { ...new ItemMenu({
@@ -142,7 +142,7 @@ export function useMenu()
       ]
     },
     {
-      ...new ItemMenu({ label: "Logistica", icon: "mdi-truck-fast", to: "/pedidos" }),
+      ...new ItemMenu({ label: "Logistica", icon: "mdi-truck-fast", to: "/logistica" }),
       submenu:
       [
         { ...new ItemMenu({

@@ -60,7 +60,7 @@
           <q-popup-edit     auto-save fit
             v-model         ="acuerdo.titulo"
             v-slot          ="scope"
-            class           ="row panel-blur70 q-col-gutter-xs"
+            class           ="row panel-blur-70 q-col-gutter-xs"
             max-width       ="500px"
             @update:model-value ="editarTitulo"
             >
