@@ -6,7 +6,8 @@
     :cargando                   ="cargando"
     >
     <template                   #barra>
-      <TransitionGroup          enter-active-class="animated fadeInDown" leave-active-class="animated fadeOutDown" mode="out-in">
+      <!-- mode="out-in" -->
+      <TransitionGroup          enter-active-class="animated fadeInDown" leave-active-class="animated fadeOutDown">
         <q-btn                  dark push dense glossy
           v-if                  ="!readonly"
           class                 ="desktop-only"

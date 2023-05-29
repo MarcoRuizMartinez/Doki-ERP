@@ -52,8 +52,15 @@ export function useControlIncentivos()
                                                 )
     loadAcu.value.incentivo     = false
     loading.value.carga         = false
+
     if(ok){
-      return comoArray ? Incentivo.getIncentivosToApi( data ) : Incentivo.getIncentivoToApi( data )
+      const esIncoherente       = tipo =="unico" && Array.isArray(data)
+      if(esIncoherente){
+        aviso( "negative", "Se estan recibiendo varios registros de incentivos cuando no debería" )
+        return Incentivo.getIncentivoToApi( data[0] )
+      }
+      else
+        return comoArray ? Incentivo.getIncentivosToApi( data ) : Incentivo.getIncentivoToApi( data )
     }
 
     return []

@@ -1,9 +1,10 @@
 <template>
+  <!-- mode                  ="out-in" -->
   <TransitionGroup
-    mode                  ="out-in"
+    
     :enter-active-class   ="'animated fadeIn'   + fxIn"
     :leave-active-class   ="'animated fadeOut'  + fxOut"
-    >  
+    >
     <slot></slot>
   </TransitionGroup>
 </template>

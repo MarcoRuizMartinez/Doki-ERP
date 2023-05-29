@@ -37,7 +37,8 @@
       />
     </div>
     <!-- //* ///////////////////////////////////////////////////////////// Valores AIUs -->
-    <TransitionGroup        enter-active-class="animated fadeInDown" leave-active-class="animated fadeOutDown" mode="out-in">
+    <!-- mode="out-in" -->
+    <TransitionGroup        enter-active-class="animated fadeInDown" leave-active-class="animated fadeOutDown" >
       <div
         v-if                ="acuerdo.aiuOn"
         class               ="col-12 row q-col-gutter-sm"

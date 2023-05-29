@@ -42,10 +42,10 @@
             v-if                  ="showAprobar"
             v-bind                ="style.btnBaseMd"
             color                 ="primary"
-            :label                ="!acuerdo.incentivo.id ? 'Aprobar' : acuerdo.incentivo.estadoLabel"
+            :label                ="!acuerdo.incentivo.id ? 'Aprobar'           : acuerdo.incentivo.estadoLabel"
             :icon                 ="!acuerdo.incentivo.id ? 'mdi-account-check' : undefined"
             :loading              ="loading.incentivo"
-            @click                ="modales.incentivo = true"
+            @click                ="()=>{ if(!acuerdo.incentivo.id) modales.incentivo = true }"
           />
         </div>
       </div>
@@ -212,7 +212,6 @@
       columnas.value.splice(2, 0,  Columna.ColumnaPrecio ({ name: "costo" }) )
       columnas.value.splice(3, 0,  Columna.ColumnaPrecio ({ name: "utilidad" }) )
       columnas.value.splice(4, 0,  Columna.ColumnaX100 ({ name: "aumentoFromCosto", label: "Aumento", decimales: 1 }) )
-      
     }
 
     columnas.value.forEach( c=> c.sortable = false )
