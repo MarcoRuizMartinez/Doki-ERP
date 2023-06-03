@@ -19,11 +19,11 @@
         icon                    ="mdi-truck-fast"
         :disable                ="!acuerdo.puedeCrearNuevoGrupo"
         @click                  ="emit('clickNuevaEntrega')"
-      />
+      /> 
       <q-btn                    round dense flat
         icon                    ="mdi-refresh"
         class                   ="op60 op100-hover"
-        @click                  ="buscarAcuerdoEnlazados( true )"
+        @click                  ="buscarAcuerdoEnlazados()"
         >
         <Tooltip label          ="Recargar entregas"/>
       </q-btn>   

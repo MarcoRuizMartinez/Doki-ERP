@@ -139,6 +139,7 @@ export interface ILoading {
   proyecto        ?: boolean
   enlaces         ?: boolean
   incentivo       ?: boolean
+  calificacion    ?: boolean
 }
 
 export const LoadingDefault = {
@@ -178,6 +179,7 @@ export const LoadingDefault = {
   proyecto        : false,
   enlaces         : false,
   incentivo       : false,
+  calificacion    : false,
 }
 
 

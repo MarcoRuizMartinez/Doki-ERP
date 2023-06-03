@@ -49,19 +49,20 @@ import {  TTipoAcuerdo,
 import {  IAnticipo                         } from "./Anticipo"
 import {  IRetenciones,     Retenciones     } from "./Retenciones"
 import {  IProyecto,        Proyecto        } from "src/areas/proyectos/models/Proyecto"
-import {  ILineaAcuerdo,    LineaAcuerdo    } from "src/areas/acuerdos/models/LineaAcuerdo"
 import {  ITercero,         Tercero         } from "src/areas/terceros/models/Tercero"
 import {  IUsuario,         Usuario         } from "src/areas/usuarios/models/Usuario"
 import {  IContacto,        Contacto        } from "src/areas/terceros/models/Contacto"
-import {  IGrupoLineas,     GrupoLineas     } from "src/areas/acuerdos/models/GrupoLineasAcuerdo"
-import {  IComision,        Comision        } from "src/areas/acuerdos/models/Comisiones/Comision"
+import {  ILineaAcuerdo,    LineaAcuerdo    } from "./LineaAcuerdo"
+import {  IGrupoLineas,     GrupoLineas     } from "./GrupoLineasAcuerdo"
+import {  IComision,        Comision        } from "./Comisiones/Comision"
+import {  IEnlaceAcuerdo,   EnlaceAcuerdo   } from "./EnlaceAcuerdo"
+import {  ICalificacion,    Calificacion    } from "./Calificacion"
+import {  IIncentivo,       Incentivo       } from "src/areas/nomina/models/Incentivo"
 import {  ICondicionPago,   CondicionPago   } from "src/models/Diccionarios/CondicionPago"
 import {  IFormaPago,       FormaPago       } from "src/models/Diccionarios/FormaPago"
 import {  IMetodoEntrega,   MetodoEntrega   } from "src/models/Diccionarios/MetodoEntrega"
 import {  IOrigenContacto,  OrigenContacto  } from "src/models/Diccionarios/OrigenContacto"
 import {  ITiempoEntrega,   TiempoEntrega   } from "src/models/Diccionarios/TiempoEntrega"
-import {  IEnlaceAcuerdo,   EnlaceAcuerdo   } from "src/areas/acuerdos/models/EnlaceAcuerdo"
-import {  IIncentivo,       Incentivo       } from "src/areas/nomina/models/Incentivo"
 import {  IArchivo                          } from "src/models/Archivo"
 import {  X100,
           fechaCorta,
@@ -86,6 +87,7 @@ export interface IAcuerdo
   modulo:                     TModulosDolibarr
   anticipos:                  IAnticipo[]
   archivos:                   IArchivo[]
+  archivosVisor:              IArchivo[]
   esCotizacion:               boolean
   esPedido:                   boolean
   esOCProveedor:              boolean
@@ -127,6 +129,7 @@ export interface IAcuerdo
   usuarioEsDueño:             boolean
   creadorId:                  number
   comision:                   IComision
+  calificacion:               ICalificacion
 
   creador:                    IUsuario
 
@@ -254,7 +257,7 @@ export class Acuerdo implements IAcuerdo
   terceroId:                  number
   tercero:                    ITercero
   anticipos:                  IAnticipo[]
-  archivos:                   IArchivo[]
+  archivos:                   IArchivo[]  
   enlaces:                    IEnlaceAcuerdo[]
   fechaCreacion:              Date
   fechaValidacion:            Date
@@ -270,6 +273,7 @@ export class Acuerdo implements IAcuerdo
   comercial2Id:               number
   comercial2:                 IUsuario
   comision:                   IComision
+  calificacion:               ICalificacion
   condicionPagoId:            number
   formaPagoId:                number
   metodoEntregaId:            number
@@ -331,6 +335,7 @@ export class Acuerdo implements IAcuerdo
     this.comercial2Id         = 0
     this.comercial2           = new Usuario()
     this.comision             = new Comision()
+    this.calificacion         = new Calificacion( tipo == TIPO_ACUERDO.PEDIDO_CLI ? 2 : 1 )
     this.creadorId            = 0
     this.creador              = new Usuario()
     this.estado               = ESTADO_ACU.NO_GUARDADO
@@ -780,6 +785,9 @@ https://dolibarr.mublex.com/fichinter/card.php?
                               : this.tercero.correo
     return correo
   }
+
+
+  get archivosVisor() : IArchivo[] { return this.archivos.filter( f => f.esVisualizable ) }
 
   get pdfCiudad() :string {
     let correo              =   this.esTerceroCtz   || this.tercero.esEmpresa

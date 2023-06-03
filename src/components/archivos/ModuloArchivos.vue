@@ -77,31 +77,13 @@
               <Tooltip    :label="'Borrar archivo ' + props.row.name"/>
             </q-btn>            
             <!-- //* /////////  Lupa ver PDF  -->
-            <q-btn              flat dense round
-              v-if              ="props.row.esVisualizable"
-              icon              ="mdi-magnify-plus"
-              class             ="op40 op100-hover"
-              padding           ="none"
-              size              ="md"
-              @click            ="verArchivo( props.row )"
-            />  
+            <btn-visualizar     
+              :archivo          ="props.row"
+            />
           </q-td>
         </q-tr>
       </template>
     </q-table>
-    <!-- //* /////////////////  Visor PDF  -->
-    <visor-pdf                  en-base-64
-      v-model:src               ="srcPDF"
-      v-model:visible           ="ventanaPDF"
-      :nombre-pdf               ="fileNameSelect"
-    />
-    <visor-imagen               en-base-64
-      v-model:src               ="imagenAver.src"
-      v-model:visible           ="ventanaImagen"
-      :ratio                    ="''"
-      :titulo                   ="imagenAver.titulo"
-      :fileType                 ="imagenAver.fileType"
-    />
     <template                   #barra>
       <q-btn                    round dense flat
         icon                    ="mdi-refresh"
@@ -145,23 +127,16 @@
   import {  IArchivo,
             Archivo         } from "src/models/Archivo"
   import    ventana           from "components/utilidades/Ventana.vue"
-  import    visorPdf          from "components/utilidades/VisorPDF.vue"  
-  import    visorImagen       from "components/utilidades/VisorImagen.vue"
   import    subirArchivo      from "./SubirArchivo.vue"
   import    tooltipDocumento  from "./TooltipArchivo.vue"
+  import    btnVisualizar     from "./BtnVisualzarArchivo.vue"
   import    confirmar         from "components/utilidades/MenuConfirmar.vue"
 
   const { apiDolibarr       } = useApiDolibarr()
   const { aviso             } = useTools()
   const modo                  = ref< ModosVentana >("buscando")
   const archivos              = ref< IArchivo[] >([])
-  const fileNameSelect        = ref< string     >( "" )
-  const ventanaPDF            = ref< boolean    >(false)
-  const ventanaImagen         = ref< boolean    >(false)
-  const srcPDF                = ref< string     >("")
-  type  TImagenAver           = { src : string, titulo: string, fileType: string }
-  const imagenAver            = ref< TImagenAver >( { titulo: "", src: "", fileType: "" } )
-  
+
   const props                 = defineProps({
     modulo:       { required: true,   type: String as PropType < TModulosDolibarr > },
     moduloId:     { required: true,   type: Number                                  },
@@ -180,8 +155,7 @@
           puedeEditar
                             } = toRefs( props )
   let puedeSubir              = true//modulo.value === "thirdparty" || !puedeEditar.value ? false : true //computed(()=>{ modulo.value === "thirdparty" })
-  const urlDolibarr           = process.env.URL_DOLIBARR
-
+  
   const columnas: IColumna[]  = [
     new Columna({ name: "name",     label: "Archivo"  }),
     new Columna({ name: "tipo",     label: "."        })
@@ -227,31 +201,6 @@
       let descarga            = data as any
       DownloadFile_B64( descarga.content, archivo.name,  descarga["content-type"] )
       aviso("positive", "Archivo descargado", "file")
-    }
-    else
-      aviso("negative", "Error descargando el archivo", "file")
-  }
-
-
-  async function verArchivo( archivo : IArchivo )
-  {
-    fileNameSelect.value      = archivo.name
-    archivo.loading           = true
-
-    let { data, ok }          = await apiDolibarr( "descargar", "documento", archivo.endPoint )
-    archivo.loading           = false
-
-    if(ok){
-      let descarga            = data as any
-      if(archivo.tipo         === "PDF"){        
-        srcPDF.value          = descarga.content
-        ventanaPDF.value      = true
-      }
-      else
-      if(archivo.tipo         === "Imagen"){
-        imagenAver.value      = { titulo: archivo.name, src: descarga.content, fileType: archivo.fileType }
-        ventanaImagen.value   = true
-      }
     }
     else
       aviso("negative", "Error descargando el archivo", "file")

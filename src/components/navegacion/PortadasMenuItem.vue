@@ -29,15 +29,18 @@
   </router-link>
 </template>
 <script setup lang="ts">
-  import {  computed,
+  import {  toRefs,
+            computed,
             PropType  } from "vue"
   import {  IItemMenu } from "src/models/ItemMenu"  
   
-  const { enlace }                = defineProps({      
+  const props           = defineProps({      
     enlace: { required: true,  type: Object as PropType< IItemMenu > },
   })
 
-  const color = computed(()=> enlace.color )
+  const { enlace }      = toRefs( props )
+
+  const color = computed(()=> enlace.value.color )
 
 </script>
 <style>

@@ -14,6 +14,7 @@ import {  useFetch              } from "src/useSimpleOk/useFetch"
 import {  getURL, getFormData   } from "src/services/APIMaco"
 import {  useTools,
           ID_URL_Ok,
+          anyToNum,
           confeti               } from "src/useSimpleOk/useTools"
 import {  dexieReglaComision    } from "src/services/useDexie"
 
@@ -33,14 +34,15 @@ import {  LineaAcuerdo          } from "src/areas/acuerdos/models/LineaAcuerdo"
 import {  IMetodoEntrega        } from "src/models/Diccionarios/MetodoEntrega"
 import {  ITiempoEntrega        } from "src/models/Diccionarios/TiempoEntrega"
 import {  IProyecto, Proyecto   } from "src/areas/proyectos/models/Proyecto"
-import {  IAcuerdo, Acuerdo     } from "src/areas/acuerdos/models/Acuerdo"  
-import {  IEnlaceAcuerdo,
-          EnlaceAcuerdo         } from "src/areas/acuerdos/models/EnlaceAcuerdo"
+import {  Acuerdo               } from "src/areas/acuerdos/models/Acuerdo"  
+import {  EnlaceAcuerdo         } from "src/areas/acuerdos/models/EnlaceAcuerdo"
+import {  Calificacion          } from "src/areas/acuerdos/models/Calificacion"
 import {  IContacto,
           Contacto,
           TTipoContacto,
           TIPOS_CONTACTO
                                 } from "src/areas/terceros/models/Contacto"
+import { parse } from 'path'
 
 
 export function useControlAcuerdo()
@@ -131,6 +133,8 @@ export function useControlAcuerdo()
       await buscarTerceroDolibarr ( acuerdo.value.terceroId   )
       await buscarProyecto        ( acuerdo.value.proyectoId  )
       await buscarAcuerdoEnlazados()
+      if( acuerdo.value.esCotizacion || acuerdo.value.esPedido )
+        buscarCalificacion() 
       if( acuerdo.value.comisiona )
         acuerdo.value.incentivo = await buscarIncentivos( { origenId: acuerdo.value.id, incOrigen: INCENTIVO_ORIGEN.PEDIDO_CLI } ) as IIncentivo
     }
@@ -140,9 +144,47 @@ export function useControlAcuerdo()
       router.push("/error")
     }
 
-    loading.value.carga         = false
+    loading.value.carga           = false
   }
 
+  //* ////////////////////////////////////////////////////////////////////// Buscar Calificacion
+  async function buscarCalificacion() 
+  {
+    const objeto                  = { id: acuerdo.value.id, acuerdo: acuerdo.value.calificacion.tipo }
+    const { ok, data }            = await miFetch( getURL("listas", "varios"), { method: "POST", body: getFormData( "calificacion", objeto ) }, { mensaje: "buscar calificación" } )
+    if(ok){
+      if( Array.isArray( data ) )
+        aviso("negative", `Error. Estan llegando multiples calificaciones`)
+      else
+        acuerdo.value.calificacion= await Calificacion.convertirDataApiToCalificacion( data )
+    }
+  }
+
+  //* ////////////////////////////////////////////////////////////////////// Editar o Crear calificacion
+  async function editarCrearCalificacion( idUser : number )
+  {
+    const nuevaCal              = !acuerdo.value.calificacion.id
+    loading.value.calificacion  = true
+
+    const calApi                = acuerdo.value.calificacion.dataForApi
+          calApi.acuerdo_id     = acuerdo.value.id
+          calApi.editor         = idUser
+
+    const objetoForData         = { body: getFormData("calificacion", calApi), method: "POST" }
+    const { ok, data  }         = await miFetch( getURL("servicios", "varios"), objetoForData, { mensaje: "actualizar calificación" } )        
+    
+    if(ok){
+      if(nuevaCal){
+        const id : number             = anyToNum( data )
+        acuerdo.value.calificacion.id = id 
+        if(!id) aviso("negative", `Error al crear calificación`)
+      }
+    }
+    else
+      aviso("negative", `Error al actualizar calificación`)
+
+    loading.value.calificacion  = false
+  }  
 
   //* ////////////////////////////////////////////////////////////////////// Buscar tercero
   async function buscarTerceroDolibarr( id_ : number )
@@ -178,7 +220,6 @@ export function useControlAcuerdo()
     
     if(ok && typeof data === "object" && Array.isArray( data ))
     {
-      //console.log("Data Api", data[0]);
       acuerdo.value.entregas  = await Acuerdo.convertirDataApiToEntregas( data )
     }
   }
@@ -344,13 +385,11 @@ export function useControlAcuerdo()
   async function asignarReglaComision( comercial : IUsuario )
   {
     if(!reglasComision.value.length){
-      console.warn("Error asignando regla de comisión. No hay reglas.")
       return
     }
 
     const i       = reglasComision.value.findIndex( r => r.id == comercial.reglaComisionId )
     if(i          === -1){
-      console.warn("Error asignando regla de comisión. Regla no encontrada.")
       return 
     }
     comercial.comision = reglasComision.value[i]
@@ -543,6 +582,7 @@ export function useControlAcuerdo()
   }
 
 
+
   //* ////////////////////////////////////////////////////////////////////// Eliminar acuerdo
   async function eliminarAcuerdo()
   {
@@ -680,8 +720,6 @@ export function useControlAcuerdo()
       const {ok}                = await apiDolibarr("editar-linea", acuerdo.value.tipo, lineaAPI, acuerdo.value.id )
       if (!ok){
         const error             = "Error al cambiar el IVA del producto"
-        console.trace()
-        console.error(error)
         aviso("negative", error)
         todoOk                  = false
       }
@@ -752,6 +790,8 @@ export function useControlAcuerdo()
       acuerdo.value.enlaces = EnlaceAcuerdo.enlacesApiToEnlaces( data, acuerdo.value.tipo )
   }  
 
+
+
   //* /////////////////////////////////////////////////////////////// Editar metodo de entrega
   async function actualizarPreciosAcuerdo( soloCosto : 0 | 1 )
   {
@@ -818,6 +858,7 @@ export function useControlAcuerdo()
     editarDatosEntregaSistemaViejo,
     buscarAcuerdoEnlazados,
     actualizarPreciosAcuerdo,
-    setListoEntregar
+    setListoEntregar,
+    editarCrearCalificacion
   }
 }

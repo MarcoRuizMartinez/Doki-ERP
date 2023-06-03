@@ -5,7 +5,7 @@
         {{titulo}}:
       </template>
     </td>
-    <td :class="[ $attrs.class, classLabel ]" :style="[ $attrs.style, styleLabel ]">
+    <td :class="[ $attrs.class, classLabel ]" :style="[ $attrs.style as string, styleLabel ]">
       <campo-copiar
         v-if    ="copiar"
         :dato   ="label"

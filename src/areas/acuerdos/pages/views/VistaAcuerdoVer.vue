@@ -67,12 +67,16 @@
   <lineas
     class                   ="col-12"
   />
-  <entregas
+  <!-- <entregas
     v-if                    ="acuerdo.esPedido && !acuerdo.esEstadoBoceto"
     class                   ="col-8"
     @click-nueva-entrega    ="clickNuevaEntrega"
     @click-remision         ="abrirModalRemision"
-  />
+  /> -->
+  <calificacion
+    v-if                    ="acuerdo.esEstadoValido && ( acuerdo.esPedido || acuerdo.esCotizacion )"
+    class                   ="col-md-4 col-12"
+  />    
   <!-- //* /////////////////  Visor PDF  -->
   <visor-pdf                descargar
     v-model:src             ="srcPDF"
@@ -132,17 +136,18 @@
   import {  pausa                 } from "src/useSimpleOk/useTools"
   //* ///////////////////////////////////////////////////////////////////////////////// Componentes
   import    visorPdf                from "components/utilidades/VisorPDF.vue"
-  import    notas                   from "src/areas/acuerdos/components/Modulos/ModuloNotas.vue"
-  import    titulo                  from "src/areas/acuerdos/components/Modulos/ModuloTitulo.vue"
-  import    totales                 from "src/areas/acuerdos/components/Modulos/ModuloTotales.vue"
-  import    botonera                from "src/areas/acuerdos/components/Modulos/ModuloBotonera.vue"
-  import    terceroYContacto        from "src/areas/acuerdos/components/Modulos/ModuloTercero.vue"
-  import    condiciones             from "src/areas/acuerdos/components/Modulos/ModuloCondiciones.vue"
-  import    lineas                  from "src/areas/acuerdos/components/Modulos/ModuloLineas.vue"
-  import    enlaces                 from "src/areas/acuerdos/components/Modulos/ModuloEnlaces.vue"
-  import    contactos               from "src/areas/acuerdos/components/Modulos/ModuloContactos.vue"
-  import    entregas                from "src/areas/acuerdos/components/Modulos/ModuloEntregas.vue"
-  import    anticipos               from "src/areas/acuerdos/components/Modulos/ModuloAnticipos.vue"
+  import    notas                   from "./../../components/Modulos/ModuloNotas.vue"
+  import    titulo                  from "./../../components/Modulos/ModuloTitulo.vue"
+  import    totales                 from "./../../components/Modulos/ModuloTotales.vue"
+  import    botonera                from "./../../components/Modulos/ModuloBotonera.vue"
+  import    terceroYContacto        from "./../../components/Modulos/ModuloTercero.vue"
+  import    condiciones             from "./../../components/Modulos/ModuloCondiciones.vue"
+  import    lineas                  from "./../../components/Modulos/ModuloLineas.vue"
+  import    enlaces                 from "./../../components/Modulos/ModuloEnlaces.vue"
+  import    contactos               from "./../../components/Modulos/ModuloContactos.vue"
+  import    entregas                from "./../../components/Modulos/ModuloEntregas.vue"
+  import    calificacion            from "./../../components/Modulos/ModuloCalificacion.vue"
+  import    anticipos               from "./../../components/Modulos/ModuloAnticipos.vue"
   //import    nuevaEntrega          from ".././Modals/NuevaEntregaSelectBodega.vue"
   import    remision                from "src/areas/acuerdos/components/PDF/RemisionPDF.vue"
   import    documentos              from "components/archivos/ModuloArchivos.vue"
@@ -194,8 +199,7 @@
     await buscarAcuerdo( tipo.value, id.value )
   }
 
-  async function clickAprobarCotizacion()
-  {
+  async function clickAprobarCotizacion(){
     await aprobarCotizacion()
     await buscarAcuerdoEnlazados( /* true */ )
   }
@@ -217,7 +221,7 @@
 
     function getIdBodegaByArea( area : AREA ) : number
     {
-      const idBodega  = bodegas.value.find( b => b.padre_id == 0 && b.area == area )?.id ?? 0
+      const idBodega= bodegas.value.find( b => b.padre_id == 0 && b.area == area )?.id ?? 0
       return idBodega
     }
   }
@@ -236,8 +240,6 @@
     if(acuerdo.value.esEntrega){
       abrirModalRemision( acuerdo.value )
     }
-
-    
   }
 
 

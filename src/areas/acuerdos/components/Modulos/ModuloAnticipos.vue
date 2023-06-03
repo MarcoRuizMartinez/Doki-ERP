@@ -186,7 +186,6 @@
 
     for (const pago of acuerdo.value.anticipos)
     {
-      pago.fileInterno      = new Archivo()
       pago.fileInterno      = new Archivo()      
       if(!!pago.filenameInterno){
         const fileInterno       = acuerdo.value.archivos.find( ( a : IArchivo ) => a.name === pago.filenameInterno )

@@ -11,6 +11,7 @@
 </template>
 <script setup lang="ts">
   import {  ref,
+            toRefs,
             onMounted,
             PropType              } from "vue"
   import {  useApiDolibarr        } from "src/services/useApiDolibarr"      
@@ -22,10 +23,11 @@
   const { apiDolibarr       } = useApiDolibarr()
   const enlaces               = ref<IItemMenu[]>([])
 
-  const { palabras }          = defineProps({      
+  const props                 = defineProps({      
     palabras: { required: true,  type: Array as PropType< string[] > },
   })
 
+  const { palabras }          = toRefs( props )
 
   onMounted( cargarEnlaces )
 
@@ -41,7 +43,7 @@
           const item    = new ItemMenu( itemMenu )
           enlaces.value.push( item )
         }
-        enlaces.value   = enlaces.value.filter( e => palabras.some( p => e.titulo.includes( p ) ) )
+        enlaces.value   = enlaces.value.filter( e => palabras.value.some( p => e.titulo.includes( p ) ) )
         enlaces.value   = sortArray( enlaces.value, 'orden', "<")
       }
     }
