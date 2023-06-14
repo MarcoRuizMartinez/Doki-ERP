@@ -1,0 +1,56 @@
+/*
+ Theme Name:   Woodmart Child
+ Description:  Woodmart Child Theme
+ Author:       XTemos
+ Author URI:   http://xtemos.com
+ Template:     woodmart
+ Version:      1.0.0
+ Text Domain:  woodmart
+*/
+
+/* html {
+  margin-top: 0px !important;
+} */
+
+/* 
+@import url('https://fonts.googleapis.com/css2?family=Raleway&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lato&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Hind&display=swap');
+ */
+/*
+@import url("menu.css");
+@import url("contenido.css");
+@import url("francisco.css");
+@import url("francisco-media.css");
+*/
+
+.cabe {
+  background-color: blueviolet;
+  display: flex;
+  align-content: center;
+  justify-content: space-evenly;
+  align-items: center;  
+  text-align: center;
+}
+
+.cabe > div {
+  background-color: rgb(71, 182, 44);  
+  display: flex;
+  align-content: center;
+  justify-content: space-evenly;
+  align-items: center;    
+}
+
+.telefonos_cabezote_fr :nth-child(2){
+  flex-direction: column;
+}
+
+.naran{
+  color: #ff7f00;
+}
+.gris{
+  color: #999;
+}
+

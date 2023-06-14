@@ -1,0 +1,1089 @@
+@media (max-width:479px)
+
+{
+
+/*   .whb-general-header .whb-mobile-right .wd-header-html {
+
+    display: none;
+
+  } */
+
+/*   .whb-sticked .whb-general-header .container {
+
+    height: 70px;
+
+  } */
+
+/*   .whb-header {
+
+    z-index: 1!important; position: relative!important;
+
+  } */
+
+/*   .page .main-page-wrapper {
+
+    z-index: 0; position: relative;
+
+  } */
+
+/*   .whb-sticked .whb-color-dark:not(.whb-with-bg) {
+
+    height: 70px;
+
+  } */
+
+/*   .whb-scroll-stick.whb-sticked .whb-flex-row {
+
+    height: 70px;
+
+  } */
+
+/*   .whb-sticked .wd-logo img {
+
+    max-height: 48px;
+
+    padding-top:0px;
+
+    padding-bottom:0px;
+
+  } */
+
+/*   .whb-sticked .whb-main-header .wd-tools-element > a {
+
+    height: 38px;
+
+    margin-right: 11px;
+
+    width: 38px;
+
+  } */
+
+/*   .whb-sticked .whb-general-header .container {
+
+    background: #fff;
+
+  } */
+
+  .no_max_479 {
+
+    display:none;
+
+  }
+
+  /*----------top bar inicio------------*/
+
+  .botones_movil_arriba { 
+
+    height:40px;
+
+    margin:1px;
+
+  }
+
+  .botones_movil_arriba img {
+
+    width:24px; height:24px; margin-top:2px;
+
+  }
+
+  .botones_movil_arriba a {
+
+    background: linear-gradient(to bottom,  #727272 0%,#494949 100%);
+
+    width: 33%;
+
+    height: 40px;
+
+    display: block;
+
+    text-align: center;
+
+    float: left;
+
+    padding-top: 4px;
+
+    border: 1px solid #B6B5B5;
+
+    outline: 1px solid #363434;
+
+  }
+
+/*   .whb-top-bar .container { 
+
+    padding-right: 0px;
+
+  } */
+
+/*   .whb-top-bar .wd-header-html { 
+
+    margin-right: 8px; 
+
+    padding-right: 0px;
+
+  } */
+
+/*   .joinchat__box {
+
+    width: auto;
+
+  }
+
+  .scrollToTop {
+
+    bottom: 24px!important; left: 36px!important;
+
+  }
+
+  .joinchat__button {
+
+    right: 30px !important;
+
+  } */
+
+}
+
+
+
+@media (min-width:480px) {
+
+  .no_min_480 {
+
+    display:none;
+
+  }
+
+}
+
+
+
+@media (min-width:480px) and (max-width:767px)
+
+{
+
+/*   .whb-sticked .whb-main-header {
+
+    position: absolute!important;
+
+  }
+
+  .scrollToTop {
+
+    bottom: 24px!important;
+
+    left: 46px !important;
+
+  }
+
+  .joinchat__button {
+
+    right: 40px !important;
+
+  } */
+
+}
+
+
+
+@media (min-width:480px) and (max-width:768px)
+
+{
+
+  .whb-general-header .container {
+
+    background: url(https://www.escoming.com/wp-content/uploads/background_header_desktop_768_fr.webp) top left no-repeat;
+
+  }
+
+}
+
+
+
+@media (max-width:529px)
+
+{
+
+  .no_max_529 {
+
+    display:none;
+
+  }
+
+}
+
+
+
+@media (max-width:552px)
+
+{
+
+  .boton_cabezote_movil_telefono {
+
+    display:none;
+
+  }
+
+}
+
+
+
+@media (max-width:679px)
+
+{
+
+/*   .whb-general-header	.wd-search-form {
+
+    display:none;
+
+  } */
+
+}
+
+
+
+@media (min-width:680px)
+
+{
+
+/*   [class*="wd-header-search-form"] {
+
+    padding-left: 45px!important;
+
+  } */
+
+}
+
+
+
+@media (max-width:767px)
+
+{
+
+/*   .whb-general-header {
+
+    background-image: none!important; 
+
+  }
+
+  .whb-main-header .whb-mobile-center {
+
+    display: none;
+
+  } */
+
+}
+
+
+
+@media (min-width:768px)
+
+{
+
+  .direccion_y_correo_cabezote_fr {
+
+    height: 100px;
+
+    /* float: left; */
+
+    display: inline-flex; 
+
+  }
+
+
+
+  .direccion_y_correo_cabezote_fr a {
+
+    color: #FF7F00; 
+
+  }
+
+
+
+  .direccion_y_correo_cabezote_fr a:hover {
+
+    color: #141414;
+
+  }
+
+/*  .whb-sticked .whb-general-header .container { 
+
+     height: 70px;
+
+  }
+
+  .whb-header {
+
+    z-index: 1 !important; 
+
+    position: relative !important;
+
+  }
+
+  .page .main-page-wrapper {
+
+    z-index: 0;
+
+    position: relative;
+
+  }
+
+  .whb-sticked .whb-color-dark:not(.whb-with-bg) {
+
+    box-shadow: 0px 0px 50px rgba(0,0,0,0.5);
+
+    height: 70px;
+
+  }
+
+  .whb-scroll-stick.whb-sticked .whb-flex-row {
+
+    height: 70px;
+
+  }
+
+  .whb-sticked .wd-logo img {
+
+    max-height: 48px;
+
+    padding-top:0px;
+
+    padding-bottom:0px;
+
+  }
+
+  .whb-sticked .whb-main-header .wd-tools-element > a {
+
+    height: 38px;
+
+    margin-right: 11px;
+
+    width: 38px;
+
+  }
+
+  .whb-sticked .whb-general-header .container {
+
+    background: #fff;
+
+  }
+
+  .whb-sticked .site-logo {
+
+    width: 190px;
+
+  }
+
+  .whb-sticked .searchform, 
+
+  .whb-sticked .searchform.wd-style-with-bg input[type="text"], 
+
+  .whb-sticked [class*="wd-header-search-form"]  {
+
+    height: 36px; margin-top:-1px;
+
+  }
+
+  .whb-sticked .whb-main-header .searchsubmit {
+
+    border: none;
+
+    height: 34px;
+
+    margin-top: 1px;
+
+  }
+
+  .whb-sticked .searchform.wd-style-with-bg .searchsubmit {
+
+    width: 44px;
+
+  }
+
+  .whb-sticked .searchform .searchsubmit::after, .whb-sticked .searchform .searchsubmit img {
+
+    font-size: 16px;
+
+    font-weight:bold;
+
+  }
+
+  .whb-sticked .botones_cabezote_movil img {
+
+    width: 54px; 
+
+    height: 54px; 
+
+    margin-right: 0px;
+
+  }
+
+  .whb-sticked .botones_cabezote_movil { 
+
+    height: 70px; 
+
+    min-width: 70px; 
+
+    padding-top:11px;
+
+  }
+
+  .whb-sticked .whb-general-header .whb-mobile-right .wd-header-html { 
+
+    height: 70px; 
+
+    padding-top: 0px;
+
+  }
+
+  .joinchat__button { 
+
+    right: 50px !important; 
+
+    bottom:10px!important;
+
+  } */
+
+}
+
+
+
+@media (min-width:768px) and (max-width:899px)
+
+{
+
+/*   .whb-sticked .whb-main-header .wd-tools-element > a { margin-left: 19px;
+
+  }  
+
+  .whb-sticked [class*="wd-header-search-form"] { padding-left: 35px !important; padding-right: 35px !important;
+
+  }
+
+  }
+
+  @media (min-width:768px) and (max-width:1024px) {
+
+  .wd-toolbar { display: none!important;
+
+  }
+
+  .scrollToTop { bottom: 40px!important; left: 56px!important;
+
+  } */
+
+}
+
+
+
+
+
+@media (min-width:769px) 
+
+{
+
+  .whb-general-header .container { 
+
+    background: url(https://www.escoming.com/wp-content/uploads/background_header_desktop_fr.webp) top left no-repeat;
+
+  }
+
+}
+
+
+
+@media (max-width:799px) 
+
+{
+
+  .no_max_799 { 
+
+    display:none;
+
+  }
+
+}
+
+
+
+@media (min-width:900px) and (max-width:1023px) 
+
+{
+
+/*   .whb-sticked [class*="wd-header-search-form"] { 
+
+    padding-left: 50px !important; 
+
+    padding-right: 50px !important;
+
+  } */
+
+}
+
+
+
+@media (min-width:900px) and (max-width:1024px)
+
+{
+
+/*   .whb-sticked .whb-main-header .wd-tools-element > a { 
+
+    margin-left: 34px;
+
+  } */
+
+}
+
+
+
+@media (max-width:999px)
+
+{
+
+  .no_max_999 { 
+
+    display:none;
+
+  }
+
+}
+
+
+
+@media (max-width:1023px)
+
+{
+
+  .no_max_1023 {
+
+    display:none;
+
+  }
+
+}
+
+
+
+@media (min-width:1024px)
+
+{
+
+/*   .whb-sticked .whb-top-bar {
+
+    display:none;
+
+  } */
+
+  .direccion_y_correo_cabezote_fr p {
+
+    margin-top: 35px;
+
+  }
+
+}
+
+
+
+@media (min-width:1024px) and (max-width:1024px)
+
+{
+
+/*   .whb-sticked .direccion_y_correo_cabezote_fr {
+
+    height:70px;
+
+  }
+
+  .whb-sticked .direccion_y_correo_cabezote_fr p {
+
+    margin-top: 19px;
+
+  }
+
+  .whb-sticked [class*="wd-header-search-form"] {
+
+    padding-left: 35px !important; 
+
+    padding-right: 35px !important;
+
+  } */
+
+}
+
+
+
+@media (max-width:1024px)
+
+{
+
+  .page-title-default {
+
+    box-shadow: 0px 30px 30px -30px rgb(0, 0, 0, .8) inset,0px -30px 30px -30px rgb(0, 0, 0) inset !important;
+
+    border-top: 1px solid #fff; 
+
+    border-bottom: 1px solid #fff; 
+
+    z-index: 390;
+
+    position: relative;
+
+  }
+
+/*   .whb-general-header .whb-col-right {
+
+    display:none;
+
+  }
+
+  .whb-general-header .whb-mobile-left { 
+
+    flex:0!important; 
+
+    width: 250px;
+
+  }	
+
+  .whb-general-header .whb-mobile-right .wd-header-html { 
+
+    padding-right: 0px; 
+
+    padding-left: 0px; 
+
+    height: 100px;
+
+    margin-right: 11px;
+
+    padding-top: 22px;
+
+    width: max-content;
+
+  }
+
+  .whb-sticked .whb-general-header { 
+
+    display:inherit!important; 
+
+    position:fixed!important;
+
+  }
+
+  .wd-side-hidden.wd-opened { 
+
+    z-index: 900;
+
+  }
+
+  .whb-sticked .whb-general-header { 
+
+    width: 100%;
+
+  }
+
+  .whb-top-bar .wd-header-html {  
+
+    width: 100%;
+
+  } */
+
+/*   .top_bar_left_fr { 
+
+    width: max-content; 
+
+  }
+
+  .top_bar_right_actualidad_fr, .top_bar_right_nosotros_fr, .top_bar_right_preguntas_fr { 
+
+    width: max-content;
+
+  } */
+
+  .redes_actualidad_nosotros_preguntas { 
+
+    display: flex; 
+
+    float: right;
+
+  }
+
+/*   .whb-top-bar .wd-header-divider { 
+
+    margin-left: 12px; 
+
+    margin-right: 12px; 
+
+    background: #505050 !important;
+
+  } */
+
+  .no_max_1024 { 
+
+    display:none;  
+
+  }
+
+/*   .whb-header {
+
+    padding-top: 143px !important;  
+
+  }
+
+  .wd-toolbar { 
+
+    display: none!important;
+
+  } */
+
+  .direccion_y_correo_cabezote_fr { 
+
+    font-size: 13px; 
+
+    line-height: 15px; 
+
+    color: #141414; 
+
+    font-weight: bold; 
+
+    width: max-content; 
+
+    margin-right: 35px;
+
+  }
+
+/*   .whb-general-header .wd-header-html { 
+
+    padding-left:0px; 
+
+    padding-right:0px;
+
+  } */
+
+}
+
+
+
+@media (min-width:1025px) and (max-width:1222px) 
+
+{
+
+  .direccion_y_correo_cabezote_fr { 
+
+    margin-right: 18px;
+
+  }
+
+}
+
+
+
+@media (min-width:1025px) 
+
+{
+
+/*   .top_bar_fr { 
+
+    display: flex; 
+
+  } */
+
+/*   .whb-header-bottom { 
+
+    border-top: 1px solid #fff;
+
+    border-bottom: 1px solid #F58438; 
+
+  } */
+
+  .whb-main-header input[type="text"] { 
+
+    color: #000;
+
+  }
+
+/*   .site-logo { 
+
+    padding-right: 0px;
+
+  } */
+
+  .whb-general-header .whb-col-right { 
+
+    width: 572px !important; 
+
+    min-width: 572px !important;
+
+    max-width: 572px !important; 
+
+    margin-right: 0px; 
+
+    display: block; 
+
+    font-size: 13px; 
+
+    line-height: 15px;
+
+    color: #141414; 
+
+    font-weight: bold;
+
+  }
+
+/*   .whb-general-header .wd-header-html { 
+
+    padding-right: 0px; 
+
+    padding-left: 0px; 
+
+  } */
+
+  .telefonos_cabezote_fr img { 
+
+    width: 34px; 
+
+    height: 34px; 
+
+    margin-top: 33px; 
+
+  }
+
+  .direccion_y_correo_cabezote_fr img { 
+
+    margin-right: 10px;
+
+  }
+
+  .telefonos_cabezote_fr img { 
+
+    margin-left: 16px; 
+
+    margin-right: 26px; 
+
+    margin-bottom: 33px; 
+
+    float: left; 
+
+  }
+
+  .telefonos_cabezote_fr { 
+
+    background: url(https://www.escoming.com/wp-content/uploads/telefonos_cabezote_bg.webp) top left no-repeat; 
+
+    float: left; 
+
+    height: 100px; 
+
+    width:auto; 
+
+    display: flex; 
+
+    background-size:contain;
+
+  }
+
+  .telefonos_cabezote_fr p { 
+
+    margin-top: 27px; 
+
+  }
+
+/*   .whb-sticked .whb-header-bottom { 
+
+    border-top: none;
+
+  } */
+
+  .direccion_y_correo_cabezote_fr img, 
+
+  .telefonos_cabezote_fr img { 
+
+    width: 34px; 
+
+    height: 34px; 
+
+    margin-top: 33px;
+
+  }
+
+  .botones_cabezote_movil { 
+
+    display:none;
+
+  }
+
+  /* 
+
+  .whb-sticked .whb-general-header-inner { 
+
+    height: 100px !important; 
+
+    max-height: 100px !important;
+
+  }
+
+  .whb-sticked .whb-general-header { 
+
+    display:none;
+
+  }
+
+  .whb-header { padding-top: 194px !important;
+
+  }
+
+  .admin-bar .whb-sticked .whb-main-header { 
+
+    top: 0px!important;
+
+  }
+
+  .scrollToTop {
+
+    bottom: 35px !important;
+
+    left: 70px !important;
+
+  }  
+
+  .whb-header-bottom .container { 
+
+    justify-content: center; 
+
+    display: flex;
+
+  }
+
+  .whb-header-bottom {
+
+    background: linear-gradient(to bottom,  #ff7218 0%,#ff5c03 100%);
+
+  }  
+
+  .wd-header-nav,
+
+  .wd-header-nav > ul,
+
+  .wd-header-nav > ul > li,
+
+  .wd-header-nav > ul > li > a {
+
+    height: 100%;
+
+  }
+
+  .wd-header-nav > ul > li {
+
+    padding-left: 0px;
+
+  }
+
+  .wd-header-nav > ul > li > a {
+
+    text-transform: none !important; 
+
+    font-family: roboto;
+
+    font-size: 0.85rem !important; 
+
+    font-weight: 500 !important; 
+
+    letter-spacing: 0.2px; 
+
+    text-align:center; 
+
+    text-shadow: 1px 1px 2px #EF5B14; 
+
+    padding-left:0px; 
+
+    padding-right:0px;
+
+  }
+
+  .wd-header-nav > ul > li > a::after { 
+
+    font-size: 0.5rem !important; 
+
+    color:#fff !important; 
+
+    margin-left:5px !important; 
+
+    margin-right:10px;
+
+  }
+
+  .wd-nav.wd-style-separated > li:not(:last-child)::after { 
+
+    background: #221a17; 
+
+    width: 2px; 
+
+    height: 100%; 
+
+    border-right: 1px solid #FFA045 !important;
+
+  } */
+
+}
+
+@media (min-width:1025px) and (max-width:1099px) 
+
+{
+
+  .no_min_1025_max_1099 { 
+
+    display: none; 
+
+  }
+
+/*   [class*="wd-header-search-form"] input[type="text"] { 
+
+    min-width: 220px !important; 
+
+  } */
+
+}
+
+  
+
+@media (min-width:1100px) and (max-width:1366px) 
+
+{
+
+/*   .main-page-wrapper { 
+
+    padding-top: 0px;
+
+  } */
+
+}
+
+
+
+@media (max-width:1222px) 
+
+{
+
+/*   [class*="wd-header-search-form"] { 
+
+    padding-right: 25px!important;
+
+  } */
+
+}
+
+
+
+@media (min-width:1223px)
+
+{
+
+/*   [class*="wd-header-search-form"] { 
+
+    padding-right: 40px!important; 
+
+  } */
+
+  .direccion_y_correo_cabezote_fr { 
+
+    margin-right: 33px;
+
+  }
+
+}
