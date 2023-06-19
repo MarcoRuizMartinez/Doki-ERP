@@ -228,7 +228,7 @@
                             } = toRefs(props)
 
   const storeUser             = useStoreUser()
-  const fondoBarra            = computed(() => "background-image: url('images/patrones/"  + storeUser.patron + "') !important;")
+  const fondoBarra            = computed(() => "background-image: url('/images/patrones/"  + storeUser.patron + "') !important;")
   const hayMenu               = computed(() => slots.hasOwnProperty('menu'))
   const hayAcciones           = computed(() => slots.hasOwnProperty('acciones'))
   const altoFullScreen        = computed(() => hayMenu.value ? "87vh" : height.value )

@@ -132,7 +132,7 @@
   
   const online                    = computed(() => storeApp.online)
   
-  const fondoApp                  = computed(() => "background-image: url('images/fondos/" + fondo.value + "');" )
+  const fondoApp                  = computed(() => "background-image: url('/images/fondos/" + fondo.value + "');" )
   const imagenFondo               = computed(() => "background-image: url('" + imgFormulario.value + "');")
 
   const reglaNombre               = computed(() =>  ( val :any ) => val && val.length > 0 || 'Por favor escribe tu contraseña' )

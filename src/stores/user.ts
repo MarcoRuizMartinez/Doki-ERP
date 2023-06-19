@@ -28,7 +28,7 @@ export const  useStoreUser = defineStore('user', {
     setFondo(fondo : string){
       this.fondo              = fondo
       
-      const fondoCSS          = "url('images/fondos/" + this.fondo + "')"  
+      const fondoCSS          = "url('/images/fondos/" + this.fondo + "')"  
       document.body.style.backgroundImage = fondoCSS
     },    
     setPermisos( jsonPermisos : string ){

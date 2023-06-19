@@ -37,5 +37,5 @@ export class CuentaDinero implements ICuentaDinero
   }
   
   get value()     : number  { return this.id }
-  get imagenUrl() : string  { return `images/iconos/cuentasDinero/${this.logoUrl}` }
+  get imagenUrl() : string  { return `/images/iconos/cuentasDinero/${this.logoUrl}` }
 }

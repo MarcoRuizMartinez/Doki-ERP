@@ -23,7 +23,7 @@
         -->        
         <img
           v-if                ="!!acuerdo.imagen"
-          :src                ="`images/iconos/${acuerdo.imagen}`" />
+          :src                ="`/images/iconos/${acuerdo.imagen}`" />
         <Tooltip
           v-if                ="!acuerdo.esNuevo"
           label               ="Generar PDF"

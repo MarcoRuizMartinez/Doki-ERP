@@ -2,9 +2,9 @@
   <q-page                     padding
     class                     ="row justify-start items-start q-col-gutter-md"
     >
-    <TransitionGroup          appear
+    <!-- <TransitionGroup          appear
       enter-active-class      ="animated fadeInDown"
-      >
+      > -->
       <div class              ="col-md-6 col-12 row q-col-gutter-sm">
         <formulario-tercero
           class               ="col-12"
@@ -12,7 +12,7 @@
           :puede-editar       ="puedeModificar"
         />
       </div>
-    </TransitionGroup>
+    <!-- </TransitionGroup> -->
     <div class                ="col-md-6 col-12 row q-col-gutter-sm">
       <contactos              minimizar
         v-if                  ="permisos.contactos_ver"
@@ -21,7 +21,7 @@
         :tercero-id           ="tercero.id ?? 0"
         :puede-editar         ="puedeModificar"
       />
-      <efecto>
+      <!-- <efecto> -->
         <notas
           v-show              ="!!tercero.id"
           class               ="col-12"
@@ -29,7 +29,7 @@
           :nota               ="tercero.notaPrivada"
           :puede-editar       ="puedeModificar"
         />
-      </efecto>
+      <!-- </efecto> -->
     </div>
       <acuerdos
         v-if                  ="permisos.cotizar_ver && tercero.esCliente"
@@ -49,7 +49,7 @@
         :tipo                 ="TIPO_ACUERDO.PEDIDO_PRO"        
         :tercero              ="tercero"
       />      
-      <efecto>
+      <!-- <efecto> -->
         <documentos
           v-show              ="!!tercero.id"
           class               ="col-12 col-md-4"
@@ -59,7 +59,7 @@
           :modulo-ref         ="(tercero.id ?? 0).toString()"
           :puede-editar       ="puedeModificar"
         />
-      </efecto>      
+      <!-- </efecto>       -->
   </q-page>
 </template>
 
@@ -92,7 +92,7 @@ height-card         ="210px"
   import {  useTools,
             ID_URL_Ok         } from "src/useSimpleOk/useTools"  
   //* ///////////////////////////////////////////////////////////////////////////////////// Componentes
-  import  efecto                from "components/utilidades/Efecto.vue"  
+  //import  efecto                from "components/utilidades/Efecto.vue"  
   import  documentos            from "components/archivos/ModuloArchivos.vue"
   import  contactos             from "src/areas/terceros/components/contactos/ModuloContactos.vue"
   import  notas                 from "src/areas/terceros/components/helper/ModuloNotasTercero.vue"

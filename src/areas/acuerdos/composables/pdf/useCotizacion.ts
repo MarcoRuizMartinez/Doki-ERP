@@ -31,7 +31,7 @@ export function useCotizacionPDF()
                                 margenIzq:  80,
                                 margenDer:  96,
                                 pie:        8,
-                                path:       "images/pdf/",
+                                path:       "/images/pdf/",
                                 pdf:        pdf
                               }
   const doc   : IUtilPDF    = new UtilPDF( setup )
@@ -388,7 +388,7 @@ export function useCotizacionPDF()
 
   async function generarNota() : Promise<boolean>
   {
-    if(!quote.notaPublica) return
+    if(!quote.notaPublica) return false
 
     const copia = doc.y
     const notaSplit             = pdf.splitTextToSize(quote.notaPublica, doc.ancho - 30  ) as Array<string>    

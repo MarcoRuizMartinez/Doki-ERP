@@ -19,7 +19,7 @@
           >
           <img
           class         ="row"          
-          src           ="images/logos/doki.png"
+          src           ="/images/logos/doki.png"
           >
         </q-toolbar-title>
         <buscador/>
@@ -27,7 +27,7 @@
         <q-space />
         <img
           class         ="row q-pr-md op20"
-          src           ="images/logos/logosEscomMublex.png"
+          src           ="/images/logos/logosEscomMublex.png"
           >        
         <online />
         <menu-usuario />
@@ -103,7 +103,7 @@
   const { esMobil         } = useTools()
   const leftDrawerOpen      = ref(false)
   const miniState           = ref(true)  
-  const fondoBarra          = computed(() => "background-image: url('images/patrones/"  + patron.value + "');" )
+  const fondoBarra          = computed(() => "background-image: url('/images/patrones/"  + patron.value + "');" )
   const pre                 = process.env.PREFIJO
 
   //* ///////////////////////////////////////////////////////////////////////// On Mounted

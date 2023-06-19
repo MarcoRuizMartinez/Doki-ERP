@@ -1,14 +1,6 @@
 {
-  "extends": "@quasar/app-webpack/tsconfig-preset",
+  "extends": "@quasar/app-vite/tsconfig-preset",
   "compilerOptions": {
-    "baseUrl": ".",
-    "target": "esnext",
-    "strictNullChecks": false
-  },
-  "typedocOptions": {
-      "entryPoints": [
-        "src/index.ts"
-      ],
-      "out": "docs"
+    "baseUrl": "."
   }
 }

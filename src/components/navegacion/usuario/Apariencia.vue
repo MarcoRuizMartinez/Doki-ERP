@@ -23,7 +23,7 @@
       <template #option   ="scope">
         <q-item v-bind          ="scope.itemProps">
           <q-item-section       avatar>
-            <q-img :src         ="'images/fondos/' + scope.opt.src"/>
+            <q-img :src         ="'/images/fondos/' + scope.opt.src"/>
           </q-item-section>
           <q-item-section>
             <q-item-label>{{ scope.opt.label }}</q-item-label>
@@ -50,7 +50,7 @@
       <template #option   ="scope">
         <q-item v-bind          ="scope.itemProps">
           <q-item-section       avatar>
-            <q-img :src         ="'images/patrones/' + scope.opt.src"/>
+            <q-img :src         ="'/images/patrones/' + scope.opt.src"/>
           </q-item-section>
           <q-item-section>
             <q-item-label>{{ scope.opt.label }}</q-item-label>

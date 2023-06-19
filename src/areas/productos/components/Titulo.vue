@@ -30,7 +30,7 @@
         padding               ="0"
         @click                ="emit('click')"
         >
-        <img src              ="images/iconos/iconoProductos.webp" />
+        <img src              ="/images/iconos/iconoProductos.webp" />
       </q-btn>
     </template>
     <!-- //* ///////////////////////////////////////////////////////// SLOT CENTER -->

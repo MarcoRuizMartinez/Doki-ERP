@@ -6,7 +6,7 @@
     >
     <!-- //* ///////////////////////////////////////////////////////// SLOT LEFT -->
     <template           #left>
-      <img  :src        ="`images/iconos/${img}`" />
+      <img  :src        ="`/images/iconos/${img}`" />
     </template>
     <!-- //* ///////////////////////////////////////////////////////// SLOT CENTER -->
     <template           #center>

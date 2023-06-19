@@ -24,7 +24,7 @@ export function useReciboCajaPDF()
                                   margenIzq:  10,
                                   margenDer:  10,
                                   pie:        8,
-                                  path:       "images/pdf/",
+                                  path:       "/images/pdf/",
                                   pdf:        pdf
                                 }
   const doc     : IUtilPDF    = new UtilPDF( setup )

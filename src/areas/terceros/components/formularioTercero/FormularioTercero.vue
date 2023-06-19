@@ -7,7 +7,7 @@
     >
     <template                   #barra>
       <!-- mode="out-in" -->
-      <TransitionGroup          enter-active-class="animated fadeInDown" leave-active-class="animated fadeOutDown">
+      <!-- <TransitionGroup          enter-active-class="animated fadeInDown" leave-active-class="animated fadeOutDown"> -->
         <q-btn                  dark push dense glossy
           v-if                  ="!readonly"
           class                 ="desktop-only"
@@ -35,7 +35,7 @@
             <Tooltip label      ="Ir a Dolibarr"/>
           </q-btn>
         </span>
-      </TransitionGroup>
+      <!-- </TransitionGroup> -->
     </template>
     <template                   #menu
       v-if                      ="!!tercero.ulrFoto">
@@ -151,7 +151,7 @@
         />
       </div>
       <!-- //* //////////////   Código proveedor  -->
-      <TransitionGroup          enter-active-class="animated fadeIn" leave-active-class="animated fadeOut" >
+      <!-- <TransitionGroup          enter-active-class="animated fadeIn" leave-active-class="animated fadeOut" > -->
         <input-text             clearable alerta uppercase AZ09 sin-espacios
           v-if                  ="tercero.esProveedor && !readonly"
           v-model               ="tercero.codigoProveedor"
@@ -161,7 +161,7 @@
           maxlength             ="4"
           :readonly             ="readonly"
         />
-      </TransitionGroup>
+      <!-- </TransitionGroup> -->
       <!-- //* //////////////   Sujeto a IVA  -->
       <q-checkbox               
         v-if                    ="tercero.esCliente"
@@ -212,7 +212,7 @@
         />
       </div>
       <!-- //* //////////////   Botones Sumit  -->
-      <TransitionGroup          enter-active-class="animated fadeInDown" leave-active-class="animated fadeOutDown">
+      <!-- <TransitionGroup          enter-active-class="animated fadeInDown" leave-active-class="animated fadeOutDown"> -->
         <div
           class                 ="col-12 column mobile-only"
           v-show                ="!readonly"
@@ -224,7 +224,7 @@
             :label              ="tipo == 'ver' ? 'Guardar' : 'Crear'" 
           />
         </div>
-      </TransitionGroup>
+      <!-- </TransitionGroup> -->
     </q-form>
     <!-- //* /////////////////  Carita triste -->
 <!--     <div v-else class           ="column justify-center items-center" >
@@ -351,7 +351,7 @@
 
     if(terceroOk)
     {
-      const id                = parseInt( newID.toString() ?? "0" )
+      const id                = parseInt( newID?.toString() ?? "0" )
       if(storeUser.permisos.acceso_total) // Cuando se tiene acceso total, o ver otros terceros de los otros no asigna usuario a tercero cuando se crea, por eso toca asignarlo                                      
       {
         
