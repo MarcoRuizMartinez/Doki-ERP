@@ -7,20 +7,23 @@
       height-card         ="202px"
       size-icon-carga     ="8em"
     />
+
     <terceros-favoritos
       class               ="col-md-4 col-12"
       height-card         ="260px"
       size-icon-carga     ="12em"
-      />
+    />
     <mis-terceros
       class               ="col-md-4 col-12"
       height-card         ="260px"
       size-icon-carga     ="12em"
-      />
+    />
+
     <!-- <modulo-enlaces
       class               ="col-md-4 col-12"
     /> -->
     <template v-if        ="storeUser.usuario.esDev">
+
       <modulo-usuarios            class="col-md-4 col-12" height-card="260px"/>      
       <modulo-bodegas             class="col-md-4 col-12" height-card="260px"/>
       <modulo-reglas-comision     class="col-md-4 col-12" height-card="260px"/>
@@ -37,6 +40,7 @@
       <modulo-categorias-producto class="col-md-4 col-12" height-card="260px"/>
       <modulo-constantes          class="col-md-4 col-12" height-card="260px"/>
       <modulo-cuentas-dinero      class="col-md-4 col-12" height-card="260px"/>
+
     </template>
   </q-page>
 </template>
@@ -50,6 +54,7 @@
   import {  useTitle                } from "@vueuse/core"
 
   //import    moduloEnlaces             from "src/areas/sistemas/components/ModuloLinks.vue"
+  
   import    moduloUsuarios            from "src/areas/sistemas/components/ModuloUsuarios.vue"
   import    moduloProveedores         from "src/areas/sistemas/components/ModuloProveedores.vue"
   import    moduloMunicipios          from "src/areas/sistemas/components/ModuloMunicipios.vue"

@@ -470,7 +470,7 @@ export class Acuerdo implements IAcuerdo
 
   get urlDolibarrNuevoEnvio() : string
   {
-    const doliURL = process.env?.URL_DOLIBARR ?? ""
+    const doliURL = process.env.URL_DOLIBARR ?? ""
     const url     = doliURL.concat(
                     "/expedition/card.php?action=create&origin=commande&",
                     `shipping_method_id=${this.metodoEntrega.id}&`,
@@ -486,7 +486,7 @@ export class Acuerdo implements IAcuerdo
   }
 
   get urlDolibarrNuevaInsta() : string {
-    const doliURL = process.env?.URL_DOLIBARR ?? ""
+    const doliURL = process.env.URL_DOLIBARR ?? ""
     const url   = doliURL.concat(
                   "/fichinter/card.php?action=create&origin=commande&",
                   `originid=${this.id}&`,

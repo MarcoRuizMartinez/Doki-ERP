@@ -1,7 +1,7 @@
 
 import {  boot                } from 'quasar/wrappers'
 import    Dexie                 from 'dexie';
-import {  TABLAS, ITabla      } from "src/services/useDexie"
+//import {  TABLAS              } from "src/services/useDexie"
 import {  IMunicipio,         Municipio         } from "src/models/Municipio"
 import {  IUsuario,           Usuario           } from "src/areas/usuarios/models/Usuario"
 import {  ITipoDocumento,     TipoDocumento     } from "src/areas/terceros/models/TiposDocumento"
@@ -19,6 +19,28 @@ import {  IReglaComision,     ReglaComision     } from "src/models/Diccionarios/
 import {  IProductoCategoria, ProductoCategoria } from "src/areas/productos/models/ProductoCategoria"
 import {  IBodega,            Bodega            } from "src/models/Diccionarios/Bodega"
 
+//* ///////////////////////////////////////////////////////////// 
+export enum TABLAS
+{
+  MUNICIPIOS                  = "municipios",
+  USUARIOS                    = "usuarios",
+  TIPOS_DOCUMENTOS            = "tipoDocumento",
+  CONDICION_PAGO              = "condicionPago",
+  FORMA_PAGO                  = "formaPago",
+  METODO_ENTREGA              = "metodoEntrega",
+  ORIGEN_CONTACTO             = "origenContacto",
+  UNIDAD                      = "unidad",
+  TIEMPO_ENTREGA              = "tiempoEntrega",
+  TIPO_CONTACTO               = "tipoContacto",
+  PRODUCTO_CATE               = "productoCategoria",
+  CONSTANTE                   = "constantes",
+  PROVEEDORES                 = "proveedores",
+  CUENTA_DINERO               = "cuentasDinero",
+  REGLA_COMISION              = "reglasComision",
+  BODEGA                      = "bodegas",
+}
+
+const cosa = TABLAS
 export class DBSimpleOk extends Dexie
 {
   [TABLAS.USUARIOS]!:         Dexie.Table< IUsuario,          number >

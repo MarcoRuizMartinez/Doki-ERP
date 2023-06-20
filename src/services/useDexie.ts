@@ -4,7 +4,7 @@ import {
           onMounted,
           onUnmounted
                             } from 'vue'
-import {  db                } from "src/boot/dexie"
+import {  db, TABLAS        } from "src/boot/dexie"
 import {  useStoreApp       } from 'src/stores/app'
 import {  ALMACEN_LOCAL     } from "src/models/TiposVarios"
 import {  LocalStorage      } from 'quasar'
@@ -28,34 +28,15 @@ import {  IReglaComision,     ReglaComision     } from "src/models/Diccionarios/
 import {  IBodega,            Bodega            } from "src/models/Diccionarios/Bodega"
 import {  storeToRefs                           } from 'pinia'
 
-//* ///////////////////////////////////////////////////////////// Tipos de documento
-export enum TABLAS
-{
-  MUNICIPIOS                  = "municipios",
-  USUARIOS                    = "usuarios",
-  TIPOS_DOCUMENTOS            = "tipoDocumento",
-  CONDICION_PAGO              = "condicionPago",
-  FORMA_PAGO                  = "formaPago",
-  METODO_ENTREGA              = "metodoEntrega",
-  ORIGEN_CONTACTO             = "origenContacto",
-  UNIDAD                      = "unidad",
-  TIEMPO_ENTREGA              = "tiempoEntrega",
-  TIPO_CONTACTO               = "tipoContacto",
-  PRODUCTO_CATE               = "productoCategoria",
-  CONSTANTE                   = "constantes",
-  PROVEEDORES                 = "proveedores",
-  CUENTA_DINERO               = "cuentasDinero",
-  REGLA_COMISION              = "reglasComision",
-  BODEGA                      = "bodegas",
-}
+
 
 export type ITabla            = IMunicipio      | IUsuario        | ITipoDocumento      | ICondicionPago | IReglaComision |
                                 IFormaPago      | IMetodoEntrega  | IOrigenContacto     | IUnidad        | ICuentaDinero  |
                                 ITiempoEntrega  | ITipoContacto   | IProductoCategoria  | IConstante     | IProveedor     | IBodega
 
-
 const pre                     = process.env.PREFIJO
 
+//const db      =  new DBSimpleOk()
 
 export function cargarListasIndex() {
   dexieUsuarios   ({ cargarSiempre : true})
@@ -183,7 +164,7 @@ export function dexieBodegas ( { cargarSiempre = false, demora = 0 } = paramDefa
 
 function useDexie( tabla : TABLAS, { cargarSiempre = false, demora = 0 } = paramDefault )
 {
-  const{ online }                 = storeToRefs( useStoreApp() )
+  const{ online }             = storeToRefs( useStoreApp() )
   const lista                     = ref< Array < any > >( [] )
 
   //* ///////////////////////////////////////////////////////////////////////// On Mounted
@@ -193,8 +174,9 @@ function useDexie( tabla : TABLAS, { cargarSiempre = false, demora = 0 } = param
 
   async function motorTabla()
   {
-                                    await pausa( demora )
+    await pausa( demora )
     const largoDBTabla             = await db[ tabla ].count()
+
 
     if(largoDBTabla               == 0 && online.value )
     {
@@ -204,7 +186,6 @@ function useDexie( tabla : TABLAS, { cargarSiempre = false, demora = 0 } = param
     else
     {
       await cargarTablaDBLocal()
-
       if(online.value)
       {
         let DBsIguales            = true
@@ -229,12 +210,18 @@ function useDexie( tabla : TABLAS, { cargarSiempre = false, demora = 0 } = param
 
   async function getDatosDBToArray() : Promise < ITabla[] >
   {
-    return db.transaction('r', db[ tabla ], async () =>
+    return new Promise( async (resolve, reject) => {
+      const arrayResultado      = await db[ tabla ].toArray()
+      resolve( arrayResultado) 
+      
+    })
+
+    /* return db.transaction('r', db[ tabla ], async () =>
       {
         const arrayResultado      = await db[ tabla ].toArray()
         return arrayResultado
       }
-    )
+    ) */
   }
 
   async function DBLocalEsIgualADBHosting( largoLocal : number ) : Promise < boolean >
@@ -337,7 +324,6 @@ function useDexie( tabla : TABLAS, { cargarSiempre = false, demora = 0 } = param
                 //let nuevoLargo    = await db[ tabla ].count()
               }
               catch(error){
-                console.error(error)
                 return -1
               }
             }
@@ -348,7 +334,6 @@ function useDexie( tabla : TABLAS, { cargarSiempre = false, demora = 0 } = param
         }
 
     } catch(e) {
-        console.error(e);
     }
   }
 
@@ -370,7 +355,6 @@ function useDexie( tabla : TABLAS, { cargarSiempre = false, demora = 0 } = param
         }
       } catch(e) {
         resolve(0)
-        console.error(e);
       }
     })
   }
@@ -382,6 +366,7 @@ function useDexie( tabla : TABLAS, { cargarSiempre = false, demora = 0 } = param
 
 export async function getMunicipioDB( id : number ) : Promise < IMunicipio >
 {
+  // const{ db }               = storeToRefs( useStoreApp() )
   return db.transaction('r', db[ TABLAS.MUNICIPIOS ], async () =>
     {
       const municipio        = await db[ TABLAS.MUNICIPIOS ].where("id").equals( id ).toArray()
@@ -395,6 +380,7 @@ export async function getMunicipioDB( id : number ) : Promise < IMunicipio >
 
 export async function getCategoriaDB( sigla : string ) : Promise < IProductoCategoria >
 {
+  // const{ db }               = storeToRefs( useStoreApp() )
   return db.transaction('r', db[ TABLAS.PRODUCTO_CATE ], async () =>
     {
       const catego          = await db[ TABLAS.PRODUCTO_CATE ].where("sigla").equals( sigla ).toArray()
@@ -414,6 +400,7 @@ export async function getCategoriaDB( sigla : string ) : Promise < IProductoCate
 
 export async function getTipoDocumentoDB( id : number ) : Promise < ITipoDocumento >
 {
+  // const{ db }               = storeToRefs( useStoreApp() )
   return db.transaction('r', db[ TABLAS.TIPOS_DOCUMENTOS ], async () =>
     {
       const tipo            = await db[ TABLAS.TIPOS_DOCUMENTOS ].where("id").equals(id).toArray()
@@ -427,6 +414,7 @@ export async function getTipoDocumentoDB( id : number ) : Promise < ITipoDocumen
 
 export async function getUsuariosDB( ids : number[] ) : Promise < IUsuario[] >
 {
+  // const{ db }               = storeToRefs( useStoreApp() )
   return db.transaction('r', db[ TABLAS.USUARIOS ], async () =>
     {
       const usuarios        = await db[ TABLAS.USUARIOS ].where("id").anyOf( ...ids ).toArray()
@@ -440,6 +428,7 @@ export async function getUsuariosDB( ids : number[] ) : Promise < IUsuario[] >
 
 export async function getUsuariosByGrupoDB( grupo : string ) : Promise < IUsuario[] >
 {
+  // const{ db }               = storeToRefs( useStoreApp() )
   return db.transaction('r', db[ TABLAS.USUARIOS ], async () =>
     {
       const usuarios        = await db[ TABLAS.USUARIOS ].filter((u)=>u.gruposString.includes( grupo )).toArray()
@@ -453,6 +442,7 @@ export async function getUsuariosByGrupoDB( grupo : string ) : Promise < IUsuari
 
 export async function getUsuarioDB( id : number ) : Promise < IUsuario >
 {
+  // const{ db }               = storeToRefs( useStoreApp() )
   return db.transaction('r', db[ TABLAS.USUARIOS ], async () =>
     {
       const usuario         = await db[ TABLAS.USUARIOS ].where("id").equals(id).toArray()
@@ -469,6 +459,7 @@ export async function getUsuarioDB( id : number ) : Promise < IUsuario >
 
 export async function getCondicionDePagoDB( id : number ) : Promise < ICondicionPago >
 {
+  // const{ db }               = storeToRefs( useStoreApp() )
   return db.transaction('r', db[ TABLAS.CONDICION_PAGO ], async () =>
     {
       const listaDB         = await db[ TABLAS.CONDICION_PAGO ].where("id").equals(id).toArray()
@@ -483,12 +474,14 @@ export async function getCondicionDePagoDB( id : number ) : Promise < ICondicion
 
 export async function getCondicionesPagoDB() : Promise < ICondicionPago[] >
 {
+  // const{ db }               = storeToRefs( useStoreApp() )
   return db.transaction('r', db[ TABLAS.CONDICION_PAGO ], async () => await db[ TABLAS.CONDICION_PAGO ].toArray()
   )
 }
 
 export async function getFormaDePagoDB( id : number ) : Promise < IFormaPago >
 {
+  // const{ db }               = storeToRefs( useStoreApp() )
   return db.transaction('r', db[ TABLAS.FORMA_PAGO ], async () =>
     {
       const listaDB         = await db[ TABLAS.FORMA_PAGO ].where("id").equals(id).toArray()
@@ -502,12 +495,14 @@ export async function getFormaDePagoDB( id : number ) : Promise < IFormaPago >
 
 export async function getFormasPagoDB() : Promise < IFormaPago[] >
 {
+  // const{ db }               = storeToRefs( useStoreApp() )
   return db.transaction('r', db[ TABLAS.FORMA_PAGO ], async () => await db[ TABLAS.FORMA_PAGO ].toArray() )
 }
 
 
 export async function getMetodoDeEntregaDB( id : number ) : Promise < IMetodoEntrega >
 {
+  // const{ db }               = storeToRefs( useStoreApp() )
   return db.transaction('r', db[ TABLAS.METODO_ENTREGA ], async () =>
     {
       const listaDB          = await db[ TABLAS.METODO_ENTREGA ].where("id").equals(id).toArray()
@@ -523,11 +518,13 @@ export async function getMetodoDeEntregaDB( id : number ) : Promise < IMetodoEnt
 
 export async function getMetodosEntregaDB() : Promise < IMetodoEntrega[] >
 {
+  // const{ db }               = storeToRefs( useStoreApp() )
   return db.transaction('r', db[ TABLAS.METODO_ENTREGA ], async () => await db[ TABLAS.METODO_ENTREGA ].toArray())
 }
 
 export async function getOrigenContactoDB( id : number ) : Promise < IOrigenContacto >
 {
+  // const{ db }               = storeToRefs( useStoreApp() )
   return db.transaction('r', db[ TABLAS.ORIGEN_CONTACTO ], async () =>
     {
       const listaDB          = await db[ TABLAS.ORIGEN_CONTACTO ].where("id").equals(id).toArray()
@@ -541,12 +538,14 @@ export async function getOrigenContactoDB( id : number ) : Promise < IOrigenCont
 
 export async function getOrigenesContactoDB() : Promise < IOrigenContacto[] >
 {
+  // const{ db }               = storeToRefs( useStoreApp() )
   return db.transaction('r', db[ TABLAS.ORIGEN_CONTACTO ], async () => await db[ TABLAS.ORIGEN_CONTACTO ].toArray() )
 }
 
 
 export async function getUnidadDB( id : number ) : Promise < IUnidad >
 {
+  // const{ db }               = storeToRefs( useStoreApp() )
   return db.transaction('r', db[ TABLAS.UNIDAD ], async () =>
     {
       const listaDB          = await db[ TABLAS.UNIDAD ].where("id").equals(id).toArray()
@@ -560,6 +559,7 @@ export async function getUnidadDB( id : number ) : Promise < IUnidad >
 
 export async function getTiempoEntregaDB( id : number ) : Promise < ITiempoEntrega >
 {
+  // const{ db }               = storeToRefs( useStoreApp() )
   return db.transaction('r', db[ TABLAS.TIEMPO_ENTREGA ], async () =>
     {
       const listaDB          = await db[ TABLAS.TIEMPO_ENTREGA ].where("id").equals(id).toArray()
@@ -573,6 +573,7 @@ export async function getTiempoEntregaDB( id : number ) : Promise < ITiempoEntre
 
 export async function getConstanteDB( label : string ) : Promise < IConstante >
 {
+  // const{ db }               = storeToRefs( useStoreApp() )
   return db.transaction('r', db[ TABLAS.CONSTANTE ], async () =>
     {
       const listaDB          = await db[ TABLAS.CONSTANTE ].where("label").equals(label).toArray()
@@ -586,6 +587,7 @@ export async function getConstanteDB( label : string ) : Promise < IConstante >
 
 export async function getProveedorDB( id : number ) : Promise < IProveedor >
 {
+  // const{ db }               = storeToRefs( useStoreApp() )
   return db.transaction('r', db[ TABLAS.PROVEEDORES ], async () =>
     {
       const listaDB          = await db[ TABLAS.PROVEEDORES ].where("id").equals(id).toArray()
@@ -599,11 +601,13 @@ export async function getProveedorDB( id : number ) : Promise < IProveedor >
 
 export async function getProveedoresDB() : Promise < IProveedor[] >
 {
+  // const{ db }               = storeToRefs( useStoreApp() )
   return db.transaction('r', db[ TABLAS.PROVEEDORES ], async () => await db[ TABLAS.PROVEEDORES ].toArray() )
 }
 
 export async function getCuentasDineroDB( id : number ) : Promise < ICuentaDinero >
 {
+  // const{ db }               = storeToRefs( useStoreApp() )
   return db.transaction('r', db[ TABLAS.CUENTA_DINERO ], async () =>
     {
       const listaDB          = await db[ TABLAS.CUENTA_DINERO ].where("id").equals(id).toArray()
@@ -617,18 +621,16 @@ export async function getCuentasDineroDB( id : number ) : Promise < ICuentaDiner
 // TODO
 export async function getReglaComisionDB( id : number ) : Promise < IReglaComision >
 {
+  // const{ db }               = storeToRefs( useStoreApp() )
   return db.transaction('r', db[ TABLAS.REGLA_COMISION ], async () =>
     {
       const listaDB         = await db[ TABLAS.REGLA_COMISION ].where("id").equals( id ).toArray()
-      //console.log("listaDB: ", listaDB);
       if(listaDB.length     == 1)
       {
         //listaDB[0].id       = +listaDB[0].id
         const regla         = Object.assign( listaDB[0], {} )
-        //console.log("regla: ", regla);
         // TODO
         regla.id            = +regla.id
-        //console.log("listaDB[0]: ", listaDB[0]);
         return listaDB[0]
       }
       else
@@ -639,6 +641,7 @@ export async function getReglaComisionDB( id : number ) : Promise < IReglaComisi
 
 export async function getBodegaDB( id : number ) : Promise < IBodega >
 {
+  // const{ db }               = storeToRefs( useStoreApp() )
   return db.transaction('r', db[ TABLAS.BODEGA ], async () =>
     {
       const listaDB         = await db[ TABLAS.BODEGA ].where("id").equals(id).toArray()
@@ -690,5 +693,6 @@ function largoDBTabla(largoDBTabla: any): boolean|PromiseLike<boolean> {
 
 export async function limpiarDB() : Promise<void>
 {
+  // const{ db }               = storeToRefs( useStoreApp() )
   await db.delete()
 }

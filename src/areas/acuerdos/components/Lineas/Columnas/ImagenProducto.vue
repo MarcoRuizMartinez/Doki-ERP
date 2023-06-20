@@ -6,8 +6,8 @@
     <q-img
       :src                ="linea.imagen100px"
       class               ="cursor-pointer"
-      :class              ="mini ? 'imagen-woo-xs' : 'imagen-woo-md'"
       spinner-color       ="white"
+      :class              ="mini ? 'imagen-woo-xs' : 'imagen-woo-md'"
       @click              ="clickImagen( linea )"
       >
       <template v-slot:loading>

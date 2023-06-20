@@ -41,5 +41,4 @@
                                   new Columna({ name: "departamento"}),
                                   new Columna({ name: "indicativo"}),
                                 ]
-  //[TABLAS.MUNICIPIOS]:        "++id, municipio, departamento
 </script>

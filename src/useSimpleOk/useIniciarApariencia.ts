@@ -12,13 +12,13 @@ export function useInciarApariencia() : void
 
     onMounted(() =>
     {
-        let  colorLocal :string     = localStorage.getItem( pre + ALMACEN_LOCAL.COLOR ) ?? ""
+        const colorLocal :string    = localStorage.getItem( pre + ALMACEN_LOCAL.COLOR ) ?? ""
         if(!!colorLocal){
             setCssVar('primary', colorLocal)
             addressbarColor.set(colorLocal)
         }
 
-        let  fondoLocal :string     = localStorage.getItem( pre + ALMACEN_LOCAL.FONDO ) ?? "Dream.webp"
+        const fondoLocal :string    = localStorage.getItem( pre + ALMACEN_LOCAL.FONDO ) ?? "Dream.webp"
 
         if(!!fondoLocal)          
           storeUser.setFondo(fondoLocal)
