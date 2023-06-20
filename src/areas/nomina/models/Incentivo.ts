@@ -127,14 +127,14 @@ export class Incentivo implements IIncentivo
 
   get esEstadoAprobado  (){ return this.estado === INCENTIVO_ESTADO.APROBADO  }
   get esEstadoAnulado   (){ return this.estado === INCENTIVO_ESTADO.ANULADO   }
-  get estadoLabel       (){ return Incentivo.estados    .find( e => e.value === this.estado ).label }
-  get razonLabel        (){ return Incentivo.razones    .find( e => e.value === this.razon  ).label }
+  get estadoLabel       (){ return Incentivo.estados    .find( e => e.value === this.estado )?.label ?? "" }
+  get razonLabel        (){ return Incentivo.razones    .find( e => e.value === this.razon  )?.label ?? "" }
   get estadoPago        (){ return    this.pagado === this.valor                  ? INCENTIVO_ESTADO_PAGO.PAGO_TOTAL
                                     : this.pagado === 0                           ? INCENTIVO_ESTADO_PAGO.PENDIENTE
                                     : this.pagado > 0 && this.pagado < this.valor ? INCENTIVO_ESTADO_PAGO.PAGO_PARCIAL
                                     :                                               INCENTIVO_ESTADO_PAGO.NULO
                           }
-  get estadoPagoLabel   (){ return Incentivo.estadosPago.find( e => e.value === this.estadoPago  ).label }  
+  get estadoPagoLabel   (){ return Incentivo.estadosPago.find( e => e.value === this.estadoPago  )?.label ?? "" }  
   get usuarioLabel      (){ return this.usuario.nombre }
   get creadorLabel      (){ return this.creador.nombre }
   get esPedidoCli       (){ return this.origenTipo === INCENTIVO_ORIGEN.PEDIDO_CLI }

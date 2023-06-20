@@ -470,22 +470,24 @@ export class Acuerdo implements IAcuerdo
 
   get urlDolibarrNuevoEnvio() : string
   {
-    const url   = process.env.URL_DOLIBARR.concat(
-                  "/expedition/card.php?action=create&origin=commande&",
-                  `shipping_method_id=${this.metodoEntrega.id}&`,
-                  `origin_id=${this.id}&`,
-                  (!!this.proyecto.id ? `projectid=${this.proyecto.id}&` : ''),
-                  `ref_client=${this.refCliente}&`,
-                  `note_public=${this.notaPublica}&`,
-                  `options_comercial_id=${this.comercial.id}&`,
-                  `options_contacto_id=${this.contactoEntrega.id}&`,
-                  `note_private=${this.notaPrivada}`
-                )
-    return  this.esPedido ? url : ""
+    const doliURL = process.env?.URL_DOLIBARR ?? ""
+    const url     = doliURL.concat(
+                    "/expedition/card.php?action=create&origin=commande&",
+                    `shipping_method_id=${this.metodoEntrega.id}&`,
+                    `origin_id=${this.id}&`,
+                    (!!this.proyecto.id ? `projectid=${this.proyecto.id}&` : ''),
+                    `ref_client=${this.refCliente}&`,
+                    `note_public=${this.notaPublica}&`,
+                    `options_comercial_id=${this.comercial.id}&`,
+                    `options_contacto_id=${this.contactoEntrega.id}&`,
+                    `note_private=${this.notaPrivada}`
+                  )
+    return  this .esPedido ? url : ""
   }
 
   get urlDolibarrNuevaInsta() : string {
-    const url   = process.env.URL_DOLIBARR.concat(
+    const doliURL = process.env?.URL_DOLIBARR ?? ""
+    const url   = doliURL.concat(
                   "/fichinter/card.php?action=create&origin=commande&",
                   `originid=${this.id}&`,
                   `socid=${this.terceroId}&`,
@@ -911,7 +913,7 @@ https://dolibarr.mublex.com/fichinter/card.php?
 
 
   get pedidoId()  : number{
-    return this.enlaces.find( e => e.origen.tipo === TIPO_ACUERDO.PEDIDO_CLI  ).origen.id ?? 0
+    return this.enlaces.find( e => e.origen.tipo === TIPO_ACUERDO.PEDIDO_CLI  )?.origen.id ?? 0
   }
 
   static getTipoAcuerdoSingular( tipo : TTipoAcuerdo ) : string {

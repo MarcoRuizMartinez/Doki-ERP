@@ -148,7 +148,7 @@
         </div>
       </div> 
     </fieldset-filtro>
-    <inner-loading :cargando    ="loading.carga"/>
+    <inner-loading :cargando    ="loading?.carga ?? false"/>
   </div>
 </template>
 <script lang="ts" setup>
@@ -200,8 +200,8 @@
     emit("buscar", b.value.query)
   }
 
-  function limpiarBusqueda(){
-    const todoLimpio  = b.value.limpiarQueryDeRouter()
+  async function limpiarBusqueda(){
+    const todoLimpio  = await b.value.limpiarQueryDeRouter()
     if(todoLimpio) emit("limpiar")
   }  
 

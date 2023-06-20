@@ -187,8 +187,8 @@ export class Anticipo implements IAnticipo
     if(!!antApi.verificadorId)
       anti.verificador        = await getUsuarioDB( antApi.verificadorId )
 
-    anti.tipoSelect           = Anticipo.tipos  .find( ( t ) => t.value === anti.tipo )
-    anti.estadoSelect         = Anticipo.estados.find( ( e ) => e.value === anti.estado )    
+    anti.tipoSelect           = Anticipo.tipos  .find( ( t ) => t.value === anti.tipo )   ?? labelValueNulo
+    anti.estadoSelect         = Anticipo.estados.find( ( e ) => e.value === anti.estado ) ?? labelValueNulo
     return anti
   }
 

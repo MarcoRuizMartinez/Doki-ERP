@@ -1,7 +1,8 @@
 import {  ISerie,
           Serie,
           PERIODO             } from "src/models/TiposInformes"
-import {  EstadosAcuerdos     } from "src/areas/acuerdos/models/ConstantesAcuerdos"
+import {  EstadosAcuerdos,
+          TIPO_ACUERDO        } from "src/areas/acuerdos/models/ConstantesAcuerdos"
 import {  valuesObjectArrayToNumber,
           agregarZeroANumero1Digito
                               } from "src/useSimpleOk/useTools"
@@ -93,8 +94,8 @@ export class SerieAcu extends Serie implements ISerieAcu
       }
       else
       if(q.dimension        == DIMENSIONES.ESTADOS){
-        serie.nombre        = EstadosAcuerdos.estadoToName ( q.acuerdo, d )
-        serie.color         = EstadosAcuerdos.estadoToColor( q.acuerdo, d )
+        serie.nombre        = EstadosAcuerdos.estadoToName ( q?.acuerdo ?? TIPO_ACUERDO.NULO, d )
+        serie.color         = EstadosAcuerdos.estadoToColor( q?.acuerdo ?? TIPO_ACUERDO.NULO, d )
       }      
       else 
       if(q.dimension        == DIMENSIONES.ORIGEN){

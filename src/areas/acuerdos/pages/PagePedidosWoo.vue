@@ -181,7 +181,7 @@
     const ids                 = pedidos.value.map( p => p.id ).join(",") 
     const refIds              = await buscarPedidosDolibarr( ids )
     for (const p of pedidos.value)
-      p.idPedido              = refIds.find( ri => ri.ref === p.id ).id ?? 0
+      p.idPedido              = refIds.find( ri => ri.ref === p.id )?.id ?? 0
   }
 
   //* ///////////////////////////////////////////////////////////// Consultar Si existe cliente y Pagos

@@ -66,7 +66,7 @@ export class Archivo implements IArchivo
   }
 
   get url() : string {
-    return this.fullname.replace("/home/mublexco/_dolibarr", process.env.URL_DOLIBARR )
+    return this.fullname.replace("/home/mublexco/_dolibarr", process.env?.URL_DOLIBARR ?? "")
     // "/home/mublexco/_dolibarr/documents/societe/4/RUT Ergo ACTUALIZADO 2015.pdf"
   }
 

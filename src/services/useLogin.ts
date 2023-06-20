@@ -159,6 +159,8 @@ export function useLogin( origen_ : string )
     } catch(e) {
         console.error(e);
     }
+
+    return false
   }
 
   //* ///////////////////////////////////////////////////////////////////////// Iniciar Sesion en Dolibarr

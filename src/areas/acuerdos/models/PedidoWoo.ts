@@ -163,6 +163,6 @@ export class PedidoWoo implements IPedidoWoo
                                   }                                  
 
   getValueByKey( key : string ) : string {
-    return this.meta_data.find( p => p.key.includes( key ) ).value ?? ""
+    return this.meta_data.find( p => p.key.includes( key ) )?.value ?? ""
   }
 }

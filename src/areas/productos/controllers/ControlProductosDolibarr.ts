@@ -7,9 +7,11 @@ import {  useStoreProducto      } from 'src/stores/producto'
 import {  IProductoDoli,
           ProductoDoli          } from "src/areas/productos/models/ProductoDolibarr"     
 //* ////////////////////////////////////////////////////////////////// Componibles
-import {  useTools, ID_URL_Ok   } from "src/useSimpleOk/useTools"
+import {  useTools,
+          ID_URL_Ok,            } from "src/useSimpleOk/useTools"
 import {  useApiDolibarr        } from "src/services/useApiDolibarr"  
 import {  servicesProductos     } from "src/areas/productos/services/servicesProductos"
+
 //* ////////////////////////////////////////////////////////////////// Modelos
 
 export function useControlProductos() 
@@ -43,8 +45,8 @@ export function useControlProductos()
     loading.value.crear         = true
 
     const { ok, data }          = await apiDolibarr("crear", "producto", pro.productoForApi )       
-    if(ok){
-      pro.id                    = ID_URL_Ok( data.toString() )
+    if(ok && !!data && typeof data === "string"){
+      pro.id                    = ID_URL_Ok( data )
       aviso("positive", `Producto creado 👌🏼`)
     }
     else

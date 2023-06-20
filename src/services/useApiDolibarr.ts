@@ -75,7 +75,8 @@ export function useApiDolibarr()
     id      : number          = 0
   ) : Promise <IResultado>
   {
-    if(!tipo) return
+    if(!tipo) return { ok: false, codigo: 20 }
+
     mensajeGlobal             = "crear " + tipo
     let endPoint  : string    = getEndPoint( tipo )
     let esLinea               = accion.includes("linea")

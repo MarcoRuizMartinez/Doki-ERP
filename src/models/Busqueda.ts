@@ -156,7 +156,7 @@ import {  Router           } from "vue-router"
 export interface        IBusqueda {
   query                 : IQuery
   usuarioId             : number        // id de usuario que busca
-  router                : Router
+  router                : Router | null
   rourterQ              : LocationQuery
   acuerdo               : TTipoAcuerdo
   f                     : ICampos       // f de fiels
@@ -197,18 +197,18 @@ export interface        IBusqueda {
 
 export class Busqueda implements IBusqueda
 {
-  rourterQ              : LocationQuery
+  rourterQ              : LocationQuery = {}
   acuerdo               : TTipoAcuerdo 
-  usuarioId             : number
-  f                     : ICampos
-  o                     : IOpciones
-  usuarioIdInicio       : number
-  haySiguientePagina    : boolean
+  usuarioId             : number        = 0
+  f                     : ICampos       = Busqueda.getFieldsStart()
+  o                     : IOpciones     = Busqueda.getOptionsStart()
+  usuarioIdInicio       : number        = 0
+  haySiguientePagina    : boolean       = false
+  puedeCambiarUser      : boolean       = false
+  haceAutoSelect        : boolean       = false
   montadoOk             : boolean
-  puedeCambiarUser      : boolean
-  haceAutoSelect        : boolean  
-  router                : Router
-  copiaPagina           : number
+  router                : Router | null = null
+  copiaPagina           : number        = 1
 
   constructor()
   {
@@ -222,63 +222,8 @@ export class Busqueda implements IBusqueda
     this.rourterQ         = {}
     this.usuarioIdInicio  = 0
     this.copiaPagina      = 1
-    this.o                = {
-      opcionesOk          : false,
-      usuarios            : [],      
-      condicionesPago     : [],
-      formasPago          : [],
-      metodosEntrega      : [],
-      proveedores         : [],
-      origenes            : [],
-      estados             : [],
-    }
-    this.f                = {
-      copiando            : false,
-      buscar              : "",
-      contacto            : "",
-      desde               : "",
-      hasta               : ""    ,
-      valorMin            : undefined,
-      valorMax            : undefined,
-      estados             : [],
-      origenes            : [],
-      usuarios            : [],
-      condiciones         : [],
-      formaPago           : [],
-      entrega             : [],
-      estadoAnticipo      : [],
-      tipoAnticipo        : [],      
-      area                : labelValueNulo,
-      facturado           : labelValueNulo,
-      conIva              : labelValueNulo,
-      terceroInterno      : labelValueNulo,
-      tipoTercero         : labelValueNulo,
-      totalizado          : labelValueNulo,
-      conOrdenes          : labelValueNulo,
-      proveedores         : labelValueNulo,
-      incPago             : labelValueNulo,
-      incEstado           : labelValueNulo,
-      incRazon            : labelValueNulo,
-      incOrigen           : labelValueNulo,
-      activo              : labelValueNulo,
-      dimension           : labelValueNulo,
-      periodo             : labelValueNulo,
-      municipio           : new Municipio(),
-      municipioContacto   : new Municipio(),
-      resultadosXPage     : 10,
-      pagina              : 1,
-      usuario             : new Usuario(),
-      creador             : new Usuario(),
-      favorito            : false,
-      destacado           : false,
-      color               : false,
-      nombre              : "",
-      qty                 : 0,
-      peso                : 0,
-      altura              : undefined,
-      ancho               : undefined,
-      fondo               : undefined,
-    }   
+    this.f                = Busqueda.getFieldsStart()
+    this.o                = Busqueda.getOptionsStart()
   } 
   
   async iniciarOpciones() : Promise<void>
@@ -320,7 +265,7 @@ export class Busqueda implements IBusqueda
     this.f.color              = getQueryRouterBoolean   ( this.rourterQ .color        )    
 
     if(!!this.rourterQ .limite)
-      this.f.resultadosXPage  = getQueryRouterNumber    ( this.rourterQ .limite       )
+      this.f.resultadosXPage  = getQueryRouterNumber    ( this.rourterQ .limite       )         ?? 10
     this.f.area               = getQueryRouterLabelValue( this.rourterQ .area,                  Areas                         )    
     this.f.facturado          = getQueryRouterLabelValue( this.rourterQ .facturado,             Busqueda.listaFacturado       )
     this.f.incPago            = getQueryRouterLabelValue( this.rourterQ .incPago,               Incentivo.estadosPago         )
@@ -350,7 +295,7 @@ export class Busqueda implements IBusqueda
     const municipioContId     = getQueryRouterNumber( this.rourterQ .municipioContacto ) 
     this.f.municipioContacto  = !!municipioContId ? await getMunicipioDB( municipioContId ) : new Municipio()
 
-    const creadorlId          = getQueryRouterNumber( this.rourterQ.creador )
+    const creadorlId          = getQueryRouterNumber( this.rourterQ.creador ) ?? 0
     this.f.creador            = creadorlId > 0 ? await getUsuarioDB( creadorlId ) : new Usuario()
     await this.setUsuario()
     this.f.copiando           = false
@@ -409,7 +354,8 @@ export class Busqueda implements IBusqueda
 
   copiarQueryARourter()
   {
-    this.router.replace({ query: { ...this.query }  })
+    if(!!this.router)
+      this.router.replace({ query: { ...this.query }  })
   }
 
 
@@ -432,7 +378,8 @@ export class Busqueda implements IBusqueda
     this.rourterQ           = {}
     if(!this.camposVacios)
       await this.copiarQueryACampos()
-    this.router.replace({ query: {} })
+    if(!!this.router)
+      this.router.replace({ query: {} })
     this.f.pagina           = 1
 
     return true
@@ -579,5 +526,69 @@ export class Busqueda implements IBusqueda
                                       {value: DIMENSIONES.CONDICIONES,  label: 'Condiciones'      },
                                       {value: DIMENSIONES.UNIDAD_N,     label: 'Área'             },
                                       {value: DIMENSIONES.REGION,       label: 'Municipio'        },
-                                    ]                                    
+                                    ]
+  static getOptionsStart() : IOpciones
+  {
+    return {
+      opcionesOk          : false,
+      usuarios            : [],      
+      condicionesPago     : [],
+      formasPago          : [],
+      metodosEntrega      : [],
+      proveedores         : [],
+      origenes            : [],
+      estados             : [],
+    }
+  }
+                                                                  
+  static getFieldsStart() : ICampos
+  {
+    return {
+      copiando            : false,
+      buscar              : "",
+      contacto            : "",
+      desde               : "",
+      hasta               : ""    ,
+      valorMin            : undefined,
+      valorMax            : undefined,
+      estados             : [],
+      origenes            : [],
+      usuarios            : [],
+      condiciones         : [],
+      formaPago           : [],
+      entrega             : [],
+      estadoAnticipo      : [],
+      tipoAnticipo        : [],      
+      area                : labelValueNulo,
+      facturado           : labelValueNulo,
+      conIva              : labelValueNulo,
+      terceroInterno      : labelValueNulo,
+      tipoTercero         : labelValueNulo,
+      totalizado          : labelValueNulo,
+      conOrdenes          : labelValueNulo,
+      proveedores         : labelValueNulo,
+      incPago             : labelValueNulo,
+      incEstado           : labelValueNulo,
+      incRazon            : labelValueNulo,
+      incOrigen           : labelValueNulo,
+      activo              : labelValueNulo,
+      dimension           : labelValueNulo,
+      periodo             : labelValueNulo,
+      municipio           : new Municipio(),
+      municipioContacto   : new Municipio(),
+      resultadosXPage     : 10,
+      pagina              : 1,
+      usuario             : new Usuario(),
+      creador             : new Usuario(),
+      favorito            : false,
+      destacado           : false,
+      color               : false,
+      nombre              : "",
+      qty                 : 0,
+      peso                : 0,
+      altura              : undefined,
+      ancho               : undefined,
+      fondo               : undefined,
+    }   
+  }
 }
