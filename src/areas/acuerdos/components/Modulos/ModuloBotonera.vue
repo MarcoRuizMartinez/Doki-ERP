@@ -213,7 +213,7 @@
         <Tooltip label        ="Clasificar entregado"/>
       </q-btn>    
       <!-- //* ////////////////////////////////////////////////////////// Boton Editar -->
-      <q-btn                  dense
+      <q-btn
         v-if                  ="mostrarEditar"
         v-bind                ="style.btnBaseMd"
         color                 ="positive"

@@ -32,22 +32,22 @@
     <div class                ="row justify-between items-center q-ml-md">
       <div class              ="row col-8 items-center califi">
         <span class           ="col-4">Atención:</span>
-        <q-rating             no-reset
+        <q-rating
           v-model             ="acuerdo.calificacion.f.nota_atencion"
           v-bind              ="estiloStar"
         />
         <span class           ="col-4">Calidad:</span>      
-        <q-rating             no-reset
+        <q-rating
           v-model             ="acuerdo.calificacion.f.nota_calidad"
           v-bind              ="estiloStar"
         />
         <span class           ="col-4">Precio:</span>
-        <q-rating             no-reset
+        <q-rating
           v-model             ="acuerdo.calificacion.f.nota_precio"
           v-bind              ="estiloStar"
         />
         <span class           ="col-4">Tiempos:</span>
-        <q-rating             no-reset
+        <q-rating
           v-model             ="acuerdo.calificacion.f.nota_tiempos"
           v-bind              ="estiloStar"
         />
@@ -107,7 +107,7 @@
   const estiloStar = {
     noReset       : true,          
     class         : "col-8",
-    size          : "2.3em",
+    size          : "2.1em",
     color         : "amber-6",
     icon          : "mdi-star-outline",
     iconSelected  : "mdi-star",

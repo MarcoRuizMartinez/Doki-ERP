@@ -1,6 +1,6 @@
 <template>
   <div>
-    <q-input          dense hide-bottom-space
+    <q-input          hide-bottom-space
       v-model         ="modelo"
       v-bind          ="$attrs"
       lazy-rules      ="ondemand"
@@ -8,15 +8,20 @@
       :debounce       ="debounce"
       :class          ="{'campo-hundido' : hundido}"
       :filled         ="!hundido"
-      :borderless     ="!hundido"      
+      :borderless     ="!hundido"
       :label          ="label"
+      :dense          ="dense"
+      :disable        ="loading"
       @blur           ="onBlur"
       @focus          ="campoEnfocado = true"
       @clear          ="emit('clear')"
       @keydown.enter.prevent="emit('enter')"
       >
       <template #prepend>
-        <q-icon :name ="icon" />
+        <q-icon :name ="icon" :class="loading ? 'mdi-spin' : ''"/>
+      </template>
+      <template v-slot:append>
+        <slot></slot>
       </template>
     </q-input>
   </div>
@@ -34,6 +39,8 @@
       icon:       { type: String,   default:  "mdi-magnify" },
       hundido:    { type: Boolean,  default:  false         },
       debounce:   { type: String,   default:  "400"         },
+      dense:      { type: Boolean,  default:  true          },
+      loading:    { type: Boolean,  default:  false         },
     }
   )
 

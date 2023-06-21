@@ -52,7 +52,7 @@
   const emit                  = defineEmits(["update:visible", "update:src", "clickDescargar"])
   const props                 = defineProps({
     src:          { required: true,       type: String  },
-    visible:      { required: true,       type: Boolean },
+    visible:      { default:  false,      type: Boolean },
     nombrePdf:    { default:  "archivo",  type: String  },
     enBase64:     { required: false,      type: Boolean },
     descargar:    { default:  false,      type: Boolean }

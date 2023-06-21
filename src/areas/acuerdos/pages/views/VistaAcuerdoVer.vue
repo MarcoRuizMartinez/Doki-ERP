@@ -77,6 +77,8 @@
     v-if                    ="acuerdo.esEstadoValido && ( acuerdo.esPedido || acuerdo.esCotizacion )"
     class                   ="col-md-4 col-12"
   />    
+  <comentarios
+  />
   <!-- //* /////////////////  Visor PDF  -->
   <visor-pdf                descargar
     v-model:src             ="srcPDF"
@@ -148,6 +150,7 @@
   import    entregas                from "./../../components/Modulos/ModuloEntregas.vue"
   import    calificacion            from "./../../components/Modulos/ModuloCalificacion.vue"
   import    anticipos               from "./../../components/Modulos/ModuloAnticipos.vue"
+  import    comentarios             from "./../../components/Modulos/ModuloComentarios.vue"
   //import    nuevaEntrega          from ".././Modals/NuevaEntregaSelectBodega.vue"
   import    remision                from "src/areas/acuerdos/components/PDF/RemisionPDF.vue"
   import    documentos              from "components/archivos/ModuloArchivos.vue"
@@ -238,15 +241,15 @@
     }
     else
     if(acuerdo.value.esEntrega){
-      abrirModalRemision( acuerdo.value )
+      abrirModalRemision(/* acuerdo.value */)
     }
   }
 
 
-  function abrirModalRemision( acu : IAcuerdo )
+  function abrirModalRemision( /*acu : IAcuerdo */)
   {
     modales.value.remision      = true
-    acuerdoRemsion.value        = acu    
+    //acuerdoRemsion.value        = acu    
   }
 
 /*

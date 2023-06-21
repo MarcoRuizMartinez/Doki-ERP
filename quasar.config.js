@@ -95,7 +95,8 @@ module.exports = configure(function (/* ctx */) {
       // extendViteConf (viteConf) {},
       viteVuePluginOptions: {
         script: {
-          defineModel: true
+          defineModel: true,
+          propsDestructure: true
         }
       },
 
