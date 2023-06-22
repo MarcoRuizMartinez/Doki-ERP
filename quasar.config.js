@@ -61,7 +61,7 @@ module.exports = configure(function (/* ctx */) {
 
       // rebuildCache: true, // rebuilds Vite/linter/etc cache on startup
 
-      publicPath: process.env.NODE_ENV === 'development' ? '/' : '/ok_vite', // production /ok
+      publicPath: process.env.NODE_ENV === 'development' ? '/' : '/ok', // production /ok
       // analyze: true,
       env: {
         PREFIJO:            'CO-',

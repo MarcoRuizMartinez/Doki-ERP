@@ -31,7 +31,7 @@
           debounce            ="800"
           :disable            ="!transtTieneGet"
           @update:model-value ="cargarIframe"
-          @enter              ="cargarIframe"
+          @keydown.enter.prevent  ="cargarIframe"
 
         />
         <q-btn

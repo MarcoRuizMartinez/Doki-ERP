@@ -369,8 +369,8 @@
     emit("buscar", query)
   }
 
-  function limpiarBusqueda(){
-    const todoLimpio  = b.value.limpiarQueryDeRouter()
+  async function limpiarBusqueda(){
+    const todoLimpio  = await b.value.limpiarQueryDeRouter()
     if(todoLimpio) emit("limpiar")
   }  
 

@@ -1,9 +1,7 @@
-import {  exportFile,
-          date,
+import {  date,
           useQuasar,
           QNotifyAction,
                                   } from "quasar"
-import {  IColumna                } from "src/models/Tabla"
 import {  LocationQueryValue      } from "vue-router"
 import {  ILabelValue,
           labelValueNulo,         } from "src/models/TiposVarios"
@@ -571,36 +569,36 @@ export function getStringValido( objeto : any, key : string ) : string {
 type QType = "hours" | "minutes" | "days" | "months" | "years"
 export function diferenciaFechas( fechaOld : number, fechaNew : number ) : string
 {
-    const minDife               = ( fechaNew - fechaOld )  / 1000 / 60
-    let unit : QType           
+  const minDife               = ( fechaNew - fechaOld )  / 1000 / 60
+  let unit : QType
 
-    if      (minDife < 60)        unit    = "minutes"
-    else  if(minDife < 1440)      unit    = "hours"
-    else  if(minDife < 44640)     unit    = "days"
-    else  if(minDife < 525600)    unit    = "months"
-    else                          unit    = "years"    
+  if      (minDife < 60)        unit    = "minutes"
+  else  if(minDife < 1440)      unit    = "hours"
+  else  if(minDife < 44640)     unit    = "days"
+  else  if(minDife < 525600)    unit    = "months"
+  else                          unit    = "years"    
 
-    const diferencia            = date.getDateDiff(fechaNew, fechaOld, unit)
-    let unidad                  = ""
+  const diferencia            = date.getDateDiff(fechaNew, fechaOld, unit)
+  let unidad                  = ""
 
-    if(diferencia               > 1)
-    {
-        if      (unit == "minutes")   unidad  = "minutos"
-        else if (unit == "hours")     unidad  = "horas"
-        else if (unit == "days")      unidad  = "días" 
-        else if (unit == "months")    unidad  = "meses" 
-        else if (unit == "years")     unidad  = "años"
-    }
-    else
-    {
-        if      (unit == "minutes")   unidad  = "minuto"
-        else if (unit == "hours")     unidad  = "hora"
-        else if (unit == "days")      unidad  = "día" 
-        else if (unit == "months")    unidad  = "mes" 
-        else if (unit == "years")     unidad  = "año"
-    }
+  if(diferencia               > 1)
+  {
+      if      (unit == "minutes")   unidad  = "minutos"
+      else if (unit == "hours")     unidad  = "horas"
+      else if (unit == "days")      unidad  = "días" 
+      else if (unit == "months")    unidad  = "meses" 
+      else if (unit == "years")     unidad  = "años"
+  }
+  else
+  {
+      if      (unit == "minutes")   unidad  = "minuto"
+      else if (unit == "hours")     unidad  = "hora"
+      else if (unit == "days")      unidad  = "día" 
+      else if (unit == "months")    unidad  = "mes" 
+      else if (unit == "years")     unidad  = "año"
+  }
 
-    return diferencia + " " + unidad
+  return diferencia + " " + unidad
 }
 
 export function numberRandom( base : number ) : number 

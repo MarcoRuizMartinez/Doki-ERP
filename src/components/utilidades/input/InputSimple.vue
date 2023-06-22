@@ -15,7 +15,7 @@
       @blur           ="onBlur"
       @focus          ="campoEnfocado = true"
       @clear          ="emit('clear')"
-      @keydown.enter.prevent="emit('enter')"
+      @keydown.ctrl.enter.prevent ="emit('ctrl-enter')"
       >
       <template #prepend>
         <q-icon :name ="icon" :class="loading ? 'mdi-spin' : ''"/>
@@ -44,7 +44,7 @@
     }
   )
 
-  const emit            = defineEmits(["update:modelValue", "blur", "clear", "enter"])
+  const emit            = defineEmits(["update:modelValue", "blur", "clear", "ctrl-enter"])
 
   const { modelValue  } = toRefs( props )
   const modelo          = computed({

@@ -28,6 +28,7 @@ import {  ESTADO_CTZ,
 import {  IOrigenContacto       } from "src/models/Diccionarios/OrigenContacto"
 import {  IUsuario              } from "src/areas/usuarios/models/Usuario"
 import {  ITercero              } from "src/areas/terceros/models/Tercero"
+import {  Comentario            } from "src/models/Comentario"
 import {  ICondicionPago        } from "src/models/Diccionarios/CondicionPago"
 import {  IFormaPago            } from "src/models/Diccionarios/FormaPago"
 import {  LineaAcuerdo          } from "src/areas/acuerdos/models/LineaAcuerdo"
@@ -42,8 +43,6 @@ import {  IContacto,
           TTipoContacto,
           TIPOS_CONTACTO
                                 } from "src/areas/terceros/models/Contacto"
-import { parse } from 'path'
-
 
 export function useControlAcuerdo()
 {
@@ -133,6 +132,8 @@ export function useControlAcuerdo()
       await buscarTerceroDolibarr ( acuerdo.value.terceroId   )
       await buscarProyecto        ( acuerdo.value.proyectoId  )
       await buscarAcuerdoEnlazados()
+      await buscarComentarios()
+
       if( acuerdo.value.esCotizacion || acuerdo.value.esPedido )
         buscarCalificacion() 
       if( acuerdo.value.comisiona )
@@ -358,7 +359,8 @@ export function useControlAcuerdo()
       // Si se mueve el acuerdo a una persona natural, se desvincula el contacto
       else
       {
-        if( desvincularContactoAcuerdo( contactoNow.id, contactoNow.tipo ) )  // Se deja listo para si mas adelante se crea un contacto
+        const ok = await desvincularContactoAcuerdo( contactoNow.id, contactoNow.tipo )
+        if(ok)  // Se deja listo para si mas adelante se crea un contacto
           acuerdo.value.contactoComercial  = new Contacto( terceroNew.id )
       }
     }
@@ -791,6 +793,42 @@ export function useControlAcuerdo()
   }  
 
 
+  async function buscarComentarios()
+  {
+    loading.value.commentsLoad= true
+    const objeto              = {
+      codigo        : "AC_OTH",
+      terceroId     : acuerdo.value.tercero.id,
+      elementoId    : acuerdo.value.id,
+      acuerdo       : Comentario.getTipo( acuerdo.value.tipo )
+    }
+    const { ok, data }        = await miFetch(  getURL("listas", "varios"),
+                                                { method: "POST", body: getFormData( "comentarios", objeto ) },
+                                                { dataEsArray: true, mensaje: "buscar comentarios" }
+                                              )
+    acuerdo.value.comentarios = []                                              
+    loading.value.commentsLoad= false
+    if(ok)
+    {
+      if(!Array.isArray(data) || !data.length) return      
+      for (const item of data)
+      { 
+        const comment         = await Comentario.comentarioApiToComentario( item )
+        acuerdo.value.comentarios.push( comment )
+      }
+    }
+  }
+
+
+  //* ////////////////////////////////////////////////////////////////////// Editar o Crear calificacion
+  async function editarComentario( id : number, comentario : string) : Promise<boolean>
+  {
+    const objetoForData         = { body: getFormData("comentario", { id, comentario }), method: "POST" }
+    const { ok }                = await miFetch( getURL("servicios", "varios"), objetoForData, { mensaje: "editar comentario" } )
+    if(!ok) aviso("negative", `Error al editar comentario`)
+    return ok
+  }    
+
 
   //* /////////////////////////////////////////////////////////////// Editar metodo de entrega
   async function actualizarPreciosAcuerdo( soloCosto : 0 | 1 )
@@ -832,6 +870,8 @@ export function useControlAcuerdo()
     buscarAcuerdo,
     buscarTerceroDolibarr,
     buscarProyecto,
+    buscarComentarios,
+    editarComentario,
     editarComercial,
     pasarABorradorAcuerdo,
     reabrirPedido,
