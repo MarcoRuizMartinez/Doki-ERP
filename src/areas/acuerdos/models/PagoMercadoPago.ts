@@ -1,9 +1,11 @@
+import {  fechaCorta          } from "src/useSimpleOk/useTools"
 export interface IMercadoPago {
   data                  : any
   id                    : number
   ref                   : string
   fechaAprobado         : Date
   fechaCreado           : Date
+  fechaCorta            : string
   tipoPago              : string
   estado                : string
   estadoDetalles        : string
@@ -39,9 +41,10 @@ export class MercadoPago implements IMercadoPago
 
   get id                (): number  { return parseInt( this.data?.id ?? "0" ) }
   get total             (): number  { return parseInt( this.data?.transaction_details?.total_paid_amount ?? "0" ) }
-  get totalRecibido     (): number  { return parseInt( this.data?.transaction_details?.net_received_amount ?? "0" ) }  
+  get totalRecibido     (): number  { return parseInt( this.data?.transaction_details?.net_received_amount ?? "0" ) }
   get fechaAprobado     (): Date    { return new Date( this.data?.date_approved ?? 0 ) }
-  get fechaCreado       (): Date    { return new Date( this.data?.date_created ?? 0 ) }
+  get fechaCreado       (): Date    { return new Date( this.data?.date_created  ?? 0 ) }
+  get fechaCorta        (): string  { return fechaCorta(this.fechaCreado) }
   get ref               (): string  { return this.data?.external_reference ?? "" }
   get tipoPago          (): string  { return this.data?.payment_type_id ?? "" }
   get estado            (): string  { return this.data?.status ?? "" }

@@ -73,7 +73,7 @@ export function getDateToStr( fechaStr : string, tipo : "UTC" | "local" = "local
 
 export function getDateToApiDolibarr( fechaDoli : any ) : Date
 {
-  // Dolibarr envia fecha con 3 ceros menos que toca agregar. Ejem:  1675442604 
+  // Dolibarr envia fecha con 3 ceros menos que toca agregar. Ejem:  1675442604
 
   const raw = anyToNumOStr(fechaDoli)
   if( !valorValido( raw ) )
@@ -82,15 +82,15 @@ export function getDateToApiDolibarr( fechaDoli : any ) : Date
   const numero = strOrNumToNum( raw, 0 )
   if(numero < 1_000_000_000 )
     return new Date()
-    
+
   return new Date( +(numero.toString() + "000")  )
 }
 
 export function anyToNumOStr( v : any ) : number | string
 {
   if(typeof v === "number" || typeof v === "string")
-    return v 
-  else 
+    return v
+  else
     return ""
 }
 
@@ -364,6 +364,7 @@ export const fechaCorta = ( fecha : Date ) : string => {
 }
 
 export const fechaLarga = ( fecha : Date ) : string => fecha.toLocaleDateString('es-CO', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
+export const fechaYHora = ( fecha : Date ) : string => fechaLarga(fecha) + " " + fecha.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' })
 
 export const valorValido  = ( valor : any ) : boolean => {
   let valido              = true
@@ -486,7 +487,7 @@ export function getArrayInObject( o : any, key : string ) : any[]
   return typeof o == "object" && key in o && Array.isArray( o[key] ) && !!o[key].length ? o[key] : []
 }
 
-export function getArrayFromAny( a : any ) : any[] 
+export function getArrayFromAny( a : any ) : any[]
 {
   return Array.isArray( a ) && a.length ? a : []
 }
@@ -576,7 +577,7 @@ export function diferenciaFechas( fechaOld : number, fechaNew : number ) : strin
   else  if(minDife < 1440)      unit    = "hours"
   else  if(minDife < 44640)     unit    = "days"
   else  if(minDife < 525600)    unit    = "months"
-  else                          unit    = "years"    
+  else                          unit    = "years"
 
   const diferencia            = date.getDateDiff(fechaNew, fechaOld, unit)
   let unidad                  = ""
@@ -585,28 +586,28 @@ export function diferenciaFechas( fechaOld : number, fechaNew : number ) : strin
   {
       if      (unit == "minutes")   unidad  = "minutos"
       else if (unit == "hours")     unidad  = "horas"
-      else if (unit == "days")      unidad  = "días" 
-      else if (unit == "months")    unidad  = "meses" 
+      else if (unit == "days")      unidad  = "días"
+      else if (unit == "months")    unidad  = "meses"
       else if (unit == "years")     unidad  = "años"
   }
   else
   {
       if      (unit == "minutes")   unidad  = "minuto"
       else if (unit == "hours")     unidad  = "hora"
-      else if (unit == "days")      unidad  = "día" 
-      else if (unit == "months")    unidad  = "mes" 
+      else if (unit == "days")      unidad  = "día"
+      else if (unit == "months")    unidad  = "mes"
       else if (unit == "years")     unidad  = "año"
   }
 
   return diferencia + " " + unidad
 }
 
-export function numberRandom( base : number ) : number 
+export function numberRandom( base : number ) : number
 {
   return Math.floor( Math.random() * base )
 }
 
-export function colorRandom( modo : "lista" | "random" ) : string 
+export function colorRandom( modo : "lista" | "random" ) : string
 {
   let color             = ""
   if(modo               === "random"){
@@ -636,6 +637,6 @@ export function colorRandom( modo : "lista" | "random" ) : string
     const i = numberRandom( listaColores.length )
     color   = listaColores[ i ]
   }
-  
+
   return color
 }

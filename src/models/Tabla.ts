@@ -1,6 +1,8 @@
 import {  QTableProps             } from "quasar"
 import {  mayusculasPrimeraLetra  } from "../useSimpleOk/useTools"
-import {  siNo, formatoPrecio     } from "src/useSimpleOk/useTools"
+import {  siNo,
+          formatoPrecio,
+          fechaCorta              } from "src/useSimpleOk/useTools"
 
 
 export interface IColumna {
@@ -71,7 +73,7 @@ export class Columna implements IColumna
     this.headerClasses    = ""
   }
 
-  static ColumnaPrecio({ name = "", label = "",  sortable = true, clase = "", visible = true }) : IColumna 
+  static ColumnaPrecio({ name = "", label = "",  sortable = true, clase = "", visible = true }) : IColumna
   {
     let col               = new Columna({ name: name, label: label, sortable: sortable, clase: clase })
         col.format        = val => formatoPrecio( val, "decimales-no" )// + "\r\n" + formatoPrecio( val *1.19, "decimales-no" )
@@ -82,7 +84,22 @@ export class Columna implements IColumna
     return col
   }
 
-  static ColumnaX100({ name = "", label = "",  sortable = true, clase = "", decimales = 2 }) : IColumna 
+  static ColumnaFecha({ name = "", label = "",  sortable = true, clase = "", visible = true }) : IColumna
+  {
+    let col               = new Columna({ name: name, label: label, sortable: sortable, clase: clase })
+        col.format        = val => {
+
+                                      const fecha = !!val && val instanceof Date ? val : new Date()
+                                      return fechaCorta( fecha)
+                                    }
+        col.align         = "right"
+        col.classes       = clase + " fuente-mono"
+        col.visible       = visible
+
+    return col
+  }
+
+  static ColumnaX100({ name = "", label = "",  sortable = true, clase = "", decimales = 2 }) : IColumna
   {
     let col               = new Columna({ name : name, label : label, sortable : sortable, clase: clase })
         col.format        = val => {
@@ -95,7 +112,7 @@ export class Columna implements IColumna
     return col
   }
 
-  static ColumnaSiNo({ name = "", label = "",  sortable = true, clase = "" }) : IColumna 
+  static ColumnaSiNo({ name = "", label = "",  sortable = true, clase = "" }) : IColumna
   {
     let col               = new Columna({ name : name, label : label, sortable : sortable, clase: clase })
         col.format        = ( val : boolean ) => siNo(val)
@@ -104,7 +121,7 @@ export class Columna implements IColumna
 
     return col
   }
-  
+
   static eliminarCol( name : string, columnas : IColumna[] )
   {
     const index = columnas.findIndex( c => c.name === name )
@@ -114,7 +131,7 @@ export class Columna implements IColumna
   static ocultarCol( name : string, cols : IColumna[] )
   {
     const index = cols.findIndex( c => c.name === name )
-    if(index === -1 ) return 
+    if(index === -1 ) return
     cols[index].visible = false
   }
 
@@ -124,5 +141,5 @@ export class Columna implements IColumna
 
   static ocultarColums( cols : string[], columnas : IColumna[]  ){
     for (const col of cols) Columna.ocultarCol( col, columnas )
-  }    
+  }
 }
