@@ -162,7 +162,7 @@
           modales             } = storeToRefs( useStoreAcuerdo() )
   const { crearNuevoGrupo     } = useControlProductos()
 
-  watch( () => modales.value.formulario, (mostrarForm) => destacarLineaElegida(mostrarForm) )
+  watch( () => modales.value.formulario, (mostrarForm) => destacarLineaElegida( mostrarForm ?? false ) )
 
 
 </script>

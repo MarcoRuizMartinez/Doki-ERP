@@ -6,13 +6,14 @@
     class-contenido         ="column gap-sm"
     min-width               ="400px"
     >
-    <div style              ="height: 80vh; overflow-y: auto" class="fit">
+    <div style              ="height: 80vh; overflow-y: auto;" class="fit">
       <Container 
         lock-axis           ="y"
         drag-class          ="opacity-ghost"
         drop-class          ="opacity-ghost-drop"
         :get-ghost-parent   ="getGhostParent"
         @drop               ="ordenarLineas"
+        @drop-ready         ="onDropReady"
         >
         <Draggable
           v-for             ="linea in lineas"
@@ -69,6 +70,13 @@
     })    
   })
 
+  function onDropReady(){    
+    let ultimoNodo = document.body.lastChild;
+    if(!!ultimoNodo){
+      ultimoNodo.style.zIndex  = "10000";
+    }
+  }  
+
   function ordenarLineas( dropResult )
   {
     lineas.value                = applyDrag( lineas.value, dropResult )
@@ -79,8 +87,6 @@
     sortArray( grupoElegido.value.productos, "orden" )
     deGruposAProductos()
   }
-
-
   
   function applyDrag(arr, dragResult)
   {

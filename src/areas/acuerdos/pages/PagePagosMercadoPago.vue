@@ -1,13 +1,13 @@
 <template>
   <q-page padding class             ="row item-stretch content-start justify-start">
     <ventana
+      titulo                        ="Pagos MercadoPago"
       class                         ="col-12"
       class-contenido               ="column items-center"
       height                        ="100%"
       size-icon-carga               ="22em"
       icono                         ="mdi-credit-card-check"
       :modo                         ="modo"
-      titulo                        ="Pagos MercadoPago"
       :padding-contenido            ="modo === 'normal' ? '0' : '12px' "
       >
       <template                     #menu>
@@ -59,8 +59,6 @@
 </template>
 
 <script setup lang="ts">
-//:columns                  ="columnas"
-//:visible-columns          ="columnasVisibles"
   // * /////////////////////////////////////////////////////////////////////// Core
   import {  ref,
             onMounted           } from "vue"

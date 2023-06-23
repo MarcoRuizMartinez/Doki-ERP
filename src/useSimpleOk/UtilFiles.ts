@@ -40,16 +40,15 @@ export function generarCSVDesdeTabla( nombre :string = "", columnsTabla : IColum
         celda               = siNo( fila[columna.name], false )
       else  if(tipo === "number") 
         celda               = fila[columna.name].toString().replace(".", ",")
-      else  if(tipo === "object")
+      else  if(tipo === "object" && !!fila[columna.name])
       {
-              if(fila[columna.name].hasOwnProperty("nombre") && !!fila[columna.name].nombre )
+              if(fila[columna.name]?.hasOwnProperty("nombre") && !!fila[columna.name]?.nombre )
           celda             = fila[columna.name].nombre
         else  if(fila[columna.name].hasOwnProperty("nombreCompleto") && !!fila[columna.name].nombreCompleto )
           celda             = fila[columna.name].nombreCompleto
         else  if(fila[columna.name].hasOwnProperty("nombreCompleto") && !!fila[columna.name].nombreCompleto )
           celda             = fila[columna.name].nombreCompleto
       }
-        
       
       arrayFila.push( celda )
     }
