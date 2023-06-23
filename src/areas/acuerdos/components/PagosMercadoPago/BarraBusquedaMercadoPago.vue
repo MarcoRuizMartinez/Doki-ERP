@@ -1,20 +1,5 @@
 <template>
   <div class                  ="full-width relative-position row q-pa-none no-wrap scroll">
-    <!-- //* ///////////////////////////////////////////////////////////////////// FIELD SET REF Y USUARIO  -->
-    <fieldset-filtro
-      titulo                  ="Búsqueda"
-      class-conenido          ="column q-gutter-xs"
-      >
-      <!-- //* ///////////////////////////////////////////////// Busqueda general -->        
-      <input-buscar           clearable hundido
-        v-model               ="b.f.buscar"
-        label                 ="Búsqueda Ref"
-        class                 ="width200"
-        icon                  ="mdi-magnify"
-      />
-      
-      <slot name              ="filtro"></slot>
-    </fieldset-filtro>
     <!-- //* /////////////////////////////////////////////////// Fecha creacion -->
     <fieldset-filtro
       titulo                  ="Creación"
@@ -35,6 +20,13 @@
         :desde                ="b.f.desde"
       />
     </fieldset-filtro>
+    <!-- //* ///////////////////////////////////////////////////////////////////// FIELD SET REF Y USUARIO  -->
+    <fieldset-filtro
+      titulo                  ="Búsqueda"
+      class-conenido          ="column q-gutter-xs"
+      >
+      <slot name              ="filtro"></slot>
+    </fieldset-filtro>    
     <!-- //* ///////////////////////////////////////////////////////////////////// FIELD SET Paginación -->
     <fieldset-filtro
       titulo                  ="Paginas"
@@ -66,7 +58,7 @@
         />
         <Tooltip label        ="Pagina"/>
         <q-spinner-puff
-          v-if                ="b.haySiguientePagina"
+          v-if                ="haySiguientePagina"
           color               ="primary"
           size                ="2em"
           class               ="q-mt-xs"
@@ -78,80 +70,68 @@
       class-conenido          ="grilla-ribom"
       >
       <!-- //* ///////////////////////////////////////////////// Botones -->
-      <div class                ="row justify-around q-mt-sm">
+      <div class              ="row justify-around q-mt-sm">
         <!-- //* /////////////////////////////////////////////// Boton recargar -->
         <div>
-          <q-btn                round push glossy
-            icon                ="mdi-refresh"
-            padding             ="xs"
-            color               ="primary"
-            :disable            ="b.queryVacia"
-            @click              ="buscar"
+          <q-btn              round push glossy
+            icon              ="mdi-refresh"
+            padding           ="xs"
+            color             ="primary"
+            :disable          ="b.queryVacia"
+            @click            ="buscar"
             >
-            <Tooltip label      ="Recargar"/>
+            <Tooltip label    ="Recargar"/>
           </q-btn>
         </div>
         <!-- //* /////////////////////////////////////////////// Boton limpiar -->
         <div>
-          <q-btn                round push glossy
-            icon                ="mdi-close"
-            padding             ="xs"
-            color               ="primary"
-            :disable            ="b.queryVacia"
-            @click              ="limpiarBusqueda"
+          <q-btn              round push glossy
+            icon              ="mdi-close"
+            padding           ="xs"
+            color             ="primary"
+            :disable          ="b.queryVacia"
+            @click            ="limpiarBusqueda"
             >
-            <Tooltip label      ="Limpiar búsqueda"/>
+            <Tooltip label    ="Limpiar búsqueda"/>
           </q-btn>
         </div>
         <!-- //* /////////////////////////////////////////////// Boton exportar -->
         <div>
-          <q-btn                round push glossy
-            icon                ="mdi-microsoft-excel"
-            color               ="primary"
-            padding             ="xs"
-            :disable            ="b.queryVacia"
-            @click              ="emit('exportar')"
+          <q-btn              round push glossy
+            icon              ="mdi-microsoft-excel"
+            color             ="primary"
+            padding           ="xs"
+            :disable          ="b.queryVacia"
+            @click            ="emit('exportar')"
             >
-            <Tooltip label      ="Descargar"/>
+            <Tooltip label    ="Descargar"/>
           </q-btn>
         </div>
       </div> 
     </fieldset-filtro>
-    <inner-loading :cargando    ="loading?.carga ?? false"/>
+    <inner-loading :cargando  ="loading?.carga ?? false"/>
   </div>
 </template>
 <script lang="ts" setup>
   // * /////////////////////////////////////////////////////////////////////// Core
-  import {  toRefs,
-            watch,
+  import {  watch,
             computed            } from "vue"
   // * /////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs         } from "pinia"
-  import {  useStoreUser        } from "src/stores/user"
   import {  useStoreAcuerdo     } from "src/stores/acuerdo"
-
   // * /////////////////////////////////////////////////////////////////////// Modelos
-  import {  Incentivo           } from "src/areas/nomina//models/Incentivo"            
-  import {  GRUPO_USUARIO       } from "src/models/TiposVarios"
-  import {  IQuery, Busqueda    } from "src/models/Busqueda"
-
+  import {  IQuery              } from "src/models/Busqueda"
   // * /////////////////////////////////////////////////////////////////////// Componentes
   import    fieldsetFiltro        from "components/utilidades/Fieldset.vue"
-  import    inputNumber           from "components/utilidades/input/InputFormNumber.vue"
-  import    selectLabelValue      from "components/utilidades/select/SelectLabelValue.vue"
-  import    selectUsuario         from "src/areas/usuarios/components/SelectUsuario.vue"
-  import    inputBuscar           from "components/utilidades/input/InputSimple.vue"
   import    inputFecha            from "components/utilidades/input/InputFecha.vue"
   import    innerLoading          from "components/utilidades/InnerLoading.vue"
 
   const { loading,
           busqueda : b  }   = storeToRefs( useStoreAcuerdo() )
 
-  const props               = defineProps({
-    largo: { required: true, type: Number },
+  const { total }           = defineProps({    
+    total: { required: true, type: Number },
   })
-
-  const { largo }           = toRefs( props )
 
   const emit = defineEmits<{
     (e: 'buscar',   value: IQuery ): void
@@ -171,6 +151,7 @@
   function buscar()
   {
     b.value.copiarQueryARourter()
+    if(!busquedaCompleta.value) return
     emit("buscar", b.value.query)
   }
 
@@ -179,5 +160,23 @@
     if(todoLimpio) emit("limpiar")
   }  
 
-  const siguientePagina           = computed(()=> b.value.siguientePagina( largo.value ) )
+  const busquedaCompleta          = computed(()=> ( "fechaDesde"  in b.value.query &&
+                                                    "fechaHasta"  in b.value.query
+                                                  )
+                                            )
+
+  const haySiguientePagina        = computed(()=> {
+    const limit                   = b.value.query?.limite ?? 0
+    const offset                  = (b.value.query?.offset ?? 0)
+    const largo                   = limit + offset
+    const hayMas                  = largo < total
+    return hayMas
+  })
+
+  const siguientePagina           = computed(()=> {
+    const aumentoPagina           = haySiguientePagina.value ? 1 : 0
+    const pagNow                  = b.value.f.pagina
+    const pagNext                 = pagNow + aumentoPagina
+    return pagNext
+  } )
 </script>

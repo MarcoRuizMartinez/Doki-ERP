@@ -191,7 +191,13 @@ const routes: RouteRecordRaw[] = [
         path:       'tienda',
         name:       'pedidosTienda',
         component:  () => import('src/areas/acuerdos/pages/PagePedidosWoo.vue'),
-      },      
+      },
+      //* ////////////////////////////////////////////////////////////////// Pedido cliente Woocommerce 
+      {
+        path:       'mercado-pago',
+        name:       'pagosMercadoPago',
+        component:  () => import('src/areas/acuerdos/pages/PagePagosMercadoPago.vue'),
+      },
       //* ////////////////////////////////////////////////////////////////// Pedido cliente Ver 
       {
         path:       'cliente/:id',

@@ -123,7 +123,7 @@
   import {  ITercero,
             Tercero,
                                 } from "src/areas/terceros/models/Tercero"              
-  import {  IQuery              } from "src/models/Busqueda"                                
+  import {  IQuery              } from "src/models/Busqueda"
   // * /////////////////////////////////////////////////////////////////////// Componentes
   import    ventana               from "components/utilidades/Ventana.vue"
   import    inputBuscar           from "components/utilidades/input/InputSimple.vue"
@@ -195,7 +195,8 @@
       p.estadoCliente         = !!p.idTercero ? "✅" : "✖️"
       /////////////////////// Pago
       p.estadoPago            = "🔎"      
-      p.pagos                 = await buscarPagosMercadoPago( p.id )
+      const { pagos }         = await buscarPagosMercadoPago( { id: p.id } )  
+      p.pagos                 = pagos
       p.estadoPago            = !!p.pagos.length ? "✅" : "✖️"      
     }
   }

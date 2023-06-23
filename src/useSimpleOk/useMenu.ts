@@ -208,7 +208,14 @@ export function useMenu()
                             to:         "/guias",
                             visible:    true
                           }),
-        },           
+        },
+        { ...new ItemMenu({
+                            label:      "MercadoPago",
+                            icon:       "mdi-credit-card-check",
+                            to:         "/pedidos/mercado-pago",
+                            visible:    true
+                          }),
+        },            
       ]
     },
 /*     

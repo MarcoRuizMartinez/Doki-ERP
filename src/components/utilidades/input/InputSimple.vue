@@ -11,7 +11,7 @@
       :borderless     ="!hundido"
       :label          ="label"
       :dense          ="dense"
-      :disable        ="loading"
+      :disable        ="disable || loading "
       @blur           ="onBlur"
       @focus          ="campoEnfocado = true"
       @clear          ="emit('clear')"
@@ -41,6 +41,7 @@
       debounce:   { type: String,   default:  "400"         },
       dense:      { type: Boolean,  default:  true          },
       loading:    { type: Boolean,  default:  false         },
+      disable:    { type: Boolean,  default:  false         },
     }
   )
 
