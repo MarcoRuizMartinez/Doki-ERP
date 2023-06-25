@@ -63,7 +63,7 @@ import {  IFormaPago,       FormaPago       } from "src/models/Diccionarios/Form
 import {  IMetodoEntrega,   MetodoEntrega   } from "src/models/Diccionarios/MetodoEntrega"
 import {  IOrigenContacto,  OrigenContacto  } from "src/models/Diccionarios/OrigenContacto"
 import {  ITiempoEntrega,   TiempoEntrega   } from "src/models/Diccionarios/TiempoEntrega"
-import {  IComentario,      Comentario      } from "src/models/Comentario"
+import {  IAccion,          Accion          } from "src/areas/comunicacion/models/Accion"
 import {  IArchivo                          } from "src/models/Archivo"
 import {  X100,
           fechaCorta,
@@ -211,7 +211,7 @@ export interface IAcuerdo
   puedeCrearSubtotal:         boolean
   puedeCrearNuevoGrupo:       boolean  
 
-  comentarios:                IComentario[]
+  comentarios:                IAccion[]
 
   /* Solo para cotizaciones */
   titulo:                     string
@@ -300,7 +300,7 @@ export class Acuerdo implements IAcuerdo
   tiempoEntrega:              ITiempoEntrega
   conIVA:                     boolean
   acuerdosEnlazados:          IAcuerdo[]
-  comentarios:                IComentario[]   = []
+  comentarios:                IAccion[]   = []
 
   /* Solo para cotizaciones */
   titulo:                     string

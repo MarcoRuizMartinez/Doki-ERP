@@ -5,7 +5,7 @@ import {  TIPO_ACUERDO      } from "src/areas/acuerdos/models/ConstantesAcuerdos
 import {  getUsuarioDB      } from "src/services/useDexie"
 
 
-export interface IComentario
+export interface IAccion
 {
   id                        : number  // 
   codigo                    : string  // AC_OTH
@@ -27,9 +27,10 @@ export interface IComentario
   hace                      : string
   sePuedeEditar             : boolean
   editandoComentario        : boolean
+  esTarea                   : boolean
 }
 
-export class Comentario implements IComentario
+export class Accion implements IAccion
 {
   id                        : number  = 0
   codigo                    : string  = "AC_OTH"
@@ -69,6 +70,8 @@ export class Comentario implements IComentario
     }
   }
 
+  get esTarea(): boolean { return this.progreso > -1 }
+
   get hace(): string  { 
     const diferencia  = Date.now() - this.creacion.valueOf()
     const hace        =   diferencia <= 3_600_000   ? diferenciaFechas( this.creacion.valueOf(), Date.now() ) // 1 hora
@@ -82,9 +85,9 @@ export class Comentario implements IComentario
     return diferencia <= 600_000 // 600_000 son 10 minutos
   }
 
-  static async comentarioApiToComentario( cApi : any ) : Promise<IComentario>
+  static async accionApiToAccion( cApi : any ) : Promise<IAccion>
   {
-      const c       = Object.assign( new Comentario(), cApi ) as IComentario
+      const c       = Object.assign( new Accion(), cApi ) as IAccion
       c.creadorId   = +cApi?.creadorId  ?? 0
       c.asignadoId  = +cApi?.asignadoId ?? 0
       c.modificoId  = +cApi?.modificoId ?? 0
@@ -109,5 +112,6 @@ export class Comentario implements IComentario
             : tipo === TIPO_ACUERDO.FACTURA_CLI     ? "invoice"
             : tipo === TIPO_ACUERDO.FACTURA_PRO     ? "invoice_supplier"
             : "xxx"
+            //product
   }
 }

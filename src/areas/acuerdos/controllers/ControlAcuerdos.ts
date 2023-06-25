@@ -28,7 +28,7 @@ import {  ESTADO_CTZ,
 import {  IOrigenContacto       } from "src/models/Diccionarios/OrigenContacto"
 import {  IUsuario              } from "src/areas/usuarios/models/Usuario"
 import {  ITercero              } from "src/areas/terceros/models/Tercero"
-import {  Comentario            } from "src/models/Comentario"
+import {  Comentario            } from "src/areas/comunicacion/models/Accion"
 import {  ICondicionPago        } from "src/models/Diccionarios/CondicionPago"
 import {  IFormaPago            } from "src/models/Diccionarios/FormaPago"
 import {  LineaAcuerdo          } from "src/areas/acuerdos/models/LineaAcuerdo"

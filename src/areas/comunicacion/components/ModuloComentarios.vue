@@ -133,8 +133,8 @@
   import {  style                 } from "src/useSimpleOk/useEstilos"
   import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"
   // * /////////////////////////////////////////////////////////////////////////////////// Modelos
-  import {  Comentario,
-            IComentario           } from "src/models/Comentario"
+  import {  Accion,
+            IAccion               } from "../models/Accion"
   // * /////////////////////////////////////////////////////////////////////////////////// Componentes
   import    inputBuscar             from "components/utilidades/input/InputSimple.vue"
 
@@ -143,7 +143,7 @@
   const cuentaAperturas         = ref<number>(0)
   const errorEnEdicion          = ref<boolean>(false)
     
-  const comentario              = ref<IComentario>( new Comentario() )  
+  const comentario              = ref<IAccion>( new Accion() )  
   const { apiDolibarr         } = useApiDolibarr()
   const { aviso               } = useTools()
   const { acuerdo, loading    } = storeToRefs( useStoreAcuerdo() )
@@ -157,7 +157,6 @@
   })
 
   watch(()=> acuerdo.value.comentarios.length, (largo)=>{
-    console.log("largo: ", largo);
     if(cuentaAperturas.value == 0 && !!largo)
       isOpen.value = true
   })
@@ -191,7 +190,7 @@
       comentario.value.value    = comentario.value.value.replaceAll("\n", "<br/>")
       acuerdo.value.comentarios.push( comentario.value )
       textoComentario.value     = ""
-      comentario.value          = new Comentario()
+      comentario.value          = new Accion()
       scrollAlFinal()
     }
     else
@@ -200,7 +199,7 @@
     }
   }
 
-  async function ejecutarEditarComentario( c : IComentario, valor : any )
+  async function ejecutarEditarComentario( c : IAccion, valor : any )
   {
     if(typeof valor != "string" || !valor) return
     c.editandoComentario = true
@@ -221,7 +220,7 @@
   {
     comentario.value.value      = textoComentario.value
     comentario.value.elementoId = acuerdo.value.id
-    comentario.value.tipo       = Comentario.getTipo( acuerdo.value.tipo )
+    comentario.value.tipo       = Accion.getTipo( acuerdo.value.tipo )
     comentario.value.terceroId  = acuerdo.value.tercero.id
     comentario.value.asignadoId = usuario.value.id
     comentario.value.creador    = usuario.value

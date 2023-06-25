@@ -150,7 +150,7 @@
   import    entregas                from "./../../components/Modulos/ModuloEntregas.vue"
   import    calificacion            from "./../../components/Modulos/ModuloCalificacion.vue"
   import    anticipos               from "./../../components/Modulos/ModuloAnticipos.vue"
-  import    comentarios             from "./../../components/Modulos/ModuloComentarios.vue"
+  import    comentarios             from "src/areas/comunicacion/components/ModuloComentarios.vue"
   //import    nuevaEntrega          from ".././Modals/NuevaEntregaSelectBodega.vue"
   import    remision                from "src/areas/acuerdos/components/PDF/RemisionPDF.vue"
   import    documentos              from "components/archivos/ModuloArchivos.vue"
