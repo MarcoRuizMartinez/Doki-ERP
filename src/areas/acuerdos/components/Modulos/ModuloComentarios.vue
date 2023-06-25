@@ -6,7 +6,7 @@
     <!-- //* ///////////////////////////////////////////////////////// Boton Flotante -->
     <q-fab 
       v-model                   ="isOpen"
-      direction                 ="left"
+      direction                 ="up"
       padding                   ="sm"
       :color                    ="isOpen ? 'red' : 'positive'"
       >
@@ -16,6 +16,12 @@
           :class                ="{'mdi-spin' : loading.commentsLoad}"
         />
       </template>
+      <q-btn                    round unelevated
+        color                   ="positive"
+        icon                    ="mdi-check"
+        >
+        <Tooltip label          ="Nueva tarea"/>
+      </q-btn>
       <div class                ="chat panel-blur-70 shadow-6 radius-10 column justify-between">
         <!-- //* ///////////////////////////////////////////////////// Sroll Area -->
         <q-scroll-area
@@ -150,6 +156,12 @@
     asignarValoresAComentario()
   })
 
+  watch(()=> acuerdo.value.comentarios.length, (largo)=>{
+    console.log("largo: ", largo);
+    if(cuentaAperturas.value == 0 && !!largo)
+      isOpen.value = true
+  })
+
   watch(isOpen, (open)=>{
     if(open){
       cuentaAperturas.value++
@@ -229,6 +241,7 @@
 .chat{
   height: 380px;
   width: 360px;
-  margin-top: -330px; 
+  margin-bottom: -100px; 
+  margin-left: -420px; 
 }
 </style>

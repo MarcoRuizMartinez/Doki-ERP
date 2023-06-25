@@ -147,10 +147,8 @@
       new Columna           ({ name: "documento",         label: "documento"  }),
       new Columna           ({ name: "id"                                     }),
       new Columna           ({ name: "ref"                                    }),
-      new Columna           ({ name: "moneda",            label: "moneda"     }),
       Columna.ColumnaPrecio ({ name: "totalRecibido",     label: "recibido"   }),
     ]
-    columnas.value.forEach( c => c.sortable = false )
   }
 
 

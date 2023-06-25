@@ -1,0 +1,64 @@
+[
+    {
+        "type": "File",
+        "name": "c:\\Users\\estad\\Apps\\SimpleOk-ERP\\src\\router\\routes.ts",
+        "parent_id": null,
+        "fsPath": "c:\\Users\\estad\\Apps\\SimpleOk-ERP\\src\\router\\routes.ts",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "IWTmKkhFbqcQg7Ei"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\estad\\Apps\\SimpleOk-ERP\\src\\useSimpleOk\\useMenu.ts",
+        "parent_id": null,
+        "fsPath": "c:\\Users\\estad\\Apps\\SimpleOk-ERP\\src\\useSimpleOk\\useMenu.ts",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "fu59S4xrzajY8oFA"
+    },
+    {
+        "type": "Group",
+        "name": "Productos",
+        "parent_id": null,
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "dwaYvuUqzL1jIfQx"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\estad\\Apps\\SimpleOk-ERP\\src\\areas\\productos\\models\\ProductoDolibarr.ts",
+        "parent_id": "dwaYvuUqzL1jIfQx",
+        "fsPath": "c:\\Users\\estad\\Apps\\SimpleOk-ERP\\src\\areas\\productos\\models\\ProductoDolibarr.ts",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "o9OvEjLX0cDS3H2x"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\estad\\Apps\\SimpleOk-ERP\\src\\areas\\productos\\models\\ProductoCategoria.ts",
+        "parent_id": "dwaYvuUqzL1jIfQx",
+        "fsPath": "c:\\Users\\estad\\Apps\\SimpleOk-ERP\\src\\areas\\productos\\models\\ProductoCategoria.ts",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "PNAXz0Ui9xbKsMIy"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\estad\\Apps\\SimpleOk-ERP\\src\\areas\\productos\\pages\\PageCategorias.vue",
+        "parent_id": "dwaYvuUqzL1jIfQx",
+        "fsPath": "c:\\Users\\estad\\Apps\\SimpleOk-ERP\\src\\areas\\productos\\pages\\PageCategorias.vue",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "pM9mbaQrXfvZUGH8"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\estad\\Apps\\SimpleOk-ERP\\src\\areas\\acuerdos\\components\\Modulos\\ModuloComentarios.vue",
+        "parent_id": null,
+        "fsPath": "c:\\Users\\estad\\Apps\\SimpleOk-ERP\\src\\areas\\acuerdos\\components\\Modulos\\ModuloComentarios.vue",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "IuxSr8laCw0KVcgX"
+    }
+]

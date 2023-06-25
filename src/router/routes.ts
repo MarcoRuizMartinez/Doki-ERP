@@ -311,6 +311,11 @@ const routes: RouteRecordRaw[] = [
         name:       'crearProducto',
         component:  () => import('src/areas/productos/pages/PageProductosCrear.vue'),
       },      
+      {
+        path:       '/categorias',
+        name:       'categorias',
+        component:  () => import('src/areas/productos/pages/PageCategorias.vue'),
+      },
     ],
   },
   //* //////////////////////////////////////////////////////////////////////

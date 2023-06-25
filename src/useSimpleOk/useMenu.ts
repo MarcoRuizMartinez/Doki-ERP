@@ -258,6 +258,13 @@ export function useMenu()
                               visible:  usuario.value.esProduccion || usuario.value.esGerencia
                           } ),
         },
+        { ...new ItemMenu({
+                              label:    "Categorías",
+                              icon:     "mdi-group",
+                              to:       "/productos/categorias",
+                              visible:  false//usuario.value.esProduccion || usuario.value.esGerencia
+                          } ),
+        },        
       ]
     },
   ]
