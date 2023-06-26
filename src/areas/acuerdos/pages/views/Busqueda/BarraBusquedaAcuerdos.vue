@@ -2,7 +2,7 @@
   <q-tab-panels                 animated keep-alive vertical
     v-model                     ="tabs.activa"
     class                       ="transparent fit"
-    >    
+    >
     <!-- //* /////////////////////////////////////////////////////// Tab 1 -->
     <q-tab-panel
       name                      ="tab_1"
@@ -12,7 +12,7 @@
         titulo                  ="Búsqueda"
         class-conenido          ="column q-gutter-xs"
         >
-        <!-- //* ///////////////////////////////////////////////// Busqueda general -->        
+        <!-- //* ///////////////////////////////////////////////// Busqueda general -->
         <input-buscar           clearable hundido
           v-model               ="b.f.buscar"
           label                 ="Búsqueda"
@@ -112,7 +112,7 @@
           class                 ="width160"
           label                 ="Lugar envió"
           tooltip               ="Municipio contacto"
-        />        
+        />
         <!-- //* ///////////////////////////////////////////////// Pedido facturado -->
         <select-label-value     use-input hundido clearable flat bordered
           v-if                  ="b.esPedido"
@@ -155,7 +155,7 @@
             color               ="primary"
             size                ="2em"
             class               ="q-mt-xs"
-          />          
+          />
         </div>
       </fieldset-filtro>
       <fieldset-filtro
@@ -282,7 +282,7 @@
           icon                  ="mdi-circle-multiple"
           class                 ="width160"
           :options              ="Busqueda.listaTerceroInterno"
-        /> 
+        />
         <!-- //* ///////////////////////////////////////////////// Forma de pago -->
         <!-- //* ///////////////////////////////////////////////// Estado Anticipo -->
         <multi-label-value
@@ -310,7 +310,7 @@
           icon                  ="mdi-factory"
           class                 ="width160"
           :options              ="Busqueda.listaOrdenesProv"
-        />         
+        />
         <!-- //* ///////////////////////////////////////////////// Comision -->
         <select-label-value     use-input hundido clearable flat bordered
           v-if                  ="b.esPedido"
@@ -319,7 +319,7 @@
           icon                  ="mdi-cash-check"
           class                 ="width160"
           :options              ="Busqueda.listaEstadosPago"
-        />           
+        />
       </fieldset-filtro>
       <fieldset-filtro
         v-if                    ="!b.esEntrega"
@@ -372,7 +372,7 @@
             </tr>
           </tbody>
         </table>
-        <inner-loading :cargando="loading.carga"/>
+        <inner-loading :cargando="loading?.carga ?? false"/>
       </fieldset-filtro>
     </q-tab-panel>
   </q-tab-panels>
@@ -389,7 +389,7 @@
   import {  useStoreAcuerdo     } from 'src/stores/acuerdo'
   // * /////////////////////////////////////////////////////////////////////// Componibles
   import {  formatoPrecio       } from "src/useSimpleOk/useTools"
-  // * /////////////////////////////////////////////////////////////////////// Modelos  
+  // * /////////////////////////////////////////////////////////////////////// Modelos
   import {  IQuery, Busqueda    } from "src/models/Busqueda"
   import {  GRUPO_USUARIO       } from "src/models/TiposVarios"
   // * /////////////////////////////////////////////////////////////////////// Componentes
@@ -403,9 +403,9 @@
   import    inputBuscar           from "components/utilidades/input/InputSimple.vue"
   import    innerLoading          from "components/utilidades/InnerLoading.vue"
 
-  // * /////////////////////////////////////////////////////////////////////// Importaciones 
+  // * /////////////////////////////////////////////////////////////////////// Importaciones
   const { usuario, permisos     } = storeToRefs( useStoreUser() )
-  const { busqueda : b, 
+  const { busqueda : b,
           acuerdos,
           loading               } = storeToRefs( useStoreAcuerdo() )
   const { tabs                  } = storeToRefs( useStoreApp() )
@@ -413,7 +413,7 @@
   const emit = defineEmits<{
     (e: 'buscar',   value: IQuery ): void
     (e: 'limpiar',                ): void
-    (e: 'exportar',               ): void    
+    (e: 'exportar',               ): void
   }>()
 
   watch(()=>b.value.f, ()=>
@@ -433,26 +433,26 @@
     emit("buscar", query)
   }
 
-  function limpiarBusqueda(){
-    const todoLimpio  = b.value.limpiarQueryDeRouter()
+  async function limpiarBusqueda(){
+    const todoLimpio  = await b.value.limpiarQueryDeRouter()
     if(todoLimpio) emit("limpiar")
-  }  
+  }
 
   // * /////////////////////////////////////////////////////////////////////// Computed
-  const siguientePagina           = computed(()=> b.value.siguientePagina( acuerdos.value.length ) )  
-  const sumaAcuerdosSubtotal      = computed(()=> { 
+  const siguientePagina           = computed(()=> b.value.siguientePagina( acuerdos.value.length ) )
+  const sumaAcuerdosSubtotal      = computed(()=> {
     let suma                      = 0
     if(!!acuerdos.value && !!acuerdos.value.length)
       suma                        = acuerdos.value.map( a => a.totalConDescu ?? 0 ).reduce((acu, now) => (acu ?? 0) + now)
     return suma
   })
-  const sumaAcuerdosSubtotalLimpio= computed(()=> { 
+  const sumaAcuerdosSubtotalLimpio= computed(()=> {
     let suma                      = 0
     if(!!acuerdos.value && !!acuerdos.value.length)
       suma                        = acuerdos.value.map( a => a.subTotalLimpio ).reduce((acu, now) => (acu ?? 0) + now)
     return suma
   })
-  const sumaAcuerdosTotal         = computed(()=> { 
+  const sumaAcuerdosTotal         = computed(()=> {
     let suma                      = 0
     if(!!acuerdos.value && !!acuerdos.value.length)
       suma                        = acuerdos.value.map( a => a.totalConIva ).reduce((acu, now) => (acu ?? 0) + now)

@@ -21,7 +21,7 @@ export const labelValueNulo : ILabelValue = { label: "", value: null }
 export type  EstadoVerificar  = "off" | "verificando"  | "check" | "alert"
 export type  ModosVentana     = "normal" | "buscando" | "esperando-busqueda" | "sin-resultados"
 
-export const enum ALMACEN_LOCAL { 
+export const enum ALMACEN_LOCAL {
   COLOR           = "v3-color",
   FONDO           = "v3-fondo",
   PATRON          = "v3-patron",
@@ -42,13 +42,13 @@ export const enum ALMACEN_LOCAL {
   FECHA_LISTAS    = "v3-fechaListas",
 }
 
-export const AlmacenesLimpiar  : string[] = [  
+export const AlmacenesLimpiar  : string[] = [
   ALMACEN_LOCAL.COL_TERCEROS,
   ALMACEN_LOCAL.COL_ACUERDOS,
   ALMACEN_LOCAL.COL_COTIZACIONES,
   ALMACEN_LOCAL.COL_PEDIDOS,
   ALMACEN_LOCAL.COL_ENTREGAS,
-  ALMACEN_LOCAL.COL_OC_PROVEE,  
+  ALMACEN_LOCAL.COL_OC_PROVEE,
   ALMACEN_LOCAL.COL_PRODUCTOS,
   ALMACEN_LOCAL.COL_INVENTIVOS,
   ALMACEN_LOCAL.COL_COTZ_ENVI,
@@ -66,7 +66,7 @@ export const enum TIPO_USUARIO {
   ADMINISTRACION  = "2",
   GERENCIA        = "3",
   PRODUCTOS       = "4",
-  LOGISTICA       = "5",    
+  LOGISTICA       = "5",
 }
 
 export const enum AREA {
@@ -99,6 +99,7 @@ export const enum GRUPO_USUARIO {
   DESARROLLO      = "Desarrollo",
   CONTABLE        = "Contable",
   EN_NOMINA       = "Nomina",
+  MIEMBRO         = "Miembro",
 }
 
 
@@ -122,9 +123,9 @@ export interface ILoading {
   metodoEntrega   ?: boolean
   tiempoEntrega   ?: boolean
   conTotal        ?: boolean
-  conIVA          ?: boolean  
+  conIVA          ?: boolean
   conAIU          ?: boolean
-  valoresAIU      ?: boolean  
+  valoresAIU      ?: boolean
   añadir          ?: boolean
   borrarLinea     ?: boolean
   editarLinea     ?: boolean

@@ -1,24 +1,27 @@
 <template>
   <q-page-sticky
-    position                    ="bottom-right" 
+    v-bind                      ="$attrs"
+    position                    ="bottom-right"
     :offset                     ="[18, 18]"
     >
     <!-- //* ///////////////////////////////////////////////////////// Boton Flotante -->
-    <q-fab 
+    <q-fab
       v-model                   ="isOpen"
       direction                 ="up"
       padding                   ="sm"
       :color                    ="isOpen ? 'red' : 'positive'"
       >
       <template                 #icon>
-        <q-icon 
+        <q-icon
           :name                 ="loading.commentsLoad ? 'mdi-loading' : 'mdi-comment-multiple'"
           :class                ="{'mdi-spin' : loading.commentsLoad}"
         />
       </template>
+      <!-- //* /////////////////////////////////////////////////////// Boton Tarea -->
       <q-btn                    round unelevated
         color                   ="positive"
         icon                    ="mdi-check"
+        @click                  ="abrirFormularioTarea"
         >
         <Tooltip label          ="Nueva tarea"/>
       </q-btn>
@@ -37,11 +40,11 @@
             :sent               ="c.creador.id === usuario.id"
             :avatar             ="c.creador.fotoPerfilMini"
             :text               ="[c.value]"
-            :bg-color           ="c.creador.id === usuario.id ? 'indigo-9' : 'teal-9'"            
+            :bg-color           ="c.creador.id === usuario.id ? 'indigo-9' : 'teal-9'"
             :stamp              ="c.hace"
             >
             <q-spinner-dots
-              v-if              ="c.editandoComentario" 
+              v-if              ="c.editandoComentario"
               size              ="2rem"
             />
             <div v-else>
@@ -68,8 +71,8 @@
                   :dense        ="false"
                   @ctrl-enter   ="scope.set"
                   >
-                </input-buscar>               
-              </q-popup-edit> 
+                </input-buscar>
+              </q-popup-edit>
             </div>
           </q-chat-message>
         </q-scroll-area>
@@ -94,8 +97,8 @@
               @click            ="crearComentario"
               >
               <Tooltip>Enviar</Tooltip>
-            </q-btn> 
-            <!-- //* ///////////////////////////////////////////////// Boton recargar -->           
+            </q-btn>
+            <!-- //* ///////////////////////////////////////////////// Boton recargar -->
             <q-btn
               v-bind            ="style.btnRedondoFlat"
               icon              ="mdi-reload"
@@ -107,7 +110,7 @@
           </input-buscar>
         </div>
       </div>
-      <template                 #tooltip 
+      <template                 #tooltip
         v-if                    ="!isOpen && !!acuerdo.comentarios.length"
         >
         <!-- //* ///////////////////////////////////////////////////// Cantidad de mensajes -->
@@ -115,9 +118,18 @@
           color                 ="red"
           :label                ="acuerdo.comentarios.length"
         />
-      </template>      
+      </template>
     </q-fab>
   </q-page-sticky>
+  <!-- //* ///////////////////////////////////////////////////////////// Modal Buscar Formulario anticipo -->
+  <q-dialog
+    v-model                     ="formularioOn"
+    v-bind                      ="style.dialogo"
+    >
+    <formulario-tarea
+
+    />
+  </q-dialog>
 </template>
 <script setup lang="ts">
   // * /////////////////////////////////////////////////////////////////////////////////// Core
@@ -125,10 +137,10 @@
   import {  QScrollArea           } from 'quasar';
   // * /////////////////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs           } from 'pinia'
-  import {  useStoreAcuerdo       } from 'src/stores/acuerdo'  
+  import {  useStoreAcuerdo       } from 'src/stores/acuerdo'
   import {  useStoreUser          } from 'src/stores/user'
   // * /////////////////////////////////////////////////////////////////////////////////// Componibles
-  import {  useApiDolibarr        } from "src/services/useApiDolibarr"  
+  import {  useApiDolibarr        } from "src/services/useApiDolibarr"
   import {  useTools, pausa       } from "src/useSimpleOk/useTools"
   import {  style                 } from "src/useSimpleOk/useEstilos"
   import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"
@@ -137,20 +149,22 @@
             IAccion               } from "../models/Accion"
   // * /////////////////////////////////////////////////////////////////////////////////// Componentes
   import    inputBuscar             from "components/utilidades/input/InputSimple.vue"
+  import    formularioTarea         from "./FormularioTarea.vue"
 
   const isOpen                  = ref<boolean>(false)
+  const formularioOn            = ref<boolean>(false)
   const textoComentario         = ref<string>("")
   const cuentaAperturas         = ref<number>(0)
   const errorEnEdicion          = ref<boolean>(false)
-    
-  const comentario              = ref<IAccion>( new Accion() )  
+
+  const comentario              = ref<IAccion>( new Accion() )
   const { apiDolibarr         } = useApiDolibarr()
   const { aviso               } = useTools()
   const { acuerdo, loading    } = storeToRefs( useStoreAcuerdo() )
   const { usuario             } = storeToRefs( useStoreUser() )
   const { buscarComentarios,
           editarComentario    } = useControlAcuerdo()
-  const componenteScroll        = ref<InstanceType<typeof QScrollArea> | null>(null)                              
+  const componenteScroll        = ref<InstanceType<typeof QScrollArea> | null>(null)
 
   onMounted(()=>{
     asignarValoresAComentario()
@@ -181,7 +195,7 @@
 
     asignarValoresAComentario()
     const obj                   = comentario.value.commentToApi
-    
+
     loading.value.commentEdit   = true
     const { ok, data }          = await apiDolibarr("crear", "comentario", obj)
     loading.value.commentEdit   = false
@@ -199,6 +213,11 @@
     }
   }
 
+  function abrirFormularioTarea()
+  {
+    formularioOn.value = true
+  }
+
   async function ejecutarEditarComentario( c : IAccion, valor : any )
   {
     if(typeof valor != "string" || !valor) return
@@ -212,7 +231,7 @@
     if(!!componenteScroll.value){
       await pausa(200)
       componenteScroll.value.setScrollPercentage('vertical', 1, 400)
-        
+
     }
   }
 
@@ -234,13 +253,13 @@
     const valido = typeof val === "string" && val.length > 2
     errorEnEdicion.value = !valido
     return valido
-  }  
+  }
 </script>
 <style>
 .chat{
   height: 380px;
   width: 360px;
-  margin-bottom: -100px; 
-  margin-left: -420px; 
+  margin-bottom: -100px;
+  margin-left: -420px;
 }
 </style>

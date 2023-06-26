@@ -3,11 +3,29 @@ import {  IUsuario, Usuario } from "src/areas/usuarios/models/Usuario"
 import {  diferenciaFechas  } from "src/useSimpleOk/useTools"
 import {  TIPO_ACUERDO      } from "src/areas/acuerdos/models/ConstantesAcuerdos"
 import {  getUsuarioDB      } from "src/services/useDexie"
+import {  ILabelValue,
+          labelValueNulo    } from "src/models/TiposVarios"
+
+export const Prioridades = [
+  { value: 1, label: "😉Normal"         },
+  { value: 2, label: "😬Urgente"        },
+  { value: 3, label: "🚨Vida o Muerte"  }
+]
+
+export const Cuando = [
+  { value: 0, label: "Fecha"            },
+  { value: 1, label: "Hoy"              },
+  { value: 2, label: "Mañana"           },
+  { value: 3, label: "Esta semana"      },
+  { value: 4, label: "Otra semana"      },
+  { value: 5, label: "Otro mes"         },
+  { value: 6, label: "Algún momento"    }
+  ]
 
 
 export interface IAccion
 {
-  id                        : number  // 
+  id                        : number  //
   codigo                    : string  // AC_OTH
   creacion                  : Date
   creador                   : IUsuario
@@ -18,10 +36,12 @@ export interface IAccion
   asignado                  : IUsuario
   asignadoId                : number
   terceroId                 : number
-  progreso                  : number  
+  progreso                  : number
+  cuando                    : ILabelValue
+  prioridad                 : ILabelValue
   label                     : string
   value                     : string
-  elementoId                : number 
+  elementoId                : number
   tipo                      : string // order
   commentToApi              : any
   hace                      : string
@@ -32,24 +52,26 @@ export interface IAccion
 
 export class Accion implements IAccion
 {
-  id                        : number  = 0
-  codigo                    : string  = "AC_OTH"
-  creacion                  : Date    = new Date()
-  creadorId                 : number  = 0
-  modificado                : Date    = new Date()
-  modificoId                : number  = 0
-  asignadoId                : number  = 0
-  terceroId                 : number  = 0
-  progreso                  : number  = -1  
-  label                     : string  = ""
-  value                     : string  = ""
-  elementoId                : number  = 0
-  tipo                      : string  = ""
-  editandoComentario        : boolean = false
+  id                        : number        = 0
+  codigo                    : string        = "AC_OTH"
+  creacion                  : Date          = new Date()
+  creadorId                 : number        = 0
+  modificado                : Date          = new Date()
+  modificoId                : number        = 0
+  asignadoId                : number        = 0
+  terceroId                 : number        = 0
+  progreso                  : number        = -1
+  cuando                    : ILabelValue   = labelValueNulo
+  prioridad                 : ILabelValue   = labelValueNulo
+  label                     : string        = ""
+  value                     : string        = ""
+  elementoId                : number        = 0
+  tipo                      : string        = ""
+  editandoComentario        : boolean       = false
 
-  creador                   : IUsuario= new Usuario()  
+  creador                   : IUsuario= new Usuario()
   modifico                  : IUsuario= new Usuario()
-  asignado                  : IUsuario= new Usuario()  
+  asignado                  : IUsuario= new Usuario()
 
   constructor()
   {
@@ -64,7 +86,7 @@ export class Accion implements IAccion
       fk_element:   this.elementoId,
       elementtype:  this.tipo,
       fulldayevent: "0",
-      percentage:   this.progreso, 
+      percentage:   this.progreso,
       userownerid:  this.asignadoId,
       datep:        getMilisecShortForApiDolibarr( new Date() )
     }
@@ -72,7 +94,7 @@ export class Accion implements IAccion
 
   get esTarea(): boolean { return this.progreso > -1 }
 
-  get hace(): string  { 
+  get hace(): string  {
     const diferencia  = Date.now() - this.creacion.valueOf()
     const hace        =   diferencia <= 3_600_000   ? diferenciaFechas( this.creacion.valueOf(), Date.now() ) // 1 hora
                         : diferencia <= 28_800_000  ? `Hoy ${this.creacion.toLocaleString('es-CO', { hour: 'numeric', minute: "numeric", hour12: true })}` // 8 horas
@@ -101,7 +123,7 @@ export class Accion implements IAccion
       c.creador     = await getUsuarioDB( c.creadorId )
       c.asignado    = await getUsuarioDB( c.asignadoId )
       c.modifico    = await getUsuarioDB( c.modificoId )
-  
+
       return c
   }
 

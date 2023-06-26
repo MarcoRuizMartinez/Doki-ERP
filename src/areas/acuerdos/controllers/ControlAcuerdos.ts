@@ -7,8 +7,8 @@ import {  useStoreAcuerdo       } from 'src/stores/acuerdo'
 import {  useControlProductos   } from "src/areas/acuerdos/controllers/ControlLineasProductos"
 import {  servicesAcuerdos      } from "src/areas/acuerdos/controllers/servicesAcuerdos"
 import {  servicesTerceros      } from "src/areas/terceros/services/servicesTerceros"
-import {  useControlIncentivos  } from "src/areas/nomina/controllers/ControlIncentivos" 
-import {  IIncentivo, INCENTIVO_ORIGEN      } from "src/areas/nomina/models/Incentivo"  
+import {  useControlIncentivos  } from "src/areas/nomina/controllers/ControlIncentivos"
+import {  IIncentivo, INCENTIVO_ORIGEN      } from "src/areas/nomina/models/Incentivo"
 import {  useApiDolibarr        } from "src/services/useApiDolibarr"
 import {  useFetch              } from "src/useSimpleOk/useFetch"
 import {  getURL, getFormData   } from "src/services/APIMaco"
@@ -28,14 +28,14 @@ import {  ESTADO_CTZ,
 import {  IOrigenContacto       } from "src/models/Diccionarios/OrigenContacto"
 import {  IUsuario              } from "src/areas/usuarios/models/Usuario"
 import {  ITercero              } from "src/areas/terceros/models/Tercero"
-import {  Comentario            } from "src/areas/comunicacion/models/Accion"
+import {  Accion                } from "src/areas/comunicacion/models/Accion"
 import {  ICondicionPago        } from "src/models/Diccionarios/CondicionPago"
 import {  IFormaPago            } from "src/models/Diccionarios/FormaPago"
 import {  LineaAcuerdo          } from "src/areas/acuerdos/models/LineaAcuerdo"
 import {  IMetodoEntrega        } from "src/models/Diccionarios/MetodoEntrega"
 import {  ITiempoEntrega        } from "src/models/Diccionarios/TiempoEntrega"
 import {  IProyecto, Proyecto   } from "src/areas/proyectos/models/Proyecto"
-import {  Acuerdo               } from "src/areas/acuerdos/models/Acuerdo"  
+import {  Acuerdo               } from "src/areas/acuerdos/models/Acuerdo"
 import {  EnlaceAcuerdo         } from "src/areas/acuerdos/models/EnlaceAcuerdo"
 import {  Calificacion          } from "src/areas/acuerdos/models/Calificacion"
 import {  IContacto,
@@ -135,7 +135,7 @@ export function useControlAcuerdo()
       await buscarComentarios()
 
       if( acuerdo.value.esCotizacion || acuerdo.value.esPedido )
-        buscarCalificacion() 
+        buscarCalificacion()
       if( acuerdo.value.comisiona )
         acuerdo.value.incentivo = await buscarIncentivos( { origenId: acuerdo.value.id, incOrigen: INCENTIVO_ORIGEN.PEDIDO_CLI } ) as IIncentivo
     }
@@ -149,7 +149,7 @@ export function useControlAcuerdo()
   }
 
   //* ////////////////////////////////////////////////////////////////////// Buscar Calificacion
-  async function buscarCalificacion() 
+  async function buscarCalificacion()
   {
     const objeto                  = { id: acuerdo.value.id, acuerdo: acuerdo.value.calificacion.tipo }
     const { ok, data }            = await miFetch( getURL("listas", "varios"), { method: "POST", body: getFormData( "calificacion", objeto ) }, { mensaje: "buscar calificación" } )
@@ -172,12 +172,12 @@ export function useControlAcuerdo()
           calApi.editor         = idUser
 
     const objetoForData         = { body: getFormData("calificacion", calApi), method: "POST" }
-    const { ok, data  }         = await miFetch( getURL("servicios", "varios"), objetoForData, { mensaje: "actualizar calificación" } )        
-    
+    const { ok, data  }         = await miFetch( getURL("servicios", "varios"), objetoForData, { mensaje: "actualizar calificación" } )
+
     if(ok){
       if(nuevaCal){
         const id : number             = anyToNum( data )
-        acuerdo.value.calificacion.id = id 
+        acuerdo.value.calificacion.id = id
         if(!id) aviso("negative", `Error al crear calificación`)
       }
     }
@@ -185,7 +185,7 @@ export function useControlAcuerdo()
       aviso("negative", `Error al actualizar calificación`)
 
     loading.value.calificacion  = false
-  }  
+  }
 
   //* ////////////////////////////////////////////////////////////////////// Buscar tercero
   async function buscarTerceroDolibarr( id_ : number )
@@ -205,7 +205,7 @@ export function useControlAcuerdo()
   {
     if(!id_) return
     loading.value.proyecto      = true
-    const { data, ok }          = await apiDolibarr("ver", "proyecto", {}, id_ )    
+    const { data, ok }          = await apiDolibarr("ver", "proyecto", {}, id_ )
 
     if(ok && typeof data === "object" && !Array.isArray( data )){
       acuerdo.value.proyecto    = Proyecto.convertirDataApiToProyecto( data )
@@ -218,7 +218,7 @@ export function useControlAcuerdo()
   {
     if(!id_) return
     const { data, ok }        = await apiDolibarr("ver", "entregasPedido", {}, id_ )
-    
+
     if(ok && typeof data === "object" && Array.isArray( data ))
     {
       acuerdo.value.entregas  = await Acuerdo.convertirDataApiToEntregas( data )
@@ -249,8 +249,8 @@ export function useControlAcuerdo()
   {
     const objeto                = { contacto_id, entrega_id: acuerdo.value.id, acuerdo: acuerdo.value.tipo }
     const objetoForData         = { body: getFormData("editarContactoEntrega", objeto), method: "POST"}
-    const { ok  }               = await miFetch( endPoint("servicios"), objetoForData, { mensaje: "contacto de entrega" } )        
-    
+    const { ok  }               = await miFetch( endPoint("servicios"), objetoForData, { mensaje: "contacto de entrega" } )
+
     if(ok){
       aviso("positive", `Contacto de entrega cambiado 👌🏼`)
     }
@@ -392,7 +392,7 @@ export function useControlAcuerdo()
 
     const i       = reglasComision.value.findIndex( r => r.id == comercial.reglaComisionId )
     if(i          === -1){
-      return 
+      return
     }
     comercial.comision = reglasComision.value[i]
   }
@@ -673,7 +673,7 @@ export function useControlAcuerdo()
     const ok                    = await setAiu( acuerdo.value.id, +on, "aiu", acuerdo.value.tipo)
     const okIVA                 = await editarConIVA( !on )
     let totalOk                 = true
-    if(okIVA) 
+    if(okIVA)
       acuerdo.value.conIVA      = !on
     if(!acuerdo.value.conTotal && acuerdo.value.esCotizacion && on){
       totalOk                   = await editarConTotal( true )
@@ -751,7 +751,7 @@ export function useControlAcuerdo()
                               { ids:  coti, tipo: TIPO_ACUERDO.COTIZACION_CLI   },
                               { ids:  oc_p, tipo: TIPO_ACUERDO.PEDIDO_PRO       },
                               { ids:  en_c, tipo: TIPO_ACUERDO.ENTREGA_CLI      },
-                            ]    
+                            ]
     acuerdo.value.acuerdosEnlazados = []
 
     for (const item of paquete )
@@ -769,8 +769,8 @@ export function useControlAcuerdo()
     }
 
     acuerdo.value.acuerdosEnlazados.forEach( a => a.tercero = acuerdo.value.tercero )
-    
-    if( acuerdo.value.esPedido  )    
+
+    if( acuerdo.value.esPedido  )
       acuerdo.value.calcularEntregado()
 
     loading.value.enlaces           = false
@@ -779,18 +779,18 @@ export function useControlAcuerdo()
     {
       const enla                = acuerdo.value.enlaces.filter( e => e.destinoSmart.tipo === tipo )
       return  !!enla.length
-              ? enla.flatMap( ( enla )=> enla.destinoSmart.id ).join(",") 
+              ? enla.flatMap( ( enla )=> enla.destinoSmart.id ).join(",")
               : ""
     }
   }
 
-  async function buscarEnlacesAcuerdo() 
+  async function buscarEnlacesAcuerdo()
   {
     const objeto          = { ref: acuerdo.value.ref, id: acuerdo.value.id }
     const { ok, data }    = await miFetch( getURL("listas", "varios"), { method: "POST", body: getFormData( "buscarEnlacesAcuerdo", objeto ) }, { mensaje: "buscar enlaces" } )
     if(ok)
       acuerdo.value.enlaces = EnlaceAcuerdo.enlacesApiToEnlaces( data, acuerdo.value.tipo )
-  }  
+  }
 
 
   async function buscarComentarios()
@@ -800,20 +800,20 @@ export function useControlAcuerdo()
       codigo        : "AC_OTH",
       terceroId     : acuerdo.value.tercero.id,
       elementoId    : acuerdo.value.id,
-      acuerdo       : Comentario.getTipo( acuerdo.value.tipo )
+      acuerdo       : Accion.getTipo( acuerdo.value.tipo )
     }
     const { ok, data }        = await miFetch(  getURL("listas", "varios"),
                                                 { method: "POST", body: getFormData( "comentarios", objeto ) },
                                                 { dataEsArray: true, mensaje: "buscar comentarios" }
                                               )
-    acuerdo.value.comentarios = []                                              
+    acuerdo.value.comentarios = []
     loading.value.commentsLoad= false
     if(ok)
     {
-      if(!Array.isArray(data) || !data.length) return      
+      if(!Array.isArray(data) || !data.length) return
       for (const item of data)
-      { 
-        const comment         = await Comentario.comentarioApiToComentario( item )
+      {
+        const comment         = await Accion.accionApiToAccion( item )
         acuerdo.value.comentarios.push( comment )
       }
     }
@@ -827,7 +827,7 @@ export function useControlAcuerdo()
     const { ok }                = await miFetch( getURL("servicios", "varios"), objetoForData, { mensaje: "editar comentario" } )
     if(!ok) aviso("negative", `Error al editar comentario`)
     return ok
-  }    
+  }
 
 
   //* /////////////////////////////////////////////////////////////// Editar metodo de entrega
@@ -835,8 +835,8 @@ export function useControlAcuerdo()
   {
     const objeto                = { id: acuerdo.value.id, acuerdo: acuerdo.value.tipo, soloCosto }
     const objetoForData         = { body: getFormData("actualizarPrecios", objeto), method: "POST" }
-    const { ok  }               = await miFetch( endPoint("servicios"), objetoForData, { mensaje: "actualizar precios" } )        
-    
+    const { ok  }               = await miFetch( endPoint("servicios"), objetoForData, { mensaje: "actualizar precios" } )
+
     if(ok){
       aviso("positive", `Precios actualizados`)
       await buscarAcuerdo( acuerdo.value.tipo, acuerdo.value.id.toString() )
@@ -849,9 +849,9 @@ export function useControlAcuerdo()
   {
     const objeto                = { on: +!acuerdo.value.listoEntregar, id: acuerdo.value.id, acuerdo: acuerdo.value.tipo }
     const objetoForData         = { body: getFormData("listoEntregar", objeto), method: "POST"}
-    const { ok  }               = await miFetch( endPoint("servicios"), objetoForData, { mensaje: "listo para entregar" } )        
+    const { ok  }               = await miFetch( endPoint("servicios"), objetoForData, { mensaje: "listo para entregar" } )
     if(ok){
-      acuerdo.value.fechaListo  = acuerdo.value.listoEntregar ? new Date( 0 ) : new Date() 
+      acuerdo.value.fechaListo  = acuerdo.value.listoEntregar ? new Date( 0 ) : new Date()
       aviso("positive", "Listo para entregar 👌🏼")
     }
     else

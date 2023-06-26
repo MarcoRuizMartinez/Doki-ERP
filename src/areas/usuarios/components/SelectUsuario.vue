@@ -40,6 +40,10 @@
         name                ="mdi-account-supervisor-circle"
       />
     </template>
+    <Tooltip
+      v-if                  ="!!tooltip"
+      :label                ="tooltip"
+    />
   </q-select>
 </template>
 
@@ -92,6 +96,7 @@
     area:         { default: "",            type: String as PropType< AREA >      },
     clearable:    { default: false,         type: Boolean                         },
     idsNegativos: { default: [],            type: Array  as PropType < number[] > },
+    tooltip:      { default: "",            type: String                          },
   })
   const { modelValue,
           readonly,
