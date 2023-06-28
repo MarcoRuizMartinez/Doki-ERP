@@ -29,7 +29,8 @@
                                   } from "vue"
   import {  useTitle              } from "@vueuse/core"                                  
   //* ///////////////////////////////////////////////////////////////////////////////// Store
-  import {  storeToRefs           } from 'pinia'    
+  import {  storeToRefs           } from 'pinia'
+  import {  useStoreUser          } from 'src/stores/user'
   import {  useStoreProducto      } from 'src/stores/producto'
   //* ///////////////////////////////////////////////////////////////////////////////// Modelos
   import {  IArchivo,
@@ -41,20 +42,19 @@
   import    imagen                  from "src/areas/productos/components/ImagenProducto.vue"
   import    formulario              from "src/areas/productos/components/FormularioProducto.vue"
   import    documentos              from "components/archivos/ModuloArchivos.vue"
+  
 
   const { editarURL         } = useControlProductos()  
   const { producto,
-          loading
-                            } = storeToRefs( useStoreProducto() )                                
-  const minimizadoTodo        = ref< boolean  >(false)
+          loading           } = storeToRefs( useStoreProducto() )
   
+
+          
+  const minimizadoTodo        = ref< boolean >(false)
+    
   const props                 = defineProps({
     id:   { required: true, type: String }
   })
-
-  /* watch ( [()=>acuerdo.value.id, ()=>acuerdo.value.tipo],
-          ()=> useTitle(`${acuerdo.value.emoji} ${acuerdo.value.title}`)
-        ) */
 
   provide('superminimizado', minimizadoTodo)
 
@@ -66,8 +66,6 @@
       const ok                = await editarURL( url )
       if(ok)
         producto.value.imagen = url
-    }
-
-    
+    }    
   }
 </script>

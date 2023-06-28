@@ -142,7 +142,6 @@ export interface ILoading {
   incentivo       ?: boolean
   calificacion    ?: boolean
   commentsLoad    ?: boolean
-  commentEdit     ?: boolean
 }
 
 export const LoadingDefault = {
@@ -184,7 +183,6 @@ export const LoadingDefault = {
   incentivo       : false,
   calificacion    : false,
   commentsLoad    : false,
-  commentEdit     : false,
 }
 
 

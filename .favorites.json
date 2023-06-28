@@ -60,5 +60,32 @@
         "workspaceRoot": null,
         "workspacePath": null,
         "id": "IuxSr8laCw0KVcgX"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\estad\\Apps\\SimpleOk-ERP\\src\\components\\archivos\\ModuloArchivos.vue",
+        "parent_id": null,
+        "fsPath": "c:\\Users\\estad\\Apps\\SimpleOk-ERP\\src\\components\\archivos\\ModuloArchivos.vue",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "aj7dUQhNy8gWwJOv"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\estad\\Apps\\SimpleOk-ERP\\src\\models\\Archivo.ts",
+        "parent_id": null,
+        "fsPath": "c:\\Users\\estad\\Apps\\SimpleOk-ERP\\src\\models\\Archivo.ts",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "zJxCDY80fq5EBHN4"
+    },
+    {
+        "type": "File",
+        "name": "c:\\Users\\estad\\Apps\\SimpleOk-ERP\\src\\services\\useApiDolibarr.ts",
+        "parent_id": null,
+        "fsPath": "c:\\Users\\estad\\Apps\\SimpleOk-ERP\\src\\services\\useApiDolibarr.ts",
+        "workspaceRoot": null,
+        "workspacePath": null,
+        "id": "GuS8VjmPnNWEbZCA"
     }
 ]

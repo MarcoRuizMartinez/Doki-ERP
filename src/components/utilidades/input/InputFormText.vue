@@ -20,6 +20,7 @@
     @blur           ="onBlur"
     @focus          ="onFocus" 
     @clear          ="emit('clear')"
+    @keydown.enter.prevent ="emit('enter')"
     >
     <template #prepend v-if="!!icon">
       <q-icon :name ="icon" />
@@ -82,7 +83,7 @@
     }
   )
 
-  const emit            = defineEmits(["update:modelValue", "blur", "clear", "alert"])
+  const emit            = defineEmits(["update:modelValue", "blur", "clear", "alert", "enter"])
 
   const {
           modelValue,

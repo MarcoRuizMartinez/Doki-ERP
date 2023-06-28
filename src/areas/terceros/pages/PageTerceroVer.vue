@@ -59,7 +59,14 @@
           :modulo-ref         ="(tercero.id ?? 0).toString()"
           :puede-editar       ="puedeModificar"
         />
-      <!-- </efecto>       -->
+      <!-- </efecto> -->
+      <comentarios
+        v-model               ="tercero.comentarios"
+        :funcion-buscar       ="buscarComentarios"
+        :asignado             ="tercero.responsables[0]"        
+        :terceroId            ="tercero.id"
+        :cargando             ="loadComentarios"
+      />
   </q-page>
 </template>
 
@@ -89,6 +96,8 @@ height-card         ="210px"
   import {  TIPO_ACUERDO      } from "src/areas/acuerdos/models/ConstantesAcuerdos"                              
   //* ///////////////////////////////////////////////////////////////////////////////////// Componibles
   import {  servicesTerceros  } from "src/areas/terceros/services/servicesTerceros"
+  import {  useControlComunicacion
+                              } from "src/areas/comunicacion/controllers/ControlComunicacion"  
   import {  useTools,
             ID_URL_Ok         } from "src/useSimpleOk/useTools"  
   //* ///////////////////////////////////////////////////////////////////////////////////// Componentes
@@ -98,6 +107,7 @@ height-card         ="210px"
   import  notas                 from "src/areas/terceros/components/helper/ModuloNotasTercero.vue"
   import  formularioTercero     from "src/areas/terceros/components/formularioTercero/FormularioTercero.vue"
   import  acuerdos              from "src/areas/terceros/components/modules/ModuloAcuerdosTercero.vue"
+  import  comentarios           from "src/areas/comunicacion/components/ModuloComentarios.vue"
 
   const { usuario, permisos } = storeToRefs( useStoreUser() )
   const { acuerdo           } = storeToRefs( useStoreAcuerdo() )
@@ -108,9 +118,11 @@ height-card         ="210px"
     id: { required: true, type: String }
   })
 
-  const { buscarTercero    }  = servicesTerceros()
+  const { buscarTercero     } = servicesTerceros()
+  const { buscarAcciones    } = useControlComunicacion()
   const { id }                = toRefs( props )
   const cargando              = ref< boolean >(false)
+  const loadComentarios       = ref< boolean >(false)
   const title                 = useTitle( "🏪 Cargando..." )
   const usuarioEsDueño        = computed( () =>{ return tercero.value.responsables.some( r => r.id == usuario.value.id ) })
   const puedeModificar        = computed( () =>{
@@ -152,6 +164,7 @@ height-card         ="210px"
     {
       title.value             = "🏪 " + tercero.value.nombre
       verificarPermisosLectura()
+      buscarComentarios()
     }
     else
     {
@@ -160,6 +173,20 @@ height-card         ="210px"
     }
     cargando.value            = false
   }
+
+  async function buscarComentarios()
+  {
+    const query     = {
+      codigo        : "AC_OTH",
+      terceroId     : tercero.value.id,
+      tipoElemento  : "null"
+    }
+    
+    loadComentarios.value     = true
+    tercero.value.comentarios = await buscarAcciones( query, "comentarios" )
+    loadComentarios.value     = false
+  }
+
 
   //* ////////////////////////////////////////////////////////////////////////////////////// Verificar permisos de lectura
   function verificarPermisosLectura()

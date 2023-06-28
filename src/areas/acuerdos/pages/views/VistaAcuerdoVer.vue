@@ -78,6 +78,14 @@
     class                   ="col-md-4 col-12"
   />    
   <comentarios
+    v-model                 ="acuerdo.comentarios"
+    :asignado               ="acuerdo.comercial"
+    :elemento-id            ="acuerdo.id"
+    :tipo                   ="Accion.getTipo( acuerdo.tipo )"
+    :terceroId              ="acuerdo.tercero.id"
+    :proyectoId             ="acuerdo.proyecto.id"
+    :cargando               ="loading?.commentsLoad ?? false"
+    :funcion-buscar         ="buscarComentarios"
   />
   <!-- //* /////////////////  Visor PDF  -->
   <visor-pdf                descargar
@@ -126,6 +134,7 @@
   import {  LineaAcuerdo          } from "src/areas/acuerdos/models/LineaAcuerdo"
   import {  IArchivo              } from "src/models/Archivo"
   import {  AREA                  } from "src/models/TiposVarios"
+  import {  Accion                } from "src/areas/comunicacion/models/Accion"  
   //* ///////////////////////////////////////////////////////////////////////////////// Componibles
   import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"
   import {  useCotizacionPDF,
@@ -173,6 +182,7 @@
           validarAcuerdo,
           cerrarPedido,
           setListoEntregar,
+          buscarComentarios
                             } = useControlAcuerdo()
   const minimizadoTodo        = ref< boolean  >(false)
   const srcPDF                = ref< string   >("")

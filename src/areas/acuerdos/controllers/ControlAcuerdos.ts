@@ -3,12 +3,15 @@ import {  useRouter             } from 'vue-router'
 //* ////////////////////////////////////////////////////////////////// Store
 import {  storeToRefs           } from 'pinia'
 import {  useStoreAcuerdo       } from 'src/stores/acuerdo'
+import {  useStoreUser          } from 'src/stores/user'
 //* ////////////////////////////////////////////////////////////////// Componibles
 import {  useControlProductos   } from "src/areas/acuerdos/controllers/ControlLineasProductos"
 import {  servicesAcuerdos      } from "src/areas/acuerdos/controllers/servicesAcuerdos"
 import {  servicesTerceros      } from "src/areas/terceros/services/servicesTerceros"
 import {  useControlIncentivos  } from "src/areas/nomina/controllers/ControlIncentivos"
-import {  IIncentivo, INCENTIVO_ORIGEN      } from "src/areas/nomina/models/Incentivo"
+import {  useControlComunicacion} from "src/areas/comunicacion/controllers/ControlComunicacion"
+import {  IIncentivo,
+          INCENTIVO_ORIGEN      } from "src/areas/nomina/models/Incentivo"
 import {  useApiDolibarr        } from "src/services/useApiDolibarr"
 import {  useFetch              } from "src/useSimpleOk/useFetch"
 import {  getURL, getFormData   } from "src/services/APIMaco"
@@ -67,6 +70,7 @@ export function useControlAcuerdo()
                               } = servicesAcuerdos()
 
   const { crearNuevoGrupo     } = useControlProductos()
+  const { buscarAcciones      } = useControlComunicacion()
   const { buscarTercero,
           moverContactoAOtroTercero
                               } = servicesTerceros()
@@ -75,6 +79,8 @@ export function useControlAcuerdo()
   const { miFetch             } = useFetch()
   const { acuerdo,
           loading             } = storeToRefs( useStoreAcuerdo() )
+  const { usuario             } = storeToRefs( useStoreUser() )
+          
   const reglasComision          = dexieReglaComision()
   const endPoint                = ( tipo : "servicios" | "listas" ) => getURL(tipo, "acuerdos")
 
@@ -795,28 +801,16 @@ export function useControlAcuerdo()
 
   async function buscarComentarios()
   {
-    loading.value.commentsLoad= true
-    const objeto              = {
+    const query     = {
       codigo        : "AC_OTH",
       terceroId     : acuerdo.value.tercero.id,
       elementoId    : acuerdo.value.id,
-      acuerdo       : Accion.getTipo( acuerdo.value.tipo )
+      tipoElemento  : Accion.getTipo( acuerdo.value.tipo )
     }
-    const { ok, data }        = await miFetch(  getURL("listas", "varios"),
-                                                { method: "POST", body: getFormData( "comentarios", objeto ) },
-                                                { dataEsArray: true, mensaje: "buscar comentarios" }
-                                              )
-    acuerdo.value.comentarios = []
+
+    loading.value.commentsLoad= true
+    acuerdo.value.comentarios = await buscarAcciones( query, "comentarios" )
     loading.value.commentsLoad= false
-    if(ok)
-    {
-      if(!Array.isArray(data) || !data.length) return
-      for (const item of data)
-      {
-        const comment         = await Accion.accionApiToAccion( item )
-        acuerdo.value.comentarios.push( comment )
-      }
-    }
   }
 
 

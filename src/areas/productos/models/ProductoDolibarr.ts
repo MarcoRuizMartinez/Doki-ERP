@@ -8,6 +8,7 @@ import {  roundInt,
           X100_Calcular     } from "src/useSimpleOk/useTools"
 import {  IProductoCategoria,
           ProductoCategoria } from "src/areas/productos/models/ProductoCategoria"
+import {  IAccion           } from "src/areas/comunicacion/models/Accion"
 
 export const imagenDefault  :string  = "https://dolibarr.mublex.com/_maco/img/box.jpg"
 const ivaX100                 = parseInt( process.env.IVA ?? "0" )
@@ -70,6 +71,7 @@ export interface IProductoDoli {
   elegido                   : boolean       // Se utiliza para indicar que el producto a sido agregado a lista
   esRefEspecial             : boolean
   activo                    : boolean
+  comentarios               : IAccion[]
   productoForApi            : any
 }
 
@@ -113,6 +115,7 @@ export class ProductoDoli implements IProductoDoli
   codigo                    : number
   competencia               : number
   elegido                   : boolean
+  comentarios               : IAccion[]   = []
 
   constructor()
   {

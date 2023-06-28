@@ -20,7 +20,7 @@ type ModuloDolibarr           = "" | "tercero" | "contacto" | "documento" | "sab
                                 "pedido"      | "pedidoPro"     |
                                 "entrega"     | "entregaPro"    | "entregasPedido" | 
                                 "factura"     | "facturaPro"    |
-                                "comentario"
+                                "accion"
 type Metodo                   = "post" | "put" | "get" | "delete"
 
 export function useApiDolibarr()
@@ -62,7 +62,7 @@ export function useApiDolibarr()
       case "pedidoPro"      : endPoint = "supplierorders";      break;
       case "entregasPedido" : endPoint = "orders";              break;
       case "entrega"        : endPoint = "shipments";           break;
-      case "comentario"     : endPoint = "agendaevents";        break;
+      case "accion"         : endPoint = "agendaevents";        break;
       default: break;
     }
 

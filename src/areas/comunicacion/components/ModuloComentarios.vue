@@ -13,11 +13,11 @@
       >
       <template                 #icon>
         <q-icon
-          :name                 ="loading.commentsLoad ? 'mdi-loading' : 'mdi-comment-multiple'"
-          :class                ="{'mdi-spin' : loading.commentsLoad}"
+          :name                 ="cargando ? 'mdi-loading' : 'mdi-comment-multiple'"
+          :class                ="{'mdi-spin' : cargando}"
         />
       </template>
-      <!-- //* /////////////////////////////////////////////////////// Boton Tarea -->
+      <!-- //* /////////////////////////////////////////////////////// Boton nueva Tarea -->
       <q-btn                    round unelevated
         color                   ="positive"
         icon                    ="mdi-check"
@@ -31,50 +31,16 @@
           ref                   ="componenteScroll"
           class                 ="col q-py-none q-px-md"
           >
-          <!-- //* /////////////////////////////////////////////////// Chat Mensaje -->
-          <q-chat-message       text-html
-            v-for               ="(c, index) of acuerdo.comentarios"
-            text-color          ="white"
+          <template
+            v-for               ="(comentario, index) of modelValue"
             :key                ="index"
-            :name               ="c.creador.nombre"
-            :sent               ="c.creador.id === usuario.id"
-            :avatar             ="c.creador.fotoPerfilMini"
-            :text               ="[c.value]"
-            :bg-color           ="c.creador.id === usuario.id ? 'indigo-9' : 'teal-9'"
-            :stamp              ="c.hace"
             >
-            <q-spinner-dots
-              v-if              ="c.editandoComentario"
-              size              ="2rem"
+            <!-- //* /////////////////////////////////////////////////// Chat Mensaje -->
+            <mensaje  
+              :msj              ="comentario"
+              @click            ="verTarea"
             />
-            <div v-else>
-              <span v-html      ="c.value"></span>
-              <q-popup-edit     buttons
-                v-if            ="c.sePuedeEditar && c.creador.id === usuario.id"
-                v-model         ="c.value"
-                v-slot          ="scope"
-                label-set       ="Editar"
-                class           ="panel-blur-70"
-                :validate       ="validarEdicion"
-                @save           ="( value: any, initialValue : any)=>ejecutarEditarComentario( c, value )"
-                >
-                <!-- //* /////////////////////////////////////////////////// Escribir comentario  @update:model-value ="editarTitulo"-->
-                <input-buscar   autogrow autofocus
-                  v-model       ="scope.value"
-                  :error        ="errorEnEdicion"
-                  error-message ="No puede estar vacío"
-                  label         ="Editar comentario... Ctrl+Enter"
-                  debounce      ="0"
-                  type          ="textarea"
-                  :icon         ="loading.commentEdit ? 'mdi-loading' : 'mdi-chat'"
-                  :loading      ="loading.commentEdit"
-                  :dense        ="false"
-                  @ctrl-enter   ="scope.set"
-                  >
-                </input-buscar>
-              </q-popup-edit>
-            </div>
-          </q-chat-message>
+          </template>
         </q-scroll-area>
         <div>
           <!-- //* /////////////////////////////////////////////////// Escribir comentario -->
@@ -84,8 +50,8 @@
             class               ="col-md-2 col-6"
             debounce            ="0"
             type                ="textarea"
-            :icon               ="loading.commentEdit ? 'mdi-loading' : 'mdi-chat'"
-            :loading            ="loading.commentEdit"
+            :icon               ="editando ? 'mdi-loading' : 'mdi-chat'"
+            :loading            ="editando"
             :dense              ="false"
             @ctrl-enter         ="crearComentario"
             >
@@ -102,7 +68,7 @@
             <q-btn
               v-bind            ="style.btnRedondoFlat"
               icon              ="mdi-reload"
-              :loading          ="loading.commentsLoad"
+              :loading          ="cargando"
               @click            ="recargar"
               >
               <Tooltip>Cargar comentarios</Tooltip>
@@ -111,12 +77,12 @@
         </div>
       </div>
       <template                 #tooltip
-        v-if                    ="!isOpen && !!acuerdo.comentarios.length"
+        v-if                    ="!isOpen && !!modelValue.length"
         >
         <!-- //* ///////////////////////////////////////////////////// Cantidad de mensajes -->
         <q-badge                floating
           color                 ="red"
-          :label                ="acuerdo.comentarios.length"
+          :label                ="modelValue.length"
         />
       </template>
     </q-fab>
@@ -127,7 +93,13 @@
     v-bind                      ="style.dialogo"
     >
     <formulario-tarea
-
+      v-model                   ="tareaSelect"
+      :elemento-id              ="elementoId"
+      :tipo                     ="tipo"
+      :tercero-id               ="terceroId"
+      :proyecto-id              ="proyectoId"
+      @tarea-creada             ="recibirTareaCreada"
+      @tarea-editada            ="recibirTareaEditada"
     />
   </q-dialog>
 </template>
@@ -137,43 +109,60 @@
   import {  QScrollArea           } from 'quasar';
   // * /////////////////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs           } from 'pinia'
-  import {  useStoreAcuerdo       } from 'src/stores/acuerdo'
   import {  useStoreUser          } from 'src/stores/user'
   // * /////////////////////////////////////////////////////////////////////////////////// Componibles
   import {  useApiDolibarr        } from "src/services/useApiDolibarr"
   import {  useTools, pausa       } from "src/useSimpleOk/useTools"
   import {  style                 } from "src/useSimpleOk/useEstilos"
   import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"
+  import {  useControlComunicacion} from "../controllers/ControlComunicacion"
   // * /////////////////////////////////////////////////////////////////////////////////// Modelos
-  import {  Accion,
-            IAccion               } from "../models/Accion"
+  import {  Accion, IAccion, 
+            PropsAccion           } from "../models/Accion"
+  import {  IUsuario, Usuario     } from "src/areas/usuarios/models/Usuario"            
   // * /////////////////////////////////////////////////////////////////////////////////// Componentes
   import    inputBuscar             from "components/utilidades/input/InputSimple.vue"
   import    formularioTarea         from "./FormularioTarea.vue"
+  import    mensaje                 from "./Mensaje.vue"
+
+  const { apiDolibarr         } = useApiDolibarr()
+  const { aviso               } = useTools()
+  const { usuario             } = storeToRefs( useStoreUser() )  
+  const { crearAccion         } = useControlComunicacion()
 
   const isOpen                  = ref<boolean>(false)
   const formularioOn            = ref<boolean>(false)
+  const editando                = ref<boolean>(false)
   const textoComentario         = ref<string>("")
   const cuentaAperturas         = ref<number>(0)
-  const errorEnEdicion          = ref<boolean>(false)
-
-  const comentario              = ref<IAccion>( new Accion() )
-  const { apiDolibarr         } = useApiDolibarr()
-  const { aviso               } = useTools()
-  const { acuerdo, loading    } = storeToRefs( useStoreAcuerdo() )
-  const { usuario             } = storeToRefs( useStoreUser() )
-  const { buscarComentarios,
-          editarComentario    } = useControlAcuerdo()
+  const tareaSelect             = ref< IAccion >( new Accion( usuario.value.id ) )
+  const comentario              = ref <IAccion >( new Accion( usuario.value.id ) )
   const componenteScroll        = ref<InstanceType<typeof QScrollArea> | null>(null)
+
+  const modelValue              = defineModel<IAccion[]>( { required: true })
+  type TypeProps                = PropsAccion & { cargando: boolean, asignado: IUsuario, funcionBuscar: Function }
+  const { elementoId            = 0,
+          tipo                  = "",
+          terceroId             = 0,
+          proyectoId            = 0,
+          cargando              = false,
+          asignado              = new Usuario(),
+          funcionBuscar
+                              } = defineProps< TypeProps >()
 
   onMounted(()=>{
     asignarValoresAComentario()
   })
 
-  watch(()=> acuerdo.value.comentarios.length, (largo)=>{
-    if(cuentaAperturas.value == 0 && !!largo)
+  watch(()=> modelValue.value.length, abrirAlIniciarSiHayComentarios)
+
+  async function abrirAlIniciarSiHayComentarios( largo : number )
+  {
+    if(cuentaAperturas.value == 0 && !!largo){
+      await pausa(600)
       isOpen.value = true
-  })
+    }   
+  }
 
   watch(isOpen, (open)=>{
     if(open){
@@ -186,74 +175,78 @@
 
   async function recargar()
   {
-    await buscarComentarios()
+    await funcionBuscar()
     scrollAlFinal()
   }
+  
   async function crearComentario()
   {
     if(!textoComentario.value) return
 
-    asignarValoresAComentario()
-    const obj                   = comentario.value.commentToApi
+    asignarValoresAComentario()    
 
-    loading.value.commentEdit   = true
-    const { ok, data }          = await apiDolibarr("crear", "comentario", obj)
-    loading.value.commentEdit   = false
-    if(ok && !!data && typeof data == "number"){
-      comentario.value.id       = data
-      comentario.value.value    = comentario.value.value.replaceAll("\n", "<br/>")
-      acuerdo.value.comentarios.push( comentario.value )
-      textoComentario.value     = ""
-      comentario.value          = new Accion()
+    editando.value                = true
+    const id                      = await crearAccion(comentario.value)
+    editando.value                = false
+    if(!!id){
+      comentario.value.id         = id
+      comentario.value.comentario = comentario.value.comentario.replaceAll("\n", "<br/>")
+      modelValue.value.push( comentario.value )
+      textoComentario.value       = ""
+      comentario.value            = new Accion( usuario.value.id )
       scrollAlFinal()
     }
-    else
-    {
-      aviso("negative", "Error al publicar comentario")
+  }
+
+  function verTarea( t : IAccion ) {
+    tareaSelect.value           = t
+    formularioOn.value          = true
+  }
+
+  function abrirFormularioTarea(){
+    tareaSelect.value           = new Accion( usuario.value.id )
+    tareaSelect.value.asignado  = asignado
+    formularioOn.value          = true
+  }
+
+  function recibirTareaCreada( t : IAccion ){
+    modelValue.value.push( t )
+    scrollAlFinal()
+  }
+
+  function recibirTareaEditada( t : IAccion, cerrar : boolean = true )
+  {
+    const index                 = modelValue.value.findIndex( ( tarea )=> tarea.id === t.id )
+    if( index >= 0 ){
+      modelValue.value[index]   = Object.assign( modelValue.value[index], t )
+      formularioOn.value        = !cerrar
     }
   }
 
-  function abrirFormularioTarea()
-  {
-    formularioOn.value = true
-  }
 
-  async function ejecutarEditarComentario( c : IAccion, valor : any )
-  {
-    if(typeof valor != "string" || !valor) return
-    c.editandoComentario = true
-    await editarComentario( c.id, valor )
-    c.editandoComentario = false
-  }
 
-  async function scrollAlFinal()
-  {
+  async function scrollAlFinal(){
     if(!!componenteScroll.value){
       await pausa(200)
       componenteScroll.value.setScrollPercentage('vertical', 1, 400)
-
     }
   }
 
   function asignarValoresAComentario()
   {
-    comentario.value.value      = textoComentario.value
-    comentario.value.elementoId = acuerdo.value.id
-    comentario.value.tipo       = Accion.getTipo( acuerdo.value.tipo )
-    comentario.value.terceroId  = acuerdo.value.tercero.id
-    comentario.value.asignadoId = usuario.value.id
+    comentario.value.comentario = textoComentario.value
+    comentario.value.elementoId = elementoId
+    comentario.value.tipo       = tipo
+    comentario.value.terceroId  = terceroId
+    comentario.value.proyectoId = proyectoId
+    comentario.value.asignado   = usuario.value
     comentario.value.creador    = usuario.value
-    comentario.value.creadorId  = usuario.value.id
-    comentario.value.label      = `Comentario de ${usuario.value.nombre}`
+    comentario.value.titulo     = `Comentario de ${usuario.value.nombre}`
     comentario.value.creacion   = new Date()
+    //console.log("asignarValoresAComentario: ", comentario.value);
   }
 
-  function validarEdicion( val : string)
-  {
-    const valido = typeof val === "string" && val.length > 2
-    errorEnEdicion.value = !valido
-    return valido
-  }
+
 </script>
 <style>
 .chat{

@@ -7,92 +7,141 @@ import {  ILabelValue,
           labelValueNulo    } from "src/models/TiposVarios"
 
 export const Prioridades = [
-  { value: 1, label: "😉Normal"         },
-  { value: 2, label: "😬Urgente"        },
-  { value: 3, label: "🚨Vida o Muerte"  }
+  { value: 0, label: "😉Normal"         },
+  { value: 1, label: "😬Urgente"        },
+  { value: 2, label: "🚨Vida o Muerte"  }
 ]
 
 export const Cuando = [
-  { value: 0, label: "Fecha"            },
-  { value: 1, label: "Hoy"              },
-  { value: 2, label: "Mañana"           },
-  { value: 3, label: "Esta semana"      },
-  { value: 4, label: "Otra semana"      },
-  { value: 5, label: "Otro mes"         },
-  { value: 6, label: "Algún momento"    }
-  ]
+  { value: 1, label: "📅Fecha"          },
+  { value: 2, label: "📍Hoy"            },
+  { value: 3, label: "▶️Mañana"         },
+  { value: 4, label: "⏩Esta semana"    },
+  { value: 5, label: "↗️Otra semana"    },
+  { value: 6, label: "📆Otro mes"       },
+  { value: 7, label: "✋🏼Algún momento"  }
+]
 
+export type  PropsAccion    = {
+  elementoId                ?: number 
+  tipo                      ?: string
+  terceroId                 ?: number
+  proyectoId                ?: number
+}
+
+type TipoAccion             = "sistema" | "manual"
 
 export interface IAccion
 {
   id                        : number  //
   codigo                    : string  // AC_OTH
+  tipoAccion                : TipoAccion // 40 sistema 50 manual
+  fechaInicio               : Date
+  fechaFin                  : Date
+  eventoDiaFull             : boolean
+
+  usuarioNowId              : number
+
   creacion                  : Date
   creador                   : IUsuario
-  creadorId                 : number
+
   modificado                : Date
   modifico                  : IUsuario
-  modificoId                : number
+  
   asignado                  : IUsuario
-  asignadoId                : number
+  
+  proyectoId                : number
   terceroId                 : number
   progreso                  : number
+  progreso_1_4              : number
   cuando                    : ILabelValue
   prioridad                 : ILabelValue
-  label                     : string
-  value                     : string
+  publico                   : boolean
+  titulo                    : string
+  comentario                : string
   elementoId                : number
   tipo                      : string // order
-  commentToApi              : any
+  accionToApiDolibarr       : any
   hace                      : string
   sePuedeEditar             : boolean
   editandoComentario        : boolean
   esTarea                   : boolean
+  tareaCompletada           : boolean
+  esNuevo                   : boolean
+  esFecha                   : boolean
+  usuarioEsCreador          : boolean
+  usuarioEsAsignado         : boolean
+  usuarioPermitido          : boolean
+  urlDolibarrFiles          : string
 }
 
 export class Accion implements IAccion
 {
   id                        : number        = 0
   codigo                    : string        = "AC_OTH"
+  tipoAccion                : TipoAccion    = "manual"
+  eventoDiaFull             : boolean       = true
+  fechaInicio               : Date          = new Date()
+  fechaFin                  : Date          = new Date()
+  usuarioNowId              : number
   creacion                  : Date          = new Date()
   creadorId                 : number        = 0
   modificado                : Date          = new Date()
   modificoId                : number        = 0
   asignadoId                : number        = 0
+  proyectoId                : number        = 0
   terceroId                 : number        = 0
   progreso                  : number        = -1
   cuando                    : ILabelValue   = labelValueNulo
   prioridad                 : ILabelValue   = labelValueNulo
-  label                     : string        = ""
-  value                     : string        = ""
+  publico                   : boolean       = true
+  titulo                    : string        = ""
+  comentario                : string        = ""
   elementoId                : number        = 0
   tipo                      : string        = ""
   editandoComentario        : boolean       = false
 
-  creador                   : IUsuario= new Usuario()
-  modifico                  : IUsuario= new Usuario()
-  asignado                  : IUsuario= new Usuario()
+  creador                   : IUsuario      = new Usuario()
+  modifico                  : IUsuario      = new Usuario()
+  asignado                  : IUsuario      = new Usuario()
 
-  constructor()
+  constructor( usuarioNowId : number )
   {
+    this.usuarioNowId       = usuarioNowId
   }
 
-  get commentToApi() : any {
-    return {
+  get accionToApiDolibarr() : any {
+    const data    = {
       type_code:    this.codigo,
-      label:        this.label,
-      note_private: this.value,
-      socid:        this.terceroId,
-      fk_element:   this.elementoId,
-      elementtype:  this.tipo,
-      fulldayevent: "0",
+      label:        this.titulo,
+      note_private: this.comentario,      
+      fulldayevent: +this.cuando.value > 0,
       percentage:   this.progreso,
-      userownerid:  this.asignadoId,
-      datep:        getMilisecShortForApiDolibarr( new Date() )
+      userownerid:  this.asignado.id,      
+      status:       this.cuando.value,
+      priority:     this.prioridad.value,
+      transparency: +this.publico,
+      datep:        getMilisecShortForApiDolibarr( this.fechaInicio ),
+      datef:        getMilisecShortForApiDolibarr( this.fechaFin ),
+      socid:        !!this.terceroId  ? this.terceroId  : null,
+      fk_element:   !!this.elementoId ? this.elementoId : null,
+      elementtype:  !!this.tipo       ? this.tipo       : null,
+      fk_project:   !!this.proyectoId ? this.proyectoId : null,
     }
-  }
 
-  get esTarea(): boolean { return this.progreso > -1 }
+    return data
+  }
+  
+  get progreso_1_4()              { return  this.progreso >= 25 ? this.progreso / 25 : 0 }
+  set progreso_1_4( p : number )  { this.progreso = p * 25}
+
+  get usuarioEsCreador()  : boolean { return this.usuarioNowId == this.creador.id   }
+  get usuarioEsAsignado() : boolean { return this.usuarioNowId == this.asignado.id }
+  get usuarioPermitido()  : boolean { return this.usuarioEsCreador || this.usuarioEsAsignado }
+  get esNuevo()           : boolean { return !this.id }  
+  get esFecha()           : boolean { return this.cuando.value === Cuando[0].value }
+  get esTarea()           : boolean { return this.progreso > -1 && this.codigo == "AC_OTH" }  
+  get tareaCompletada()   : boolean { return this.esTarea && this.progreso === 100 }
 
   get hace(): string  {
     const diferencia  = Date.now() - this.creacion.valueOf()
@@ -107,24 +156,41 @@ export class Accion implements IAccion
     return diferencia <= 600_000 // 600_000 son 10 minutos
   }
 
-  static async accionApiToAccion( cApi : any ) : Promise<IAccion>
+
+  get urlDolibarrFiles() : string {
+    return process.env.URL_DOLIBARR + "/comm/action/document.php?id=" + this.id
+  }  
+
+  static async accionApiToAccion( cApi : any, usuarioNowId : number ) : Promise<IAccion>
   {
-      const c       = Object.assign( new Accion(), cApi ) as IAccion
-      c.creadorId   = +cApi?.creadorId  ?? 0
-      c.asignadoId  = +cApi?.asignadoId ?? 0
-      c.modificoId  = +cApi?.modificoId ?? 0
-      c.elementoId  = +cApi?.elementoId ?? 0
-      c.id          = +cApi?.id         ?? 0
-      c.progreso    = +cApi?.progreso   ?? 0
-      c.terceroId   = +cApi?.terceroId  ?? 0
-      c.creacion    = !!cApi.creacion ? new Date( cApi.creacion ) : new Date()
-      c.value       = c.value.replaceAll('\n', "<br/>")
+    const c         = Object.assign( new Accion( usuarioNowId ), cApi ) as IAccion
+    c.id            = +cApi?.id           ?? 0
+    c.tipoAccion    = +(cApi?.tipoAccion  ?? 40) === 40 ? "sistema" : "manual"
+    const creadorId = +cApi?.creadorId    ?? 0
+    const asignadoId= +cApi?.asignadoId   ?? 0
+    const modificoId= +cApi?.modificoId   ?? 0
+    c.elementoId    = +cApi?.elementoId   ?? 0
+    c.progreso      = +cApi?.progreso     ?? 0
+    c.terceroId     = +cApi?.terceroId    ?? 0
+    c.proyectoId    = +cApi?.proyectoId   ?? 0
+    c.publico       = Boolean( +cApi?.publico       ?? 0)
+    c.eventoDiaFull = Boolean( +cApi?.eventoDiaFull ?? 0)
+    c.comentario    = c.comentario.replaceAll('\n', "<br/>")
+    c.fechaInicio   = !!cApi.fechaInicio  ? new Date( cApi.fechaInicio  ) : new Date()
+    c.fechaFin      = !!cApi.fechaFin     ? new Date( cApi.fechaFin     ) : new Date()
+    c.creacion      = !!cApi.creacion     ? new Date( cApi.creacion     ) : new Date()
+    c.modificado    = !!cApi.modificado   ? new Date( cApi.modificado   ) : new Date()
+    
+    const cuando    = +cApi?.cuando       ?? 0
+    const priori    = +cApi?.prioridad    ?? 0
+    c.cuando        = Cuando      .find( c => c.value === cuando ) ?? labelValueNulo
+    c.prioridad     = Prioridades .find( c => c.value === priori ) ?? labelValueNulo
 
-      c.creador     = await getUsuarioDB( c.creadorId )
-      c.asignado    = await getUsuarioDB( c.asignadoId )
-      c.modifico    = await getUsuarioDB( c.modificoId )
+    c.creador       = await getUsuarioDB( creadorId   )
+    c.asignado      = await getUsuarioDB( asignadoId  )
+    c.modifico      = await getUsuarioDB( modificoId  )
 
-      return c
+    return c
   }
 
   static getTipo( tipo : TIPO_ACUERDO ) : string {

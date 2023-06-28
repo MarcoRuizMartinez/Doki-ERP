@@ -285,7 +285,7 @@
           esTerceroCtz      } = toRefs( props )
   const tipo                  = ref< "crear" | "ver" > ("ver")
   const readonly              = ref< boolean >( tipo.value == "ver" && !editando.value ? true : false )  
-  const esTerceroInternoDeCoti= computed(()=> clientesExistentes.value.length === 1 /* && clientesExistentes.value[0].nombre.indexOf('COTIZACIONES ', 0) != -1 */)
+  const esTerceroInternoDeCoti= computed(()=> !!clientesExistentes.value && clientesExistentes.value.length === 1 /* && clientesExistentes.value[0].nombre.indexOf('COTIZACIONES ', 0) != -1 */)
   const btnDisable            = computed(()=>{
     return  (
               tipo.value      == 'ver'
@@ -472,7 +472,7 @@
     if(existe)      return
     const esFamoso  = esCorreoFamoso(contacto.value.correo)
     if(esFamoso)    return
-    const dominio   = contacto.value.correo.split('@').pop()//.match(/(?<=@)[^.]+(?=\.)/)[0]
+    const dominio   = contacto.value.correo.split('@').pop() ?? "" //.match(/(?<=@)[^.]+(?=\.)/)[0]
     existe          = await vericarExiste("emailTerceroExiste",       dominio,  estaCheckEmail)
     if(existe)      return
     existe          = await vericarExiste("emailContactoExiste",      dominio,  estaCheckEmail)
@@ -521,7 +521,7 @@
 
   function mostrarClientesExistentes()
   {
-    if(!clientesExistentes.value.length) return
+    if(!!clientesExistentes.value && !clientesExistentes.value.length) return
     ventanaClienteExiste.value  = true    
   }
 

@@ -3,13 +3,14 @@
     class-contenido             ="column items-center"
     :titulo                     ="`Documentos (${archivos.length})`"
     icono                       ="mdi-attachment"
-    size-icon-carga             ="6em"
     mensaje-sin-resultados      ="Sin documentos"
     icono-sin-resultados        ="mdi-file-document-multiple"
+    :size-icon-carga            ="sizeIcon"
+    :sin-titulo                 ="sinTitulo"
     :padding-contenido          ="modo == 'normal' ? '0' : '12px' "
     :modo                       ="modo"
-    :menu-visible               ="puedeSubir"
     >
+    <!-- :menu-visible               ="!sinSubida" -->
     <!-- //* ////////////////   Tabla  -->
     <q-table                    bordered dense flat
       v-if                      ="!!archivos.length"
@@ -95,9 +96,20 @@
       <!-- //* ///////////////  Boton subir  -->
       <!-- v-if                    ="!puedeSubir && puedeEditar" -->
     </template>
-    <template #menu v-if        ="puedeSubir">
+    <template                   #menu>
+      <slot></slot>
+      <q-btn
+        v-if                    ="sinTitulo"
+        v-bind                  ="style.btnRedondoFlat"
+        icon                    ="mdi-refresh"
+        class                   ="op60 op100-hover"
+        @click                  ="buscarArchivos()"
+        >
+        <Tooltip label          ="Recargar"/>
+      </q-btn>      
       <!-- //* ///////////////  Subir archivo  -->
       <subir-archivo
+        v-if                    ="!sinSubida"
         class                   ="full-width"
         label                   ="Subir archivos"
         :modulo                 ="modulo"
@@ -119,13 +131,14 @@
                             } from "vue"
   import {  useApiDolibarr  } from "src/services/useApiDolibarr"
   import {  ModosVentana    } from "src/models/TiposVarios"
-  import {  useTools        } from "src/useSimpleOk/useTools"
+  import {  useTools, pausa } from "src/useSimpleOk/useTools"
   import {  DownloadFile_B64} from "src/useSimpleOk/UtilFiles"
   import {  TModulosDolibarr} from "src/useSimpleOk/UtilFiles"
   import {  IColumna,
             Columna         } from "src/models/Tabla"
   import {  IArchivo,
             Archivo         } from "src/models/Archivo"
+  import {  style           } from "src/useSimpleOk/useEstilos"            
   import    ventana           from "components/utilidades/Ventana.vue"
   import    subirArchivo      from "./SubirArchivo.vue"
   import    tooltipDocumento  from "./TooltipArchivo.vue"
@@ -140,8 +153,12 @@
   const props                 = defineProps({
     modulo:       { required: true,   type: String as PropType < TModulosDolibarr > },
     moduloId:     { required: true,   type: Number                                  },
+    retrasoInicio:{ default:  0,      type: Number                                  },
     moduloRef:    { required: true,   type: String                                  },
     puedeEditar:  { default:  false,  type: Boolean                                 },
+    sinSubida:    { default:  false,  type: Boolean                                 },
+    sinTitulo:    { default:  false,  type: Boolean                                 },
+    sizeIcon:     { default:  "6em",  type: String                                  },    
   })
   const emit = defineEmits<{
     (e: "subidaOk",   value: IArchivo[]  ): void
@@ -152,18 +169,22 @@
   const { modulo,
           moduloId,
           moduloRef,
-          puedeEditar
+          puedeEditar,
+          retrasoInicio
                             } = toRefs( props )
-  let puedeSubir              = true//modulo.value === "thirdparty" || !puedeEditar.value ? false : true //computed(()=>{ modulo.value === "thirdparty" })
+  //let puedeSubir              = true//modulo.value === "thirdparty" || !puedeEditar.value ? false : true //computed(()=>{ modulo.value === "thirdparty" })
   
   const columnas: IColumna[]  = [
     new Columna({ name: "name",     label: "Archivo"  }),
     new Columna({ name: "tipo",     label: "."        })
   ]
 
-  onMounted( buscarArchivos )
+  onMounted( async ()=> { 
+    await pausa( retrasoInicio.value )
+    buscarArchivos() 
+  })
 
-  watch(moduloId, (newId, oldId) => {
+  watch(moduloId,  (newId) => {    
     buscarArchivos("watch", newId)
   })
 
@@ -175,9 +196,15 @@
     
     if(ok && Array.isArray( data ) && !!data.length)
     {
-      archivos.value        = []
+      archivos.value          = []
       for (const documento of data)
-        archivos.value.push( Object.assign( new Archivo(), documento ) )        
+      {
+        const file = Object.assign( new Archivo(), documento ) as IArchivo
+        if("name" in documento)
+          file.label = documento?.name ?? ""
+
+        archivos.value.push( file )
+      }
       
       if(origen === "subida")
         emit("subidaOk", archivos.value)

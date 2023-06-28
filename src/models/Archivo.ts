@@ -12,11 +12,11 @@ export interface IArchivo
   fechaCorta:               string
   fullname:                 string
   name:                     string
-  level1name:               string
+  //level1name:               string
   path:                     string
   relativename:             string
   size:                     number 
-  type:                     string
+  //type:                     string
   sizeFile:                 string
   extension:                string
   tipo:                     TFamiliaArchivos
@@ -36,37 +36,26 @@ export interface IArchivo
 
 export class Archivo implements IArchivo
 {
-  date:                     number
-  fullname:                 string
-  name:                     string
-  level1name:               string
-  path:                     string
-  relativename:             string
-  size:                     number 
-  type:                     string
-  loading:                  boolean  
+  date          : number    = 0
+  fullname      : string    = ""
+  name          : string    = ""  
+  path          : string    = ""
+  relativename  : string    = ""
+  size          : number    = 0
+  loading       : boolean   = false
+  label         : string    = ""
 
   constructor()
   {
-    this.date               = 0
-    this.fullname           = ""
-    this.name               = ""
-    this.level1name         = ""
-    this.path               = ""
-    this.relativename       = ""
-    this.size               = 0
-    this.type               = ""
-    this.loading            = false
-  }
-  get label() : string {
-    return this.name
-  }
-  get value() : string {
-    return this.name
+    //this.label = this.name
   }
 
+  //get label() : string { return this.name }
+  get value() : string { return this.name }
+
   get url() : string {
-    return this.fullname.replace("/home/mublexco/_dolibarr", process.env.URL_DOLIBARR ?? "")
+    const url = this.fullname.replace("/home/mublexco/_dolibarr", process.env.URL_DOLIBARR ?? "")
+    return url 
     // "/home/mublexco/_dolibarr/documents/societe/4/RUT Ergo ACTUALIZADO 2015.pdf"
   }
 
@@ -87,9 +76,9 @@ export class Archivo implements IArchivo
   }
 
   get original_file() : string {
-
     let arrayPath = this.path.split( "/" )
-    return arrayPath[arrayPath.length - 1] + "/" + this.relativename
+    const file = arrayPath[arrayPath.length - 1] + "/" + this.relativename
+    return file
   }
 
   get tipo() : TFamiliaArchivos {

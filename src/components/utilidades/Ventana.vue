@@ -2,7 +2,9 @@
   <!-- no-scroll -->
   <div  
     class                     ="ventana transi no-scroll"
-    :class                    ="maximizado ? classMaximizado : classRestaurado"
+    :class                    ="[ maximizado ? classMaximizado : classRestaurado,
+                                  { 'ventana-sombra' : !sinSombra }
+                                ]"
     >
     <q-card
       :style                  ="estiloAncho"
@@ -10,7 +12,8 @@
       style                   ="height: 100%;"
       > <!-- //?* class ="miCard shadow-5" :class="clase"  --> 
       <!-- //?* //////////////////////////////////////////////////////////////// Barra superior justify-between --> 
-      <q-card-section         
+      <q-card-section  
+        v-if                  ="!sinTitulo"
         class                 ="row justify-between items-center text-white q-py-sm bg-primary"
         :style                ="fondoBarra"
         >
@@ -176,6 +179,7 @@
       minimizado:           { type: Boolean,  default: false                      },
       maximizar:            { type: Boolean,  default: false                      },
       cerrar:               { type: Boolean,  default: false                      },
+      sinTitulo:            { type: Boolean,  default: false                      },
       fullScreen:           { type: Boolean,  default: false                      },
       classContenido:       { type: String,   default: "q-pa-none"                },
       classMenu:            { type: String,   default: ""                         },
@@ -187,9 +191,10 @@
       mensajeSinResultados: { type: String,   default: "Sin resultados"           },
       mensajeCargando:      { type: String,   default: ""                         },
       iconoSinResultados:   { type: String,   default: "mdi-emoticon-sad-outline" },
-      backgroundColor:      { type: String,   default: "rgb(255 255 255 / 100%)"   },
+      backgroundColor:      { type: String,   default: "rgb(255 255 255 / 100%)"  },
       menuVisible:          { type: Boolean,  default: false                      },
       scroll:               { type: Boolean,  default: false                      },
+      sinSombra:            { type: Boolean,  default: false                      },
       heightCard:           { default: 'auto',  type: [Number, String] as PropType<number | string>},
       heightCardMin:        { default: 'auto',  type: [Number, String] as PropType<number | string>},
       heightCardMax:        { default: '',      type: [Number, String] as PropType<number | string>},

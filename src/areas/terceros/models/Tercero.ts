@@ -1,6 +1,4 @@
-import {  IContacto,
-          Contacto          } from "./Contacto"
-
+import {  IContacto         } from "./Contacto"
 import {  IDocumento,
           Documento,
                             } from "./DocumentoId"
@@ -11,6 +9,7 @@ import {  IUsuario          } from "src/areas/usuarios/models/Usuario"
 import {  formatoMilesInt   } from "src/useSimpleOk/useTools"
 import {  TIPOS_DOCUMENTO   } from "./TiposDocumento"
 import {  AREA              } from "src/models/TiposVarios"
+import {  IAccion           } from "src/areas/comunicacion/models/Accion"
 import {  getMunicipioDB,
           getTipoDocumentoDB,
           getUsuariosDB
@@ -56,6 +55,7 @@ export interface ITercero
   notaPrivada:              string                  // note_private
   esTerceroCtz:             boolean
   esFamoso:                 boolean
+  comentarios:              IAccion[]
   getTerceroToAPIDolibarr: () => any
 }
 
@@ -88,6 +88,7 @@ export class Tercero implements ITercero
   notaPublica:              string
   notaPrivada:              string
   esFamoso:                 boolean
+  comentarios               : IAccion[]   = []
 
   constructor()
   {
