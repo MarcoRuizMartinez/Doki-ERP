@@ -2,30 +2,62 @@
   <div class                  ="full-width relative-position row q-pa-none no-wrap scroll">
     <!-- //* /////////////////////////////////////////////////// Fecha creacion -->
     <fieldset-filtro
-      titulo                  ="Creación"
-      class-contenido         ="column q-gutter-xs"
-      >
-      <!-- //* ///////////////////////////////////////////////// Fecha desde -->
-      <input-fecha            hundido no-futuro clearable
-        v-model               ="b.f.desde"
-        label                 ="Desde"
+      titulo                  ="Búsqueda"
+      class-contenido         ="grilla-ribom"
+      > 
+      <!-- //* ///////////////////////////////////////////////// Cuando -->
+      <multi-label-value
+        v-model               ="b.f.cuando"
+        label                 ="Cuando"
         class                 ="width160"
-        :hasta                ="b.f.hasta"
+        icon                  ="mdi-calendar"
+        :options              ="Cuando"
       />
-      <!-- //* ///////////////////////////////////////////////// Fecha hasta -->
-      <input-fecha            hundido no-futuro clearable
-        v-model               ="b.f.hasta"
-        label                 ="Hasta"
+      <!-- //* ///////////////////////////////////////////////// Prioridad -->
+      <multi-label-value
+        v-model               ="b.f.prioridad"
+        label                 ="Prioridad"
         class                 ="width160"
-        :desde                ="b.f.desde"
+        icon                  ="mdi-alarm-light"
+        :options              ="Prioridades "
       />
+      <!-- //* ///////////////////////////////////////////////// Prioridad -->
+      <multi-label-value
+        v-model               ="b.f.progreso"
+        label                 ="Progreso"
+        class                 ="width160"
+        icon                  ="mdi-run-fast"
+        :options              ="Progresos"
+      />
+      <slot name              ="filtro"></slot>
     </fieldset-filtro>
     <!-- //* ///////////////////////////////////////////////////////////////////// FIELD SET REF Y USUARIO  -->
     <fieldset-filtro
-      titulo                  ="Búsqueda"
-      class-contenido         ="column q-gutter-xs"
+      titulo                  ="Usuarios"
+      class-contenido         ="grilla-ribom"
       >
-      <slot name              ="filtro"></slot>
+      <!-- //* ///////////////////////////////////////////////// Asignado -->
+      <select-usuario         hundido clearable
+        v-model               ="b.f.usuario"
+        class                 ="width160"
+        label                 ="Asignado"
+        :grupos               ="[GRUPO_USUARIO.MIEMBRO]"
+      />      
+      <!-- //* ///////////////////////////////////////////////// Creador -->
+      <select-usuario         hundido clearable
+        v-model               ="b.f.creador"
+        class                 ="width160"
+        label                 ="Creador"
+        :grupos               ="[GRUPO_USUARIO.MIEMBRO]"
+      />
+      <!-- //* ///////////////////////////////////////////////// Usuarios -->      
+      <multi-label-value
+        v-model               ="b.f.usuarios"
+        label                 ="Asignados"
+        class                 ="width160"
+        icon                  ="mdi-account-multiple"
+        :options              ="b.o.usuarios"
+      />        
     </fieldset-filtro>    
     <!-- //* ///////////////////////////////////////////////////////////////////// FIELD SET Paginación -->
     <fieldset-filtro
@@ -39,9 +71,9 @@
           color               ="white"
           text-color          ="grey-8"
           toggle-color        ="primary"
-          :options            ="[ {value: 10, label: '10' },
-                                  {value: 25, label: '25' },
-                                  {value: 50, label: '50' },
+          :options            ="[ {value: 25,   label: '25' },
+                                  {value: 50,   label: '50' },
+                                  {value: 100,  label: '100' },
                                 ]"
           @update:model-value ="b.f.pagina = 1"
         />
@@ -58,7 +90,7 @@
         />
         <Tooltip label        ="Pagina"/>
         <q-spinner-puff
-          v-if                ="haySiguientePagina"
+          v-if                ="b.haySiguientePagina"
           color               ="primary"
           size                ="2em"
           class               ="q-mt-xs"
@@ -69,6 +101,7 @@
       titulo                  ="Opciones"
       class-contenido         ="grilla-ribom"
       >
+      <slot></slot>
       <!-- //* ///////////////////////////////////////////////// Botones -->
       <div class              ="row justify-around q-mt-sm">
         <!-- //* /////////////////////////////////////////////// Boton recargar -->
@@ -109,6 +142,31 @@
         </div>
       </div> 
     </fieldset-filtro>
+    <fieldset-filtro
+      titulo                  ="Acciones"
+      class-contenido         ="grilla-ribom"
+      >
+      <div class              ="q-mb-sm">
+        <q-btn              
+          v-bind              ="style.btnBaseMd"
+          icon                ="mdi-check-bold"          
+          label               ="Nueva tarea"
+          color               ="positive"
+          @click              ="emit('nuevaTarea', false)"
+        />
+      </div>
+      <div>
+        <q-btn              
+          v-bind              ="style.btnBaseMd"
+          icon                ="mdi-account-check"
+          label               ="Nueva tarea"
+          color               ="info"
+          @click              ="emit('nuevaTarea', true)"
+        >
+          <Tooltip label      ="Nueva tarea personal"/>
+        </q-btn>
+      </div>      
+    </fieldset-filtro>    
     <inner-loading :cargando  ="loading?.carga ?? false"/>
   </div>
 </template>
@@ -118,26 +176,31 @@
             computed            } from "vue"
   // * /////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs         } from "pinia"
-  import {  useStoreAcuerdo     } from "src/stores/acuerdo"
+  import {  useStoreAcciones    } from "src/stores/acciones"
   // * /////////////////////////////////////////////////////////////////////// Modelos
   import {  IQuery              } from "src/models/Busqueda"
+  import {  Cuando,
+            Progresos,
+            Prioridades         } from "src/areas/comunicacion/models/Accion"  
+  import {  GRUPO_USUARIO       } from "src/models/TiposVarios"
   // * /////////////////////////////////////////////////////////////////////// Componentes
+  import {  style               } from "src/useSimpleOk/useEstilos"
   import    fieldsetFiltro        from "components/utilidades/Fieldset.vue"
-  import    inputFecha            from "components/utilidades/input/InputFecha.vue"
   import    innerLoading          from "components/utilidades/InnerLoading.vue"
+  import    multiLabelValue       from "components/utilidades/select/SelectLabelValueMulti.vue"
+  import    selectUsuario         from "src/areas/usuarios/components/SelectUsuario.vue"
 
   const { loading,
-          busqueda : b  }   = storeToRefs( useStoreAcuerdo() )
+          busqueda : b  }   = storeToRefs( useStoreAcciones() )
 
-  const { total }           = defineProps({    
-    total: { required: true, type: Number },
-  })
+  const { largo }           = defineProps< { largo : number }>()
 
-  const emit = defineEmits<{
-    (e: 'buscar',   value: IQuery ): void
-    (e: 'limpiar',                ): void
-    (e: 'exportar',               ): void    
-  }>()
+  const emit                = defineEmits<{
+    buscar:     [ value: IQuery ],
+    limpiar:    [ value: void ],
+    exportar:   [ value: void ],
+    nuevaTarea: [ personal: boolean ],
+  }>() 
 
   watch(()=>b.value.f, ()=>
     {
@@ -160,23 +223,9 @@
     if(todoLimpio) emit("limpiar")
   }  
 
-  const busquedaCompleta          = computed(()=> ( "fechaDesde"  in b.value.query &&
+  const busquedaCompleta          = computed(()=> true /* ( "fechaDesde"  in b.value.query &&
                                                     "fechaHasta"  in b.value.query
-                                                  )
+                                                  ) */
                                             )
-
-  const haySiguientePagina        = computed(()=> {
-    const limit                   = b.value.query?.limite ?? 0
-    const offset                  = (b.value.query?.offset ?? 0)
-    const largo                   = limit + offset
-    const hayMas                  = largo < total
-    return hayMas
-  })
-
-  const siguientePagina           = computed(()=> {
-    const aumentoPagina           = haySiguientePagina.value ? 1 : 0
-    const pagNow                  = b.value.f.pagina
-    const pagNext                 = pagNow + aumentoPagina
-    return pagNext
-  } )
+  const siguientePagina           = computed(()=> b.value.siguientePagina( largo ) )  
 </script>

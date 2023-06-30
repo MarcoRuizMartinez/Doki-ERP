@@ -8,6 +8,7 @@ import {  INCENTIVO_ESTADO,
           INCENTIVO_RAZON,
           INCENTIVO_ORIGEN,
           INCENTIVO_ESTADO_PAGO         } from "src/areas/nomina/models/Incentivo"
+import {  Prioridades, Cuando, Progresos} from "src/areas/comunicacion/models/Accion"            
 import {  Anticipo                      } from "src/areas/acuerdos/models/Anticipo"
 import {  DIMENSIONES                   } from "src/areas/acuerdos/models/SerieAcuerdo"
 import {  Periodo, PERIODO              } from "src/models/TiposInformes"
@@ -34,13 +35,17 @@ export interface      IQuery {
   //tipo                 ?: string
   id                   ?: number
   acuerdo              ?: TTipoAcuerdo
+  user                 ?: number
   usuario              ?: string | number
   usuarios             ?: string  // Array de IDs de usuarios 1_2_4
   creador              ?: string | number
   buscar               ?: string
   idTercero            ?: number
   contacto             ?: string
-  estados              ?: string  
+  estados              ?: string
+  cuando               ?: string
+  prioridad            ?: string
+  progreso             ?: string
   origenes             ?: string
   condiciones          ?: string
   formaPago            ?: string
@@ -90,6 +95,11 @@ export interface      IQuery {
   // * //////////////   Informes
   periodo              ?: Periodo
   dimension            ?: string
+
+  // * //////////////   Informes
+  codigo               ?: string 
+  elementoId           ?: number
+  elementoTipo         ?: string
 }
 
 interface               IOpciones {
@@ -112,6 +122,9 @@ interface               ICampos {
   valorMin              : number | undefined
   valorMax              : number | undefined
   estados               : ILabelValue[]
+  cuando                : ILabelValue[]
+  prioridad             : ILabelValue[]
+  progreso              : ILabelValue[]
   origenes              : ILabelValue[]
   usuarios              : ILabelValue[]
   condiciones           : ILabelValue[]
@@ -283,6 +296,9 @@ export class Busqueda implements IBusqueda
     this.f.estadoAnticipo     = getQueryRouterLabelValueArray ( this.rourterQ .estadoAnticipo,  Anticipo.estados              )
     this.f.tipoAnticipo       = getQueryRouterLabelValueArray ( this.rourterQ .tipoAnticipo,    Anticipo.tipos                )
     this.f.estados            = getQueryRouterLabelValueArray ( this.rourterQ .estados,         this.o.estados                )    
+    this.f.cuando             = getQueryRouterLabelValueArray ( this.rourterQ .cuando,          Cuando                        )
+    this.f.prioridad          = getQueryRouterLabelValueArray ( this.rourterQ .prioridad,       Prioridades                   )
+    this.f.progreso           = getQueryRouterLabelValueArray ( this.rourterQ .progreso,        Progresos                     )
     this.f.formaPago          = getQueryRouterLabelValueArray ( this.rourterQ .formaPago,       this.o.formasPago             )
     this.f.entrega            = getQueryRouterLabelValueArray ( this.rourterQ .entrega,         this.o.metodosEntrega         )
     this.f.usuarios           = getQueryRouterLabelValueArray ( this.rourterQ .usuarios,        this.o.usuarios               )
@@ -452,6 +468,9 @@ export class Busqueda implements IBusqueda
     if(!!this.f.ancho)                  q.ancho             = this.f.ancho
     if(!!this.f.fondo)                  q.fondo             = this.f.fondo
     if(!!this.f.estados.length)         q.estados           = this.f.estados        .map( e => e.value ).join("_")
+    if(!!this.f.cuando.length)          q.cuando            = this.f.cuando         .map( e => e.value ).join("_")
+    if(!!this.f.prioridad.length)       q.prioridad         = this.f.prioridad      .map( e => e.value ).join("_")
+    if(!!this.f.progreso.length)        q.progreso          = this.f.progreso       .map( e => e.value ).join("_")
     if(!!this.f.origenes.length)        q.origenes          = this.f.origenes       .map( e => e.value ).join("_")
     if(!!this.f.usuarios.length)        q.usuarios          = this.f.usuarios       .map( e => e.value ).join("_")
     if(!!this.f.condiciones.length)     q.condiciones       = this.f.condiciones    .map( e => e.value ).join("_")
@@ -552,6 +571,9 @@ export class Busqueda implements IBusqueda
       valorMin            : undefined,
       valorMax            : undefined,
       estados             : [],
+      cuando              : [],
+      prioridad           : [],
+      progreso            : [],
       origenes            : [],
       usuarios            : [],
       condiciones         : [],

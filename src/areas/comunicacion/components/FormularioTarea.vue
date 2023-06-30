@@ -67,14 +67,16 @@
         label               ="Asignado"
         class               ="col-12 col-md-6"
         tooltip             ="Usuario asignado"
+        :use-input          ="tarea.asignado.id < 1"
         :grupos             ="[GRUPO_USUARIO.MIEMBRO]"
         :readonly           ="readonly"
+        @update:model-value="tarea.publico = !tarea.usuarioEsAsignado"
       />
       <progreso
         v-model             ="tarea"
         class               ="col-12 col-md-6 justify-around"
         size                ="md"
-        @set                ="cambiarProgreso"
+        @set                ="ejecutarCambiarProgreso"
       />
       <!-- //* ///////////  Cuando -->
       <select-label-value   use-input flat bordered
@@ -196,7 +198,8 @@
   import    progreso                from "./Progreso.vue"
   
   const { crearAccion,
-          editarAccion      } = useControlComunicacion()
+          editarAccion,
+          cambiarProgreso   } = useControlComunicacion()
   const { usuario           } = storeToRefs( useStoreUser() )
   const { aviso             } = useTools()
   const tarea                 = ref< IAccion >( new Accion( usuario.value.id ) )
@@ -231,6 +234,12 @@
 
   //* ////////////////////////////////////////////////////////////////////////////////////// Validar
   async function validar()  {
+    
+    if(tarea.value.asignado.id < 1){
+      aviso("negative", "Falta usuario asignado", "account" )
+      return
+    }
+    
     const validacionOk      = await formulario.value.validate()
     if(validacionOk)          onSubmit()
   }
@@ -265,18 +274,12 @@
     }
   }
 
-  async function cambiarProgreso( progreso : number )
+  async function ejecutarCambiarProgreso( progreso : number )
   {
-    const ok              = await editarAccion( tarea.value.id, { percentage: progreso } )
-    let msj               = "Progreso editado"
+    const ok              = await cambiarProgreso( tarea.value.id, progreso )
+    
     if(ok){
-      if( progreso === 100 ){
-        confeti(3)
-        msj               = "Tarea completada"
-      }
-
-      aviso("positive", msj, "shield" )
-      emit("tareaEditada", tarea.value, false)
+      emit("tareaEditada", tarea.value, false )
     }
   }
 
@@ -295,7 +298,6 @@
     if(tarea.value.fechaFin.valueOf() < tarea.value.fechaInicio.valueOf())
       tarea.value.fechaFin  = tarea.value.fechaInicio
   }
-
 
 
   const readonly            = computed(()=> !tarea.value.esNuevo && !modoEdicion.value )

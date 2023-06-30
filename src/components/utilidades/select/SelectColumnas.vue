@@ -40,6 +40,7 @@
                             } from 'vue'
 
   const pre                   = process.env.PREFIJO
+  let columnasCargas          = false
   const emit                  = defineEmits(["update:modelValue"])
   const props                 = defineProps(
   {
@@ -55,15 +56,19 @@
 
   onMounted( cargarColumnasLocal ) 
   watch(almacen, cargarColumnasLocal)
+  watch(modelValue, (m)=>{
+    if(!columnasCargas)
+      modelo.value = m
+  })
 
   function cargarColumnasLocal()
   {
     let  columnas             = LocalStorage.getItem( pre + almacen.value) as string[]
-    
     if(!!columnas)
     {
       modelo.value            = columnas
       emit("update:modelValue", modelo.value)
+      columnasCargas          = true
     }
   }
 

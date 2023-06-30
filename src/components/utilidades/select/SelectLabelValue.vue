@@ -12,7 +12,7 @@
       :label                  ="label"
       :label-color            ="!!modelo && !!modelo.label ? 'primary' : 'grey-6'"
       :class                  ="{ 'campo-hundido' : hundido }"
-      :filled                 ="!hundido"
+      :filled                 ="!hundido && !noFilled"
       :options                ="opciones"
       :clearable              ="clearable && !!modelValue && !!modelo && !!modelo.label"
       :loading                ="(options.length == 0 || loading) && !noLoading"
@@ -70,7 +70,7 @@
   {
     modelValue:   { default: labelValueNulo,  type: Object   as PropType<ILabelValue>   },
     alerta:       { default:  false,          type: [Boolean, String  ]                 },
-    label:        { required: true,           type: String,                             },
+    label:        { default: undefined,              type: String,                             },
     readonly:     { default: false,           type: Boolean                             },
     useInput:     { default: false,           type: Boolean                             },
     hundido:      { default: false,           type: Boolean                             },
@@ -83,6 +83,7 @@
     noLoading:    { default: false,           type: Boolean                             },
     defecto:      { default: "",              type: String,                             },
     optionsSort:  { default: "",              type: String                              },
+    noFilled:     { default: false,           type: Boolean                             },
     behavior:     { default: "default",       type: String  as PropType< "default" | "menu" | "dialog" > },
     rules:        { default:  [],             type: Array  as PropType< ValidationRule[] > },
     //noInmediato:  { default: false,     type: Boolean                             },
@@ -207,7 +208,7 @@
   function regla( item : ILabelValue | undefined ) : boolean | string {    
     return  ( !!item || !alerta.value)
             ||
-            ( typeof alerta.value == "string" ? alerta.value : `El campo '${label.value}' no puede estar vació` )
+            ( typeof alerta.value == "string" ? alerta.value : `El campo '${label?.value ?? ""}' no puede estar vació` )
   }  
 </script>
 <style>

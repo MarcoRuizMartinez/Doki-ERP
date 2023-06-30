@@ -11,7 +11,7 @@
       <!-- //* ///////////////////////////////////////////////////////////// Botones -->
       <fieldset-filtro
         titulo                  ="Acciones"
-        class-conenido          ="column q-gutter-xs"
+        class-contenido         ="column q-gutter-xs"
         >
         <q-btn
           v-bind                ="style.btnBaseMd"
@@ -24,7 +24,7 @@
       <!-- //* ///////////////////////////////////////////////////////////// Busqueda y filtro -->
       <fieldset-filtro
         titulo                  ="Búsqueda"
-        class-conenido          ="column q-gutter-xs"
+        class-contenido         ="column q-gutter-xs"
         >
         <!-- //* ///////////////////////////////////////////////// Busqueda general -->
         <input-buscar           clearable hundido
@@ -45,7 +45,7 @@
       <!-- //* ///////////////////////////////////////////////////////////// Categorías-->
       <fieldset-filtro
         titulo                  ="Categorías"
-        class-conenido          ="column q-gutter-xs"
+        class-contenido         ="column q-gutter-xs"
         >
         <!-- //* ///////////////////////////////////////////////////////////// Campo Categoría -->
         <select-label-value     use-input hundido clearable flat bordered
@@ -64,7 +64,7 @@
       <fieldset-filtro
         v-if                    ="false"
         titulo                  ="Estado"
-        class-conenido          ="grilla-ribom"
+        class-contenido         ="grilla-ribom"
         >
         <!-- //* ///////////////////////////////////////////////// Creador -->
         <select-usuario         hundido clearable
@@ -79,7 +79,7 @@
       <fieldset-filtro
         v-if                    ="false" 
         titulo                  ="Paginas"
-        class-conenido          ="grilla-ribom fit"
+        class-contenido         ="grilla-ribom fit"
         >
         <!-- //* ///////////////////////////////////////////////// Resultados por pagina -->
         <div>
@@ -114,7 +114,7 @@
       </fieldset-filtro>
       <fieldset-filtro
         titulo                  ="Opciones"
-        class-conenido          ="grilla-ribom"
+        class-contenido         ="grilla-ribom"
         >
         <!-- //* ///////////////////////////////////////////////// Slot Columnas -->
         <slot></slot>
@@ -176,7 +176,7 @@
       >
       <fieldset-filtro
         titulo                  ="Grupo"
-        class-conenido          ="column q-gutter-xs"
+        class-contenido         ="column q-gutter-xs"
         >
       </fieldset-filtro>
     </q-tab-panel> -->

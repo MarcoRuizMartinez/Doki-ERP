@@ -803,9 +803,9 @@ export function useControlAcuerdo()
   {
     const query     = {
       codigo        : "AC_OTH",
-      terceroId     : acuerdo.value.tercero.id,
+      idTercero     : acuerdo.value.tercero.id,
       elementoId    : acuerdo.value.id,
-      tipoElemento  : Accion.getTipo( acuerdo.value.tipo )
+      elementoTipo  : Accion.getTipo( acuerdo.value.tipo )
     }
 
     loading.value.commentsLoad= true

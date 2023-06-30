@@ -15,9 +15,10 @@ export function useFetch()
   let   idTimeout             : NodeJS.Timeout
 
   type ParamExtraFetch = {
-    mensaje       : string
-    tiempoEspera? : number
-    dataEsArray?  : boolean
+    mensaje        : string
+    tiempoEspera  ?: number
+    dataEsArray   ?: boolean
+    conLoadingBar ?: boolean
   }
   async function miFetch(
                           url             : string,
@@ -25,7 +26,8 @@ export function useFetch()
                           {
                             mensaje       = "",
                             tiempoEspera  = 15000,
-                            dataEsArray   = false
+                            dataEsArray   = false,
+                            conLoadingBar = true,
                           }               : ParamExtraFetch
                         )                 : Promise <IResultado>
   {
@@ -42,13 +44,15 @@ export function useFetch()
         idTimeout             = setTimeout( abortarSiDemora, tiempoEspera)
         cargando              = true
         solicitud.signal      = controller.signal
-        loadingBar.start()
+        if(conLoadingBar)
+          loadingBar.start()
         const resultado       = await fetch( url, solicitud )
         const esJson          = resultado.headers.get('content-type')?.includes('application/json')
         const data            = esJson
                                   ? await resultado.json()
                                   : await resultado.text()
-        loadingBar.stop()
+        if(conLoadingBar)
+          loadingBar.stop()
         
         cargando              = false        
         if(!!data)

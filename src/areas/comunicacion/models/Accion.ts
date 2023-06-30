@@ -1,3 +1,5 @@
+//import {  date          } from "quasar"
+import {  fechaCorta    } from "src/useSimpleOk/useTools"
 import {  getMilisecShortForApiDolibarr } from "src/useSimpleOk/useTools"
 import {  IUsuario, Usuario } from "src/areas/usuarios/models/Usuario"
 import {  diferenciaFechas  } from "src/useSimpleOk/useTools"
@@ -19,8 +21,19 @@ export const Cuando = [
   { value: 4, label: "⏩Esta semana"    },
   { value: 5, label: "↗️Otra semana"    },
   { value: 6, label: "📆Otro mes"       },
-  { value: 7, label: "✋🏼Algún momento"  }
+  { value: 7, label: "✋🏼Algún momento"  },
+  { value: 8, label: "❌Descartado"     },
 ]
+
+export const Progresos = [
+  { value: 0,   label: "0%"   },
+  { value: 25,  label: "25%"  },
+  { value: 50,  label: "50%"  },
+  { value: 75,  label: "75%"  },
+  { value: 100, label: "100%" }
+  
+]
+export const TASK = "task"
 
 export type  PropsAccion    = {
   elementoId                ?: number 
@@ -73,6 +86,20 @@ export interface IAccion
   usuarioEsAsignado         : boolean
   usuarioPermitido          : boolean
   urlDolibarrFiles          : string
+  progresoLabel             : string  
+  fechaInicioCorta          : string
+  fechaCreacionCorta        : string
+  fechaEdicionCorta         : string
+  cuandoLabel               : string
+  prioridadLabel            : string
+  prioridadEmoji            : string
+  publicoLabel              : string
+  creadorLabel              : string
+  modificoLabel             : string
+  asignadoLabel             : string
+  tipoLabel                 : string
+  toTipo                    : string
+  tieneTerceroYNoEsTercero  : boolean
 }
 
 export class Accion implements IAccion
@@ -84,11 +111,8 @@ export class Accion implements IAccion
   fechaInicio               : Date          = new Date()
   fechaFin                  : Date          = new Date()
   usuarioNowId              : number
-  creacion                  : Date          = new Date()
-  creadorId                 : number        = 0
+  creacion                  : Date          = new Date()  
   modificado                : Date          = new Date()
-  modificoId                : number        = 0
-  asignadoId                : number        = 0
   proyectoId                : number        = 0
   terceroId                 : number        = 0
   progreso                  : number        = -1
@@ -142,6 +166,23 @@ export class Accion implements IAccion
   get esFecha()           : boolean { return this.cuando.value === Cuando[0].value }
   get esTarea()           : boolean { return this.progreso > -1 && this.codigo == "AC_OTH" }  
   get tareaCompletada()   : boolean { return this.esTarea && this.progreso === 100 }
+  get prioridadLabel()    : string  { return this.prioridad.label }
+  get prioridadEmoji()    : string  { return this.prioridadLabel.slice(0,2 ) }
+  get publicoLabel()      : string  { return this.publico ? "🗣️Publico" : "🔒Privado"}
+
+  get creadorLabel()      : string  { return this.creador.nombre }
+  get modificoLabel()     : string  { return this.modifico.nombre }
+  get asignadoLabel()     : string  { return this.asignado.nombre }
+
+  get fechaInicioCorta()  : string  { return this.esFecha ? fechaCorta(this.fechaInicio) : "" }
+  get fechaCreacionCorta(): string  { return fechaCorta(this.creacion)  }
+  get fechaEdicionCorta() : string  { return fechaCorta(this.modificado)  }
+  get tieneTerceroYNoEsTercero() : boolean{
+    return !!this.terceroId && !!this.tipo
+  }
+  get cuandoLabel()       : string  { return this.esFecha ? this.fechaInicioCorta : this.cuando.label }
+
+  //get fechaCorta        (): string  { return  }
 
   get hace(): string  {
     const diferencia  = Date.now() - this.creacion.valueOf()
@@ -160,6 +201,41 @@ export class Accion implements IAccion
   get urlDolibarrFiles() : string {
     return process.env.URL_DOLIBARR + "/comm/action/document.php?id=" + this.id
   }  
+
+  get progresoLabel() : string
+  {
+    const label =   this.progreso === 0   ? "🕑 Pendiente"
+                  : this.progreso === 100 ? "✅ Completada"
+                  :                         "🏃🏼 Progreso"
+                  
+
+    return label
+  }
+
+  get tipoLabel() : string
+  {
+    const label =   this.tipo === "order"           ? "🛒 Pedido"
+                  : this.tipo === "propal"          ? "📜 Cotizacion"
+                  : this.tipo === "order_supplier"  ? "🚛 Pedido proveedor"
+                  : this.tipo === "product"         ? "📦 Producto"
+                  : this.tipo === "shipping"        ? "🚛 Entrega"
+                  : this.tipo === TASK              ? "✔️ Tarea"
+                  :                                   "🏪 Tercero"
+                  
+    return label
+  }
+
+  get toTipo() : string
+  {
+    const to =      this.tipo === "order"           ? "/pedidos/cliente/" + this.elementoId
+                  : this.tipo === "propal"          ? "/cotizaciones/cliente/" + this.elementoId
+                  : this.tipo === "order_supplier"  ? "/pedidos/proveedor/" + this.elementoId
+                  : this.tipo === "product"         ? "/productos/" + this.elementoId
+                  : this.tipo === "shipping"        ? "/entregas/cliente/" + this.elementoId
+                  :                                   ""
+                  
+    return to
+  }
 
   static async accionApiToAccion( cApi : any, usuarioNowId : number ) : Promise<IAccion>
   {

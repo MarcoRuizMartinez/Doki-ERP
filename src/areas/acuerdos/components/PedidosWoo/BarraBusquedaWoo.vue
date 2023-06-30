@@ -3,7 +3,7 @@
     <!-- //* ///////////////////////////////////////////////////////////////////// FIELD SET REF Y USUARIO  -->
     <fieldset-filtro
       titulo                  ="Búsqueda"
-      class-conenido          ="column q-gutter-xs"
+      class-contenido         ="column q-gutter-xs"
       >
       <!-- //* ///////////////////////////////////////////////// Busqueda general -->        
       <input-buscar           clearable hundido
@@ -12,13 +12,12 @@
         class                 ="width200"
         icon                  ="mdi-magnify"
       />
-      
       <slot name              ="filtro"></slot>
     </fieldset-filtro>
     <!-- //* /////////////////////////////////////////////////// Fecha creacion -->
     <fieldset-filtro
       titulo                  ="Creación"
-      class-conenido          ="column q-gutter-xs"
+      class-contenido         ="column q-gutter-xs"
       >
       <!-- //* ///////////////////////////////////////////////// Fecha desde -->
       <input-fecha            hundido no-futuro clearable
@@ -38,7 +37,7 @@
     <!-- //* ///////////////////////////////////////////////////////////////////// FIELD SET Paginación -->
     <fieldset-filtro
       titulo                  ="Paginas"
-      class-conenido          ="grilla-ribom fit"
+      class-contenido         ="grilla-ribom fit"
       >
       <!-- //* ///////////////////////////////////////////////// Resultados por pagina -->
       <div>
@@ -75,7 +74,7 @@
     </fieldset-filtro>
     <fieldset-filtro
       titulo                  ="Opciones"
-      class-conenido          ="grilla-ribom"
+      class-contenido         ="grilla-ribom"
       >
       <!-- //* ///////////////////////////////////////////////// Botones -->
       <div class                ="row justify-around q-mt-sm">
@@ -131,15 +130,10 @@
   import {  useStoreAcuerdo     } from "src/stores/acuerdo"
 
   // * /////////////////////////////////////////////////////////////////////// Modelos
-  import {  Incentivo           } from "src/areas/nomina//models/Incentivo"            
-  import {  GRUPO_USUARIO       } from "src/models/TiposVarios"
-  import {  IQuery, Busqueda    } from "src/models/Busqueda"
+  import {  IQuery              } from "src/models/Busqueda"
 
   // * /////////////////////////////////////////////////////////////////////// Componentes
   import    fieldsetFiltro        from "components/utilidades/Fieldset.vue"
-  import    inputNumber           from "components/utilidades/input/InputFormNumber.vue"
-  import    selectLabelValue      from "components/utilidades/select/SelectLabelValue.vue"
-  import    selectUsuario         from "src/areas/usuarios/components/SelectUsuario.vue"
   import    inputBuscar           from "components/utilidades/input/InputSimple.vue"
   import    inputFecha            from "components/utilidades/input/InputFecha.vue"
   import    innerLoading          from "components/utilidades/InnerLoading.vue"

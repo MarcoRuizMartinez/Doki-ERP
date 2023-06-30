@@ -19,6 +19,8 @@
 
 .width20  { width: 20px;  }
 .width60  { width: 60px;  }
+.width70  { width: 70px;  }
+.width80  { width: 80px;  }
 .width90  { width: 90px; }
 .width100 { width: 100px; }
 .width110 { width: 110px; }
@@ -35,7 +37,7 @@
 .width300 { width: 300px; }
 .width400 { width: 400px; }
 .width500 { width: 500px; }
-
+.fill-available{ min-height: -webkit-fill-available;} 
 .gap-sm{ gap: 0.6em; }
 .gap-md{ gap: 1.2em; }
 .gap-lg{ gap: 2em;   }

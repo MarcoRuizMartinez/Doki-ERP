@@ -11,7 +11,7 @@
       
       <fieldset-filtro
         titulo                  ="Búsqueda"
-        class-conenido          ="column q-gutter-xs"
+        class-contenido         ="column q-gutter-xs"
         >
         <!-- //* ///////////////////////////////////////////////// Dimensión -->
         <select-label-value     fc use-input hundido flat bordered
@@ -33,7 +33,7 @@
       <!-- //* /////////////////////////////////////////////////// Fecha  -->
       <fieldset-filtro
         titulo                  ="Fecha"
-        class-conenido          ="column q-gutter-xs"
+        class-contenido         ="column q-gutter-xs"
         >
         <!-- //* ///////////////////////////////////////////////// Fecha desde -->
         <input-fecha            hundido no-futuro clearable
@@ -52,7 +52,7 @@
       </fieldset-filtro>
       <fieldset-filtro
         titulo                  ="Estado"
-        class-conenido          ="grilla-ribom"
+        class-contenido         ="grilla-ribom"
         >
         <!-- //* ///////////////////////////////////////////////// Busqueda general -->        
         <!--
@@ -95,7 +95,7 @@
           class                 ="width160"
           tooltip               ="Municipio tercero"
         />
-        <!-- //* ///////////////////////////////////////////////// Métodos de entrega -->
+        <!-- //* ///////////////////////////////////////////////// Usuarios -->
         <multi-label-value
           v-model               ="b.f.usuarios"
           label                 ="Comerciales"
@@ -145,7 +145,7 @@
       <fieldset-filtro
         v-if                    ="!b.esEntrega"
         titulo                  ="Subtotal"
-        class-conenido          ="column q-gutter-xs"
+        class-contenido         ="column q-gutter-xs"
         >
         <!-- //* ///////////////////////////////////////////////// Precio Minimo -->
         <input-number           hundido clearable
@@ -176,7 +176,7 @@
       <fieldset-filtro
         v-if                    ="!b.esOCProveedor"
         titulo                  ="Opciones"
-        class-conenido          ="grilla-ribom"
+        class-contenido         ="grilla-ribom"
         >
         <!-- //* ///////////////////////////////////////////////// Métodos de entrega -->
         <multi-label-value

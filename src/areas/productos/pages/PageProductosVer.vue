@@ -67,9 +67,8 @@
     const query     = {
       codigo        : "AC_OTH",
       elementoId    : producto.value.id,
-      tipoElemento  : "product"
+      elementoTipo  : "product"
     }
-    
     
     loading.value.commentsLoad  = true
     producto.value.comentarios  = await buscarAcciones( query, "comentarios" )

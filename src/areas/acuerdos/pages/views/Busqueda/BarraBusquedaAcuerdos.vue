@@ -10,7 +10,7 @@
       >
       <fieldset-filtro
         titulo                  ="Búsqueda"
-        class-conenido          ="column q-gutter-xs"
+        class-contenido         ="column q-gutter-xs"
         >
         <!-- //* ///////////////////////////////////////////////// Busqueda general -->
         <input-buscar           clearable hundido
@@ -40,7 +40,7 @@
       <!-- //* /////////////////////////////////////////////////// Fecha creacion -->
       <fieldset-filtro
         titulo                  ="Creación"
-        class-conenido          ="column q-gutter-xs"
+        class-contenido         ="column q-gutter-xs"
         >
         <!-- //* ///////////////////////////////////////////////// Fecha desde -->
         <input-fecha            hundido no-futuro clearable
@@ -59,7 +59,7 @@
       </fieldset-filtro>
       <fieldset-filtro
         titulo                  ="Estado"
-        class-conenido          ="grilla-ribom"
+        class-contenido         ="grilla-ribom"
         >
         <!-- //* ///////////////////////////////////////////////// Estado acuerdo -->
         <multi-label-value
@@ -126,7 +126,7 @@
       <!-- //* /////////////////////////////////////////////////// Paginación -->
       <fieldset-filtro
         titulo                  ="Paginas"
-        class-conenido          ="grilla-ribom fit"
+        class-contenido         ="grilla-ribom fit"
         >
         <!-- //* ///////////////////////////////////////////////// Resultados por pagina -->
         <div>
@@ -160,7 +160,7 @@
       </fieldset-filtro>
       <fieldset-filtro
         titulo                  ="Opciones"
-        class-conenido          ="grilla-ribom"
+        class-contenido         ="grilla-ribom"
         >
         <!-- //* ///////////////////////////////////////////////// Slot Columnas -->
         <slot></slot>
@@ -214,7 +214,7 @@
       <fieldset-filtro
         v-if                    ="!b.esOCProveedor"
         titulo                  ="Opciones"
-        class-conenido          ="grilla-ribom"
+        class-contenido         ="grilla-ribom"
         >
         <!-- //* ///////////////////////////////////////////////// Forma de pago -->
         <multi-label-value
@@ -324,7 +324,7 @@
       <fieldset-filtro
         v-if                    ="!b.esEntrega"
         titulo                  ="Subtotal"
-        class-conenido          ="column q-gutter-xs"
+        class-contenido         ="column q-gutter-xs"
         >
         <!-- //* ///////////////////////////////////////////////// Precio Minimo -->
         <input-number           hundido clearable
@@ -348,7 +348,7 @@
       <fieldset-filtro
         v-if                    ="!b.esEntrega"
         titulo                  ="Totales"
-        class-conenido          ="column q-gutter-xs"
+        class-contenido         ="column q-gutter-xs"
         >
         <table>
           <tbody>

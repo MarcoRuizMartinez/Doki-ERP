@@ -10,7 +10,7 @@
       >
       <fieldset-filtro
         titulo                  ="Búsqueda"
-        class-conenido          ="grilla-ribom"
+        class-contenido         ="grilla-ribom"
         >
         <!-- //* ///////////////////////////////////////////////// Busqueda general -->        
         <input-buscar           clearable hundido
@@ -74,7 +74,7 @@
       </fieldset-filtro>
       <fieldset-filtro
         titulo                  ="Especiales"
-        class-conenido          ="grilla-ribom"
+        class-contenido         ="grilla-ribom"
         >
         <!-- //* ///////////////////////////////////////////////// Es favorito de comercial -->
         <favorito
@@ -91,7 +91,7 @@
       <!-- //* /////////////////////////////////////////////////// Paginación -->
       <fieldset-filtro
         titulo                  ="Paginas"
-        class-conenido          ="grilla-ribom fit"
+        class-contenido         ="grilla-ribom fit"
         >
         <!-- //* ///////////////////////////////////////////////// Resultados por pagina -->
         <div>
@@ -125,7 +125,7 @@
       </fieldset-filtro>
       <fieldset-filtro
         titulo                  ="Opciones"
-        class-conenido          ="grilla-ribom"
+        class-contenido         ="grilla-ribom"
         >
         <!-- //* ///////////////////////////////////////////////// Slot Columnas -->
         <slot></slot>
@@ -196,7 +196,7 @@
         <fieldset-filtro
           v-else
           titulo                  ="Buscar"
-          class-conenido          ="row q-gutter-sm"
+          class-contenido         ="row q-gutter-sm"
           >
 
           <responsables           hundido inactivos
@@ -262,7 +262,7 @@
       <fieldset-filtro
         titulo                    ="Buscar"
         class                     ="menu-gris full-width q-pt-sm"
-        class-conenido            ="column q-gutter-sm"
+        class-contenido           ="column q-gutter-sm"
         >
         <responsables             hundido inactivos
           v-if                    ="storeUser.permisos.acceso_total"

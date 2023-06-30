@@ -11,7 +11,7 @@
       >
       <fieldset-filtro
         titulo                ="Búsqueda"
-        class-conenido        ="row q-gutter-xs full-width"
+        class-contenido       ="row q-gutter-xs full-width"
         >
       <!-- //* ///////////////////////////////////////////////// Transportadora -->
         <select-label-value   use-input hundido clearable flat bordered

@@ -5,14 +5,14 @@ import {  storeToRefs           } from 'pinia'
 import {  useStoreAcuerdo       } from 'src/stores/acuerdo'
 import {  useStoreUser          } from 'src/stores/user'
 //* ////////////////////////////////////////////////////////////////// Componibles
-
 import {  useApiDolibarr        } from "src/services/useApiDolibarr"
 import {  useFetch              } from "src/useSimpleOk/useFetch"
 import {  getURL, getFormData   } from "src/services/APIMaco"
-import {  useTools              } from "src/useSimpleOk/useTools"
+import {  useTools, confeti     } from "src/useSimpleOk/useTools"
 
 //* ////////////////////////////////////////////////////////////////// Modelos
 import {  IAccion, Accion       } from "src/areas/comunicacion/models/Accion"
+import {  IQuery                } from "src/models/Busqueda"
 
 export function useControlComunicacion()
 {
@@ -23,21 +23,16 @@ export function useControlComunicacion()
   const { miFetch             } = useFetch()
   const { usuario             } = storeToRefs( useStoreUser() )
   
-  type QueryAccion = {
-    codigo        : string 
-    tipoElemento  : string
-    terceroId    ?: number
-    elementoId   ?: number
-  }
 
-  async function buscarAcciones( q : QueryAccion, tipo : string ) : Promise< IAccion[] >
+  async function buscarAcciones( q : IQuery, tipo : string ) : Promise< IAccion[] >
   {
-    const { ok, data }        = await miFetch(  getURL("listas", "varios"),
-                                                { method: "POST", body: getFormData( "accion", q ) },
-                                                { dataEsArray: true, mensaje: "buscar " + tipo }
-                                              )
+    q.user                    = usuario.value.id
+    const { ok, data }        = await miFetch(  getURL("listas", "acciones"),
+                                                { method: "POST", body: getFormData( "", q ) },
+                                                { dataEsArray: true, mensaje: "buscar " + tipo, conLoadingBar: false }
+                                              )    
+    
     const acciones :IAccion[] = []
-
     if(ok && Array.isArray( data ) && !!data.length)
     {      
       for (const item of data)
@@ -74,10 +69,38 @@ export function useControlComunicacion()
     return ok
   }  
 
+  async function cambiarProgreso( idTarea : number, progreso : number ) : Promise<boolean>
+  {
+    const ok              = await editarAccion( idTarea, { percentage: progreso } )
+    let msj               = "Progreso editado"
+    if(ok){
+      if( progreso === 100 ){
+        confeti(3)
+        msj               = "Tarea completada"
+      }
+
+      aviso("positive", msj, "shield" )
+    }
+
+    return ok
+  }
+
+  async function cambiarCuando( idTarea : number, idCuando : number ) : Promise<boolean>
+  {
+    const ok              = await editarAccion( idTarea, { status: idCuando } )
+    if(ok){
+      aviso("positive", "Cuando editado", "shield" )
+    }
+
+    return ok
+  }    
+
   //* /////////////////////////////////////////////////////////////// Return
   return {
     crearAccion,
     editarAccion,
-    buscarAcciones
+    buscarAcciones,
+    cambiarProgreso,
+    cambiarCuando
   }
 }

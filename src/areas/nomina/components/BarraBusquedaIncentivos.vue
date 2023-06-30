@@ -3,7 +3,7 @@
     <!-- //* ///////////////////////////////////////////////////////////////////// FIELD SET REF Y USUARIO  -->
     <fieldset-filtro
       titulo                  ="Búsqueda"
-      class-conenido          ="column q-gutter-xs"
+      class-contenido         ="column q-gutter-xs"
       >
       <!-- //* ///////////////////////////////////////////////// Busqueda general -->        
       <input-buscar           clearable hundido
@@ -24,7 +24,7 @@
     <!-- //* ///////////////////////////////////////////////////////////////////// FIELD SET VALOR -->
     <fieldset-filtro
       titulo                  ="Valor"
-      class-conenido          ="column q-gutter-xs"
+      class-contenido         ="column q-gutter-xs"
       >
       <!-- //* ///////////////////////////////////////////////// Precio Minimo -->
       <input-number           hundido clearable
@@ -48,7 +48,7 @@
     <!-- //* ///////////////////////////////////////////////////////////////////// FIELD SET ESTADOS -->
     <fieldset-filtro
       titulo                  ="Estado"
-      class-conenido          ="column q-gutter-xs"
+      class-contenido         ="column q-gutter-xs"
       >
       <!-- //* ///////////////////////////////////////////////// Estado -->
       <select-label-value     use-input hundido clearable flat bordered
@@ -70,7 +70,7 @@
     <!-- //* ///////////////////////////////////////////////////////////////////// FIELD SET Paginación -->
     <fieldset-filtro
       titulo                  ="Paginas"
-      class-conenido          ="grilla-ribom fit"
+      class-contenido         ="grilla-ribom fit"
       >
       <!-- //* ///////////////////////////////////////////////// Resultados por pagina -->
       <div>
@@ -104,7 +104,7 @@
     </fieldset-filtro>
     <fieldset-filtro
       titulo                  ="Opciones"
-      class-conenido          ="grilla-ribom"
+      class-contenido         ="grilla-ribom"
       >
       <!-- //* ///////////////////////////////////////////////// Slot Columnas -->
       <slot></slot>

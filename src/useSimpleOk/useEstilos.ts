@@ -53,6 +53,16 @@ export const style  = {
     noCaps          : true,
     padding         : "4px 14px"
   },  
+  btnElegante       : {
+    dense           : true,
+    unelevated      : true,
+    rounded         : true,
+    noCaps          : true,
+    padding         : "2px 14px",
+    color           :"grey-4",
+    textColor       :"grey-10",
+    class           : "op60 op100-hover"
+  },  
   toggleGris        : {
     dense           : true,
     push            : true,

@@ -3,7 +3,7 @@
     <!-- //* ///////////////////////////////////////////////////////////////////// FIELD SET LUGARES  -->
     <fieldset-filtro
       titulo                  ="Lugares"
-      class-conenido          ="grilla-ribom"
+      class-contenido         ="grilla-ribom"
       >
       <!-- //* ///////////////////////////////////////////////// Origen -->
       <municipios             hundido alerta
@@ -21,7 +21,7 @@
     <!-- //* ///////////////////////////////////////////////////////////////////// FIELD SET VALOR -->
     <fieldset-filtro
       titulo                  ="Valor"
-      class-conenido          ="grilla-ribom"
+      class-contenido         ="grilla-ribom"
       >
       <!-- //* ///////////////////////////////////////////////// Valor envio -->
       <input-number           hundido alerta
@@ -44,7 +44,7 @@
     <!-- //* ///////////////////////////////////////////////////////////////////// FIELD SET MEDIDAS -->
     <fieldset-filtro
       titulo                  ="Medidas"
-      class-conenido          ="grilla-ribom"
+      class-contenido         ="grilla-ribom"
       >
       <!-- //* ///////////////////////////////////////////////// Ancho -->
       <input-number           hundido
@@ -81,7 +81,7 @@
     </fieldset-filtro>
     <fieldset-filtro
       titulo                  ="Buscar y tipo"
-      class-conenido          ="column q-gutter-xs"
+      class-contenido         ="column q-gutter-xs"
       >
       <!-- //* ///////////////////////////////////////////////// Tipo de producto -->        
       <input-buscar           clearable hundido
@@ -96,7 +96,7 @@
     <!-- //* /////////////////////////////////////////////////// Cotizacion -->
     <fieldset-filtro
       titulo                  ="Cotizacion"
-      class-conenido          ="fit"
+      class-contenido         ="fit"
       >
       <!-- //* ///////////////////////////////////////////////// Slot -->
       <div>
@@ -121,7 +121,7 @@
     </fieldset-filtro>
     <fieldset-filtro
       titulo                  ="Opciones"
-      class-conenido          ="grilla-ribom"
+      class-contenido         ="grilla-ribom"
       >
       <!-- //* ///////////////////////////////////////////////// Slot Columnas -->
       <slot name              ="columnas"></slot>

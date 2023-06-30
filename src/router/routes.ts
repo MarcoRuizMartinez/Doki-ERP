@@ -42,7 +42,13 @@ const routes: RouteRecordRaw[] = [
         path:       'logistica',
         name:       'logistica',
         component:  () => import('src/pages/PagePortadaLogistica.vue'),
-      },      
+      },
+      //* ////////////////////////////////////////////////////////////////// Tareas
+      {
+        path:       'tareas',
+        name:       'tareas',
+        component:  () => import('src/areas/comunicacion/pages/PageTareas.vue'),
+      },            
       {
         path: 'politicas',
         name: 'politicas',

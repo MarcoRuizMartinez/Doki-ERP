@@ -2,7 +2,7 @@
   <div>
     <fieldset class="full-height">
     <legend>{{titulo}}:</legend>
-      <div  :class          ="classConenido">
+      <div  :class          ="classContenido">
         <slot></slot>
       </div>
     </fieldset>
@@ -12,6 +12,6 @@
 //class         ="col" col
   const props           = defineProps({
     titulo:         { required: true, type: String  },
-    classConenido:  { default: "",    type: String  },
+    classContenido:  { default: "",    type: String  },
   })
 </script>

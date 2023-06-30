@@ -205,7 +205,7 @@
 
 
 
-  const regla = ( user : IUsuario ) => !!user.id || (  "Por favor seleccione un responsable" )
+  const regla = ( user : IUsuario ) => user.id > 0 || (  "Por favor seleccione un responsable" )
 
   function filterFn ( busqueda : any, update : Function, abort : Function  )
   {

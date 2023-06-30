@@ -178,8 +178,8 @@ height-card         ="210px"
   {
     const query     = {
       codigo        : "AC_OTH",
-      terceroId     : tercero.value.id,
-      tipoElemento  : "null"
+      idTercero     : tercero.value.id,
+      elementoTipo  : "null"
     }
     
     loadComentarios.value     = true
