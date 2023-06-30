@@ -79,7 +79,7 @@ export function useControlComunicacion()
         msj               = "Tarea completada"
       }
 
-      aviso("positive", msj, "shield" )
+      aviso("positive", msj)
     }
 
     return ok
@@ -89,11 +89,25 @@ export function useControlComunicacion()
   {
     const ok              = await editarAccion( idTarea, { status: idCuando } )
     if(ok){
-      aviso("positive", "Cuando editado", "shield" )
+      aviso("positive", "Cuando editado")
     }
 
     return ok
-  }    
+  }
+  
+  async function cambiarAceptar( task : IAccion ) : Promise<boolean>
+  {
+    if(!task.usuarioEsAsignado || task.aceptado) return true
+    task.aceptado         = !task.aceptado
+
+    const ok              = await editarAccion( task.id, { event_paid: +task.aceptado } )
+    if(ok){
+      const msj           = task.aceptado ? "Tarea aceptada" : "Tarea rechazada"
+      aviso("positive", msj)
+    }
+
+    return ok
+  }      
 
   //* /////////////////////////////////////////////////////////////// Return
   return {
@@ -101,6 +115,7 @@ export function useControlComunicacion()
     editarAccion,
     buscarAcciones,
     cambiarProgreso,
-    cambiarCuando
+    cambiarCuando,
+    cambiarAceptar
   }
 }

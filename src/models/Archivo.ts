@@ -88,6 +88,7 @@ export class Archivo implements IArchivo
       case "pdf":   tipo  = "PDF";      break;
       case "xlsx":  tipo  = "Excel";    break;
       case "xls":   tipo  = "Excel";    break;
+      case "csv":   tipo  = "Excel";    break;
       case "docx":  tipo  = "Word";     break;
       case "doc":   tipo  = "Word";     break;
       case "txt":   tipo  = "Texto";    break;

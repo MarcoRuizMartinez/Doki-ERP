@@ -70,6 +70,7 @@ export interface IAccion
   cuando                    : ILabelValue
   prioridad                 : ILabelValue
   publico                   : boolean
+  aceptado                  : boolean
   titulo                    : string
   comentario                : string
   elementoId                : number
@@ -85,6 +86,7 @@ export interface IAccion
   usuarioEsCreador          : boolean
   usuarioEsAsignado         : boolean
   usuarioPermitido          : boolean
+  creadorEsAsignado         : boolean
   urlDolibarrFiles          : string
   progresoLabel             : string  
   fechaInicioCorta          : string
@@ -119,6 +121,7 @@ export class Accion implements IAccion
   cuando                    : ILabelValue   = labelValueNulo
   prioridad                 : ILabelValue   = labelValueNulo
   publico                   : boolean       = true
+  aceptado                  : boolean       = false
   titulo                    : string        = ""
   comentario                : string        = ""
   elementoId                : number        = 0
@@ -145,6 +148,7 @@ export class Accion implements IAccion
       status:       this.cuando.value,
       priority:     this.prioridad.value,
       transparency: +this.publico,
+      event_paid:   +this.aceptado,
       datep:        getMilisecShortForApiDolibarr( this.fechaInicio ),
       datef:        getMilisecShortForApiDolibarr( this.fechaFin ),
       socid:        !!this.terceroId  ? this.terceroId  : null,
@@ -159,8 +163,9 @@ export class Accion implements IAccion
   get progreso_1_4()              { return  this.progreso >= 25 ? this.progreso / 25 : 0 }
   set progreso_1_4( p : number )  { this.progreso = p * 25}
 
-  get usuarioEsCreador()  : boolean { return this.usuarioNowId == this.creador.id   }
-  get usuarioEsAsignado() : boolean { return this.usuarioNowId == this.asignado.id }
+  get usuarioEsCreador()  : boolean { return this.usuarioNowId  == this.creador.id   }
+  get usuarioEsAsignado() : boolean { return this.usuarioNowId  == this.asignado.id  }
+  get creadorEsAsignado() : boolean { return this.creador.id    == this.asignado.id  }
   get usuarioPermitido()  : boolean { return this.usuarioEsCreador || this.usuarioEsAsignado }
   get esNuevo()           : boolean { return !this.id }  
   get esFecha()           : boolean { return this.cuando.value === Cuando[0].value }
@@ -214,25 +219,32 @@ export class Accion implements IAccion
 
   get tipoLabel() : string
   {
-    const label =   this.tipo === "order"           ? "🛒 Pedido"
-                  : this.tipo === "propal"          ? "📜 Cotizacion"
-                  : this.tipo === "order_supplier"  ? "🚛 Pedido proveedor"
-                  : this.tipo === "product"         ? "📦 Producto"
-                  : this.tipo === "shipping"        ? "🚛 Entrega"
-                  : this.tipo === TASK              ? "✔️ Tarea"
+    const label =   this.tipo === "order"             ? "🛒 Pedido"
+                  : this.tipo === "propal"            ? "📜 Cotizacion"
+                  : this.tipo === "order_supplier"    ? "🚛 Pedido proveedor"
+                  : this.tipo === "product"           ? "📦 Producto"
+                  : this.tipo === "shipping"          ? "🚛 Entrega"
+                  : this.tipo === "supplier_proposal" ? "📜 Cotizacion proveedor"
+                  : this.tipo === TASK                ? "✔️ Tarea"
                   :                                   "🏪 Tercero"
                   
     return label
   }
 
+
+
+
+
+
   get toTipo() : string
   {
-    const to =      this.tipo === "order"           ? "/pedidos/cliente/" + this.elementoId
-                  : this.tipo === "propal"          ? "/cotizaciones/cliente/" + this.elementoId
-                  : this.tipo === "order_supplier"  ? "/pedidos/proveedor/" + this.elementoId
-                  : this.tipo === "product"         ? "/productos/" + this.elementoId
-                  : this.tipo === "shipping"        ? "/entregas/cliente/" + this.elementoId
-                  :                                   ""
+    const to =      this.tipo === "order"             ? "/pedidos/cliente/" + this.elementoId
+                  : this.tipo === "propal"            ? "/cotizaciones/cliente/" + this.elementoId
+                  : this.tipo === "order_supplier"    ? "/pedidos/proveedor/" + this.elementoId
+                  : this.tipo === "product"           ? "/productos/" + this.elementoId
+                  : this.tipo === "shipping"          ? "/entregas/cliente/" + this.elementoId
+                  //: this.tipo === "supplier_proposal" ? "📜 Cotizacion proveedor"
+                  :                                     ""
                   
     return to
   }
@@ -250,6 +262,7 @@ export class Accion implements IAccion
     c.terceroId     = +cApi?.terceroId    ?? 0
     c.proyectoId    = +cApi?.proyectoId   ?? 0
     c.publico       = Boolean( +cApi?.publico       ?? 0)
+    c.aceptado      = Boolean( +cApi?.aceptado      ?? 0)
     c.eventoDiaFull = Boolean( +cApi?.eventoDiaFull ?? 0)
     c.comentario    = c.comentario.replaceAll('\n', "<br/>")
     c.fechaInicio   = !!cApi.fechaInicio  ? new Date( cApi.fechaInicio  ) : new Date()
@@ -271,7 +284,9 @@ export class Accion implements IAccion
 
   static getTipo( tipo : TIPO_ACUERDO ) : string {
     return    tipo === TIPO_ACUERDO.PEDIDO_CLI      ? "order"
+            : tipo === TIPO_ACUERDO.PEDIDO_PRO      ? "order_supplier"
             : tipo === TIPO_ACUERDO.COTIZACION_CLI  ? "propal"
+            : tipo === TIPO_ACUERDO.COTIZACION_PRO  ? "supplier_proposal"
             : tipo === TIPO_ACUERDO.ENTREGA_CLI     ? "shipping"
             : tipo === TIPO_ACUERDO.FACTURA_CLI     ? "invoice"
             : tipo === TIPO_ACUERDO.FACTURA_PRO     ? "invoice_supplier"

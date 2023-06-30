@@ -192,7 +192,7 @@ export interface        IBusqueda {
 
   // * /////////////////  Metodos
   initClass             : ()=> void
-  iniciarOpciones       : ()=> Promise<void>
+  iniciarOpciones       : ( grupoUsuarios : string )=> Promise<void>
   copiarQueryACampos    : ()=> Promise<void>
   desmontarBusqueda     : ()=> void
   copiarQueryARourter   : ()=> void
@@ -204,7 +204,8 @@ export interface        IBusqueda {
                             autoSelect       ?: boolean,
                             canChangeUser    ?: boolean,
                             resultadosXPage  ?: number,
-                            acuerdoTipo      ?: TTipoAcuerdo 
+                            acuerdoTipo      ?: TTipoAcuerdo,
+                            grupoUsuarios    ?: string
                           ) => Promise<void>
 }
 
@@ -239,10 +240,10 @@ export class Busqueda implements IBusqueda
     this.o                = Busqueda.getOptionsStart()
   } 
   
-  async iniciarOpciones() : Promise<void>
+  async iniciarOpciones( grupoUsuarios : string ) : Promise<void>
   {
     this.o.opcionesOk                       = false
-    this.o.usuarios                         = await getUsuariosByGrupoDB("Comerci")
+    this.o.usuarios                         = await getUsuariosByGrupoDB( grupoUsuarios )
     this.o.origenes                         = await getOrigenesContactoDB()
     this.o.condicionesPago                  = await getCondicionesPagoDB()
     this.o.formasPago                       = await getFormasPagoDB()
@@ -346,7 +347,8 @@ export class Busqueda implements IBusqueda
     autoSelect                : boolean       = false,
     canChangeUser             : boolean       = false, 
     resultadosXPage           : number        = 10,
-    acuerdoTipo               : TTipoAcuerdo  = TIPO_ACUERDO.NULO 
+    acuerdoTipo               : TTipoAcuerdo  = TIPO_ACUERDO.NULO,
+    grupoUsuarios             : string        = "Comerci"
   ) : Promise<void>
   {
     this.montadoOk            = false
@@ -362,7 +364,7 @@ export class Busqueda implements IBusqueda
     if(cambioTipo)
       this.acuerdo            = acuerdoTipo
 
-    await this.iniciarOpciones()
+    await this.iniciarOpciones( grupoUsuarios )
     await this.copiarQueryACampos()
     
     this.montadoOk          = true

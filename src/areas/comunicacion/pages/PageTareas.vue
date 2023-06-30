@@ -7,6 +7,8 @@
       height                          ="100%"
       size-icon-carga                 ="22em"
       icono                           ="mdi-check-box-outline"
+      icono-sin-resultados            ="mdi-checkbox-multiple-marked-outline"
+      mensaje-sin-resultados          ="No se encontraron tareas"
       :modo                           ="modo"
       :padding-contenido              ="modo === 'normal' ? '0' : '12px' "
       >
@@ -114,6 +116,16 @@
           #body-cell-asignadoLabel    ="props">
           <q-td   :props              ="props">
             <chip-usuario             :usuario="props.row.asignado"/>
+            <q-btn
+              v-if                    ="!props.row.creadorEsAsignado"
+              v-bind                  ="style.btnRedondoFlatSple"
+              icon                    ="mdi-check-all"
+              class                   ="q-ml-xs"
+              :color                  ="props.row.aceptado ? 'info' : props.row.usuarioEsAsignado ? 'deep-orange-9' : 'grey-6' "
+              @click                  ="()=> cambiarAceptar( props.row )"
+              >
+              <Tooltip  :label        ="props.row.aceptado ? 'Tarea aceptada' : 'Esperando aceptación'"/>
+            </q-btn>
           </q-td>
         </template>
         <!-- //* ///////////////////  Columna Creador -->
@@ -184,7 +196,8 @@
   const { busqueda : b      } = storeToRefs( useStoreAcciones() )
   const { buscarAcciones,
           cambiarCuando,
-          cambiarProgreso   } = useControlComunicacion()
+          cambiarProgreso,
+          cambiarAceptar    } = useControlComunicacion()
 
   const { usuario           } = storeToRefs( useStoreUser() )
   const { aviso             } = useTools()
@@ -209,7 +222,7 @@
   async function iniciar()
   {
     useTitle("✅ Tareas")
-    await b.value.montarBusqueda( usuario.value.id, router, false, true, 50  )
+    await b.value.montarBusqueda( usuario.value.id, router, false, true, 50, undefined, "Miembr"  )
 
     crearColumnas()
   }
@@ -268,8 +281,6 @@
   async function ejecutarCambiarCuando( idTarea : number, cuando: number ){
     const ok              = await cambiarCuando( idTarea, cuando )
   }
-  
-
 
   //* ///////////////////////////////////////////////////////////// Crear Columnas
   function crearColumnas(){
@@ -285,7 +296,7 @@
       new Columna({ name: "publicoLabel",       label: "Visible"    }),
       new Columna({ name: "modificoLabel",      label: "editó"      }),      
       new Columna({ name: "fechaCreacionCorta", label: "creación"   }),      
-      new Columna({ name: "fechaEdicionCorta",  label: "edición"    }),      
+      new Columna({ name: "fechaEdicionCorta",  label: "edición"    }),
     ]
 
     const colsOcu =[ "modificoLabel", "comentario", "fechaCreacionCorta", "fechaEdicionCorta" ]

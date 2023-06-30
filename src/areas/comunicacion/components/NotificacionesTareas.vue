@@ -11,32 +11,38 @@
       <div class            ="row">
         <q-btn 
           v-bind            ="style.btnElegante"
-          class             ="col-12 q-mb-sm"
-          label             ="Tareas que asigne"
-          :to               ="`/tareas?creador=${usuario.id}&cuando=1_2_3_4_5&progreso=0_25_50_75&limite=50&offset=0`"
-        />
-        <q-btn 
-          v-bind            ="style.btnElegante"
           class             ="col q-mr-sm"
           label             ="Tarea personal"
+          icon              ="mdi-plus"
+          padding           ="2px 6px"
           @click            ="tareaPersonal"
           >
           <Tooltip  label   ="Nueva tarea personal"/>
         </q-btn>
         <q-btn 
           v-bind            ="style.btnElegante"
-          class             ="col"
           label             ="Asignar tarea"
+          class             ="col"
+          icon              ="mdi-plus"
+          padding           ="2px 6px"
           @click            ="tareaAsignada"
           >
           <Tooltip  label   ="Asignar una tarea"/>
-        </q-btn>        
+        </q-btn>
+        <q-btn 
+          v-bind            ="style.btnElegante"
+          class             ="col-12 q-mt-sm"
+          label             ="Tareas que asigne"
+          icon              ="mdi-open-in-new"
+          :to               ="`/tareas?creador=${usuario.id}&cuando=1_2_3_4_5&progreso=0_25_50_75&limite=50&offset=0`"
+        />        
       </div>
       <q-separator class    ="q-my-sm"/>      
       <div  class           ="row justify-between items-center">
         <q-btn              flat rounded          
           label             ="Mis tareas de hoy"
-          :to               ="`/tareas?usuario=${usuario.id}&limite=50&offset=0&cuando=2&progreso=0_25_50_75`"
+          icon              ="mdi-open-in-new"
+          :to               ="`/tareas?usuario=${usuario.id}&limite=50&offset=0&cuando=2_3&progreso=0_25_50_75`"
         />           
         <q-btn              flat round dense
           icon              ="mdi-refresh"
@@ -59,8 +65,17 @@
           </div>
           <div>
             Asignado por
-            <chip-usuario :usuario="t.asignado"/>
-          </div>
+            <chip-usuario   :usuario="t.creador"/>
+            <q-btn          unelevated dense no-caps
+              v-if          ="!t.usuarioEsCreador && !t.aceptado"
+              label         ="Aceptar"
+              icon          ="mdi-check-all"
+              class         ="q-ml-xs"
+              color         ="positive"
+              @click        ="()=> cambiarAceptar( t )"
+            />            
+          </div>          
+
         </div>
       </div>
     </div>
@@ -109,7 +124,8 @@
   const { usuario             } = storeToRefs( useStoreUser() )
   const { tareas, tarea,
           menuTareasOn        } = storeToRefs( useStoreAcciones() )  
-  const { buscarAcciones      } = useControlComunicacion()
+  const { buscarAcciones,
+          cambiarAceptar      } = useControlComunicacion()
   const usuarioAfuera           = usePageLeave()
   
   
@@ -128,7 +144,7 @@
     {
       const q : IQuery          = {
                                     codigo    : "AC_OTH",
-                                    cuando    : "2",
+                                    cuando    : "2_3",
                                     progreso  : "0_25_50_75",
                                     usuario   : usuario.value.id,
                                     user      : usuario.value.id

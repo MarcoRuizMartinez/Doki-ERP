@@ -108,7 +108,7 @@
 
 "@quasar/cli@^2.2.1":
   version "2.2.1"
-  resolved "https://registry.npmjs.org/@quasar/cli/-/cli-2.2.1.tgz"
+  resolved "https://registry.yarnpkg.com/@quasar/cli/-/cli-2.2.1.tgz#8b7c3016c5681c1a9967265a8fe3943269dd4c3a"
   integrity sha512-PMwJ76IeeNRRBw+08hUMjhqGC6JKJ/t1zIb+IOiyR5D4rkBR26Ha/Z46OD3KfwUprq4Q8s4ieB1+d3VY8FhPKg==
   dependencies:
     "@quasar/ssl-certificate" "^1.0.0"

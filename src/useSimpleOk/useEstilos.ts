@@ -47,6 +47,12 @@ export const style  = {
     padding         : "none",
     class           : "op60 op100-hover q-ml-sm"
   },
+  btnRedondoFlatSple: {
+    dense           : true,
+    flat            : true,
+    round           : true,    
+    padding         : "none",    
+  },  
   btnSimple         : {
     flat            : true,
     dense           : true,
@@ -58,7 +64,6 @@ export const style  = {
     unelevated      : true,
     rounded         : true,
     noCaps          : true,
-    padding         : "2px 14px",
     color           :"grey-4",
     textColor       :"grey-10",
     class           : "op60 op100-hover"

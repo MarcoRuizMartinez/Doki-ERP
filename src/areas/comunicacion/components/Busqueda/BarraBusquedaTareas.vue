@@ -150,8 +150,9 @@
         <q-btn              
           v-bind              ="style.btnBaseMd"
           icon                ="mdi-check-bold"          
-          label               ="Nueva tarea"
+          label               ="Asignar tarea"
           color               ="positive"
+          class               ="width140"
           @click              ="emit('nuevaTarea', false)"
         />
       </div>
@@ -159,8 +160,9 @@
         <q-btn              
           v-bind              ="style.btnBaseMd"
           icon                ="mdi-account-check"
-          label               ="Nueva tarea"
+          label               ="Tarea personal"
           color               ="info"
+          class               ="width140"
           @click              ="emit('nuevaTarea', true)"
         >
           <Tooltip label      ="Nueva tarea personal"/>
