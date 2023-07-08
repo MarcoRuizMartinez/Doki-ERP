@@ -57,7 +57,7 @@
             />
           </q-td>
         </template>
-        <!-- //* //////////////////  Columna nombre  -->
+        <!-- //* //////////////////  Columna Estado  -->
         <template #body-cell-estado ="props">
           <q-td   :props            ="props">
             <span

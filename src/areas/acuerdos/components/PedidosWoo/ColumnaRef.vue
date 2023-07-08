@@ -35,7 +35,7 @@
         size          ="12px"
         icon          ="mdi-open-in-new"
         target        ="_blank"
-        :href         ="'pedidos/cliente/' + modelValue.idPedido"
+        :href         ="'/pedidos/cliente/' + modelValue.idPedido"
       />      
     </div>
   </div>

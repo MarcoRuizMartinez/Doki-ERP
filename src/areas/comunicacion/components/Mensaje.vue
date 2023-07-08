@@ -10,7 +10,7 @@
     @click              ="()=> { if(msj.esTarea) emit('click', msj ) }"
     >
     <q-spinner-dots
-      v-if              ="msj.editandoComentario"
+      v-if              ="msj.editando"
       size              ="2rem"
     />
     <div
@@ -99,9 +99,9 @@
   async function ejecutarEditarComentario( c : IAccion, valor : any )
   {
     if(typeof valor != "string" || !valor) return
-    c.editandoComentario = true
+    c.editando = true
     await editarComentario( c.id, valor )
-    c.editandoComentario = false
+    c.editando = false
   }
 
   function validarEdicion( val : string)

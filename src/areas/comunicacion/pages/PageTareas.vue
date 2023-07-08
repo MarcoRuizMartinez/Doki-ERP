@@ -46,6 +46,7 @@
         :rows                         ="tareas"
         :columns                      ="columnas"
         :visible-columns              ="columnasVisibles"
+        :pagination                   ="{ sortBy: 'cuandoValue',  descending: false, }"
         :rows-per-page-options        ="[100]"
         @row-dblclick                 ="( e : Event, row : Object, i: number )=> mostrarTarea( row as IAccion )"
         >
@@ -56,10 +57,23 @@
               class                   ="cursor-pointer text-1_2em"
               @click                  ="mostrarTarea(props.row)"
               >
-              <span class             ="text-1_3em">{{ props.row.prioridadEmoji }}</span>
+              <span
+                v-if                  ="props.row.prioridad.value >= 1"
+                class                 ="text-1_3em"
+                >
+                {{ props.row.prioridadEmoji }}
+              </span>
               {{ props.row.titulo }}
             </span>
-            <Tooltip>Prioridad {{ props.row.prioridadLabel }}<br/> {{ props.row.comentario }}</Tooltip>
+            <Tooltip>
+              Prioridad {{ props.row.prioridadLabel }}<br/>
+              <span
+                style                 ="max-width: 300px;"
+                class                 ="ellipsis-3-lines"
+                >
+                {{ props.row.comentario }}
+              </span>
+            </Tooltip>
           </q-td>
         </template>
         <!-- //* ///////////////////  Columna Tipo y Tercero  -->
@@ -142,6 +156,17 @@
             <chip-usuario             :usuario="props.row.modifico"/>
           </q-td>
         </template>
+        <!-- //* ///////////////////  Columna Privacidad  -->
+        <template
+          #body-cell-publicoLabel     ="props">
+          <q-td   :props              ="props">
+          <span @click                ="()=> cambiarPrivacidad( props.row )">
+            {{ props.value }}
+          </span>
+          <inner-loading :cargando    ="props.row.editando" size="md"/>
+          </q-td>
+        </template>
+        
       </q-table>
     </ventana>
     <q-dialog
@@ -192,12 +217,14 @@
   import    progreso                  from "../components/Progreso.vue"
   import    formularioTarea           from "../components/FormularioTarea.vue"
   import    chipUsuario               from "src/areas/usuarios/components/ChipUsuario.vue"
+  import    innerLoading              from "components/utilidades/InnerLoading.vue"
 
   const { busqueda : b      } = storeToRefs( useStoreAcciones() )
   const { buscarAcciones,
           cambiarCuando,
           cambiarProgreso,
-          cambiarAceptar    } = useControlComunicacion()
+          cambiarAceptar,
+          cambiarPrivacidad } = useControlComunicacion()
 
   const { usuario           } = storeToRefs( useStoreUser() )
   const { aviso             } = useTools()
@@ -210,11 +237,10 @@
   const modo                  = ref< ModosVentana >( "esperando-busqueda" )
   const tareas                = ref< IAccion[]> ([])
   const tarea                 = ref< IAccion>   ( new Accion( usuario.value.id ) )
-  let yaBusco                 = false
 
-  watch(()=>router.currentRoute.value.query, ( q )=>{
-    if(yaBusco)
-      buscar( q )  
+  watch(()=>router.currentRoute.value.query, async ( q )=>{
+    if(modo.value !== "buscando")
+      await b.value.copiarQueryACampos( true )
   })
 
   onMounted( iniciar )
@@ -230,7 +256,6 @@
   //* ///////////////////////////////////////////////////////////// Consultar Si existe cliente y Pagos
   async function buscar( q : IQuery )
   {
-    yaBusco                   = false
     q.codigo                  = "AC_OTH"
 
     if(!("progreso" in q))
@@ -240,7 +265,6 @@
     modo.value                = "buscando"
     tareas.value              = await buscarAcciones( q, "tareas" )
     modo.value                = !!tareas.value.length ? "normal" : "sin-resultados"
-    yaBusco                   = true
   }
 
   function mostrarTarea( t : IAccion )
@@ -282,6 +306,7 @@
     const ok              = await cambiarCuando( idTarea, cuando )
   }
 
+
   //* ///////////////////////////////////////////////////////////// Crear Columnas
   function crearColumnas(){
     columnas.value            = [
@@ -297,9 +322,10 @@
       new Columna({ name: "modificoLabel",      label: "editó"      }),      
       new Columna({ name: "fechaCreacionCorta", label: "creación"   }),      
       new Columna({ name: "fechaEdicionCorta",  label: "edición"    }),
+      new Columna({ name: "cuandoValue",        label: "cuando Id"  }),
     ]
 
-    const colsOcu =[ "modificoLabel", "comentario", "fechaCreacionCorta", "fechaEdicionCorta" ]
+    const colsOcu =[ "modificoLabel", "comentario", "fechaCreacionCorta", "fechaEdicionCorta", "cuandoValue" ]
     Columna.ocultarColums( colsOcu, columnas.value )    
     columnasVisibles.value    = columnas.value.filter(c => c.visible ).map( c => c.name )
   }
@@ -308,6 +334,7 @@
   function limpiarBusqueda(){
     modo.value                = "esperando-busqueda"    
     filtro.value              = ""
+    tareas.value              = []
   }
 
   //* ///////////////////////////////////////////////////////////// Descargar Archivos
@@ -318,5 +345,8 @@
     else    aviso("negative", "Error al generar el archivo...", "file")
   }
 
-  const titulo = computed(()=> tareas.value.length + " Tarea" + ( tareas.value.length == 1 ? "" : "s" ) )
+  const titulo = computed(()=>  modo.value == "esperando-busqueda" ? "Buscar tareas"
+                                : modo.value == "buscando"         ? "Buscando tareas..."
+                                : tareas.value.length + " Tarea" + ( tareas.value.length == 1 ? "" : "s" ) 
+                          )
 </script>

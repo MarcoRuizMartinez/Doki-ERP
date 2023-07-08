@@ -9,16 +9,18 @@ import {  ILoading,
 export interface IAccionStore {
   tareas          : IAccion[]
   tarea           : IAccion
+  yaBusco         : boolean
   menuTareasOn    : boolean  
   loading         : ILoading,
   modales         : IModales,
-  busqueda        : IBusqueda,  
+  busqueda        : IBusqueda,
 }
 
 export const useStoreAcciones = defineStore('acciones', {
   state: () : IAccionStore  => ({
     tareas        : [],
     tarea         : new Accion( 0 ),
+    yaBusco       : false,
     menuTareasOn  : false,
     loading       : LoadingDefault,    
     modales       : ModalesDefault,

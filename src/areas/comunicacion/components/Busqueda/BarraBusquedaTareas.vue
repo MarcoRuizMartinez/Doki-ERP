@@ -149,16 +149,6 @@
       <div class              ="q-mb-sm">
         <q-btn              
           v-bind              ="style.btnBaseMd"
-          icon                ="mdi-check-bold"          
-          label               ="Asignar tarea"
-          color               ="positive"
-          class               ="width140"
-          @click              ="emit('nuevaTarea', false)"
-        />
-      </div>
-      <div>
-        <q-btn              
-          v-bind              ="style.btnBaseMd"
           icon                ="mdi-account-check"
           label               ="Tarea personal"
           color               ="info"
@@ -167,6 +157,16 @@
         >
           <Tooltip label      ="Nueva tarea personal"/>
         </q-btn>
+      </div>
+      <div>
+        <q-btn              
+          v-bind              ="style.btnBaseMd"
+          icon                ="mdi-check-bold"          
+          label               ="Asignar tarea"
+          color               ="positive"
+          class               ="width140"
+          @click              ="emit('nuevaTarea', false)"
+        />        
       </div>      
     </fieldset-filtro>    
     <inner-loading :cargando  ="loading?.carga ?? false"/>

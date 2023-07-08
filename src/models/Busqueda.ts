@@ -193,7 +193,7 @@ export interface        IBusqueda {
   // * /////////////////  Metodos
   initClass             : ()=> void
   iniciarOpciones       : ( grupoUsuarios : string )=> Promise<void>
-  copiarQueryACampos    : ()=> Promise<void>
+  copiarQueryACampos    : ( cambioEnQuery ?: boolean )=> Promise<void>
   desmontarBusqueda     : ()=> void
   copiarQueryARourter   : ()=> void
   checkPage             : ()=> boolean
@@ -259,9 +259,10 @@ export class Busqueda implements IBusqueda
     this.o.opcionesOk                       = true
   }
 
-  async copiarQueryACampos() : Promise<void>
+  async copiarQueryACampos( cambioEnQuery : boolean = false ) : Promise<void> // cambioEnQuery es cuando la url cambia, primero y toca detectar ese cambio
   {
     this.f.copiando           = true
+    this.rourterQ             = this.router?.currentRoute.value.query ?? {}    
     this.f.desde              = getQueryRouterDate      ( this.rourterQ .fechaDesde   )
     this.f.hasta              = getQueryRouterDate      ( this.rourterQ .fechaHasta   )
     this.f.buscar             = getQueryRouterString    ( this.rourterQ .buscar       )
@@ -312,9 +313,14 @@ export class Busqueda implements IBusqueda
     const municipioContId     = getQueryRouterNumber( this.rourterQ .municipioContacto ) 
     this.f.municipioContacto  = !!municipioContId ? await getMunicipioDB( municipioContId ) : new Municipio()
 
-    const creadorlId          = getQueryRouterNumber( this.rourterQ.creador ) ?? 0
-    this.f.creador            = creadorlId > 0 ? await getUsuarioDB( creadorlId ) : new Usuario()
-    await this.setUsuario()
+    const creadorId           = getQueryRouterNumber( this.rourterQ.creador ) ?? 0
+    this.f.creador            = creadorId > 0 ? await getUsuarioDB( creadorId ) : new Usuario()
+    if(cambioEnQuery){
+      const usurioId          = getQueryRouterNumber( this.rourterQ.usuario ) ?? 0
+      this.f.usuario          = usurioId > 0 ? await getUsuarioDB( usurioId ) : new Usuario()
+    }
+    else
+      await this.setUsuario()
     this.f.copiando           = false
   }
 
@@ -325,7 +331,7 @@ export class Busqueda implements IBusqueda
       if( this.puedeCambiarUser )
       {
         if( !!this.usuarioIdInicio )
-          this.f.usuario      = await getUsuarioDB( this.usuarioIdInicio )          
+          this.f.usuario      = await getUsuarioDB( this.usuarioIdInicio )
         else
         if( this.haceAutoSelect )
           this.f.usuario      = await getUsuarioDB( this.usuarioId )

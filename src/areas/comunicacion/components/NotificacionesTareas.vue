@@ -13,21 +13,25 @@
           v-bind            ="style.btnElegante"
           class             ="col q-mr-sm"
           label             ="Tarea personal"
-          icon              ="mdi-plus"
+          icon              ="mdi-account-check"
           padding           ="2px 6px"
           @click            ="tareaPersonal"
           >
-          <Tooltip  label   ="Nueva tarea personal"/>
+          <Tooltip>
+            <span v-html    ="'Nueva tarea personal.<br/>Alt + S o Alt + M'"></span>
+          </Tooltip>
         </q-btn>
         <q-btn 
           v-bind            ="style.btnElegante"
           label             ="Asignar tarea"
           class             ="col"
-          icon              ="mdi-plus"
+          icon              ="mdi-check-bold"
           padding           ="2px 6px"
           @click            ="tareaAsignada"
           >
-          <Tooltip  label   ="Asignar una tarea"/>
+          <Tooltip>
+            <span v-html    ="'Asignar una tarea.<br/>Alt + A o Alt + O'"></span>
+          </Tooltip>
         </q-btn>
         <q-btn 
           v-bind            ="style.btnElegante"
@@ -35,15 +39,18 @@
           label             ="Tareas que asigne"
           icon              ="mdi-open-in-new"
           :to               ="`/tareas?creador=${usuario.id}&cuando=1_2_3_4_5&progreso=0_25_50_75&limite=50&offset=0`"
-        />        
-      </div>
-      <q-separator class    ="q-my-sm"/>      
-      <div  class           ="row justify-between items-center">
-        <q-btn              flat rounded          
+        />
+        <q-btn 
+          v-bind            ="style.btnElegante"
+          class             ="col-12 q-mt-sm"
           label             ="Mis tareas de hoy"
           icon              ="mdi-open-in-new"
           :to               ="`/tareas?usuario=${usuario.id}&limite=50&offset=0&cuando=2_3&progreso=0_25_50_75`"
-        />           
+        />          
+      </div>
+      <q-separator class    ="q-my-sm"/>      
+      <div  class           ="row justify-between items-center">
+        <span class         ="text-1_2em">Mis tareas de hoy</span>
         <q-btn              flat round dense
           icon              ="mdi-refresh"
           class             ="op60 op100-hover "
@@ -54,14 +61,28 @@
         <div
           v-for             ="(t, index) of tareas"
           :key              ="index"
-          class             ="task radius-10 bg-grey-3 q-pa-sm q-mb-sm"
+          class             ="task radius-10 bg-grey-3 q-pa-sm q-mb-sm cursor-pointer"
+          @click            ="()=>abrirFormularioTarea( t )"
           >
           <div>
             <span class     ="text-1_1em">
-              <span class   ="text-1_3em">{{ t.prioridadEmoji }}</span>
+              <span 
+                v-if        ="t.prioridad.value >= 1"
+                class       ="text-1_3em"                
+                >
+                {{ t.prioridadEmoji }}
+              </span>
               {{ t.titulo  }}
             </span>
-            <Tooltip>Prioridad {{ t.prioridadLabel }}<br/> {{ t.comentario }}</Tooltip>
+            <Tooltip>
+              Prioridad {{ t.prioridadLabel }}<br/>
+              <span
+                style       ="max-width: 300px;"
+                class       ="ellipsis-3-lines"
+                >
+                {{ t.comentario }}
+              </span>
+            </Tooltip>
           </div>
           <div>
             Asignado por
@@ -88,6 +109,7 @@
         v-model             ="tarea"
         :tipo               ="TASK"
         @tarea-creada       ="recibirTareaCreada"
+        @tarea-editada      ="recibirTareaEditada"
       />
     </q-dialog>
   </q-scroll-area>
@@ -95,8 +117,11 @@
 <script setup lang="ts">
   // * /////////////////////////////////////////////////////////////////////////////////// Core
   import {  ref,
-            onMounted               } from 'vue'
-  import {  usePageLeave            } from '@vueuse/core'
+            watchEffect,
+            onMounted,
+            onUnmounted             } from 'vue'
+  import {  usePageLeave,
+            useMagicKeys            } from '@vueuse/core'
   
   // * /////////////////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs             } from 'pinia'
@@ -111,11 +136,13 @@
   // * /////////////////////////////////////////////////////////////////////////////////// Modelos
   import {  IAccion, Accion, TASK   } from "../models/Accion"
   import {  IQuery                  } from "src/models/Busqueda"
+  import {  Usuario                 } from "src/areas/usuarios/models/Usuario"
 
   // * /////////////////////////////////////////////////////////////////////////////////// Componentes
   import    chipUsuario               from "src/areas/usuarios/components/ChipUsuario.vue"
   import    innerLoading              from "components/utilidades/InnerLoading.vue"
   import    formularioTarea           from "./FormularioTarea.vue"
+  
 
   const adentro                 = ref<boolean>(false)
   const loading                 = ref<boolean>(false)
@@ -123,14 +150,14 @@
 
   const { usuario             } = storeToRefs( useStoreUser() )
   const { tareas, tarea,
+          yaBusco,
           menuTareasOn        } = storeToRefs( useStoreAcciones() )  
   const { buscarAcciones,
           cambiarAceptar      } = useControlComunicacion()
   const usuarioAfuera           = usePageLeave()
   
-  
-
   onMounted(iniciar)
+  onUnmounted(()=> tareas.value = [])
 
   async function iniciar()
   {
@@ -151,6 +178,7 @@
                                   }
       loading.value             = true
       tareas.value              = await buscarAcciones( q, "tareas" )
+      yaBusco.value             = true
       loading.value             = false
     }
     
@@ -160,7 +188,19 @@
 
   function recibirTareaCreada( t : IAccion ){
     formularioOn.value        = false
+    buscar()
   }
+
+  function recibirTareaEditada( t : IAccion, cerrar : boolean = true )
+  {
+    const index               = tareas.value.findIndex( ( ti )=> ti.id === t.id )
+    if( index >= 0 ){
+      tareas.value[index]     = Object.assign( tareas.value[index], t )
+      formularioOn.value      = !cerrar
+    }
+
+    buscar()
+  }  
 
 
   function salir()
@@ -184,11 +224,30 @@
   function tareaAsignada()
   {
     tarea.value               = new Accion( usuario.value.id )
-    //tarea.value.asignado      = usuario.value    
+    tarea.value.asignado      = new Usuario()
     tarea.value.publico       = true
 
     formularioOn.value        = true
   }
+
+  function abrirFormularioTarea( t : IAccion)
+  {
+    tarea.value               = t
+    formularioOn.value        = true
+  }
+
+  const { alt_s, alt_m, alt_a, alt_o } = useMagicKeys()
+
+  watchEffect(() => 
+  {
+    if(formularioOn.value) return 
+
+    if ( alt_s.value || alt_m.value )
+      tareaPersonal()
+    if ( alt_a.value || alt_o.value )
+      tareaAsignada()
+      
+  })  
 
 </script>
 <style>

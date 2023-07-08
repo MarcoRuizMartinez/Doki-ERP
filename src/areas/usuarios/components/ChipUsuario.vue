@@ -1,11 +1,10 @@
 <template>
-  <q-chip             dense
-    color             ="primary"
-    text-color        ="white"
+  <q-chip                 dense
+    color                 ="primary"
+    text-color            ="white"
     >
-    <q-avatar
-      text-color      ="white">
-    <img :src         ="usuario.fotoPerfilMini">
+    <q-avatar text-color  ="white">
+      <img :src           ="usuario.fotoPerfilMini"/>
     </q-avatar>
     {{usuario.nombre}} 
   </q-chip>

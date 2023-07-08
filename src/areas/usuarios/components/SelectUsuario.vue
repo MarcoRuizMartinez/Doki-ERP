@@ -1,48 +1,61 @@
 <template>
-  <q-select                 dense options-dense use-chips
-                            hide-bottom-space borderless
-    v-model                 ="modelo"
-    :label                  ="!!modelo ? undefined : label "
-    input-debounce          ="0"
-    lazy-rules              ="ondemand"
-    display-value           =""
-    option-label            ="nombreCompleto"
-    options-selected-class  ="text-weight-bold"
-    class                   ="text-caption"
-    popup-content-class     ="panel-blur"
-    :class                  ="{ 'campo-hundido' : hundido }"
-    :filled                 ="!hundido"
-    :options                ="usuarios"
-    :loading                ="usuariosDB.length == 0 || loading"
-    :readonly               ="readonly"
-    :use-input              ="useInput"
-    :rules                  ="[ regla ]"
-    @filter                 ="filterFn"
-    @update:model-value     ="seleccionarUsuario"
+  <q-select                   dense options-dense use-chips
+                              hide-bottom-space borderless
+    v-model                   ="modelo"
+    :label                    ="!!modelo ? undefined : label "
+    input-debounce            ="0"
+    lazy-rules                ="ondemand"
+    display-value             =""
+    option-label              ="nombreCompleto"
+    options-selected-class    ="text-weight-bold"
+    class                     ="text-caption"
+    popup-content-class       ="panel-blur"
+    :class                    ="{ 'campo-hundido' : hundido }"
+    :filled                   ="!hundido"
+    :options                  ="usuarios"
+    :loading                  ="usuariosDB.length == 0 || loading"
+    :readonly                 ="readonly"
+    :use-input                ="useInput"
+    :rules                    ="[ regla ]"
+    @filter                   ="filterFn"
+    @update:model-value       ="seleccionarUsuario"
     >
-    <template
-      #selected-item        ="scope">
-      <q-chip               dense
-        color               ="primary"
-        text-color          ="white"
-        :removable          ="!readonly && clearable"
-        :tabindex           ="scope.tabindex"
-        @remove             ="borrarUsuario(scope)"
+    <template #option         ="scope">
+      <q-item v-bind          ="scope.itemProps">
+        <q-item-section       avatar>
+          <q-avatar size      ="md">
+            <img :src         ="scope.opt.fotoPerfilMini">
+          </q-avatar>
+        </q-item-section>
+        <q-item-section>
+          <q-item-label>
+            {{ scope.opt.label }}
+          </q-item-label>
+        </q-item-section>
+      </q-item>
+    </template>
+    <template #selected-item  ="scope">
+      <q-chip                 dense
+        color                 ="primary"
+        text-color            ="white"
+        :removable            ="!readonly && clearable"
+        :tabindex             ="scope.tabindex"
+        @remove               ="borrarUsuario(scope)"
         >
-        <q-avatar text-color="white" >
-          <img :src         ="scope.opt.fotoPerfilMini">
+        <q-avatar text-color  ="white" >
+          <img :src           ="scope.opt.fotoPerfilMini">
         </q-avatar>
         {{scope.opt.label}}
       </q-chip>
     </template>
-    <template               #prepend>
+    <template                 #prepend>
       <q-icon
-        name                ="mdi-account-supervisor-circle"
+        name                  ="mdi-account-circle"
       />
     </template>
     <Tooltip
-      v-if                  ="!!tooltip"
-      :label                ="tooltip"
+      v-if                    ="!!tooltip"
+      :label                  ="tooltip"
     />
   </q-select>
 </template>
@@ -60,6 +73,7 @@
   import {  useStoreUser      } from 'src/stores/user'
   import {  storeToRefs       } from 'pinia'
   import {  AREA              } from "src/models/TiposVarios"
+  import    chipUsuario       from "./ChipUsuario.vue"
 
   interface IScope {
     index:          number

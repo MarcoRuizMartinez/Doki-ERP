@@ -78,7 +78,7 @@ export interface IAccion
   accionToApiDolibarr       : any
   hace                      : string
   sePuedeEditar             : boolean
-  editandoComentario        : boolean
+  editando                  : boolean
   esTarea                   : boolean
   tareaCompletada           : boolean
   esNuevo                   : boolean
@@ -93,6 +93,7 @@ export interface IAccion
   fechaCreacionCorta        : string
   fechaEdicionCorta         : string
   cuandoLabel               : string
+  cuandoValue               : number
   prioridadLabel            : string
   prioridadEmoji            : string
   publicoLabel              : string
@@ -126,7 +127,7 @@ export class Accion implements IAccion
   comentario                : string        = ""
   elementoId                : number        = 0
   tipo                      : string        = ""
-  editandoComentario        : boolean       = false
+  editando                  : boolean       = false
 
   creador                   : IUsuario      = new Usuario()
   modifico                  : IUsuario      = new Usuario()
@@ -186,6 +187,7 @@ export class Accion implements IAccion
     return !!this.terceroId && !!this.tipo
   }
   get cuandoLabel()       : string  { return this.esFecha ? this.fechaInicioCorta : this.cuando.label }
+  get cuandoValue()       : number  { return this.cuando.value }
 
   //get fechaCorta        (): string  { return  }
 

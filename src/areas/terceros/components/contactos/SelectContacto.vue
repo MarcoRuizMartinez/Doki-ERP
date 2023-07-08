@@ -171,7 +171,8 @@
     cargando.value            = true
 
     let url                   = "thirdparty_ids=" + tercero.value.id + "&search_status=1&limit=10"
-    if(!!busqueda) url        += `&sqlfilters=(t.firstname%3Alike%3A'%25${busqueda}%25')||(t.lastname%3Alike%3A'%25${busqueda}%25')||(t.email%3Alike%3A'%25${busqueda}%25')||(t.phone_mobile%3Alike%3A'%25${busqueda}%25')||(t.note_public%3Alike%3A'%25${busqueda}%25')`.replaceAll(" ", "%20")
+    //if(!!busqueda) url        += `&sqlfilters=(t.firstname%3Alike%3A'%25${busqueda}%25')||(t.lastname%3Alike%3A'%25${busqueda}%25')||(t.email%3Alike%3A'%25${busqueda}%25')||(t.phone_mobile%3Alike%3A'%25${busqueda}%25')||(t.note_public%3Alike%3A'%25${busqueda}%25')`.replaceAll(" ", "%20")
+    if(!!busqueda) url        += `&sqlfilters=(t.firstname:like:'%${busqueda}%') OR (t.lastname:like:'%${busqueda}%') OR (t.email:like:'%${busqueda}%') OR (t.note_public:like:'%${busqueda}%')`
     const { data, ok }        = await apiDolibarr( "buscar", "contacto", url )
     const contacts :IContacto[] = []
     

@@ -107,7 +107,21 @@ export function useControlComunicacion()
     }
 
     return ok
-  }      
+  }
+
+  async function cambiarPrivacidad( tarea : IAccion ) : Promise<boolean>
+  {
+    tarea.editando        = true
+    const ok              = await editarAccion( tarea.id, { transparency: +!tarea.publico } )
+    tarea.publico         = !tarea.publico
+    tarea.editando        = false
+    if(!ok){
+      aviso("negative", "Error editando privacidad")
+    }
+
+    return ok
+  }
+    
 
   //* /////////////////////////////////////////////////////////////// Return
   return {
@@ -116,6 +130,7 @@ export function useControlComunicacion()
     buscarAcciones,
     cambiarProgreso,
     cambiarCuando,
-    cambiarAceptar
+    cambiarAceptar,
+    cambiarPrivacidad
   }
 }

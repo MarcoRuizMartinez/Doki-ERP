@@ -1,8 +1,19 @@
 <template>
+  <q-spinner-puff
+    v-if          ="!!tareas.length"
+    color         ="white"
+    size          ="md"
+    style         ="right: 61px; top: 9px;"
+    class         ="absolute-top-right"
+  />      
   <q-btn          dense flat rounded
+    v-bind        ="$attrs"
     class         ="width80 q-mr-sm"
-    :icon         ="!!tareas.length ? 'mdi-bell-ring' : 'mdi-bell-check'"
-    @click        ="menuTareasOn = !menuTareasOn"
+    :icon         ="  !!tareas.length ? 'mdi-bell-ring'
+                    : yaBusco         ? 'mdi-bell-check'
+                    :                   'mdi-bell'
+                    "
+    to            ="/tareas"
     @mouseover    ="menuTareasOn = true"
     >
     <q-badge      rounded
@@ -10,16 +21,14 @@
       color       ="red"
       :label      ="tareas.length"
     />
-  </q-btn>
+    <Tooltip label="Ir a buscador de tareas"/>
+  </q-btn>  
 </template>
 
 <script setup lang="ts">
-  ///////////////////////////////////////////////////////////////////////// Store
-  import {  storeToRefs       } from 'pinia'
-  
-  import {  useStoreAcciones  } from 'src/stores/acciones'
-  //import {  useStoreUser      } from 'src/stores/user'
-  const { tareas,
+  ///////////////////////////////////////////////////////////////////////// Store  
+  import {  storeToRefs       } from 'pinia'    
+  import {  useStoreAcciones  } from 'src/stores/acciones'  
+  const { tareas, yaBusco,
           menuTareasOn    } = storeToRefs( useStoreAcciones() )
-
 </script>

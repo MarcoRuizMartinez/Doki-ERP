@@ -3,11 +3,11 @@
     v-model         ="modelo"
     lazy-rules      ="ondemand"
     class           ="transi"
-    debounce        ="1200"
     :class          ="{'campo-hundido' : hundido}"
     :filled         ="!hundido"
     :borderless     ="!hundido"
     :type           ="type"
+    :debounce       ="debounce"
     :label          =" !!alerta && !readonly ? label + ' *' : label"
     :rules          ="[ regla, reglaEmail, reglaTelefono, ...rules ]"
     :autofocus      ="autofocus"
@@ -76,6 +76,7 @@
       AZ09:       { default:  false,  type: Boolean             },
       AZ:         { default:  false,  type: Boolean             },
       loading:    { default:  false,  type: Boolean             },
+      debounce:   { default:  1200,   type: [String, Number]    },
       maxlength:  {                   type: [String, Number]    },
       rules:      { default:  [],     type: Array  as PropType< ValidationRule[] > },
       estadoCheck:{ default:  "off",  type: String as PropType< EstadoVerificar > },

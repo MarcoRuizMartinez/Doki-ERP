@@ -468,7 +468,7 @@ export class Acuerdo implements IAcuerdo
 
   get urlDolibarrOC() : string {
     return    this.esPedido
-            ? process.env.URL_DOLIBARR + "/supplierorderfromorder/ordercustomer.php?id=" + this.id
+            ? process.env.URL_DOLIBARR + "/supplierorderfromorder/ordercustomer.php?show_stock_no_need=yes&id=" + this.id
             : ""
   }
 

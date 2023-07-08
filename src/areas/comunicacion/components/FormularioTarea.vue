@@ -58,6 +58,7 @@
         class               ="col-12"
         icon                ="mdi-check"
         label               ="Titulo"
+        debounce            ="1"
         :readonly           ="readonly"
         @enter              ="validar"
       />
