@@ -37,14 +37,14 @@
           v-bind            ="style.btnElegante"
           class             ="col-12 q-mt-sm"
           label             ="Tareas que asigne"
-          icon              ="mdi-open-in-new"
+          icon              ="mdi-account-supervisor-circle"
           :to               ="`/tareas?creador=${usuario.id}&cuando=1_2_3_4_5&progreso=0_25_50_75&limite=50&offset=0`"
         />
         <q-btn 
           v-bind            ="style.btnElegante"
           class             ="col-12 q-mt-sm"
           label             ="Mis tareas de hoy"
-          icon              ="mdi-open-in-new"
+          icon              ="mdi-account-details"
           :to               ="`/tareas?usuario=${usuario.id}&limite=50&offset=0&cuando=2_3&progreso=0_25_50_75`"
         />          
       </div>

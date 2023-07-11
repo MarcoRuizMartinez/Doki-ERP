@@ -233,11 +233,6 @@ export class Accion implements IAccion
     return label
   }
 
-
-
-
-
-
   get toTipo() : string
   {
     const to =      this.tipo === "order"             ? "/pedidos/cliente/" + this.elementoId
@@ -245,6 +240,7 @@ export class Accion implements IAccion
                   : this.tipo === "order_supplier"    ? "/pedidos/proveedor/" + this.elementoId
                   : this.tipo === "product"           ? "/productos/" + this.elementoId
                   : this.tipo === "shipping"          ? "/entregas/cliente/" + this.elementoId
+                  : !this.tipo                        ? "/tercero/" + this.terceroId
                   //: this.tipo === "supplier_proposal" ? "📜 Cotizacion proveedor"
                   :                                     ""
                   

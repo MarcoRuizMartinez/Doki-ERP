@@ -17,6 +17,7 @@ import {  IProveedor,         Proveedor         } from "src/models/Diccionarios/
 import {  ICuentaDinero,      CuentaDinero      } from "src/models/Diccionarios/CuentaDinero"
 import {  IReglaComision,     ReglaComision     } from "src/models/Diccionarios/ReglasComision"
 import {  IProductoCategoria, ProductoCategoria } from "src/areas/productos/models/ProductoCategoria"
+import {  IGrupoCategoria,    GrupoCategoria    } from "src/areas/productos/models/GrupoCategoria"
 import {  IBodega,            Bodega            } from "src/models/Diccionarios/Bodega"
 
 //* ///////////////////////////////////////////////////////////// 
@@ -33,6 +34,7 @@ export enum TABLAS
   TIEMPO_ENTREGA              = "tiempoEntrega",
   TIPO_CONTACTO               = "tipoContacto",
   PRODUCTO_CATE               = "productoCategoria",
+  GRUPO_CATE                  = "grupoCategoria",
   CONSTANTE                   = "constantes",
   PROVEEDORES                 = "proveedores",
   CUENTA_DINERO               = "cuentasDinero",
@@ -54,6 +56,7 @@ export class DBSimpleOk extends Dexie
   [TABLAS.TIEMPO_ENTREGA]!:   Dexie.Table< ITiempoEntrega,    number >
   [TABLAS.TIPO_CONTACTO]!:    Dexie.Table< ITipoContacto,     number >
   [TABLAS.PRODUCTO_CATE]!:    Dexie.Table< IProductoCategoria,number >
+  [TABLAS.GRUPO_CATE]!:       Dexie.Table< IGrupoCategoria,   number >
   [TABLAS.CONSTANTE]!:        Dexie.Table< IConstante,        number >
   [TABLAS.PROVEEDORES]!:      Dexie.Table< IProveedor,        number >
   [TABLAS.CUENTA_DINERO]!:    Dexie.Table< ICuentaDinero,     number >
@@ -77,6 +80,7 @@ export class DBSimpleOk extends Dexie
       [TABLAS.TIEMPO_ENTREGA]   : "++id, label, codigo",
       [TABLAS.TIPO_CONTACTO]    : "++id, codigo, tipo,  origen",
       [TABLAS.PRODUCTO_CATE]    : "++id, nombre, sigla, grupo, modificadorComision, codigoVenta, codigoCompra",
+      [TABLAS.GRUPO_CATE]       : "++id, nombre, sigla, grupo, modificadorComision, codigoVenta, codigoCompra",
       [TABLAS.CONSTANTE]        : "++id, label, value",
       [TABLAS.PROVEEDORES]      : "++id, nombre, alias, codigo",
       [TABLAS.CUENTA_DINERO]    : "++id, ref, label, tipoId, logoUrl, virtual",
@@ -116,6 +120,9 @@ export class DBSimpleOk extends Dexie
 
     this[TABLAS.PRODUCTO_CATE]    = this.table( TABLAS.PRODUCTO_CATE )
     this[TABLAS.PRODUCTO_CATE]    .mapToClass( ProductoCategoria )
+
+    this[TABLAS.GRUPO_CATE]       = this.table( TABLAS.GRUPO_CATE )
+    this[TABLAS.GRUPO_CATE]       .mapToClass( GrupoCategoria )
 
     this[TABLAS.CONSTANTE]        = this.table( TABLAS.CONSTANTE )
     this[TABLAS.CONSTANTE]        .mapToClass( Constante )
