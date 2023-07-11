@@ -1,10 +1,10 @@
 
 import {  UtilPDF,
           IUtilPDF,
-          IInicioPDF        } from 'src/useSimpleOk/UtilPDF';
+          IInicioPDF        } from 'src/composables/UtilPDF';
 import {  useQuasar,
           QSpinnerGears     } from "quasar"
-import {  formatoPrecio     } from "src/useSimpleOk/useTools"
+import {  formatoPrecio     } from "src/composables/useTools"
 import {  jsPDF             } from "jspdf"
 import    autoTable           from 'jspdf-autotable'
 //* /////////////////////////////////////////////////////////////////////////////////// Store

@@ -25,7 +25,7 @@
   </q-menu>
 </template>
 <script setup lang="ts">
-  import { style } from "src/useSimpleOk/useEstilos"
+  import { style } from "src/composables/useEstilos"
   const emit        = defineEmits(["ok"])
   const props       = defineProps({
     conLabel:       { default: true, type: Boolean }

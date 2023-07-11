@@ -27,7 +27,7 @@ export class Constante implements IConstante
 }
 
 import {  ref, watch        } from "vue"
-import {  dexieConstantes   } from "src/services/useDexie"
+import {  dexieConstantes   } from "src/composables/useDexie"
 
 export function useConstantes( constanteBuscada : CONSTANTES )
 {

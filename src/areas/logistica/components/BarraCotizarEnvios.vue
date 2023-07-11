@@ -182,7 +182,7 @@
   // * /////////////////////////////////////////////////////////////////////// Modelos
   import {  IQuery              } from "src/models/Busqueda"
   import {  formatoPrecio,
-            X100_Aumento        } from "src/useSimpleOk/useTools"
+            X100_Aumento        } from "src/composables/useTools"
   import {  ICostoEnvio         } from "src/areas/logistica/models/CostoEnvio"
 
   // * /////////////////////////////////////////////////////////////////////// Componentes

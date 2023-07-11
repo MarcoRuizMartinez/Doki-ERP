@@ -61,8 +61,8 @@
 <script lang="ts" setup>
   import {  PropType          } from "vue"  
   import {  IPedidoWoo        } from "src/areas/acuerdos/models/PedidoWoo"      
-  import {  style             } from "src/useSimpleOk/useEstilos"
-  import {  formatoPrecio       } from "src/useSimpleOk/useTools"
+  import {  style             } from "src/composables/useEstilos"
+  import {  formatoPrecio       } from "src/composables/useTools"
   ////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana               from "components/utilidades/Ventana.vue"  
   import    item                from "components/utilidades/TrTdTd.vue"  

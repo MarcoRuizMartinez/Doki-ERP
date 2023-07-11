@@ -37,7 +37,7 @@
             toRefs,
             computed
                             } from "vue"
-  import {  mayusculasPrimeraLetra  } from "src/useSimpleOk/useTools"  
+  import {  mayusculasPrimeraLetra  } from "src/composables/useTools"  
   const popupOn               = ref<boolean>( true )
   const props                 = defineProps({
     modelValue: { required: true,   type: String  },

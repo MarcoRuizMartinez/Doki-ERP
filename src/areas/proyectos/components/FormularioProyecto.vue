@@ -233,12 +233,12 @@
   import {  useQuasar,
             extend          } from 'quasar'
   import {  storeToRefs     } from 'pinia'            
-  import {  useApiDolibarr  } from "src/services/useApiDolibarr"
+  import {  useApiDolibarr  } from "src/composables/useApiDolibarr"
   import {  useStoreUser    } from 'src/stores/user'
   import {  useTools,
             esCorreoFamoso,
             mayusculasPrimeraLetraAll
-                            } from "src/useSimpleOk/useTools"
+                            } from "src/composables/useTools"
   import {  IMunicipio,
             Municipio       } from "src/models/Municipio"
   import {  IContacto,
@@ -248,10 +248,10 @@
   import    municipios        from "components/utilidades/select/SelectMunicipios.vue"
   import    inputText         from "components/utilidades/input/InputFormText.vue"
   import {  EstadoVerificar } from "src/models/TiposVarios"
-  import {  useFetch        } from "src/useSimpleOk/useFetch"
+  import {  useFetch        } from "src/composables/useFetch"
   import {  getURL,
-            getFormData     } from "src/services/APIMaco"
-  import {  style           } from "src/useSimpleOk/useEstilos"      
+            getFormData     } from "src/composables/APIMaco"
+  import {  style           } from "src/composables/useEstilos"      
 
   const { dialog            } = useQuasar()
   const { apiDolibarr       } = useApiDolibarr()

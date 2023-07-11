@@ -147,8 +147,8 @@
   // * /////////////////////////////////////////////////////////////////////////////////// Modelos
   import {  ILineaAcuerdo       } from "src/areas/acuerdos/models/LineaAcuerdo"
   import {  ModosVentana        } from "src/models/TiposVarios"
-  import {  IProductoCategoria,
-            ProductoCategoria   } from "src/areas/productos/models/ProductoCategoria"
+  import {  ICategoriaProducto,
+            CategoriaProducto   } from "src/areas/productos/models/CategoriaProducto"
   import {  IProductoDoli       } from "src/areas/productos/models/ProductoDolibarr"
   import {  IQueryProducto      } from "src/areas/productos/models/BusquedaProductos"
   import {  IColumna, Columna   } from "src/models/Tabla"
@@ -156,11 +156,11 @@
   import {  useControlProductos } from "src/areas/acuerdos/controllers/ControlLineasProductos"
   import {  servicesProductos   } from "src/areas/productos/services/servicesProductos"
   import {  dexieCategoriasProducto
-                                } from "src/services/useDexie"
+                                } from "src/composables/useDexie"
   import {
             sortArray,
             useTools,
-                                } from "src/useSimpleOk/useTools"
+                                } from "src/composables/useTools"
   // * /////////////////////////////////////////////////////////////////////////////////// Componentes
   import    efecto                from "components/utilidades/Efecto.vue"
   import    ventana               from "components/utilidades/Ventana.vue"
@@ -193,7 +193,7 @@
   const { usuario           } = storeToRefs( useStoreUser() )
   const busquedaTxt           = ref< string   >("")
   const modo                  = ref< ModosVentana >("esperando-busqueda")
-  const categoria             = ref< IProductoCategoria  >( new ProductoCategoria() )
+  const categoria             = ref< ICategoriaProducto  >( new CategoriaProducto() )
 
   const { buscarProductos   } = servicesProductos()
   const categorias            = dexieCategoriasProducto({ cargarSiempre : true})

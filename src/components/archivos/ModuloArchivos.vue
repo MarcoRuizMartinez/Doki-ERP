@@ -129,16 +129,16 @@
             onMounted,
             PropType
                             } from "vue"
-  import {  useApiDolibarr  } from "src/services/useApiDolibarr"
+  import {  useApiDolibarr  } from "src/composables/useApiDolibarr"
   import {  ModosVentana    } from "src/models/TiposVarios"
-  import {  useTools, pausa } from "src/useSimpleOk/useTools"
-  import {  DownloadFile_B64} from "src/useSimpleOk/UtilFiles"
-  import {  TModulosDolibarr} from "src/useSimpleOk/UtilFiles"
+  import {  useTools, pausa } from "src/composables/useTools"
+  import {  DownloadFile_B64} from "src/composables/UtilFiles"
+  import {  TModulosDolibarr} from "src/composables/UtilFiles"
   import {  IColumna,
             Columna         } from "src/models/Tabla"
   import {  IArchivo,
             Archivo         } from "src/models/Archivo"
-  import {  style           } from "src/useSimpleOk/useEstilos"            
+  import {  style           } from "src/composables/useEstilos"            
   import    ventana           from "components/utilidades/Ventana.vue"
   import    subirArchivo      from "./SubirArchivo.vue"
   import    tooltipDocumento  from "./TooltipArchivo.vue"

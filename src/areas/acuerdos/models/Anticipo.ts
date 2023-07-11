@@ -1,13 +1,13 @@
 import {  IUsuario, Usuario   } from "../../usuarios/models/Usuario"
 import {  getUsuarioDB,
-          getCuentasDineroDB  } from "src/services/useDexie"
+          getCuentasDineroDB  } from "src/composables/useDexie"
 import {  ICuentaDinero,
           CuentaDinero        } from "src/models/Diccionarios/CuentaDinero"          
-import {  formatoPrecio       } from "src/useSimpleOk/useTools"  
+import {  formatoPrecio       } from "src/composables/useTools"  
 import {  IArchivo, Archivo   } from "src/models/Archivo"
 import {  ILabelValue,  
           labelValueNulo      } from "src/models/TiposVarios"
-import {  fechaCorta          } from "src/useSimpleOk/useTools"
+import {  fechaCorta          } from "src/composables/useTools"
 
 export enum ESTADO_ANTICIPO
 {

@@ -185,8 +185,8 @@
   import {  GRUPO_USUARIO         } from "src/models/TiposVarios"
   import {  IArchivo              } from "src/models/Archivo"  
   //* ///////////////////////////////////////////////////////////////////////////////// Componibles
-  import {  useTools, confeti     } from "src/useSimpleOk/useTools"
-  import {  style                 } from "src/useSimpleOk/useEstilos"
+  import {  useTools, confeti     } from "src/composables/useTools"
+  import {  style                 } from "src/composables/useEstilos"
   import {  useControlComunicacion} from "../controllers/ControlComunicacion"
   //* ///////////////////////////////////////////////////////////////////////////////// Componentes
   import    efecto                  from "components/utilidades/Efecto.vue"

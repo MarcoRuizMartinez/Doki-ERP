@@ -44,9 +44,9 @@
             watch,
                               } from "vue"  
   import    ventana             from "components/utilidades/Ventana.vue"
-  import {  File_B64_ToBlob   } from "src/useSimpleOk/UtilFiles"
+  import {  File_B64_ToBlob   } from "src/composables/UtilFiles"
   import {  ModosVentana      } from "src/models/TiposVarios"
-  import {  style             } from "src/useSimpleOk/useEstilos"
+  import {  style             } from "src/composables/useEstilos"
 
   const visibleModel            = ref< boolean  >(false)
   const srcModel                = ref< string   >("")

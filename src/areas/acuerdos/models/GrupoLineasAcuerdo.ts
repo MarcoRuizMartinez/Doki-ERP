@@ -1,5 +1,5 @@
 import { ILineaAcuerdo, LineaAcuerdo  } from "src/areas/acuerdos/models/LineaAcuerdo"
-import {  X100                        } from "src/useSimpleOk/useTools"
+import {  X100                        } from "src/composables/useTools"
 
 export interface IGrupoLineas {
   productos:                ILineaAcuerdo[]

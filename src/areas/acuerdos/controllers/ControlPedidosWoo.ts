@@ -5,15 +5,15 @@ import {  storeToRefs           } from 'pinia'
 import {  useStoreAcuerdo       } from 'src/stores/acuerdo'
 import {  useStoreUser          } from 'src/stores/user'
 //* ////////////////////////////////////////////////////////////////// Componibles
-import {  useFetch              } from "src/useSimpleOk/useFetch"
-import {  getURL, getFormData   } from "src/services/APIMaco"
+import {  useFetch              } from "src/composables/useFetch"
+import {  getURL, getFormData   } from "src/composables/APIMaco"
 import {  useTools,
           getArrayFromAny,
           getArrayInObject,
           existeYEsValido,
           getNumberValido,
           ID_URL_Ok,
-          confeti               } from "src/useSimpleOk/useTools"
+          confeti               } from "src/composables/useTools"
 
 //* ////////////////////////////////////////////////////////////////// Modelos
 import {  IPedidoWoo, PedidoWoo } from "src/areas/acuerdos/models/PedidoWoo"

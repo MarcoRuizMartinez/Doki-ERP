@@ -131,17 +131,17 @@
   import {  IColumna, Columna     } from "src/models/Tabla"  
   import {  IArchivo, Archivo     } from "src/models/Archivo"
   //* /////////////////////////////////////////////////////////////////////////////////// Componibles
-  import {  useFetch              } from "src/useSimpleOk/useFetch"
+  import {  useFetch              } from "src/composables/useFetch"
   import {  getURL,
-            getFormData           } from "src/services/APIMaco"
+            getFormData           } from "src/composables/APIMaco"
   import {  useTools, 
-            formatoPrecio         } from "src/useSimpleOk/useTools"
-  import {  style                 } from "src/useSimpleOk/useEstilos"
-  import {  useApiDolibarr        } from "src/services/useApiDolibarr"
+            formatoPrecio         } from "src/composables/useTools"
+  import {  style                 } from "src/composables/useEstilos"
+  import {  useApiDolibarr        } from "src/composables/useApiDolibarr"
   import {  useReciboCajaPDF      } from "src/areas/acuerdos/composables/pdf/useReciboCaja"
   import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"
   import {  dexieCondicionesPago,
-            dexieFormasPago       } from "src/services/useDexie"
+            dexieFormasPago       } from "src/composables/useDexie"
   //* /////////////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana                 from "components/utilidades/Ventana.vue"
   import    cardAnticipo            from "../Anticipos/CardAnticipo.vue"

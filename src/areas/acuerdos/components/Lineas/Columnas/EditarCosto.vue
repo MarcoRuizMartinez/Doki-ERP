@@ -30,7 +30,7 @@
   import {  ILineaAcuerdo       } from "src/areas/acuerdos/models/LineaAcuerdo"
   import    inputNumber           from "components/utilidades/input/InputFormNumber.vue"
   import {  useControlProductos } from "src/areas/acuerdos/controllers/ControlLineasProductos"
-  import {  valorValido         } from "src/useSimpleOk/useTools"
+  import {  valorValido         } from "src/composables/useTools"
 
   const { editarCostoLinea  } = useControlProductos()  
   const props                 = defineProps({

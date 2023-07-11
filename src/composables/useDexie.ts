@@ -8,7 +8,7 @@ import {  db, TABLAS        } from "src/boot/dexie"
 import {  useStoreApp       } from 'src/stores/app'
 import {  ALMACEN_LOCAL     } from "src/models/TiposVarios"
 import {  LocalStorage      } from 'quasar'
-import {  pausa             } from "src/useSimpleOk/useTools"
+import {  pausa             } from "src/composables/useTools"
 
 import {  IMunicipio,         Municipio         } from "src/models/Municipio"
 import {  Usuario,            IUsuario          } from "src/areas/usuarios/models/Usuario"
@@ -20,7 +20,8 @@ import {  IOrigenContacto,    OrigenContacto    } from "src/models/Diccionarios/
 import {  IUnidad,            Unidad            } from "src/models/Diccionarios/Unidad"
 import {  ITiempoEntrega,     TiempoEntrega     } from "src/models/Diccionarios/TiempoEntrega"
 import {  ITipoContacto,      TipoContacto      } from "src/models/Diccionarios/TipoContacto"
-import {  IProductoCategoria, ProductoCategoria } from "src/areas/productos/models/ProductoCategoria"
+import {  ICategoriaProducto, CategoriaProducto } from "src/areas/productos/models/CategoriaProducto"
+import {  ICategoriaGrupo,    CategoriaGrupo    } from "src/areas/productos/models/CategoriaGrupo"
 import {  IConstante,         Constante         } from "src/models/Diccionarios/Constante"
 import {  IProveedor,         Proveedor         } from "src/models/Diccionarios/Proveedor"
 import {  ICuentaDinero,      CuentaDinero      } from "src/models/Diccionarios/CuentaDinero"
@@ -30,9 +31,9 @@ import {  storeToRefs                           } from 'pinia'
 
 
 
-export type ITabla            = IMunicipio      | IUsuario        | ITipoDocumento      | ICondicionPago | IReglaComision |
-                                IFormaPago      | IMetodoEntrega  | IOrigenContacto     | IUnidad        | ICuentaDinero  |
-                                ITiempoEntrega  | ITipoContacto   | IProductoCategoria  | IConstante     | IProveedor     | IBodega
+export type ITabla            = IMunicipio      | IUsuario        | ITipoDocumento      | ICondicionPago | IReglaComision | IProveedor |
+                                IFormaPago      | IMetodoEntrega  | IOrigenContacto     | IUnidad        | ICuentaDinero  | IBodega    |
+                                ITiempoEntrega  | ITipoContacto   | ICategoriaProducto  | ICategoriaGrupo| IConstante
 
 const pre                     = process.env.PREFIJO
 
@@ -127,9 +128,15 @@ export function dexieUnidades         ( { cargarSiempre = false, demora = 0 } = 
 }
 
 //* ///////////////////////////////////////////////////////////// Categorias de productos
-export function dexieCategoriasProducto( { cargarSiempre = false, demora = 0 } = paramDefault ) :Ref< IProductoCategoria[] > {
-  const { lista } = useDexie( TABLAS.PRODUCTO_CATE, { cargarSiempre, demora } )
-  return lista as Ref< IProductoCategoria[] >
+export function dexieCategoriasProducto( { cargarSiempre = false, demora = 0 } = paramDefault ) :Ref< ICategoriaProducto[] > {
+  const { lista } = useDexie( TABLAS.CATEGORIA_PRODUCTO, { cargarSiempre, demora } )
+  return lista as Ref< ICategoriaProducto[] >
+}
+
+//* ///////////////////////////////////////////////////////////// Categorias de productos
+export function dexieCategoriasGrupo( { cargarSiempre = false, demora = 0 } = paramDefault ) :Ref< ICategoriaGrupo[] > {
+  const { lista } = useDexie( TABLAS.CATEGORIA_GRUPO, { cargarSiempre, demora } )
+  return lista as Ref< ICategoriaGrupo[] >
 }
 
 //* ///////////////////////////////////////////////////////////// Unidades
@@ -300,9 +307,12 @@ function useDexie( tabla : TABLAS, { cargarSiempre = false, demora = 0 } = param
                   case TABLAS.TIPO_CONTACTO :
                     await db[ TABLAS.TIPO_CONTACTO      ].bulkAdd( listaCarga )
                     break;
-                  case TABLAS.PRODUCTO_CATE :
-                    await db[ TABLAS.PRODUCTO_CATE      ].bulkAdd( listaCarga )
+                  case TABLAS.CATEGORIA_PRODUCTO :
+                    await db[ TABLAS.CATEGORIA_PRODUCTO ].bulkAdd( listaCarga )
                     break;
+                  case TABLAS.CATEGORIA_GRUPO :
+                    await db[ TABLAS.CATEGORIA_GRUPO    ].bulkAdd( listaCarga )
+                    break;                    
                   case TABLAS.CONSTANTE :
                     await db[ TABLAS.CONSTANTE          ].bulkAdd( listaCarga )
                     break;
@@ -378,12 +388,32 @@ export async function getMunicipioDB( id : number ) : Promise < IMunicipio >
   )
 }
 
-export async function getCategoriaDB( sigla : string ) : Promise < IProductoCategoria >
+export async function getCategoriaDB( sigla : string ) : Promise < ICategoriaProducto >
 {
   // const{ db }               = storeToRefs( useStoreApp() )
-  return db.transaction('r', db[ TABLAS.PRODUCTO_CATE ], async () =>
+  return db.transaction('r', db[ TABLAS.CATEGORIA_PRODUCTO ], async () =>
     {
-      const catego          = await db[ TABLAS.PRODUCTO_CATE ].where("sigla").equals( sigla ).toArray()
+      const catego          = await db[ TABLAS.CATEGORIA_PRODUCTO ].where("sigla").equals( sigla ).toArray()
+      if(catego.length      == 1)
+      {
+        // TODO
+        catego[0].modificadorComision = +catego[0].modificadorComision
+        catego[0].codigoCompra        = +catego[0].codigoCompra
+        catego[0].codigoVenta         = +catego[0].codigoVenta
+        catego[0].grupoId             = +catego[0].grupoId
+        return catego[0]
+      }
+      else
+        return new CategoriaProducto()
+    }
+  )
+}
+
+/* export async function getCategoriaGrupoDB( sigla : string ) : Promise < ICategoriaGrupo >
+{
+  return db.transaction('r', db[ TABLAS.CATEGORIA_GRUPO ], async () =>
+    {
+      const catego          = await db[ TABLAS.CATEGORIA_GRUPO ].where("sigla").equals( sigla ).toArray()
       if(catego.length      == 1)
       {
         // TODO
@@ -393,10 +423,10 @@ export async function getCategoriaDB( sigla : string ) : Promise < IProductoCate
         return catego[0]
       }
       else
-        return new ProductoCategoria()
+        return new CategoriaGrupo()
     }
   )
-}
+} */
 
 export async function getTipoDocumentoDB( id : number ) : Promise < ITipoDocumento >
 {

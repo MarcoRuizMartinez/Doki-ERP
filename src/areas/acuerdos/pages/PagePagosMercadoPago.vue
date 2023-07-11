@@ -71,9 +71,9 @@
   import {  useTitle            } from "@vueuse/core"
   import {  useControlPedidosWoo} from "src/areas/acuerdos/controllers/ControlPedidosWoo"
   import {  useTools,
-            getDateToStr        } from "src/useSimpleOk/useTools"
-  import {  generarCSVDesdeTabla} from "src/useSimpleOk/UtilFiles"
-  import {  style               } from "src/useSimpleOk/useEstilos"
+            getDateToStr        } from "src/composables/useTools"
+  import {  generarCSVDesdeTabla} from "src/composables/UtilFiles"
+  import {  style               } from "src/composables/useEstilos"
   // * /////////////////////////////////////////////////////////////////////// Modelos
   import {  Columna, IColumna   } from "src/models/Tabla"
   import {  ModosVentana        } from "src/models/TiposVarios"

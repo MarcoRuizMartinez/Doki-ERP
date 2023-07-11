@@ -99,7 +99,7 @@ height-card         ="210px"
   import {  useControlComunicacion
                               } from "src/areas/comunicacion/controllers/ControlComunicacion"  
   import {  useTools,
-            ID_URL_Ok         } from "src/useSimpleOk/useTools"  
+            ID_URL_Ok         } from "src/composables/useTools"  
   //* ///////////////////////////////////////////////////////////////////////////////////// Componentes
   //import  efecto                from "components/utilidades/Efecto.vue"  
   import  documentos            from "components/archivos/ModuloArchivos.vue"

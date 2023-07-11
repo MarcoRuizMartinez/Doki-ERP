@@ -1,10 +1,10 @@
 import {  IQueryProducto    } from "src/areas/productos/models/BusquedaProductos"
 import {  getURL,
-          getFormData     } from "src/services/APIMaco"
-import {  useFetch        } from "src/useSimpleOk/useFetch"
+          getFormData     } from "src/composables/APIMaco"
+import {  useFetch        } from "src/composables/useFetch"
 import {  IProductoDoli,
           ProductoDoli    } from "src/areas/productos/models/ProductoDolibarr"
-import {  ID_URL_Ok       } from "src/useSimpleOk/useTools"
+import {  ID_URL_Ok       } from "src/composables/useTools"
 
 export function servicesProductos() 
 {

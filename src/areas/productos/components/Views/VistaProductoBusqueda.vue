@@ -64,11 +64,11 @@
   import {  useStoreProducto    } from 'src/stores/producto'
   // * /////////////////////////////////////////////////////////////////////// Componibles
   import {  servicesProductos   } from "src/areas/productos/services/servicesProductos"
-  import {  useTools            } from "src/useSimpleOk/useTools"
-  import {  generarCSVDesdeTabla} from "src/useSimpleOk/UtilFiles"
+  import {  useTools            } from "src/composables/useTools"
+  import {  generarCSVDesdeTabla} from "src/composables/UtilFiles"
   import {  IProductoDoli,
             ProductoDoli        } from "src/areas/productos/models/ProductoDolibarr"
-  import {  style               } from "src/useSimpleOk/useEstilos"            
+  import {  style               } from "src/composables/useEstilos"            
   // * /////////////////////////////////////////////////////////////////////// Modelos
   import {  BusquedaProducto,
             IQueryProducto      } from "src/areas/productos/models/BusquedaProductos"

@@ -43,7 +43,7 @@
   <script setup lang="ts">
   import {  ref, onMounted          } from "vue"
   import    ventana                   from "components/utilidades/Ventana.vue"
-  import {  useApiDolibarr        } from "src/services/useApiDolibarr"      
+  import {  useApiDolibarr        } from "src/composables/useApiDolibarr"      
   ////////////////////////////////////////////////////////////////////////// Store
   //import {  storeToRefs         } from 'pinia'
   //import {  useStoreUser        } from 'src/stores/user'

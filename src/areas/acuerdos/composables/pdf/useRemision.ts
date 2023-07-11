@@ -1,10 +1,10 @@
 
 import {  UtilPDF,
           IUtilPDF,
-          IInicioPDF        } from 'src/useSimpleOk/UtilPDF';
+          IInicioPDF        } from 'src/composables/UtilPDF';
 import {  Acuerdo, IAcuerdo } from "src/areas/acuerdos/models/Acuerdo"
 import {  ILineaLite        } from "src/areas/acuerdos/models/LineaAcuerdo"
-import {  fechaCorta        } from "src/useSimpleOk/useTools"
+import {  fechaCorta        } from "src/composables/useTools"
 import {  jsPDF             } from "jspdf"
 import    autoTable           from 'jspdf-autotable'
 

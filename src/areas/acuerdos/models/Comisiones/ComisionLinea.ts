@@ -1,6 +1,6 @@
 import {  TNivelesComision  } from "./NivelesComision"
 import {  IReglaComision    } from "src/models/Diccionarios/ReglasComision"
-import {  X100              } from "src/useSimpleOk/useTools"   
+import {  X100              } from "src/composables/useTools"   
 
 export interface IComisionLinea
 {

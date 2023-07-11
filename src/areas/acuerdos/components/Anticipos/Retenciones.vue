@@ -62,7 +62,7 @@
   // * /////////////////////////////////////////////////////////////////////////////////// Core
   import {  PropType        } from "vue"
   import {  IRetenciones    } from "src/areas/acuerdos/models/Retenciones"
-  import {  formatoPrecio   } from "src/useSimpleOk/useTools" 
+  import {  formatoPrecio   } from "src/composables/useTools" 
 
   const props                 = defineProps({      
     modelValue: { required: true,  type: Object as PropType< IRetenciones >  },

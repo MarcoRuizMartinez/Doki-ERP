@@ -66,13 +66,13 @@
             TIPOS_DOCUMENTO
                               } from "src/areas/terceros/models/TiposDocumento"
   import {  EstadoVerificar   } from "src/models/TiposVarios"
-  import {  useTools          } from "src/useSimpleOk/useTools"
+  import {  useTools          } from "src/composables/useTools"
   
   import {  dexieTiposDocumentos
-                              } from "src/services/useDexie"
-  import {  useFetch          } from "src/useSimpleOk/useFetch"
+                              } from "src/composables/useDexie"
+  import {  useFetch          } from "src/composables/useFetch"
   import {  getURL,
-            getFormData       } from "src/services/APIMaco"
+            getFormData       } from "src/composables/APIMaco"
   import    inputNumber         from "components/utilidades/input/InputFormNumber.vue"
   import    inputText           from "components/utilidades/input/InputFormText.vue"
   import {  servicesTerceros  } from "src/areas/terceros/services/servicesTerceros"

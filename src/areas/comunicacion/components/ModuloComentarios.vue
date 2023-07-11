@@ -111,9 +111,9 @@
   import {  storeToRefs           } from 'pinia'
   import {  useStoreUser          } from 'src/stores/user'
   // * /////////////////////////////////////////////////////////////////////////////////// Componibles
-  import {  useApiDolibarr        } from "src/services/useApiDolibarr"
-  import {  useTools, pausa       } from "src/useSimpleOk/useTools"
-  import {  style                 } from "src/useSimpleOk/useEstilos"
+  import {  useApiDolibarr        } from "src/composables/useApiDolibarr"
+  import {  useTools, pausa       } from "src/composables/useTools"
+  import {  style                 } from "src/composables/useEstilos"
   import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"
   import {  useControlComunicacion} from "../controllers/ControlComunicacion"
   // * /////////////////////////////////////////////////////////////////////////////////// Modelos

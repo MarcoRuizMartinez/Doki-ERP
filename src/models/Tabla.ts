@@ -1,8 +1,8 @@
 import {  QTableProps             } from "quasar"
-import {  mayusculasPrimeraLetra  } from "../useSimpleOk/useTools"
+import {  mayusculasPrimeraLetra  } from "../composables/useTools"
 import {  siNo,
           formatoPrecio,
-          fechaCorta              } from "src/useSimpleOk/useTools"
+          fechaCorta              } from "src/composables/useTools"
 
 
 export interface IColumna {

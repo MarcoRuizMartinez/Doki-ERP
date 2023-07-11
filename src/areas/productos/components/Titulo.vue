@@ -1,6 +1,6 @@
 <script setup lang="ts">  
   import {  computed              } from "vue"
-  import {  useTools              } from "src/useSimpleOk/useTools"
+  import {  useTools              } from "src/composables/useTools"
   import    titulo                  from "components/utilidades/Titulo.vue"
   import {  storeToRefs           } from 'pinia'
   import {  useStoreProducto      } from 'src/stores/producto'  

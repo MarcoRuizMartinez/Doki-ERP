@@ -142,9 +142,9 @@
   
   //import {  useControlProductos   } from "src/areas/acuerdos/controllers/ControlLineasProductos"
   import {  TTipoAcuerdo          } from "src/areas/acuerdos/models/ConstantesAcuerdos"
-  import {  style                 } from "src/useSimpleOk/useEstilos"  
-  import {  dexieBodegas          } from "src/services/useDexie"  
-  import {  pausa                 } from "src/useSimpleOk/useTools"
+  import {  style                 } from "src/composables/useEstilos"  
+  import {  dexieBodegas          } from "src/composables/useDexie"  
+  import {  pausa                 } from "src/composables/useTools"
   //* ///////////////////////////////////////////////////////////////////////////////// Componentes
   import    visorPdf                from "components/utilidades/VisorPDF.vue"
   import    notas                   from "./../../components/Modulos/ModuloNotas.vue"

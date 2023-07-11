@@ -1,10 +1,10 @@
 //* ///////////////////////////////////////// Core
-import {  getUsuarioDB      } from "src/services/useDexie"
+import {  getUsuarioDB      } from "src/composables/useDexie"
 
 //* ///////////////////////////////////////// Modelos
 import {  IUsuario, Usuario } from "src/areas/usuarios/models/Usuario"
 import {  IArchivo, Archivo } from "src/models/Archivo"
-import {  getDateToStr      } from "src/useSimpleOk/useTools"
+import {  getDateToStr      } from "src/composables/useTools"
 
 //type TNota              = 0 | 1 | 2 | 3 | 4 | 5
 

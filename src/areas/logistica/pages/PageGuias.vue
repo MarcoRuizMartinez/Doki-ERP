@@ -62,7 +62,7 @@
   import    selectLabelValue  from "components/utilidades/select/SelectLabelValue.vue"
   import    fieldsetFiltro    from "components/utilidades/Fieldset.vue"
   import    btnCopiar         from "components/utilidades/CampoCopiar.vue" 
-  import {  style               } from "src/useSimpleOk/useEstilos"
+  import {  style               } from "src/composables/useEstilos"
   import {  labelValueNulo,
             ILabelValue,    } from "src/models/TiposVarios"
 

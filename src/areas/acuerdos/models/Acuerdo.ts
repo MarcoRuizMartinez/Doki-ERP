@@ -35,7 +35,7 @@ import {  getCondicionDePagoDB,
           getTiempoEntregaDB,
           getUsuarioDB,
           getReglaComisionDB
-                                            } from "src/services/useDexie"
+                                            } from "src/composables/useDexie"
 import {  TTipoAcuerdo,
           TIPO_ACUERDO,
           EstadosAcuerdos,
@@ -70,8 +70,8 @@ import {  X100,
           getDateToStr,
           getNumberValido,
           getDateToApiDolibarr,
-          getMilisecShortForApiDolibarr,    } from "src/useSimpleOk/useTools"
-import {  TModulosDolibarr                  } from "src/useSimpleOk/UtilFiles"
+          getMilisecShortForApiDolibarr,    } from "src/composables/useTools"
+import {  TModulosDolibarr                  } from "src/composables/UtilFiles"
 import {  storeToRefs                       } from 'pinia'
 import {  useStoreUser                      } from 'src/stores/user'
 

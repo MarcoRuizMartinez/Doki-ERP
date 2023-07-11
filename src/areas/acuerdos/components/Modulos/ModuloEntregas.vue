@@ -138,7 +138,7 @@
   import {  IAcuerdo              } from "../../models/Acuerdo"  
   //* ///////////////////////////////////////////////////////////////////////////// Componibles  
   import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"
-  import {  style                 } from "src/useSimpleOk/useEstilos"
+  import {  style                 } from "src/composables/useEstilos"
   //* ///////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana                 from "components/utilidades/Ventana.vue"
   import    refAcuerdo              from "src/areas/acuerdos/components/Tools/RefAcuerdo.vue"

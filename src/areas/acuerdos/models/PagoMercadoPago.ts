@@ -1,4 +1,4 @@
-//import {  fechaCorta    } from "src/useSimpleOk/useTools"
+//import {  fechaCorta    } from "src/composables/useTools"
 import {  date          } from "quasar"
 
 export interface IMercadoPago {

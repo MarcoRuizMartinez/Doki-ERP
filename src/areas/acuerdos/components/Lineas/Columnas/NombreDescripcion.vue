@@ -89,7 +89,7 @@
             toRefs,
             PropType              } from "vue"  
   import {  ILineaAcuerdo } from "src/areas/acuerdos/models/LineaAcuerdo"
-  import {  formatoPrecio } from "src/useSimpleOk/useTools"
+  import {  formatoPrecio } from "src/composables/useTools"
   import    confirmar       from "components/utilidades/MenuConfirmar.vue"
   import    popupCosto      from "./EditarCosto.vue"
   // * /////////////////////////////////////////////////////////////////////// Store

@@ -51,7 +51,7 @@
             watch
                               } from 'vue'
   import {  IUsuario          } from "src/areas/usuarios/models/Usuario"
-  import {  dexieUsuarios     } from "src/services/useDexie"
+  import {  dexieUsuarios     } from "src/composables/useDexie"
   import {  useStoreUser      } from 'src/stores/user'
   import {  AREA              } from "src/models/TiposVarios"
 

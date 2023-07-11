@@ -2,7 +2,7 @@
 import {  storeToRefs           } from 'pinia'
 import {  useStoreAcuerdo       } from 'src/stores/acuerdo'
 // * //////////////////////////////////////////////////////////////////////////////// Componibles
-import {  useApiDolibarr        } from "src/services/useApiDolibarr"
+import {  useApiDolibarr        } from "src/composables/useApiDolibarr"
 import {  servicesAcuerdos      } from "src/areas/acuerdos/controllers/servicesAcuerdos"
 // * //////////////////////////////////////////////////////////////////////////////// Modelos
 import {  IProductoDoli         } from "src/areas/productos/models/ProductoDolibarr"
@@ -12,7 +12,7 @@ import {  LineaAcuerdo,
           ILineaAcuerdo         } from "src/areas/acuerdos/models/LineaAcuerdo"
 // * //////////////////////////////////////////////////////////////////////////////// Tools
 import {  useTools,
-          pausa                 } from "src/useSimpleOk/useTools"
+          pausa                 } from "src/composables/useTools"
 
 export function useControlProductos()
 {

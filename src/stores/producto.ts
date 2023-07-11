@@ -4,8 +4,8 @@ import {  ILoading,
           IModales,
           ModalesDefault
                                 } from "src/models/TiposVarios"
-import {  IProductoCategoria,
-          ProductoCategoria     } from "src/areas/productos/models/ProductoCategoria"
+import {  ICategoriaProducto,
+          CategoriaProducto     } from "src/areas/productos/models/CategoriaProducto"
 import {  ProductoDoli,
           IProductoDoli         } from "src/areas/productos/models/ProductoDolibarr"
 import {  BusquedaProducto,

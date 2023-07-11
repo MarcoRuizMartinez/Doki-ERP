@@ -1,7 +1,7 @@
-import {  TModulosDolibarr                  } from "src/useSimpleOk/UtilFiles"
+import {  TModulosDolibarr                  } from "src/composables/UtilFiles"
 import {  ITercero,         Tercero         } from "src/areas/terceros/models/Tercero"
 import {  IUsuario,         Usuario         } from "src/areas/usuarios/models/Usuario"
-import {  fechaCorta                        } from "src/useSimpleOk/useTools"
+import {  fechaCorta                        } from "src/composables/useTools"
 
 export enum ESTADO_PROYECTO
 {

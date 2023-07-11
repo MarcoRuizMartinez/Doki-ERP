@@ -1,6 +1,6 @@
 //* ////////////////////////////////////////////////////////////////// Componibles
-import {  useFetch                } from "src/useSimpleOk/useFetch"
-import {  getURL, getFormData     } from "src/services/APIMaco"
+import {  useFetch                } from "src/composables/useFetch"
+import {  getURL, getFormData     } from "src/composables/APIMaco"
 import {  IQuery                  } from "src/models/Busqueda"
 import {  ICostoEnvio, CostoEnvio } from "src/areas/logistica/models/CostoEnvio"
 

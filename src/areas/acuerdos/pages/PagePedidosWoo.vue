@@ -111,9 +111,9 @@
   // * /////////////////////////////////////////////////////////////////////// Componibles
   import {  useTitle            } from "@vueuse/core"
   import {  useControlPedidosWoo} from "src/areas/acuerdos/controllers/ControlPedidosWoo"
-  import {  useTools            } from "src/useSimpleOk/useTools"
-  import {  generarCSVDesdeTabla} from "src/useSimpleOk/UtilFiles"
-  import {  style               } from "src/useSimpleOk/useEstilos"
+  import {  useTools            } from "src/composables/useTools"
+  import {  generarCSVDesdeTabla} from "src/composables/UtilFiles"
+  import {  style               } from "src/composables/useEstilos"
   import {  servicesTerceros    } from "src/areas/terceros/services/servicesTerceros"
   // * /////////////////////////////////////////////////////////////////////// Modelos
   import {  Columna, IColumna   } from "src/models/Tabla"

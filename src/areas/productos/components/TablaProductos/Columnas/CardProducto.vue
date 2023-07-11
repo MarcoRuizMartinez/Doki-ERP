@@ -7,7 +7,7 @@
   // * /////////////////////////////////////////////////////////////////////////////////// Componibles
   import {  siNo,
             formatoPrecio,
-                                } from "src/useSimpleOk/useTools"  
+                                } from "src/composables/useTools"  
   // * /////////////////////////////////////////////////////////////////////////////////// Componentes
   import    efecto                from "components/utilidades/Efecto.vue"
   import    tooltipPrecios        from "src/areas/acuerdos/components/Tools/Tooltips/TooltipPreciosProducto.vue"

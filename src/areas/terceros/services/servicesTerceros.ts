@@ -13,9 +13,9 @@
 } */
 
 import {  getURL,
-          getFormData     } from "src/services/APIMaco"
-import {  useFetch        } from "src/useSimpleOk/useFetch"
-//import {  useUsuario      } from "src/useSimpleOk/useUsuario"
+          getFormData     } from "src/composables/APIMaco"
+import {  useFetch        } from "src/composables/useFetch"
+//import {  useUsuario      } from "src/composables/useUsuario"
 import {  ITercero,
           Tercero,
                           } from "src/areas/terceros/models/Tercero"

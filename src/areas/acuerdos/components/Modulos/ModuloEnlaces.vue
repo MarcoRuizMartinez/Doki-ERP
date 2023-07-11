@@ -59,7 +59,7 @@
             Columna               } from "src/models/Tabla"
   import {  IAcuerdo              } from "src/areas/acuerdos/models/Acuerdo"  
   //* /////////////////////////////////////////////////////////////////////////////////// Componibles
-  import {  pausa                 } from "src/useSimpleOk/useTools"
+  import {  pausa                 } from "src/composables/useTools"
   import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"  
   //* /////////////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana                 from "components/utilidades/Ventana.vue"

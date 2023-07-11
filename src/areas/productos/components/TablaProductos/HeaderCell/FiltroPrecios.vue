@@ -59,7 +59,7 @@
   // * /////////////////////////////////////////////////////////////////////////////////// Componibles
   import {  sortArray,
             filterArrayMaxMin,
-                                } from "src/useSimpleOk/useTools"  
+                                } from "src/composables/useTools"  
   // * /////////////////////////////////////////////////////////////////////////////////// Componentes
   import    inputNumber           from "components/utilidades/input/InputFormNumber.vue"
 

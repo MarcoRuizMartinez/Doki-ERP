@@ -16,7 +16,7 @@
     import {  useStoreProducto      } from 'src/stores/producto'
     //* ///////////////////////////////////////////////////////////////////////////////// Componibles
     import {  servicesProductos     } from "src/areas/productos/services/servicesProductos"
-    import {  useTools              } from "src/useSimpleOk/useTools"
+    import {  useTools              } from "src/composables/useTools"
     //* ///////////////////////////////////////////////////////////////////////////////// Componentes
     import    vistaProducto           from "src/areas/productos/components/Views/VistaProductoVer.vue"
 

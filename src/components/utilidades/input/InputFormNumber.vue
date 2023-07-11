@@ -91,10 +91,10 @@
   import {  Notify,
             copyToClipboard       } from 'quasar'
   import {  EstadoVerificar       } from "src/models/TiposVarios"
-  import {  btnNumeroPaso         } from "src/useSimpleOk/useEstilos"
+  import {  btnNumeroPaso         } from "src/composables/useEstilos"
   import {  ValidationRule        } from "quasar"
   import {  valorValido,  
-            strOrNumToNum         } from "src/useSimpleOk/useTools"
+            strOrNumToNum         } from "src/composables/useTools"
 
   const NUM_MAX           = 9_999_999_999
   const props             = defineProps(

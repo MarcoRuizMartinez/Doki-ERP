@@ -1,4 +1,4 @@
-import { X100_Aumento } from "src/useSimpleOk/useTools"
+import { X100_Aumento } from "src/composables/useTools"
 
 export interface ICostoEnvio
 { 

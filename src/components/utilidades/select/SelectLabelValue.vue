@@ -50,7 +50,7 @@
             onMounted,
                             } from 'vue'
   import {  sortArray,
-            valorValido     } from "src/useSimpleOk/useTools"                            
+            valorValido     } from "src/composables/useTools"                            
   import {  ILabelValue,
             labelValueNulo  } from "src/models/TiposVarios"
   import {  ValidationRule  } from "quasar"

@@ -61,7 +61,7 @@ conDecimales
             computed
                               } from "vue"
   import {  useClamp          } from "@vueuse/math"
-  import {  btnNumeroPaso     } from "src/useSimpleOk/useEstilos"
+  import {  btnNumeroPaso     } from "src/composables/useEstilos"
   
 
   const emit                  = defineEmits(["update:model-value", "enter"])

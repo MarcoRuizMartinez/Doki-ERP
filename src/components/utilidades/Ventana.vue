@@ -166,7 +166,7 @@
             useSlots      } from 'vue';
   import {  useStoreUser  } from 'src/stores/user'
   import {  ModosVentana  } from "src/models/TiposVarios"
-  import {  useTools      } from "src/useSimpleOk/useTools"
+  import {  useTools      } from "src/composables/useTools"
   const emits                   = defineEmits(["minimizar", "maximizar", "cerrar"])
   const slots                   = useSlots()
   const props                   = defineProps(

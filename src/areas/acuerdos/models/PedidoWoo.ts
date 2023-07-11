@@ -1,4 +1,4 @@
-import {  diferenciaFechas  } from "src/useSimpleOk/useTools"
+import {  diferenciaFechas  } from "src/composables/useTools"
 import {  date              } from "quasar"
 import {  IMercadoPago      } from "./PagoMercadoPago"
 

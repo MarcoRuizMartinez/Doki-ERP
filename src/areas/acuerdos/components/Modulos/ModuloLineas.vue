@@ -139,7 +139,7 @@
   import {  useControlProductos   } from "src/areas/acuerdos/controllers/ControlLineasProductos"
   import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"
   import {  style, 
-            menuDefault           } from "src/useSimpleOk/useEstilos"
+            menuDefault           } from "src/composables/useEstilos"
             
   // * ///////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana                 from "components/utilidades/Ventana.vue"

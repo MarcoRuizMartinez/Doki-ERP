@@ -31,7 +31,7 @@
               Columna             } from "src/models/Tabla"
     import    ventana               from "components/utilidades/Ventana.vue"
     import    inputBuscar           from "components/utilidades/input/InputSimple.vue"
-    import {  dexieTiposContacto  } from "src/services/useDexie"
+    import {  dexieTiposContacto  } from "src/composables/useDexie"
 
     const filtro                = ref< string >("")
     const lista                 = dexieTiposContacto()

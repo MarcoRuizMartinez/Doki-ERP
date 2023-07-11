@@ -133,8 +133,8 @@
   // * /////////////////////////////////////////////////////////////////////////////////// Componibles
   import {  IParams,
             useRemisionPDF      } from "src/areas/acuerdos/composables/pdf/useRemision"
-  import {  style               } from "src/useSimpleOk/useEstilos"
-  import {  useTools            } from "src/useSimpleOk/useTools"
+  import {  style               } from "src/composables/useEstilos"
+  import {  useTools            } from "src/composables/useTools"
   // * /////////////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana               from "components/utilidades/Ventana.vue"
   import    inputFecha            from "components/utilidades/input/InputFecha.vue"

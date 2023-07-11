@@ -44,9 +44,9 @@
                             } from "vue"
   import {  ModosVentana    } from "src/models/TiposVarios"
   import    ventana           from "components/utilidades/Ventana.vue"
-  import {  File_B64_ToBlob } from "src/useSimpleOk/UtilFiles"
-  import {  useTools        } from "src/useSimpleOk/useTools"
-  import {  style           } from "src/useSimpleOk/useEstilos"
+  import {  File_B64_ToBlob } from "src/composables/UtilFiles"
+  import {  useTools        } from "src/composables/useTools"
+  import {  style           } from "src/composables/useEstilos"
   import    efecto            from "components/utilidades/Efecto.vue"
 
   const emit                  = defineEmits(["update:visible", "update:src", "clickDescargar"])

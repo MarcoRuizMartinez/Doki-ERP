@@ -1,6 +1,6 @@
 //  ok_rrhh_incentivos_monetarios
 import {  IAcuerdo      } from "src/areas/acuerdos/models/Acuerdo"  
-import {  getUsuarioDB  } from "src/services/useDexie"
+import {  getUsuarioDB  } from "src/composables/useDexie"
 import {  IUsuario,
           Usuario       } from "src/areas/usuarios/models/Usuario"
 

@@ -1,9 +1,9 @@
 import {  ILabelValue,
           labelValueNulo      } from "src/models/TiposVarios"
 import {  IUsuario            } from "src/areas/usuarios/models/Usuario"
-import {  valorValido         } from "src/useSimpleOk/useTools"
-import {  IProductoCategoria,
-          ProductoCategoria   } from "src/areas/productos/models/ProductoCategoria"
+import {  valorValido         } from "src/composables/useTools"
+import {  ICategoriaProducto,
+          CategoriaProducto   } from "src/areas/productos/models/CategoriaProducto"
 /* import {  FiltroProductos,
   IFiltroProductos      } from "src/areas/productos/models/FiltrosProductos" */
 
@@ -22,7 +22,7 @@ export interface ICamposBusqueda {
   nombre                : string
   precioMinimo          : number | undefined
   precioMaximo          : number | undefined
-  categoria             : IProductoCategoria
+  categoria             : ICategoriaProducto
   activo                : boolean
 }
 
@@ -66,7 +66,7 @@ export class BusquedaProducto implements IBusquedaProducto
     this.c                = // c de Campos
     {
       nombre              : "",
-      categoria           : new ProductoCategoria(),
+      categoria           : new CategoriaProducto(),
       precioMinimo        : undefined,
       precioMaximo        : undefined,
       activo              : false,

@@ -79,7 +79,7 @@
   import {  ValidationRule  } from "quasar"  
   import {  useTools,
             fechaCorta,
-            fechaValida     } from "src/useSimpleOk/useTools"
+            fechaValida     } from "src/composables/useTools"
 
   const hoy                   = date.formatDate(Date.now(), 'YYYY/MM/DD')
   const desdeConFormato       = ref<string>("") // 'YYYY/MM/DD' 

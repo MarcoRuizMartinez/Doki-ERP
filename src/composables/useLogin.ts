@@ -5,7 +5,7 @@ import {
 import {  useStoreUser    } from 'src/stores/user'
 import {  useStoreApp     } from 'src/stores/app'
 import {  useRouter       } from 'vue-router'
-import {  useTools        } from "src/useSimpleOk/useTools"
+import {  useTools        } from "src/composables/useTools"
 import {  LocalStorage    } from 'quasar'
 import {  ALMACEN_LOCAL,
           ORIGEN        

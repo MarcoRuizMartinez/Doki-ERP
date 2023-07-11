@@ -281,9 +281,9 @@
   import {  useStoreUser    } from 'src/stores/user'
   import {  useStoreAcuerdo } from 'src/stores/acuerdo'
   // * /////////////////////////////////////////////////////////////////////// Componibles
-  import {  siNo, useTools  } from "src/useSimpleOk/useTools"
+  import {  siNo, useTools  } from "src/composables/useTools"
   import {  menuDefault,
-            style           } from "src/useSimpleOk/useEstilos"
+            style           } from "src/composables/useEstilos"
   import {  TTipoPDF        } from "src/areas/acuerdos/composables/pdf/useCotizacion"
   // * /////////////////////////////////////////////////////////////////////// Componentes
   import    barra             from "components/utilidades/Barra.vue"

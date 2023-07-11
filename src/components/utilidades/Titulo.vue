@@ -42,7 +42,7 @@
 <script setup lang="ts">
   import {  useSlots,
             computed          } from 'vue'
-  import {  useTools          } from "src/useSimpleOk/useTools"                            
+  import {  useTools          } from "src/composables/useTools"                            
   const slots                 = useSlots()
   const { esMobil           } = useTools()
   const ancho                 = esMobil ? '66px' : '120px'

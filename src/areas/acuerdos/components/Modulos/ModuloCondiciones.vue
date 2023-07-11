@@ -121,7 +121,7 @@
             dexieFormasPago,
             dexieBodegas,
             dexieMetodosEntrega,
-            dexieTiemposEntrega   } from "src/services/useDexie"
+            dexieTiemposEntrega   } from "src/composables/useDexie"
   import {  TIPOS_CONTACTO        } from "src/areas/terceros/models/Contacto"  
   // * ///////////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana                 from "components/utilidades/Ventana.vue"

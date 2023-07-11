@@ -8,8 +8,8 @@ import {  IProductoDoli,
           ProductoDoli          } from "src/areas/productos/models/ProductoDolibarr"     
 //* ////////////////////////////////////////////////////////////////// Componibles
 import {  useTools,
-          ID_URL_Ok,            } from "src/useSimpleOk/useTools"
-import {  useApiDolibarr        } from "src/services/useApiDolibarr"  
+          ID_URL_Ok,            } from "src/composables/useTools"
+import {  useApiDolibarr        } from "src/composables/useApiDolibarr"  
 import {  servicesProductos     } from "src/areas/productos/services/servicesProductos"
 
 //* ////////////////////////////////////////////////////////////////// Modelos

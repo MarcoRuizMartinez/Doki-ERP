@@ -60,7 +60,7 @@
             IObjetivo         } from "src/areas/empresa/models/HojaRutaAirTable"
   import    panel               from "components/utilidades/Panel.vue"
   import    timeLine            from "components/utilidades/TimeLine.vue"
-  import {  useFetch          } from "src/useSimpleOk/useFetch"         
+  import {  useFetch          } from "src/composables/useFetch"         
   import {  ILabelValue       } from "src/models/TiposVarios"
 
   const { miFetch             } = useFetch()

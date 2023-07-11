@@ -100,8 +100,8 @@
   import {  IColumna, Columna   } from "src/models/Tabla"
   import {  IProductoDoli       } from "src/areas/productos/models/ProductoDolibarr"  
   // * /////////////////////////////////////////////////////////////////////////////////// Componibles
-  import {  formatoPrecio       } from "src/useSimpleOk/useTools"
-  import {  style               } from "src/useSimpleOk/useEstilos"  
+  import {  formatoPrecio       } from "src/composables/useTools"
+  import {  style               } from "src/composables/useEstilos"  
   // * /////////////////////////////////////////////////////////////////////////////////// Componentes
   //import    tooltipPrecios        from "src/areas/acuerdos/components/Tools/Tooltips/TooltipPreciosProducto.vue"
   import    inputFiltroTexto      from "src/areas/productos/components/TablaProductos/HeaderCell/FiltroTexto.vue"

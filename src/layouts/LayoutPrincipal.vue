@@ -90,8 +90,8 @@
   ///////////////////////////////////////////////////////////////////////// Modelos
   import {  ALMACEN_LOCAL     } from "src/models/TiposVarios"
   ///////////////////////////////////////////////////////////////////////// Componibles
-  import {  useMenu           } from "src/useSimpleOk/useMenu"  
-  import {  useTools          } from "src/useSimpleOk/useTools"
+  import {  useMenu           } from "src/composables/useMenu"  
+  import {  useTools          } from "src/composables/useTools"
   ///////////////////////////////////////////////////////////////////////// Componentes
   import    online              from "components/navegacion/IconOnline.vue"
   import    menuTop             from "components/navegacion/menus/MenuTop.vue"

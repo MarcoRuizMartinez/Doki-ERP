@@ -43,7 +43,7 @@
 <script lang="ts" setup>
   import {  PropType          } from "vue"  
   import {  IPedidoWoo        } from "src/areas/acuerdos/models/PedidoWoo"      
-  import {  style             } from "src/useSimpleOk/useEstilos"          
+  import {  style             } from "src/composables/useEstilos"          
   import    btnProductos        from "./BtnProductos.vue"
   import    btnPagos            from "./BtnPago.vue"
 

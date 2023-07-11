@@ -26,7 +26,7 @@
   import {  IGrupoLineas        } from "src/areas/acuerdos/models/GrupoLineasAcuerdo"
   // * ///////////////////////////////////////////////////////////////////////////// Componibles
   import {  useControlProductos } from "src/areas/acuerdos/controllers/ControlLineasProductos"
-  import {  formatoPrecio       } from "src/useSimpleOk/useTools"
+  import {  formatoPrecio       } from "src/composables/useTools"
 
   const { loading               } = storeToRefs( useStoreAcuerdo() )  
   const { editarSubTotales      } = useControlProductos()  

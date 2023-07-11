@@ -145,7 +145,7 @@
 <script setup lang="ts">
   import {  storeToRefs           } from 'pinia'                            
   import {  useStoreAcuerdo       } from 'src/stores/acuerdo'  
-  import {  formatoPrecio         } from "src/useSimpleOk/useTools" 
+  import {  formatoPrecio         } from "src/composables/useTools" 
   import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"
   import    ventana                 from "components/utilidades/Ventana.vue"
   import    inputNumber             from "components/utilidades/input/InputFormNumber.vue"

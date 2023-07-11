@@ -16,7 +16,7 @@ import {  Anticipo,
 import {  NivelesComision,
           INivelesComision  } from "src/areas/acuerdos/models/Comisiones/NivelesComision"
 import {  CONSTANTES        } from "src/models/Diccionarios/Constante"
-import {  getConstanteDB    } from "src/services/useDexie"
+import {  getConstanteDB    } from "src/composables/useDexie"
 
 interface IAcuerdoState {
   acuerdo             : IAcuerdo,

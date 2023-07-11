@@ -5,12 +5,12 @@ import {  EstadosAcuerdos,
           TIPO_ACUERDO        } from "src/areas/acuerdos/models/ConstantesAcuerdos"
 import {  valuesObjectArrayToNumber,
           agregarZeroANumero1Digito
-                              } from "src/useSimpleOk/useTools"
+                              } from "src/composables/useTools"
 import {  getUsuarioDB,
           getMunicipioDB,
           getOrigenContactoDB,
           getCondicionDePagoDB,
-                              } from "src/services/useDexie"
+                              } from "src/composables/useDexie"
 import {  IQuery              } from "src/models/Busqueda"  
 import {  getArea             } from "src/models/TiposVarios"
 

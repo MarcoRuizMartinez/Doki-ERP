@@ -31,7 +31,7 @@
               Columna                 } from "src/models/Tabla"
     import    ventana                   from "components/utilidades/Ventana.vue"
     import    inputBuscar               from "components/utilidades/input/InputSimple.vue"
-    import {  dexieCategoriasProducto } from "src/services/useDexie"
+    import {  dexieCategoriasProducto } from "src/composables/useDexie"
 
     const filtro                = ref< string >("")
     const lista                 = dexieCategoriasProducto({ cargarSiempre : true})

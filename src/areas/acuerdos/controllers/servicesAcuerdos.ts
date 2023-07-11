@@ -19,10 +19,10 @@ export interface IBusquedaCotizacion {
   municipio?:     string
 }
 
-import {  useApiDolibarr    } from "src/services/useApiDolibarr"
+import {  useApiDolibarr    } from "src/composables/useApiDolibarr"
 import {  getURL,
-          getFormData       } from "src/services/APIMaco"
-import {  useFetch          } from "src/useSimpleOk/useFetch"
+          getFormData       } from "src/composables/APIMaco"
+import {  useFetch          } from "src/composables/useFetch"
 import {  date              } from "quasar"
 import {  ILineaApi         } from "src/areas/acuerdos/models/LineaAcuerdo"
 import {  TIPOS_CONTACTO_ID } from "src/areas/terceros/models/Contacto"
@@ -30,7 +30,7 @@ import {  IQuery            } from "src/models/Busqueda"
 import {  TTipoAcuerdo      } from "src/areas/acuerdos/models/ConstantesAcuerdos"
 import {  Acuerdo,
           IAcuerdo,         } from "src/areas/acuerdos/models/Acuerdo"
-import {  pausa             } from "src/useSimpleOk/useTools"
+import {  pausa             } from "src/composables/useTools"
 
 export function servicesAcuerdos()
 {

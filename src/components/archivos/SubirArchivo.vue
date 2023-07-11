@@ -90,16 +90,16 @@
             PropType,
             computed,
                             } from "vue"
-  import {  useApiDolibarr  } from "src/services/useApiDolibarr"
-  import {  useTools        } from "src/useSimpleOk/useTools"
+  import {  useApiDolibarr  } from "src/composables/useApiDolibarr"
+  import {  useTools        } from "src/composables/useTools"
   import {  FileToBase64,
             limpiarStringBase64,
             TModulosDolibarr
-                            } from "src/useSimpleOk/UtilFiles"
+                            } from "src/composables/UtilFiles"
 
   import {  format          } from "quasar"
   import {  style,
-            WYSIWYG_Imagen  } from "src/useSimpleOk/useEstilos"
+            WYSIWYG_Imagen  } from "src/composables/useEstilos"
   import    inputText         from "components/utilidades/input/InputFormText.vue"  
   import {  IArchivo        } from "src/models/Archivo"
 

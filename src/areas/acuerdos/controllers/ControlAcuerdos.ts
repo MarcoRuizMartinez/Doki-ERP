@@ -12,14 +12,14 @@ import {  useControlIncentivos  } from "src/areas/nomina/controllers/ControlInce
 import {  useControlComunicacion} from "src/areas/comunicacion/controllers/ControlComunicacion"
 import {  IIncentivo,
           INCENTIVO_ORIGEN      } from "src/areas/nomina/models/Incentivo"
-import {  useApiDolibarr        } from "src/services/useApiDolibarr"
-import {  useFetch              } from "src/useSimpleOk/useFetch"
-import {  getURL, getFormData   } from "src/services/APIMaco"
+import {  useApiDolibarr        } from "src/composables/useApiDolibarr"
+import {  useFetch              } from "src/composables/useFetch"
+import {  getURL, getFormData   } from "src/composables/APIMaco"
 import {  useTools,
           ID_URL_Ok,
           anyToNum,
-          confeti               } from "src/useSimpleOk/useTools"
-import {  dexieReglaComision    } from "src/services/useDexie"
+          confeti               } from "src/composables/useTools"
+import {  dexieReglaComision    } from "src/composables/useDexie"
 
 //* ////////////////////////////////////////////////////////////////// Modelos
 import {  ESTADO_CTZ,

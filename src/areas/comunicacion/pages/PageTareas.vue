@@ -196,9 +196,9 @@
   import {  useStoreAcciones        } from "src/stores/acciones"
   // * /////////////////////////////////////////////////////////////////////// Componibles
   import {  useTitle                } from "@vueuse/core"
-  import {  useTools                } from "src/useSimpleOk/useTools"
-  import {  generarCSVDesdeTabla    } from "src/useSimpleOk/UtilFiles"
-  import {  style                   } from "src/useSimpleOk/useEstilos"
+  import {  useTools                } from "src/composables/useTools"
+  import {  generarCSVDesdeTabla    } from "src/composables/UtilFiles"
+  import {  style                   } from "src/composables/useEstilos"
   import {  useControlComunicacion  } from "src/areas/comunicacion/controllers/ControlComunicacion"
   // * /////////////////////////////////////////////////////////////////////// Modelos
   import {  Columna, IColumna       } from "src/models/Tabla"

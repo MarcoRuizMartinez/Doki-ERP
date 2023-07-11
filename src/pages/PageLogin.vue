@@ -104,8 +104,8 @@
   import {  useStoreUser      } from 'src/stores/user'
   import {  useStoreApp       } from 'src/stores/app'  
   // * /////////////////////////////////////////////////////////////////////// Componibles
-  import {  useLogin          } from "src/services/useLogin"
-  import {  style             } from "src/useSimpleOk/useEstilos"
+  import {  useLogin          } from "src/composables/useLogin"
+  import {  style             } from "src/composables/useEstilos"
   // * /////////////////////////////////////////////////////////////////////// Modelos
   import {  ORIGEN, 
             ALMACEN_LOCAL     } from "src/models/TiposVarios"

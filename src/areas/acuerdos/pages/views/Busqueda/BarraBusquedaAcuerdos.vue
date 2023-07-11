@@ -388,7 +388,7 @@
   import {  useStoreUser        } from 'src/stores/user'
   import {  useStoreAcuerdo     } from 'src/stores/acuerdo'
   // * /////////////////////////////////////////////////////////////////////// Componibles
-  import {  formatoPrecio       } from "src/useSimpleOk/useTools"
+  import {  formatoPrecio       } from "src/composables/useTools"
   // * /////////////////////////////////////////////////////////////////////// Modelos
   import {  IQuery, Busqueda    } from "src/models/Busqueda"
   import {  GRUPO_USUARIO       } from "src/models/TiposVarios"

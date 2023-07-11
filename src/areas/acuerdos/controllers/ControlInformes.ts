@@ -1,12 +1,12 @@
 // * /////////////////////////////////////////////////////////////////////// Componibles
-import {  sortArray           } from "src/useSimpleOk/useTools"
+import {  sortArray           } from "src/composables/useTools"
 import {  getURL,
-          getFormData         } from "src/services/APIMaco"        
-import {  useFetch            } from "src/useSimpleOk/useFetch"
+          getFormData         } from "src/composables/APIMaco"        
+import {  useFetch            } from "src/composables/useFetch"
 import {  getDateToStr,
           colorRandom,
           mayusculasPrimeraLetra  
-                              } from "src/useSimpleOk/useTools"
+                              } from "src/composables/useTools"
 
 // * /////////////////////////////////////////////////////////////////////// Modelos
 import {  IQuery              } from "src/models/Busqueda"  

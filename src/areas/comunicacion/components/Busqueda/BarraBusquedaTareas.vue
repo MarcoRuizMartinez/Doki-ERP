@@ -186,7 +186,7 @@
             Prioridades         } from "src/areas/comunicacion/models/Accion"  
   import {  GRUPO_USUARIO       } from "src/models/TiposVarios"
   // * /////////////////////////////////////////////////////////////////////// Componentes
-  import {  style               } from "src/useSimpleOk/useEstilos"
+  import {  style               } from "src/composables/useEstilos"
   import    fieldsetFiltro        from "components/utilidades/Fieldset.vue"
   import    innerLoading          from "components/utilidades/InnerLoading.vue"
   import    multiLabelValue       from "components/utilidades/select/SelectLabelValueMulti.vue"

@@ -129,9 +129,9 @@
   import {  useStoreUser            } from 'src/stores/user'
 
   // * /////////////////////////////////////////////////////////////////////////////////// Componibles
-  import {  pausa                   } from "src/useSimpleOk/useTools"
+  import {  pausa                   } from "src/composables/useTools"
   import {  useControlComunicacion  } from "src/areas/comunicacion/controllers/ControlComunicacion"
-  import {  style                   } from "src/useSimpleOk/useEstilos"
+  import {  style                   } from "src/composables/useEstilos"
 
   // * /////////////////////////////////////////////////////////////////////////////////// Modelos
   import {  IAccion, Accion, TASK   } from "../models/Accion"

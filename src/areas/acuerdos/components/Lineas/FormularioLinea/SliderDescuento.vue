@@ -19,7 +19,7 @@
             PropType              } from "vue"    
   import {  ILineaAcuerdo         } from "src/areas/acuerdos/models/LineaAcuerdo"
   import {  useControlProductos   } from "src/areas/acuerdos/controllers/ControlLineasProductos"
-  import {  roundInt              } from "src/useSimpleOk/useTools"
+  import {  roundInt              } from "src/composables/useTools"
 
   const props               = defineProps({
     modelValue: { required: true,   type: Object as PropType< ILineaAcuerdo > },

@@ -47,7 +47,7 @@
   import {  useStoreAcuerdo     } from 'src/stores/acuerdo'            
   ////////////////////////////////////////////////////////////////////////// Controles
   import {  useControlProductos } from "src/areas/acuerdos/controllers/ControlLineasProductos"
-  import {  sortArray           } from "src/useSimpleOk/useTools"  
+  import {  sortArray           } from "src/composables/useTools"  
 
   ////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana               from "components/utilidades/Ventana.vue"

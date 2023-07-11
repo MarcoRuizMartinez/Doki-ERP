@@ -115,7 +115,7 @@
   import {  useStoreAcuerdo     } from 'src/stores/acuerdo'  
   //* //////////////////////////////////////////////////////////////////////////////// Componibles
   import {  useControlProductos } from "src/areas/acuerdos/controllers/ControlLineasProductos"  
-  import {  style               } from "src/useSimpleOk/useEstilos"
+  import {  style               } from "src/composables/useEstilos"
   //* //////////////////////////////////////////////////////////////////////////////// Modelos
   import {  IGrupoLineas        } from "src/areas/acuerdos/models/GrupoLineasAcuerdo"
   

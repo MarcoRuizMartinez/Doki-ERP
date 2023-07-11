@@ -32,7 +32,7 @@
   import {  PropType          } from "vue"
   import {  IMercadoPago      } from "src/areas/acuerdos/models/PagoMercadoPago"
   import {  formatoPrecio,
-            fechaYHora        } from "src/useSimpleOk/useTools"
+            fechaYHora        } from "src/composables/useTools"
   ////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana             from "components/utilidades/Ventana.vue"
   import    item                from "components/utilidades/TrTdTd.vue"

@@ -49,7 +49,7 @@
             computed          } from "vue"  
   import {  IPedidoWoo        } from "src/areas/acuerdos/models/PedidoWoo"      
   import {  formatoPrecio,
-            fechaCorta        } from "src/useSimpleOk/useTools"
+            fechaCorta        } from "src/composables/useTools"
   ////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana             from "components/utilidades/Ventana.vue"  
   import    item                from "components/utilidades/TrTdTd.vue"  

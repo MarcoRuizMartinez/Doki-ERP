@@ -31,7 +31,7 @@
               Columna               } from "src/models/Tabla"
     import    ventana                 from "components/utilidades/Ventana.vue"
     import    inputBuscar             from "components/utilidades/input/InputSimple.vue"
-    import {  dexieCondicionesPago  } from "src/services/useDexie"
+    import {  dexieCondicionesPago  } from "src/composables/useDexie"
 
     const filtro                = ref< string >("")
     const lista                 = dexieCondicionesPago()

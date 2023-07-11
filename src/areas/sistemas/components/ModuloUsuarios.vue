@@ -31,7 +31,7 @@
             Columna         } from "src/models/Tabla"
   import    ventana           from "components/utilidades/Ventana.vue"
   import    inputBuscar       from "components/utilidades/input/InputSimple.vue"
-  import {  dexieUsuarios   } from "src/services/useDexie"
+  import {  dexieUsuarios   } from "src/composables/useDexie"
 
   const filtro                = ref< string >("")
   const lista                 = dexieUsuarios()

@@ -22,14 +22,14 @@ import {  getUsuarioDB,
           getMetodosEntregaDB,
           getUsuariosByGrupoDB,
           getCondicionesPagoDB,
-          getOrigenesContactoDB         } from "src/services/useDexie"
+          getOrigenesContactoDB         } from "src/composables/useDexie"
 import {  LocationQuery                 } from "vue-router"
 import {  getQueryRouterDate,
           getQueryRouterNumber,
           getQueryRouterString,
           getQueryRouterBoolean,
           getQueryRouterLabelValue,
-          getQueryRouterLabelValueArray } from "src/useSimpleOk/useTools"
+          getQueryRouterLabelValueArray } from "src/composables/useTools"
 
 export interface      IQuery {
   //tipo                 ?: string

@@ -66,7 +66,7 @@
             toRefs,
             inject,
             watch           } from "vue"
-  import {  useApiDolibarr  } from "src/services/useApiDolibarr"
+  import {  useApiDolibarr  } from "src/composables/useApiDolibarr"
   import {  IContacto,
             Contacto        } from "src/areas/terceros/models/Contacto"
   import {  useStoreUser    } from "src/stores/user"
@@ -78,7 +78,7 @@
   import    formContacto      from "src/areas/terceros/components/contactos/FormularioContacto.vue"
   import {  Tercero,
             ITercero        } from "src/areas/terceros/models/Tercero"
-  import {  style           } from "src/useSimpleOk/useEstilos"
+  import {  style           } from "src/composables/useEstilos"
 
   const { apiDolibarr       } = useApiDolibarr()
   const storeUser             = useStoreUser()

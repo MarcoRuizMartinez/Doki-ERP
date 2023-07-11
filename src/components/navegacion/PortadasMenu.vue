@@ -14,8 +14,8 @@
             toRefs,
             onMounted,
             PropType              } from "vue"
-  import {  useApiDolibarr        } from "src/services/useApiDolibarr"      
-  import {  sortArray             } from "src/useSimpleOk/useTools"  
+  import {  useApiDolibarr        } from "src/composables/useApiDolibarr"      
+  import {  sortArray             } from "src/composables/useTools"  
   import {  IItemMenu, ItemMenu   } from "src/models/ItemMenu"
   import    itemMenu                from "components/navegacion/PortadasMenuItem.vue"
 

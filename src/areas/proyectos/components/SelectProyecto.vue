@@ -88,7 +88,7 @@
   </q-dialog>
 </template>
 <script setup lang="ts">
-  import {  useApiDolibarr  } from "src/services/useApiDolibarr"
+  import {  useApiDolibarr  } from "src/composables/useApiDolibarr"
   import {  ref,
             toRefs,
             computed,
@@ -106,7 +106,7 @@
   //import    tooltipProyecto   from "src/areas/proyectos/components/TooltipProyecto.vue"
   //import    formProyecto      from "src/areas/proyectos/components/FormularioProyecto.vue"
   import    confirmar         from "components/utilidades/MenuConfirmar.vue"
-  import {  style           } from "src/useSimpleOk/useEstilos"
+  import {  style           } from "src/composables/useEstilos"
 
   const { acuerdo           } = storeToRefs( useStoreAcuerdo() )
   const proyectos             = ref< IProyecto[] > ([])

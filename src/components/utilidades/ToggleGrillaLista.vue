@@ -5,7 +5,7 @@
             toRefs,
             PropType,            
                               } from "vue"
-  import {  style             } from "src/useSimpleOk/useEstilos"
+  import {  style             } from "src/composables/useEstilos"
 
   type TTipoLista             = "grilla" | "lista"  
 

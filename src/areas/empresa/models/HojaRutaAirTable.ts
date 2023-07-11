@@ -1,4 +1,4 @@
-import { fechaLarga, getDateToStr } from "src/useSimpleOk/useTools"
+import { fechaLarga, getDateToStr } from "src/composables/useTools"
 
 export interface  IObjetivo {
   id:             string

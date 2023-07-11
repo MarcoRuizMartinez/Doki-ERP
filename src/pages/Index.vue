@@ -38,6 +38,7 @@
       <modulo-tipos-documentos    class="col-md-4 col-12" height-card="260px"/>
       <modulo-unidades            class="col-md-4 col-12" height-card="260px"/>
       <modulo-categorias-producto class="col-md-4 col-12" height-card="260px"/>
+      <modulo-categorias-grupos   class="col-md-4 col-12" height-card="260px"/>      
       <modulo-constantes          class="col-md-4 col-12" height-card="260px"/>
       <modulo-cuentas-dinero      class="col-md-4 col-12" height-card="260px"/>
 
@@ -67,12 +68,13 @@
   import    moduloTiposDocumentos     from "src/areas/sistemas/components/ModuloTiposDocumentos.vue"
   import    moduloUnidades            from "src/areas/sistemas/components/ModuloUnidades.vue"
   import    moduloCategoriasProducto  from "src/areas/sistemas/components/ModuloCategoriasProducto.vue"
+  import    moduloCategoriasGrupos    from "src/areas/sistemas/components/ModuloCategoriasGrupos.vue"
   import    moduloConstantes          from "src/areas/sistemas/components/ModuloConstantes.vue"
   import    moduloCuentasDinero       from "src/areas/sistemas/components/ModuloCuentasDinero.vue"
   import    moduloReglasComision      from "src/areas/sistemas/components/ModuloReglasComision.vue"
   import    moduloBodegas             from "src/areas/sistemas/components/ModuloBodegas.vue"
 
-  import {  cargarListasIndex       } from "src/services/useDexie"
+  import {  cargarListasIndex       } from "src/composables/useDexie"
 
   const storeUser                 = useStoreUser()
   const minimizadoTodo            = ref< boolean >(false)

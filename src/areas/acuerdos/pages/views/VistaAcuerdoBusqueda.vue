@@ -161,9 +161,9 @@
   import {  useTitle            } from "@vueuse/core"
   import {  servicesAcuerdos    } from "src/areas/acuerdos/controllers/servicesAcuerdos"
   import {  useControlAcuerdo   } from "src/areas/acuerdos/controllers/ControlAcuerdos"
-  import {  useTools            } from "src/useSimpleOk/useTools"
-  import {  generarCSVDesdeTabla} from "src/useSimpleOk/UtilFiles"
-  import {  style               } from "src/useSimpleOk/useEstilos"            
+  import {  useTools            } from "src/composables/useTools"
+  import {  generarCSVDesdeTabla} from "src/composables/UtilFiles"
+  import {  style               } from "src/composables/useEstilos"            
   // * /////////////////////////////////////////////////////////////////////// Modelos
   import {  IQuery              } from "src/models/Busqueda"
   import {  Columna, IColumna   } from "src/models/Tabla"

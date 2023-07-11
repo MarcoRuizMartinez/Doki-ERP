@@ -6,14 +6,14 @@ import {  IMunicipio,
           Municipio
                             } from "src/models/Municipio"
 import {  IUsuario          } from "src/areas/usuarios/models/Usuario"
-import {  formatoMilesInt   } from "src/useSimpleOk/useTools"
+import {  formatoMilesInt   } from "src/composables/useTools"
 import {  TIPOS_DOCUMENTO   } from "./TiposDocumento"
 import {  AREA              } from "src/models/TiposVarios"
 import {  IAccion           } from "src/areas/comunicacion/models/Accion"
 import {  getMunicipioDB,
           getTipoDocumentoDB,
           getUsuariosDB
-                            } from "src/services/useDexie"
+                            } from "src/composables/useDexie"
 
 export interface ITercero
 {

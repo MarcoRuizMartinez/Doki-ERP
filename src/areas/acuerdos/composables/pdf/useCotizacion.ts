@@ -3,7 +3,7 @@ import {  UtilPDF,
           IUtilPDF,
           IInicioPDF,
           crearImageHTML,
-          GRISES            } from 'src/useSimpleOk/UtilPDF';
+          GRISES            } from 'src/composables/UtilPDF';
 import {  Acuerdo, IAcuerdo } from "src/areas/acuerdos/models/Acuerdo"
 import {  TIPO_ACUERDO      } from "src/areas/acuerdos/models/ConstantesAcuerdos"
 import {  useQuasar,
@@ -11,7 +11,7 @@ import {  useQuasar,
 import {  fechaLarga,
           limpiarHTML,
           formatoPrecio,
-                            } from "src/useSimpleOk/useTools"
+                            } from "src/composables/useTools"
 import {  jsPDF             } from "jspdf"
 import    autoTable           from 'jspdf-autotable'
 //import    html2canvas         from 'html2canvas';

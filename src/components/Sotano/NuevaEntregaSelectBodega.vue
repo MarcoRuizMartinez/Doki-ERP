@@ -32,7 +32,7 @@
   import {  ILineaAcuerdo,
             LineaAcuerdo        } from "src/areas/acuerdos/models/LineaAcuerdo"
   //* ////////////////////////////////////////////////////////////////////////// Componibles
-  import {  dexieBodegas        } from "src/services/useDexie"  
+  import {  dexieBodegas        } from "src/composables/useDexie"  
 
   //* ////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana               from "components/utilidades/Ventana.vue"

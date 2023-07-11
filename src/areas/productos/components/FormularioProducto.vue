@@ -65,7 +65,7 @@
         class                   ="col-12 col-md-6"
         options-sort            ="nombre"
         :options                ="categorias"
-        @select                 ="( c : IProductoCategoria )=> proModel.ref = c.sigla + '-'"
+        @select                 ="( c : ICategoriaProducto )=> proModel.ref = c.sigla + '-'"
       />
     <template v-if            ="usuario.esProduccion || usuario.esGerencia">
       <!-- //* //////////////   Costo -->
@@ -225,18 +225,18 @@
   import {  useStoreProducto      } from 'src/stores/producto'
   import {  useStoreUser          } from "src/stores/user"
   //* ///////////////////////////////////////////////////////////////////////////////// Modelos
-  import {  IProductoCategoria,
-            ProductoCategoria   } from "src/areas/productos/models/ProductoCategoria"
+  import {  ICategoriaProducto,
+            CategoriaProducto   } from "src/areas/productos/models/CategoriaProducto"
   import {  IProductoDoli,
             ProductoDoli        } from "src/areas/productos/models/ProductoDolibarr"
   //* ///////////////////////////////////////////////////////////////////////////////// Componibles
   import {  formatoPrecio,
-            confeti               } from "src/useSimpleOk/useTools"
-  import {  style                 } from "src/useSimpleOk/useEstilos"
+            confeti               } from "src/composables/useTools"
+  import {  style                 } from "src/composables/useEstilos"
   import {  useControlProductos   } from "src/areas/productos/controllers/ControlProductosDolibarr"
   import {  dexieUnidades,
             dexieCategoriasProducto
-                                  } from "src/services/useDexie"
+                                  } from "src/composables/useDexie"
   //* ///////////////////////////////////////////////////////////////////////////////// Componentes
   import    efecto                  from "components/utilidades/Efecto.vue"
   import    ventana                 from "components/utilidades/Ventana.vue"

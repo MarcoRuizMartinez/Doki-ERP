@@ -59,9 +59,9 @@
 
   // * /////////////////////////////////////////////////////////////////////// Componibles
   import {  servicesTerceros    } from "src/areas/terceros/services/servicesTerceros"
-  import {  useTools            } from "src/useSimpleOk/useTools"
+  import {  useTools            } from "src/composables/useTools"
   import {  generarCSVDesdeTabla
-                                } from "src/useSimpleOk/UtilFiles"
+                                } from "src/composables/UtilFiles"
   // * /////////////////////////////////////////////////////////////////////// Modelos
   import {  Columna, IColumna   } from "src/models/Tabla"
   import {  Tercero             } from "src/areas/terceros/models/Tercero"

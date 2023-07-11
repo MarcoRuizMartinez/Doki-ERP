@@ -26,7 +26,7 @@
   //* ///////////////////////////////////////////////////////////////////////////////// Componibles
   import {  servicesProductos     } from "src/areas/productos/services/servicesProductos"
   import {  useControlComunicacion} from "src/areas/comunicacion/controllers/ControlComunicacion"
-  import {  useTools              } from "src/useSimpleOk/useTools"
+  import {  useTools              } from "src/composables/useTools"
   //* ///////////////////////////////////////////////////////////////////////////////// Componentes
   import    vistaProducto           from "src/areas/productos/components/Views/VistaProductoVer.vue"
   import    comentarios             from "src/areas/comunicacion/components/ModuloComentarios.vue"

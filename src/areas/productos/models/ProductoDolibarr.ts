@@ -1,13 +1,13 @@
 import {  IUnidad,
           Unidad            } from "src/models/Diccionarios/Unidad"
 import {  getCategoriaDB,
-          getUnidadDB       } from "src/services/useDexie"
+          getUnidadDB       } from "src/composables/useDexie"
 import {  roundInt,
           valorValido,
           X100_Aumento,
-          X100_Calcular     } from "src/useSimpleOk/useTools"
-import {  IProductoCategoria,
-          ProductoCategoria } from "src/areas/productos/models/ProductoCategoria"
+          X100_Calcular     } from "src/composables/useTools"
+import {  ICategoriaProducto,
+          CategoriaProducto } from "src/areas/productos/models/CategoriaProducto"
 import {  IAccion           } from "src/areas/comunicacion/models/Accion"
 
 export const imagenDefault  :string  = "https://dolibarr.mublex.com/_maco/img/box.jpg"
@@ -17,7 +17,7 @@ export interface IProductoDoli {
   id                        : number
   ref                       : string
   refProv                   : string
-  categoria                 : IProductoCategoria
+  categoria                 : ICategoriaProducto
   nombre                    : string
   urlDolibarr               : string
   sigla                     : string
@@ -80,7 +80,7 @@ export class ProductoDoli implements IProductoDoli
   id                        : number
   ref                       : string
   refProv                   : string
-  categoria                 : IProductoCategoria
+  categoria                 : ICategoriaProducto
   nombre                    : string
   sigla                     : string
   descripcion               : string
@@ -123,7 +123,7 @@ export class ProductoDoli implements IProductoDoli
     this.ref                = ""
     this.refProv            = ""
     this.sigla              = ""
-    this.categoria          = new ProductoCategoria()
+    this.categoria          = new CategoriaProducto()
     this.nombre             = ""
     this.descripcion        = ""
     this.iva                = parseInt( process.env.IVA ?? "0" )

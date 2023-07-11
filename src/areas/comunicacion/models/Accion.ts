@@ -1,10 +1,10 @@
 //import {  date          } from "quasar"
-import {  fechaCorta    } from "src/useSimpleOk/useTools"
-import {  getMilisecShortForApiDolibarr } from "src/useSimpleOk/useTools"
+import {  fechaCorta    } from "src/composables/useTools"
+import {  getMilisecShortForApiDolibarr } from "src/composables/useTools"
 import {  IUsuario, Usuario } from "src/areas/usuarios/models/Usuario"
-import {  diferenciaFechas  } from "src/useSimpleOk/useTools"
+import {  diferenciaFechas  } from "src/composables/useTools"
 import {  TIPO_ACUERDO      } from "src/areas/acuerdos/models/ConstantesAcuerdos"
-import {  getUsuarioDB      } from "src/services/useDexie"
+import {  getUsuarioDB      } from "src/composables/useDexie"
 import {  ILabelValue,
           labelValueNulo    } from "src/models/TiposVarios"
 

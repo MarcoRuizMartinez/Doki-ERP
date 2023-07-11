@@ -18,7 +18,7 @@
 </template>
 <script setup lang="ts">
   import {  PropType            } from "vue"
-  import {  formatoPrecio       } from "src/useSimpleOk/useTools"
+  import {  formatoPrecio       } from "src/composables/useTools"
   type  TLabelValue           = { label : string, value: number }
 
   const props                 = defineProps({      

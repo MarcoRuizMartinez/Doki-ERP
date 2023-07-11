@@ -63,7 +63,7 @@
   import {  Acuerdo               } from "src/areas/acuerdos/models/Acuerdo"
   import {  TTipoAcuerdo          } from "src/areas/acuerdos/models/ConstantesAcuerdos"
   // * /////////////////////////////////////////////////////////////////////////////////// Componibles
-  import {  style                 } from "src/useSimpleOk/useEstilos"
+  import {  style                 } from "src/composables/useEstilos"
   import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"
   import {  useControlProductos   } from "src/areas/acuerdos/controllers/ControlLineasProductos"
   import {  useCotizacionPDF      } from "src/areas/acuerdos/composables/pdf/useCotizacion"

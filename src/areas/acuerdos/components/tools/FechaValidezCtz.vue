@@ -21,7 +21,7 @@
   import {  useConstantes,
             CONSTANTES        } from "src/models/Diccionarios/Constante"
   import {  date              } from 'quasar'
-  import {  ID_URL_Ok         } from "src/useSimpleOk/useTools"
+  import {  ID_URL_Ok         } from "src/composables/useTools"
 
   const emit                  = defineEmits(["update:model-value"])
   const props                 = defineProps({

@@ -1,6 +1,6 @@
 import {  exportFile              } from "quasar"
 import {  IColumna                } from "src/models/Tabla"
-import {  siNo                    } from "src/useSimpleOk/useTools"
+import {  siNo                    } from "src/composables/useTools"
 
 export type TModulosDolibarr  =   "thirdparty" | "project"  | "proposal"  | "order" | "shipment"  | "invoice" | "supplier_proposal" | "supplier_order"  | "supplier_invoice" | "product" | "action"
 

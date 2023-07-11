@@ -84,9 +84,9 @@
   import {  IAcuerdo              } from "src/areas/acuerdos/models/Acuerdo";
 
   // * ///////////////////////////////////////////////////////////////////////////////// Componibles
-  import {  style                 } from "src/useSimpleOk/useEstilos"
+  import {  style                 } from "src/composables/useEstilos"
   import {  useControlIncentivos  } from "src/areas/nomina/controllers/ControlIncentivos"
-  import {  valorValido           } from "src/useSimpleOk/useTools"  
+  import {  valorValido           } from "src/composables/useTools"  
   
   // * ///////////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana                 from "components/utilidades/Ventana.vue"

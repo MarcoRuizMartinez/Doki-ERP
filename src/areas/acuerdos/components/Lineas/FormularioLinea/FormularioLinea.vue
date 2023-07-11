@@ -190,12 +190,12 @@
   import {  ILineaAcuerdo,
             LineaAcuerdo        } from "src/areas/acuerdos/models/LineaAcuerdo"
   //* ////////////////////////////////////////////////////////////////////////// Componibles
-  import {  WYSIWYG_Limpio      } from "src/useSimpleOk/useEstilos"
-  import {  dexieUnidades       } from "src/services/useDexie"  
+  import {  WYSIWYG_Limpio      } from "src/composables/useEstilos"
+  import {  dexieUnidades       } from "src/composables/useDexie"  
   import {  useControlProductos } from "src/areas/acuerdos/controllers/ControlLineasProductos"
   import {  useTools, 
-            formatoPrecio       } from "src/useSimpleOk/useTools"
-  import {  useApiDolibarr      } from "src/services/useApiDolibarr"  
+            formatoPrecio       } from "src/composables/useTools"
+  import {  useApiDolibarr      } from "src/composables/useApiDolibarr"  
   //* ////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana               from "components/utilidades/Ventana.vue"
   import    selectLabelValue      from "components/utilidades/select/SelectLabelValue.vue"

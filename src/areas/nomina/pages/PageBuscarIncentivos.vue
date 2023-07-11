@@ -84,8 +84,8 @@
   import {  servicesAcuerdos    } from "src/areas/acuerdos/controllers/servicesAcuerdos"
   import {  useControlAcuerdo   } from "src/areas/acuerdos/controllers/ControlAcuerdos"
   import {  useTools, 
-            formatoPrecio       } from "src/useSimpleOk/useTools"
-  import {  generarCSVDesdeTabla} from "src/useSimpleOk/UtilFiles"
+            formatoPrecio       } from "src/composables/useTools"
+  import {  generarCSVDesdeTabla} from "src/composables/UtilFiles"
   import {  useControlIncentivos} from "src/areas/nomina/controllers/ControlIncentivos"
 
   // * /////////////////////////////////////////////////////////////////////// Modelos

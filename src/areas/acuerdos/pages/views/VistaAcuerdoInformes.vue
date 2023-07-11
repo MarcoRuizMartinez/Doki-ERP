@@ -103,7 +103,7 @@
   // * /////////////////////////////////////////////////////////////////////// Componibles
   import {  useTitle            } from "@vueuse/core"
   import {  useControlInformes  } from "src/areas/acuerdos/controllers/ControlInformes"  
-  import {  getDateToStr        } from "src/useSimpleOk/useTools"       
+  import {  getDateToStr        } from "src/composables/useTools"       
   // * /////////////////////////////////////////////////////////////////////// Modelos
   import {  IQuery, Busqueda    } from "src/models/Busqueda"  
   import {  ModosVentana        } from "src/models/TiposVarios"  

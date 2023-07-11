@@ -26,7 +26,7 @@
             computed,
                               } from "vue"
   import {  formatoPrecio,
-            X100_Aumento     } from "src/useSimpleOk/useTools"
+            X100_Aumento     } from "src/composables/useTools"
   const props                   = defineProps({
     precio:   { required: true,   type: Number  },
     iva:      { required: true,   type: Number  },

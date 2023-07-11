@@ -32,7 +32,7 @@ class-maximizado      ="col-12"
   import    ventana             from "components/utilidades/Ventana.vue"
   import    apexchart           from "vue3-apexcharts"
   import {  ModosVentana      } from "src/models/TiposVarios"
-  import {  estiloApexChart   } from "src/useSimpleOk/useEstilos"
+  import {  estiloApexChart   } from "src/composables/useEstilos"
   import {  Periodo,
             IApexSerie        } from "src/models/TiposInformes" 
 

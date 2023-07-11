@@ -76,10 +76,10 @@
             computed          } from "vue"
   import    apariencia          from "./Apariencia.vue"
   import {  useStoreUser      } from 'src/stores/user'
-  import {  limpiarDB         } from "src/services/useDexie"
-  import {  style             } from "src/useSimpleOk/useEstilos"
+  import {  limpiarDB         } from "src/composables/useDexie"
+  import {  style             } from "src/composables/useEstilos"
   import {  useRouter         } from 'vue-router'
-  import {  pausa             } from "src/useSimpleOk/useTools"
+  import {  pausa             } from "src/composables/useTools"
   import {  AlmacenesLimpiar  } from "src/models/TiposVarios"
   const router                    = useRouter()
   const ventanaApariencia         = ref(false)

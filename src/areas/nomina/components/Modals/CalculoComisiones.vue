@@ -172,8 +172,8 @@
   import {  IIncentivo,
             INCENTIVO_ORIGEN    } from "src/areas/nomina/models/Incentivo"  
   // * /////////////////////////////////////////////////////////////////////////////////// Componibles
-  import {  formatoPrecio       } from "src/useSimpleOk/useTools"
-  import {  style               } from "src/useSimpleOk/useEstilos"  
+  import {  formatoPrecio       } from "src/composables/useTools"
+  import {  style               } from "src/composables/useEstilos"  
   import {  useControlIncentivos} from "src/areas/nomina/controllers/ControlIncentivos"  
   // * /////////////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana               from "components/utilidades/Ventana.vue"

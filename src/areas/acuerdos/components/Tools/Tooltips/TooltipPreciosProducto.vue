@@ -30,7 +30,7 @@
 <script lang="ts" setup>
   import {  PropType          } from "vue"
   import {  IProductoDoli     } from "src/areas/productos/models/ProductoDolibarr"
-  import {  formatoPrecio     } from "src/useSimpleOk/useTools"
+  import {  formatoPrecio     } from "src/composables/useTools"
   const props                 = defineProps({
     producto: { required: true,   type: Object as PropType< IProductoDoli >  },
   })

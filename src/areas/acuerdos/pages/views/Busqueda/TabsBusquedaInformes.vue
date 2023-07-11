@@ -26,7 +26,7 @@
   import  { storeToRefs         } from 'pinia'                                            
   import  { useStoreApp         } from 'src/stores/app'
   import  { useStoreAcuerdo     } from 'src/stores/acuerdo'  
-  import  { fechaValida         } from "src/useSimpleOk/useTools"  
+  import  { fechaValida         } from "src/composables/useTools"  
   const   { tabs                } = storeToRefs( useStoreApp() )
   const   { busqueda : b        } = storeToRefs( useStoreAcuerdo() )
 

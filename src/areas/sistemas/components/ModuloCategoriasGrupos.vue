@@ -1,8 +1,8 @@
 <template>
     <ventana                      minimizar
       class-contenido             ="column items-center"
-      titulo                      ="Constantes"
-      icono                       ="mdi-cube-outline"
+      titulo                      ="Grupos de categorías"
+      icono                       ="mdi-view-carousel"
       size-icon-carga             ="14em"
       padding-contenido           ="0"
       :cargando                   ="!lista.length"
@@ -26,18 +26,18 @@
   </template>
 
   <script setup lang="ts">
-    import {  ref                 } from "vue"
+    import {  ref                     } from "vue"
     import {  IColumna,
-              Columna             } from "src/models/Tabla"
-    import    ventana               from "components/utilidades/Ventana.vue"
-    import    inputBuscar           from "components/utilidades/input/InputSimple.vue"
-    import {  dexieConstantes     } from "src/composables/useDexie"
+              Columna                 } from "src/models/Tabla"
+    import    ventana                   from "components/utilidades/Ventana.vue"
+    import    inputBuscar               from "components/utilidades/input/InputSimple.vue"
+    import {  dexieCategoriasGrupo    } from "src/composables/useDexie"
 
     const filtro                = ref< string >("")
-    const lista                 = dexieConstantes()
+    const lista                 = dexieCategoriasGrupo({ cargarSiempre : true})
     const columnas: IColumna[]  = [
                                     new Columna({ name: "id"}),
-                                    new Columna({ name: "label"}),
-                                    new Columna({ name: "value"}),
+                                    new Columna({ name: "nombre"}),
+                                    new Columna({ name: "codigo"}),
                                   ]
   </script>

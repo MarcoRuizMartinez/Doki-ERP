@@ -15,7 +15,7 @@
             watch,
                               } from "vue"  
   import {  IPedidoWoo        } from "src/areas/acuerdos/models/PedidoWoo"
-  import {  style             } from "src/useSimpleOk/useEstilos"
+  import {  style             } from "src/composables/useEstilos"
 
   const props               = defineProps({
     pedido: { required: true, type: Object as PropType< IPedidoWoo > },      

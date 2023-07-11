@@ -29,8 +29,8 @@
             toRefs,
             PropType
                             } from "vue"
-  import {  useApiDolibarr  } from "src/services/useApiDolibarr"
-  import {  useTools        } from "src/useSimpleOk/useTools"
+  import {  useApiDolibarr  } from "src/composables/useApiDolibarr"
+  import {  useTools        } from "src/composables/useTools"
   import {  IArchivo        } from "src/models/Archivo"
   import    visorPdf          from "components/utilidades/VisorPDF.vue"  
   import    visorImagen       from "components/utilidades/VisorImagen.vue"

@@ -153,7 +153,7 @@
 </template>
 <script setup lang="ts">
   import {  servicesAcuerdos      } from "src/areas/acuerdos/controllers/servicesAcuerdos"
-  import {  useTools              } from "src/useSimpleOk/useTools"
+  import {  useTools              } from "src/composables/useTools"
   import    titulo                  from "components/utilidades/Titulo.vue"
   import    efecto                  from "components/utilidades/Efecto.vue"
   import {  TTipoPDF              } from "src/areas/acuerdos/composables/pdf/useCotizacion"

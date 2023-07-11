@@ -111,7 +111,7 @@
   import {  storeToRefs           } from 'pinia'
   import {  useStoreAcuerdo       } from 'stores/acuerdo'
   //* ///////////////////////////////////////////////////////////////////////////// Componibles
-  import {  dexieOrigenesContacto } from "src/services/useDexie"
+  import {  dexieOrigenesContacto } from "src/composables/useDexie"
   import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"
   import {  GRUPO_USUARIO         } from "src/models/TiposVarios"
   //* ///////////////////////////////////////////////////////////////////////////// Modelos

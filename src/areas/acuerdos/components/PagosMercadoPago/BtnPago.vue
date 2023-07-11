@@ -15,7 +15,7 @@
             toRefs,
                               } from "vue"  
   import {  IMercadoPago      } from "src/areas/acuerdos/models/PagoMercadoPago"
-  import {  style             } from "src/useSimpleOk/useEstilos"
+  import {  style             } from "src/composables/useEstilos"
 
   const props             = defineProps({
     pago: { required: true, type: Object as PropType< IMercadoPago > },      

@@ -15,7 +15,7 @@
                                   } from "vue"
   import {  ITercero              } from "src/areas/terceros/models/Tercero"
   import    tooltipTercero          from "src/areas/terceros/components/TooltipTerceros.vue"
-  import {  getColorTextFromHexa  } from "src/useSimpleOk/useTools"
+  import {  getColorTextFromHexa  } from "src/composables/useTools"
 
   const props           = defineProps({
     tercero:  { required: true, type: Object as PropType< ITercero > }

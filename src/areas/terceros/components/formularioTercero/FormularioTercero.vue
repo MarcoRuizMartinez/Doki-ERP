@@ -258,11 +258,11 @@
             watch
                             } from "vue"
   import {  useQuasar       } from 'quasar'  
-  import {  useApiDolibarr  } from "src/services/useApiDolibarr"
+  import {  useApiDolibarr  } from "src/composables/useApiDolibarr"
   import {  getURL,
-            getFormData     } from "src/services/APIMaco"
+            getFormData     } from "src/composables/APIMaco"
   import {  useStoreUser    } from "src/stores/user"
-  import {  useFetch        } from "src/useSimpleOk/useFetch"
+  import {  useFetch        } from "src/composables/useFetch"
   import {  ITercero,
             Tercero
                             } from "src/areas/terceros/models/Tercero"

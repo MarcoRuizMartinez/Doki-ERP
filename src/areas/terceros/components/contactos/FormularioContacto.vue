@@ -304,16 +304,16 @@
             Contacto        } from "src/areas/terceros/models/Contacto"
   import {  EstadoVerificar } from "src/models/TiposVarios"
   // * /////////////////////////////////////////////////////////////////////////////////// Componibles
-  import {  useApiDolibarr  } from "src/services/useApiDolibarr"
+  import {  useApiDolibarr  } from "src/composables/useApiDolibarr"
   import {  servicesTerceros} from "src/areas/terceros/services/servicesTerceros"  
   import {  useTools,
             esCorreoFamoso,
             mayusculasPrimeraLetraAll
-                            } from "src/useSimpleOk/useTools"
-  import {  useFetch        } from "src/useSimpleOk/useFetch"
+                            } from "src/composables/useTools"
+  import {  useFetch        } from "src/composables/useFetch"
   import {  getURL,
-            getFormData     } from "src/services/APIMaco"
-  import {  style           } from "src/useSimpleOk/useEstilos"            
+            getFormData     } from "src/composables/APIMaco"
+  import {  style           } from "src/composables/useEstilos"            
   // * /////////////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana           from "components/utilidades/Ventana.vue"
   import    municipios        from "components/utilidades/select/SelectMunicipios.vue"

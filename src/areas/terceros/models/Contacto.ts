@@ -1,11 +1,11 @@
 import {  IMunicipio,
           Municipio         } from "src/models/Municipio"
-import {  getMunicipioDB    } from "src/services/useDexie"
+import {  getMunicipioDB    } from "src/composables/useDexie"
 
 import {  TTipoAcuerdo, 
           TIPO_ACUERDO      } from "src/areas/acuerdos/models/ConstantesAcuerdos"
 import {  getDateToApiDolibarr
-                            } from "src/useSimpleOk/useTools"          
+                            } from "src/composables/useTools"          
 
 export const enum TIPOS_CONTACTO_ID { // llx_c_type_contact
   NO_ASIGNADO             = 0,

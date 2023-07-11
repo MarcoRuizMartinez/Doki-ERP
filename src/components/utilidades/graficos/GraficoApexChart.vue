@@ -19,7 +19,7 @@
             estiloApexChartBar,
             estiloApexChartLine,
                               } from "src/models/TiposInformes" 
-  import {  FormatosNumero    } from "src/useSimpleOk/useTools"
+  import {  FormatosNumero    } from "src/composables/useTools"
 
   type  Formatos         = FormatosNumero
   type  TipoXCord        = "line" | "bar" | "bar100%" 

@@ -5,10 +5,10 @@ import {  storeToRefs           } from 'pinia'
 import {  useStoreAcuerdo       } from 'src/stores/acuerdo'
 import {  useStoreNomina      } from "src/stores/nomina"
 //* ////////////////////////////////////////////////////////////////// Componibles
-import {  useApiDolibarr        } from "src/services/useApiDolibarr"
-import {  useFetch              } from "src/useSimpleOk/useFetch"
-import {  getURL, getFormData   } from "src/services/APIMaco"
-import {  useTools, anyToNum    } from "src/useSimpleOk/useTools"
+import {  useApiDolibarr        } from "src/composables/useApiDolibarr"
+import {  useFetch              } from "src/composables/useFetch"
+import {  getURL, getFormData   } from "src/composables/APIMaco"
+import {  useTools, anyToNum    } from "src/composables/useTools"
 //* ////////////////////////////////////////////////////////////////// Modelos
 import {  IIncentivo,
           Incentivo             } from "src/areas/nomina/models/Incentivo"

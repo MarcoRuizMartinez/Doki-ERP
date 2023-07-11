@@ -80,7 +80,7 @@
   </q-dialog>
 </template>
 <script setup lang="ts">
-  import {  useApiDolibarr  } from "src/services/useApiDolibarr"
+  import {  useApiDolibarr  } from "src/composables/useApiDolibarr"
   import {  ref,
             toRefs,
             PropType,
@@ -91,7 +91,7 @@
   import {  ITercero        } from "src/areas/terceros/models/Tercero"            
   import    tooltipContacto   from "src/areas/terceros/components/contactos/TooltipContacto.vue"
   import    formContacto      from "src/areas/terceros/components/contactos/FormularioContacto.vue"
-  import {  style           } from "src/useSimpleOk/useEstilos"
+  import {  style           } from "src/composables/useEstilos"
 
   const contactos             = ref< IContacto[] > ([])
   const modelo                = ref< IContacto >()

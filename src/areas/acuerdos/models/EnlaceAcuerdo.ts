@@ -2,7 +2,7 @@ import {  TTipoAcuerdo,
           TIPO_ACUERDO          } from "src/areas/acuerdos/models/ConstantesAcuerdos"
 
 import {  getNumberValido,
-          getStringValido,      } from "src/useSimpleOk/useTools"
+          getStringValido,      } from "src/composables/useTools"
 
 interface IIdTipo 
 {

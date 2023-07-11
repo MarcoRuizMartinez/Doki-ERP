@@ -90,7 +90,7 @@
   import {  Archivo             } from "src/models/Archivo"
   //* ///////////////////////////////////////////////////////////////////////////// Componibles  
   import {  useControlAcuerdo   } from "src/areas/acuerdos/controllers/ControlAcuerdos"
-  import {  fechaCorta          } from "src/useSimpleOk/useTools"  
+  import {  fechaCorta          } from "src/composables/useTools"  
   //* ///////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana               from "components/utilidades/Ventana.vue"
   import    selectLabelValue      from "components/utilidades/select/SelectLabelValue.vue"

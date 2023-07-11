@@ -49,7 +49,7 @@
             Municipio
                             } from "src/models/Municipio"
   
-  import { dexieMunicipios  } from "src/services/useDexie"
+  import { dexieMunicipios  } from "src/composables/useDexie"
 
   const model                 = ref< IMunicipio >( new Municipio() )
   const lista                 = dexieMunicipios()

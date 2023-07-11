@@ -5,10 +5,10 @@ import {  X100_Descuento,
           X100_Aumento,
           X100_Reduccion,
           X100,
-          roundInt          } from "src/useSimpleOk/useTools"
+          roundInt          } from "src/composables/useTools"
 import {  getUnidadDB,
           getCategoriaDB,
-          getBodegaDB       } from "src/services/useDexie"
+          getBodegaDB       } from "src/composables/useDexie"
 import {  storeToRefs       } from 'pinia'
 import {  useStoreAcuerdo   } from 'src/stores/acuerdo'
 import {  NivelesComision,

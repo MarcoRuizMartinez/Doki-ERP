@@ -86,10 +86,10 @@
   // * /////////////////////////////////////////////////////////////////////// Componibles
   import {  useTitle            } from "@vueuse/core"
   import {  useCotizarEnvio     } from "src/areas/logistica/controllers/ControlCotizarEnvio"
-  import {  useTools            } from "src/useSimpleOk/useTools"
-  import {  generarCSVDesdeTabla} from "src/useSimpleOk/UtilFiles"
-  import {  getMunicipioDB      } from "src/services/useDexie"
-  import {  style               } from "src/useSimpleOk/useEstilos"
+  import {  useTools            } from "src/composables/useTools"
+  import {  generarCSVDesdeTabla} from "src/composables/UtilFiles"
+  import {  getMunicipioDB      } from "src/composables/useDexie"
+  import {  style               } from "src/composables/useEstilos"
 
   // * /////////////////////////////////////////////////////////////////////// Modelos
   import {  Columna, IColumna   } from "src/models/Tabla"

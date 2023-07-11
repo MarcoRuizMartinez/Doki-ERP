@@ -194,17 +194,17 @@
   import {  useStoreUser        } from 'src/stores/user'
   import {  useStoreProducto    } from 'src/stores/producto'
   // * /////////////////////////////////////////////////////////////////////// Componibles
-  //import {                      } from "src/services/useDexie"
-  import {  getQueryRouterString} from "src/useSimpleOk/useTools"
+  //import {                      } from "src/composables/useDexie"
+  import {  getQueryRouterString} from "src/composables/useTools"
   import {  dexieCategoriasProducto,
             getCategoriaDB,
-                                } from "src/services/useDexie"                                
+                                } from "src/composables/useDexie"                                
   // * /////////////////////////////////////////////////////////////////////// Modelos
   import {  Areas               } from "src/models/TiposVarios"
   import {  IQueryProducto,
             IBusquedaProducto   } from "src/areas/productos/models/BusquedaProductos"
   // * /////////////////////////////////////////////////////////////////////// Componibles
-  import {  style               } from "src/useSimpleOk/useEstilos"
+  import {  style               } from "src/composables/useEstilos"
   // * /////////////////////////////////////////////////////////////////////// Componentes
   import    fieldsetFiltro        from "components/utilidades/Fieldset.vue"
   import    inputNumber           from "components/utilidades/input/InputFormNumber.vue"

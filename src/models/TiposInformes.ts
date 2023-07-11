@@ -1,4 +1,4 @@
-import { formatoNumeroCorto, FormatosNumero } from "src/useSimpleOk/useTools"
+import { formatoNumeroCorto, FormatosNumero } from "src/composables/useTools"
 
 export enum PERIODO
 {

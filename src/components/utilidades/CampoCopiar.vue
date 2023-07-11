@@ -24,7 +24,7 @@
 <script lang="ts" setup>
   import {  ref, 
             toRefs            } from "vue"
-  import {  pausa             } from "src/useSimpleOk/useTools"
+  import {  pausa             } from "src/composables/useTools"
   import {  copyToClipboard   } from 'quasar'
 
   const props               = defineProps({

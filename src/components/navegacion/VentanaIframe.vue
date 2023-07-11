@@ -82,8 +82,8 @@
   import {  ref,
             toRefs,
             watch,                } from "vue"  
-  import {  pausa                 } from "src/useSimpleOk/useTools" 
-  import {  style                 } from "src/useSimpleOk/useEstilos"
+  import {  pausa                 } from "src/composables/useTools" 
+  import {  style                 } from "src/composables/useEstilos"
   import    formularioIframe        from "components/navegacion/VentanaIframe.vue"
   import    ventana                 from "components/utilidades/Ventana.vue"
   import {  copyToClipboard       } from 'quasar'

@@ -55,7 +55,7 @@
 <script setup lang="ts">
   import {  PropType      } from "vue"  
   import {  fechaLarga,
-            formatoPrecio } from "src/useSimpleOk/useTools"
+            formatoPrecio } from "src/composables/useTools"
   import {  IAcuerdo      } from "src/areas/acuerdos/models/Acuerdo"  
   import    chipUsuario     from "src/areas/usuarios/components/ChipUsuario.vue";    
   const props = defineProps({
