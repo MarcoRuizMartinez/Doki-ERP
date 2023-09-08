@@ -202,7 +202,10 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
   get esTituloOsubTotal() : boolean { return this.tipo === 9 && this.codeX === 104777 && ( this.qty === 99 || this.qty === 1 )}
 
   get aumentoFromCosto()  : number { 
-    return ( ( this.precioFinal / this.costo ) - 1 )  * 100    
+    let aumento = 0
+    if(!!this.costo)
+      aumento = ( ( this.precioFinal / this.costo ) - 1 )  * 100  
+    return  aumento
   }
 
   // * ////////////////////////////////////////////////////////////////////////////////////////////////////

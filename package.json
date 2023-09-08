@@ -11,7 +11,7 @@
     "build": "quasar build"
   },
   "dependencies": {
-    "@quasar/cli": "^2.2.1",
+    "@quasar/cli": "^2.2.2",
     "@quasar/extras": "^1.0.0",
     "@types/canvas-confetti": "^1.6.0",
     "@vueuse/core": "^10.2.0",

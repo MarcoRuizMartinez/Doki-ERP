@@ -27,8 +27,11 @@ export function useControlComunicacion()
   async function buscarAcciones( q : IQuery, tipo : string ) : Promise< IAccion[] >
   {
     q.user                    = usuario.value.id
+    const consulta : any      = q
+    consulta.grupos           = usuario.value.gruposString
+
     const { ok, data }        = await miFetch(  getURL("listas", "acciones"),
-                                                { method: "POST", body: getFormData( "", q ) },
+                                                { method: "POST", body: getFormData( "", consulta ) },
                                                 { dataEsArray: true, mensaje: "buscar " + tipo, conLoadingBar: false }
                                               )    
     

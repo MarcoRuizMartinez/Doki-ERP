@@ -4,6 +4,7 @@
     width                       ="440px"
     :titulo                     ="titulo"
     :cargando                   ="cargando"
+    height-card-max             ="80vh"
     >
     <!-- loading.carga || loading.editar || loading.crear -->
     <template                   #barra
