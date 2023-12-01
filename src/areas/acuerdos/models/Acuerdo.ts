@@ -737,12 +737,12 @@ https://dolibarr.mublex.com/fichinter/card.php?
     let final             = 0
     if(this.esCotizacion){
       inicio              = 6
-      final               = 19
+      final               = 20
     }
     else
     if(this.esPedido){
       inicio              = 7
-      final               = 20
+      final               = 21
     }
     else
     if(this.esOCProveedor){

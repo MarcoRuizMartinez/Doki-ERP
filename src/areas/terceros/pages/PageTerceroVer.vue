@@ -193,7 +193,7 @@ height-card         ="210px"
   {
     if
     (
-      ( tercero.value.esProveedor   && !permisos.value.terceros_ver_proveedor )
+      ( tercero.value.esProveedor   && !tercero.value.esCliente     && !permisos.value.terceros_ver_proveedor )
       ||
       ( !usuarioEsDueño.value       && !permisos.value.acceso_total && tercero.value.esCliente && !tercero.value.esProveedor )
     )

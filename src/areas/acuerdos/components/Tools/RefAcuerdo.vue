@@ -20,6 +20,7 @@
       >
       <Tooltip  label ="Vista rápida"/>
     </q-btn>
+    <!-- //* //////// Generar OC a proveedor -->
     <q-btn            flat dense round
       v-if            ="acuerdo.esPedido && vistaRapida && usuario.esProduccion"
       icon            ="mdi-tools"
@@ -32,6 +33,7 @@
       >
       <Tooltip  label ="Generar OC a proveedor"/>
     </q-btn>
+    <!-- //* //////// Link a Dolibarr -->
     <q-btn            flat dense round
       icon            ="mdi-alpha-d-circle"
       class           ="op40 op100-hover q-ml-sm"
@@ -42,6 +44,7 @@
       >
       <Tooltip  label ="Ver en Dolibarr"/>
     </q-btn>
+    <!-- //* //////// Link REF -->
     <div>
       <router-link
         class           ="fuente-mono q-ml-sm"
