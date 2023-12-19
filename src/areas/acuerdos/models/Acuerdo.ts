@@ -63,7 +63,7 @@ import {  IFormaPago,       FormaPago       } from "src/models/Diccionarios/Form
 import {  IMetodoEntrega,   MetodoEntrega   } from "src/models/Diccionarios/MetodoEntrega"
 import {  IOrigenContacto,  OrigenContacto  } from "src/models/Diccionarios/OrigenContacto"
 import {  ITiempoEntrega,   TiempoEntrega   } from "src/models/Diccionarios/TiempoEntrega"
-import {  IAccion,          Accion          } from "src/areas/comunicacion/models/Accion"
+import {  IAccion,                          } from "src/areas/comunicacion/models/Accion"
 import {  IArchivo                          } from "src/models/Archivo"
 import {  X100,
           fechaCorta,
@@ -77,171 +77,165 @@ import {  useStoreUser                      } from 'src/stores/user'
 
 export interface IAcuerdo
 {
-  tipo:                       TIPO_ACUERDO
-  label:                      string
-  labelEspecial:              string
-  labelPlural:                string
-  ruta:                       string
-  emoji:                      string
-  icono:                      string
-  imagen:                     string
-  modulo:                     TModulosDolibarr
-  anticipos:                  IAnticipo[]
-  archivos:                   IArchivo[]
-  archivosVisor:              IArchivo[]
-  esCotizacion:               boolean
-  esPedido:                   boolean
-  esOCProveedor:              boolean
-  esFactura:                  boolean
-  esEntrega:                  boolean
-  esNuevo:                    boolean
-  id:                         number
+  tipo                        : TIPO_ACUERDO
+  label                       : string
+  labelEspecial               : string
+  labelPlural                 : string
+  ruta                        : string
+  emoji                       : string
+  icono                       : string
+  imagen                      : string
+  modulo                      : TModulosDolibarr
+  anticipos                   : IAnticipo[]
+  archivos                    : IArchivo[]
+  archivosVisor               : IArchivo[]
+  esCotizacion                : boolean
+  esPedido                    : boolean
+  esOCProveedor               : boolean
+  esFactura                   : boolean
+  esEntrega                   : boolean
+  esNuevo                     : boolean
+  id                          : number
+  ref                         : string
+  refCorta                    : string
+  refCliente                  : string
+  proyectoId                  : number
+  proyecto                    : IProyecto
+  urlDolibarr                 : string
+  urlDolibarrOC               : string
+  urlDolibarrNuevoEnvio       : string
+  urlDolibarrNuevaInsta       : string
+  title                       : string // Titulo HTML
+  terceroId                   : number
+  tercero                     : ITercero
+  area                        : string
+  enlaces                     : IEnlaceAcuerdo[]
+  municipioTercero            : string
+  fechaCreacion               : Date
+  fechaCreacionCorta          : string
+  fechaValidacion             : Date
+  fechaValidacionCorta        : string
+  fechaCierre                 : Date
+  fechaCierreCorta            : string
+  fechaEntrega                : Date
+  fechaEntregaCorta           : string
+  comercialId                 : number
+  comercial                   : IUsuario
+  comercial2Id                : number
+  comercial2                  : IUsuario
+  usuarioEsDueño              : boolean
+  creadorId                   : number
+  comision                    : IComision
+  calificacion                : ICalificacion
+  creador                     : IUsuario
 
-  ref:                        string
-  refCorta:                   string
-  refCliente:                 string
-  proyectoId:                 number
-  proyecto:                   IProyecto
+  estado                      : number
+  estadoLabel                 : string
+  estadoColor                 : string
+  estadoIcono                 : string
 
-  urlDolibarr:                string
-  urlDolibarrOC:              string
-  urlDolibarrNuevoEnvio:      string
-  urlDolibarrNuevaInsta:      string
-  title:                      string // Titulo HTML
-  terceroId:                  number
-  tercero:                    ITercero
-  //terceroNombre:              string
-  area:                       string
-  enlaces:                    IEnlaceAcuerdo[]
-  municipioTercero:           string
-  fechaCreacion:              Date
-  fechaCreacionCorta:         string
-  fechaValidacion:            Date
-  fechaValidacionCorta:       string
-  fechaCierre:                Date
-  fechaCierreCorta:           string
-  fechaEntrega:               Date
-  fechaEntregaCorta:          string
+  esEstadoBoceto              : boolean
+  esEstadoNoValidado          : boolean
+  esEstadoValido              : boolean // Es cualquier estado que no sea borrador o boceto
+  esEstadoEdicion             : boolean
+  esEstadoValidado            : boolean // Es especificamente estado Validado
+  esEstadoAbierto             : boolean
+  esEstadoCotizado            : boolean
+  esEstadoFacturado           : boolean
+  esEstadoEntregando          : boolean
+  esEstadoEntregado           : boolean
+  esEstadoAnulado             : boolean
 
-  comercialId:                number
-  comercial:                  IUsuario
-  comercial2Id:               number
-  comercial2:                 IUsuario
-  usuarioEsDueño:             boolean
-  creadorId:                  number
-  comision:                   IComision
-  calificacion:               ICalificacion
-
-  creador:                    IUsuario
-
-  estado:                     number
-  estadoIcono:                string
-  estadoColor:                string
-  estadoLabel:                string 
-
-  esEstadoBoceto:             boolean
-  esEstadoNoValidado:         boolean
-  esEstadoValido:             boolean // Es cualquier estado que no sea borrador o boceto
-  esEstadoEdicion:            boolean
-  esEstadoValidado:           boolean // Es especificamente estado Validado
-  esEstadoAbierto:            boolean
-  esEstadoCotizado:           boolean
-  esEstadoFacturado:          boolean
-  esEstadoEntregando:         boolean
-  esEstadoEntregado:          boolean
-  esEstadoAnulado:            boolean
-  hayServicios:               boolean
-  hayProductos:               boolean
-
-  notaPrivada:                string
-  notaPublica:                string
-
-  condicionPagoId:            number
-  condicionPago:              ICondicionPago
-  condicionPagoLabel:         string
-
-  formaPagoId:                number
-  formaPago:                  IFormaPago
-  formaPagoLabel:             string
-
-  metodoEntregaId:            number
-  metodoEntrega:              IMetodoEntrega
-  metodoEntregaLabel:         string
-
-  tiempoEntregaId:            number
-  tiempoEntrega:              ITiempoEntrega
-  tiempoEntregaLabel:         string
-
-  origenContactoId:           number
-  origenContacto:             IOrigenContacto
-  origenContactoLabel:        string
-
-  aiuOn:                      boolean
-  aiuAdmin:                   number
-  aiuImpre:                   number
-  aiuUtili:                   number
-  aiuAdminValor:              number
-  aiuImpreValor:              number
-  aiuUtiliValor:              number
-  aiuTotal:                   number
-
-  descuento:                  number
-  contactos:                  IContacto[]
-  contactoComercial:          IContacto
-  contactoEntrega:            IContacto
-  contactoContable:           IContacto
-  contactoSmart:              IContacto
-  contactoSmartMun:           string
-  contactoSmartDir:           string
-  contactoSmartTel:           string
-
-  productos:                  ILineaAcuerdo[]
-  proGrupos:                  IGrupoLineas[]
-
-  conIVA:                     boolean
-
-  hayDescuento:               boolean
-  descuentoValor:             number      // Descuento valor
-  totalSinDescu:              number      // Subtotal sin descuento
-  totalConDescu:              number      // Subtotal con descuento
-  ivaValor:                   number
-  totalConIva:                number
-
-  vinculado:                  boolean     // Tiene un vinculo con otro elemento en dolibarr como facturas o pedidos
-  puedeCrearSubtotal:         boolean
-  puedeCrearNuevoGrupo:       boolean  
-
-  comentarios:                IAccion[]
+  hayServicios                : boolean
+  hayProductos                : boolean
+  notaPrivada                 : string
+  notaPublica                 : string
+  condicionPagoId             : number
+  condicionPago               : ICondicionPago
+  condicionPagoLabel          : string
+  formaPagoId                 : number
+  formaPago                   : IFormaPago
+  formaPagoLabel              : string
+  metodoEntregaId             : number
+  metodoEntrega               : IMetodoEntrega
+  metodoEntregaLabel          : string
+  tiempoEntregaId             : number
+  tiempoEntrega               : ITiempoEntrega
+  tiempoEntregaLabel          : string
+  origenContactoId            : number
+  origenContacto              : IOrigenContacto
+  origenContactoLabel         : string
+  aiuOn                       : boolean
+  aiuAdmin                    : number
+  aiuImpre                    : number
+  aiuUtili                    : number
+  aiuAdminValor               : number
+  aiuImpreValor               : number
+  aiuUtiliValor               : number
+  aiuTotal                    : number
+  descuento                   : number
+  contactos                   : IContacto[]
+  contactoComercial           : IContacto
+  contactoEntrega             : IContacto
+  contactoContable            : IContacto
+  contactoSmart               : IContacto
+  contactoSmartMun            : string
+  contactoSmartDir            : string
+  contactoSmartTel            : string
+  productos                   : ILineaAcuerdo[]
+  proGrupos                   : IGrupoLineas[]
+  conIVA                      : boolean
+  hayDescuento                : boolean
+  descuentoValor              : number      // Descuento valor
+  totalSinDescu               : number      // Subtotal sin descuento
+  totalConDescu               : number      // Subtotal con descuento
+  ivaValor                    : number
+  totalConIva                 : number
+  vinculado                   : boolean     // Tiene un vinculo con otro elemento en dolibarr como facturas o pedidos
+  puedeCrearSubtotal          : boolean
+  puedeCrearNuevoGrupo        : boolean  
+  comentarios                 : IAccion[]
+  eventos                     : IAccion[]
 
   /* Solo para cotizaciones */
-  titulo:                     string
-  fechaFinValidez:            Date
-  fechaFinValidezCorta:       string
-  diasValidez:                number
-  conTotal:                   boolean
-  pdfNombre:                  string
-  pdfContacto:                string
-  pdfCorreo:                  string
-  pdfCiudad:                  string
-  esTerceroCtz:               boolean
-  getAcuerdoForApi:           ( usuarioId : number ) => any
+  titulo                      : string
+  fechaFinValidez             : Date
+  fechaFinValidezCorta        : string
+  diasValidez                 : number
+  conTotal                    : boolean
+  pdfNombre                   : string
+  pdfContacto                 : string
+  pdfCorreo                   : string
+  pdfCiudad                   : string
+  esTerceroCtz                : boolean
+  getAcuerdoForApi            : ( usuarioId : number ) => any
   //reorganizarProductosGrupos: () => void
 
   /* Solo para pedidos */
-  facturado:                  boolean
-  totalAnticipos:             number
-  saldo:                      number
-  subTotalLimpio:             number
-  retenciones:                IRetenciones
-  comisiona:                  boolean
-  incentivo:                  IIncentivo
-  fechaListo:                 Date      // Productos listos para entregar
-  fechaListoCorta:            string
-  listoEntregar:              boolean
+  facturado                   : boolean
+  totalAnticipos              : number
+  saldo                       : number
+  subTotalLimpio              : number
+  retenciones                 : IRetenciones
+  comisiona                   : boolean
+  incentivo                   : IIncentivo
+  fechaListo                  : Date      // Productos listos para entregar
+  fechaListoCorta             : string
+  fechaADespachar             : Date      // Fecha a despachar
+  fechaADespacharCorta        : string
+  listoEntregar               : boolean
+  OC_a_Proveedor              : IAcuerdo[]
+  OC_a_ProveedorTotal         : number
+  cotizaciones                : IAcuerdo[]
+  hay_OC_aProveedor           : boolean
+
+  estadoDespachoLabel         : string
+  estadoDespachoColor         : string
+  estadoDespachoIcono         : string  
 
   /* Solo para entregas */
   acuerdosEnlazados           : IAcuerdo[]
-  entregas                    : IAcuerdo[]
+  entregas                    : IAcuerdo[]  
   transportadoraId            : number
   numeroGuia                  : string
   pedidoId                    : number
@@ -250,165 +244,83 @@ export interface IAcuerdo
 
 export class Acuerdo implements IAcuerdo
 {
-  tipo:                       TTipoAcuerdo
-  esNuevo:                    boolean
-  id:                         number
-  ref:                        string
-  refCliente:                 string
-  proyectoId:                 number
-  proyecto:                   IProyecto
-  terceroId:                  number
-  tercero:                    ITercero
-  anticipos:                  IAnticipo[]
-  archivos:                   IArchivo[]  
-  enlaces:                    IEnlaceAcuerdo[]
-  fechaCreacion:              Date
-  fechaValidacion:            Date
-  fechaCierre:                Date
-  fechaEntrega:               Date
-  creadorId:                  number
-  creador:                    IUsuario
-  estado:                     number
-  notaPrivada:                string
-  notaPublica:                string
-  comercialId:                number
-  comercial:                  IUsuario
-  comercial2Id:               number
-  comercial2:                 IUsuario
-  comision:                   IComision
-  calificacion:               ICalificacion
-  condicionPagoId:            number
-  formaPagoId:                number
-  metodoEntregaId:            number
-  tiempoEntregaId:            number
-  origenContactoId:           number
-  aiuOn:                      boolean
-  aiuAdmin:                   number
-  aiuImpre:                   number
-  aiuUtili:                   number
-  descuento:                  number
-  contactos:                  IContacto[]
-  contactoComercial:          IContacto
-  contactoEntrega:            IContacto
-  contactoContable:           IContacto
-  productos:                  ILineaAcuerdo[]
-  proGrupos:                  IGrupoLineas[]
-  condicionPago:              ICondicionPago
-  formaPago:                  IFormaPago
-  metodoEntrega:              IMetodoEntrega
-  origenContacto:             IOrigenContacto
-  tiempoEntrega:              ITiempoEntrega
-  conIVA:                     boolean
-  acuerdosEnlazados:          IAcuerdo[]
-  comentarios:                IAccion[]   = []
+  tipo                        : TTipoAcuerdo
+  esNuevo                     : boolean             = true
+  id                          : number              = 0
+  ref                         : string              = ""
+  refCliente                  : string              = ""
+  proyectoId                  : number              = 0
+  proyecto                    : IProyecto           = new Proyecto()
+  terceroId                   : number              = 0
+  tercero                     : ITercero            = new Tercero()
+  anticipos                   : IAnticipo[]         = []
+  archivos                    : IArchivo[]          = [] 
+  enlaces                     : IEnlaceAcuerdo[]    = []
+  fechaCreacion               : Date                = new Date()
+  fechaValidacion             : Date                = new Date()
+  fechaCierre                 : Date                = new Date(0)
+  fechaEntrega                : Date                = new Date(0)
+  creadorId                   : number              = 0
+  creador                     : IUsuario            = new Usuario()
+  estado                      : number             = ESTADO_ACU.NO_GUARDADO
+  notaPrivada                 : string              = ""
+  notaPublica                 : string              = ""
+  comercialId                 : number              = 0
+  comercial                   : IUsuario            = new Usuario()
+  comercial2Id                : number              = 0
+  comercial2                  : IUsuario            = new Usuario()
+  comision                    : IComision           = new Comision()
+  calificacion                : ICalificacion
+  condicionPagoId             : number              = 0
+  formaPagoId                 : number              = 0
+  metodoEntregaId             : number              = 0
+  tiempoEntregaId             : number              = 0
+  origenContactoId            : number              = 0
+  aiuOn                       : boolean             = false
+  aiuAdmin                    : number              = 0
+  aiuImpre                    : number              = 0
+  aiuUtili                    : number              = 0
+  descuento                   : number              = 0
+
+  contactos                   : IContacto[]         = []
+  contactoComercial           : IContacto           = new Contacto()
+  contactoEntrega             : IContacto           = new Contacto()
+  contactoContable            : IContacto           = new Contacto()
+
+  productos                   : ILineaAcuerdo[]     = []
+  proGrupos                   : IGrupoLineas[]      = []
+
+  condicionPago               : ICondicionPago      = new CondicionPago()
+  formaPago                   : IFormaPago          = new FormaPago()
+  metodoEntrega               : IMetodoEntrega      = new MetodoEntrega()
+  origenContacto              : IOrigenContacto     = new OrigenContacto()
+  tiempoEntrega               : ITiempoEntrega      = new TiempoEntrega()
+  
+  conIVA                      : boolean             = true
+  acuerdosEnlazados           : IAcuerdo[]          = []
+  comentarios                 : IAccion[]           = []
+  eventos                     : IAccion[]           = []
 
   /* Solo para cotizaciones */
-  titulo:                     string
-  fechaFinValidez:            Date
-  conTotal:                   boolean
+  titulo                      : string              = ""
+  fechaFinValidez             : Date                = new Date(0)
+  conTotal                    : boolean             = true
 
   /* Solo para pedidos */
-  facturado:                  boolean
-  incentivo:                  IIncentivo
-  fechaListo:                 Date
+  facturado                   : boolean             = false
+  incentivo                   : IIncentivo          = new Incentivo()
+  fechaListo                  : Date                = new Date(0)
+  fechaADespachar             : Date                = new Date(0)  
+
   /* Solo para entregas */
-  transportadoraId            : number
-  numeroGuia                  : string
+  transportadoraId            : number              = 0
+  numeroGuia                  : string              = ""
 
   constructor( tipo : TTipoAcuerdo = TIPO_ACUERDO.NULO )
   {
     this.tipo                 = tipo
-    this.esNuevo              = true
-    this.id                   = 0
-    this.ref                  = ""
-    this.refCliente           = ""
-    this.terceroId            = 0
-    this.tercero              = new Tercero()
-    this.anticipos            = []
-    this.archivos             = []
-    this.proyectoId           = 0
-    this.proyecto             = new Proyecto()
-    this.enlaces              = []
-    this.acuerdosEnlazados    = []
-    this.fechaCreacion        = new Date()
-    this.fechaValidacion      = new Date()
-    this.fechaCierre          = new Date(0)
-    this.fechaEntrega         = new Date(0)
-    this.comercialId          = 0
-    this.comercial            = new Usuario()
-    this.comercial2Id         = 0
-    this.comercial2           = new Usuario()
-    this.comision             = new Comision()
     this.calificacion         = new Calificacion( tipo == TIPO_ACUERDO.PEDIDO_CLI ? 2 : 1 )
-    this.creadorId            = 0
-    this.creador              = new Usuario()
-    this.estado               = ESTADO_ACU.NO_GUARDADO
-    this.notaPrivada          = ''
-    this.notaPublica          = ''
-    this.condicionPagoId      = 0
-    this.formaPagoId          = 0
-    this.metodoEntregaId      = 0
-    this.tiempoEntregaId      = 0
-    this.origenContactoId     = 0
-    this.aiuOn                = false
-    this.aiuAdmin             = 0
-    this.aiuImpre             = 0
-    this.aiuUtili             = 0
-    this.descuento            = 0
-    this.contactos            = []
-    this.contactoComercial    = new Contacto()
-    this.contactoEntrega      = new Contacto()
-    this.contactoContable     = new Contacto()
-    this.productos            = []
-    this.proGrupos            = []
-    this.condicionPago        = new CondicionPago()
-    this.formaPago            = new FormaPago()
-    this.metodoEntrega        = new MetodoEntrega()
-    this.origenContacto       = new OrigenContacto()
-    this.tiempoEntrega        = new TiempoEntrega()
-    this.conIVA               = true    
-
-    /* Solo para cotizaciones */
-    this.titulo               = ""
-    this.fechaFinValidez      = new Date(0)
-    this.conTotal             = true
-
-    /* Solo para pedidos */
-    this.facturado            = false
-    this.incentivo            = new Incentivo()
-    this.fechaListo           = new Date(0)
-
-    /* Solo para entregas */
-    this.transportadoraId     = 0
-    this.numeroGuia           = ""
   }
-
-
-
-/*   reorganizarProductosGrupos()
-  {
-    let orden                 = 0
-    for (const grupo of this.proGrupos)
-    {
-      if(grupo.tituloCreado)  orden++
-      for (let linea of grupo.productos){
-        orden++
-        linea.orden           = orden
-      }
-
-      if(grupo.totalCreado)   orden++
-    }
-  } */
-
-/*   get label() : string {
-    const label   = this.tipo === TIPO_ACUERDO.COTIZACION_CLI   ? "cotización"
-                  : this.tipo === TIPO_ACUERDO.PEDIDO_CLI       ? "pedido"
-                  : this.tipo === TIPO_ACUERDO.ENTREGA      ? "entrega"
-                  : this.tipo === TIPO_ACUERDO.PEDIDO_PRO ? "pedido proveedor"
-                  : this.tipo === TIPO_ACUERDO.FACTURA_CLI  ? "factura"
-                  : ""
-    return label
-  } */
 
   calcularEntregado()
   {
@@ -697,7 +609,30 @@ https://dolibarr.mublex.com/fichinter/card.php?
 
   get estadoLabel(): string { return EstadosAcuerdos.estadoToName ( this.tipo, this.estado )}
   get estadoColor(): string { return EstadosAcuerdos.estadoToColor( this.tipo, this.estado )}
-  get estadoIcono(): string { return EstadosAcuerdos.estadoIcono  ( this.tipo, this.estado )}
+  get estadoIcono(): string { return EstadosAcuerdos.estadoIcono  ( this.tipo, this.estado )}  
+
+  //* /////////////////////////////////////////////////////////////////////////////// Estados despacho
+  
+  get estadoDespachoLabel(): string {
+    return    this.listoEntregar      ? 'Listo para despacho'
+            : this.hay_OC_aProveedor  ? `No esta listo. Ordenes a proveedor : ${this.OC_a_ProveedorTotal}`
+            :                           'No esta listo. Sin ordenes a proveedor'
+   }
+   
+  get estadoDespachoColor(): string {
+    return    this.listoEntregar      ? 'green-3'
+            : this.hay_OC_aProveedor  ? 'light-blue-3'
+            :                           'red-3'
+   }
+
+  get estadoDespachoIcono(): string {
+    return    this.listoEntregar      ? 'mdi-truck-check'
+            : this.hay_OC_aProveedor  ? 'mdi-lan-pending'
+            :                           'mdi-lan-disconnect'
+   }
+
+   //* /////////////////////////////////////////////////////////////////////////////// 
+
   get comisiona()  : boolean{ return this.esPedido && this.esEstadoEntregado && this.facturado }
 
   get puedeCrearSubtotal():boolean{
@@ -831,6 +766,7 @@ https://dolibarr.mublex.com/fichinter/card.php?
   get fechaCierreCorta()      : string { return fechaCorta( this.fechaCierre      ) }
   get fechaEntregaCorta()     : string { return fechaCorta( this.fechaEntrega     ) }
   get fechaListoCorta()       : string { return fechaCorta( this.fechaListo       ) }
+  get fechaADespacharCorta()  : string { return fechaCorta( this.fechaADespachar  ) }
 
   get totalAnticipos()        : number {
     if(!this.anticipos.length) return 0
@@ -941,6 +877,17 @@ https://dolibarr.mublex.com/fichinter/card.php?
  */
   }
 
+  get cotizaciones() : IAcuerdo[] {
+    return this.acuerdosEnlazados.filter( a => a.tipo === TIPO_ACUERDO.COTIZACION_CLI )
+  }  
+
+  get OC_a_Proveedor() : IAcuerdo[] {
+    return this.acuerdosEnlazados.filter( a => a.tipo === TIPO_ACUERDO.PEDIDO_PRO )
+  }  
+
+  get OC_a_ProveedorTotal() : number  { return this.OC_a_Proveedor.length   }
+  get hay_OC_aProveedor()   : boolean { return !!this.OC_a_Proveedor.length }
+
   static  getTipoAcuerdoPlural( tipo : TTipoAcuerdo ) : string {
     const singular                = tipo === TIPO_ACUERDO.COTIZACION_CLI  ? "cotizaciones"
                                   : tipo === TIPO_ACUERDO.PEDIDO_CLI      ? "pedidos"
@@ -1019,8 +966,9 @@ https://dolibarr.mublex.com/fichinter/card.php?
     acuApi.fechaValidacion    = getDateToStr( acuApi.fechaValidacion  )
     acuApi.fechaCierre        = getDateToStr( acuApi.fechaCierre      )
     acuApi.fechaFinValidez    = getDateToStr( acuApi.fechaFinValidez  )
-    acuApi.fechaEntrega       = getDateToStr( acuApi.fechaEntrega,  "UTC")
-    acuApi.fechaListo         = getDateToStr( acuApi.fechaListo,    "UTC")
+    acuApi.fechaEntrega       = getDateToStr( acuApi.fechaEntrega,    "UTC")
+    acuApi.fechaListo         = getDateToStr( acuApi.fechaListo,      "UTC")
+    acuApi.fechaADespachar    = getDateToStr( acuApi.fechaADespachar, "UTC")
 
     const acu                 = Object.assign( new Acuerdo( tipo ), acuApi ) as IAcuerdo
     acu.esNuevo               = false
@@ -1119,9 +1067,34 @@ https://dolibarr.mublex.com/fichinter/card.php?
 
     return entregas
   }
-
-
 }
+
+
+/*   reorganizarProductosGrupos()
+  {
+    let orden                 = 0
+    for (const grupo of this.proGrupos)
+    {
+      if(grupo.tituloCreado)  orden++
+      for (let linea of grupo.productos){
+        orden++
+        linea.orden           = orden
+      }
+
+      if(grupo.totalCreado)   orden++
+    }
+  } */
+
+/*   get label() : string {
+    const label   = this.tipo === TIPO_ACUERDO.COTIZACION_CLI   ? "cotización"
+                  : this.tipo === TIPO_ACUERDO.PEDIDO_CLI       ? "pedido"
+                  : this.tipo === TIPO_ACUERDO.ENTREGA      ? "entrega"
+                  : this.tipo === TIPO_ACUERDO.PEDIDO_PRO ? "pedido proveedor"
+                  : this.tipo === TIPO_ACUERDO.FACTURA_CLI  ? "factura"
+                  : ""
+    return label
+  } */
+
 /*
 id: "2620"
 billed

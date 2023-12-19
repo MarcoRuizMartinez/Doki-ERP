@@ -320,6 +320,15 @@
           class                 ="width160"
           :options              ="Busqueda.listaEstadosPago"
         />
+        <!-- //* ///////////////////////////////////////////////// Con fecha de listo para despacho -->
+        <select-label-value     use-input hundido clearable flat bordered
+          v-if                  ="b.esPedido"
+          v-model               ="b.f.listoDespacho"
+          label                 ="Listo para despacho"
+          icon                  ="mdi-truck-check"
+          class                 ="width160"
+          :options              ="Busqueda.listaListoDespachar"
+        />        
       </fieldset-filtro>
       <fieldset-filtro
         v-if                    ="!b.esEntrega"

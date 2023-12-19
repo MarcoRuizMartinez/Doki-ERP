@@ -40,7 +40,7 @@ export function useControlInformes()
     const nombresLineas   = [ ...new Set( seriesCrudas.map((s) => s.nombre ) ) ]    
     const cuenta          = getSerie("cuenta",  seriesCrudas, nombresLineas ) // , query.periodo, tipoGrafico )    
     const total           = getSerie("total",   seriesCrudas, nombresLineas ) // , query.periodo, tipoGrafico )
-    const ejeX            = getPeridosEjeX( cuenta, query.periodo )
+    const ejeX            = getPeridosEjeX( cuenta, query.periodo ?? PERIODO.MES )
     
 
     revisarColor()

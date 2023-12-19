@@ -13,6 +13,7 @@
   "dependencies": {
     "@quasar/cli": "^2.3.0",
     "@quasar/extras": "^1.16.8",
+    "@quasar/quasar-ui-qcalendar": "^4.0.0-beta.18",
     "@types/canvas-confetti": "^1.6.0",
     "@vueuse/core": "^10.2.0",
     "@vueuse/math": "^10.2.0",
@@ -31,6 +32,7 @@
   },
   "devDependencies": {
     "@quasar/app-vite": "^1.7.0",
+    "@quasar/quasar-app-extension-qcalendar": "^4.0.0-beta.15",
     "@quasar/quasar-app-extension-qpdfviewer": "^2.0.0-alpha.6",
     "@types/node": "^20.3.1",
     "autoprefixer": "^10.4.2",

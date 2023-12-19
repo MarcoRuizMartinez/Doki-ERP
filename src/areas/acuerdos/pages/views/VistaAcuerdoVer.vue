@@ -19,21 +19,21 @@
     @click-comisiones       ="modales.comisiones = true"
     @click-nueva-entrega    ="clickNuevaEntrega"
     @click-cuenta-cobro     ="generarPDF"
-    @click-listo-entregar   ="setListoEntregar"
+    @click-listo-entregar   ="setListoDespacho"
   />
   <tercero-y-contacto       scroll
     class                   ="col-md-4 col-12"
-    height-card             ="260px" 
+    height-card             ="320px" 
   />
   <condiciones              scroll
     ref                     ="moduloCondiciones"
     class                   ="col-md-4 col-12"
-    height-card             ="260px"
+    height-card             ="320px"
   />
   <totales                  scroll
     v-if                    ="!acuerdo.esEntrega"
     class                   ="col-md-4 col-12"
-    height-card-min         ="260px"
+    height-card-min         ="320px"
   />
   <contactos
     v-if                    ="acuerdo.tercero.esEmpresa && !acuerdo.esEntrega"
@@ -81,7 +81,7 @@
     v-model                 ="acuerdo.comentarios"
     :asignado               ="acuerdo.comercial"
     :elemento-id            ="acuerdo.id"
-    :tipo                   ="Accion.getTipo( acuerdo.tipo )"
+    :tipo                   ="Accion.getTipoByAcuerdo( acuerdo.tipo )"
     :terceroId              ="acuerdo.tercero.id"
     :proyectoId             ="acuerdo.proyecto.id"
     :cargando               ="loading?.commentsLoad ?? false"
@@ -101,6 +101,7 @@
     >
     <comisiones style       ="max-width: initial;"/>
   </q-dialog>
+  <!-- //* ///////////////////////////////////////////////////////////// Modal remision -->
   <q-dialog                 maximized
     v-model                 ="modales.remision"
     v-bind                  ="style.dialogo"
@@ -109,7 +110,13 @@
       :acuerdo              ="acuerdoRemsion"
     />
   </q-dialog>
-
+  <!-- //* ///////////////////////////////////////////////////////////// Modal detalles condiciones -->
+  <q-dialog
+    v-model                 ="modales.calendario"
+    v-bind                  ="style.dialogo"
+    >
+    <calendario />
+  </q-dialog>
     
     <!-- <remision v-model:visible ="modales.pdfRemision"/> -->
     <!--   <div id="capture" style="padding: 10px; background: #f5da55">
@@ -153,6 +160,7 @@
   import    botonera                from "./../../components/Modulos/ModuloBotonera.vue"
   import    terceroYContacto        from "./../../components/Modulos/ModuloTercero.vue"
   import    condiciones             from "./../../components/Modulos/ModuloCondiciones.vue"
+  import    calendario              from "./../../components/Modulos/ModuloCalendarioAcuerdos.vue"
   import    lineas                  from "./../../components/Modulos/ModuloLineas.vue"
   import    enlaces                 from "./../../components/Modulos/ModuloEnlaces.vue"
   import    contactos               from "./../../components/Modulos/ModuloContactos.vue"
@@ -181,7 +189,7 @@
           eliminarAcuerdo,
           validarAcuerdo,
           cerrarPedido,
-          setListoEntregar,
+          setListoDespacho,
           buscarComentarios
                             } = useControlAcuerdo()
   const minimizadoTodo        = ref< boolean  >(false)

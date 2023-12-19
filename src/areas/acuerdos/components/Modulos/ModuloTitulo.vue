@@ -48,9 +48,20 @@
           </span>
           <Tooltip class="text-capitalize">{{ acuerdo.label }}</Tooltip>
         </q-btn>
+        <!-- //* ///////////////////////////////////////////////// Boton listo para despacho -->
+        <div
+          v-if              ="acuerdo.esPedido && acuerdo.esEstadoValidado"
+          class             ="row justify-center items-center gap-sm dense">
+          <q-icon
+            size            ="lg"            
+            :color          ="acuerdo.estadoDespachoColor"
+            :name           ="acuerdo.estadoDespachoIcono"
+          />
+          <span class       =" q-ml-sm text-white text-1_3em">{{ acuerdo.estadoDespachoLabel }}</span>
+        </div>
         <!-- //* ////////////////////////////////////////////////////// Titulo  -->
         <div
-          v-if              ="!acuerdo.esNuevo && !acuerdo.esOCProveedor"
+          v-else-if         ="!acuerdo.esNuevo && !acuerdo.esOCProveedor"
           :style            ="esMobil ? 'order: 3;' : ''"
           >
           <span class       ="q-ma-none q-pa-none op20 titulo-lg">
@@ -160,7 +171,9 @@
   import {  storeToRefs           } from 'pinia'
   import {  useStoreAcuerdo       } from 'src/stores/acuerdo'  
 
-  const { acuerdo           } = storeToRefs( useStoreAcuerdo() )  
+  const { acuerdo,
+          loading,
+          modales           } = storeToRefs( useStoreAcuerdo() )  
   const { esMobil, aviso    } = useTools()
   const { setTitulo         } = servicesAcuerdos()
 

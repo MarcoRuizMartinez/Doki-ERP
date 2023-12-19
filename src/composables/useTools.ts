@@ -363,6 +363,18 @@ export const fechaCorta = ( fecha : Date ) : string => {
   return !!fecha.valueOf() ? fecha.toLocaleDateString('sv-SE') : ""
 }
 
+export const horaAmPm = ( fecha : Date ) : string => {
+  let horas     = fecha.getHours()
+  let minutos   = fecha.getMinutes()
+  let periodo   = horas >= 12 ? 'PM' : 'AM';
+      horas     = horas % 12;
+      horas     = horas ? horas : 12; // Si son las 0 horas, ajustar a 12 en lugar de 0
+
+
+  let horaFormateada = (horas < 10 ? '0' : '') + horas + ':' + (minutos < 10 ? '0' : '') + minutos + ' ' + periodo;
+  return horaFormateada
+}
+
 export const fechaLarga = ( fecha : Date ) : string => fecha.toLocaleDateString('es-CO', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
 export const fechaYHora = ( fecha : Date ) : string => fechaLarga(fecha) + " " + fecha.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' })
 

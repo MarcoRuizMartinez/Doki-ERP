@@ -135,8 +135,8 @@
   const editando                = ref<boolean>(false)
   const textoComentario         = ref<string>("")
   const cuentaAperturas         = ref<number>(0)
-  const tareaSelect             = ref< IAccion >( new Accion( usuario.value.id ) )
-  const comentario              = ref <IAccion >( new Accion( usuario.value.id ) )
+  const tareaSelect             = ref<IAccion >( new Accion( usuario.value.id ) )
+  const comentario              = ref<IAccion >( new Accion( usuario.value.id ) )
   const componenteScroll        = ref<InstanceType<typeof QScrollArea> | null>(null)
 
   const modelValue              = defineModel<IAccion[]>( { required: true })

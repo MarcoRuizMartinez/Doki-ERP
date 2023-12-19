@@ -1,3 +1,4 @@
 {
-  "@quasar/qpdfviewer": {}
+  "@quasar/qpdfviewer": {},
+  "@quasar/qcalendar": {}
 }

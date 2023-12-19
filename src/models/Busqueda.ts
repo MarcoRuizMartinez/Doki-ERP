@@ -60,6 +60,7 @@ export interface      IQuery {
   conTotal             ?: number
   interno              ?: number
   conOrdenes           ?: number
+  listoDespacho        ?: number
   limite               ?: number
   offset               ?: number
   area                 ?: string
@@ -100,6 +101,9 @@ export interface      IQuery {
   codigo               ?: string 
   elementoId           ?: number
   elementoTipo         ?: string
+
+  // * //////////////   Acciones o eventos
+  permisos             ?: number
 }
 
 interface               IOpciones {
@@ -139,6 +143,7 @@ interface               ICampos {
   tipoTercero           : ILabelValue
   terceroInterno        : ILabelValue
   conOrdenes            : ILabelValue
+  listoDespacho         : ILabelValue
   proveedores           : ILabelValue  
   incPago               : ILabelValue
   incEstado             : ILabelValue
@@ -165,6 +170,7 @@ interface               ICampos {
 }
 
 import {  Router           } from "vue-router"
+import { Permisos } from '../areas/usuarios/models/Permisos';
 
 export interface        IBusqueda {
   query                 : IQuery
@@ -291,6 +297,7 @@ export class Busqueda implements IBusqueda
     this.f.totalizado         = getQueryRouterLabelValue( this.rourterQ .conTotal,              Busqueda.listaTotales         )
     this.f.terceroInterno     = getQueryRouterLabelValue( this.rourterQ .interno,               Busqueda.listaTerceroInterno  )
     this.f.conOrdenes         = getQueryRouterLabelValue( this.rourterQ .conOrdenes,            Busqueda.listaOrdenesProv     )
+    this.f.listoDespacho      = getQueryRouterLabelValue( this.rourterQ .listoDespacho,         Busqueda.listaListoDespachar  )
     this.f.tipoTercero        = getQueryRouterLabelValue( this.rourterQ .tipoTercero,           Busqueda.listaTipoTercero     )
     this.f.activo             = getQueryRouterLabelValue( this.rourterQ .activo,                Busqueda.listaActivo          )
     this.f.dimension          = getQueryRouterLabelValue( this.rourterQ .dimension,             Busqueda.listaDimensiones,  "string")    
@@ -498,6 +505,7 @@ export class Busqueda implements IBusqueda
     if(!!this.f.municipio.id)           q.municipio         = this.f.municipio.id
     if(!!this.f.municipioContacto.id)   q.municipioContacto = this.f.municipioContacto.id
     if(!!this.f.conOrdenes.label)       q.conOrdenes        = this.f.conOrdenes.value
+    if(!!this.f.listoDespacho.label)    q.listoDespacho     = this.f.listoDespacho.value
     if(!!this.f.tipoTercero.label)      q.tipoTercero       = this.f.tipoTercero.value
     if(!!this.f.activo.label)           q.activo            = this.f.activo.value
     if(!!this.f.dimension.label)        q.dimension         = this.f.dimension.value
@@ -521,12 +529,13 @@ export class Busqueda implements IBusqueda
   }
 
   // * /////////////////////////////////////////////////////////////////////// Lista de opciones
-  static listaFacturado           = [{value:0, label:'No facturado'},   {value:1, label:'Facturado'   }]
-  static listaTotales             = [{value:0, label:'Sin totalizar'},  {value:1, label:'Totalizado'  }]
-  static listaIVA                 = [{value:0, label:'Sin IVA'},        {value:1, label:'Con IVA'     }]
-  static listaTerceroInterno      = [{value:0, label:'Externo'},        {value:1, label:'Interno'     }]
-  static listaOrdenesProv         = [{value:0, label:'Sin ordenes'},    {value:1, label:'Con ordenes' }]  
-  static listaActivo              = [{value:1, label:'Activo'},         {value:0, label:'Inactivo'    }]  
+  static listaFacturado           = [{value:0, label:'No facturado'},         {value:1, label:'Facturado'     }]
+  static listaTotales             = [{value:0, label:'Sin totalizar'},        {value:1, label:'Totalizado'    }]
+  static listaIVA                 = [{value:0, label:'Sin IVA'},              {value:1, label:'Con IVA'       }]
+  static listaTerceroInterno      = [{value:0, label:'Externo'},              {value:1, label:'Interno'       }]
+  static listaOrdenesProv         = [{value:0, label:'Sin ordenes'},          {value:1, label:'Con ordenes'   }]
+  static listaListoDespachar      = [{value:1, label:'Listo para despacho'},  {value:0, label:'No esta listo' }]
+  static listaActivo              = [{value:1, label:'Activo'},               {value:0, label:'Inactivo'      }]  
   static listaAreas               = Areas  
   static listaEstadosPago         = Incentivo.estadosPago
   static listaAnticipoEstados     = Anticipo.estados
@@ -596,6 +605,7 @@ export class Busqueda implements IBusqueda
       tipoTercero         : labelValueNulo,
       totalizado          : labelValueNulo,
       conOrdenes          : labelValueNulo,
+      listoDespacho       : labelValueNulo,
       proveedores         : labelValueNulo,
       incPago             : labelValueNulo,
       incEstado           : labelValueNulo,

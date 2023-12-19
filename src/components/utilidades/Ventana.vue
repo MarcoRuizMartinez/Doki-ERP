@@ -84,7 +84,7 @@
       <q-card-actions
         v-if                  ="hayMenu || menuVisible"
         class                 ="row menu-ventana menu-gris no-wrap overflow-auto"
-        :class                ="classMenu, { 'minimizado' : minimizadoModel }"
+        :class                ="[classMenu, { 'minimizado' : minimizadoModel }]"
         >
         <slot                 name="menu">
         </slot>
@@ -92,12 +92,12 @@
       <!-- //?* ////////////////////////////////////////////////////////////// SLOT Default --> 
       <q-card-section
         class                 ="row items-start ventana-contenido transi"
-        :class                ="  classContenido,
+        :class                ="[  classContenido,
                                   { 'minimizado'        : minimizadoModel },
                                   { 'full-screen'       : fullScreen      },
                                   { 'scroll q-mt-none'  : scroll          },
                                   { 'q-mt-none'         : hayAcciones     }
-                                "
+                                ]"
         :style                ="estiloCard"
         >  <!-- //?* /   :style                ="estiloAlto" :style="estiloCard" --> 
         <slot v-if            ="modo == 'normal' ">

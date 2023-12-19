@@ -280,7 +280,7 @@ export class Accion implements IAccion
     return c
   }
 
-  static getTipo( tipo : TIPO_ACUERDO ) : string {
+  static getTipoByAcuerdo( tipo : TIPO_ACUERDO ) : string {
     return    tipo === TIPO_ACUERDO.PEDIDO_CLI      ? "order"
             : tipo === TIPO_ACUERDO.PEDIDO_PRO      ? "order_supplier"
             : tipo === TIPO_ACUERDO.COTIZACION_CLI  ? "propal"
@@ -290,5 +290,26 @@ export class Accion implements IAccion
             : tipo === TIPO_ACUERDO.FACTURA_PRO     ? "invoice_supplier"
             : "xxx"
             //product
+  }
+
+  static getCodigoByAcuerdo( tipo : TIPO_ACUERDO ) : string {
+    return    tipo === TIPO_ACUERDO.PEDIDO_CLI      ? "AC_ORDER"
+            : tipo === TIPO_ACUERDO.PEDIDO_PRO      ? "AC_ORDER"
+            : tipo === TIPO_ACUERDO.COTIZACION_CLI  ? "AC_PROPAL"
+            : tipo === TIPO_ACUERDO.COTIZACION_PRO  ? "AC_PROPOSAL"
+            : tipo === TIPO_ACUERDO.ENTREGA_CLI     ? "AC_SHIPPING"
+            : tipo === TIPO_ACUERDO.FACTURA_CLI     ? ""
+            : tipo === TIPO_ACUERDO.FACTURA_PRO     ? ""
+            : "xxx"
+            /*
+            Otros tipos de codigos 
+
+            AC_COMPANY
+            AC_CONTACT
+            AC_FICHINTER
+            AC_PRODUCT
+            AC_PROJECT
+            AC_USER
+            */
   }
 }

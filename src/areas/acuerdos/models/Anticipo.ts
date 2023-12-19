@@ -75,47 +75,31 @@ export interface IAnticipo
 
 export class Anticipo implements IAnticipo
 {
-  id                        : number
-  index                     : number
-  fechaPago                 : string
-  cuenta                    : ICuentaDinero
-  cuentaId                  : number
-  pedidoId                  : number  
-  verificador               : IUsuario
-  verificadorId             : number
-  valor                     : number  
-  nota                      : string
-  fechaEdicionNota          : string
-  filenameInterno           : string
-  fileInterno               : IArchivo
-  filenameCliente           : string
-  fileCliente               : IArchivo
-  tipo                      : TIPO_ANTICIPO
-  tipoSelect                : ILabelValue
-  estado                    : ESTADO_ANTICIPO  
-  estadoSelect              : ILabelValue
+  id                        : number            = 0
+  index                     : number            = 0
+  fechaPago                 : string            = fechaCorta( new Date() )
+  cuenta                    : ICuentaDinero     = new CuentaDinero()
+  cuentaId                  : number            = 0
+  pedidoId                  : number             
+  verificador               : IUsuario          = new Usuario()
+  verificadorId             : number            = 0
+  valor                     : number              = 0
+  nota                      : string            = ""
+  fechaEdicionNota          : string            = ""
+
+  filenameInterno           : string            = ""
+  fileInterno               : IArchivo          = new Archivo()
+  filenameCliente           : string            = ""
+  fileCliente               : IArchivo          = new Archivo()  
+
+  tipo                      : TIPO_ANTICIPO     = TIPO_ANTICIPO.PAGO
+  tipoSelect                : ILabelValue       = labelValueNulo
+  estado                    : ESTADO_ANTICIPO   = ESTADO_ANTICIPO.PENDIENTE
+  estadoSelect              : ILabelValue       = labelValueNulo
 
   constructor( idPedido : number = 0 )
   {
-    this.id                 = 0
-    this.index              = 0
-    this.fechaPago          = fechaCorta( new Date() )
-    this.cuenta             = new CuentaDinero()
-    this.cuentaId           = 0
     this.pedidoId           = idPedido
-    this.verificador        = new Usuario()
-    this.verificadorId      = 0
-    this.valor              = 0
-    this.nota               = ""
-    this.fechaEdicionNota   = ""
-    this.filenameInterno    = ""
-    this.filenameCliente    = ""
-    this.fileInterno        = new Archivo()    
-    this.fileCliente        = new Archivo()    
-    this.tipo               = TIPO_ANTICIPO.PAGO
-    this.tipoSelect         = labelValueNulo
-    this.estado             = ESTADO_ANTICIPO.PENDIENTE
-    this.estadoSelect       = labelValueNulo
   }
 
   get esNuevo   () : boolean  { return !this.id }

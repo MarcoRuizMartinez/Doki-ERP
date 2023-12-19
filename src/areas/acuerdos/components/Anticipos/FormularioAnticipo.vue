@@ -136,8 +136,8 @@
             ESTADO_ANTICIPO
                                 } from "src/areas/acuerdos/models/Anticipo"
   //* /////////////////////////////////////////////////////////////////////////////////// Store
-  import {  storeToRefs           } from 'pinia'                            
-  import {  useStoreAcuerdo       } from 'stores/acuerdo'
+  import {  storeToRefs         } from 'pinia'                            
+  import {  useStoreAcuerdo     } from 'stores/acuerdo'
   // * ///////////////////////////////////////////////////////////////////////////////// Componibles
   import {  useTools            } from "src/composables/useTools"  
   import {  useFetch            } from "src/composables/useFetch"

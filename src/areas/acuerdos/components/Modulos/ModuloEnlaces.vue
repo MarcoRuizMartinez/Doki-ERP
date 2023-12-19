@@ -58,8 +58,7 @@
   import {  IColumna,
             Columna               } from "src/models/Tabla"
   import {  IAcuerdo              } from "src/areas/acuerdos/models/Acuerdo"  
-  //* /////////////////////////////////////////////////////////////////////////////////// Componibles
-  import {  pausa                 } from "src/composables/useTools"
+  //* /////////////////////////////////////////////////////////////////////////////////// Componibles  
   import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"  
   //* /////////////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana                 from "components/utilidades/Ventana.vue"
@@ -74,24 +73,14 @@
     new Columna({ name: "ref"       }),
     new Columna({ name: "estado"    }),
   ]
-  
 
-/*   watch( ()=>acuerdo.value.ref, async ( ref )=> {
-    modo.value                = "sin-resultados"
-    if(!ref) return
-
-    await pausa(600)
-    buscar()
-  }, { immediate: true}) */
-  
   watch( ()=>acuerdo.value.acuerdosEnlazados.length, ( largo )=> {
       modo.value    = !!largo                   ? "normal"
                     : modo.value === "buscando" ? modo.value
                     : "esperando-busqueda"
     },
     { immediate: true}
-  )
-  
+  )  
   
   async function buscar()
   {
@@ -99,5 +88,4 @@
     await buscarAcuerdoEnlazados( /* true */ )
     modo.value                = !!acuerdo.value.acuerdosEnlazados.length ? "normal" : "sin-resultados"
   }
-
 </script>

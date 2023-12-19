@@ -27,7 +27,8 @@ import {  date              } from "quasar"
 import {  ILineaApi         } from "src/areas/acuerdos/models/LineaAcuerdo"
 import {  TIPOS_CONTACTO_ID } from "src/areas/terceros/models/Contacto"
 import {  IQuery            } from "src/models/Busqueda"
-import {  TTipoAcuerdo      } from "src/areas/acuerdos/models/ConstantesAcuerdos"
+import {  TTipoAcuerdo,
+          TIPO_ACUERDO      } from "src/areas/acuerdos/models/ConstantesAcuerdos"
 import {  Acuerdo,
           IAcuerdo,         } from "src/areas/acuerdos/models/Acuerdo"
 import {  pausa             } from "src/composables/useTools"
@@ -108,7 +109,7 @@ export function servicesAcuerdos()
       {
         for (const item of data)
         {
-          const quote : IAcuerdo    = await Acuerdo.convertirDataApiToAcuerdo( item, query.acuerdo )
+          const quote : IAcuerdo    = await Acuerdo.convertirDataApiToAcuerdo( item, query?.acuerdo ?? TIPO_ACUERDO.NULO)
           acuerdos.push( quote )
         }
         resolver( acuerdos )
@@ -155,6 +156,25 @@ export function servicesAcuerdos()
       resolver( ok )
     })
   }
+
+
+  async function setFechaADespachar( acu_id : number, fecha : Date, acuerdo : TTipoAcuerdo ) : Promise< boolean >
+  {
+    const fechaToApi  = date.formatDate (fecha, 'YYYY-MM-DD')
+    const obj         = { id: acu_id, fecha: fechaToApi, acuerdo: acuerdo  }
+
+    return new Promise( async (resolver, rechazar ) =>
+    {
+      const { ok }    = await miFetch( getURL("servicios", "acuerdos"),
+                                                    {
+                                                      body: getFormData(  "editarFechaDespacho", obj ),
+                                                      method: "POST"
+                                                    },
+                                                    { mensaje: "editar fecha de despacho" }
+                                                  )
+      resolver( ok )
+    })
+  }  
 
   async function setCondicionPago( ctz_id : number, valor : number, acuerdo : TTipoAcuerdo ) : Promise< boolean >
   {
@@ -431,6 +451,7 @@ export function servicesAcuerdos()
     getAcuerdos,
     setFechaFinValidez,
     setFechaEntrega,
+    setFechaADespachar,
     setCondicionPago,
     setFormaPago,
     setMetodoEntrega,

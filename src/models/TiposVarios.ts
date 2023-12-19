@@ -120,6 +120,7 @@ export interface ILoading {
   comercial       ?: boolean
   fechaFinValidez ?: boolean
   fechaEntrega    ?: boolean
+  fechaADespachar ?: boolean
   condicionPago   ?: boolean
   formaPago       ?: boolean
   metodoEntrega   ?: boolean
@@ -144,6 +145,7 @@ export interface ILoading {
   incentivo       ?: boolean
   calificacion    ?: boolean
   commentsLoad    ?: boolean
+  eventosLoad     ?: boolean
 }
 
 export const LoadingDefault = {
@@ -161,6 +163,7 @@ export const LoadingDefault = {
   comercial       : false,
   fechaFinValidez : false,
   fechaEntrega    : false,
+  fechaADespachar : false,
   condicionPago   : false,
   formaPago       : false,
   metodoEntrega   : false,
@@ -185,6 +188,7 @@ export const LoadingDefault = {
   incentivo       : false,
   calificacion    : false,
   commentsLoad    : false,
+  eventosLoad     : false,
 }
 
 
@@ -199,6 +203,8 @@ export interface IModales {
   comisiones      ?: boolean
   nuevaEntrega    ?: boolean
   incentivo       ?: boolean
+  detalles        ?: boolean
+  calendario      ?: boolean
 }
 
 export const ModalesDefault = {
@@ -212,4 +218,6 @@ export const ModalesDefault = {
   comisiones      : false,
   nuevaEntrega    : false,
   incentivo       : false,
+  detalles        : false,
+  calendario      : false,
 }

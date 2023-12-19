@@ -39,7 +39,7 @@ import {  IMetodoEntrega        } from "src/models/Diccionarios/MetodoEntrega"
 import {  ITiempoEntrega        } from "src/models/Diccionarios/TiempoEntrega"
 import {  IProyecto, Proyecto   } from "src/areas/proyectos/models/Proyecto"
 import {  Acuerdo               } from "src/areas/acuerdos/models/Acuerdo"
-import {  EnlaceAcuerdo         } from "src/areas/acuerdos/models/EnlaceAcuerdo"
+import {  EnlaceAcuerdo, IEnlaceAcuerdo         } from "src/areas/acuerdos/models/EnlaceAcuerdo"
 import {  Calificacion          } from "src/areas/acuerdos/models/Calificacion"
 import {  IContacto,
           Contacto,
@@ -54,6 +54,7 @@ export function useControlAcuerdo()
   const {
           setFechaFinValidez,
           setFechaEntrega,
+          setFechaADespachar,
           setCondicionPago,
           setFormaPago,
           setMetodoEntrega,
@@ -618,7 +619,7 @@ export function useControlAcuerdo()
   }
 
   //* /////////////////////////////////////////////////////////////// Editar fecha entrega
-  async function editarFechaEntrega( fecha : Date )
+  async function editarFechaEntrega()
   {
     if(acuerdo.value.esNuevo) return
 
@@ -627,6 +628,17 @@ export function useControlAcuerdo()
     if (ok) aviso("positive", "Fecha de entrega cambiada", "clock" )
     loading.value.fechaEntrega  = false
   }
+
+  //* /////////////////////////////////////////////////////////////// Editar fecha a despachar
+  async function editarFechaADespachar()
+  {
+    if(acuerdo.value.esNuevo) return
+
+    loading.value.fechaADespachar = true
+    const ok                      = await setFechaADespachar( acuerdo.value.id, acuerdo.value.fechaADespachar, acuerdo.value.tipo )
+    if (ok) aviso("positive", "Fecha de despacho cambiada", "clock" )
+    loading.value.fechaADespachar = false
+  }  
 
   //* /////////////////////////////////////////////////////////////// Editar condiciones de pago
   async function editarCondicionPago( condicion : ICondicionPago )
@@ -783,7 +795,7 @@ export function useControlAcuerdo()
 
     function getIds( tipo : TTipoAcuerdo ) :string
     {
-      const enla                = acuerdo.value.enlaces.filter( e => e.destinoSmart.tipo === tipo )
+      const enla                = acuerdo.value.enlaces.filter( ( e : IEnlaceAcuerdo ) => e.destinoSmart.tipo === tipo )
       return  !!enla.length
               ? enla.flatMap( ( enla )=> enla.destinoSmart.id ).join(",")
               : ""
@@ -805,13 +817,28 @@ export function useControlAcuerdo()
       codigo        : "AC_OTH",
       idTercero     : acuerdo.value.tercero.id,
       elementoId    : acuerdo.value.id,
-      elementoTipo  : Accion.getTipo( acuerdo.value.tipo )
+      elementoTipo  : Accion.getTipoByAcuerdo( acuerdo.value.tipo )
     }
 
     loading.value.commentsLoad= true
     acuerdo.value.comentarios = await buscarAcciones( query, "comentarios" )
     loading.value.commentsLoad= false
   }
+
+  async function buscarEventos()
+  {
+    const query     = {
+      codigo        : Accion.getCodigoByAcuerdo( acuerdo.value.tipo ),
+      idTercero     : acuerdo.value.tercero.id,
+      elementoId    : acuerdo.value.id,
+      elementoTipo  : Accion.getTipoByAcuerdo( acuerdo.value.tipo )
+    }
+
+    loading.value.eventosLoad = true
+    acuerdo.value.eventos     = await buscarAcciones( query, "eventos", false )
+    loading.value.eventosLoad = false
+  }
+
 
 
   //* ////////////////////////////////////////////////////////////////////// Editar o Crear calificacion
@@ -839,17 +866,17 @@ export function useControlAcuerdo()
       aviso("negative", `Error al actualizar precios`)
   }
 
-  async function setListoEntregar()
+  async function setListoDespacho()
   {
     const objeto                = { on: +!acuerdo.value.listoEntregar, id: acuerdo.value.id, acuerdo: acuerdo.value.tipo }
     const objetoForData         = { body: getFormData("listoEntregar", objeto), method: "POST"}
-    const { ok  }               = await miFetch( endPoint("servicios"), objetoForData, { mensaje: "listo para entregar" } )
+    const { ok  }               = await miFetch( endPoint("servicios"), objetoForData, { mensaje: "listo para despacho" } )
     if(ok){
       acuerdo.value.fechaListo  = acuerdo.value.listoEntregar ? new Date( 0 ) : new Date()
-      aviso("positive", "Listo para entregar 👌🏼")
+      aviso("positive", acuerdo.value.listoEntregar ? "Marcado como listo para despacho 👌🏼" : 'Marcado como No listo para despacho')
     }
     else
-      aviso("negative", `Error al camabiar listo para entregar`)
+      aviso("negative", `Error al camabiar listo para despacho`)
   }
 
 
@@ -864,6 +891,7 @@ export function useControlAcuerdo()
     buscarAcuerdo,
     buscarTerceroDolibarr,
     buscarProyecto,
+    buscarEventos,
     buscarComentarios,
     editarComentario,
     editarComercial,
@@ -877,6 +905,7 @@ export function useControlAcuerdo()
     editarFormaPago,
     editarCondicionPago,
     editarFechaEntrega,
+    editarFechaADespachar,
     editarFechaFinValidez,
     editarConAIU,
     editarValorAIU,
@@ -892,7 +921,7 @@ export function useControlAcuerdo()
     editarDatosEntregaSistemaViejo,
     buscarAcuerdoEnlazados,
     actualizarPreciosAcuerdo,
-    setListoEntregar,
+    setListoDespacho,
     editarCrearCalificacion
   }
 }

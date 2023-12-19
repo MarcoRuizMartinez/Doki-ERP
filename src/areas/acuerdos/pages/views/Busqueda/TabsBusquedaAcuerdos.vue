@@ -40,8 +40,8 @@
                             ( !!b.value.f.entrega.length    && b.value.esEntrega )
                             )
     tabs.value.alerts[1]  = ( !!b.value.f.formaPago.length  || !!b.value.f.origenes.length    || !!b.value.f.conIva.label           || !!b.value.f.area.label           ||
-                              !!b.value.f.municipio.id      || !!b.value.f.totalizado.label   || !!b.value.f.estadoAnticipo.length  || !!b.value.f.tipoAnticipo.length  ||
-                              !!b.value.f.tipoTercero.label || !!b.value.f.conOrdenes.label   || !!b.value.f.valorMin               || !!b.value.f.valorMax             || !!b.value.f.incPago.label || 
+                              !!b.value.f.municipio.id      || !!b.value.f.totalizado.label   || !!b.value.f.estadoAnticipo.length  || !!b.value.f.tipoAnticipo.length  || !!b.value.f.listoDespacho.label  ||
+                              !!b.value.f.tipoTercero.label || !!b.value.f.conOrdenes.label   || !!b.value.f.valorMin               || !!b.value.f.valorMax             || !!b.value.f.incPago.label        || 
                             ( !!b.value.f.entrega.length  && !b.value.esEntrega )
                             )
   }

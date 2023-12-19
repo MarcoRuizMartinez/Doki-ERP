@@ -24,8 +24,10 @@ export function useControlComunicacion()
   const { usuario             } = storeToRefs( useStoreUser() )
   
 
-  async function buscarAcciones( q : IQuery, tipo : string ) : Promise< IAccion[] >
+  async function buscarAcciones( q : IQuery, tipo : string, solicitarPermisos : boolean = true ) : Promise< IAccion[] >
   {
+    if(solicitarPermisos)
+      q.permisos              = 1
     q.user                    = usuario.value.id
     const consulta : any      = q
     consulta.grupos           = usuario.value.gruposString
@@ -36,6 +38,7 @@ export function useControlComunicacion()
                                               )    
     
     const acciones :IAccion[] = []
+    
     if(ok && Array.isArray( data ) && !!data.length)
     {      
       for (const item of data)

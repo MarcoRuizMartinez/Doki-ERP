@@ -13,6 +13,17 @@
         >
         <Tooltip label        ="Calculo de comisiones" v-if="esMobil"/>
       </q-btn>
+      <q-btn
+        v-if                  ="acuerdo.esPedido"
+        v-bind                ="style.btnBaseMd"
+        color                 ="primary"
+        icon                  ="mdi-calendar-month"
+        label                 ="Calendario"
+        :disable              ="cargandoAlgo"
+        @click                ="modales.calendario = true"
+        >
+        <Tooltip label        ="Ver calendario de eventos"/>
+      </q-btn>
     </div>
     <!-- //* ////////////////////////////////////////////////////////////////////  Lado Derecho -->
     <div class                ="row gap-sm">
@@ -72,15 +83,16 @@
       <!-- //* //////////////////////////////////////////////////////////  Boton Listo entregar -->
       <efecto efecto          ="Down">      
         <q-btn
-          v-if                ="acuerdo.esPedido && acuerdo.esEstadoValido && !acuerdo.esEstadoEntregado"
+          v-if                ="usuario.esProduccion && acuerdo.esPedido && acuerdo.esEstadoValido && !acuerdo.esEstadoEntregado"
           v-bind              ="style.btnBaseMd"
           color               ="primary"
-          icon                ="mdi-hand-okay"
+          :class              ="{ 'no-pointer-events' : !usuario.esProduccion }"
+          :icon               ="acuerdo.listoEntregar ? 'mdi-check-circle' : 'mdi-alert'"
+          :label              ="acuerdo.listoEntregar ? 'Listo para despacho' : 'No esta listo'"
           :disable            ="cargandoAlgo"
-          :class              ="{'op50' : !acuerdo.listoEntregar}"
           @click              ="clickListoEntregar"
           >
-          <Tooltip :label     ="'Listo para entregar: '+ siNo(acuerdo.listoEntregar)"/>
+          <Tooltip :label     ="acuerdo.listoEntregar ? 'Marcar como ❌ No listo para despacho' : 'Marcar como ✅ Listo para despachar'"/>
         </q-btn>
       </efecto>      
       <!-- //* //////////////////////////////////////////////////////////  Boton PDF -->
@@ -116,7 +128,7 @@
         <!-- //* ////////////////////////////////////////////////////////// Botones Instalacion y entrega
           v-if              ="acuerdo.hayServicios"
         -->
-        <q-btn-group  v-if    ="acuerdo.esEstadoAbierto && acuerdo.esPedido && !acuerdo.esTerceroCtz">
+        <q-btn-group  v-if    ="acuerdo.esEstadoAbierto && acuerdo.esPedido && !acuerdo.esTerceroCtz && false">
           <!-- //* //////////////////////////////////////////////////////// Botones Instalacion -->
           <q-btn
             v-bind            ="style.btnBaseMd"
@@ -292,8 +304,9 @@
   import    tooltipAcuerdo    from "src/areas/acuerdos/components/Tools/Tooltips/TooltipAcuerdo.vue"
 
   const { acuerdo,
+          modales,
           loading     } = storeToRefs( useStoreAcuerdo() )
-  const { usuario     } = storeToRefs( useStoreUser() )          
+  const { usuario     } = storeToRefs( useStoreUser() )
 
   const { esMobil     } = useTools()
 

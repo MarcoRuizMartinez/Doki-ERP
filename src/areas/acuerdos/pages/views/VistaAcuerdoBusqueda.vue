@@ -323,13 +323,14 @@
       new Columna(            { name: "fechaCreacionCorta",   label: "Creado"                                 }),
       new Columna(            { name: "fechaValidacionCorta", label: "Validado"                               }),
       new Columna(            { name: "fechaListoCorta",      label: "Fecha listo"                            }),
+      new Columna(            { name: "fechaADespacharCorta", label: "Fecha a despachar"                      }),
       Columna.ColumnaPrecio ( { name: "subTotalLimpio",       label: "Subtotal comisión", clase: "text-bold"  }),
       Columna.ColumnaPrecio ( { name: "totalConDescu",        label: "Subtotal",          clase: "text-bold"  }),
       Columna.ColumnaPrecio ( { name: "ivaValor",             label: "IVA",               clase: "text-bold"  }),
       Columna.ColumnaPrecio ( { name: "totalConIva",          label: "Total",             clase: "text-bold"  }),
     ]
 
-    const colsEli = busqueda.value.esCotizacion   ? ["facturado", "pedidoId", "fechaListoCorta"]
+    const colsEli = busqueda.value.esCotizacion   ? ["facturado", "pedidoId", "fechaListoCorta", "fechaADespacharCorta"]
                   : busqueda.value.esPedido       ? ["pedidoId"]
                   : busqueda.value.esEntrega      ? ["facturado", "condicionPagoLabel", "formaPagoLabel", "origenContactoLabel", "subTotalLimpio", "totalConDescu", "ivaValor", "totalConIva", "fechaListoCorta"]
                   : busqueda.value.esOCProveedor  ? ["refCliente", "comercial", "metodoEntregaLabel", "facturado", "origenContactoLabel", "subTotalLimpio", "pedidoId", "fechaListoCorta"]
