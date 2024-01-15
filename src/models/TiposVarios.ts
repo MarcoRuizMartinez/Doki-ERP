@@ -104,6 +104,13 @@ export const enum GRUPO_USUARIO {
   MIEMBRO         = "Miembro",
 }
 
+export type TCodigosSiigo = {
+  codigo  : number
+  linea   : number
+  grupo   : number
+  nombre ?: string
+  ref    ?: string  
+ }
 
 export interface ILoading {
   carga           ?: boolean
@@ -205,6 +212,7 @@ export interface IModales {
   incentivo       ?: boolean
   detalles        ?: boolean
   calendario      ?: boolean
+  siigo           ?: boolean
 }
 
 export const ModalesDefault = {
@@ -220,4 +228,7 @@ export const ModalesDefault = {
   incentivo       : false,
   detalles        : false,
   calendario      : false,
+  siigo           : false,
 }
+
+

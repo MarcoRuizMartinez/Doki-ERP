@@ -1,3 +1,122 @@
+<script lang="ts" setup>
+  // * /////////////////////////////////////////////////////////////////////// Core
+  import {  computed        } from "vue"
+  // * /////////////////////////////////////////////////////////////////////// Store
+  import {  storeToRefs     } from 'pinia'
+  import {  useStoreUser    } from 'src/stores/user'
+  import {  useStoreAcuerdo } from 'src/stores/acuerdo'
+  // * /////////////////////////////////////////////////////////////////////// Componibles
+  import {  siNo, useTools  } from "src/composables/useTools"
+  import {  menuDefault,
+            style           } from "src/composables/useEstilos"
+  import {  TTipoPDF        } from "src/areas/acuerdos/composables/pdf/useCotizacion"
+  // * /////////////////////////////////////////////////////////////////////// Componentes
+  import    barra             from "components/utilidades/Barra.vue"
+  import    efecto            from "components/utilidades/Efecto.vue"
+  import    confirmar         from "components/utilidades/MenuConfirmar.vue"
+  import    tooltipAcuerdo    from "src/areas/acuerdos/components/Tools/Tooltips/TooltipAcuerdo.vue"
+
+  const { acuerdo,
+          modales,
+          loading     } = storeToRefs( useStoreAcuerdo() )
+  const { usuario     } = storeToRefs( useStoreUser() )
+
+  const { esMobil     } = useTools()
+
+  const emit = defineEmits<{
+    (e: 'clickPdf',           value: TTipoPDF ): void
+    (e: 'clickAprobar',       ): void
+    (e: 'clickAnular',        ): void  
+    (e: 'clickValidar',       ): void
+    (e: 'clickEditar',        ): void
+    (e: 'clickBorrar',        ): void  
+    (e: 'clickRemision',      ): void
+    (e: 'clickReabrir',       ): void
+    (e: 'clickRecargar',      ): void  
+    (e: 'clickEntregado',     ): void
+    (e: 'clickComisiones',    ): void
+    (e: 'clickNuevaEntrega',  ): void  
+    (e: 'clickListoEntregar', ): void
+    (e: 'clickCuentaCobro',   value: TTipoPDF ): void 
+  }>()
+
+  const cargandoAlgo    = computed(()=> Object.values(loading.value).some( ( estado : boolean )=> !!estado ) )
+  const totalNotas      = computed(()=> ( !!acuerdo.value.notaPrivada ? 1 : 0 ) + ( !!acuerdo.value.notaPublica ? 1 : 0 )  )
+  //const envioInactivo   = computed(()=> cargandoAlgo.value || !acuerdo.value.metodoEntrega.id || !acuerdo.value.fechaEntregaCorta )
+  const mostrarEditar   = computed(()=>   !acuerdo.value.esEstadoEdicion
+                                          &&
+                                          (
+                                            (     acuerdo.value.esCotizacion
+                                              &&  !acuerdo.value.esEstadoFacturado
+                                            )
+                                            ||
+                                            (     acuerdo.value.esPedido
+                                              //&&  !acuerdo.value.facturado
+                                              &&  !acuerdo.value.esEstadoNoValidado
+                                              &&  !acuerdo.value.esEstadoAnulado
+                                              &&  !acuerdo.value.esEstadoEntregado
+                                            )
+                                          )
+                                  )
+
+  const disableBtnValidar = computed(()=>
+                                    cargandoAlgo.value
+                                || !acuerdo.value.proGrupos.length
+                                || !acuerdo.value.proGrupos[0].productos.length
+                                || (  
+                                      ( acuerdo.value.esPedido || acuerdo.value.esCotizacion )
+                                      &&
+                                      !acuerdo.value.contactoComercial.id
+                                      &&
+                                      (
+                                        acuerdo.value.tercero.esEmpresa
+                                        ||
+                                        acuerdo.value.esTerceroCtz
+                                      )
+                                    )
+                              )
+  const mostrarComisiones   = computed(()=> 
+    !acuerdo.value.condicionPago.esGarantia
+    &&
+    (acuerdo.value.esPedido || acuerdo.value.esCotizacion)
+    &&
+    !acuerdo.value.esEstadoBoceto
+    &&
+    ( acuerdo.value.usuarioEsDueño || usuario.value.esGerencia || usuario.value.esContable )
+  )
+
+  const labelBtnPDFDefault  = computed(()=>   acuerdo.value.esCotizacion  ? 'Cotizacion' 
+                                            : acuerdo.value.esPedido      ? ""
+                                            : acuerdo.value.esEntrega     ? "Remisión"
+                                            : acuerdo.value.esOCProveedor ? "Orden de compra"
+                                            : ""
+                                      )
+  
+  function pdfDefault()
+  {
+    const tipo : TTipoPDF = acuerdo.value.esCotizacion ? "quote" : "cuentaCobro"
+    emit("clickPdf", tipo)
+  }
+                                      
+  function clickEnNotas()
+  {
+    window.scrollTo({ top: document.body.scrollHeight,  behavior: 'smooth'})
+  }
+
+  function clickListoEntregar()
+  {
+    if(usuario.value.esProduccion)
+      emit('clickListoEntregar')    
+  }
+</script>
+
+
+<!-- //* ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+<!-- //* ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+<!-- //* ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+<!-- //* ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+
 <template>
   <barra  class               ="row justify-between">
     <!-- //* ////////////////////////////////////////////////////////////////////  Lado izquierdo -->
@@ -24,6 +143,17 @@
         >
         <Tooltip label        ="Ver calendario de eventos"/>
       </q-btn>
+      <q-btn
+        v-if                  ="acuerdo.esPedido && ( usuario.esContable || usuario.esDev )"
+        v-bind                ="style.btnBaseMd"
+        color                 ="primary"
+        icon                  ="mdi-file-table-box-multiple-outline"
+        label                 ="Siigo"
+        :disable              ="loading.carga"
+        @click                ="modales.siigo = true"
+        >
+        <Tooltip label        ="Descargar productos para siigo"/>
+      </q-btn>      
     </div>
     <!-- //* ////////////////////////////////////////////////////////////////////  Lado Derecho -->
     <div class                ="row gap-sm">
@@ -285,114 +415,3 @@
     </div>
   </barra>    
 </template>
-<script lang="ts" setup>
-  // * /////////////////////////////////////////////////////////////////////// Core
-  import {  computed        } from "vue"
-  // * /////////////////////////////////////////////////////////////////////// Store
-  import {  storeToRefs     } from 'pinia'
-  import {  useStoreUser    } from 'src/stores/user'
-  import {  useStoreAcuerdo } from 'src/stores/acuerdo'
-  // * /////////////////////////////////////////////////////////////////////// Componibles
-  import {  siNo, useTools  } from "src/composables/useTools"
-  import {  menuDefault,
-            style           } from "src/composables/useEstilos"
-  import {  TTipoPDF        } from "src/areas/acuerdos/composables/pdf/useCotizacion"
-  // * /////////////////////////////////////////////////////////////////////// Componentes
-  import    barra             from "components/utilidades/Barra.vue"
-  import    efecto            from "components/utilidades/Efecto.vue"
-  import    confirmar         from "components/utilidades/MenuConfirmar.vue"
-  import    tooltipAcuerdo    from "src/areas/acuerdos/components/Tools/Tooltips/TooltipAcuerdo.vue"
-
-  const { acuerdo,
-          modales,
-          loading     } = storeToRefs( useStoreAcuerdo() )
-  const { usuario     } = storeToRefs( useStoreUser() )
-
-  const { esMobil     } = useTools()
-
-  const emit = defineEmits<{
-    (e: 'clickPdf',           value: TTipoPDF ): void
-    (e: 'clickAprobar',       ): void
-    (e: 'clickAnular',        ): void  
-    (e: 'clickValidar',       ): void
-    (e: 'clickEditar',        ): void
-    (e: 'clickBorrar',        ): void  
-    (e: 'clickRemision',      ): void
-    (e: 'clickReabrir',       ): void
-    (e: 'clickRecargar',      ): void  
-    (e: 'clickEntregado',     ): void
-    (e: 'clickComisiones',    ): void
-    (e: 'clickNuevaEntrega',  ): void  
-    (e: 'clickListoEntregar', ): void
-    (e: 'clickCuentaCobro',   value: TTipoPDF ): void 
-  }>()
-
-  const cargandoAlgo    = computed(()=> Object.values(loading.value).some( ( estado : boolean )=> !!estado ) )
-  const totalNotas      = computed(()=> ( !!acuerdo.value.notaPrivada ? 1 : 0 ) + ( !!acuerdo.value.notaPublica ? 1 : 0 )  )
-  //const envioInactivo   = computed(()=> cargandoAlgo.value || !acuerdo.value.metodoEntrega.id || !acuerdo.value.fechaEntregaCorta )
-  const mostrarEditar   = computed(()=>   !acuerdo.value.esEstadoEdicion
-                                          &&
-                                          (
-                                            (     acuerdo.value.esCotizacion
-                                              &&  !acuerdo.value.esEstadoFacturado
-                                            )
-                                            ||
-                                            (     acuerdo.value.esPedido
-                                              //&&  !acuerdo.value.facturado
-                                              &&  !acuerdo.value.esEstadoNoValidado
-                                              &&  !acuerdo.value.esEstadoAnulado
-                                              &&  !acuerdo.value.esEstadoEntregado
-                                            )
-                                          )
-                                  )
-
-  const disableBtnValidar = computed(()=>
-                                    cargandoAlgo.value
-                                || !acuerdo.value.proGrupos.length
-                                || !acuerdo.value.proGrupos[0].productos.length
-                                || (  
-                                      ( acuerdo.value.esPedido || acuerdo.value.esCotizacion )
-                                      &&
-                                      !acuerdo.value.contactoComercial.id
-                                      &&
-                                      (
-                                        acuerdo.value.tercero.esEmpresa
-                                        ||
-                                        acuerdo.value.esTerceroCtz
-                                      )
-                                    )
-                              )
-  const mostrarComisiones   = computed(()=> 
-    !acuerdo.value.condicionPago.esGarantia
-    &&
-    (acuerdo.value.esPedido || acuerdo.value.esCotizacion)
-    &&
-    !acuerdo.value.esEstadoBoceto
-    &&
-    ( acuerdo.value.usuarioEsDueño || usuario.value.esGerencia || usuario.value.esContable )
-  )
-
-  const labelBtnPDFDefault  = computed(()=>   acuerdo.value.esCotizacion  ? 'Cotizacion' 
-                                            : acuerdo.value.esPedido      ? ""
-                                            : acuerdo.value.esEntrega     ? "Remisión"
-                                            : acuerdo.value.esOCProveedor ? "Orden de compra"
-                                            : ""
-                                      )
-  
-  function pdfDefault()
-  {
-    const tipo : TTipoPDF = acuerdo.value.esCotizacion ? "quote" : "cuentaCobro"
-    emit("clickPdf", tipo)
-  }
-                                      
-  function clickEnNotas()
-  {
-    window.scrollTo({ top: document.body.scrollHeight,  behavior: 'smooth'})
-  }
-
-  function clickListoEntregar()
-  {
-    if(usuario.value.esProduccion)
-      emit('clickListoEntregar')    
-  }
-</script>

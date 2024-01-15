@@ -92,7 +92,7 @@
     <!-- //* ///////////////////////////////////////////////////////////// Tabla totales -->
     <div        class         ="col-12">
       <div      class         ="row justify-center bg-grey-3 rounded-borders">
-        <table  class         ="tabla-totales text_12px">
+        <table  class         ="tabla-totales">
           <tr>
             <td>Subtotal bruto:</td>
             <td>{{ formatoPrecio( aTotalSinDescu )}}</td>
@@ -195,7 +195,7 @@
   import {  useControlProductos } from "src/areas/acuerdos/controllers/ControlLineasProductos"
   import {  useTools, 
             formatoPrecio       } from "src/composables/useTools"
-  import {  useApiDolibarr      } from "src/composables/useApiDolibarr"  
+  import {  useApiDolibarr      } from "src/composables/useApiDolibarr"
   //* ////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana               from "components/utilidades/Ventana.vue"
   import    selectLabelValue      from "components/utilidades/select/SelectLabelValue.vue"

@@ -614,10 +614,9 @@ export function diferenciaFechas( fechaOld : number, fechaNew : number ) : strin
   return diferencia + " " + unidad
 }
 
-export function numberRandom( base : number ) : number
-{
-  return Math.floor( Math.random() * base )
-}
+export const numberRandom       = ( base : number )                     : number => Math.floor( Math.random() * base )
+export const numberRandomRango  = ( inicio : number, maximo : number )  : number => Math.floor( Math.random() * ( maximo - inicio )) + inicio
+
 
 export function colorRandom( modo : "lista" | "random" ) : string
 {

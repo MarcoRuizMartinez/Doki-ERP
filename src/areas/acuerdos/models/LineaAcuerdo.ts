@@ -59,7 +59,7 @@ export interface ILineaAcuerdo extends IProductoDoli {
   qty                       : number
   x100Maximo                : number
   orden                     : number
-  codeX                     : number
+  codeX                     : number      // Codigo que especial que tienen las lineas de un acuerdo
   tipoLinea                 : TipoLinea
   esTitulo                  : boolean
   esSubTotal                : boolean
@@ -119,55 +119,34 @@ export interface ILineaAcuerdo extends IProductoDoli {
 
 export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
 {
-  padreId                   : number
-  lineaId                   : number
-  qty                       : number
-  descuentoX100             : number
-  orden                     : number
-  codeX                     : number
-  fixed                     : boolean
-  class                     : string
-  precioBase                : number
-  borrar                    : boolean
-  accion                    : TAccionesSobreLinea  
+  padreId                   : number              = 0
+  lineaId                   : number              = 0
+  qty                       : number              = 0
+  descuentoX100             : number              = 0
+  orden                     : number              = 0
+  codeX                     : number              = 0
+  fixed                     : boolean             = false
+  class                     : string              = "" 
+  precioBase                : number              = 0
+  borrar                    : boolean             = false
+  accion                    : TAccionesSobreLinea = ""
   // */ /////////////////// Entrega
-  qtyTotal                  : number
-  bodegaId                  : number
-  bodega                    : IBodega
-  lineaIdPedido             : number
-  qtyProgramado             : number
-  qtyEntregado              : number
+  qtyTotal                  : number              = 0
+  bodegaId                  : number              = 0
+  bodega                    : IBodega             = new Bodega()
+  lineaIdPedido             : number              = 0
+  qtyProgramado             : number              = 0
+  qtyEntregado              : number              = 0
 
   // */ /////////////////// Comisiones
-  comsionX100Division       : number
-  comision_c1               : IComisionLinea
-  comision_c2               : IComisionLinea
+  comsionX100Division       : number              = 100
+  comision_c1               : IComisionLinea      = new ComisionLinea( "comercial 1" )
+  comision_c2               : IComisionLinea      = new ComisionLinea( "comercial 2" )
 
-  constructor()
+  /*constructor()
   {
-    super()
-
-    this.padreId            = 0
-    this.lineaId            = 0
-    this.qty                = 0
-    this.descuentoX100      = 0
-    this.precioBase         = 0
-    this.orden              = 0
-    this.codeX              = 0
-    this.fixed              = false
-    this.class              = ""
-    this.borrar             = false
-    this.accion             = ""
-    this.comsionX100Division= 100
-    this.comision_c1        = new ComisionLinea( "comercial 1" )
-    this.comision_c2        = new ComisionLinea( "comercial 2" )
-    this.qtyTotal           = 0
-    this.bodegaId           = 0
-    this.bodega             = new Bodega()
-    this.lineaIdPedido      = 0
-    this.qtyProgramado      = 0
-    this.qtyEntregado       = 0
-  }
+    super()   
+  }*/
 
   get entregaTotalOk()      : boolean { return !!this.qty && this.qty === this.qtyEntregado }
   get entregaProgramadoOk() : boolean { return !!this.qty && this.qty === this.qtyProgramado }
@@ -434,7 +413,7 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
         linea.lineaId       = +linea.lineaId
         linea.qty           = +linea.qty
         linea.orden         = +linea.orden
-        linea.codeX         = +linea.codeX
+        linea.codeX         = +linea.codeX        
         linea.unidadId      = +linea.unidadId
         linea.unidad        = await getUnidadDB( linea.unidadId )    
         if(!!linea.sigla)
@@ -445,7 +424,9 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
         linea.lineaIdPedido = linea?.lineaIdPedido  ?? 0
 
         const lineaFinal    = Object.assign( new LineaAcuerdo(), linea ) as ILineaAcuerdo
-        lineaFinal.comsionX100Division = +(linea?.divisionComision ?? 100)
+
+        lineaFinal.siigo.codigo         = +linea.codigo
+        lineaFinal.comsionX100Division  = +(linea?.divisionComision ?? 100)
 
         if(!!lineaFinal.bodegaId)
         {

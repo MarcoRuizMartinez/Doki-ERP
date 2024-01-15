@@ -11,6 +11,9 @@ import {  useTools,
           ID_URL_Ok,            } from "src/composables/useTools"
 import {  useApiDolibarr        } from "src/composables/useApiDolibarr"  
 import {  servicesProductos     } from "src/areas/productos/services/servicesProductos"
+import {  useFetch              } from "src/composables/useFetch"
+import {  getURL, getFormData   } from "src/composables/APIMaco"
+import {  TCodigosSiigo         } from "src/models/TiposVarios"
 
 //* ////////////////////////////////////////////////////////////////// Modelos
 
@@ -19,6 +22,7 @@ export function useControlProductos()
   const router                  = useRouter()
   const { aviso               } = useTools()  
   const { apiDolibarr         } = useApiDolibarr()
+  const { miFetch             } = useFetch()
   const { producto,
           productos,
           loading             } = storeToRefs( useStoreProducto() )
@@ -70,7 +74,27 @@ export function useControlProductos()
 
     return ok
   }
-  
+
+
+  async function codigoYaExiste( codigo : number ) : Promise <boolean>
+  {
+    const { ok }    = await miFetch( getURL("listas", "productos"), { method: "POST", body: getFormData( "codigoSiigoOk", { codigo } ) }, { mensaje: "buscar código producto existe" } )    
+    return ok
+  }
+
+  async function buscarCodigosSiigo( sigla : string, codigo : number ) : Promise <TCodigosSiigo>
+  {
+    const { ok, data }    = await miFetch( getURL("listas", "productos"), { method: "POST", body: getFormData( "codigosPorSiglas", { sigla } ) }, { mensaje: "buscar codigos siigo" } )    
+
+    const codigos : TCodigosSiigo = {
+      codigo  : codigo,
+      linea   : +data?.codigo_linea ?? 0,
+      grupo   : +data?.codigo_grupo ?? 0,
+    }
+    
+    return codigos
+  }
+
 
 
   //* /////////////////////////////////////////////////////////////// Return
@@ -78,5 +102,7 @@ export function useControlProductos()
     crearProducto,
     editarURL,
     editarProducto,
+    codigoYaExiste,
+    buscarCodigosSiigo,
   }
 }

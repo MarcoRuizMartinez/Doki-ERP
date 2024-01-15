@@ -73,10 +73,10 @@
     @click-nueva-entrega    ="clickNuevaEntrega"
     @click-remision         ="abrirModalRemision"
   /> -->
-  <calificacion
+  <!-- <calificacion
     v-if                    ="acuerdo.esEstadoValido && ( acuerdo.esPedido || acuerdo.esCotizacion )"
     class                   ="col-md-4 col-12"
-  />    
+  /> -->
   <comentarios
     v-model                 ="acuerdo.comentarios"
     :asignado               ="acuerdo.comercial"
@@ -110,14 +110,20 @@
       :acuerdo              ="acuerdoRemsion"
     />
   </q-dialog>
-  <!-- //* ///////////////////////////////////////////////////////////// Modal detalles condiciones -->
+  <!-- //* ///////////////////////////////////////////////////////////// Modal calendario de enventos de acuerdo -->
   <q-dialog
     v-model                 ="modales.calendario"
     v-bind                  ="style.dialogo"
     >
     <calendario />
   </q-dialog>
-    
+  <!-- //* ///////////////////////////////////////////////////////////// Modal productos siigo -->
+  <q-dialog
+    v-model                 ="modales.siigo"
+    v-bind                  ="style.dialogo"
+    >
+    <productos-siigo />
+  </q-dialog>    
     <!-- <remision v-model:visible ="modales.pdfRemision"/> -->
     <!--   <div id="capture" style="padding: 10px; background: #f5da55">
     <h4 style="color: #000; ">Hello world!</h4>
@@ -160,18 +166,21 @@
   import    botonera                from "./../../components/Modulos/ModuloBotonera.vue"
   import    terceroYContacto        from "./../../components/Modulos/ModuloTercero.vue"
   import    condiciones             from "./../../components/Modulos/ModuloCondiciones.vue"
-  import    calendario              from "./../../components/Modulos/ModuloCalendarioAcuerdos.vue"
   import    lineas                  from "./../../components/Modulos/ModuloLineas.vue"
   import    enlaces                 from "./../../components/Modulos/ModuloEnlaces.vue"
   import    contactos               from "./../../components/Modulos/ModuloContactos.vue"
-  import    entregas                from "./../../components/Modulos/ModuloEntregas.vue"
-  import    calificacion            from "./../../components/Modulos/ModuloCalificacion.vue"
+  //import    entregas                from "./../../components/Modulos/ModuloEntregas.vue"
+  //import    calificacion            from "./../../components/Modulos/ModuloCalificacion.vue"
   import    anticipos               from "./../../components/Modulos/ModuloAnticipos.vue"
+
+  import    calendario              from "./../../components/Modales/CalendarioAcuerdos.vue"
+  import    productosSiigo          from "./../../components/Modales/ProductosSiigo.vue"
+
   import    comentarios             from "src/areas/comunicacion/components/ModuloComentarios.vue"
   //import    nuevaEntrega          from ".././Modals/NuevaEntregaSelectBodega.vue"
   import    remision                from "src/areas/acuerdos/components/PDF/RemisionPDF.vue"
   import    documentos              from "components/archivos/ModuloArchivos.vue"
-  import    comisiones              from "src/areas/nomina/components/Modals/CalculoComisiones.vue" 
+  import    comisiones              from "src/areas/nomina/components/Modales/CalculoComisiones.vue" 
 
   const { acuerdo,
           modales,
@@ -246,7 +255,6 @@
       return idBodega
     }
   }
-
 
   async function generarPDF( tipo : TTipoPDF = "quote")
   {

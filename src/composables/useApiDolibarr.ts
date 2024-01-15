@@ -191,7 +191,6 @@ export function useApiDolibarr()
         else
           resultado           = await apiDolibarrAxios[metodo](endPoint, objeto, { headers: getHeadersAxios(), cancelToken: cancelTokenSource.token })
 
-        
         //console.log("useApiDoliabrr Resultado: ", resultado);
 
         if(!!resultado.data)

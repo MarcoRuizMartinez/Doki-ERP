@@ -1,14 +1,22 @@
 <template>
   <div class            ="row items-center min-w-max">
-    <q-icon
-      name              ="mdi-package-variant-closed"
-      size              ="xs"
-      class             ="op60 op100-hover"
-      >
-      <tooltip-lineas
-        :lineas         ="acuerdo.productos"
-      />
-    </q-icon>
+    <div class          ="relative-position">
+      <q-icon
+        name            ="mdi-tooltip"
+        size            ="xs"
+        class           ="op50 op100-hover"
+        >     
+        <tooltip-lineas
+          :lineas       ="acuerdo.productos"
+        />
+      </q-icon>
+      <q-badge          rounded floating transparent 
+        color           ="transparent"
+        text-color      ="white"
+        class           ="text-0_8em absolute lago non-selectable no-pointer-events"
+        :label          ="acuerdo.largo"
+      />  
+    </div>
     <!-- //* //////// Vista Rapida -->
     <q-btn            flat dense round
       v-if            ="vistaRapida"
@@ -86,3 +94,9 @@
     emit("clickAcuerdo", acuerdo.value)
   }
 </script>
+<style scoped>
+.lago{
+    left: 1px;
+    top: 1px;
+}
+</style>

@@ -46,7 +46,14 @@
           label             ="Mis tareas de hoy"
           icon              ="mdi-account-details"
           :to               ="`/tareas?usuario=${usuario.id}&limite=50&offset=0&cuando=2_3&progreso=0_25_50_75`"
-        />          
+        />
+        <q-btn 
+          v-bind            ="style.btnElegante"
+          class             ="col-12 q-mt-sm"
+          label             ="Mis tareas pendientes"
+          icon              ="mdi-account-details"
+          :to               ="`/tareas?usuario=${usuario.id}&limite=50&offset=0&cuando=1_2_3_4_5_6_7&progreso=0_25_50_75`"
+        />            
       </div>
       <q-separator class    ="q-my-sm"/>      
       <div  class           ="row justify-between items-center">

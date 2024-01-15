@@ -9,9 +9,14 @@ import {  roundInt,
 import {  ICategoriaProducto,
           CategoriaProducto } from "src/areas/productos/models/CategoriaProducto"
 import {  IAccion           } from "src/areas/comunicacion/models/Accion"
+import {  TCodigosSiigo     } from "src/models/TiposVarios"
 
 export const imagenDefault  :string  = "https://dolibarr.mublex.com/_maco/img/box.jpg"
 const ivaX100                 = parseInt( process.env.IVA ?? "0" )
+
+
+
+export type TTipoPDF = "quote" | "cuentaCobro"
 
 export interface IProductoDoli {
   id                        : number
@@ -63,8 +68,7 @@ export interface IProductoDoli {
   precio_promocion          : number
   precioPublicoConIVA       : number
   precioPromocionConIVA     : number
-  precio                    : number        // Precio final, el menor entre publico y promocion
-  codigo                    : number
+  precio                    : number        // Precio final, el menor entre publico y promocion  
   competencia               : number
   esProducto                : boolean
   esServicio                : boolean
@@ -73,112 +77,50 @@ export interface IProductoDoli {
   activo                    : boolean
   comentarios               : IAccion[]
   productoForApi            : any
+  siigo                     : TCodigosSiigo  // Codigo siigo que se utiliza en los productos
 }
 
 export class ProductoDoli implements IProductoDoli
 {
-  id                        : number
-  ref                       : string
-  refProv                   : string
-  categoria                 : ICategoriaProducto
-  nombre                    : string
-  sigla                     : string
-  descripcion               : string
-  iva                       : number
-  unidadId                  : number
-  unidad                    : IUnidad
-  tipo                      : 0 | 1 | 9
-  imagen                    : string
-  activo_proveedor          : boolean
-  aumento                   : number
-  aumento_escom             : number
-  aumento_descuento         : number
-  aumento_loco              : number
-  costo                     : number
-  costo_adicional           : number
-  creador_id                : number
-  disponible                : boolean
-  activoEnCompra            : boolean
-  activoEnVenta             : boolean
-  sin_proveedor             : boolean
-  fecha_creacion            : string
-  fecha_llegada             : string
-  garantia                  : string
-  hecho_en                  : string
-  id_extra                  : number
-  id_producto_pro           : number
-  id_proveedor              : number
-  precio_proveedor          : number
-  precio_publico            : number
-  precio_promocion          : number
-  precio                    : number
-  codigo                    : number
-  competencia               : number
-  elegido                   : boolean
-  comentarios               : IAccion[]   = []
-
-  constructor()
-  {
-    this.id                 = 0
-    this.ref                = ""
-    this.refProv            = ""
-    this.sigla              = ""
-    this.categoria          = new CategoriaProducto()
-    this.nombre             = ""
-    this.descripcion        = ""
-    this.iva                = parseInt( process.env.IVA ?? "0" )
-    this.unidadId           = 0
-    this.unidad             = new Unidad()
-    this.tipo               = 0
-    this.imagen             = imagenDefault
-    this.activo_proveedor   = true
-    this.disponible         = true
-    this.aumento            = 0
-    this.aumento_escom      = 0
-    this.aumento_descuento  = 0
-    this.aumento_loco       = 0
-    this.costo_adicional    = 0
-    this.creador_id         = 0
-    this.activoEnCompra     = true
-    this.activoEnVenta      = true
-    this.sin_proveedor      = false
-    this.fecha_creacion     = ""
-    this.fecha_llegada      = ""
-    this.garantia           = ""
-    this.hecho_en           = ""
-    this.id_extra           = 0
-    this.id_producto_pro    = 0
-    this.id_proveedor       = 0
-    this.costo              = 0
-    this.precio_proveedor   = 0
-    this.precio_publico     = 0
-    this.precio_promocion   = 0
-    this.precio             = 0
-    this.codigo             = 0
-    this.competencia        = 0
-    this.elegido            = false
-
-
-    /*
-    p.ref                                       as ref,
-    p.label                                     as nombre,
-    p.price                                     as precio,
-    p.url                                       as imagen,
-    p.description                               as descripcion,
-
-    IFNULL(p.fk_unit, '')                       as unidadId,
-    IFNULL(p.cost_price,            0)          as costo,
-
-    IFNULL(px.aumento,              0)          as aumento,
-    IFNULL(px.aumento_escom,        0)          as aumento_escom,
-    IFNULL(px.aumento_precio_desc,  0)          as aumento_descuento,
-    IFNULL(px.aumento_precio_loco,  0)          as aumento_loco,
-
-    IFNULL(px.precio_publico,       0)          as precio_publico,
-    IFNULL(px.precio_promocion,     0)          as precio_promocion,
-    IFNULL(px.costo_adicional,      0)          as costo_adicional,
-    */
-  }
+  id                        : number              = 0
+  ref                       : string              = ""
+  refProv                   : string              = ""
+  categoria                 : ICategoriaProducto  = new CategoriaProducto()
+  nombre                    : string              = ""
+  sigla                     : string              = ""
+  descripcion               : string              = ""
+  iva                       : number              = parseInt( process.env.IVA ?? "0" )
+  unidadId                  : number              = 0
+  unidad                    : IUnidad             = new Unidad()
+  tipo                      : 0 | 1 | 9           = 0
+  imagen                    : string              = imagenDefault
+  activo_proveedor          : boolean             = true
+  aumento                   : number              = 0
+  aumento_escom             : number              = 0
+  aumento_descuento         : number              = 0
+  aumento_loco              : number              = 0
+  costo                     : number              = 0
+  costo_adicional           : number              = 0
+  creador_id                : number              = 0
+  disponible                : boolean             = true
+  activoEnCompra            : boolean             = true
+  activoEnVenta             : boolean             = true
+  sin_proveedor             : boolean             = false
+  fecha_creacion            : string              = ""
+  fecha_llegada             : string              = ""
+  garantia                  : string              = ""
+  hecho_en                  : string              = ""
+  id_extra                  : number              = 0
+  id_producto_pro           : number              = 0
+  id_proveedor              : number              = 0
+  precio_proveedor          : number              = 0
+  precio_publico            : number              = 0
+  precio_promocion          : number              = 0
+  precio                    : number              = 0
+  siigo                     : TCodigosSiigo       = { codigo : 0, linea : 0, grupo : 0 }
+  competencia               : number              = 0
+  elegido                   : boolean             = false
+  comentarios               : IAccion[]           = []
 
   get precio_aumento()          :number { return this.calcularPrecioConAumento( this.aumento            ) }
   get precio_aumento_escom()    :number { return this.calcularPrecioConAumento( this.aumento_escom      ) }
@@ -413,7 +355,7 @@ export class ProductoDoli implements IProductoDoli
     producto.id_proveedor           = +productoApi.id_proveedor
     producto.unidadId               = +productoApi.unidadId
     producto.creador_id             = +productoApi.creador_id
-    producto.codigo                 = +productoApi.codigo
+    producto.siigo.codigo           = +productoApi.codigo
     producto.iva                    = +productoApi.iva
     producto.tipo                   =   productoApi.tipo == 1 ? 1
                                       : productoApi.tipo == 9 ? 9

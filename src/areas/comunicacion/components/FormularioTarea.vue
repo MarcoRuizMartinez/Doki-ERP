@@ -141,7 +141,7 @@
           <q-icon name      ="mdi-subtitles-outline" />
         </template>
       </q-input>
-      <documentos           minimizar puede-editar sin-titulo sin-subida
+      <documentos           minimizar puede-editar sin-titulo
         v-if                ="!tarea.esNuevo"
         class               ="col-12"
         modulo              ="action"
@@ -154,7 +154,7 @@
         :modulo-ref         ="tarea.id.toString()"
         @descarga-ok        ="( f:IArchivo[] )=> totalArchivos = f.length"
         >
-        <q-btn        
+        <!-- <q-btn        
           v-bind            ="style.btnRedondoFlat"
           icon              ="mdi-file-upload"
           class             ="op60 op100-hover"
@@ -162,7 +162,7 @@
           :href             ="tarea.urlDolibarrFiles"          
           >
           <Tooltip label    ="Subir archivo en Dolibarr"/>
-        </q-btn>     
+        </q-btn>     --> 
       </documentos>
     </q-form>
   </ventana>

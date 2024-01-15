@@ -184,6 +184,7 @@ export interface IAcuerdo
   contactoSmartTel            : string
   productos                   : ILineaAcuerdo[]
   proGrupos                   : IGrupoLineas[]
+  largo                       : number      // total de productos
   conIVA                      : boolean
   hayDescuento                : boolean
   descuentoValor              : number      // Descuento valor
@@ -364,6 +365,8 @@ export class Acuerdo implements IAcuerdo
   //get labelPlural() : string { return getTipoAcuerdoPlural( this.tipo ) }
   //get icono()       : string { return getIconoAcuerdo     ( this.tipo ) }
   //get tipoPlural()  : string { return "" }
+
+  get largo()       : number { return this.productos.filter( p => !p.esTituloOsubTotal ).length }
 
 
 

@@ -17,6 +17,8 @@
 
 .fuente-gruesa{
   font-family: 'Poppins', sans-serif;
+  font-style: italic;
+  font-weight: 700;
 }
 .fuente-delicada{
   font-family: 'Julius Sans One', sans-serif;  
@@ -68,7 +70,7 @@
   text-decoration: underline;
 }
   
-
+.text-0_6em { font-size: 0.6em; }
 .text-0_8em { font-size: 0.8em; }
 .text-0_9em { font-size: 0.9em; }
 .text-1em   { font-size: 1em;   }

@@ -312,6 +312,9 @@
       new Columna(            { name: "contactoSmartMun",     label: "Municipio contacto"                     }),
       new Columna(            { name: "contactoSmartDir",     label: "Dirección contacto"                     }),
       new Columna(            { name: "contactoSmartTel",     label: "Teléfono contacto"                      }),
+      new Columna(            { name: "fechaEntregaCorta",    label: "Fecha compromiso"                       }),
+      new Columna(            { name: "fechaListoCorta",      label: "Fecha listo"                            }),
+      new Columna(            { name: "fechaADespacharCorta", label: "Fecha a despachar"                      }), 
       new Columna(            { name: "metodoEntregaLabel",   label: "Entrega"                                }), 
       new Columna(            { name: "condicionPagoLabel",   label: "Condiciones"                            }), 
       new Columna(            { name: "formaPagoLabel",       label: "Forma de pago"                          }), 
@@ -321,16 +324,14 @@
       new Columna(            { name: "origenContactoLabel",  label: "Origen"                                 }), 
       new Columna(            { name: "creador"                                                               }),
       new Columna(            { name: "fechaCreacionCorta",   label: "Creado"                                 }),
-      new Columna(            { name: "fechaValidacionCorta", label: "Validado"                               }),
-      new Columna(            { name: "fechaListoCorta",      label: "Fecha listo"                            }),
-      new Columna(            { name: "fechaADespacharCorta", label: "Fecha a despachar"                      }),
+      new Columna(            { name: "fechaValidacionCorta", label: "Validado"                               }),            
       Columna.ColumnaPrecio ( { name: "subTotalLimpio",       label: "Subtotal comisión", clase: "text-bold"  }),
       Columna.ColumnaPrecio ( { name: "totalConDescu",        label: "Subtotal",          clase: "text-bold"  }),
       Columna.ColumnaPrecio ( { name: "ivaValor",             label: "IVA",               clase: "text-bold"  }),
       Columna.ColumnaPrecio ( { name: "totalConIva",          label: "Total",             clase: "text-bold"  }),
     ]
 
-    const colsEli = busqueda.value.esCotizacion   ? ["facturado", "pedidoId", "fechaListoCorta", "fechaADespacharCorta"]
+    const colsEli = busqueda.value.esCotizacion   ? ["facturado", "pedidoId", "fechaListoCorta", "fechaADespacharCorta", "fechaEntregaCorta"]
                   : busqueda.value.esPedido       ? ["pedidoId"]
                   : busqueda.value.esEntrega      ? ["facturado", "condicionPagoLabel", "formaPagoLabel", "origenContactoLabel", "subTotalLimpio", "totalConDescu", "ivaValor", "totalConIva", "fechaListoCorta"]
                   : busqueda.value.esOCProveedor  ? ["refCliente", "comercial", "metodoEntregaLabel", "facturado", "origenContactoLabel", "subTotalLimpio", "pedidoId", "fechaListoCorta"]
