@@ -19,6 +19,7 @@ import {  IReglaComision,     ReglaComision     } from "src/models/Diccionarios/
 import {  ICategoriaProducto, CategoriaProducto } from "src/areas/productos/models/CategoriaProducto"
 import {  ICategoriaGrupo,    CategoriaGrupo    } from "src/areas/productos/models/CategoriaGrupo"
 import {  IBodega,            Bodega            } from "src/models/Diccionarios/Bodega"
+import {  ITipoProducto,      TipoProducto      } from "src/models/Diccionarios/TipoProducto"
 
 //* ///////////////////////////////////////////////////////////// 
 export enum TABLAS
@@ -40,6 +41,7 @@ export enum TABLAS
   CUENTA_DINERO               = "cuentasDinero",
   REGLA_COMISION              = "reglasComision",
   BODEGA                      = "bodegas",
+  TIPO_PRODUCTO               = "tipoProducto",
 }
 
 const cosa = TABLAS
@@ -62,12 +64,13 @@ export class DBSimpleOk extends Dexie
   [TABLAS.CUENTA_DINERO]      !: Dexie.Table< ICuentaDinero,     number >
   [TABLAS.REGLA_COMISION]     !: Dexie.Table< IReglaComision,    number >
   [TABLAS.BODEGA]             !: Dexie.Table< IBodega,           number >
+  [TABLAS.TIPO_PRODUCTO]      !: Dexie.Table< ITipoProducto,     number >
 
   constructor()
   {
     super(process.env.PREFIJO + "DBSimpleOk")
 
-    this.version(2).stores(
+    this.version(3).stores(
     {
       [TABLAS.MUNICIPIOS]         : "++id, municipio, departamento, departamentoSigla, departamentoId, indicativo, codigoDian",
       [TABLAS.USUARIOS]           : "++id, nombre, apellido, puesto, foto, tipo, area, estado, gruposString, terceroIdCtz, cel, correo, reglaComisionId, color",
@@ -86,6 +89,7 @@ export class DBSimpleOk extends Dexie
       [TABLAS.CUENTA_DINERO]      : "++id, ref, label, tipoId, logoUrl, virtual",
       [TABLAS.REGLA_COMISION]     : "++id, nombre, descripcion, alfa, a, b, c, d, e",
       [TABLAS.BODEGA]             : "++id, ref, nombre, estado, padre_id, proyecto_id, descripcion, direccion, area",
+      [TABLAS.TIPO_PRODUCTO]      : "++id, nombre, codigo",
     })
 
     this[TABLAS.MUNICIPIOS]         = this.table( TABLAS.MUNICIPIOS )
@@ -138,6 +142,9 @@ export class DBSimpleOk extends Dexie
 
     this[TABLAS.BODEGA]             = this.table( TABLAS.BODEGA )
     this[TABLAS.BODEGA]             .mapToClass( Bodega )
+
+    this[TABLAS.TIPO_PRODUCTO]      = this.table( TABLAS.TIPO_PRODUCTO )
+    this[TABLAS.TIPO_PRODUCTO]      .mapToClass( TipoProducto )    
   }
 }
 

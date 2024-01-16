@@ -18,28 +18,15 @@ export interface IBodega
 
 export class Bodega implements IBodega
 {
-  id                  : number
-  ref                 : string
-  nombre              : string
-  activo              : boolean
-  padre_id            : number
-  proyecto_id         : number
-  descripcion         : string
-  direccion           : string
-  area                : AREA  
-
-  constructor()
-  {
-    this.id           = 0
-    this.ref          = ""
-    this.nombre       = ""
-    this.activo       = true
-    this.padre_id     = 0
-    this.proyecto_id  = 0
-    this.descripcion  = ""
-    this.direccion    = ""
-    this.area         = AREA.NULO
-  }
+  id                  : number  = 0
+  ref                 : string  = ""
+  nombre              : string  = ""
+  activo              : boolean = true
+  padre_id            : number  = 0
+  proyecto_id         : number  = 0
+  descripcion         : string  = ""
+  direccion           : string  = ""
+  area                : AREA    = AREA.NULO
 
   get value() : number  { return this.id  }
   get label() : string  { return this.ref }

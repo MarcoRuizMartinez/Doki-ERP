@@ -27,13 +27,14 @@ import {  IProveedor,         Proveedor         } from "src/models/Diccionarios/
 import {  ICuentaDinero,      CuentaDinero      } from "src/models/Diccionarios/CuentaDinero"
 import {  IReglaComision,     ReglaComision     } from "src/models/Diccionarios/ReglasComision"
 import {  IBodega,            Bodega            } from "src/models/Diccionarios/Bodega"
+import {  ITipoProducto,      TipoProducto      } from "src/models/Diccionarios/TipoProducto"
 import {  storeToRefs                           } from 'pinia'
 
 
 
-export type ITabla            = IMunicipio      | IUsuario        | ITipoDocumento      | ICondicionPago | IReglaComision | IProveedor |
-                                IFormaPago      | IMetodoEntrega  | IOrigenContacto     | IUnidad        | ICuentaDinero  | IBodega    |
-                                ITiempoEntrega  | ITipoContacto   | ICategoriaProducto  | ICategoriaGrupo| IConstante
+export type ITabla            = IMunicipio      | IUsuario        | ITipoDocumento      | ICondicionPago | IReglaComision | IProveedor    |
+                                IFormaPago      | IMetodoEntrega  | IOrigenContacto     | IUnidad        | ICuentaDinero  | IBodega       |
+                                ITiempoEntrega  | ITipoContacto   | ICategoriaProducto  | ICategoriaGrupo| IConstante     | ITipoProducto
 
 const pre                     = process.env.PREFIJO
 
@@ -60,6 +61,7 @@ export function cargarListasIndex() {
                                           dexieCuentasDinero    (param)
                                           dexieReglaComision    (param)
                                           dexieBodegas          (param)
+                                          dexieTiposProducto    (param)
   }
 }
 
@@ -167,6 +169,12 @@ export function dexieReglaComision ( { cargarSiempre = false, demora = 0 } = par
 export function dexieBodegas ( { cargarSiempre = false, demora = 0 } = paramDefault ) :Ref< IBodega[] > {
   const { lista } = useDexie( TABLAS.BODEGA, { cargarSiempre, demora } )
   return lista as Ref< IBodega[] >
+}
+
+//* ///////////////////////////////////////////////////////////// Tipos productos
+export function dexieTiposProducto ( { cargarSiempre = false, demora = 0 } = paramDefault ) :Ref< ITipoProducto[] > {
+  const { lista } = useDexie( TABLAS.TIPO_PRODUCTO, { cargarSiempre, demora } )
+  return lista as Ref< ITipoProducto[] >
 }
 
 function useDexie( tabla : TABLAS, { cargarSiempre = false, demora = 0 } = paramDefault )
@@ -327,7 +335,10 @@ function useDexie( tabla : TABLAS, { cargarSiempre = false, demora = 0 } = param
                     break;
                   case TABLAS.BODEGA :
                     await db[ TABLAS.BODEGA             ].bulkAdd( listaCarga )
-                    break;                    
+                    break;
+                  case TABLAS.TIPO_PRODUCTO :
+                    await db[ TABLAS.TIPO_PRODUCTO      ].bulkAdd( listaCarga )
+                    break;
                   default:
                     break;
                 }

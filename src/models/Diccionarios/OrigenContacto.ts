@@ -7,14 +7,8 @@ export interface IOrigenContacto
 
 export class OrigenContacto implements IOrigenContacto
 {
-  id:                 number  
-  label:              string
+  id                  : number = 0
+  label               : string = ""
   
-  constructor()
-  {
-    this.id           = 0  
-    this.label        = ""
-  }
-
   get value() : number  { return this.id }
 }

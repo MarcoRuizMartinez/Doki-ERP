@@ -11,20 +11,11 @@ export interface IUnidad
 
 export class Unidad implements IUnidad
 {
-  id:                 number
-  nombre:             string
-  codigo:             string
-  tipo:               string
-  orden:              number
-
-  constructor()
-  {
-    this.id           = 1
-    this.nombre       = ""
-    this.codigo       = ""
-    this.tipo         = ""
-    this.orden        = 0
-  }
+  id                  : number  = 1
+  nombre              : string  = ""
+  codigo              : string  = ""
+  tipo                : string  = ""
+  orden               : number  = 0
 
   get value() : number  { return this.id }
   get label() : string  {

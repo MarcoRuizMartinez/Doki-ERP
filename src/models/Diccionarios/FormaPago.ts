@@ -7,14 +7,8 @@ export interface IFormaPago
 
 export class FormaPago implements IFormaPago
 {
-  id:                 number  
-  label:              string
-  
-  constructor()
-  {
-    this.id           = 0  
-    this.label        = ""
-  }
+  id                  : number  = 0  
+  label               : string  = ""  
 
   get value() : number  { return this.id }
 }

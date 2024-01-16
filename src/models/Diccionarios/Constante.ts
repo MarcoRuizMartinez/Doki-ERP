@@ -14,16 +14,9 @@ export const enum CONSTANTES {
 
 export class Constante implements IConstante
 {
-  id:                 number
-  label:              string
-  value:              string
-
-  constructor()
-  {
-    this.id           = 0
-    this.label        = ""
-    this.value        = ""
-  }
+  id                    : number = 0
+  label                 : string = ""
+  value                 : string = ""
 }
 
 import {  ref, watch        } from "vue"

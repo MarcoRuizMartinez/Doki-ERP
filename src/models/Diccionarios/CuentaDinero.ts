@@ -19,23 +19,13 @@ export interface ICuentaDinero
 
 export class CuentaDinero implements ICuentaDinero
 {
-  id:                 number  
-  ref:                string
-  label:              string
-  tipoId:             TIPO_CUENTA_DINERO
-  logoUrl:            string
-  virtual:            boolean
+  id                  : number              = 0
+  ref                 : string              = ""
+  label               : string              = ""
+  tipoId              : TIPO_CUENTA_DINERO  = 0
+  logoUrl             : string              = "defecto.png"
+  virtual             : boolean             = false
 
-  constructor()
-  {
-    this.id           = 0
-    this.ref          = ""
-    this.label        = ""
-    this.tipoId       = 0
-    this.logoUrl      = "defecto.png"
-    this.virtual      = false
-  }
-  
   get value()     : number  { return this.id }
   get imagenUrl() : string  { return `/images/iconos/cuentasDinero/${this.logoUrl}` }
 }

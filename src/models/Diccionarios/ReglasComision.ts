@@ -30,30 +30,16 @@ export interface IReglaComision
 
 export class ReglaComision implements IReglaComision
 {
-  id                        : number
-	nombre                    : string
-  descripcion               : string
+  id                        : number  = 0
+	nombre                    : string  = ""
+  descripcion               : string  = ""
 
-	alfa                      : string
-	a                         : string
-	b                         : string
-	c                         : string
-	d                         : string
-	e                         : string
-
-  constructor()
-  {
-    this.id                 = 0
-    this.nombre             = ""
-    this.descripcion        = ""
-
-    this.alfa               = "0"
-    this.a                  = "0"
-    this.b                  = "0"
-    this.c                  = "0"
-    this.d                  = "0"
-    this.e                  = "0"
-  }
+	alfa                      : string  = "0"
+	a                         : string  = "0"
+	b                         : string  = "0"
+	c                         : string  = "0"
+	d                         : string  = "0"
+	e                         : string  = "0"
 
   get label()     : string  { return this.nombre  }
   get value()     : number  { return this.id      }

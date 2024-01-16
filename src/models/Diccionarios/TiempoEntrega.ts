@@ -8,16 +8,9 @@ export interface ITiempoEntrega
 
 export class TiempoEntrega implements ITiempoEntrega
 {
-  id:                 number  
-  label:              string
-  codigo:             string
-
-  constructor()
-  {
-    this.id           = 0  
-    this.label        = ""
-    this.codigo       = ""
-  } 
+  id                  : number  = 0 
+  label               : string  = ""
+  codigo              : string  = ""
 
   get value() : number  { return this.id }
 }

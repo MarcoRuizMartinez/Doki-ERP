@@ -9,18 +9,10 @@ export interface ITipoContacto
 
 export class TipoContacto implements ITipoContacto
 {
-  id:                 number  
-  codigo:             string
-  tipo:               string
-  origen:             string
-
-  constructor()
-  {
-    this.id           = 0  
-    this.codigo       = ""
-    this.tipo         = ""
-    this.origen       = ""
-  }
+  id                  : number  = 0  
+  codigo              : string  = ""
+  tipo                : string  = ""
+  origen              : string  = ""
 
   get value() : number  { return this.id }
 }
