@@ -1,4 +1,4 @@
-export interface ITipoProducto
+export interface INaturalezaProducto
 {
   id:                 number
   codigo:             number
@@ -7,7 +7,7 @@ export interface ITipoProducto
   value:              number
 }
 
-export class TipoProducto implements ITipoProducto
+export class NaturalezaProducto implements INaturalezaProducto
 {
   id                  : number  = 0
   nombre              : string  = ""

@@ -19,7 +19,7 @@ import {  IReglaComision,     ReglaComision     } from "src/models/Diccionarios/
 import {  ICategoriaProducto, CategoriaProducto } from "src/areas/productos/models/CategoriaProducto"
 import {  ICategoriaGrupo,    CategoriaGrupo    } from "src/areas/productos/models/CategoriaGrupo"
 import {  IBodega,            Bodega            } from "src/models/Diccionarios/Bodega"
-import {  ITipoProducto,      TipoProducto      } from "src/models/Diccionarios/TipoProducto"
+import {  INaturalezaProducto,NaturalezaProducto} from "src/models/Diccionarios/NaturalezaProducto"
 
 //* ///////////////////////////////////////////////////////////// 
 export enum TABLAS
@@ -41,30 +41,30 @@ export enum TABLAS
   CUENTA_DINERO               = "cuentasDinero",
   REGLA_COMISION              = "reglasComision",
   BODEGA                      = "bodegas",
-  TIPO_PRODUCTO               = "tipoProducto",
+  NATURALEZA_PRODUCTO         = "naturaleza",
 }
 
 const cosa = TABLAS
 export class DBSimpleOk extends Dexie
 {
-  [TABLAS.USUARIOS]           !: Dexie.Table< IUsuario,          number >
-  [TABLAS.MUNICIPIOS]         !: Dexie.Table< IMunicipio,        number >
-  [TABLAS.TIPOS_DOCUMENTOS]   !: Dexie.Table< ITipoDocumento,    number >
-  [TABLAS.CONDICION_PAGO]     !: Dexie.Table< ICondicionPago,    number >
-  [TABLAS.FORMA_PAGO]         !: Dexie.Table< IFormaPago,        number >
-  [TABLAS.METODO_ENTREGA]     !: Dexie.Table< IMetodoEntrega,    number >
-  [TABLAS.ORIGEN_CONTACTO]    !: Dexie.Table< IOrigenContacto,   number >
-  [TABLAS.UNIDAD]             !: Dexie.Table< IUnidad,           number >
-  [TABLAS.TIEMPO_ENTREGA]     !: Dexie.Table< ITiempoEntrega,    number >
-  [TABLAS.TIPO_CONTACTO]      !: Dexie.Table< ITipoContacto,     number >
-  [TABLAS.CATEGORIA_PRODUCTO] !: Dexie.Table< ICategoriaProducto,number >
-  [TABLAS.CATEGORIA_GRUPO]    !: Dexie.Table< ICategoriaGrupo,   number >
-  [TABLAS.CONSTANTE]          !: Dexie.Table< IConstante,        number >
-  [TABLAS.PROVEEDORES]        !: Dexie.Table< IProveedor,        number >
-  [TABLAS.CUENTA_DINERO]      !: Dexie.Table< ICuentaDinero,     number >
-  [TABLAS.REGLA_COMISION]     !: Dexie.Table< IReglaComision,    number >
-  [TABLAS.BODEGA]             !: Dexie.Table< IBodega,           number >
-  [TABLAS.TIPO_PRODUCTO]      !: Dexie.Table< ITipoProducto,     number >
+  [TABLAS.USUARIOS]             !: Dexie.Table< IUsuario,             number >
+  [TABLAS.MUNICIPIOS]           !: Dexie.Table< IMunicipio,           number >
+  [TABLAS.TIPOS_DOCUMENTOS]     !: Dexie.Table< ITipoDocumento,       number >
+  [TABLAS.CONDICION_PAGO]       !: Dexie.Table< ICondicionPago,       number >
+  [TABLAS.FORMA_PAGO]           !: Dexie.Table< IFormaPago,           number >
+  [TABLAS.METODO_ENTREGA]       !: Dexie.Table< IMetodoEntrega,       number >
+  [TABLAS.ORIGEN_CONTACTO]      !: Dexie.Table< IOrigenContacto,      number >
+  [TABLAS.UNIDAD]               !: Dexie.Table< IUnidad,              number >
+  [TABLAS.TIEMPO_ENTREGA]       !: Dexie.Table< ITiempoEntrega,       number >
+  [TABLAS.TIPO_CONTACTO]        !: Dexie.Table< ITipoContacto,        number >
+  [TABLAS.CATEGORIA_PRODUCTO]   !: Dexie.Table< ICategoriaProducto,   number >
+  [TABLAS.CATEGORIA_GRUPO]      !: Dexie.Table< ICategoriaGrupo,      number >
+  [TABLAS.CONSTANTE]            !: Dexie.Table< IConstante,           number >
+  [TABLAS.PROVEEDORES]          !: Dexie.Table< IProveedor,           number >
+  [TABLAS.CUENTA_DINERO]        !: Dexie.Table< ICuentaDinero,        number >
+  [TABLAS.REGLA_COMISION]       !: Dexie.Table< IReglaComision,       number >
+  [TABLAS.BODEGA]               !: Dexie.Table< IBodega,              number >
+  [TABLAS.NATURALEZA_PRODUCTO]  !: Dexie.Table< INaturalezaProducto,  number >
 
   constructor()
   {
@@ -89,7 +89,7 @@ export class DBSimpleOk extends Dexie
       [TABLAS.CUENTA_DINERO]      : "++id, ref, label, tipoId, logoUrl, virtual",
       [TABLAS.REGLA_COMISION]     : "++id, nombre, descripcion, alfa, a, b, c, d, e",
       [TABLAS.BODEGA]             : "++id, ref, nombre, estado, padre_id, proyecto_id, descripcion, direccion, area",
-      [TABLAS.TIPO_PRODUCTO]      : "++id, nombre, codigo",
+      [TABLAS.NATURALEZA_PRODUCTO]: "++id, nombre, codigo",
     })
 
     this[TABLAS.MUNICIPIOS]         = this.table( TABLAS.MUNICIPIOS )
@@ -143,8 +143,8 @@ export class DBSimpleOk extends Dexie
     this[TABLAS.BODEGA]             = this.table( TABLAS.BODEGA )
     this[TABLAS.BODEGA]             .mapToClass( Bodega )
 
-    this[TABLAS.TIPO_PRODUCTO]      = this.table( TABLAS.TIPO_PRODUCTO )
-    this[TABLAS.TIPO_PRODUCTO]      .mapToClass( TipoProducto )    
+    this[TABLAS.NATURALEZA_PRODUCTO]= this.table( TABLAS.NATURALEZA_PRODUCTO )
+    this[TABLAS.NATURALEZA_PRODUCTO].mapToClass( NaturalezaProducto )    
   }
 }
 

@@ -1,3 +1,163 @@
+<script setup lang="ts">
+  //* ///////////////////////////////////////////////////////////////////////////////// Core
+  import {  ref,
+            toRefs,
+            watch,
+            computed,
+            PropType,
+            onMounted
+                                  } from "vue"
+  //* ///////////////////////////////////////////////////////////////////////////////// Store
+  import {  storeToRefs           } from 'pinia'
+  import {  useStoreProducto      } from 'src/stores/producto'
+  import {  useStoreUser          } from "src/stores/user"
+  //* ///////////////////////////////////////////////////////////////////////////////// Modelos
+  import {  ICategoriaProducto,
+            CategoriaProducto   } from "src/areas/productos/models/CategoriaProducto"
+  import {  IProductoDoli,
+            ProductoDoli        } from "src/areas/productos/models/ProductoDolibarr"
+  //* ///////////////////////////////////////////////////////////////////////////////// Componibles
+  import {  formatoPrecio,
+            confeti               } from "src/composables/useTools"
+  import {  style                 } from "src/composables/useEstilos"
+  import {  useControlProductos   } from "src/areas/productos/controllers/ControlProductosDolibarr"
+  import {  dexieUnidades, 
+            dexieNaturaleza,
+            dexieCategoriasProducto
+                                  } from "src/composables/useDexie"
+  //* ///////////////////////////////////////////////////////////////////////////////// Componentes
+  import    efecto                  from "components/utilidades/Efecto.vue"
+  import    ventana                 from "components/utilidades/Ventana.vue"
+  import    numeroPaso              from "components/utilidades/input/InputNumeroPaso.vue"
+  import    inputNumber             from "components/utilidades/input/InputFormNumber.vue"
+  import    selectLabelValue        from "components/utilidades/select/SelectLabelValue.vue"
+  import    inputText               from "components/utilidades/input/InputFormText.vue"
+  import    precioTabla             from "src/areas/productos/components/Tools/PrecioProducto.vue"
+
+  const { producto,
+          loading           } = storeToRefs( useStoreProducto() )
+  const { usuario           } = storeToRefs( useStoreUser() )           
+
+  const proModel              = ref< IProductoDoli >( new ProductoDoli() )
+  const formulario            = ref< any >()
+  const categorias            = dexieCategoriasProducto({ cargarSiempre : true})
+  const unidades              = dexieUnidades()
+  const naturalezas           = dexieNaturaleza()
+  const { crearProducto,
+          editarProducto    } = useControlProductos()
+
+
+  //* ////////////////////////////////////////////////////////////////////////////////////// Props
+  const props                 = defineProps(
+  {
+    modoVentana:  { default: false,         type: Boolean                               },
+    puedeEditar:  { default: false,         type: Boolean                               },
+    tipo:         { default: "ver",         type: String as PropType< "crear" | "ver" > },
+  })
+
+  const emit                  = defineEmits<{
+    (e: "creado",   value: IProductoDoli  ): void
+    (e: "editado",  value: IProductoDoli  ): void
+  }>()
+
+  const { tipo              } = toRefs( props )
+  const readonly              = ref< boolean >( tipo.value == "ver" ? true : false )
+
+  //* ////////////////////////////////////////////////////////////////////////////////////// onMounted
+  onMounted( iniciar )
+
+  //* ///////////////////////////////////////////////////////////////////////////////// Ver cambios en tipo para iniciar
+  //watch(tipo, (newTipo, oldTipo) => iniciar())
+
+  watch(producto, (pro)=>
+    {
+      if(!!pro){
+        proModel.value                  = Object.assign( new ProductoDoli(), pro )
+
+        if(tipo.value == "crear")
+        {
+          proModel.value.aumento        = 50
+          proModel.value.aumento_escom  = 50
+        }
+      }
+
+    }
+    ,{ immediate: true }
+  )
+
+  //* ////////////////////////////////////////////////////////////////////////////////////// Inicio
+  function iniciar()
+  {
+    if(tipo.value             == "ver"){
+      return
+    }
+  }
+
+  //* ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //* /////////////////////////////////////////////////////////////////////////////////// FUNCIONES DEL FORMULARIO
+  //* ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  //* ////////////////////////////////////////////////////////////////////////////////////// Validar
+  async function validar()
+  {
+    let validacionOk          = await formulario.value.validate()
+    if(validacionOk)          onSubmit()
+  }
+
+  //* ////////////////////////////////////////////////////////////////////////////////////// Submit
+  function onSubmit()
+  {
+    if(tipo.value == "ver")
+      modificarProducto()
+    else
+      creacionProducto()
+  }
+
+  async function modificarProducto(){
+    const ok              = await editarProducto( proModel.value )
+    readonly.value        = true
+    if(ok){
+      proModel.value.precio_publico = proModel.value.precio_publico_final
+      emit("editado", proModel.value)
+    }
+  }
+
+  async function creacionProducto(){
+    const id              = await crearProducto( proModel.value )
+    if(!!id){
+      confeti(3)
+      proModel.value.id   = id
+      emit("creado", proModel.value)
+    }
+  }
+
+  //* ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //* /////////////////////////////////////////////////////////////////////////////////////////////////// FUNCTION VARIAS
+  //* ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  const titulo                = computed(()=>
+  {
+    let title                 = ""
+
+    if(tipo.value             == "crear")
+      title                   = "Crear producto"
+    else
+    if(tipo.value             == "ver")
+    {
+      if(proModel.value.nombre.length > 1)
+        title                 = "Producto"
+      else
+        title                 = "Cargando..."
+    }
+
+    return  title
+  })
+</script>
+
+
+<!-- //* /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+<!-- //* /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+<!-- //* /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
 <template>
   <ventana                      scroll
     class-contenido             ="column items-center"
@@ -187,13 +347,24 @@
         v-model                 ="proModel.unidad"
         label                   ="Tipo de unidad"
         icon                    ="mdi-tape-measure"
-        class                   ="col-12"
+        class                   ="col-6"
         behavior                ="dialog"
         options-sort            ="orden"
         defecto                 ="UND - Unidad"
         :options                ="unidades"
         :readonly               ="readonly"
       />
+      <!-- //* ///////////////////////////////////////////////////////////// Naturaleza producto -->
+      <select-label-value       no-inmediato use-input
+        v-model                 ="proModel.naturaleza"
+        label                   ="Naturaleza de producto"
+        icon                    ="mdi-leaf"
+        class                   ="col-6"
+        options-sort            ="orden"
+        defecto                 ="Producto terminado"
+        :options                ="naturalezas"
+        :readonly               ="readonly"
+      />      
       <!-- //* //////////////   Descripción  -->
       <q-input                  filled dense
         v-model                 ="proModel.descripcion"
@@ -210,156 +381,3 @@
     </q-form>
   </ventana>
 </template>
-
-<script setup lang="ts">
-  //* ///////////////////////////////////////////////////////////////////////////////// Core
-  import {  ref,
-            toRefs,
-            watch,
-            computed,
-            PropType,
-            onMounted
-                                  } from "vue"
-  //* ///////////////////////////////////////////////////////////////////////////////// Store
-  import {  storeToRefs           } from 'pinia'
-  import {  useStoreProducto      } from 'src/stores/producto'
-  import {  useStoreUser          } from "src/stores/user"
-  //* ///////////////////////////////////////////////////////////////////////////////// Modelos
-  import {  ICategoriaProducto,
-            CategoriaProducto   } from "src/areas/productos/models/CategoriaProducto"
-  import {  IProductoDoli,
-            ProductoDoli        } from "src/areas/productos/models/ProductoDolibarr"
-  //* ///////////////////////////////////////////////////////////////////////////////// Componibles
-  import {  formatoPrecio,
-            confeti               } from "src/composables/useTools"
-  import {  style                 } from "src/composables/useEstilos"
-  import {  useControlProductos   } from "src/areas/productos/controllers/ControlProductosDolibarr"
-  import {  dexieUnidades,
-            dexieCategoriasProducto
-                                  } from "src/composables/useDexie"
-  //* ///////////////////////////////////////////////////////////////////////////////// Componentes
-  import    efecto                  from "components/utilidades/Efecto.vue"
-  import    ventana                 from "components/utilidades/Ventana.vue"
-  import    numeroPaso              from "components/utilidades/input/InputNumeroPaso.vue"
-  import    inputNumber             from "components/utilidades/input/InputFormNumber.vue"
-  import    selectLabelValue        from "components/utilidades/select/SelectLabelValue.vue"
-  import    inputText               from "components/utilidades/input/InputFormText.vue"
-  import    precioTabla             from "src/areas/productos/components/Tools/PrecioProducto.vue"
-
-  const { producto,
-          loading           } = storeToRefs( useStoreProducto() )
-  const { usuario           } = storeToRefs( useStoreUser() )           
-
-  const proModel              = ref< IProductoDoli >( new ProductoDoli() )
-  const formulario            = ref< any >()
-  const categorias            = dexieCategoriasProducto({ cargarSiempre : true})
-  const unidades              = dexieUnidades()
-  const { crearProducto,
-          editarProducto    } = useControlProductos()
-
-
-  //* ////////////////////////////////////////////////////////////////////////////////////// Props
-  const props                 = defineProps(
-  {
-    modoVentana:  { default: false,         type: Boolean                               },
-    puedeEditar:  { default: false,         type: Boolean                               },
-    tipo:         { default: "ver",         type: String as PropType< "crear" | "ver" > },
-  })
-
-  const emit                  = defineEmits<{
-    (e: "creado",   value: IProductoDoli  ): void
-    (e: "editado",  value: IProductoDoli  ): void
-  }>()
-
-  const { tipo              } = toRefs( props )
-  const readonly              = ref< boolean >( tipo.value == "ver" ? true : false )
-
-  //* ////////////////////////////////////////////////////////////////////////////////////// onMounted
-  onMounted( iniciar )
-
-  //* ///////////////////////////////////////////////////////////////////////////////// Ver cambios en tipo para iniciar
-  //watch(tipo, (newTipo, oldTipo) => iniciar())
-
-  watch(producto, (pro)=>
-    {
-      if(!!pro){
-        proModel.value                  = Object.assign( new ProductoDoli(), pro )
-
-        if(tipo.value == "crear")
-        {
-          proModel.value.aumento        = 50
-          proModel.value.aumento_escom  = 50
-        }
-      }
-
-    }
-    ,{ immediate: true }
-  )
-
-  //* ////////////////////////////////////////////////////////////////////////////////////// Inicio
-  function iniciar()
-  {
-    if(tipo.value             == "ver"){
-      return
-    }
-  }
-
-  //* ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  //* /////////////////////////////////////////////////////////////////////////////////// FUNCIONES DEL FORMULARIO
-  //* ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-  //* ////////////////////////////////////////////////////////////////////////////////////// Validar
-  async function validar()
-  {
-    let validacionOk          = await formulario.value.validate()
-    if(validacionOk)          onSubmit()
-  }
-
-  //* ////////////////////////////////////////////////////////////////////////////////////// Submit
-  function onSubmit()
-  {
-    if(tipo.value == "ver")
-      modificarProducto()
-    else
-      creacionProducto()
-  }
-
-  async function modificarProducto(){
-    const ok              = await editarProducto( proModel.value )
-    readonly.value        = true
-    if(ok){
-      proModel.value.precio_publico = proModel.value.precio_publico_final
-      emit("editado", proModel.value)
-    }
-  }
-
-  async function creacionProducto(){
-    const id              = await crearProducto( proModel.value )
-    if(!!id){
-      confeti(3)
-      proModel.value.id   = id
-      emit("creado", proModel.value)
-    }
-  }
-
-  //* ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  //* /////////////////////////////////////////////////////////////////////////////////////////////////// FUNCTION VARIAS
-  //* ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  const titulo                = computed(()=>
-  {
-    let title                 = ""
-
-    if(tipo.value             == "crear")
-      title                   = "Crear producto"
-    else
-    if(tipo.value             == "ver")
-    {
-      if(proModel.value.nombre.length > 1)
-        title                 = "Producto"
-      else
-        title                 = "Cargando..."
-    }
-
-    return  title
-  })
-</script>

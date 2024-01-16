@@ -1,15 +1,18 @@
 import {  IUnidad,
-          Unidad            } from "src/models/Diccionarios/Unidad"
-import {  getCategoriaDB,
-          getUnidadDB       } from "src/composables/useDexie"
+          Unidad              } from "src/models/Diccionarios/Unidad"
+import {  getUnidadDB,
+          getCategoriaDB,
+          getNaturalezaDB     } from "src/composables/useDexie"
 import {  roundInt,
           valorValido,
           X100_Aumento,
-          X100_Calcular     } from "src/composables/useTools"
+          X100_Calcular       } from "src/composables/useTools"
 import {  ICategoriaProducto,
-          CategoriaProducto } from "src/areas/productos/models/CategoriaProducto"
-import {  IAccion           } from "src/areas/comunicacion/models/Accion"
-import {  TCodigosSiigo     } from "src/models/TiposVarios"
+          CategoriaProducto   } from "src/areas/productos/models/CategoriaProducto"
+import {  INaturalezaProducto,
+          NaturalezaProducto  } from "src/models/Diccionarios/NaturalezaProducto"
+import {  IAccion             } from "src/areas/comunicacion/models/Accion"
+import {  TCodigosSiigo       } from "src/models/TiposVarios"
 
 export const imagenDefault  :string  = "https://dolibarr.mublex.com/_maco/img/box.jpg"
 const ivaX100                 = parseInt( process.env.IVA ?? "0" )
@@ -32,6 +35,7 @@ export interface IProductoDoli {
   unidad                    : IUnidad
   tipo                      : 0 | 1 | 9     // 0 producto 1 servicio 9 subtotal
   tipoProducto              : string
+  naturaleza                : INaturalezaProducto
   imagen                    : string
   imagenFull                : string
   imagen100px               : string
@@ -93,6 +97,7 @@ export class ProductoDoli implements IProductoDoli
   unidadId                  : number              = 0
   unidad                    : IUnidad             = new Unidad()
   tipo                      : 0 | 1 | 9           = 0
+  naturaleza                : INaturalezaProducto = new NaturalezaProducto()
   imagen                    : string              = imagenDefault
   activo_proveedor          : boolean             = true
   aumento                   : number              = 0
@@ -126,7 +131,6 @@ export class ProductoDoli implements IProductoDoli
   get precio_aumento_escom()    :number { return this.calcularPrecioConAumento( this.aumento_escom      ) }
   get precio_aumento_descuento():number { return this.calcularPrecioConAumento( this.aumento_descuento  ) }
   get precio_aumento_loco()     :number { return this.calcularPrecioConAumento( this.aumento_loco       ) }
-
 
   get precio_publico_final() : number
   {
@@ -327,6 +331,7 @@ export class ProductoDoli implements IProductoDoli
       status:                 +this.activoEnVenta,
       status_buy:             +this.activoEnCompra,
       fk_unit:                this.unidad.id ?? 28,
+      finished:               this.naturaleza.codigo,
       array_options:
       {
         options_aumento_escom:        this.aumento_escom,
@@ -390,6 +395,8 @@ export class ProductoDoli implements IProductoDoli
 
     producto.unidad                 = await getUnidadDB( producto.unidadId )
     producto.categoria              = await getCategoriaDB( producto.sigla )
+    producto.naturaleza             = await getNaturalezaDB( productoApi?.naturaleza_id ?? "0" )
+        
     return producto
   }
 }

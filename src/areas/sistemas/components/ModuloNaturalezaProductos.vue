@@ -1,7 +1,7 @@
 <template>
     <ventana                      minimizar
       class-contenido             ="column items-center"
-      titulo                      ="Tipos de productos"
+      titulo                      ="Naturaleza de productos"
       icono                       ="mdi-focus-field"
       size-icon-carga             ="14em"
       padding-contenido           ="0"
@@ -31,10 +31,10 @@
               Columna             } from "src/models/Tabla"
     import    ventana               from "components/utilidades/Ventana.vue"
     import    inputBuscar           from "components/utilidades/input/InputSimple.vue"
-    import {  dexieTiposProducto  } from "src/composables/useDexie"
+    import {  dexieNaturaleza     } from "src/composables/useDexie"
 
     const filtro                = ref< string >("")
-    const lista                 = dexieTiposProducto()
+    const lista                 = dexieNaturaleza()
     const columnas: IColumna[]  = [
                                     new Columna({ name: "id"}),
                                     new Columna({ name: "nombre"}),

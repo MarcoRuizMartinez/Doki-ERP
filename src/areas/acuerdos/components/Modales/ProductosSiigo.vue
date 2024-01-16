@@ -38,11 +38,8 @@
 
   onMounted( async ()=>{
     cargandoDatos.value             = true
-    console.log("generarCodigosSiigo: ");
     await generarCodigosSiigo()
-    console.log("buscarLineaYGrupo: ");
     await buscarLineaYGrupo()
-    console.log("generarLista: ");
           generarLista()
     cargandoDatos.value             = false
   })
@@ -86,9 +83,6 @@
 
       lista.value.push( { ...p.siigo, ref : p.ref, nombre: p.nombre.toUpperCase().slice(0, 50) } )
     }
-    console.log("lista.value: ", lista.value);
-
-
   }
   
   

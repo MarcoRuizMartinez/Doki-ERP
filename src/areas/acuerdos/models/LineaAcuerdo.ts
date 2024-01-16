@@ -8,6 +8,7 @@ import {  X100_Descuento,
           roundInt          } from "src/composables/useTools"
 import {  getUnidadDB,
           getCategoriaDB,
+          getNaturalezaDB,
           getBodegaDB       } from "src/composables/useDexie"
 import {  storeToRefs       } from 'pinia'
 import {  useStoreAcuerdo   } from 'src/stores/acuerdo'
@@ -413,7 +414,7 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
         linea.lineaId       = +linea.lineaId
         linea.qty           = +linea.qty
         linea.orden         = +linea.orden
-        linea.codeX         = +linea.codeX        
+        linea.codeX         = +linea.codeX
         linea.unidadId      = +linea.unidadId
         linea.unidad        = await getUnidadDB( linea.unidadId )    
         if(!!linea.sigla)
@@ -427,6 +428,8 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
 
         lineaFinal.siigo.codigo         = +linea.codigo
         lineaFinal.comsionX100Division  = +(linea?.divisionComision ?? 100)
+        if(!!linea.naturaleza_id)
+          lineaFinal.naturaleza         = await getNaturalezaDB( linea.naturaleza_id.toString() )     
 
         if(!!lineaFinal.bodegaId)
         {

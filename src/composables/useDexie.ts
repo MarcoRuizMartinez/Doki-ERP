@@ -27,14 +27,14 @@ import {  IProveedor,         Proveedor         } from "src/models/Diccionarios/
 import {  ICuentaDinero,      CuentaDinero      } from "src/models/Diccionarios/CuentaDinero"
 import {  IReglaComision,     ReglaComision     } from "src/models/Diccionarios/ReglasComision"
 import {  IBodega,            Bodega            } from "src/models/Diccionarios/Bodega"
-import {  ITipoProducto,      TipoProducto      } from "src/models/Diccionarios/TipoProducto"
+import {  INaturalezaProducto,NaturalezaProducto} from "src/models/Diccionarios/NaturalezaProducto"
 import {  storeToRefs                           } from 'pinia'
 
 
 
 export type ITabla            = IMunicipio      | IUsuario        | ITipoDocumento      | ICondicionPago | IReglaComision | IProveedor    |
                                 IFormaPago      | IMetodoEntrega  | IOrigenContacto     | IUnidad        | ICuentaDinero  | IBodega       |
-                                ITiempoEntrega  | ITipoContacto   | ICategoriaProducto  | ICategoriaGrupo| IConstante     | ITipoProducto
+                                ITiempoEntrega  | ITipoContacto   | ICategoriaProducto  | ICategoriaGrupo| IConstante     | INaturalezaProducto
 
 const pre                     = process.env.PREFIJO
 
@@ -61,7 +61,7 @@ export function cargarListasIndex() {
                                           dexieCuentasDinero    (param)
                                           dexieReglaComision    (param)
                                           dexieBodegas          (param)
-                                          dexieTiposProducto    (param)
+                                          dexieNaturaleza       (param)
   }
 }
 
@@ -172,9 +172,9 @@ export function dexieBodegas ( { cargarSiempre = false, demora = 0 } = paramDefa
 }
 
 //* ///////////////////////////////////////////////////////////// Tipos productos
-export function dexieTiposProducto ( { cargarSiempre = false, demora = 0 } = paramDefault ) :Ref< ITipoProducto[] > {
-  const { lista } = useDexie( TABLAS.TIPO_PRODUCTO, { cargarSiempre, demora } )
-  return lista as Ref< ITipoProducto[] >
+export function dexieNaturaleza ( { cargarSiempre = false, demora = 0 } = paramDefault ) :Ref< INaturalezaProducto[] > {
+  const { lista } = useDexie( TABLAS.NATURALEZA_PRODUCTO, { cargarSiempre, demora } )
+  return lista as Ref< INaturalezaProducto[] >
 }
 
 function useDexie( tabla : TABLAS, { cargarSiempre = false, demora = 0 } = paramDefault )
@@ -336,8 +336,8 @@ function useDexie( tabla : TABLAS, { cargarSiempre = false, demora = 0 } = param
                   case TABLAS.BODEGA :
                     await db[ TABLAS.BODEGA             ].bulkAdd( listaCarga )
                     break;
-                  case TABLAS.TIPO_PRODUCTO :
-                    await db[ TABLAS.TIPO_PRODUCTO      ].bulkAdd( listaCarga )
+                  case TABLAS.NATURALEZA_PRODUCTO :
+                    await db[ TABLAS.NATURALEZA_PRODUCTO].bulkAdd( listaCarga )
                     break;
                   default:
                     break;
@@ -700,6 +700,25 @@ export async function getBodegaDB( id : number ) : Promise < IBodega >
     }
   )
 }
+
+export async function getNaturalezaDB( codigo : string ) : Promise < INaturalezaProducto >
+{
+  return db.transaction('r', db[ TABLAS.NATURALEZA_PRODUCTO ], async () =>
+    {
+      const listaDB         = await db[ TABLAS.NATURALEZA_PRODUCTO ].where("codigo").equals(codigo).toArray()
+      if(listaDB.length     == 1)
+      {
+        listaDB[0].id           = +listaDB[0].id
+        listaDB[0].codigo       = +listaDB[0].codigo
+
+        return listaDB[0]
+      }
+      else
+        return new NaturalezaProducto()
+    }
+  )
+}
+
 
 function checkListasVencidas() : boolean
 {

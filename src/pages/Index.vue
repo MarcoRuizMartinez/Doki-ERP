@@ -23,7 +23,6 @@
       class               ="col-md-4 col-12"
     /> -->
     <template v-if        ="storeUser.usuario.esDev">
-
       <modulo-usuarios            class="col-md-4 col-12" height-card="260px"/>      
       <modulo-bodegas             class="col-md-4 col-12" height-card="260px"/>
       <modulo-reglas-comision     class="col-md-4 col-12" height-card="260px"/>
@@ -41,7 +40,7 @@
       <modulo-categorias-grupos   class="col-md-4 col-12" height-card="260px"/>      
       <modulo-constantes          class="col-md-4 col-12" height-card="260px"/>
       <modulo-cuentas-dinero      class="col-md-4 col-12" height-card="260px"/>
-      <modulo-tipos-producto      class="col-md-4 col-12" height-card="260px"/>
+      <modulo-naturaleza          class="col-md-4 col-12" height-card="260px"/>
     </template>
   </q-page>
 </template>
@@ -73,7 +72,7 @@
   import    moduloCuentasDinero       from "src/areas/sistemas/components/ModuloCuentasDinero.vue"
   import    moduloReglasComision      from "src/areas/sistemas/components/ModuloReglasComision.vue"
   import    moduloBodegas             from "src/areas/sistemas/components/ModuloBodegas.vue"
-  import    moduloTiposProducto       from "src/areas/sistemas/components/ModuloTiposProductos.vue"
+  import    moduloNaturaleza          from "src/areas/sistemas/components/ModuloNaturalezaProductos.vue"
 
   import {  cargarListasIndex       } from "src/composables/useDexie"
 
