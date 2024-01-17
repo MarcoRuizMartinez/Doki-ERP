@@ -4,7 +4,11 @@ import {  getURL,
 import {  useFetch        } from "src/composables/useFetch"
 import {  IProductoDoli,
           ProductoDoli    } from "src/areas/productos/models/ProductoDolibarr"
-import {  ID_URL_Ok       } from "src/composables/useTools"
+import {  ID_URL_Ok, 
+          anyToNum        } from "src/composables/useTools"
+import {  IProductoHijo,
+          ProductoHijo    } from "../models/ProductoHijo"
+
 
 export function servicesProductos() 
 {
@@ -56,10 +60,52 @@ export function servicesProductos()
     })
   }
 
+  async function buscarProductosHijos( padre_id : number ) : Promise< IProductoHijo[] >
+  {
+    const { ok, data }        = await miFetch(  getURL("listas", "varios"),
+                                                { method: "POST", body: getFormData( "productosHijos", { padre_id } ) },
+                                                { dataEsArray: true, mensaje: "buscar productos hijos" }
+                                              )
+    const hijos : IProductoHijo [] = []
+    if( Array.isArray( data ) )
+    {
+      for (const item of data)
+      {
+        const hijo            = new ProductoHijo()
+              hijo.id         = anyToNum( item?.id        ?? 0 )
+              hijo.padre_id   = anyToNum( item?.padre_id  ?? 0 )
+              hijo.hijo_id    = anyToNum( item?.hijo_id   ?? 0 )
+              hijo.qty        = anyToNum( item?.qty       ?? 0 )
+              hijo.orden      = anyToNum( item?.orden     ?? 0 )
+              hijo.linea      = anyToNum( item?.linea     ?? 0 )
+              hijo.grupo      = anyToNum( item?.grupo     ?? 0 )
+              hijo.codigo     = anyToNum( item?.codigo    ?? 0 )
+              hijo.enSiigo    = !!anyToNum( item?.enSiigo ?? 0 )
+              hijo.ref        = item?.ref     ?? ""
+              hijo.nombre     = item?.nombre  ?? ""
+        hijos.push( hijo )
+      }
+    }
+
+    return hijos
+  }
+
+  async function marcarEnSiigo( ids : string, on : boolean ) : Promise< boolean >
+  {
+    const { ok, data }        = await miFetch(  getURL("servicios", "productos"),
+                                                { method: "POST", body: getFormData( "marcarEnSiigo", { ids, on } ) },
+                                                { mensaje: "marcar en Siigo" }
+                                              )
+    return ok
+  }
+
+
 
   return {
     buscarProducto,
     buscarProductos,
+    buscarProductosHijos,
+    marcarEnSiigo,
   }
 }
 

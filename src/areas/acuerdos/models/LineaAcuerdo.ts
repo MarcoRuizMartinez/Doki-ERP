@@ -427,7 +427,9 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
         const lineaFinal    = Object.assign( new LineaAcuerdo(), linea ) as ILineaAcuerdo
 
         lineaFinal.siigo.codigo         = +linea.codigo
+        lineaFinal.siigo.enSiigo        = Boolean( +linea?.enSiigo ?? 0 )
         lineaFinal.comsionX100Division  = +(linea?.divisionComision ?? 100)
+        
         if(!!linea.naturaleza_id)
           lineaFinal.naturaleza         = await getNaturalezaDB( linea.naturaleza_id.toString() )     
 

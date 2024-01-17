@@ -6,52 +6,58 @@ import {  siNo,
 
 
 export interface IColumna {
-  name:           string
-  label:          string
-  field:          string  | (( row: any ) => any)
-  required?:      boolean | undefined
-  align?:         "left" | "right" | "center" | undefined
-  sortable?:      boolean | undefined
-  iterable?:      boolean
-  value:          any
-  visible?:       boolean
-  format?:        (val: any, row: QTableProps) => any
-  sort?:          ( a: any, b: any, rowA: QTableProps,  rowB: QTableProps ) => number
-  style?:         string
-  classes?:       string
-  headerStyle?:   string
-  headerClasses?: string
+  name            :  string
+  label           :  string
+  field           :  string  | (( row: any ) => any)
+  required        ?: boolean | undefined
+  align           ?: "left" | "right" | "center" | undefined
+  sortable        ?: boolean | undefined
+  iterable        ?: boolean
+  value           :  any
+  visible         ?: boolean
+  format          ?: (val: any, row: QTableProps) => any
+  sort            ?: ( a: any, b: any, rowA: QTableProps,  rowB: QTableProps ) => number
+  style           ?: string
+  classes         ?: string
+  headerStyle     ?: string
+  headerClasses   ?: string
+  CSVvalor        ?: string
+  CSVOculto       ?: boolean
 }
 
 export class Columna implements IColumna
 {
-  name:           string
-  label:          string
-  field:          string  | (( row: any ) => any)
-  required?:      boolean | undefined
-  align?:         "left" | "right" | "center" | undefined
-  sortable?:      boolean | undefined
-  iterable?:      boolean
-  value:          any
-  visible?:       boolean
-  format?:        (val: any, row: QTableProps) => any
-  sort?:          ( a: any, b: any, rowA: QTableProps,  rowB: QTableProps ) => number
-  style?:         string
-  classes?:       string
-  headerStyle?:   string
-  headerClasses?: string
+  name            :  string
+  label           :  string
+  field           :  string  | (( row: any ) => any)
+  required        ?: boolean | undefined
+  align           ?: "left" | "right" | "center" | undefined
+  sortable        ?: boolean | undefined
+  iterable        ?: boolean
+  value           :  any
+  visible         ?: boolean
+  format          ?: (val: any, row: QTableProps) => any
+  sort            ?: ( a: any, b: any, rowA: QTableProps,  rowB: QTableProps ) => number
+  style           ?: string
+  classes         ?: string
+  headerStyle     ?: string
+  headerClasses   ?: string
+  CSVvalor        ?: string
+  CSVOculto       ?: boolean
 
   constructor({
-                name      = "",
-                label     = "",
-                iterable  = true,
-                visible   = true,
-                sortable  = true,
-                align     = "left",
-                clase     = "",
-                style     = "",
-                required  = false,
-                format    = ( val : any ) => val
+                name          = "",
+                label         = "",
+                iterable      = true,
+                visible       = true,
+                sortable      = true,
+                align         = "left",
+                clase         = "",
+                style         = "",
+                required      = false,
+                format        = ( val : any ) => val,
+                CSVvalor      = "",
+                CSVOculto     = false
               } = {} )
   {
     this.name             = name
@@ -71,6 +77,8 @@ export class Columna implements IColumna
     this.classes          = clase
     this.headerStyle      = ""
     this.headerClasses    = ""
+    this.CSVvalor         = CSVvalor
+    this.CSVOculto        = CSVOculto
   }
 
   static ColumnaPrecio({ name = "", label = "",  sortable = true, clase = "", visible = true }) : IColumna

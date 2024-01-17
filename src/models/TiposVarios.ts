@@ -7,7 +7,7 @@ export const enum CODES_FETCH{
 }
 
 export interface IResultado {
-  data?:      object | any[] | string | number | object[]
+  data?:      any | any[] | object | object[] | string | number
   codigo:     CODES_FETCH
   ok:         boolean
 }
@@ -103,14 +103,6 @@ export const enum GRUPO_USUARIO {
   EN_NOMINA       = "Nomina",
   MIEMBRO         = "Miembro",
 }
-
-export type TCodigosSiigo = {
-  codigo  : number
-  linea   : number
-  grupo   : number
-  nombre ?: string
-  ref    ?: string  
- }
 
 export interface ILoading {
   carga           ?: boolean

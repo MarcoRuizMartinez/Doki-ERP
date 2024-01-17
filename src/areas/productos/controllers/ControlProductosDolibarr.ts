@@ -4,8 +4,8 @@ import {  useRouter             } from 'vue-router'
 import {  storeToRefs           } from 'pinia'  
 import {  useStoreProducto      } from 'src/stores/producto'
 //* ////////////////////////////////////////////////////////////////// Modelos
-import {  IProductoDoli,
-          ProductoDoli          } from "src/areas/productos/models/ProductoDolibarr"     
+import {  IProductoDoli         } from "src/areas/productos/models/ProductoDolibarr"    
+import {  TCodigosSiigo         } from 'src/areas/productos/models/Siigo';          
 //* ////////////////////////////////////////////////////////////////// Componibles
 import {  useTools,
           ID_URL_Ok,            } from "src/composables/useTools"
@@ -13,7 +13,7 @@ import {  useApiDolibarr        } from "src/composables/useApiDolibarr"
 import {  servicesProductos     } from "src/areas/productos/services/servicesProductos"
 import {  useFetch              } from "src/composables/useFetch"
 import {  getURL, getFormData   } from "src/composables/APIMaco"
-import {  TCodigosSiigo         } from "src/models/TiposVarios"
+
 
 //* ////////////////////////////////////////////////////////////////// Modelos
 
@@ -82,7 +82,7 @@ export function useControlProductos()
     return ok
   }
 
-  async function buscarCodigosSiigo( sigla : string, codigo : number ) : Promise <TCodigosSiigo>
+  async function buscarCodigosSiigo( sigla : string, codigo : number, enSiigo : boolean ) : Promise <TCodigosSiigo>
   {
     const { ok, data }    = await miFetch( getURL("listas", "productos"), { method: "POST", body: getFormData( "codigosPorSiglas", { sigla } ) }, { mensaje: "buscar codigos siigo" } )    
 
@@ -90,6 +90,7 @@ export function useControlProductos()
       codigo  : codigo,
       linea   : +data?.codigo_linea ?? 0,
       grupo   : +data?.codigo_grupo ?? 0,
+      enSiigo,
     }
     
     return codigos

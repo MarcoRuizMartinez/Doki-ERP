@@ -23,18 +23,21 @@ export function File_B64_ToBlob( file64 : string, typeFile : string = "applicati
 export function generarCSVDesdeTabla( nombre :string = "", columnsTabla : IColumna[], tabla : any[] ) : boolean
 {
   let arrayCSV              = []
-      arrayCSV.push( columnsTabla.map( c => c.label )  )
+      arrayCSV.push( columnsTabla.filter( c => !c.CSVOculto ).map( c => c.label )  )
 
   for (const item of tabla)
   {
     let arrayFila           = []
     for (const columna of columnsTabla)
     {
+      if(columna.CSVOculto) continue
+
       const fila            = item as any
       let   celda : string  = ""
       const tipo            = typeof fila[columna.name]
-
-            if(tipo === "string") 
+      if(!!columna.CSVvalor)
+        celda               = columna.CSVvalor
+      else if(tipo === "string") 
         celda               = fila[columna.name]
       else  if(tipo === "boolean") 
         celda               = siNo( fila[columna.name], false )
@@ -44,8 +47,6 @@ export function generarCSVDesdeTabla( nombre :string = "", columnsTabla : IColum
       {
               if(fila[columna.name]?.hasOwnProperty("nombre") && !!fila[columna.name]?.nombre )
           celda             = fila[columna.name].nombre
-        else  if(fila[columna.name].hasOwnProperty("nombreCompleto") && !!fila[columna.name].nombreCompleto )
-          celda             = fila[columna.name].nombreCompleto
         else  if(fila[columna.name].hasOwnProperty("nombreCompleto") && !!fila[columna.name].nombreCompleto )
           celda             = fila[columna.name].nombreCompleto
       }

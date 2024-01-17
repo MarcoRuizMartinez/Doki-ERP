@@ -12,7 +12,7 @@ import {  ICategoriaProducto,
 import {  INaturalezaProducto,
           NaturalezaProducto  } from "src/models/Diccionarios/NaturalezaProducto"
 import {  IAccion             } from "src/areas/comunicacion/models/Accion"
-import {  TCodigosSiigo       } from "src/models/TiposVarios"
+import {  TCodigosSiigo       } from 'src/areas/productos/models/Siigo';          
 
 export const imagenDefault  :string  = "https://dolibarr.mublex.com/_maco/img/box.jpg"
 const ivaX100                 = parseInt( process.env.IVA ?? "0" )
@@ -122,7 +122,7 @@ export class ProductoDoli implements IProductoDoli
   precio_publico            : number              = 0
   precio_promocion          : number              = 0
   precio                    : number              = 0
-  siigo                     : TCodigosSiigo       = { codigo : 0, linea : 0, grupo : 0 }
+  siigo                     : TCodigosSiigo       = { codigo : 0, linea : 0, grupo : 0, enSiigo : false }
   competencia               : number              = 0
   elegido                   : boolean             = false
   comentarios               : IAccion[]           = []
@@ -371,6 +371,7 @@ export class ProductoDoli implements IProductoDoli
     producto.activoEnCompra         = Boolean( +productoApi.en_compra             )
     producto.activoEnVenta          = Boolean( +productoApi.en_venta              )
     producto.sin_proveedor          = Boolean( +productoApi.sin_proveedor         )
+    producto.siigo.enSiigo          = Boolean( +productoApi.enSiigo               )
 
     producto.aumento                = parseFloat( productoApi.aumento             )
     producto.aumento_escom          = parseFloat( productoApi.aumento_escom       )
