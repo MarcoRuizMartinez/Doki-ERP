@@ -1,51 +1,3 @@
-<template>
-  <q-page padding class           ="row item-stretch content-start justify-start">
-    <ventana
-      class                       ="col-12"
-      class-contenido             ="column items-center"
-      :titulo                     ="terceros.length > 0 ? terceros.length + ' terceros encontrados ' : 'Buscar terceros'"
-      icono                       ="mdi-account-search"
-      height                      ="100%"
-      size-icon-carga             ="22em"
-      mensaje-sin-resultados      ="No se encontraron terceros" 
-      :padding-contenido          ="modo == 'normal' ? '0' : '12px' "
-      :modo                       ="modo"
-      >
-      <template                   #menu>
-        <barra-busqueda
-          @buscar                 ="buscar"
-          @limpiar                ="limpiarBusqueda"
-          @exportar               ="descargarTerceros"
-          >
-          <select-columnas
-            v-model               ="columnasVisibles"
-            label                 ="Columnas"
-            :almacen              ="ALMACEN_LOCAL.COL_TERCEROS"
-            :options              ="columnas"
-          />
-        </barra-busqueda>
-      </template>
-      <!-- //* //////////////////////////////////////////////////////// Tabla resultados-->
-      <q-table                    bordered dense flat
-        class                     ="fit tabla-maco tabla-alto-min"
-        row-key                   ="id"
-        :filter                   ="filtro"
-        :rows                     ="terceros"
-        :columns                  ="columnas"
-        :visible-columns          ="columnasVisibles"
-        :rows-per-page-options    ="[100]"
-        >
-      <!-- //* ///////////////////////////////////////////////////// Ref con link -->
-      <template #body-cell-nombre ="props">
-        <q-td :props              ="props">
-          <linkTercero            :tercero="( props.row as Tercero ) "/>
-        </q-td>
-      </template>
-      </q-table>
-    </ventana>
-  </q-page>
-</template>
-
 <script setup lang="ts">
 
   // * /////////////////////////////////////////////////////////////////////// Core
@@ -144,3 +96,51 @@
   }
 
 </script>
+
+<template>
+  <q-page padding class           ="row item-stretch content-start justify-start">
+    <ventana
+      class                       ="col-12"
+      class-contenido             ="column items-center"
+      :titulo                     ="terceros.length > 0 ? terceros.length + ' terceros encontrados ' : 'Buscar terceros'"
+      icono                       ="mdi-account-search"
+      height                      ="100%"
+      size-icon-carga             ="22em"
+      mensaje-sin-resultados      ="No se encontraron terceros" 
+      :padding-contenido          ="modo == 'normal' ? '0' : '12px' "
+      :modo                       ="modo"
+      >
+      <template                   #menu>
+        <barra-busqueda
+          @buscar                 ="buscar"
+          @limpiar                ="limpiarBusqueda"
+          @exportar               ="descargarTerceros"
+          >
+          <select-columnas
+            v-model               ="columnasVisibles"
+            label                 ="Columnas"
+            :almacen              ="ALMACEN_LOCAL.COL_TERCEROS"
+            :options              ="columnas"
+          />
+        </barra-busqueda>
+      </template>
+      <!-- //* //////////////////////////////////////////////////////// Tabla resultados-->
+      <q-table                    bordered dense flat
+        class                     ="fit tabla-maco tabla-alto-min"
+        row-key                   ="id"
+        :filter                   ="filtro"
+        :rows                     ="terceros"
+        :columns                  ="columnas"
+        :visible-columns          ="columnasVisibles"
+        :rows-per-page-options    ="[100]"
+        >
+      <!-- //* ///////////////////////////////////////////////////// Ref con link -->
+      <template #body-cell-nombre ="props">
+        <q-td :props              ="props">
+          <linkTercero            :tercero="( props.row as Tercero ) "/>
+        </q-td>
+      </template>
+      </q-table>
+    </ventana>
+  </q-page>
+</template>

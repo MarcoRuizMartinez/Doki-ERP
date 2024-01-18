@@ -1,3 +1,21 @@
+<script setup lang="ts">
+  import {  useSlots,
+            computed          } from 'vue'
+  import {  useTools          } from "src/composables/useTools"                            
+  const slots                 = useSlots()
+  const { esMobil           } = useTools()
+  const ancho                 = esMobil ? '66px' : '120px'
+  const hayLeft               = computed(() => slots.hasOwnProperty('left'))
+  const hayRight              = computed(() => slots.hasOwnProperty('right'))
+  const props                 = defineProps({
+    titulo:     { default: "",        type: String  },
+    colorLeft:  { default: "#FFFFFF", type: String  },
+    colorRight: { default: "#FFFFFF", type: String  },
+  })
+
+  
+</script>
+
 <template>
   <div>
     <div    class           ="titulo-box row items-center"
@@ -39,23 +57,6 @@
   </div>  
 </template>
 
-<script setup lang="ts">
-  import {  useSlots,
-            computed          } from 'vue'
-  import {  useTools          } from "src/composables/useTools"                            
-  const slots                 = useSlots()
-  const { esMobil           } = useTools()
-  const ancho                 = esMobil ? '66px' : '120px'
-  const hayLeft               = computed(() => slots.hasOwnProperty('left'))
-  const hayRight              = computed(() => slots.hasOwnProperty('right'))
-  const props                 = defineProps({
-    titulo:     { default: "",        type: String  },
-    colorLeft:  { default: "#FFFFFF", type: String  },
-    colorRight: { default: "#FFFFFF", type: String  },
-  })
-
-  
-</script>
 <style>
 .titulo-box{
   color: white;
