@@ -97,10 +97,9 @@
   import {  storeToRefs         } from 'pinia'                                            
   import {  useStoreProducto    } from 'src/stores/producto'  
   // * /////////////////////////////////////////////////////////////////////////////////// Modelos
-  import {  IColumna, Columna   } from "src/models/Tabla"
+  import {  IColumna            } from "src/models/Tabla"
   import {  IProductoDoli       } from "src/areas/productos/models/ProductoDolibarr"  
   // * /////////////////////////////////////////////////////////////////////////////////// Componibles
-  import {  formatoPrecio       } from "src/composables/useTools"
   import {  style               } from "src/composables/useEstilos"  
   // * /////////////////////////////////////////////////////////////////////////////////// Componentes
   //import    tooltipPrecios        from "src/areas/acuerdos/components/Tools/Tooltips/TooltipPreciosProducto.vue"

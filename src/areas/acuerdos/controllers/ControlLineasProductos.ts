@@ -11,8 +11,7 @@ import {  IGrupoLineas,
 import {  LineaAcuerdo,
           ILineaAcuerdo         } from "src/areas/acuerdos/models/LineaAcuerdo"
 // * //////////////////////////////////////////////////////////////////////////////// Tools
-import {  useTools,
-          pausa                 } from "src/composables/useTools"
+import {  useTools, Tool        } from "src/composables/useTools"
 
 export function useControlProductos()
 {
@@ -199,7 +198,7 @@ export function useControlProductos()
     if(!!index)
       aviso("positive", "Nuevo grupo creado")
     if(!acuerdo.value.id) return
-    await pausa(200) // Para darle tiempo que el virtual DOM genere el nuevo espacio y calcule el nuevo alto del documento
+    await Tool.pausa(200) // Para darle tiempo que el virtual DOM genere el nuevo espacio y calcule el nuevo alto del documento
     //console.log(Maco"window.scrollTo")
     window.scrollTo({ top: document.body.scrollHeight,  behavior: 'smooth'})
   }
@@ -284,7 +283,7 @@ export function useControlProductos()
     {
       await borrarLinea( linea, true, retrasoEntreLineas )
       linea.destacar( "borrar", "ocultar")
-      await pausa( retrasoEntreLineas )
+      await Tool.pausa( retrasoEntreLineas )
     }
     loading.value.borrarLote      = false
     aviso("positive", grupoElegido.value.seleccion.length === 1 ? "Producto borrado" : "Productos borrados")

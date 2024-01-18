@@ -1,161 +1,3 @@
-<template>
-  <!-- no-scroll -->
-  <div  
-    class                     ="ventana transi no-scroll"
-    :class                    ="[ maximizado ? classMaximizado : classRestaurado,
-                                  { 'ventana-sombra' : !sinSombra }
-                                ]"
-    >
-    <q-card
-      :style                  ="estiloAncho"
-      class                   ="clase-ventana"
-      style                   ="height: 100%;"
-      > <!-- //?* class ="miCard shadow-5" :class="clase"  --> 
-      <!-- //?* //////////////////////////////////////////////////////////////// Barra superior justify-between --> 
-      <q-card-section  
-        v-if                  ="!sinTitulo"
-        class                 ="row justify-between items-center text-white q-py-sm bg-primary"
-        :style                ="fondoBarra"
-        >
-        <!-- //?* ////////////////////////////////////////////////////////////// Titulo --> 
-        <div  class           ="col text-h6 fuente-delicada ellipsis">
-          <q-icon
-            v-if              ="icono != undefined"
-            class             ="q-mr-sm"
-            size              ="md"
-            :name             ="icono"
-          />
-          <!-- //?* ////////////////////////////////////////////////////////////// Slot Titulo --> 
-          <slot name          ="titulo">
-            <router-link
-              v-if            ="!!linkTitulo"
-              class           ="link-limpio text-white"
-              :to             ="linkTitulo"
-              >
-              {{ titulo }}            
-            </router-link>
-            <span             v-else>
-              {{ titulo }}
-            </span>
-          </slot>
-        </div>
-        <div class            ="row col-auto q-gutter-xs items-center"> <!-- //?* / gap--> 
-          <!-- //?* ////////////////////////////////////////////////////////////// Slot Barra --> 
-          <slot               name="barra"></slot>
-          <!-- //?* ////////////////////////////////////////////////////////////// Botones --> 
-          <!-- <q-btn label="Prueba" @click="test()"/> -->
-          <div v-if           ="minimizar">
-            <q-btn            dense round glossy push unelevated
-              class           ="boton-ventana"
-              :icon           ="minimizadoModel ? 'mdi-arrow-expand' : 'mdi-window-minimize'"
-              color           ="positive"
-              size            ="sm"
-              @click          ="minimizadoModel = !minimizadoModel; $emit('minimizar')"
-              v-touch-hold.mouse="clickLargoMinMax"
-              >
-              <Tooltip :label ="minimizadoModel ?  'Restaurar' : 'Minimizar'"/>
-            </q-btn>
-          </div>
-          <div v-if           ="maximizar">
-            <q-btn            dense round glossy push unelevated              
-              class           ="boton-ventana"
-              :icon           ="maximizado ? 'mdi-window-restore' : 'mdi-window-maximize'"
-              color           ="warning"
-              size            ="sm"
-              @click          ="maximizado = !maximizado; $emit('maximizar')"
-              >
-              <Tooltip :label ="maximizado ?  'Restaurar' : 'Expandir'"/>
-            </q-btn>
-          </div>
-          <div v-if           ="cerrar">
-            <q-btn            v-close-popup dense round glossy push unelevated
-              class           ="boton-ventana"
-              icon            ="mdi-window-close"
-              color           ="red"
-              size            ="sm"
-              @click          ="$emit('cerrar')"
-              >
-              <Tooltip label  ="Cerrar"/>
-            </q-btn>
-          </div>
-        </div>
-      </q-card-section>
-      <!-- //?* ////////////////////////////////////////////////////////////// SLOT Menu --> 
-      <q-card-actions
-        v-if                  ="hayMenu || menuVisible"
-        class                 ="row menu-ventana menu-gris no-wrap overflow-auto"
-        :class                ="[classMenu, { 'minimizado' : minimizadoModel }]"
-        >
-        <slot                 name="menu">
-        </slot>
-      </q-card-actions>
-      <!-- //?* ////////////////////////////////////////////////////////////// SLOT Default --> 
-      <q-card-section
-        class                 ="row items-start ventana-contenido transi"
-        :class                ="[  classContenido,
-                                  { 'minimizado'        : minimizadoModel },
-                                  { 'full-screen'       : fullScreen      },
-                                  { 'scroll q-mt-none'  : scroll          },
-                                  { 'q-mt-none'         : hayAcciones     }
-                                ]"
-        :style                ="estiloCard"
-        >  <!-- //?* /   :style                ="estiloAlto" :style="estiloCard" --> 
-        <slot v-if            ="modo == 'normal' ">
-        
-        </slot>
-        <div  
-          v-else
-          class               ="column fit justify-center items-center bg-white contenedor"
-          >
-          <!--  class         ="spinner" -->
-          <div
-            v-if              ="modo == 'buscando'"
-            class             ="column items-center"
-            >
-            <q-spinner-dots
-              color           ="grey-5"
-              class           ="spiner"
-              :size           ="sizeIconCarga"
-            />
-            <div
-              v-if            ="!!mensajeCargando"
-              class           ="absolute text-h6 text-grey-6 text-bold">
-              {{mensajeCargando}}
-            </div>
-          </div>
-          <q-icon
-            v-else
-            class             ="text-grey-5 q-mt-md size-icon"
-            :name             ="modo == 'esperando-busqueda' ? 'mdi-cloud-search' : iconoSinResultados"
-          />
-          <div
-            v-if              ="modo == 'sin-resultados'"
-            class             ="text-weight-bold text-grey-14 size-text-icon text-center"
-            >
-            {{mensajeSinResultados}}
-          </div>
-        </div>
-      </q-card-section>
-      <!-- //?* ////////////////////////////////////////////////////////////// SLOT Menu --> 
-      <q-card-actions
-        v-if                  ="hayAcciones"
-        class                 ="row no-wrap overflow-auto"        
-        align                 ="right"
-        >
-        <slot                 name="acciones">
-        </slot>
-      </q-card-actions>
-      <!-- //?* ////////////////////////////////////////////////////////////// Cargando... spinner --> 
-      <q-inner-loading
-        :showing              ="cargando"
-        :label                ="mensajeCargando"
-        >
-        <q-spinner-dots size="5em" color="primary"/>
-      </q-inner-loading>
-    </q-card>
-  </div>
-</template>
-
 <script setup lang="ts">
   import {  toRefs,
             computed, 
@@ -316,6 +158,165 @@
   })
   //const claseContenido        = ref<string>(classContenido.value)
 </script>
+
+<template>
+  <!-- no-scroll -->
+  <div  
+    class                     ="ventana transi no-scroll"
+    :class                    ="[ maximizado ? classMaximizado : classRestaurado,
+                                  { 'ventana-sombra' : !sinSombra }
+                                ]"
+    >
+    <q-card
+      :style                  ="estiloAncho"
+      class                   ="clase-ventana"
+      style                   ="height: 100%;"
+      > <!-- //?* class ="miCard shadow-5" :class="clase"  --> 
+      <!-- //?* //////////////////////////////////////////////////////////////// Barra superior justify-between --> 
+      <q-card-section  
+        v-if                  ="!sinTitulo"
+        class                 ="row justify-between items-center text-white q-py-sm bg-primary"
+        :style                ="fondoBarra"
+        >
+        <!-- //?* ////////////////////////////////////////////////////////////// Titulo --> 
+        <div  class           ="col text-h6 fuente-delicada ellipsis">
+          <q-icon
+            v-if              ="icono != undefined"
+            class             ="q-mr-sm"
+            size              ="md"
+            :name             ="icono"
+          />
+          <!-- //?* ////////////////////////////////////////////////////////////// Slot Titulo --> 
+          <slot name          ="titulo">
+            <router-link
+              v-if            ="!!linkTitulo"
+              class           ="link-limpio text-white"
+              :to             ="linkTitulo"
+              >
+              {{ titulo }}            
+            </router-link>
+            <span             v-else>
+              {{ titulo }}
+            </span>
+          </slot>
+        </div>
+        <div class            ="row col-auto q-gutter-xs items-center"> <!-- //?* / gap--> 
+          <!-- //?* ////////////////////////////////////////////////////////////// Slot Barra --> 
+          <slot               name="barra"></slot>
+          <!-- //?* ////////////////////////////////////////////////////////////// Botones --> 
+          <!-- <q-btn label="Prueba" @click="test()"/> -->
+          <div v-if           ="minimizar">
+            <q-btn            dense round glossy push unelevated
+              class           ="boton-ventana"
+              :icon           ="minimizadoModel ? 'mdi-arrow-expand' : 'mdi-window-minimize'"
+              color           ="positive"
+              size            ="sm"
+              @click          ="minimizadoModel = !minimizadoModel; $emit('minimizar')"
+              v-touch-hold.mouse="clickLargoMinMax"
+              >
+              <Tooltip :label ="minimizadoModel ?  'Restaurar' : 'Minimizar'"/>
+            </q-btn>
+          </div>
+          <div v-if           ="maximizar">
+            <q-btn            dense round glossy push unelevated              
+              class           ="boton-ventana"
+              :icon           ="maximizado ? 'mdi-window-restore' : 'mdi-window-maximize'"
+              color           ="warning"
+              size            ="sm"
+              @click          ="maximizado = !maximizado; $emit('maximizar')"
+              >
+              <Tooltip :label ="maximizado ?  'Restaurar' : 'Expandir'"/>
+            </q-btn>
+          </div>
+          <div v-if           ="cerrar">
+            <q-btn            v-close-popup dense round glossy push unelevated
+              class           ="boton-ventana"
+              icon            ="mdi-window-close"
+              color           ="red"
+              size            ="sm"
+              @click          ="$emit('cerrar')"
+              >
+              <Tooltip label  ="Cerrar"/>
+            </q-btn>
+          </div>
+        </div>
+      </q-card-section>
+      <!-- //?* ////////////////////////////////////////////////////////////// SLOT Menu --> 
+      <q-card-actions
+        v-if                  ="hayMenu || menuVisible"
+        class                 ="row menu-ventana menu-gris no-wrap overflow-auto"
+        :class                ="[classMenu, { 'minimizado' : minimizadoModel }]"
+        >
+        <slot                 name="menu">
+        </slot>
+      </q-card-actions>
+      <!-- //?* ////////////////////////////////////////////////////////////// SLOT Default --> 
+      <q-card-section
+        class                 ="row items-start ventana-contenido transi"
+        :class                ="[  classContenido,
+                                  { 'minimizado'        : minimizadoModel },
+                                  { 'full-screen'       : fullScreen      },
+                                  { 'scroll q-mt-none'  : scroll          },
+                                  { 'q-mt-none'         : hayAcciones     }
+                                ]"
+        :style                ="estiloCard"
+        >  <!-- //?* /   :style                ="estiloAlto" :style="estiloCard" --> 
+        <slot v-if            ="modo == 'normal' ">
+        
+        </slot>
+        <div  
+          v-else
+          class               ="column fit justify-center items-center bg-white contenedor"
+          >
+          <!--  class         ="spinner" -->
+          <div
+            v-if              ="modo == 'buscando'"
+            class             ="column items-center"
+            >
+            <q-spinner-dots
+              color           ="grey-5"
+              class           ="spiner"
+              :size           ="sizeIconCarga"
+            />
+            <div
+              v-if            ="!!mensajeCargando"
+              class           ="absolute text-h6 text-grey-6 text-bold">
+              {{mensajeCargando}}
+            </div>
+          </div>
+          <q-icon
+            v-else
+            class             ="text-grey-5 q-mt-md size-icon"
+            :name             ="modo == 'esperando-busqueda' ? 'mdi-cloud-search' : iconoSinResultados"
+          />
+          <div
+            v-if              ="modo == 'sin-resultados'"
+            class             ="text-weight-bold text-grey-14 size-text-icon text-center"
+            >
+            {{mensajeSinResultados}}
+          </div>
+        </div>
+      </q-card-section>
+      <!-- //?* ////////////////////////////////////////////////////////////// SLOT Menu --> 
+      <q-card-actions
+        v-if                  ="hayAcciones"
+        class                 ="row no-wrap overflow-auto"        
+        align                 ="right"
+        >
+        <slot                 name="acciones">
+        </slot>
+      </q-card-actions>
+      <!-- //?* ////////////////////////////////////////////////////////////// Cargando... spinner --> 
+      <q-inner-loading
+        :showing              ="cargando"
+        :label                ="mensajeCargando"
+        >
+        <q-spinner-dots size="5em" color="primary"/>
+      </q-inner-loading>
+    </q-card>
+  </div>
+</template>
+
 
 <style scoped>
 .ventana-contenido {

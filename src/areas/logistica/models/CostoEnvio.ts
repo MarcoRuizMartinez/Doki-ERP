@@ -1,4 +1,4 @@
-import { X100_Aumento } from "src/composables/useTools"
+import { ToolNum } from "src/composables/useTools"
 
 export interface ICostoEnvio
 { 
@@ -59,7 +59,7 @@ export class CostoEnvio implements ICostoEnvio
     this.fondo              = 0
   }
   
-  get precioConIVA  () : number { return X100_Aumento( this.precio, parseInt( process.env.IVA ?? "0" ))  }
+  get precioConIVA  () : number { return ToolNum.X100_Aumento( this.precio, parseInt( process.env.IVA ?? "0" ))  }
   get totalSinIVA   () : number { return this.precio * ( !this.qty ? 1 : this.qty ) }
   get totalConIVA   () : number { return this.precioConIVA * ( !this.qty ? 1 : this.qty ) }
   get totalSeguro   () : number { return this.seguro * ( !this.qty ? 1 : this.qty ) }

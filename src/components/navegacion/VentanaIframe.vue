@@ -82,7 +82,7 @@
   import {  ref,
             toRefs,
             watch,                } from "vue"  
-  import {  pausa                 } from "src/composables/useTools" 
+  import {  Tool                  } from "src/composables/useTools" 
   import {  style                 } from "src/composables/useEstilos"
   import    formularioIframe        from "components/navegacion/VentanaIframe.vue"
   import    ventana                 from "components/utilidades/Ventana.vue"
@@ -112,10 +112,10 @@
 
   async function recargar(){
     modelSrc.value      = ""
-    await pausa(50)
+    await Tool.pausa(50)
     cargandoRaiz.value  = true
     modelSrc.value      = src.value
-    await pausa(4000)
+    await Tool.pausa(4000)
     cargandoRaiz.value  = false
   }
 
@@ -123,7 +123,7 @@
   {
     formularioOk.value  = true
     cargandoModel.value = true    
-    await pausa(5000)
+    await Tool.pausa(5000)
     cargandoModel.value = false
   }
   async function copiarSRC()

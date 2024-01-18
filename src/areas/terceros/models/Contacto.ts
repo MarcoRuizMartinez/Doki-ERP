@@ -4,8 +4,7 @@ import {  getMunicipioDB    } from "src/composables/useDexie"
 
 import {  TTipoAcuerdo, 
           TIPO_ACUERDO      } from "src/areas/acuerdos/models/ConstantesAcuerdos"
-import {  getDateToApiDolibarr
-                            } from "src/composables/useTools"          
+import {  ToolDate          } from "src/composables/useTools"          
 
 export const enum TIPOS_CONTACTO_ID { // llx_c_type_contact
   NO_ASIGNADO             = 0,
@@ -197,8 +196,8 @@ export class Contacto implements IContacto
     contacto.extension        = contactoApi.phone_perso
     contacto.direccion        = contactoApi.address
     contacto.nota             = contactoApi.note_private
-    contacto.fechaCreado      = getDateToApiDolibarr( contactoApi?.date_creation      ?? "" )
-    contacto.fechaModificado  = getDateToApiDolibarr( contactoApi?.date_modification  ?? "" )
+    contacto.fechaCreado      = ToolDate.getDateToApiDolibarr( contactoApi?.date_creation      ?? "" )
+    contacto.fechaModificado  = ToolDate.getDateToApiDolibarr( contactoApi?.date_modification  ?? "" )
     contacto.activo           = Boolean(  parseInt( contactoApi.statut            ) )
     contacto.documento        = +(contactoApi?.array_options?.options_documento ?? "0")
 

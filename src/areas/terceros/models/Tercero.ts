@@ -6,7 +6,7 @@ import {  IMunicipio,
           Municipio
                             } from "src/models/Municipio"
 import {  IUsuario          } from "src/areas/usuarios/models/Usuario"
-import {  formatoMilesInt   } from "src/composables/useTools"
+import {  Format            } from "src/composables/useTools"
 import {  TIPOS_DOCUMENTO   } from "./TiposDocumento"
 import {  AREA              } from "src/models/TiposVarios"
 import {  IAccion           } from "src/areas/comunicacion/models/Accion"
@@ -158,7 +158,7 @@ export class Tercero implements ITercero
     if(!!this.documento.numero)
     {
       if(this.documento.esNumero)
-        documento     = formatoMilesInt.format( parseInt( this.documento.numero ) )
+        documento     = Format.milesInt.format( parseInt( this.documento.numero ) )
 
       if(this.esEmpresa && !!this.documento.digito)
         documento     += "-" + this.documento.digito

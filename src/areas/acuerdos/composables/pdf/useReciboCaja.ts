@@ -4,7 +4,7 @@ import {  UtilPDF,
           IInicioPDF        } from 'src/composables/UtilPDF';
 import {  useQuasar,
           QSpinnerGears     } from "quasar"
-import {  formatoPrecio     } from "src/composables/useTools"
+import {  Format            } from "src/composables/useTools"
 import {  jsPDF             } from "jspdf"
 import    autoTable           from 'jspdf-autotable'
 //* /////////////////////////////////////////////////////////////////////////////////// Store
@@ -151,7 +151,7 @@ export function useReciboCajaPDF()
   function generarCuerpo()
   {
     doc.y               += 10
-    const valor         = formatoPrecio( anticipo.value.valor, 'decimales-no')
+    const valor         = Format.precio( anticipo.value.valor, 'decimales-no')
     // * //////////////////////////////////////////////// Tabla
     autoTable(pdf, {
       head: [['Cuenta', 'Descripción', 'Tercero', 'Debito', 'Crédito' ]],

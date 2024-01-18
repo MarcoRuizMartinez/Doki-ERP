@@ -1,88 +1,3 @@
-<template>
-  <q-file                   use-chips append dense hide-bottom-space borderless multiple
-    v-bind                  ="$attrs"
-    v-model                 ="archivosSubir"    
-    class                   ="campo-hundido transi"    
-    :disable                ="cargandoArchivos"
-    :max-files              ="maxFiles"
-    :max-file-size          ="maxSize"
-    @rejected               ="rechazarArchivos"
-    @update:model-value     ="seleccionar"
-    >
-    <template #prepend>
-      <q-icon name="mdi-paperclip" class="q-ml-sm"/>
-    </template>
-    <template #after>
-      <q-btn                round dense flat
-        v-if                ="!!archivosSubir.length"
-        icon                ="mdi-cloud-upload"
-        padding             ="none"
-        :loading            ="cargandoArchivos"
-        @click              ="subirArchivos"
-        >
-        <Tooltip label      ="Subir archivos"/>
-      </q-btn>
-    </template>
-  </q-file>
-  <!-- //* ///////////////////////////////////// Boton borrar mantener productos -->
-  <q-btn                    round dense flat
-    icon                    ="mdi-image-area-close"
-    class                   ="op70 op100-hover"
-    :disable                ="cargandoArchivos"    
-    >
-    <Tooltip label          ="Pegar imagen"/>
-    <q-menu                 fit
-      v-model               ="menuCopiarPegar"
-      transition-show       ="jump-down"
-      transition-hide       ="jump-up"
-      anchor                ="bottom middle"
-      self                  ="top middle"
-      @hide                 ="limpiarCopiaPegar"
-      >
-      <div
-        class               ="q-ma-md gap-md"
-        style               ="min-width: 220px; max-width: 440px;"
-        >
-        <q-form
-          ref               ="formulario"
-          class             ="column"
-          @submit           ="subirImagenPegadaBase64"
-          >
-          <div  class       ="text-center q-mb-sm text-grey-7 text-1em">
-            Copia y pega una captura de pantalla
-          </div>
-          <input-text       autofocus alerta
-            v-model         ="nombreImagen"
-            label           ="Nombre"
-            icon            ="mdi-sign-text"
-            class           ="q-mb-sm"
-            :loading        ="cargandoArchivos"
-            :disable        ="cargandoArchivos"
-            :rules          ="[ archivoExistente ]"
-          />
-          <q-btn
-            v-bind          ="style.btnBaseSm"
-            label           ="Pegar"
-            color           ="positive"
-            icon            ="mdi-clipboard-check"
-            type            ="submit"
-            class           ="q-mb-sm"
-            :loading        ="cargandoArchivos"
-            :disable        ="modelEditor.length < 20"
-          />
-          <q-editor        
-            v-bind          ="WYSIWYG_Imagen"
-            v-model         ="modelEditor"
-            placeholder     ="Pega aca"
-            max-height      ="220px"
-            :disable        ="cargandoArchivos"
-          />          
-        </q-form>        
-      </div>
-    </q-menu>   
-  </q-btn>
-</template>
-
 <script setup lang="ts">
   //accept                  =".xlsx,.xls,image/*,.doc, .docx,.ppt, .pptx, .txt, .pdf, .ods, .odt" pdfjs
   import {  ref, 
@@ -261,3 +176,88 @@
   }
 
 </script>
+
+<template>
+  <q-file                   use-chips append dense hide-bottom-space borderless multiple
+    v-bind                  ="$attrs"
+    v-model                 ="archivosSubir"    
+    class                   ="campo-hundido transi"    
+    :disable                ="cargandoArchivos"
+    :max-files              ="maxFiles"
+    :max-file-size          ="maxSize"
+    @rejected               ="rechazarArchivos"
+    @update:model-value     ="seleccionar"
+    >
+    <template #prepend>
+      <q-icon name="mdi-paperclip" class="q-ml-sm"/>
+    </template>
+    <template #after>
+      <q-btn                round dense flat
+        v-if                ="!!archivosSubir.length"
+        icon                ="mdi-cloud-upload"
+        padding             ="none"
+        :loading            ="cargandoArchivos"
+        @click              ="subirArchivos"
+        >
+        <Tooltip label      ="Subir archivos"/>
+      </q-btn>
+    </template>
+  </q-file>
+  <!-- //* ///////////////////////////////////// Boton borrar mantener productos -->
+  <q-btn                    round dense flat
+    icon                    ="mdi-image-area-close"
+    class                   ="op70 op100-hover"
+    :disable                ="cargandoArchivos"    
+    >
+    <Tooltip label          ="Pegar imagen"/>
+    <q-menu                 fit
+      v-model               ="menuCopiarPegar"
+      transition-show       ="jump-down"
+      transition-hide       ="jump-up"
+      anchor                ="bottom middle"
+      self                  ="top middle"
+      @hide                 ="limpiarCopiaPegar"
+      >
+      <div
+        class               ="q-ma-md gap-md"
+        style               ="min-width: 220px; max-width: 440px;"
+        >
+        <q-form
+          ref               ="formulario"
+          class             ="column"
+          @submit           ="subirImagenPegadaBase64"
+          >
+          <div  class       ="text-center q-mb-sm text-grey-7 text-1em">
+            Copia y pega una captura de pantalla
+          </div>
+          <input-text       autofocus alerta
+            v-model         ="nombreImagen"
+            label           ="Nombre"
+            icon            ="mdi-sign-text"
+            class           ="q-mb-sm"
+            :loading        ="cargandoArchivos"
+            :disable        ="cargandoArchivos"
+            :rules          ="[ archivoExistente ]"
+          />
+          <q-btn
+            v-bind          ="style.btnBaseSm"
+            label           ="Pegar"
+            color           ="positive"
+            icon            ="mdi-clipboard-check"
+            type            ="submit"
+            class           ="q-mb-sm"
+            :loading        ="cargandoArchivos"
+            :disable        ="modelEditor.length < 20"
+          />
+          <q-editor        
+            v-bind          ="WYSIWYG_Imagen"
+            v-model         ="modelEditor"
+            placeholder     ="Pega aca"
+            max-height      ="220px"
+            :disable        ="cargandoArchivos"
+          />          
+        </q-form>        
+      </div>
+    </q-menu>   
+  </q-btn>
+</template>

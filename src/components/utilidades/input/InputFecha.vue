@@ -1,73 +1,3 @@
-<template>
-  <q-input                      dense hide-bottom-space
-    ref                         ="input"
-    v-model                     ="modelo"
-    mask                        ="date"
-    :label                      ="label"
-    :readonly                   ="readonly"
-    :class                      ="{'campo-hundido' : hundido}"
-    :filled                     ="!hundido"
-    :borderless                 ="!hundido"     
-    :clearable                  ="clearable"
-    :rules                      ="[ ...rules, regla ]"
-    @blur                       ="blurInputText"
-    @clear                      =""
-    @update:model-value         ="cambioInputText"
-    >
-    <template                   #append>
-      <span class               ="text-subtitle2">
-        <slot></slot>
-      </span>
-      <q-icon
-        name                    ="mdi-calendar"
-        :class                  ="{'cursor-pointer' : !readonly}"
-        >
-        <q-popup-proxy          cover 
-          v-if                  ="!readonly"
-          ref                   ="qDateProxy"
-          v-model               ="popupOk"
-          :persistent           ="loading"
-          transition-show       ="scale"
-          transition-hide       ="scale"
-          @before-hide          ="asignarModelValueAModelo"
-          >
-          <q-date               today-btn
-            v-model             ="modelo"
-            :subtitle           ="(!!titulo ? titulo + ' ' : '') + modelo"
-            :options            ="fechaCumpleCriterios"
-            :events             ="[desdeConFormato, hastaConFormato]"
-            @update:model-value ="cambiarFecha"
-            >            
-            <div class          ="row items-center justify-end q-gutter-sm">
-              <q-btn            v-close-popup rounded flat
-                label           ="Cancelar"
-                color           ="primary"
-              />
-              <q-btn            v-close-popup rounded
-                label           ="Guardar"
-                color           ="primary"
-                @click          ="emitir"
-              />
-            </div>
-            <q-inner-loading
-              label             ="Cambiando fecha"
-              :showing          ="loading"
-              >
-              <q-spinner-dots
-                size            ="50px"
-                color           ="primary"
-              />
-            </q-inner-loading>                  
-          </q-date>
-        </q-popup-proxy>
-      </q-icon>
-    </template>
-    <Tooltip v-if               ="!!modelValue.valueOf()">
-      {{label}}: 
-      {{new Date(modelValue).toLocaleDateString('es-CO', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}}
-    </Tooltip> 
-  </q-input>  
-</template>
 <script setup lang="ts">
   //:rules                      ="['date']"
   import {  ref,
@@ -78,8 +8,7 @@
   import {  date, debounce  } from 'quasar'         
   import {  ValidationRule  } from "quasar"  
   import {  useTools,
-            fechaCorta,
-            fechaValida     } from "src/composables/useTools"
+            ToolDate        } from "src/composables/useTools"
 
   const hoy                   = date.formatDate(Date.now(), 'YYYY/MM/DD')
   const desdeConFormato       = ref<string>("") // 'YYYY/MM/DD' 
@@ -121,7 +50,7 @@
   const input           = ref<any>({})
   const avisoRangoOut   = debounce (()=>aviso("negative", "Fecha fuera de rango","clock"), 300)
   const emitir          = ()=> {
-    if(fechaValida(fechaTem))
+    if(ToolDate.fechaValida(fechaTem))
       emit("update:model-value", fechaTem)
     else 
       emit("update:model-value", "")
@@ -255,3 +184,74 @@
   }  
 
 </script>
+
+<template>
+  <q-input                      dense hide-bottom-space
+    ref                         ="input"
+    v-model                     ="modelo"
+    mask                        ="date"
+    :label                      ="label"
+    :readonly                   ="readonly"
+    :class                      ="{'campo-hundido' : hundido}"
+    :filled                     ="!hundido"
+    :borderless                 ="!hundido"     
+    :clearable                  ="clearable"
+    :rules                      ="[ ...rules, regla ]"
+    @blur                       ="blurInputText"
+    @clear                      =""
+    @update:model-value         ="cambioInputText"
+    >
+    <template                   #append>
+      <span class               ="text-subtitle2">
+        <slot></slot>
+      </span>
+      <q-icon
+        name                    ="mdi-calendar"
+        :class                  ="{'cursor-pointer' : !readonly}"
+        >
+        <q-popup-proxy          cover 
+          v-if                  ="!readonly"
+          ref                   ="qDateProxy"
+          v-model               ="popupOk"
+          :persistent           ="loading"
+          transition-show       ="scale"
+          transition-hide       ="scale"
+          @before-hide          ="asignarModelValueAModelo"
+          >
+          <q-date               today-btn
+            v-model             ="modelo"
+            :subtitle           ="(!!titulo ? titulo + ' ' : '') + modelo"
+            :options            ="fechaCumpleCriterios"
+            :events             ="[desdeConFormato, hastaConFormato]"
+            @update:model-value ="cambiarFecha"
+            >            
+            <div class          ="row items-center justify-end q-gutter-sm">
+              <q-btn            v-close-popup rounded flat
+                label           ="Cancelar"
+                color           ="primary"
+              />
+              <q-btn            v-close-popup rounded
+                label           ="Guardar"
+                color           ="primary"
+                @click          ="emitir"
+              />
+            </div>
+            <q-inner-loading
+              label             ="Cambiando fecha"
+              :showing          ="loading"
+              >
+              <q-spinner-dots
+                size            ="50px"
+                color           ="primary"
+              />
+            </q-inner-loading>                  
+          </q-date>
+        </q-popup-proxy>
+      </q-icon>
+    </template>
+    <Tooltip v-if               ="!!modelValue.valueOf()">
+      {{label}}: 
+      {{new Date(modelValue).toLocaleDateString('es-CO', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}}
+    </Tooltip> 
+  </q-input>  
+</template>

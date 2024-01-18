@@ -13,8 +13,8 @@
 
             </q-td>
             <q-td key           ="estadoLabel">{{ props.row.estadoLabel }}</q-td>
-            <q-td key           ="valor" class="text-bold fuente-mono text-right">{{ formatoPrecio( props.row.valor, 'decimales-no' )  }}</q-td>
-            <q-td key           ="pagado" class="text-bold fuente-mono text-right">{{ formatoPrecio( props.row.pagado, 'decimales-no' )  }}</q-td>
+            <q-td key           ="valor" class="text-bold fuente-mono text-right">{{ Format.precio( props.row.valor, 'decimales-no' )  }}</q-td>
+            <q-td key           ="pagado" class="text-bold fuente-mono text-right">{{ Format.precio( props.row.pagado, 'decimales-no' )  }}</q-td>
             <q-td key           ="usuarioLabel"><chip-usuario :usuario="props.row.usuario"/></q-td>
             <q-td key           ="creadorLabel"><chip-usuario :usuario="props.row.creador"/></q-td>
             <q-td key           ="nota">{{ props.row.nota }}</q-td>

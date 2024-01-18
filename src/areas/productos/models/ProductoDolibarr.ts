@@ -3,10 +3,7 @@ import {  IUnidad,
 import {  getUnidadDB,
           getCategoriaDB,
           getNaturalezaDB     } from "src/composables/useDexie"
-import {  roundInt,
-          valorValido,
-          X100_Aumento,
-          X100_Calcular       } from "src/composables/useTools"
+import {  ToolNum, ToolType   } from "src/composables/useTools"
 import {  ICategoriaProducto,
           CategoriaProducto   } from "src/areas/productos/models/CategoriaProducto"
 import {  INaturalezaProducto,
@@ -141,11 +138,11 @@ export class ProductoDoli implements IProductoDoli
 
   calcularPrecioConAumento( aumento : number) : number {
     if(!this.costo || !aumento) return 0
-    else                        return roundInt( X100_Aumento( this.costoTotal, aumento), 2 )
+    else                        return ToolNum.roundInt( ToolNum.X100_Aumento( this.costoTotal, aumento), 2 )
   }
 
   get costoTotal() : number {
-    return ( valorValido( this.costo ) ? this.costo : 0 ) + ( valorValido( this.costo_adicional ) ? this.costo_adicional : 0 )
+    return ( ToolType.valorValido( this.costo ) ? this.costo : 0 ) + ( ToolType.valorValido( this.costo_adicional ) ? this.costo_adicional : 0 )
   }
 
   get precio_escom() : number {
@@ -241,16 +238,16 @@ export class ProductoDoli implements IProductoDoli
   }
 
   get precioPublicoConIVA(): number {
-    return X100_Aumento( this.precio_publico, ivaX100 )
+    return ToolNum.X100_Aumento( this.precio_publico, ivaX100 )
   }
   get precioPromocionConIVA(): number {
-    return X100_Aumento( this.precio_promocion, ivaX100 )
+    return ToolNum.X100_Aumento( this.precio_promocion, ivaX100 )
   }
   get descuentoCalculado() : number {
     let diferencia  = this.precio_publico - this.precio_promocion
     if(diferencia == 0) return 0
 
-    let descuento = +X100_Calcular( this.precio_publico, diferencia ).toFixed(1)
+    let descuento = +ToolNum.X100_Calcular( this.precio_publico, diferencia ).toFixed(1)
 
     if(descuento == 100)
       descuento   = 0

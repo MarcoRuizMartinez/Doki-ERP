@@ -4,7 +4,7 @@ import {  UtilPDF,
           IInicioPDF        } from 'src/composables/UtilPDF';
 import {  Acuerdo, IAcuerdo } from "src/areas/acuerdos/models/Acuerdo"
 import {  ILineaLite        } from "src/areas/acuerdos/models/LineaAcuerdo"
-import {  fechaCorta        } from "src/composables/useTools"
+import {  ToolDate          } from "src/composables/useTools"
 import {  jsPDF             } from "jspdf"
 import    autoTable           from 'jspdf-autotable'
 
@@ -166,7 +166,7 @@ export function useRemisionPDF()
       margin:     { left: doc.margenIzq, right: doc.margenDer, bottom: 0 },
       headStyles: { fontStyle: 'bold', cellPadding: { top: 3, bottom: 0 }},
       head:       [ ['TELÉFONO', acuerdo.tercero.documento.tipo.label, 'ASESOR', "ELABORO", 'ORDEN', 'MÉTODO', 'FECHA' ]],
-      body:       [ [ acuerdo.tercero.telefono, acuerdo.tercero.numeroDocumento, acuerdo.comercial.nombreCompleto, usuario.value.nombreCompleto, acuerdo.refCliente, datos.metodo,  fechaCorta( datos.fechaEntrega ) ], ],
+      body:       [ [ acuerdo.tercero.telefono, acuerdo.tercero.numeroDocumento, acuerdo.comercial.nombreCompleto, usuario.value.nombreCompleto, acuerdo.refCliente, datos.metodo, ToolDate.fechaCorta( datos.fechaEntrega ) ], ],
     }) 
   }
 

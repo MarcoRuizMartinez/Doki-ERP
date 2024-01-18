@@ -1,12 +1,11 @@
 // * /////////////////////////////////////////////////////////////////////// Componibles
-import {  sortArray           } from "src/composables/useTools"
 import {  getURL,
           getFormData         } from "src/composables/APIMaco"        
 import {  useFetch            } from "src/composables/useFetch"
-import {  getDateToStr,
-          colorRandom,
-          mayusculasPrimeraLetra  
-                              } from "src/composables/useTools"
+import {  ToolArray,
+          ToolDate,
+          ToolColor,
+          ToolStr             } from "src/composables/useTools"
 
 // * /////////////////////////////////////////////////////////////////////// Modelos
 import {  IQuery              } from "src/models/Busqueda"  
@@ -70,7 +69,7 @@ export function useControlInformes()
                               : hay("Nivel B")  ? "#2733A0"
                               : hay("Nivel A")  ? "#007DC8"
                               : hay("Alfa")     ? "#A5EC20"
-                              :                   colorRandom( "lista" )
+                              :                   ToolColor.colorRandom( "lista" )
         total[i].color      = cuenta[i].color
       }
 
@@ -149,7 +148,7 @@ export function useControlInformes()
           if(!existe)
           {
             serieApex.data.push( { x: fecha, y: null, fecha: "" })
-            serieApex.data        = sortArray(serieApex.data, "x", "<")
+            serieApex.data        = ToolArray.sortArray(serieApex.data, "x", "<")
           }
         }
       }
@@ -200,10 +199,10 @@ export function useControlInformes()
       if( typeof serie.x == "string" )
         fechaStr            = serie.fecha
         
-      const fecha           = getDateToStr( fechaStr, "UTC" )      
+      const fecha           = ToolDate.getDateToStr( fechaStr, "UTC" )      
       const año             = new Intl.DateTimeFormat('es', { year: 'numeric' }).format(fecha);
       const añoCorto        = new Intl.DateTimeFormat('es', { year: '2-digit' }).format(fecha);
-      const mesCorto        = mayusculasPrimeraLetra( new Intl.DateTimeFormat('es', { month: 'short' }).formatToParts( fecha )[0].value )
+      const mesCorto        = ToolStr.mayusculasPrimeraLetra( new Intl.DateTimeFormat('es', { month: 'short' }).formatToParts( fecha )[0].value )
 
       if(periodo            === PERIODO.AÑO || periodo == PERIODO.TRIMESTRE )
         cat                 = serie.x.toString()

@@ -136,7 +136,7 @@
   import {  useStoreUser            } from 'src/stores/user'
 
   // * /////////////////////////////////////////////////////////////////////////////////// Componibles
-  import {  pausa                   } from "src/composables/useTools"
+  import {  Tool                    } from "src/composables/useTools"
   import {  useControlComunicacion  } from "src/areas/comunicacion/controllers/ControlComunicacion"
   import {  style                   } from "src/composables/useEstilos"
 
@@ -168,7 +168,7 @@
 
   async function iniciar()
   {
-    await pausa( 5_000 )
+    await Tool.pausa( 5_000 )
     buscar()
   }
 
@@ -189,7 +189,7 @@
       loading.value             = false
     }
     
-    await pausa( 60_000 )
+    await Tool.pausa( 60_000 )
     buscar()
   }
 

@@ -1,4 +1,3 @@
-//import {  fechaCorta    } from "src/composables/useTools"
 import {  date          } from "quasar"
 
 export interface IMercadoPago {

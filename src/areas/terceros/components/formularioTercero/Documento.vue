@@ -326,7 +326,7 @@
       return false
     }
 
-    if(typeof data !== "object" && !Array.isArray(data)) return
+    if(typeof data !== "object" && !Array.isArray(data)) return false
 
     if( "code" in data && typeof data.code === "string" && data.code == "NotFound")
     {

@@ -1,3 +1,11 @@
+<script setup lang="ts">
+  import {  PropType      } from "vue"
+  import {  ILineaAcuerdo } from "src/areas/acuerdos/models/LineaAcuerdo"
+  const props = defineProps({
+    lineas:  { required: true, type: Object as PropType<ILineaAcuerdo[]> }
+  })
+</script>
+
 <template>
   <q-tooltip  class="bg-black text-caption">
     <div class="tool-terc text-subtitle2">
@@ -20,20 +28,14 @@
           </td>
           <td><div class="ellipsis linea">x {{linea.nombre}}</div></td>
         </tr>
-        <!--<tr> <td><b>Subtotal :  </b> </td> <td>{{ formatoPrecio( cotizacion.totalConDescu ) }}</td> </tr>
+        <!--<tr> <td><b>Subtotal :  </b> </td> <td>{{ Format.precio( cotizacion.totalConDescu ) }}</td> </tr>
         <tr v-if="!!cotizacion.contacto.correo"       ><td><b>Correo :    </b></td> <td> {{cotizacion.contacto.correo}}  </td></tr>
         <tr> <td><b>Creación :</b> </td> <td>{{ fechaLarga( cotizacion.fechaCreacion )    }}</td> </tr> -->
       </table>
     </div>
   </q-tooltip>
 </template>
-<script setup lang="ts">
-  import {  PropType      } from "vue"
-  import {  ILineaAcuerdo } from "src/areas/acuerdos/models/LineaAcuerdo"
-  const props = defineProps({
-    lineas:  { required: true, type: Object as PropType<ILineaAcuerdo[]> }
-  })
-</script>
+
 <style>
 
 .qty{

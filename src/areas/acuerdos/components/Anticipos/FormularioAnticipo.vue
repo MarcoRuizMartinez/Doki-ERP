@@ -1,125 +1,3 @@
-<template>
-  <ventana                      cerrar
-    class-contenido             ="column items-center"
-    titulo                      ="Anticipo o Autorización"
-    icono                       ="mdi-cash"
-    :cargando                   ="cargando"
-    >
-    <template                   #barra>
-      <efecto efecto            ="Down">
-        <q-btn
-          v-if                  ="!modelo.esNuevo"
-          v-bind                ="style.btnBaseSm"
-          color                 ="grey-10"
-          icon                  ="mdi-close"
-          label                 ="Borrar"
-          >
-          <confirmar  @ok       ="borrarAnticipo"/>
-        </q-btn>
-      </efecto>       
-      <q-btn
-        v-bind                  ="style.btnBaseSm"
-        color                   ="positive"
-        icon                    ="mdi-cash-plus"
-        :label                  ="modelo.esNuevo ? 'Crear' : 'Guardar'"
-        :disable                ="btnDisable"
-        @click                  ="validar"
-      />        
-    </template>
-    <!-- //* ///////////////////////////////////////////////////////////////   FORMULARIO  -->
-    <q-form
-      ref                       ="formulario"
-      @submit                   ="onSubmit"
-      class                     ="row q-col-gutter-md"
-      >
-      <!-- //* ///////////////////////////////////////////////////////////// Cuenta -->
-      <select-label-value
-        v-model                 ="modelo.cuenta"
-        label                   ="Cuenta"
-        icon                    ="mdi-wallet"
-        class                   ="col-12"
-        :rules                  ="[ reglaCuenta ]"
-        :options                ="cuentas"
-        :loading                ="!cuentas.length"
-      />
-      <!-- //* ///////////////////////////////////////////////////////////// Valor -->
-      <input-number             no-undefined alerta solo-positivo 
-        v-model                 ="modelo.valor"
-        label                   ="Valor"
-        tipo                    ="precio"
-        class                   ="col-md-5 col-11"
-        icon                    ="mdi-cash-usd"
-        debounce                ="2500"
-        :rules                  ="[ reglaValor ]"
-        :minimo                 ="0"
-      />
-      <div class                ="col-1">
-        <q-btn
-          v-bind                ="style.btnRedondoFlat"
-          icon                  ="mdi-account-cash"
-          class                 ="q-mt-sm"
-          @click                ="modelo.valor = acuerdo.saldo"
-        />
-      </div>
-      <!-- //* ///////////////////////////////////////////////////////////// Fecha pago -->
-      <input-fecha              no-futuro clearable alerta
-        v-model                 ="modelo.fechaPago"
-        label                   ="Fecha"
-        class                   ="col-md-6 col-12"
-      />
-      <!-- //* ///////////////////////////////////////////////////////////// Estado -->
-      <select-label-value       alerta
-        v-model                 ="modelo.estadoSelect"
-        label                   ="Estado"
-        icon                    ="mdi-cash-check"
-        class                   ="col-md-6 col-12"
-        :defecto                ="ESTADO_ANTICIPO_LABEL.PENDIENTE"
-        :options                ="Anticipo.estados"
-        @update:model-value     ="modelo.estado = modelo.estadoSelect.value"
-      />    
-      <!-- //* ///////////////////////////////////////////////////////////// Tipo -->
-      <select-label-value       alerta
-        v-model                 ="modelo.tipoSelect"
-        label                   ="Tipo"
-        icon                    ="mdi-cash-refund"
-        class                   ="col-md-6 col-12"
-        :defecto                ="TIPO_ANTICIPO_LABEL.PAGO"
-        :options                ="Anticipo.tipos"
-        @update:model-value     ="modelo.tipo = modelo.tipoSelect.value"
-      />  
-      <!-- //* ///////////////////////////////////////////////////////////// Nota -->
-      <input-text               
-        v-model                 ="modelo.nota"
-        label                   ="Nota"
-        icon                    ="mdi-comment-quote"
-        class                   ="col-12"
-        :rules                  ="[ reglaNota ]"
-      />
-      <!-- //* ///////////////////////////////////////////////////////////// Comprobante interno -->
-      <select-label-value       clearable no-loading
-        v-model                 ="modelo.fileInterno"
-        :label                  ="'Comprobante ' + (esAutorizacion ? 'autorización' : 'pago')"
-        icon                    ="mdi-bank"
-        class                   ="col-12"
-        :alerta                 ="modelo.estadoSelect.label === ESTADO_ANTICIPO_LABEL.VERIFICADO"
-        :options                ="acuerdo.archivos"
-        @update:model-value     ="modelo.estadoSelect = {label: ESTADO_ANTICIPO_LABEL.VERIFICADO, value: ESTADO_ANTICIPO.VERIFICADO } "
-      />
-      <!-- //* ///////////////////////////////////////////////////////////// Comprobante Cliente -->
-      <select-label-value       clearable no-loading
-        v-model                 ="modelo.fileCliente"
-        label                   ="Recibo de cliente"
-        icon                    ="mdi-account-cash"
-        class                   ="col-12"
-        :options                ="acuerdo.archivos"
-      />
-      <q-btn
-        v-show                  ="false"
-        type                    ="submit"
-      />
-    </q-form>
-  </ventana>
-</template>
 <script setup lang="ts">
   // * ///////////////////////////////////////////////////////////////////////////////// Core
   import {  ref,
@@ -262,3 +140,126 @@
     return (notaOk || !esAutorizacion.value )  || "Se debe indicar una razón para la autorización"
   }
 </script>
+
+<template>
+  <ventana                      cerrar
+    class-contenido             ="column items-center"
+    titulo                      ="Anticipo o Autorización"
+    icono                       ="mdi-cash"
+    :cargando                   ="cargando"
+    >
+    <template                   #barra>
+      <efecto efecto            ="Down">
+        <q-btn
+          v-if                  ="!modelo.esNuevo"
+          v-bind                ="style.btnBaseSm"
+          color                 ="grey-10"
+          icon                  ="mdi-close"
+          label                 ="Borrar"
+          >
+          <confirmar  @ok       ="borrarAnticipo"/>
+        </q-btn>
+      </efecto>       
+      <q-btn
+        v-bind                  ="style.btnBaseSm"
+        color                   ="positive"
+        icon                    ="mdi-cash-plus"
+        :label                  ="modelo.esNuevo ? 'Crear' : 'Guardar'"
+        :disable                ="btnDisable"
+        @click                  ="validar"
+      />        
+    </template>
+    <!-- //* ///////////////////////////////////////////////////////////////   FORMULARIO  -->
+    <q-form
+      ref                       ="formulario"
+      @submit                   ="onSubmit"
+      class                     ="row q-col-gutter-md"
+      >
+      <!-- //* ///////////////////////////////////////////////////////////// Cuenta -->
+      <select-label-value
+        v-model                 ="modelo.cuenta"
+        label                   ="Cuenta"
+        icon                    ="mdi-wallet"
+        class                   ="col-12"
+        :rules                  ="[ reglaCuenta ]"
+        :options                ="cuentas"
+        :loading                ="!cuentas.length"
+      />
+      <!-- //* ///////////////////////////////////////////////////////////// Valor -->
+      <input-number             no-undefined alerta solo-positivo 
+        v-model                 ="modelo.valor"
+        label                   ="Valor"
+        tipo                    ="precio"
+        class                   ="col-md-5 col-11"
+        icon                    ="mdi-cash-usd"
+        debounce                ="2500"
+        :rules                  ="[ reglaValor ]"
+        :minimo                 ="0"
+      />
+      <div class                ="col-1">
+        <q-btn
+          v-bind                ="style.btnRedondoFlat"
+          icon                  ="mdi-account-cash"
+          class                 ="q-mt-sm"
+          @click                ="modelo.valor = acuerdo.saldo"
+        />
+      </div>
+      <!-- //* ///////////////////////////////////////////////////////////// Fecha pago -->
+      <input-fecha              no-futuro clearable alerta
+        v-model                 ="modelo.fechaPago"
+        label                   ="Fecha"
+        class                   ="col-md-6 col-12"
+      />
+      <!-- //* ///////////////////////////////////////////////////////////// Estado -->
+      <select-label-value       alerta
+        v-model                 ="modelo.estadoSelect"
+        label                   ="Estado"
+        icon                    ="mdi-cash-check"
+        class                   ="col-md-6 col-12"
+        :defecto                ="ESTADO_ANTICIPO_LABEL.PENDIENTE"
+        :options                ="Anticipo.estados"
+        @update:model-value     ="modelo.estado = modelo.estadoSelect.value"
+      />    
+      <!-- //* ///////////////////////////////////////////////////////////// Tipo -->
+      <select-label-value       alerta
+        v-model                 ="modelo.tipoSelect"
+        label                   ="Tipo"
+        icon                    ="mdi-cash-refund"
+        class                   ="col-md-6 col-12"
+        :defecto                ="TIPO_ANTICIPO_LABEL.PAGO"
+        :options                ="Anticipo.tipos"
+        @update:model-value     ="modelo.tipo = modelo.tipoSelect.value"
+      />  
+      <!-- //* ///////////////////////////////////////////////////////////// Nota -->
+      <input-text               
+        v-model                 ="modelo.nota"
+        label                   ="Nota"
+        icon                    ="mdi-comment-quote"
+        class                   ="col-12"
+        :rules                  ="[ reglaNota ]"
+      />
+      <!-- //* ///////////////////////////////////////////////////////////// Comprobante interno -->
+      <select-label-value       clearable no-loading
+        v-model                 ="modelo.fileInterno"
+        :label                  ="'Comprobante ' + (esAutorizacion ? 'autorización' : 'pago')"
+        icon                    ="mdi-bank"
+        class                   ="col-12"
+        :alerta                 ="modelo.estadoSelect.label === ESTADO_ANTICIPO_LABEL.VERIFICADO"
+        :options                ="acuerdo.archivos"
+        @update:model-value     ="modelo.estadoSelect = {label: ESTADO_ANTICIPO_LABEL.VERIFICADO, value: ESTADO_ANTICIPO.VERIFICADO } "
+      />
+      <!-- //* ///////////////////////////////////////////////////////////// Comprobante Cliente -->
+      <select-label-value       clearable no-loading
+        v-model                 ="modelo.fileCliente"
+        label                   ="Recibo de cliente"
+        icon                    ="mdi-account-cash"
+        class                   ="col-12"
+        :options                ="acuerdo.archivos"
+      />
+      <q-btn
+        v-show                  ="false"
+        type                    ="submit"
+      />
+    </q-form>
+  </ventana>
+</template>

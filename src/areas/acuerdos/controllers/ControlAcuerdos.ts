@@ -16,8 +16,8 @@ import {  useApiDolibarr        } from "src/composables/useApiDolibarr"
 import {  useFetch              } from "src/composables/useFetch"
 import {  getURL, getFormData   } from "src/composables/APIMaco"
 import {  useTools,
-          ID_URL_Ok,
-          anyToNum,
+          ToolNum,
+          ToolType,
           confeti               } from "src/composables/useTools"
 import {  dexieReglaComision    } from "src/composables/useDexie"
 
@@ -124,7 +124,7 @@ export function useControlAcuerdo()
   //* ////////////////////////////////////////////////////////////////////// Buscar Acuerdo
   async function buscarAcuerdo( tipo : TTipoAcuerdo, id_ : string )
   {
-    const idOk                  = ID_URL_Ok( id_ )
+    const idOk                  = ToolNum.ID_URL_Ok( id_ )
     if(!idOk) router.push("/error")
 
     loading.value.carga         = true
@@ -183,7 +183,7 @@ export function useControlAcuerdo()
 
     if(ok){
       if(nuevaCal){
-        const id : number             = anyToNum( data )
+        const id : number             = ToolType.anyToNum( data )
         acuerdo.value.calificacion.id = id
         if(!id) aviso("negative", `Error al crear calificación`)
       }

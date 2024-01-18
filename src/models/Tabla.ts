@@ -1,8 +1,8 @@
 import {  QTableProps             } from "quasar"
-import {  mayusculasPrimeraLetra  } from "../composables/useTools"
-import {  siNo,
-          formatoPrecio,
-          fechaCorta              } from "src/composables/useTools"
+import {  Tool,
+          ToolStr,          
+          ToolDate,
+          Format                  } from "src/composables/useTools"
 
 
 export interface IColumna {
@@ -61,7 +61,7 @@ export class Columna implements IColumna
               } = {} )
   {
     this.name             = name
-    this.label            = mayusculasPrimeraLetra( !!label ? label : name )
+    this.label            = ToolStr.mayusculasPrimeraLetra( !!label ? label : name )
     this.field            = name
     this.required         = required
     this.align            =   align == "left"   ? "left"
@@ -84,7 +84,7 @@ export class Columna implements IColumna
   static ColumnaPrecio({ name = "", label = "",  sortable = true, clase = "", visible = true }) : IColumna
   {
     let col               = new Columna({ name: name, label: label, sortable: sortable, clase: clase })
-        col.format        = val => formatoPrecio( val, "decimales-no" )// + "\r\n" + formatoPrecio( val *1.19, "decimales-no" )
+        col.format        = val => Format.precio( val, "decimales-no" )// + "\r\n" + Format.precio( val *1.19, "decimales-no" )
         col.align         = "right"
         col.classes       = clase + " fuente-mono"
         col.visible       = visible
@@ -98,7 +98,7 @@ export class Columna implements IColumna
         col.format        = val => {
 
                                       const fecha = !!val && val instanceof Date ? val : new Date()
-                                      return fechaCorta( fecha)
+                                      return ToolDate.fechaCorta( fecha)
                                     }
         col.align         = "right"
         col.classes       = clase + " fuente-mono"
@@ -123,7 +123,7 @@ export class Columna implements IColumna
   static ColumnaSiNo({ name = "", label = "",  sortable = true, clase = "" }) : IColumna
   {
     let col               = new Columna({ name : name, label : label, sortable : sortable, clase: clase })
-        col.format        = ( val : boolean ) => siNo(val)
+        col.format        = ( val : boolean ) => Tool.siNo(val)
         col.align         = "center"
         col.classes       = clase + " fuente-mono"
 

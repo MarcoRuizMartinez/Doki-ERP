@@ -1,4 +1,4 @@
-import { fechaLarga, getDateToStr } from "src/composables/useTools"
+import { ToolDate } from "src/composables/useTools"
 
 export interface  IObjetivo {
   id:             string
@@ -46,7 +46,7 @@ export class Objetivo implements IObjetivo
   }
 
   get fechaEstimada() :string {
-    return fechaLarga( getDateToStr( this.fecha, "UTC") )
+    return ToolDate.fechaLarga( ToolDate.getDateToStr( this.fecha, "UTC") )
   }
 
   get icon() : string

@@ -1,83 +1,3 @@
-<template>
-  <div>
-    <!-- v-bind              ="$attrs" -->
-    <q-input              dense hide-bottom-space      
-      v-model             ="modelo"
-      class               ="transi input-numero"
-      input-class         ="fuente-mono"
-      lazy-rules          ="ondemand"
-      type                ="text"
-      :debounce           ="debounce"    
-      :class              ="{'campo-hundido' : hundido}"
-      :filled             ="!hundido"
-      :borderless         ="!hundido"
-      :label              =" !!alerta && !readonly ? label + ' *' : label"
-      :rules              ="[ ...rules, regla, reglaCero ]"
-      :error              ="error"
-      :error-message      ="errorMessage"
-      :autofocus          ="autofocus"
-      :readonly           ="readonly"
-      :clearable          ="clearable"
-      :prefix             ="tipo == 'precio'      ? '$' : ''"
-      :bg-color           ="bgColor"
-      :suffix             ="tipo == 'porcentaje'  ? '%' : ''"
-      :maxlength          ="maxlength"
-      :disable            ="disable"
-      :loading            ="!campoEnfocado && estadoCheck == 'verificando'"
-      @blur               ="campoEnfocado = false; emit('blur')" 
-      @focus              ="campoEnfocado = true" 
-      @clear              ="limpiar"
-      @update:model-value ="inputEvent"
-      @keyup.enter        ="emit('enter')"
-      >
-      <template           #prepend v-if="!!icon">
-        <q-icon :name     ="icon" />
-      </template>
-      <template           #append  v-if="btnClick">
-        <q-btn
-          icon            ="mdi-chevron-right"
-          color           ="primary"
-          padding         ="6px 6px"
-          style           ="margin-right: -12px;"
-          @click          ="emit('click')"
-        />
-      </template>
-      <template           #after
-        style             ="font-size: 14px; padding-left: 0px;"
-        >
-        <q-icon
-          v-if            ="estadoCheck == 'check' || estadoCheck == 'alert' && !readonly && !campoEnfocado"
-          class           ="transi"
-          :name           ="estadoCheck == 'check' ? 'mdi-check-circle'   : 'mdi-alert' "
-          :color          ="estadoCheck == 'check' ? 'positive'           : 'warning'"
-        />
-        <q-btn            round dense flat
-          v-else-if       ="readonly && copy"
-          icon            ="mdi-content-copy"
-          class           ="transi"
-          @click          ="copiar"
-        />
-        <div
-          v-if            ="!!paso"
-          class           ="column"
-          style           ="font-size: 14px; padding-left: 0px;"
-          :class          ="{'ma--3px' : hundido}"
-          >
-          <q-btn
-            v-bind        ="estiloBotones('arriba')"
-            v-touch-repeat:0:100.mouse  ="sumar"
-            :disable      ="btnSumarDisable"
-          />
-          <q-btn
-            v-bind        ="estiloBotones('abajo')"
-            v-touch-repeat:0:100.mouse  ="restar"
-            :disable      ="btnRestarDisable"
-          />
-        </div>
-      </template>
-    </q-input>
-  </div>
-</template>
 <script setup lang="ts">
 // // !(tercero.documento == null || tercero.documento == '' || lectura || enfocado || verificando)
   import {  
@@ -93,8 +13,7 @@
   import {  EstadoVerificar       } from "src/models/TiposVarios"
   import {  btnNumeroPaso         } from "src/composables/useEstilos"
   import {  ValidationRule        } from "quasar"
-  import {  valorValido,  
-            strOrNumToNum         } from "src/composables/useTools"
+  import {  ToolType              } from "src/composables/useTools"
 
   const NUM_MAX           = 9_999_999_999
   const props             = defineProps(
@@ -167,10 +86,10 @@
   const maxlength         = ref< number >( -1 )
 
   const valorMaxModelo    = ref< number >( NUM_MAX )
-  watch(maximo, (newMax)=>{ valorMaxModelo.value  = strOrNumToNum( newMax, NUM_MAX ) } )
+  watch(maximo, (newMax)=>{ valorMaxModelo.value  = ToolType.strOrNumToNum( newMax, NUM_MAX ) } )
 
   const valorMinModelo    = ref< number >( -NUM_MAX )
-  watch(minimo, (newMin)=>{ valorMinModelo.value  = strOrNumToNum( newMin, -NUM_MAX ) } )
+  watch(minimo, (newMin)=>{ valorMinModelo.value  = ToolType.strOrNumToNum( newMin, -NUM_MAX ) } )
 
 
   const btnSumarDisable   = computed( ()=> ( numero.value ?? 0 ) + paso.value > valorMaxModelo.value || readonly.value )
@@ -201,7 +120,7 @@
           (
             noUndefined.value
             &&
-            valorValido(nuevoModelo)
+            ToolType.valorValido(nuevoModelo)
           )
           ||
           (
@@ -410,6 +329,87 @@
   }
 
 </script>
+
+<template>
+  <div>
+    <!-- v-bind              ="$attrs" -->
+    <q-input              dense hide-bottom-space      
+      v-model             ="modelo"
+      class               ="transi input-numero"
+      input-class         ="fuente-mono"
+      lazy-rules          ="ondemand"
+      type                ="text"
+      :debounce           ="debounce"    
+      :class              ="{'campo-hundido' : hundido}"
+      :filled             ="!hundido"
+      :borderless         ="!hundido"
+      :label              =" !!alerta && !readonly ? label + ' *' : label"
+      :rules              ="[ ...rules, regla, reglaCero ]"
+      :error              ="error"
+      :error-message      ="errorMessage"
+      :autofocus          ="autofocus"
+      :readonly           ="readonly"
+      :clearable          ="clearable"
+      :prefix             ="tipo == 'precio'      ? '$' : ''"
+      :bg-color           ="bgColor"
+      :suffix             ="tipo == 'porcentaje'  ? '%' : ''"
+      :maxlength          ="maxlength"
+      :disable            ="disable"
+      :loading            ="!campoEnfocado && estadoCheck == 'verificando'"
+      @blur               ="campoEnfocado = false; emit('blur')" 
+      @focus              ="campoEnfocado = true" 
+      @clear              ="limpiar"
+      @update:model-value ="inputEvent"
+      @keyup.enter        ="emit('enter')"
+      >
+      <template           #prepend v-if="!!icon">
+        <q-icon :name     ="icon" />
+      </template>
+      <template           #append  v-if="btnClick">
+        <q-btn
+          icon            ="mdi-chevron-right"
+          color           ="primary"
+          padding         ="6px 6px"
+          style           ="margin-right: -12px;"
+          @click          ="emit('click')"
+        />
+      </template>
+      <template           #after
+        style             ="font-size: 14px; padding-left: 0px;"
+        >
+        <q-icon
+          v-if            ="estadoCheck == 'check' || estadoCheck == 'alert' && !readonly && !campoEnfocado"
+          class           ="transi"
+          :name           ="estadoCheck == 'check' ? 'mdi-check-circle'   : 'mdi-alert' "
+          :color          ="estadoCheck == 'check' ? 'positive'           : 'warning'"
+        />
+        <q-btn            round dense flat
+          v-else-if       ="readonly && copy"
+          icon            ="mdi-content-copy"
+          class           ="transi"
+          @click          ="copiar"
+        />
+        <div
+          v-if            ="!!paso"
+          class           ="column"
+          style           ="font-size: 14px; padding-left: 0px;"
+          :class          ="{'ma--3px' : hundido}"
+          >
+          <q-btn
+            v-bind        ="estiloBotones('arriba')"
+            v-touch-repeat:0:100.mouse  ="sumar"
+            :disable      ="btnSumarDisable"
+          />
+          <q-btn
+            v-bind        ="estiloBotones('abajo')"
+            v-touch-repeat:0:100.mouse  ="restar"
+            :disable      ="btnRestarDisable"
+          />
+        </div>
+      </template>
+    </q-input>
+  </div>
+</template>
 
 <style>
 .input-numero .q-field__after {

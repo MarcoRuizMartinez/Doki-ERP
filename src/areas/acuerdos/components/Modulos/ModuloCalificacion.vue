@@ -1,3 +1,53 @@
+<script setup lang="ts">
+  import {  ref,
+            watch,
+            watchEffect         } from "vue"
+  //* ///////////////////////////////////////////////////////////////////////////// Store
+  import {  storeToRefs         } from 'pinia'                            
+  import {  useStoreAcuerdo     } from 'src/stores/acuerdo'  
+  import {  useStoreUser        } from 'src/stores/user'
+  import {  Archivo             } from "src/models/Archivo"
+  //* ///////////////////////////////////////////////////////////////////////////// Componibles  
+  import {  useControlAcuerdo   } from "src/areas/acuerdos/controllers/ControlAcuerdos"
+  import {  ToolDate            } from "src/composables/useTools"  
+  //* ///////////////////////////////////////////////////////////////////////////// Componentes
+  import    ventana               from "components/utilidades/Ventana.vue"
+  import    selectLabelValue      from "components/utilidades/select/SelectLabelValue.vue"
+  import    btnVisualizar         from "components/archivos/BtnVisualzarArchivo.vue"
+  import    btnNota               from "components/utilidades/BtnNota.vue"
+  import    chipUsuario           from "src/areas/usuarios/components/ChipUsuario.vue"
+
+  const { usuario             } = storeToRefs( useStoreUser() )    
+  const { acuerdo, loading    } = storeToRefs( useStoreAcuerdo() )  
+  const { editarCrearCalificacion
+                              } = useControlAcuerdo()
+  const promedio                = ref<number>(0)
+
+  const estiloStar = {
+    noReset       : true,          
+    class         : "col-8",
+    size          : "2.1em",
+    color         : "amber-6",
+    icon          : "mdi-star-outline",
+    iconSelected  : "mdi-star",
+  }
+  watch(  ()=> acuerdo.value.calificacion.f, // cambio en los campos
+          async ()=>{
+            if(!acuerdo.value.calificacion.esValida) return
+            promedio.value = acuerdo.value.calificacion.promedio
+            await editarCrearCalificacion( usuario.value.id )
+          },                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
+          { deep: true }
+  )
+
+  watchEffect(()=>{
+    if(!acuerdo.value.archivos.length || !acuerdo.value.calificacion.id ) return
+    const name                      = acuerdo.value.calificacion.f.filename 
+    acuerdo.value.calificacion.file = acuerdo.value.archivos.find( a => a.value === name ) ?? new Archivo()    
+  })
+
+</script>
+
 <template>
   <ventana                    minimizar
     titulo                    ="Encuesta a cliente"
@@ -71,7 +121,7 @@
           <Tooltip>
             <div class       ="text-center">
               Editado por {{ acuerdo.calificacion.editor.nombre }}<br/>
-              {{ fechaCorta( acuerdo.calificacion.fecha_edicion ) }}
+              {{ ToolDate.fechaCorta( acuerdo.calificacion.fecha_edicion ) }}
             </div>
           </Tooltip>
         </div>
@@ -79,55 +129,7 @@
     </div>
   </ventana>
 </template>
-<script setup lang="ts">
-  import {  ref,
-            watch,
-            watchEffect         } from "vue"
-  //* ///////////////////////////////////////////////////////////////////////////// Store
-  import {  storeToRefs         } from 'pinia'                            
-  import {  useStoreAcuerdo     } from 'src/stores/acuerdo'  
-  import {  useStoreUser        } from 'src/stores/user'
-  import {  Archivo             } from "src/models/Archivo"
-  //* ///////////////////////////////////////////////////////////////////////////// Componibles  
-  import {  useControlAcuerdo   } from "src/areas/acuerdos/controllers/ControlAcuerdos"
-  import {  fechaCorta          } from "src/composables/useTools"  
-  //* ///////////////////////////////////////////////////////////////////////////// Componentes
-  import    ventana               from "components/utilidades/Ventana.vue"
-  import    selectLabelValue      from "components/utilidades/select/SelectLabelValue.vue"
-  import    btnVisualizar         from "components/archivos/BtnVisualzarArchivo.vue"
-  import    btnNota               from "components/utilidades/BtnNota.vue"
-  import    chipUsuario           from "src/areas/usuarios/components/ChipUsuario.vue"
 
-  const { usuario             } = storeToRefs( useStoreUser() )    
-  const { acuerdo, loading    } = storeToRefs( useStoreAcuerdo() )  
-  const { editarCrearCalificacion
-                              } = useControlAcuerdo()
-  const promedio                = ref<number>(0)
-
-  const estiloStar = {
-    noReset       : true,          
-    class         : "col-8",
-    size          : "2.1em",
-    color         : "amber-6",
-    icon          : "mdi-star-outline",
-    iconSelected  : "mdi-star",
-  }
-  watch(  ()=> acuerdo.value.calificacion.f, // cambio en los campos
-          async ()=>{
-            if(!acuerdo.value.calificacion.esValida) return
-            promedio.value = acuerdo.value.calificacion.promedio
-            await editarCrearCalificacion( usuario.value.id )
-          },                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
-          { deep: true }
-  )
-
-  watchEffect(()=>{
-    if(!acuerdo.value.archivos.length || !acuerdo.value.calificacion.id ) return
-    const name                      = acuerdo.value.calificacion.f.filename 
-    acuerdo.value.calificacion.file = acuerdo.value.archivos.find( a => a.value === name ) ?? new Archivo()    
-  })
-
-</script>
 <style>
 .califi > span {
   font-weight: bold;

@@ -26,7 +26,7 @@
   import  { storeToRefs         } from 'pinia'                                            
   import  { useStoreApp         } from 'src/stores/app'
   import  { useStoreAcuerdo     } from 'src/stores/acuerdo'  
-  import  { fechaValida         } from "src/composables/useTools"  
+  import  { ToolDate            } from "src/composables/useTools"  
   const   { tabs                } = storeToRefs( useStoreApp() )
   const   { busqueda : b        } = storeToRefs( useStoreAcuerdo() )
 
@@ -36,8 +36,8 @@
   function checkAlertTabs()
   {
     tabs.value.alerts[0]  = (     !!b.value.f.buscar
-                              || fechaValida( b.value.f.desde ) 
-                              || fechaValida( b.value.f.hasta ) 
+                              || ToolDate.fechaValida( b.value.f.desde ) 
+                              || ToolDate.fechaValida( b.value.f.hasta ) 
                               || !!b.value.f.estados.length
                               || !!b.value.f.origenes.length
                               || !!b.value.f.totalizado.label

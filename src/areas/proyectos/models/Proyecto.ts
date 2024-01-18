@@ -1,7 +1,7 @@
 import {  TModulosDolibarr                  } from "src/composables/UtilFiles"
 import {  ITercero,         Tercero         } from "src/areas/terceros/models/Tercero"
 import {  IUsuario,         Usuario         } from "src/areas/usuarios/models/Usuario"
-import {  fechaCorta                        } from "src/composables/useTools"
+import {  ToolDate                          } from "src/composables/useTools"
 
 export enum ESTADO_PROYECTO
 {
@@ -114,10 +114,10 @@ export class Proyecto implements IProyecto
 
   get value()                 : number { return this.id }
   get label()                 : string { return this.titulo }
-  get fechaCreacionCorta()    : string { return fechaCorta( this.fechaCreacion    ) }
-  get fechaValidacionCorta()  : string { return fechaCorta( this.fechaValidacion  ) }
-  get fechaCierreCorta()      : string { return fechaCorta( this.fechaCierre      ) }
-  get fechaEntregaCorta()     : string { return fechaCorta( this.fechaEntrega     ) }
+  get fechaCreacionCorta()    : string { return ToolDate.fechaCorta( this.fechaCreacion    ) }
+  get fechaValidacionCorta()  : string { return ToolDate.fechaCorta( this.fechaValidacion  ) }
+  get fechaCierreCorta()      : string { return ToolDate.fechaCorta( this.fechaCierre      ) }
+  get fechaEntregaCorta()     : string { return ToolDate.fechaCorta( this.fechaEntrega     ) }
   get urlDolibarr()           : string { return `${process.env.URL_DOLIBARR}/projet/card.php?id=${this.id}` }
 
   // * ///////////////////////////////////////////////////// static convertir data de API en new Cotizacion

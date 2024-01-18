@@ -6,7 +6,7 @@
   import {  useStoreUser    } from 'src/stores/user'
   import {  useStoreAcuerdo } from 'src/stores/acuerdo'
   // * /////////////////////////////////////////////////////////////////////// Componibles
-  import {  siNo, useTools  } from "src/composables/useTools"
+  import {  useTools        } from "src/composables/useTools"
   import {  menuDefault,
             style           } from "src/composables/useEstilos"
   import {  TTipoPDF        } from "src/areas/acuerdos/composables/pdf/useCotizacion"

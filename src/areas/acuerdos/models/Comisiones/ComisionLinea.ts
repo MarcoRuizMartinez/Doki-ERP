@@ -1,6 +1,6 @@
 import {  TNivelesComision  } from "./NivelesComision"
 import {  IReglaComision    } from "src/models/Diccionarios/ReglasComision"
-import {  X100              } from "src/composables/useTools"   
+import {  ToolNum           } from "src/composables/useTools"   
 
 export interface IComisionLinea
 {
@@ -51,9 +51,9 @@ export class ComisionLinea implements IComisionLinea
                       ? this.X100_Bruto + modificador
                       : this.X100_Bruto
     this.X100       = this.X100 < 0 ? 0 : this.X100 // Por si el modificador lo puso en valores negativos        
-    subTotal        = X100(subTotal, divisor)
-    this.valor      = X100(subTotal, this.X100)
-  }    
+    subTotal        = ToolNum.X100(subTotal, divisor)
+    this.valor      = ToolNum.X100(subTotal, this.X100)
+  }
 
   get esComercial_2() { return !this.esComercial_1 }
 }

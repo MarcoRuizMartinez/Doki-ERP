@@ -157,7 +157,7 @@
   import {  TTipoAcuerdo          } from "src/areas/acuerdos/models/ConstantesAcuerdos"
   import {  style                 } from "src/composables/useEstilos"  
   import {  dexieBodegas          } from "src/composables/useDexie"  
-  import {  pausa                 } from "src/composables/useTools"
+  import {  Tool                  } from "src/composables/useTools"
   //* ///////////////////////////////////////////////////////////////////////////////// Componentes
   import    visorPdf                from "components/utilidades/VisorPDF.vue"
   import    notas                   from "./../../components/Modulos/ModuloNotas.vue"
@@ -246,7 +246,7 @@
     const url = acuerdo.value.urlDolibarrNuevoEnvio + "&entrepot_id=" + getIdBodegaByArea( acuerdo.value.tercero.area )
     window.open(url, '_blank')
 
-    await pausa( 16_000 )
+    await Tool.pausa( 16_000 )
     await buscarAcuerdoEnlazados( /* true */ )
 
     function getIdBodegaByArea( area : AREA ) : number

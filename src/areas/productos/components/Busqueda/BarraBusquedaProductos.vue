@@ -195,7 +195,7 @@
   import {  useStoreProducto    } from 'src/stores/producto'
   // * /////////////////////////////////////////////////////////////////////// Componibles
   //import {                      } from "src/composables/useDexie"
-  import {  getQueryRouterString} from "src/composables/useTools"
+  import {  ToolQuery           } from "src/composables/useTools"
   import {  dexieCategoriasProducto,
             getCategoriaDB,
                                 } from "src/composables/useDexie"                                
@@ -248,7 +248,7 @@
 
   async function asignarQueryRouterACampos()
   {
-    busqueda.value.c.nombre       = getQueryRouterString    ( queryURL.busqueda     )
+    busqueda.value.c.nombre       = ToolQuery.getQueryRouterString    ( queryURL.busqueda     )
     //busqueda.value.c.precioMinimo = getQueryRouterNumber    ( queryURL.subtotalMin  )
     //busqueda.value.c.precioMaximo = getQueryRouterNumber    ( queryURL.subtotalMax  )
     //busqueda.value.creador      = getQueryRouterNumber    ( queryURL.creador      )

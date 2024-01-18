@@ -5,9 +5,7 @@
   import {  IColumna, Columna   } from "src/models/Tabla"
   import {  IProductoDoli       } from "src/areas/productos/models/ProductoDolibarr"  
   // * /////////////////////////////////////////////////////////////////////////////////// Componibles
-  import {  siNo,
-            formatoPrecio,
-                                } from "src/composables/useTools"  
+  import {  Tool, Format        } from "src/composables/useTools"  
   // * /////////////////////////////////////////////////////////////////////////////////// Componentes
   import    efecto                from "components/utilidades/Efecto.vue"
   import    tooltipPrecios        from "src/areas/acuerdos/components/Tools/Tooltips/TooltipPreciosProducto.vue"
@@ -65,9 +63,9 @@
         <Tooltip v-if     ="!producto.activo">
           <div class      ="text-h6 text-center width200">Producto inactivo</div>
           <table    class ="text-1_1em">
-            <tr><td>Activo en Dolibarr:     </td><td>{{ siNo(producto.activoEnVenta)}}         </td></tr>
-            <tr><td>Activo en proveedor:    </td><td>{{ siNo(producto.activo_proveedor)}} </td></tr>
-            <tr><td>Disponible en proveedor:</td><td>{{ siNo(producto.disponible)}}       </td></tr>
+            <tr><td>Activo en Dolibarr:     </td><td>{{ Tool.siNo(producto.activoEnVenta)}}         </td></tr>
+            <tr><td>Activo en proveedor:    </td><td>{{ Tool.siNo(producto.activo_proveedor)}} </td></tr>
+            <tr><td>Disponible en proveedor:</td><td>{{ Tool.siNo(producto.disponible)}}       </td></tr>
           </table>
         </Tooltip>
         <efecto efecto="UpDown">
@@ -103,7 +101,7 @@
           />
         </div>
         <div class        ="fuente-mono col-2 text-grey-9 text-1_1em">
-          {{ formatoPrecio( producto.precio, "decimales-no" ) }}
+          {{ Format.precio( producto.precio, "decimales-no" ) }}
           <tooltip-precios
             :producto     ="producto"
           />

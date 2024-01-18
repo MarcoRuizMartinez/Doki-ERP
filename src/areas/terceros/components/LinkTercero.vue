@@ -1,3 +1,22 @@
+<script setup lang="ts">
+  import {  PropType,
+            toRefs,
+                                  } from "vue"
+  import {  ITercero              } from "src/areas/terceros/models/Tercero"
+  import    tooltipTercero          from "src/areas/terceros/components/TooltipTerceros.vue"
+  import {  ToolColor             } from "src/composables/useTools"
+
+  const props           = defineProps({
+    tercero:  { required: true, type: Object as PropType< ITercero > }
+  })
+  const { tercero     } = toRefs( props )
+  const colorFondo      = tercero.value.color
+  const { color,
+          promedio    } = ToolColor.getColorTextFromHexa( tercero.value.color )
+  const colorSombra     = promedio > 190 ? "white" : "black"
+
+</script>
+
 <template>
   <div class      ="ellipsis box-link">
     <router-link
@@ -9,24 +28,7 @@
     </router-link>
   </div>
 </template>
-<script setup lang="ts">
-  import {  PropType,
-            toRefs,
-                                  } from "vue"
-  import {  ITercero              } from "src/areas/terceros/models/Tercero"
-  import    tooltipTercero          from "src/areas/terceros/components/TooltipTerceros.vue"
-  import {  getColorTextFromHexa  } from "src/composables/useTools"
 
-  const props           = defineProps({
-    tercero:  { required: true, type: Object as PropType< ITercero > }
-  })
-  const { tercero     } = toRefs( props )
-  const colorFondo      = tercero.value.color
-  const { color,
-          promedio    } = getColorTextFromHexa( tercero.value.color )
-  const colorSombra     = promedio > 190 ? "white" : "black"
-
-</script>
 <style>
   .link-tercero-color{
     padding:          2px 6px;

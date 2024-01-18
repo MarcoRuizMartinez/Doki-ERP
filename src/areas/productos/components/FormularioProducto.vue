@@ -12,12 +12,11 @@
   import {  useStoreProducto      } from 'src/stores/producto'
   import {  useStoreUser          } from "src/stores/user"
   //* ///////////////////////////////////////////////////////////////////////////////// Modelos
-  import {  ICategoriaProducto,
-            CategoriaProducto   } from "src/areas/productos/models/CategoriaProducto"
+  import {  ICategoriaProducto    } from "src/areas/productos/models/CategoriaProducto"
   import {  IProductoDoli,
-            ProductoDoli        } from "src/areas/productos/models/ProductoDolibarr"
+            ProductoDoli          } from "src/areas/productos/models/ProductoDolibarr"
   //* ///////////////////////////////////////////////////////////////////////////////// Componibles
-  import {  formatoPrecio,
+  import {  Format,
             confeti               } from "src/composables/useTools"
   import {  style                 } from "src/composables/useEstilos"
   import {  useControlProductos   } from "src/areas/productos/controllers/ControlProductosDolibarr"
@@ -231,7 +230,7 @@
       <!-- //* //////////////   Costo -->
       <input-number        
         v-model                 ="proModel.costo"
-        :label                  ="`Costo: ${ formatoPrecio( proModel.costoTotal )}`"
+        :label                  ="`Costo: ${ Format.precio( proModel.costoTotal )}`"
         class                   ="col-12 col-md-6"
         tipo                    ="precio"
         colores                 ="verde-rojo"

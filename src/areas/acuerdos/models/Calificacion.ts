@@ -4,7 +4,7 @@ import {  getUsuarioDB      } from "src/composables/useDexie"
 //* ///////////////////////////////////////// Modelos
 import {  IUsuario, Usuario } from "src/areas/usuarios/models/Usuario"
 import {  IArchivo, Archivo } from "src/models/Archivo"
-import {  getDateToStr      } from "src/composables/useTools"
+import {  ToolDate          } from "src/composables/useTools"
 
 //type TNota              = 0 | 1 | 2 | 3 | 4 | 5
 
@@ -97,8 +97,8 @@ export class Calificacion implements ICalificacion
     dApi.acuerdo_id         = +(dApi?.acuerdo_id       ?? 0)
 
     const editor            = +(dApi?.editor           ?? 0)
-    dApi.fecha_creacion     = getDateToStr( dApi.fecha_creacion )
-    dApi.fecha_edicion      = getDateToStr( dApi.fecha_edicion  )    
+    dApi.fecha_creacion     = ToolDate.getDateToStr( dApi.fecha_creacion )
+    dApi.fecha_edicion      = ToolDate.getDateToStr( dApi.fecha_edicion  )    
     const cal               = Object.assign( new Calificacion( tipo ), dApi ) as ICalificacion
     cal.editor              = await getUsuarioDB( editor  )
     cal.f.nota_atencion     = +(dApi?.nota_atencion    ?? 0)

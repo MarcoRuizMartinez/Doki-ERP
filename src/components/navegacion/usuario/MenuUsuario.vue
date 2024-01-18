@@ -1,3 +1,41 @@
+<script setup lang="ts">
+
+  import {  ref,
+            computed          } from "vue"
+  import    apariencia          from "./Apariencia.vue"
+  import {  useStoreUser      } from 'src/stores/user'
+  import {  limpiarDB         } from "src/composables/useDexie"
+  import {  style             } from "src/composables/useEstilos"
+  import {  useRouter         } from 'vue-router'
+  import {  Tool              } from "src/composables/useTools"
+  import {  AlmacenesLimpiar  } from "src/models/TiposVarios"
+  const router                    = useRouter()
+  const ventanaApariencia         = ref(false)
+  const storeUser                 = useStoreUser()
+  const usuario                   = computed( () => storeUser.usuario)
+  const urlPerfil                 = computed( () => process.env.URL_DOLIBARR + "/user/card.php?id=" + storeUser.usuario.id + "&action=edit")
+
+  function salir()
+  {
+    //store.commit('usuario/setLogueado', false)
+    storeUser.logueado = false
+  }
+
+  async function limpiar()
+  {
+    limpiarLocal()
+    await limpiarDB()
+    router.push("/")
+    await Tool.pausa(500)
+    location.reload()
+  }
+
+  function limpiarLocal(){
+    AlmacenesLimpiar.forEach( a => localStorage.removeItem( process.env.PREFIJO + a ) )
+  }
+</script>
+
+
 <template>
   <q-btn                  dense round
     color                 ="primary"
@@ -70,39 +108,3 @@
     <apariencia />
   </q-dialog>
 </template>
-<script setup lang="ts">
-
-  import {  ref,
-            computed          } from "vue"
-  import    apariencia          from "./Apariencia.vue"
-  import {  useStoreUser      } from 'src/stores/user'
-  import {  limpiarDB         } from "src/composables/useDexie"
-  import {  style             } from "src/composables/useEstilos"
-  import {  useRouter         } from 'vue-router'
-  import {  pausa             } from "src/composables/useTools"
-  import {  AlmacenesLimpiar  } from "src/models/TiposVarios"
-  const router                    = useRouter()
-  const ventanaApariencia         = ref(false)
-  const storeUser                 = useStoreUser()
-  const usuario                   = computed( () => storeUser.usuario)
-  const urlPerfil                 = computed( () => process.env.URL_DOLIBARR + "/user/card.php?id=" + storeUser.usuario.id + "&action=edit")
-
-  function salir()
-  {
-    //store.commit('usuario/setLogueado', false)
-    storeUser.logueado = false
-  }
-
-  async function limpiar()
-  {
-    limpiarLocal()
-    await limpiarDB()
-    router.push("/")
-    await pausa(500)
-    location.reload()
-  }
-
-  function limpiarLocal(){
-    AlmacenesLimpiar.forEach( a => localStorage.removeItem( process.env.PREFIJO + a ) )
-  }
-</script>

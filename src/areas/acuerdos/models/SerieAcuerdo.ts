@@ -3,9 +3,7 @@ import {  ISerie,
           PERIODO             } from "src/models/TiposInformes"
 import {  EstadosAcuerdos,
           TIPO_ACUERDO        } from "src/areas/acuerdos/models/ConstantesAcuerdos"
-import {  valuesObjectArrayToNumber,
-          agregarZeroANumero1Digito
-                              } from "src/composables/useTools"
+import {  ToolArray, ToolNum  } from "src/composables/useTools"
 import {  getUsuarioDB,
           getMunicipioDB,
           getOrigenContactoDB,
@@ -64,8 +62,8 @@ export class SerieAcu extends Serie implements ISerieAcu
     switch (this.periodo) {
       case PERIODO.AÑO:       x = `${this.año}`;                      break;
       case PERIODO.TRIMESTRE: x = `${this.año} T${this.trimestre}`;   break;
-      case PERIODO.MES:       x = `${this.año}-${ agregarZeroANumero1Digito( this.mes )}`;          break;
-      case PERIODO.SEMANA:    x = `${this.año}-${ agregarZeroANumero1Digito( this.semana )}`;       break;    
+      case PERIODO.MES:       x = `${this.año}-${ ToolNum.agregarZeroANumero1Digito( this.mes )}`;          break;
+      case PERIODO.SEMANA:    x = `${this.año}-${ ToolNum.agregarZeroANumero1Digito( this.semana )}`;       break;    
       default:                                                        break;
     }
 
@@ -76,7 +74,7 @@ export class SerieAcu extends Serie implements ISerieAcu
   {
     let seriesRaw           = []
     if(!!data && Array.isArray(data) && data.length > 0){
-      seriesRaw             = valuesObjectArrayToNumber(data)
+      seriesRaw             = ToolArray.valuesObjectArrayToNumber(data)
     }
     else 
       return []

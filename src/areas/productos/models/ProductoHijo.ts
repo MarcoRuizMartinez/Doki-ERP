@@ -8,9 +8,15 @@ export interface IProductoHijo
   //* /////////////// Siigo
   linea               : number
   grupo               : number
-  codigo              : number
+  codigo              : number  
   codigoFull          : string
+
+  padreLinea          : number
+  padreGrupo          : number
+  padreCodigo         : number  
+
   enSiigo             : boolean
+  unidad              : string
 }
 
 export class ProductoHijo implements IProductoHijo
@@ -26,6 +32,13 @@ export class ProductoHijo implements IProductoHijo
   linea               : number  = 0
   grupo               : number  = 0
   codigo              : number  = 0
+
+  padreLinea          : number  = 0
+  padreGrupo          : number  = 0
+  padreCodigo         : number  = 0    
+
   enSiigo             : boolean = false
+  unidad              : string  = ""
+
   get codigoFull() { return `${this.linea}${this.grupo}${this.codigo}`}
 }

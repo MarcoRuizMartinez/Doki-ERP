@@ -47,7 +47,7 @@
   import {  useStoreAcuerdo     } from 'src/stores/acuerdo'            
   ////////////////////////////////////////////////////////////////////////// Controles
   import {  useControlProductos } from "src/areas/acuerdos/controllers/ControlLineasProductos"
-  import {  sortArray           } from "src/composables/useTools"  
+  import {  ToolArray           } from "src/composables/useTools"  
 
   ////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana               from "components/utilidades/Ventana.vue"
@@ -84,7 +84,7 @@
     for (const p of grupoElegido.value.productos)
       p.orden = lineas.value.findIndex( ( l )=> p.lineaId === l.id ) + 1    
 
-    sortArray( grupoElegido.value.productos, "orden" )
+    ToolArray.sortArray( grupoElegido.value.productos, "orden" )
     deGruposAProductos()
   }
   

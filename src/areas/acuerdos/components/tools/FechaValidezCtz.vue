@@ -1,27 +1,11 @@
-<template>
-  <input-fecha
-    v-model                 ="modelo"
-    label                   ="Fecha validez"
-    class                   ="col-md-6 col-12"
-    titulo                  ="Fecha vencimiento"
-    :loading                ="loading"
-    :dias-validos           ="+diasDefault"
-    @update:model-value     ="emitir"
-    >
-    {{dias + ( dias === 1 ? " día" : " días")}}
-  </input-fecha>
-</template>
 <script setup lang="ts">
   import {  ref,
             toRefs,
-            watch,
-            onMounted
-                              } from "vue"
+            watch             } from "vue"
   import    inputFecha          from "components/utilidades/input/InputFecha.vue"
   import {  useConstantes,
             CONSTANTES        } from "src/models/Diccionarios/Constante"
-  import {  date              } from 'quasar'
-  import {  ID_URL_Ok         } from "src/composables/useTools"
+  import {  date              } from 'quasar'  
 
   const emit                  = defineEmits(["update:model-value"])
   const props                 = defineProps({
@@ -72,3 +56,18 @@
     return date.addToDate(new Date(), { days: +diasDefault.value })
   }
 </script>
+
+
+<template>
+  <input-fecha
+    v-model                 ="modelo"
+    label                   ="Fecha validez"
+    class                   ="col-md-6 col-12"
+    titulo                  ="Fecha vencimiento"
+    :loading                ="loading"
+    :dias-validos           ="+diasDefault"
+    @update:model-value     ="emitir"
+    >
+    {{dias + ( dias === 1 ? " día" : " días")}}
+  </input-fecha>
+</template>

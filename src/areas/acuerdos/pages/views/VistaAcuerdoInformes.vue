@@ -103,7 +103,7 @@
   // * /////////////////////////////////////////////////////////////////////// Componibles
   import {  useTitle            } from "@vueuse/core"
   import {  useControlInformes  } from "src/areas/acuerdos/controllers/ControlInformes"  
-  import {  getDateToStr        } from "src/composables/useTools"       
+  import {  ToolDate            } from "src/composables/useTools"       
   // * /////////////////////////////////////////////////////////////////////// Modelos
   import {  IQuery, Busqueda    } from "src/models/Busqueda"  
   import {  ModosVentana        } from "src/models/TiposVarios"  
@@ -150,7 +150,7 @@
     await busqueda.value.montarBusqueda( usuario.value.id, router, usuario.value.esComercial, permisos.value.acceso_total, 10, tipo.value )
 
     if(!busqueda.value.f.desde)
-      busqueda.value.f.desde      = getDateToStr( `${new Date().getFullYear()}-01-01`, "UTC" )
+      busqueda.value.f.desde      = ToolDate.getDateToStr( `${new Date().getFullYear()}-01-01`, "UTC" )
     if(!busqueda.value.f.periodo.label)
       busqueda.value.f.periodo    = Busqueda.listaPeriodos[1]
     if(!busqueda.value.f.dimension.label)

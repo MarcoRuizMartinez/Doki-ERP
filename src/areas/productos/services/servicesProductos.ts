@@ -4,8 +4,8 @@ import {  getURL,
 import {  useFetch        } from "src/composables/useFetch"
 import {  IProductoDoli,
           ProductoDoli    } from "src/areas/productos/models/ProductoDolibarr"
-import {  ID_URL_Ok, 
-          anyToNum        } from "src/composables/useTools"
+import {  ToolType, 
+          ToolNum         } from "src/composables/useTools"
 import {  IProductoHijo,
           ProductoHijo    } from "../models/ProductoHijo"
 
@@ -18,7 +18,7 @@ export function servicesProductos()
   //* ////////////////////////////////////////////////////////////////////// Buscar Acuerdo 
   async function buscarProducto(  id : string ) : Promise< IProductoDoli | false >
   {
-    const idOk                  = ID_URL_Ok( id )
+    const idOk                  = ToolNum.ID_URL_Ok( id )
     if(  !idOk)                 return false    
     const busqueda              = { tipo: "producto", completa: 1, id: idOk }
     const productos             = await buscarProductos( busqueda )
@@ -72,15 +72,15 @@ export function servicesProductos()
       for (const item of data)
       {
         const hijo            = new ProductoHijo()
-              hijo.id         = anyToNum( item?.id        ?? 0 )
-              hijo.padre_id   = anyToNum( item?.padre_id  ?? 0 )
-              hijo.hijo_id    = anyToNum( item?.hijo_id   ?? 0 )
-              hijo.qty        = anyToNum( item?.qty       ?? 0 )
-              hijo.orden      = anyToNum( item?.orden     ?? 0 )
-              hijo.linea      = anyToNum( item?.linea     ?? 0 )
-              hijo.grupo      = anyToNum( item?.grupo     ?? 0 )
-              hijo.codigo     = anyToNum( item?.codigo    ?? 0 )
-              hijo.enSiigo    = !!anyToNum( item?.enSiigo ?? 0 )
+              hijo.id         = ToolType.anyToNum( item?.id        ?? 0 )
+              hijo.padre_id   = ToolType.anyToNum( item?.padre_id  ?? 0 )
+              hijo.hijo_id    = ToolType.anyToNum( item?.hijo_id   ?? 0 )
+              hijo.qty        = ToolType.anyToNum( item?.qty       ?? 0 )
+              hijo.orden      = ToolType.anyToNum( item?.orden     ?? 0 )
+              hijo.linea      = ToolType.anyToNum( item?.linea     ?? 0 )
+              hijo.grupo      = ToolType.anyToNum( item?.grupo     ?? 0 )
+              hijo.codigo     = ToolType.anyToNum( item?.codigo    ?? 0 )
+              hijo.enSiigo    = !!ToolType.anyToNum( item?.enSiigo ?? 0 )
               hijo.ref        = item?.ref     ?? ""
               hijo.nombre     = item?.nombre  ?? ""
         hijos.push( hijo )

@@ -1,5 +1,5 @@
-import { format               } from 'quasar'
-import { getDateToApiDolibarr } from "src/composables/useTools"          
+import { format   } from 'quasar'
+import { ToolDate } from "src/composables/useTools"          
 
 const { humanStorageSize } = format
 
@@ -158,7 +158,7 @@ export class Archivo implements IArchivo
   }
 
   get fecha() : Date {
-    return getDateToApiDolibarr( this.date )
+    return ToolDate.getDateToApiDolibarr( this.date )
   }
   get fechaCorta() : string {
     return this.fecha.toLocaleDateString('sv-SE') 

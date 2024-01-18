@@ -1,8 +1,5 @@
-//import {  date          } from "quasar"
-import {  fechaCorta    } from "src/composables/useTools"
-import {  getMilisecShortForApiDolibarr } from "src/composables/useTools"
 import {  IUsuario, Usuario } from "src/areas/usuarios/models/Usuario"
-import {  diferenciaFechas  } from "src/composables/useTools"
+import {  ToolDate          } from "src/composables/useTools"
 import {  TIPO_ACUERDO      } from "src/areas/acuerdos/models/ConstantesAcuerdos"
 import {  getUsuarioDB      } from "src/composables/useDexie"
 import {  ILabelValue,
@@ -150,8 +147,8 @@ export class Accion implements IAccion
       priority:     this.prioridad.value,
       transparency: +this.publico,
       event_paid:   +this.aceptado,
-      datep:        getMilisecShortForApiDolibarr( this.fechaInicio ),
-      datef:        getMilisecShortForApiDolibarr( this.fechaFin ),
+      datep:        ToolDate.getMilisecShortForApiDolibarr( this.fechaInicio ),
+      datef:        ToolDate.getMilisecShortForApiDolibarr( this.fechaFin ),
       socid:        !!this.terceroId  ? this.terceroId  : null,
       fk_element:   !!this.elementoId ? this.elementoId : null,
       elementtype:  !!this.tipo       ? this.tipo       : null,
@@ -180,9 +177,9 @@ export class Accion implements IAccion
   get modificoLabel()     : string  { return this.modifico.nombre }
   get asignadoLabel()     : string  { return this.asignado.nombre }
 
-  get fechaInicioCorta()  : string  { return this.esFecha ? fechaCorta(this.fechaInicio) : "" }
-  get fechaCreacionCorta(): string  { return fechaCorta(this.creacion)  }
-  get fechaEdicionCorta() : string  { return fechaCorta(this.modificado)  }
+  get fechaInicioCorta()  : string  { return this.esFecha ? ToolDate.fechaCorta(this.fechaInicio) : "" }
+  get fechaCreacionCorta(): string  { return ToolDate.fechaCorta(this.creacion)  }
+  get fechaEdicionCorta() : string  { return ToolDate.fechaCorta(this.modificado)  }
   get tieneTerceroYNoEsTercero() : boolean{
     return !!this.terceroId && !!this.tipo
   }
@@ -193,7 +190,7 @@ export class Accion implements IAccion
 
   get hace(): string  {
     const diferencia  = Date.now() - this.creacion.valueOf()
-    const hace        =   diferencia <= 3_600_000   ? diferenciaFechas( this.creacion.valueOf(), Date.now() ) // 1 hora
+    const hace        =   diferencia <= 3_600_000   ? ToolDate.diferenciaFechas( this.creacion.valueOf(), Date.now() ) // 1 hora
                         : diferencia <= 28_800_000  ? `Hoy ${this.creacion.toLocaleString('es-CO', { hour: 'numeric', minute: "numeric", hour12: true })}` // 8 horas
                         : this.creacion.toLocaleString('es-CO', { year: "2-digit",month: "2-digit", day: "numeric", weekday: "short", hour: 'numeric', minute: "numeric", hour12: true })
     return hace

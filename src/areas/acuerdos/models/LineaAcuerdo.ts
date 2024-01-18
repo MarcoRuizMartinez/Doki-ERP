@@ -1,11 +1,7 @@
 import {  IProductoDoli,
           ProductoDoli,
           imagenDefault     } from "src/areas/productos/models/ProductoDolibarr"
-import {  X100_Descuento,
-          X100_Aumento,
-          X100_Reduccion,
-          X100,
-          roundInt          } from "src/composables/useTools"
+import {  ToolNum           } from "src/composables/useTools"
 import {  getUnidadDB,
           getCategoriaDB,
           getNaturalezaDB,
@@ -208,7 +204,7 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
 
   // * /////////////////////////////////////////////////////////////////////////////// Precio Minimo con IVA
   get precioMinimoConIVA() :number {
-    return X100_Aumento( this.costo, this.iva )
+    return ToolNum.X100_Aumento( this.costo, this.iva )
   }
 
 
@@ -223,16 +219,16 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
 
   // * //////////////////////////////////////////////////////////////////////// Precio base con IVA
   get precioBaseConIVA() : number{
-    return X100_Aumento( this.precioBase, this.iva )
+    return ToolNum.X100_Aumento( this.precioBase, this.iva )
   }
   // * //////////////////////////////////////////////////////////////////////////////////////////////
   // * //////////////////////////////////////////////////////////////////////// GET SET Precio final con IVA
   get precioFinalConIVA() : number{
-    return +X100_Aumento( this.precioFinal, this.iva ).toFixed(2)
+    return +ToolNum.X100_Aumento( this.precioFinal, this.iva ).toFixed(2)
   }
 
   set precioFinalConIVA( valor : number ){
-    let newSubtotal       = X100_Reduccion( valor, this.iva )
+    let newSubtotal       = ToolNum.X100_Reduccion( valor, this.iva )
     let newDescuentoValor = this.precioBase - newSubtotal
     if(this.precioBase    !== 0)
       this.descuentoX100  = +(newDescuentoValor * 100 / this.precioBase).toFixed(3)
@@ -242,7 +238,7 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
 
   // * /////////////////////////////////////////////////////////////////////////////// IVA valor unidad
   get ivaValorLinea() :number {
-    return X100( this.precioFinal, this.iva )
+    return ToolNum.X100( this.precioFinal, this.iva )
   }
 
   // * /////////////////////////////////////////////////////////////////////////////// IVA valor total
@@ -253,12 +249,12 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
   // * /////////////////////////////////////////////////////////////////////////////////////////////////
   // * /////////////////////////////////////////////////////////////////////////////// GET SET Precio Final
   get precioFinal() :number {
-    return X100_Descuento( this.precioBase, this.descuentoX100 )
+    return ToolNum.X100_Descuento( this.precioBase, this.descuentoX100 )
   }
 
   set precioFinal( valor : number )  {
     if(!process.env.CON_DECIMALES)
-      valor                 = roundInt(valor, 2)
+      valor                 = ToolNum.roundInt(valor, 2)
 
     let diferencia          = this.precioBase - valor
     if( diferencia          <= 0){
@@ -344,7 +340,7 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
       const precioDescu       = this.precioBase - precioVenta
       const x100Descuento     = precioDescu * 100 / this.precioBase
       const keyItem           = key == "alfa" || key == "a" || key == "b" || key == "c" || key == "d" || key == "e" ? key : "alfa"
-      x100s[keyItem]          = roundInt(x100Descuento, 0)
+      x100s[keyItem]          = ToolNum.roundInt(x100Descuento, 0)
     }
     return x100s
   }

@@ -1,3 +1,96 @@
+<script lang="ts" setup>
+  // * /////////////////////////////////////////////////////////////////////// Core
+  import {  watch,
+            toRefs,
+            PropType,
+            computed            } from "vue"
+
+  // * /////////////////////////////////////////////////////////////////////// Store
+  import {  storeToRefs         } from "pinia"  
+  import {  useStoreAcuerdo     } from "src/stores/acuerdo"
+
+  // * /////////////////////////////////////////////////////////////////////// Modelos
+  import {  IQuery              } from "src/models/Busqueda"
+  import {  Format, ToolNum     } from "src/composables/useTools"
+  import {  ICostoEnvio         } from "src/areas/logistica/models/CostoEnvio"
+
+  // * /////////////////////////////////////////////////////////////////////// Componentes
+  import    fieldsetFiltro        from "components/utilidades/Fieldset.vue"
+  import    innerLoading          from "components/utilidades/InnerLoading.vue"
+  import    inputBuscar           from "components/utilidades/input/InputSimple.vue"
+  import    inputNumber           from "components/utilidades/input/InputFormNumber.vue"  
+  import    municipios            from "components/utilidades/select/SelectMunicipios.vue"
+  
+
+  const props                 = defineProps({      
+    quote: { required: true,  type: Array as PropType< ICostoEnvio[] >  },
+  })
+  const { quote }             = toRefs(props)
+
+  const { busqueda : b,
+          loading               } = storeToRefs( useStoreAcuerdo() )
+
+  const emit = defineEmits<{
+    (e: 'buscar',   value: IQuery ): void
+    (e: 'limpiar',                ): void
+    (e: 'exportar',               ): void    
+  }>()
+
+  watch(()=>b.value.f, ()=>
+    {
+      if(b.value.puedeBuscar && b.value.checkPage())
+        buscar()
+      else  if(b.value.queryVacia ) limpiarBusqueda()
+    },
+    { deep: true }
+  )
+
+  function buscar()
+  {    
+    b.value.copiarQueryARourter()
+    if(!busquedaCompleta.value) return
+    
+    const q                 = Object.assign( {}, b.value.query)
+    q.municipio             = b.value.f.municipio         .codigoDianLargo
+    q.municipioContacto     = b.value.f.municipioContacto .codigoDianLargo
+    emit("buscar", q)
+  }
+
+  async function limpiarBusqueda(){
+    const todoLimpio  = await b.value.limpiarQueryDeRouter()
+    if(todoLimpio) emit("limpiar")
+  }  
+
+  const busquedaCompleta          = computed(()=> ( "municipio"         in b.value.query &&
+                                                    "municipioContacto" in b.value.query &&
+                                                    "peso"              in b.value.query &&
+                                                    "valorMax"          in b.value.query
+                                                  )
+                                            )
+
+  type TEstilo = { colores : "verde-rojo", iconos: "suma", hundido? : boolean, debounce : string, paso : number, minimo : number, maximo : number}
+  
+  const estiloBoton : TEstilo = { 
+    hundido   : true,
+    colores   : "verde-rojo",
+    iconos    : "suma",
+    debounce  : "2500",
+    paso      : 1,
+    minimo    : 1,
+    maximo    : 1000,
+  }
+
+
+  const totalSinIVA      = computed(()=> { 
+    let suma                      = 0
+    if(!!quote.value && !!quote.value.length)
+      suma                        = quote.value.map( c=> c.totalSinIVA ?? 0 ).reduce((cos, now) => (cos ?? 0) + now)
+    return suma
+  })
+  const totalConIVA     = computed(()=>  ToolNum.X100_Aumento( totalSinIVA.value, parseInt( process.env.IVA ?? "0" )) )
+</script>
+
+
 <template>
   <div class                  ="full-width relative-position row q-pa-none no-wrap scroll">
     <!-- //* ///////////////////////////////////////////////////////////////////// FIELD SET LUGARES  -->
@@ -107,13 +200,13 @@
           <tr>
             <td>Total sin IVA:</td>
             <td class         ="text-bold fuente-mono">
-              {{ formatoPrecio( totalSinIVA ) }}
+              {{ Format.precio( totalSinIVA ) }}
             </td>
           </tr>
           <tr>
             <td>Total con IVA:</td>
             <td class         ="text-bold fuente-mono">
-              {{ formatoPrecio( totalConIVA ) }}
+              {{ Format.precio( totalConIVA ) }}
             </td>
           </tr>
         </tbody>
@@ -165,98 +258,6 @@
         </div>
       </div> 
     </fieldset-filtro>      
-    <inner-loading :cargando  ="loading.carga"/>
+    <inner-loading :cargando  ="!!loading.carga"/>
   </div>
 </template>
-<script lang="ts" setup>
-  // * /////////////////////////////////////////////////////////////////////// Core
-  import {  watch,
-            toRefs,
-            PropType,
-            computed            } from "vue"
-
-  // * /////////////////////////////////////////////////////////////////////// Store
-  import {  storeToRefs         } from "pinia"  
-  import {  useStoreAcuerdo     } from "src/stores/acuerdo"
-
-  // * /////////////////////////////////////////////////////////////////////// Modelos
-  import {  IQuery              } from "src/models/Busqueda"
-  import {  formatoPrecio,
-            X100_Aumento        } from "src/composables/useTools"
-  import {  ICostoEnvio         } from "src/areas/logistica/models/CostoEnvio"
-
-  // * /////////////////////////////////////////////////////////////////////// Componentes
-  import    fieldsetFiltro        from "components/utilidades/Fieldset.vue"
-  import    innerLoading          from "components/utilidades/InnerLoading.vue"
-  import    inputBuscar           from "components/utilidades/input/InputSimple.vue"
-  import    inputNumber           from "components/utilidades/input/InputFormNumber.vue"  
-  import    municipios            from "components/utilidades/select/SelectMunicipios.vue"
-  
-
-  const props                 = defineProps({      
-    quote: { required: true,  type: Array as PropType< ICostoEnvio[] >  },
-  })
-  const { quote }             = toRefs(props)
-
-  const { busqueda : b,
-          loading               } = storeToRefs( useStoreAcuerdo() )
-
-  const emit = defineEmits<{
-    (e: 'buscar',   value: IQuery ): void
-    (e: 'limpiar',                ): void
-    (e: 'exportar',               ): void    
-  }>()
-
-  watch(()=>b.value.f, ()=>
-    {
-      if(b.value.puedeBuscar && b.value.checkPage())
-        buscar()
-      else  if(b.value.queryVacia ) limpiarBusqueda()
-    },
-    { deep: true }
-  )
-
-  function buscar()
-  {    
-    b.value.copiarQueryARourter()
-    if(!busquedaCompleta.value) return
-    
-    const q                 = Object.assign( {}, b.value.query)
-    q.municipio             = b.value.f.municipio         .codigoDianLargo
-    q.municipioContacto     = b.value.f.municipioContacto .codigoDianLargo
-    emit("buscar", q)
-  }
-
-  function limpiarBusqueda(){
-    const todoLimpio  = b.value.limpiarQueryDeRouter()
-    if(todoLimpio) emit("limpiar")
-  }  
-
-  const busquedaCompleta          = computed(()=> ( "municipio"         in b.value.query &&
-                                                    "municipioContacto" in b.value.query &&
-                                                    "peso"              in b.value.query &&
-                                                    "valorMax"          in b.value.query
-                                                  )
-                                            )
-
-  type TEstilo = { colores : "verde-rojo", iconos: "suma", hundido? : boolean, debounce : string, paso : number, minimo : number, maximo : number}
-  
-  const estiloBoton : TEstilo = { 
-    hundido   : true,
-    colores   : "verde-rojo",
-    iconos    : "suma",
-    debounce  : "2500",
-    paso      : 1,
-    minimo    : 1,
-    maximo    : 1000,
-  }
-
-
-  const totalSinIVA      = computed(()=> { 
-    let suma                      = 0
-    if(!!quote.value && !!quote.value.length)
-      suma                        = quote.value.map( c=> c.totalSinIVA ?? 0 ).reduce((cos, now) => (cos ?? 0) + now)
-    return suma
-  })
-  const totalConIVA     = computed(()=>  X100_Aumento( totalSinIVA.value, parseInt( process.env.IVA ?? "0" )) )
-</script>

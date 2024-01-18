@@ -76,7 +76,7 @@
             Total anticipos:
           </span>
           <span class           ="fuente-mono text-grey-8 text-bold">
-            {{ formatoPrecio( acuerdo.totalAnticipos, 'decimales-no' )}}
+            {{ Format.precio( acuerdo.totalAnticipos, 'decimales-no' )}}
           </span>
         </div>
       </template>
@@ -135,7 +135,7 @@
   import {  getURL,
             getFormData           } from "src/composables/APIMaco"
   import {  useTools, 
-            formatoPrecio         } from "src/composables/useTools"
+            Format                } from "src/composables/useTools"
   import {  style                 } from "src/composables/useEstilos"
   import {  useApiDolibarr        } from "src/composables/useApiDolibarr"
   import {  useReciboCajaPDF      } from "src/areas/acuerdos/composables/pdf/useReciboCaja"

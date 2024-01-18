@@ -15,7 +15,7 @@
             onMounted,
             PropType              } from "vue"
   import {  useApiDolibarr        } from "src/composables/useApiDolibarr"      
-  import {  sortArray             } from "src/composables/useTools"  
+  import {  ToolArray             } from "src/composables/useTools"  
   import {  IItemMenu, ItemMenu   } from "src/models/ItemMenu"
   import    itemMenu                from "components/navegacion/PortadasMenuItem.vue"
 
@@ -44,7 +44,7 @@
           enlaces.value.push( item )
         }
         enlaces.value   = enlaces.value.filter( e => palabras.value.some( p => e.titulo.includes( p ) ) )
-        enlaces.value   = sortArray( enlaces.value, 'orden', "<")
+        enlaces.value   = ToolArray.sortArray( enlaces.value, 'orden', "<")
       }
     }
   }

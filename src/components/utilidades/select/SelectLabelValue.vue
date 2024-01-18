@@ -49,8 +49,8 @@
             PropType,
             onMounted,
                             } from 'vue'
-  import {  sortArray,
-            valorValido     } from "src/composables/useTools"                            
+  import {  ToolArray,
+            ToolType     } from "src/composables/useTools"                            
   import {  ILabelValue,
             labelValueNulo  } from "src/models/TiposVarios"
   import {  ValidationRule  } from "quasar"
@@ -118,7 +118,7 @@
   {
     if(modeloYvModelSonIguales()) return
       
-    if(!!newValue && valorValido( newValue.value )){
+    if(!!newValue && ToolType.valorValido( newValue.value )){
       if(!!opciones.value.length)
         modelo.value            = seleccionarEntreOpciones( newValue.value )//newValue as ILabelValue
       else 
@@ -137,7 +137,7 @@
     //if(esVirgen)// && noInmediato.value)
     //  esVirgen                  = false
     //else
-    if(!!newValue && valorValido( newValue.value ) )
+    if(!!newValue && ToolType.valorValido( newValue.value ) )
       emit("update:modelValue", newValue)
     else
       emit("update:modelValue", { value: null, label: ""  })
@@ -148,7 +148,7 @@
 
   function seleccionar()
   {
-    if( valorValido(modelo.value) )
+    if( ToolType.valorValido(modelo.value) )
       emit("select", modelo.value) 
     else
       emit("select", labelValueNulo)     
@@ -174,7 +174,7 @@
     opciones.value        = options.value
 
     if(!!optionsSort.value)
-      opciones.value      = sortArray(opciones.value, optionsSort.value)
+      opciones.value      = ToolArray.sortArray(opciones.value, optionsSort.value)
 
     if(!!modelValue.value.label && !!modelValue.value.value)
       modelo.value        = seleccionarEntreOpciones( modelValue.value.value )//newValue as ILabelValue

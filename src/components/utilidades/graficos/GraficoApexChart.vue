@@ -1,14 +1,3 @@
-<template>
-  <div class              ="boxChart">
-    <apexchart
-      :width              ="1100"
-      :height             ="500"
-      :series             ="seriesM"
-      :options            ="options"
-    ></apexchart>
-  </div>
-</template>
-
 <script setup lang="ts">
   import {  toRefs,
             computed,
@@ -19,9 +8,9 @@
             estiloApexChartBar,
             estiloApexChartLine,
                               } from "src/models/TiposInformes" 
-  import {  FormatosNumero    } from "src/composables/useTools"
+  import {  TFormatosNumero   } from "src/composables/useTools"
 
-  type  Formatos         = FormatosNumero
+  type  Formatos         = TFormatosNumero
   type  TipoXCord        = "line" | "bar" | "bar100%" 
 
   const props             = defineProps({
@@ -82,6 +71,19 @@
 
 
 </script>
+
+<template>
+  <div class              ="boxChart">
+    <apexchart
+      :width              ="1100"
+      :height             ="500"
+      :series             ="seriesM"
+      :options            ="options"
+    ></apexchart>
+  </div>
+</template>
+
+
 <style>
 .boxChart{
   /* width: 500px; */

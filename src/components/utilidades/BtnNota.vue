@@ -1,3 +1,24 @@
+<script setup lang="ts">
+  import {  ref,
+            toRefs,
+            computed
+                            } from "vue"
+  import {  ToolStr         } from "src/composables/useTools"  
+  const popupOn               = ref<boolean>( true )
+  const props                 = defineProps({
+    modelValue: { required: true,   type: String  },
+    label:      { default:  "nota", type: String  },
+    loading:    { default:  false,  type: Boolean },
+  })
+  const { modelValue }        = toRefs( props )
+
+  const emit            = defineEmits(["update:modelValue"])
+  const modelo          = computed({
+                            get: ()     => modelValue.value,
+                            set: valor  => emit("update:modelValue", valor ?? "")
+                          })
+</script>
+
 <template>
   <q-btn                flat dense round
     icon                ="mdi-comment-multiple"
@@ -19,7 +40,7 @@
       <div class        ="q-pa-sm filtro-panel bg-gris column items-center shadow-3">                            
         <q-input        filled dense
           v-model       ="modelo"      
-          :label        ="mayusculasPrimeraLetra(label)"
+          :label        ="ToolStr.mayusculasPrimeraLetra(label)"
           :placeholder  ="`Editar ${label}`"
           type          ="textarea"      
           class         ="col-12"
@@ -31,24 +52,3 @@
     </q-popup-proxy> 
   </q-btn>
 </template>
-
-<script setup lang="ts">
-  import {  ref,
-            toRefs,
-            computed
-                            } from "vue"
-  import {  mayusculasPrimeraLetra  } from "src/composables/useTools"  
-  const popupOn               = ref<boolean>( true )
-  const props                 = defineProps({
-    modelValue: { required: true,   type: String  },
-    label:      { default:  "nota", type: String  },
-    loading:    { default:  false,  type: Boolean },
-  })
-  const { modelValue }        = toRefs( props )
-
-  const emit            = defineEmits(["update:modelValue"])
-  const modelo          = computed({
-                            get: ()     => modelValue.value,
-                            set: valor  => emit("update:modelValue", valor ?? "")
-                          })
-</script>

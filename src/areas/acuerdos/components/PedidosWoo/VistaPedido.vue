@@ -1,3 +1,17 @@
+<script lang="ts" setup>
+  import {  PropType          } from "vue"  
+  import {  IPedidoWoo        } from "src/areas/acuerdos/models/PedidoWoo"      
+  import {  style             } from "src/composables/useEstilos"
+  import {  Format            } from "src/composables/useTools"
+  ////////////////////////////////////////////////////////////////////////// Componentes
+  import    ventana               from "components/utilidades/Ventana.vue"  
+  import    item                from "components/utilidades/TrTdTd.vue"  
+
+  const props               = defineProps({
+    modelValue: { required: true, type: Object as PropType< IPedidoWoo > },      
+  })
+</script>
+
 <template>
   <ventana                  cerrar
     titulo                  ="Datos de pedido y envío"
@@ -44,33 +58,21 @@
             {{item.name}}<br/>
             <div class    ="row">
               <span class ="col-2">Unidad:</span>
-              <span class ="col text-right">{{ formatoPrecio( item.price, 'decimales-no'  ) }} antes de IVA</span>
+              <span class ="col text-right">{{ Format.precio( item.price, 'decimales-no'  ) }} antes de IVA</span>
             </div>
             <div class    ="row">
               <span class ="col-2">Total:</span>
-              <span class ="col text-right">{{ formatoPrecio( item.total, 'decimales-no'  ) }} antes de IVA</span>
+              <span class ="col text-right">{{ Format.precio( item.total, 'decimales-no'  ) }} antes de IVA</span>
             </div>
           </td>
         </tr>
-        <item titulo="Total" :label="formatoPrecio( modelValue.total, 'decimales-no')" class="text-bold"/>
+        <item titulo="Total" :label="Format.precio( modelValue.total, 'decimales-no')" class="text-bold"/>
         
       </tbody>
     </table>
   </ventana>
 </template>
-<script lang="ts" setup>
-  import {  PropType          } from "vue"  
-  import {  IPedidoWoo        } from "src/areas/acuerdos/models/PedidoWoo"      
-  import {  style             } from "src/composables/useEstilos"
-  import {  formatoPrecio       } from "src/composables/useTools"
-  ////////////////////////////////////////////////////////////////////////// Componentes
-  import    ventana               from "components/utilidades/Ventana.vue"  
-  import    item                from "components/utilidades/TrTdTd.vue"  
 
-  const props               = defineProps({
-    modelValue: { required: true, type: Object as PropType< IPedidoWoo > },      
-  })
-</script>
 <style>
   .pa{ padding-left: 6px; }
 

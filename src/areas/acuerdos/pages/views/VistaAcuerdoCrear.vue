@@ -141,7 +141,7 @@
     const contactoOk          = !!acuerdo.value.contactoComercial.id
     const esPersona           = !acuerdo.value.tercero.esEmpresa
     const esEspecial          = acuerdo.value.esTerceroCtz
-    const comercialOk         = acuerdo.value.comercial.id > 0
+    const comercialOk         = !! acuerdo.value.comercial && acuerdo.value.comercial.id > 0
     const origenOk            = !!acuerdo.value.origenContacto.id
     const pagoOk              = !!acuerdo.value.condicionPago.id
     const vencimientoOk       = !!acuerdo.value.fechaFinValidezCorta || !acuerdo.value.esCotizacion

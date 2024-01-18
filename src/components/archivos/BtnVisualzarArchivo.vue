@@ -1,28 +1,3 @@
-<template>
-  <!-- //* /////////  Lupa ver PDF  -->
-  <q-btn              flat dense round
-    v-bind            ="$attrs"
-    icon              ="mdi-magnify-plus"
-    class             ="op60 op100-hover"
-    padding           ="none"
-    size              ="md"
-    @click            ="verArchivo"
-  />   
-  <!-- //* /////////////////  Visor PDF  -->
-  <visor-pdf          en-base-64
-    v-model:src       ="srcPDF"
-    v-model:visible   ="ventanaPDF"
-    :nombre-pdf       ="fileNameSelect"
-  />
-  <visor-imagen       en-base-64
-    v-model:src       ="imagenAver.src"
-    v-model:visible   ="ventanaImagen"
-    :ratio            ="''"
-    :titulo           ="imagenAver.titulo"
-    :fileType         ="imagenAver.fileType"
-  />
-</template>
-
 <script setup lang="ts">
   //accept                  =".xlsx,.xls,image/*,.doc, .docx,.ppt, .pptx, .txt, .pdf, .ods, .odt" pdfjs
   import {  ref,
@@ -73,3 +48,28 @@
       aviso("negative", "Error descargando el archivo", "file")
   }
 </script>
+
+<template>
+  <!-- //* /////////  Lupa ver PDF  -->
+  <q-btn              flat dense round
+    v-bind            ="$attrs"
+    icon              ="mdi-magnify-plus"
+    class             ="op60 op100-hover"
+    padding           ="none"
+    size              ="md"
+    @click            ="verArchivo"
+  />   
+  <!-- //* /////////////////  Visor PDF  -->
+  <visor-pdf          en-base-64
+    v-model:src       ="srcPDF"
+    v-model:visible   ="ventanaPDF"
+    :nombre-pdf       ="fileNameSelect"
+  />
+  <visor-imagen       en-base-64
+    v-model:src       ="imagenAver.src"
+    v-model:visible   ="ventanaImagen"
+    :ratio            ="''"
+    :titulo           ="imagenAver.titulo"
+    :fileType         ="imagenAver.fileType"
+  />
+</template>

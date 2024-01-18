@@ -1,3 +1,14 @@
+<script setup lang="ts">
+  import {  PropType      } from "vue"  
+  import {  ToolDate,
+            Format        } from "src/composables/useTools"
+  import {  IAcuerdo      } from "src/areas/acuerdos/models/Acuerdo"  
+  import    chipUsuario     from "src/areas/usuarios/components/ChipUsuario.vue";    
+  const props = defineProps({
+    acuerdo:  { required: true, type: Object as PropType<IAcuerdo> }
+  })
+</script>
+
 <template>
   <q-tooltip  class ="bg-black text-caption">
     <div>
@@ -42,23 +53,13 @@
             {{ acuerdo.estadoLabel }}
           </span>
         </td></tr>
-        <tr> <td>Subtotal</td> <td>{{ formatoPrecio( acuerdo.totalConDescu ) }}</td> </tr>
+        <tr> <td>Subtotal</td> <td>{{ Format.precio( acuerdo.totalConDescu ) }}</td> </tr>
         <tr v-if="!!acuerdo.contactoSmart.correo"       ><td>Correo</td>    <td><div class="ellipsis"> {{acuerdo.contactoSmart.correo}} </div> </td></tr>
         <tr v-if="!!acuerdo.contactoSmart.telefono"     ><td>Teléfono</td>  <td>{{acuerdo.contactoSmart.telefono}}</td></tr>
         <tr v-if="!!acuerdo.contactoSmart.municipioId"  ><td>Municipio</td> <td>{{acuerdo.contactoSmart.municipio.label}}</td></tr>
         <tr v-if="!!acuerdo.titulo"                ><td>Titulo</td>    <td>{{acuerdo.titulo}}</td></tr>
-        <tr> <td>Creación</td> <td>{{ fechaLarga( acuerdo.fechaCreacion )    }}</td> </tr>
+        <tr> <td>Creación</td> <td>{{ ToolDate.fechaLarga( acuerdo.fechaCreacion )    }}</td> </tr>
       </table>      
     </div>
   </q-tooltip>
 </template>
-<script setup lang="ts">
-  import {  PropType      } from "vue"  
-  import {  fechaLarga,
-            formatoPrecio } from "src/composables/useTools"
-  import {  IAcuerdo      } from "src/areas/acuerdos/models/Acuerdo"  
-  import    chipUsuario     from "src/areas/usuarios/components/ChipUsuario.vue";    
-  const props = defineProps({
-    acuerdo:  { required: true, type: Object as PropType<IAcuerdo> }
-  })
-</script>

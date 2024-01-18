@@ -3,11 +3,10 @@ import {  getUsuarioDB,
           getCuentasDineroDB  } from "src/composables/useDexie"
 import {  ICuentaDinero,
           CuentaDinero        } from "src/models/Diccionarios/CuentaDinero"          
-import {  formatoPrecio       } from "src/composables/useTools"  
+import {  Format, ToolDate    } from "src/composables/useTools"  
 import {  IArchivo, Archivo   } from "src/models/Archivo"
 import {  ILabelValue,  
           labelValueNulo      } from "src/models/TiposVarios"
-import {  fechaCorta          } from "src/composables/useTools"
 
 export enum ESTADO_ANTICIPO
 {
@@ -77,7 +76,7 @@ export class Anticipo implements IAnticipo
 {
   id                        : number            = 0
   index                     : number            = 0
-  fechaPago                 : string            = fechaCorta( new Date() )
+  fechaPago                 : string            = ToolDate.fechaCorta( new Date() )
   cuenta                    : ICuentaDinero     = new CuentaDinero()
   cuentaId                  : number            = 0
   pedidoId                  : number             
@@ -105,7 +104,7 @@ export class Anticipo implements IAnticipo
   get esNuevo   () : boolean  { return !this.id }
   get valorSumar() : number   { return this.tipo === TIPO_ANTICIPO.PAGO ? this.valor : -this.valor }
   get valorLabel() : string   { 
-    return  ( this.tipoSelect.value === TIPO_ANTICIPO.DEVOLUCION ? '-' : '' ) + formatoPrecio( this.valor, "decimales-no" ) 
+    return  ( this.tipoSelect.value === TIPO_ANTICIPO.DEVOLUCION ? '-' : '' ) + Format.precio( this.valor, "decimales-no" ) 
   }
 /*   get estadoLabel(){
     return    this.estado === ESTADO_ANTICIPO.PENDIENTE   ? "Pendiente"
@@ -153,7 +152,7 @@ export class Anticipo implements IAnticipo
   }
   
   get fechaPagoString() {
-    return typeof this.fechaPago === "string" ? this.fechaPago : fechaCorta( new Date( this.fechaPago ) )
+    return typeof this.fechaPago === "string" ? this.fechaPago : ToolDate.fechaCorta( new Date( this.fechaPago ) )
   } 
 
   static async anticipoApiToAnticipo( antApi : any  ) : Promise<IAnticipo>

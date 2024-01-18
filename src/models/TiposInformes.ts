@@ -1,4 +1,4 @@
-import { formatoNumeroCorto, FormatosNumero } from "src/composables/useTools"
+import { Format, TFormatosNumero } from "src/composables/useTools"
 
 export enum PERIODO
 {
@@ -95,7 +95,7 @@ export class Serie implements ISerie
   } */
 }
 
-export function estiloApexChartLine( nombre : string, categorias : string[], formato : FormatosNumero ) : any
+export function estiloApexChartLine( nombre : string, categorias : string[], formato : TFormatosNumero ) : any
 {
   return {
     title:        getTitle( nombre ),
@@ -121,7 +121,7 @@ export function estiloApexChartLine( nombre : string, categorias : string[], for
 export function estiloApexChartBar(
   nombre      : string,
   categorias  : string[],
-  formato     : FormatosNumero,
+  formato     : TFormatosNumero,
   stackType   : "normal" | "100%",
   maximo      : number | undefined    = undefined
 )             : any
@@ -146,7 +146,7 @@ export function estiloApexChartBar(
         fontWeight: 'bold',
         colors:     ['#FFF']
       },
-      formatter:    (val : string, opts : any) => formatoNumeroCorto(val, formato)
+      formatter:    (val : string, opts : any) => Format.formatoNumeroCorto(val, formato)
     },
   }
 }
@@ -193,10 +193,10 @@ function getXaxis( cats : string[] ) {
     tickAmount:     10,         // Para que el label en el eje X no este tan saturado
   }
 }
-function getYaxis( formato : FormatosNumero, maximo : number | undefined = undefined ) {
+function getYaxis( formato : TFormatosNumero, maximo : number | undefined = undefined ) {
   return {
     max     : maximo,
-    labels  : { formatter: ( value :string , timestamp : number ) => formatoNumeroCorto(value, formato) }
+    labels  : { formatter: ( value :string , timestamp : number ) => Format.formatoNumeroCorto(value, formato) }
   }
 }
 

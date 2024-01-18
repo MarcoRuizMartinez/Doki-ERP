@@ -1,3 +1,82 @@
+<script setup lang="ts">
+  // * /////////////////////////////////////////////////////////////////////////////////// Core
+  import {  ref, toRefs, watch,
+            PropType            } from "vue"
+  // * /////////////////////////////////////////////////////////////////////////////////// Modelos
+  import {  IAcuerdo            } from "../../models/Acuerdo";
+  // * /////////////////////////////////////////////////////////////////////////////////// Componibles
+  import {  IParams,
+            useRemisionPDF      } from "src/areas/acuerdos/composables/pdf/useRemision"
+  import {  style               } from "src/composables/useEstilos"
+  import {  useTools            } from "src/composables/useTools"
+  // * /////////////////////////////////////////////////////////////////////////////////// Componentes
+  import    ventana               from "components/utilidades/Ventana.vue"
+  import    inputFecha            from "components/utilidades/input/InputFecha.vue"
+  import    inputText             from "components/utilidades/input/InputFormText.vue"
+
+  const { getRemisionPDF,
+          saveRemisionPDF   } = useRemisionPDF()
+  const {  esMobil          } = useTools()          
+  const props                 = defineProps({
+    acuerdo:  { required: true, type: Object as PropType< IAcuerdo >  },
+  })
+
+  const { acuerdo }           = toRefs( props )
+  const datos                 = ref< IParams  >( {
+    lineas                    : [],
+    direccion                 : "",
+    indicaciones              : "",
+    fechaEntrega              : new Date(),
+    conDescripcion            : false,
+    dosHojas                  : false,
+    metodo                    : "",
+  } )
+  const srcPDF                = ref< string   >( "" )
+
+  watch(()=> acuerdo.value.ref, ()=>
+    {
+      datos.value.direccion   = acuerdo.value.contactoEntrega.direccion
+      datos.value.indicaciones= acuerdo.value.contactoEntrega.nota
+      copiarLineas()
+    },
+    { immediate: true }
+  )
+
+  async function generarPDF() {
+    datos.value.metodo        = acuerdo.value.metodoEntrega.label
+    srcPDF.value              = await getRemisionPDF( acuerdo.value, datos.value  )
+  }
+
+  function toggleMostrarDescripciones( on : boolean ) {
+    datos.value.lineas.forEach( l => l.descripcionOn = on )
+    generarPDF()
+  }
+
+  function copiarLineas()
+  {
+    datos.value.lineas  = []
+
+    for (const linea of acuerdo.value.productos)
+    {
+      if(linea.esTituloOsubTotal) continue
+
+      datos.value.lineas.push( { 
+        id            : linea.lineaId,
+        ref           : linea.ref,
+        nombre        : linea.nombre,
+        estado        : "Nuevo",
+        descripcion   : linea.descripcion,
+        descripcionOn : true,
+        qty           : linea.qty,
+        qtyTotal      : linea.qtyTotal,
+      } )
+    }
+
+    generarPDF()
+  }
+
+</script>
+
 <template>
   <ventana                          cerrar full-screen scroll
     titulo                          ="Remisión"
@@ -124,81 +203,3 @@
     </div>           
   </ventana>
 </template>
-<script setup lang="ts">
-  // * /////////////////////////////////////////////////////////////////////////////////// Core
-  import {  ref, toRefs, watch,
-            PropType            } from "vue"
-  // * /////////////////////////////////////////////////////////////////////////////////// Modelos
-  import {  IAcuerdo            } from "../../models/Acuerdo";
-  // * /////////////////////////////////////////////////////////////////////////////////// Componibles
-  import {  IParams,
-            useRemisionPDF      } from "src/areas/acuerdos/composables/pdf/useRemision"
-  import {  style               } from "src/composables/useEstilos"
-  import {  useTools            } from "src/composables/useTools"
-  // * /////////////////////////////////////////////////////////////////////////////////// Componentes
-  import    ventana               from "components/utilidades/Ventana.vue"
-  import    inputFecha            from "components/utilidades/input/InputFecha.vue"
-  import    inputText             from "components/utilidades/input/InputFormText.vue"
-
-  const { getRemisionPDF,
-          saveRemisionPDF   } = useRemisionPDF()
-  const {  esMobil          } = useTools()          
-  const props                 = defineProps({
-    acuerdo:  { required: true, type: Object as PropType< IAcuerdo >  },
-  })
-
-  const { acuerdo }           = toRefs( props )
-  const datos                 = ref< IParams  >( {
-    lineas                    : [],
-    direccion                 : "",
-    indicaciones              : "",
-    fechaEntrega              : new Date(),
-    conDescripcion            : false,
-    dosHojas                  : false,
-    metodo                    : "",
-  } )
-  const srcPDF                = ref< string   >( "" )
-
-  watch(()=> acuerdo.value.ref, ()=>
-    {
-      datos.value.direccion   = acuerdo.value.contactoEntrega.direccion
-      datos.value.indicaciones= acuerdo.value.contactoEntrega.nota
-      copiarLineas()
-    },
-    { immediate: true }
-  )
-
-  async function generarPDF() {
-    datos.value.metodo        = acuerdo.value.metodoEntrega.label
-    srcPDF.value              = await getRemisionPDF( acuerdo.value, datos.value  )
-  }
-
-  function toggleMostrarDescripciones( on : boolean ) {
-    datos.value.lineas.forEach( l => l.descripcionOn = on )
-    generarPDF()
-  }
-
-  function copiarLineas()
-  {
-    datos.value.lineas  = []
-
-    for (const linea of acuerdo.value.productos)
-    {
-      if(linea.esTituloOsubTotal) continue
-
-      datos.value.lineas.push( { 
-        id            : linea.lineaId,
-        ref           : linea.ref,
-        nombre        : linea.nombre,
-        estado        : "Nuevo",
-        descripcion   : linea.descripcion,
-        descripcionOn : true,
-        qty           : linea.qty,
-        qtyTotal      : linea.qtyTotal,
-      } )
-    }
-
-    generarPDF()
-  }
-
-</script>

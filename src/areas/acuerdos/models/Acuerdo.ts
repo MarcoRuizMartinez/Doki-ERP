@@ -65,12 +65,7 @@ import {  IOrigenContacto,  OrigenContacto  } from "src/models/Diccionarios/Orig
 import {  ITiempoEntrega,   TiempoEntrega   } from "src/models/Diccionarios/TiempoEntrega"
 import {  IAccion,                          } from "src/areas/comunicacion/models/Accion"
 import {  IArchivo                          } from "src/models/Archivo"
-import {  X100,
-          fechaCorta,
-          getDateToStr,
-          getNumberValido,
-          getDateToApiDolibarr,
-          getMilisecShortForApiDolibarr,    } from "src/composables/useTools"
+import {  ToolNum, ToolDate, ToolType       } from "src/composables/useTools"
 import {  TModulosDolibarr                  } from "src/composables/UtilFiles"
 import {  storeToRefs                       } from 'pinia'
 import {  useStoreUser                      } from 'src/stores/user'
@@ -515,7 +510,7 @@ https://dolibarr.mublex.com/fichinter/card.php?
   get aiuAdminValor(): number {
     let admin               = 0
     if(this.aiuOn && !!this.aiuAdmin)
-      admin                 = X100( this.totalConDescu, this.aiuAdmin )
+      admin                 = ToolNum.X100( this.totalConDescu, this.aiuAdmin )
 
     return admin
   }
@@ -524,7 +519,7 @@ https://dolibarr.mublex.com/fichinter/card.php?
   get aiuImpreValor(): number {
     let impre               = 0
     if(this.aiuOn && !!this.aiuImpre)
-      impre                 = X100( this.totalConDescu, this.aiuImpre )
+      impre                 = ToolNum.X100( this.totalConDescu, this.aiuImpre )
 
     return impre
   }
@@ -533,7 +528,7 @@ https://dolibarr.mublex.com/fichinter/card.php?
   get aiuUtiliValor(): number {
     let utili               = 0
     if(this.aiuOn && !!this.aiuUtili)
-      utili                 = X100( this.totalConDescu, this.aiuUtili )
+      utili                 = ToolNum.X100( this.totalConDescu, this.aiuUtili )
 
     return utili
   }
@@ -552,10 +547,10 @@ https://dolibarr.mublex.com/fichinter/card.php?
     let ivaX100             = parseInt( process.env.IVA ?? "0" )
 
     if( ( this.conIVA       && !this.aiuOn ) || this.esOCProveedor)
-      ivaTotal              = X100( this.totalConDescu, ivaX100 )
+      ivaTotal              = ToolNum.X100( this.totalConDescu, ivaX100 )
     else
     if(this.aiuOn)
-      ivaTotal              = X100( this.aiuUtiliValor, ivaX100 )
+      ivaTotal              = ToolNum.X100( this.aiuUtiliValor, ivaX100 )
 
     return ivaTotal
   }
@@ -741,7 +736,9 @@ https://dolibarr.mublex.com/fichinter/card.php?
   }
 
   get esTerceroCtz() : boolean {
-    return this.tercero.id === this.comercial.terceroIdCtz
+    //this.comercial
+    //console.log("this.comercial: ", this.comercial);
+    return !!this.comercial && this.tercero.id === this.comercial.terceroIdCtz
   }
 
   get title() : string {
@@ -763,13 +760,13 @@ https://dolibarr.mublex.com/fichinter/card.php?
     return titulo
   }
 
-  get fechaFinValidezCorta()  : string { return fechaCorta( this.fechaFinValidez  ) }
-  get fechaCreacionCorta()    : string { return fechaCorta( this.fechaCreacion    ) }
-  get fechaValidacionCorta()  : string { return fechaCorta( this.fechaValidacion  ) }
-  get fechaCierreCorta()      : string { return fechaCorta( this.fechaCierre      ) }
-  get fechaEntregaCorta()     : string { return fechaCorta( this.fechaEntrega     ) }
-  get fechaListoCorta()       : string { return fechaCorta( this.fechaListo       ) }
-  get fechaADespacharCorta()  : string { return fechaCorta( this.fechaADespachar  ) }
+  get fechaFinValidezCorta()  : string { return ToolDate.fechaCorta( this.fechaFinValidez  ) }
+  get fechaCreacionCorta()    : string { return ToolDate.fechaCorta( this.fechaCreacion    ) }
+  get fechaValidacionCorta()  : string { return ToolDate.fechaCorta( this.fechaValidacion  ) }
+  get fechaCierreCorta()      : string { return ToolDate.fechaCorta( this.fechaCierre      ) }
+  get fechaEntregaCorta()     : string { return ToolDate.fechaCorta( this.fechaEntrega     ) }
+  get fechaListoCorta()       : string { return ToolDate.fechaCorta( this.fechaListo       ) }
+  get fechaADespacharCorta()  : string { return ToolDate.fechaCorta( this.fechaADespachar  ) }
 
   get totalAnticipos()        : number {
     if(!this.anticipos.length) return 0
@@ -789,7 +786,7 @@ https://dolibarr.mublex.com/fichinter/card.php?
     const acuForApi : any = {
       socid:                  this.tercero.id,
       ref_client:             this.refCliente,
-      date:                   getMilisecShortForApiDolibarr( new Date() ),
+      date:                   ToolDate.getMilisecShortForApiDolibarr( new Date() ),
       user_author_id:         usuarioId,
       note_private:           this.notaPrivada,
       note_public:            this.notaPublica,
@@ -824,10 +821,10 @@ https://dolibarr.mublex.com/fichinter/card.php?
       acuForApi.shipping_method_id  = this.metodoEntrega.id
 
     if(!!this.fechaEntrega.valueOf())
-      acuForApi.date_livraison      = getMilisecShortForApiDolibarr( this.fechaEntrega )
+      acuForApi.date_livraison      = ToolDate.getMilisecShortForApiDolibarr( this.fechaEntrega )
 
     if(!!this.fechaFinValidez.valueOf())
-      acuForApi.fin_validite        = getMilisecShortForApiDolibarr( this.fechaFinValidez )
+      acuForApi.fin_validite        = ToolDate.getMilisecShortForApiDolibarr( this.fechaFinValidez )
 
     return acuForApi
   }
@@ -952,12 +949,12 @@ https://dolibarr.mublex.com/fichinter/card.php?
     acuApi.conIVA             = Boolean( +acuApi.conIVA )
     acuApi.aiuOn              = Boolean( +acuApi.aiu )
 
-    acuApi.aiuAdmin           = getNumberValido( acuApi, "aiuAdmin" )
-    acuApi.aiuImpre           = getNumberValido( acuApi, "aiuImpre" )
-    acuApi.aiuUtili           = getNumberValido( acuApi, "aiuUtili" )
-    acuApi.descuento          = getNumberValido( acuApi, "descuento" )
-    acuApi.comercialId        = getNumberValido( acuApi, "comercialId" )
-    acuApi.comercial2Id       = getNumberValido( acuApi, "comercial2Id" )
+    acuApi.aiuAdmin           = ToolType.getNumberValido( acuApi, "aiuAdmin" )
+    acuApi.aiuImpre           = ToolType.getNumberValido( acuApi, "aiuImpre" )
+    acuApi.aiuUtili           = ToolType.getNumberValido( acuApi, "aiuUtili" )
+    acuApi.descuento          = ToolType.getNumberValido( acuApi, "descuento" )
+    acuApi.comercialId        = ToolType.getNumberValido( acuApi, "comercialId" )
+    acuApi.comercial2Id       = ToolType.getNumberValido( acuApi, "comercial2Id" )
 
     acuApi.condicionPagoId    = +acuApi.condicionPagoId
     acuApi.formaPagoId        = +acuApi.formaPagoId
@@ -965,13 +962,13 @@ https://dolibarr.mublex.com/fichinter/card.php?
     acuApi.origenContactoId   = +acuApi.origenContactoId
     acuApi.tiempoEntregaId    = +acuApi.tiempoEntregaId
 
-    acuApi.fechaCreacion      = getDateToStr( acuApi.fechaCreacion    )
-    acuApi.fechaValidacion    = getDateToStr( acuApi.fechaValidacion  )
-    acuApi.fechaCierre        = getDateToStr( acuApi.fechaCierre      )
-    acuApi.fechaFinValidez    = getDateToStr( acuApi.fechaFinValidez  )
-    acuApi.fechaEntrega       = getDateToStr( acuApi.fechaEntrega,    "UTC")
-    acuApi.fechaListo         = getDateToStr( acuApi.fechaListo,      "UTC")
-    acuApi.fechaADespachar    = getDateToStr( acuApi.fechaADespachar, "UTC")
+    acuApi.fechaCreacion      = ToolDate.getDateToStr( acuApi.fechaCreacion    )
+    acuApi.fechaValidacion    = ToolDate.getDateToStr( acuApi.fechaValidacion  )
+    acuApi.fechaCierre        = ToolDate.getDateToStr( acuApi.fechaCierre      )
+    acuApi.fechaFinValidez    = ToolDate.getDateToStr( acuApi.fechaFinValidez  )
+    acuApi.fechaEntrega       = ToolDate.getDateToStr( acuApi.fechaEntrega,    "UTC")
+    acuApi.fechaListo         = ToolDate.getDateToStr( acuApi.fechaListo,      "UTC")
+    acuApi.fechaADespachar    = ToolDate.getDateToStr( acuApi.fechaADespachar, "UTC")
 
     const acu                 = Object.assign( new Acuerdo( tipo ), acuApi ) as IAcuerdo
     acu.esNuevo               = false
@@ -1040,9 +1037,9 @@ https://dolibarr.mublex.com/fichinter/card.php?
     e.id                  = +ee?.id ?? 0
     e.transportadoraId    = +ee?.array_options?.options_transportadora_id ?? 0
     e.facturado           = Boolean( +ee?.billed ?? 0 )
-    e.fechaCreacion       = getDateToApiDolibarr( ee?.date_creation ?? "" )
-    e.fechaEntrega        = getDateToApiDolibarr( ee?.date_delivery ?? "" )
-    e.fechaValidacion     = getDateToApiDolibarr( ee?.date_valid    ?? "" )
+    e.fechaCreacion       = ToolDate.getDateToApiDolibarr( ee?.date_creation ?? "" )
+    e.fechaEntrega        = ToolDate.getDateToApiDolibarr( ee?.date_delivery ?? "" )
+    e.fechaValidacion     = ToolDate.getDateToApiDolibarr( ee?.date_valid    ?? "" )
     e.ref                 = ee?.ref                 ?? ""
     e.notaPublica         = ee?.note_public         ?? ""
     e.refCliente          = ee?.ref_customer        ?? ""

@@ -1,3 +1,19 @@
+<script setup lang="ts">
+  import {  storeToRefs           } from 'pinia'                            
+  import {  useStoreAcuerdo       } from 'src/stores/acuerdo'  
+  import {  Format                } from "src/composables/useTools" 
+  import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"
+  import    ventana                 from "components/utilidades/Ventana.vue"
+  import    inputNumber             from "components/utilidades/input/InputFormNumber.vue"
+  import    retenciones             from "src/areas/acuerdos/components/Anticipos/Retenciones.vue"
+
+  const { acuerdo, loading    } = storeToRefs( useStoreAcuerdo() )  
+  const { editarConAIU,
+          editarValorAIU,
+          editarConTotal,
+          editarConIVA,
+                              } = useControlAcuerdo()
+</script>
 <template>
   <ventana                  minimizar
     titulo                  ="Totales"
@@ -54,7 +70,7 @@
           />
           <div  class       ="fuente-mono text-grey-8 text-center"
             >
-            {{ formatoPrecio( acuerdo.aiuAdminValor ) }}
+            {{ Format.precio( acuerdo.aiuAdminValor ) }}
           </div>
         </div>
         <!-- //* ///////////////////////////////////////////////////////// AIU Imprevistos -->
@@ -68,7 +84,7 @@
           />
           <div  class       ="fuente-mono text-grey-8 text-center"
             >
-            {{ formatoPrecio( acuerdo.aiuImpreValor ) }}
+            {{ Format.precio( acuerdo.aiuImpreValor ) }}
           </div>
         </div>
         <!-- //* ///////////////////////////////////////////////////////// AIU Utilidad -->
@@ -82,7 +98,7 @@
           />
           <div  class       ="fuente-mono text-grey-8 text-center"
             >
-            {{ formatoPrecio( acuerdo.aiuUtiliValor ) }}
+            {{ Format.precio( acuerdo.aiuUtiliValor ) }}
           </div>          
         </div>
       </div>
@@ -96,32 +112,32 @@
         <table  class       ="tabla-totales">
           <tr>
             <td>Subtotal bruto:</td>
-            <td>{{ formatoPrecio( acuerdo.totalSinDescu )}}</td>
+            <td>{{ Format.precio( acuerdo.totalSinDescu )}}</td>
           </tr>
           <tr>
             <td>Descuento:</td>
-            <td>{{ formatoPrecio( acuerdo.descuentoValor )}}</td>
+            <td>{{ Format.precio( acuerdo.descuentoValor )}}</td>
           </tr>
           <tr>
             <td>Subtotal neto:</td>
-            <td>{{ formatoPrecio( acuerdo.totalConDescu )}}</td>
+            <td>{{ Format.precio( acuerdo.totalConDescu )}}</td>
           </tr>
           <tr v-if="acuerdo.aiuOn">
             <td>AIU:</td>
-            <td>{{ formatoPrecio( acuerdo.aiuTotal )}}</td>
+            <td>{{ Format.precio( acuerdo.aiuTotal )}}</td>
           </tr>          
           <tr>
             <td>IVA:</td>
-            <td>{{ formatoPrecio( acuerdo.ivaValor )}}</td>
+            <td>{{ Format.precio( acuerdo.ivaValor )}}</td>
           </tr>        
           <tr>
             <td>TOTAL:</td>
-            <td>{{ formatoPrecio( acuerdo.totalConIva )}}</td>
+            <td>{{ Format.precio( acuerdo.totalConIva )}}</td>
           </tr>
           <template v-if="acuerdo.esPedido">  
             <tr style="border-top: 1px solid;">
               <td>Pagado:</td>
-              <td>{{ formatoPrecio( acuerdo.totalAnticipos )}}</td>
+              <td>{{ Format.precio( acuerdo.totalAnticipos )}}</td>
             </tr>
             <tr :class="  acuerdo.totalAnticipos    === 0                       ? 'text-red' 
                         : acuerdo.saldo             >= 0 && acuerdo.saldo <= 2  ? 'text-green-8'
@@ -130,7 +146,7 @@
                         >
               <td>Saldo:</td>
               <td class="cursor-pointer">
-                <span>{{ formatoPrecio( acuerdo.saldo )}}</span>
+                <span>{{ Format.precio( acuerdo.saldo )}}</span>
                 <Tooltip>
                   <retenciones v-model="acuerdo.retenciones"/>
                 </Tooltip>
@@ -142,19 +158,3 @@
     </div>      
   </ventana>
 </template>
-<script setup lang="ts">
-  import {  storeToRefs           } from 'pinia'                            
-  import {  useStoreAcuerdo       } from 'src/stores/acuerdo'  
-  import {  formatoPrecio         } from "src/composables/useTools" 
-  import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"
-  import    ventana                 from "components/utilidades/Ventana.vue"
-  import    inputNumber             from "components/utilidades/input/InputFormNumber.vue"
-  import    retenciones             from "src/areas/acuerdos/components/Anticipos/Retenciones.vue"
-
-  const { acuerdo, loading    } = storeToRefs( useStoreAcuerdo() )  
-  const { editarConAIU,
-          editarValorAIU,
-          editarConTotal,
-          editarConIVA,
-                              } = useControlAcuerdo()
-</script>

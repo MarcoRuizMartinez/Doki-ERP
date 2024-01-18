@@ -8,7 +8,7 @@ import {  db, TABLAS        } from "src/boot/dexie"
 import {  useStoreApp       } from 'src/stores/app'
 import {  ALMACEN_LOCAL     } from "src/models/TiposVarios"
 import {  LocalStorage      } from 'quasar'
-import {  pausa             } from "src/composables/useTools"
+import {  Tool              } from "src/composables/useTools"
 
 import {  IMunicipio,         Municipio         } from "src/models/Municipio"
 import {  Usuario,            IUsuario          } from "src/areas/usuarios/models/Usuario"
@@ -189,7 +189,7 @@ function useDexie( tabla : TABLAS, { cargarSiempre = false, demora = 0 } = param
 
   async function motorTabla()
   {
-    await pausa( demora )
+    await Tool.pausa( demora )
     const largoDBTabla             = await db[ tabla ].count()
 
 

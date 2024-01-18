@@ -31,7 +31,7 @@ import {  TTipoAcuerdo,
           TIPO_ACUERDO      } from "src/areas/acuerdos/models/ConstantesAcuerdos"
 import {  Acuerdo,
           IAcuerdo,         } from "src/areas/acuerdos/models/Acuerdo"
-import {  pausa             } from "src/composables/useTools"
+import {  Tool              } from "src/composables/useTools"
 
 export function servicesAcuerdos()
 {
@@ -431,7 +431,7 @@ export function servicesAcuerdos()
     return new Promise( async (resolver, rechazar ) =>
     {
       const url           = getURL("listas", "varios")
-      await pausa(400)
+      await Tool.pausa(400)
 
       const { ok, data  } = await miFetch(url,  { method: "POST", body: getFormData(  "idEnlaceCont", obj ) },
                                               { mensaje: "Buscar id de enlace de contacto"        }

@@ -71,7 +71,7 @@
   import {  useTitle            } from "@vueuse/core"
   import {  useControlPedidosWoo} from "src/areas/acuerdos/controllers/ControlPedidosWoo"
   import {  useTools,
-            getDateToStr        } from "src/composables/useTools"
+            ToolDate            } from "src/composables/useTools"
   import {  generarCSVDesdeTabla} from "src/composables/UtilFiles"
   import {  style               } from "src/composables/useEstilos"
   // * /////////////////////////////////////////////////////////////////////// Modelos
@@ -117,9 +117,9 @@
     const mes                 = now.getMonth() + 1
 
     if(!b.value.f?.desde)
-        b.value.f.desde  = getDateToStr( `${año}-${mes}-01`, "UTC" )
+        b.value.f.desde       = ToolDate.getDateToStr( `${año}-${mes}-01`, "UTC" )
     if(!b.value.f?.hasta)
-        b.value.f.hasta  = now
+        b.value.f.hasta       = now
   }
 
   //* ///////////////////////////////////////////////////////////// Consultar Si existe cliente y Pagos

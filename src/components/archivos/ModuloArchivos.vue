@@ -1,3 +1,136 @@
+<script setup lang="ts">
+  //accept                  =".xlsx,.xls,image/*,.doc, .docx,.ppt, .pptx, .txt, .pdf, .ods, .odt" pdfjs
+  import {  ref,
+            toRefs,
+            watch,
+            onMounted,
+            PropType
+                            } from "vue"
+  import {  useApiDolibarr  } from "src/composables/useApiDolibarr"
+  import {  ModosVentana    } from "src/models/TiposVarios"
+  import {  useTools, Tool  } from "src/composables/useTools"
+  import {  DownloadFile_B64} from "src/composables/UtilFiles"
+  import {  TModulosDolibarr} from "src/composables/UtilFiles"
+  import {  IColumna,
+            Columna         } from "src/models/Tabla"
+  import {  IArchivo,
+            Archivo         } from "src/models/Archivo"
+  import {  style           } from "src/composables/useEstilos"            
+  import    ventana           from "components/utilidades/Ventana.vue"
+  import    subirArchivo      from "./SubirArchivo.vue"
+  import    tooltipDocumento  from "./TooltipArchivo.vue"
+  import    btnVisualizar     from "./BtnVisualzarArchivo.vue"
+  import    confirmar         from "components/utilidades/MenuConfirmar.vue"
+
+  const { apiDolibarr       } = useApiDolibarr()
+  const { aviso             } = useTools()
+  const modo                  = ref< ModosVentana >("buscando")
+  const archivos              = ref< IArchivo[] >([])
+
+  const props                 = defineProps({
+    modulo:       { required: true,   type: String as PropType < TModulosDolibarr > },
+    moduloId:     { required: true,   type: Number                                  },
+    retrasoInicio:{ default:  0,      type: Number                                  },
+    moduloRef:    { required: true,   type: String                                  },
+    puedeEditar:  { default:  false,  type: Boolean                                 },
+    sinSubida:    { default:  false,  type: Boolean                                 },
+    sinTitulo:    { default:  false,  type: Boolean                                 },
+    sizeIcon:     { default:  "6em",  type: String                                  },    
+  })
+  const emit = defineEmits<{
+    (e: "subidaOk",   value: IArchivo[]  ): void
+    (e: "descargaOk", value: IArchivo[]  ): void
+    (e: "borradoOk",  value: IArchivo[]  ): void
+  }>()
+
+  const { modulo,
+          moduloId,
+          moduloRef,
+          puedeEditar,
+          retrasoInicio
+                            } = toRefs( props )
+  //let puedeSubir              = true//modulo.value === "thirdparty" || !puedeEditar.value ? false : true //computed(()=>{ modulo.value === "thirdparty" })
+  
+  const columnas: IColumna[]  = [
+    new Columna({ name: "name",     label: "Archivo"  }),
+    new Columna({ name: "tipo",     label: "."        })
+  ]
+
+  onMounted( async ()=> { 
+    await Tool.pausa( retrasoInicio.value )
+    buscarArchivos() 
+  })
+
+  watch(moduloId,  (newId) => {    
+    buscarArchivos("watch", newId)
+  })
+
+  async function buscarArchivos( origen : string = "desconocido", id : number = moduloId.value )
+  {
+    if(id                     <= 0) return 
+    modo.value                = "buscando"
+    let { data, ok }          = await apiDolibarr( "buscar", "documento", "modulepart=" + modulo.value + "&id=" + id )
+    
+    if(ok && Array.isArray( data ) && !!data.length)
+    {
+      archivos.value          = []
+      for (const documento of data)
+      {
+        const file = Object.assign( new Archivo(), documento ) as IArchivo
+        if("name" in documento)
+          file.label = documento?.name ?? ""
+
+        archivos.value.push( file )
+      }
+      
+      if(origen === "subida")
+        emit("subidaOk", archivos.value)
+      if(!!archivos.value.length)
+        emit("descargaOk", archivos.value)
+
+      modo.value              = "normal"
+    }
+    else
+      modo.value              = "sin-resultados"
+  }
+
+  async function descargarArchivo( archivo : IArchivo )
+  {
+    archivo.loading           = true
+    let { data, ok }          = await apiDolibarr( "descargar", "documento", archivo.endPoint )
+    archivo.loading           = false
+
+    if(ok)
+    {
+      let descarga            = data as any
+      DownloadFile_B64( descarga.content, archivo.name,  descarga["content-type"] )
+      aviso("positive", "Archivo descargado", "file")
+    }
+    else
+      aviso("negative", "Error descargando el archivo", "file")
+  }
+
+  async function borrarArchivoOk( archivo : IArchivo )
+  {
+    archivo.loading           = true
+    let { data, ok }          = await apiDolibarr( "borrar", "documento", archivo.endPoint)
+    archivo.loading           = false
+    
+    if(ok)
+    {
+      let index               = archivos.value.findIndex( a => a.relativename == archivo.name ) 
+      archivos.value.splice(index, 1)
+      aviso("positive", "Archivo borrado", "file")
+      emit("borradoOk", archivos.value)
+      if(!archivos.value.length)
+        modo.value            = "sin-resultados"
+    }
+    else
+      aviso("negative", "Error al borrar archivo", "file")
+  }
+
+</script>
+
 <template>
   <ventana
     class-contenido             ="column items-center"
@@ -121,138 +254,6 @@
   </ventana>
 </template>
 
-<script setup lang="ts">
-  //accept                  =".xlsx,.xls,image/*,.doc, .docx,.ppt, .pptx, .txt, .pdf, .ods, .odt" pdfjs
-  import {  ref,
-            toRefs,
-            watch,
-            onMounted,
-            PropType
-                            } from "vue"
-  import {  useApiDolibarr  } from "src/composables/useApiDolibarr"
-  import {  ModosVentana    } from "src/models/TiposVarios"
-  import {  useTools, pausa } from "src/composables/useTools"
-  import {  DownloadFile_B64} from "src/composables/UtilFiles"
-  import {  TModulosDolibarr} from "src/composables/UtilFiles"
-  import {  IColumna,
-            Columna         } from "src/models/Tabla"
-  import {  IArchivo,
-            Archivo         } from "src/models/Archivo"
-  import {  style           } from "src/composables/useEstilos"            
-  import    ventana           from "components/utilidades/Ventana.vue"
-  import    subirArchivo      from "./SubirArchivo.vue"
-  import    tooltipDocumento  from "./TooltipArchivo.vue"
-  import    btnVisualizar     from "./BtnVisualzarArchivo.vue"
-  import    confirmar         from "components/utilidades/MenuConfirmar.vue"
-
-  const { apiDolibarr       } = useApiDolibarr()
-  const { aviso             } = useTools()
-  const modo                  = ref< ModosVentana >("buscando")
-  const archivos              = ref< IArchivo[] >([])
-
-  const props                 = defineProps({
-    modulo:       { required: true,   type: String as PropType < TModulosDolibarr > },
-    moduloId:     { required: true,   type: Number                                  },
-    retrasoInicio:{ default:  0,      type: Number                                  },
-    moduloRef:    { required: true,   type: String                                  },
-    puedeEditar:  { default:  false,  type: Boolean                                 },
-    sinSubida:    { default:  false,  type: Boolean                                 },
-    sinTitulo:    { default:  false,  type: Boolean                                 },
-    sizeIcon:     { default:  "6em",  type: String                                  },    
-  })
-  const emit = defineEmits<{
-    (e: "subidaOk",   value: IArchivo[]  ): void
-    (e: "descargaOk", value: IArchivo[]  ): void
-    (e: "borradoOk",  value: IArchivo[]  ): void
-  }>()
-
-  const { modulo,
-          moduloId,
-          moduloRef,
-          puedeEditar,
-          retrasoInicio
-                            } = toRefs( props )
-  //let puedeSubir              = true//modulo.value === "thirdparty" || !puedeEditar.value ? false : true //computed(()=>{ modulo.value === "thirdparty" })
-  
-  const columnas: IColumna[]  = [
-    new Columna({ name: "name",     label: "Archivo"  }),
-    new Columna({ name: "tipo",     label: "."        })
-  ]
-
-  onMounted( async ()=> { 
-    await pausa( retrasoInicio.value )
-    buscarArchivos() 
-  })
-
-  watch(moduloId,  (newId) => {    
-    buscarArchivos("watch", newId)
-  })
-
-  async function buscarArchivos( origen : string = "desconocido", id : number = moduloId.value )
-  {
-    if(id                     <= 0) return 
-    modo.value                = "buscando"
-    let { data, ok }          = await apiDolibarr( "buscar", "documento", "modulepart=" + modulo.value + "&id=" + id )
-    
-    if(ok && Array.isArray( data ) && !!data.length)
-    {
-      archivos.value          = []
-      for (const documento of data)
-      {
-        const file = Object.assign( new Archivo(), documento ) as IArchivo
-        if("name" in documento)
-          file.label = documento?.name ?? ""
-
-        archivos.value.push( file )
-      }
-      
-      if(origen === "subida")
-        emit("subidaOk", archivos.value)
-      if(!!archivos.value.length)
-        emit("descargaOk", archivos.value)
-
-      modo.value              = "normal"
-    }
-    else
-      modo.value              = "sin-resultados"
-  }
-
-  async function descargarArchivo( archivo : IArchivo )
-  {
-    archivo.loading           = true
-    let { data, ok }          = await apiDolibarr( "descargar", "documento", archivo.endPoint )
-    archivo.loading           = false
-
-    if(ok)
-    {
-      let descarga            = data as any
-      DownloadFile_B64( descarga.content, archivo.name,  descarga["content-type"] )
-      aviso("positive", "Archivo descargado", "file")
-    }
-    else
-      aviso("negative", "Error descargando el archivo", "file")
-  }
-
-  async function borrarArchivoOk( archivo : IArchivo )
-  {
-    archivo.loading           = true
-    let { data, ok }          = await apiDolibarr( "borrar", "documento", archivo.endPoint)
-    archivo.loading           = false
-    
-    if(ok)
-    {
-      let index               = archivos.value.findIndex( a => a.relativename == archivo.name ) 
-      archivos.value.splice(index, 1)
-      aviso("positive", "Archivo borrado", "file")
-      emit("borradoOk", archivos.value)
-      if(!archivos.value.length)
-        modo.value            = "sin-resultados"
-    }
-    else
-      aviso("negative", "Error al borrar archivo", "file")
-  }
-
-</script>
 <style>
 .iconos-doc{
   width: 26px;

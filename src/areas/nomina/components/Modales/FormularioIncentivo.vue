@@ -86,7 +86,7 @@
   // * ///////////////////////////////////////////////////////////////////////////////// Componibles
   import {  style                 } from "src/composables/useEstilos"
   import {  useControlIncentivos  } from "src/areas/nomina/controllers/ControlIncentivos"
-  import {  valorValido           } from "src/composables/useTools"  
+  import {  ToolType              } from "src/composables/useTools"  
   
   // * ///////////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana                 from "components/utilidades/Ventana.vue"
@@ -163,7 +163,7 @@
   }
 
   function reglaValorValido() : boolean | string {    
-    const valorOk             = valorValido( incentivoModel.value.valor )
+    const valorOk             = ToolType.valorValido( incentivoModel.value.valor )
     return ( valorOk )  || "Valor invalido"
   }
 

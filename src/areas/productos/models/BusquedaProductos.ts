@@ -1,7 +1,5 @@
-import {  ILabelValue,
-          labelValueNulo      } from "src/models/TiposVarios"
 import {  IUsuario            } from "src/areas/usuarios/models/Usuario"
-import {  valorValido         } from "src/composables/useTools"
+import {  ToolType            } from "src/composables/useTools"
 import {  ICategoriaProducto,
           CategoriaProducto   } from "src/areas/productos/models/CategoriaProducto"
 /* import {  FiltroProductos,
@@ -77,7 +75,7 @@ export class BusquedaProducto implements IBusquedaProducto
       filtroTexto         : "",
       precioMinimo        : undefined,
       precioMaximo        : undefined,
-      get preciosMaxOrMinValidos() { return valorValido( this.precioMinimo ) || valorValido( this.precioMaximo ) }
+      get preciosMaxOrMinValidos() { return ToolType.valorValido( this.precioMinimo ) || ToolType.valorValido( this.precioMaximo ) }
     }
 
     this.resultadosXPage  = 25

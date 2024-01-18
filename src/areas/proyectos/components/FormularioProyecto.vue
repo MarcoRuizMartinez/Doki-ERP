@@ -1,225 +1,3 @@
-<template>
-  <ventana                      cerrar
-    class-contenido             ="column items-center"
-    icono                       ="mdi-account-box"
-    :titulo                     ="titulo"
-    :cargando                   ="cargando"
-    >
-    <template                   #barra>
-      <!-- mode="out-in" -->
-      <TransitionGroup          enter-active-class="animated fadeInDown" leave-active-class="animated fadeOutDown">
-        <q-btn                  dark push dense glossy
-          v-if                  ="!readonly"
-          class                 ="desktop-only"
-          color                 ="positive"  
-          icon                  ="mdi-account-check"
-          size                  ="md"
-          padding               ="2px 8px"
-          :label                ="tipo == 'ver' ? 'Guardar' : 'Crear'"
-          :disable              ="btnDisable"
-          @click                ="validar"
-        />    
-      </TransitionGroup>
-      <q-btn                    flat round dense
-        v-if                    ="readonly"
-        color                   ="white"
-        icon                    ="mdi-open-in-new"
-        type                    ="a"
-        class                   ="op40 op100-hover q-ml-xs"
-        target                  ="_blank"
-        :href                   ="urlDolibarr + '/contact/card.php?id=' + contacto.id"
-        >
-        <Tooltip label          ="Ir a Dolibarr"/>        
-      </q-btn>          
-    </template>
-    <!-- //* ////////////////   FORMULARIO  -->
-    <q-form
-      ref                       ="formulario"
-      @submit                   ="onSubmit"
-      class                     ="row q-col-gutter-md fit"
-      >
-      <!-- //* //////////////   Nombres -->
-      <input-text               AZ
-        label                   ="Nombres"
-        v-model                 ="contacto.nombres"
-        class                   ="col-md-6 col-12"
-        icon                    ="mdi-account"
-        :readonly               ="readonly"
-        @update:model-value     ="(txt : string )=> contacto.nombres = mayusculasPrimeraLetraAll(txt)"
-      />
-      <!-- //* //////////////   Apellidos  -->
-      <input-text               AZ alerta
-        label                   ="Apellidos"
-        v-model                 ="contacto.apellidos"
-        class                   ="col-md-6 col-12"
-        icon                    ="mdi-account"
-        :readonly               ="readonly"
-        @update:model-value     ="( txt : string )=> contacto.apellidos = mayusculasPrimeraLetraAll(txt)"
-      />
-      <!-- //* //////////////   Empresa -->
-      <input-text               AZ
-        v-if                    ="esTerceroCtz"
-        label                   ="Empresa"
-        v-model                 ="contacto.empresa"
-        class                   ="col-12"
-        icon                    ="mdi-office-building"
-        :rules                  ="[ validarExisteEmpresa ]"
-        :estadoCheck            ="estaCheckEmpresa"
-        :readonly               ="readonly"
-        @alert                  ="mostrarClientesExistentes"
-        @blur                   ="vericarExisteEmpresa"
-      />
-      <!-- //* //////////////   Cargo  -->
-      <input-text               AZ 
-        label                   ="Cargo"
-        v-model                 ="contacto.cargo"
-        class                   ="col-md-4 col-12"
-        icon                    ="mdi-account-cowboy-hat"
-        :alerta                 ="!esTerceroCtz"
-        :readonly               ="readonly"
-      />               
-      <!-- //* //////////////   Correo  -->
-      <input-text               sin-espacios copy
-        v-model                 ="contacto.correo"
-        label                   ="Correo"
-        type                    ="email"
-        icon                    ="mdi-at"
-        class                   ="col-md-8 col-12"
-        :rules                  ="[ validarExisteEmail ]"
-        :estadoCheck            ="estaCheckEmail"
-        :readonly               ="readonly"
-        @alert                  ="mostrarClientesExistentes"
-        @blur                   ="vericarExisteCorreo"
-      />
-      <!-- //* //////////////   Telefono 1  -->
-      <input-text               copy
-        v-model                 ="contacto.telefono"
-        label                   ="Celular"
-        type                    ="tel"
-        class                   ="col-md-4 col-12"
-        :rules                  ="[ validarExisteCel ]"
-        :estadoCheck            ="estaCheckCel"
-        :readonly               ="readonly"
-        @alert                  ="mostrarClientesExistentes"
-        @blur                   ="vericarExisteCel"        
-      />      
-      <!-- //* //////////////   Telefono 2  -->
-      <input-text               copy
-        v-model                 ="contacto.telefono_2"
-        label                   ="Teléfono"
-        type                    ="tel"
-        class                   ="col-md-4 col-7"
-        :rules                  ="[ validarExisteTel ]"
-        :estadoCheck            ="estaCheckTel"
-        :readonly               ="readonly"
-        @alert                  ="mostrarClientesExistentes"
-        @blur                   ="vericarExisteTel"                
-      />
-      <!-- //* //////////////   Extensión  -->
-      <input-text
-        v-model                 ="contacto.extension"
-        label                   ="Extensión"
-        class                   ="col-md-4 col-5"
-        :readonly               ="readonly"
-      />
-      <!-- //* //////////////   Municipio o Ciudad  -->
-      <municipios
-        v-model                 ="contacto.municipio"
-        class                   ="col-12"
-        :readonly               ="readonly"
-      />
-      <!-- //* //////////////   Notas  -->
-      <q-input                  filled autogrow 
-        v-model                 ="contacto.nota"
-        placeholder             ="Notas sobre el contactco..."
-        class                   ="col-12"
-        type                    ="textarea"
-        :readonly               ="readonly"
-      />
-      <!-- //* //////////////   Activo  -->
-      <q-toggle 
-        v-model                 ="contacto.activo"
-        label                   ="Activo"
-        class                   ="col-auto"
-        :disable                ="readonly"
-      />
-      <q-space/>
-      <div
-        v-if                    ="tipo == 'ver'"
-        class                   ="col-auto"
-        >
-        <!-- //* /////////////  Borrar  -->
-        <q-btn                  flat
-          v-if                  ="readonly && permisos.contactos_borrar && borrable"
-          label                 ="Borrar"
-          color                 ="negative"
-          @click                ="confirmarBorrar"
-        />
-        <!-- //* /////////////  Editar  -->
-        <q-btn                  flat
-          v-if                  ="readonly && permisos.contactos_crear"
-          label                 ="Editar"
-          @click                ="readonly = false"
-        />
-        <!-- //* /////////////  Cancelar  -->
-        <q-btn                  flat
-          v-else-if             ="permisos.contactos_crear"
-          label                 ="Cancelar"
-          @click                ="readonly = true"
-        />
-      </div>      
-      <!-- //* //////////////   Botones Sumit  -->
-      <TransitionGroup          enter-active-class="animated fadeInDown" leave-active-class="animated fadeOutDown">
-        <div
-          class                 ="col-12 column mobile-only"
-          v-show                ="!readonly"
-          >
-          <!-- //* ///////////  Guardar Crear  -->
-          <q-btn                dark push
-            type                ="submit"
-            color               ="positive"
-            icon                ="mdi-account-check"  
-            :label              ="tipo == 'ver' ? 'Guardar' : 'Crear'" 
-          />
-        </div>
-      </TransitionGroup>
-      <!-- //* ///////////////  Boton sumit -->
-      <q-btn
-        v-show                  ="false"
-        type                    ="submit"
-      />
-    </q-form>
-    <!-- //* ///////////////////////////////////////////////////////////// Modal Buscar productos -->
-    <q-dialog
-      v-model                   ="ventanaClienteExiste"      
-      v-bind                    ="style.dialogo"
-      >
-      <ventana                  cerrar scroll
-        titulo                  ="Terceros registrados"
-        icono                   ="mdi-account-remove"
-        padding-contenido       ="0"
-        width                   ="440px"
-        >
-        <template               #barra>
-          <q-btn
-            v-if                ="esTerceroInternoDeCoti"
-            v-bind              ="style.btnBaseSm"
-            color               ="positive"
-            :label              ="consentimientoAsesor ? 'Firmado' : 'Firmar'"
-            :icon               ="consentimientoAsesor ? 'mdi-check' : 'mdi-signature'"
-            @click              ="mostrarAvisoConsentimiento"
-          />
-        </template>
-        <q-table                bordered dense flat
-          class                 ="fit tabla-maco"
-          row-key               ="id"
-          :rows                 ="clientesExistentes"
-          :columns              ="[ { name: 'nombre', label: 'Tercero', field: 'nombre', align: 'left' }, { name: 'vendedores', label: 'Asesores', field: 'vendedores'}]"
-        />
-      </ventana>    
-    </q-dialog>
-  </ventana>
-</template>
 <script setup lang="ts">
 //class-contenido         ="row items-start content-start justify-start q-col-gutter-md q-mt-none"
 
@@ -236,9 +14,8 @@
   import {  useApiDolibarr  } from "src/composables/useApiDolibarr"
   import {  useStoreUser    } from 'src/stores/user'
   import {  useTools,
-            esCorreoFamoso,
-            mayusculasPrimeraLetraAll
-                            } from "src/composables/useTools"
+            Tool,
+            ToolStr         } from "src/composables/useTools"
   import {  IMunicipio,
             Municipio       } from "src/models/Municipio"
   import {  IContacto,
@@ -470,7 +247,7 @@
     if(existe)      return
     existe          = await vericarExiste("emailContactoExiste",      contacto.value.correo,  estaCheckEmail)
     if(existe)      return
-    const esFamoso  = esCorreoFamoso(contacto.value.correo)
+    const esFamoso  = Tool.esCorreoFamoso(contacto.value.correo)
     if(esFamoso)    return
     const dominio   = contacto.value.correo.split('@').pop() ?? "" //.match(/(?<=@)[^.]+(?=\.)/)[0]
     existe          = await vericarExiste("emailTerceroExiste",       dominio,  estaCheckEmail)
@@ -548,3 +325,226 @@
   const titulo                = computed(()=>  tipo.value == "crear" ? "Crear contacto" : contacto.value.nombreCompleto)
   const modificado            = computed(()=>  copiaContacto !== JSON.stringify( contacto.value ) ) 
 </script>
+
+<template>
+  <ventana                      cerrar
+    class-contenido             ="column items-center"
+    icono                       ="mdi-account-box"
+    :titulo                     ="titulo"
+    :cargando                   ="cargando"
+    >
+    <template                   #barra>
+      <!-- mode="out-in" -->
+      <TransitionGroup          enter-active-class="animated fadeInDown" leave-active-class="animated fadeOutDown">
+        <q-btn                  dark push dense glossy
+          v-if                  ="!readonly"
+          class                 ="desktop-only"
+          color                 ="positive"  
+          icon                  ="mdi-account-check"
+          size                  ="md"
+          padding               ="2px 8px"
+          :label                ="tipo == 'ver' ? 'Guardar' : 'Crear'"
+          :disable              ="btnDisable"
+          @click                ="validar"
+        />    
+      </TransitionGroup>
+      <q-btn                    flat round dense
+        v-if                    ="readonly"
+        color                   ="white"
+        icon                    ="mdi-open-in-new"
+        type                    ="a"
+        class                   ="op40 op100-hover q-ml-xs"
+        target                  ="_blank"
+        :href                   ="urlDolibarr + '/contact/card.php?id=' + contacto.id"
+        >
+        <Tooltip label          ="Ir a Dolibarr"/>        
+      </q-btn>          
+    </template>
+    <!-- //* ////////////////   FORMULARIO  -->
+    <q-form
+      ref                       ="formulario"
+      @submit                   ="onSubmit"
+      class                     ="row q-col-gutter-md fit"
+      >
+      <!-- //* //////////////   Nombres -->
+      <input-text               AZ
+        label                   ="Nombres"
+        v-model                 ="contacto.nombres"
+        class                   ="col-md-6 col-12"
+        icon                    ="mdi-account"
+        :readonly               ="readonly"
+        @update:model-value     ="(txt : string )=> contacto.nombres = ToolStr.mayusculasPrimeraLetraAll(txt)"
+      />
+      <!-- //* //////////////   Apellidos  -->
+      <input-text               AZ alerta
+        label                   ="Apellidos"
+        v-model                 ="contacto.apellidos"
+        class                   ="col-md-6 col-12"
+        icon                    ="mdi-account"
+        :readonly               ="readonly"
+        @update:model-value     ="( txt : string )=> contacto.apellidos = ToolStr.mayusculasPrimeraLetraAll(txt)"
+      />
+      <!-- //* //////////////   Empresa -->
+      <input-text               AZ
+        v-if                    ="esTerceroCtz"
+        label                   ="Empresa"
+        v-model                 ="contacto.empresa"
+        class                   ="col-12"
+        icon                    ="mdi-office-building"
+        :rules                  ="[ validarExisteEmpresa ]"
+        :estadoCheck            ="estaCheckEmpresa"
+        :readonly               ="readonly"
+        @alert                  ="mostrarClientesExistentes"
+        @blur                   ="vericarExisteEmpresa"
+      />
+      <!-- //* //////////////   Cargo  -->
+      <input-text               AZ 
+        label                   ="Cargo"
+        v-model                 ="contacto.cargo"
+        class                   ="col-md-4 col-12"
+        icon                    ="mdi-account-cowboy-hat"
+        :alerta                 ="!esTerceroCtz"
+        :readonly               ="readonly"
+      />               
+      <!-- //* //////////////   Correo  -->
+      <input-text               sin-espacios copy
+        v-model                 ="contacto.correo"
+        label                   ="Correo"
+        type                    ="email"
+        icon                    ="mdi-at"
+        class                   ="col-md-8 col-12"
+        :rules                  ="[ validarExisteEmail ]"
+        :estadoCheck            ="estaCheckEmail"
+        :readonly               ="readonly"
+        @alert                  ="mostrarClientesExistentes"
+        @blur                   ="vericarExisteCorreo"
+      />
+      <!-- //* //////////////   Telefono 1  -->
+      <input-text               copy
+        v-model                 ="contacto.telefono"
+        label                   ="Celular"
+        type                    ="tel"
+        class                   ="col-md-4 col-12"
+        :rules                  ="[ validarExisteCel ]"
+        :estadoCheck            ="estaCheckCel"
+        :readonly               ="readonly"
+        @alert                  ="mostrarClientesExistentes"
+        @blur                   ="vericarExisteCel"        
+      />      
+      <!-- //* //////////////   Telefono 2  -->
+      <input-text               copy
+        v-model                 ="contacto.telefono_2"
+        label                   ="Teléfono"
+        type                    ="tel"
+        class                   ="col-md-4 col-7"
+        :rules                  ="[ validarExisteTel ]"
+        :estadoCheck            ="estaCheckTel"
+        :readonly               ="readonly"
+        @alert                  ="mostrarClientesExistentes"
+        @blur                   ="vericarExisteTel"                
+      />
+      <!-- //* //////////////   Extensión  -->
+      <input-text
+        v-model                 ="contacto.extension"
+        label                   ="Extensión"
+        class                   ="col-md-4 col-5"
+        :readonly               ="readonly"
+      />
+      <!-- //* //////////////   Municipio o Ciudad  -->
+      <municipios
+        v-model                 ="contacto.municipio"
+        class                   ="col-12"
+        :readonly               ="readonly"
+      />
+      <!-- //* //////////////   Notas  -->
+      <q-input                  filled autogrow 
+        v-model                 ="contacto.nota"
+        placeholder             ="Notas sobre el contactco..."
+        class                   ="col-12"
+        type                    ="textarea"
+        :readonly               ="readonly"
+      />
+      <!-- //* //////////////   Activo  -->
+      <q-toggle 
+        v-model                 ="contacto.activo"
+        label                   ="Activo"
+        class                   ="col-auto"
+        :disable                ="readonly"
+      />
+      <q-space/>
+      <div
+        v-if                    ="tipo == 'ver'"
+        class                   ="col-auto"
+        >
+        <!-- //* /////////////  Borrar  -->
+        <q-btn                  flat
+          v-if                  ="readonly && permisos.contactos_borrar && borrable"
+          label                 ="Borrar"
+          color                 ="negative"
+          @click                ="confirmarBorrar"
+        />
+        <!-- //* /////////////  Editar  -->
+        <q-btn                  flat
+          v-if                  ="readonly && permisos.contactos_crear"
+          label                 ="Editar"
+          @click                ="readonly = false"
+        />
+        <!-- //* /////////////  Cancelar  -->
+        <q-btn                  flat
+          v-else-if             ="permisos.contactos_crear"
+          label                 ="Cancelar"
+          @click                ="readonly = true"
+        />
+      </div>      
+      <!-- //* //////////////   Botones Sumit  -->
+      <TransitionGroup          enter-active-class="animated fadeInDown" leave-active-class="animated fadeOutDown">
+        <div
+          class                 ="col-12 column mobile-only"
+          v-show                ="!readonly"
+          >
+          <!-- //* ///////////  Guardar Crear  -->
+          <q-btn                dark push
+            type                ="submit"
+            color               ="positive"
+            icon                ="mdi-account-check"  
+            :label              ="tipo == 'ver' ? 'Guardar' : 'Crear'" 
+          />
+        </div>
+      </TransitionGroup>
+      <!-- //* ///////////////  Boton sumit -->
+      <q-btn
+        v-show                  ="false"
+        type                    ="submit"
+      />
+    </q-form>
+    <!-- //* ///////////////////////////////////////////////////////////// Modal Buscar productos -->
+    <q-dialog
+      v-model                   ="ventanaClienteExiste"      
+      v-bind                    ="style.dialogo"
+      >
+      <ventana                  cerrar scroll
+        titulo                  ="Terceros registrados"
+        icono                   ="mdi-account-remove"
+        padding-contenido       ="0"
+        width                   ="440px"
+        >
+        <template               #barra>
+          <q-btn
+            v-if                ="esTerceroInternoDeCoti"
+            v-bind              ="style.btnBaseSm"
+            color               ="positive"
+            :label              ="consentimientoAsesor ? 'Firmado' : 'Firmar'"
+            :icon               ="consentimientoAsesor ? 'mdi-check' : 'mdi-signature'"
+            @click              ="mostrarAvisoConsentimiento"
+          />
+        </template>
+        <q-table                bordered dense flat
+          class                 ="fit tabla-maco"
+          row-key               ="id"
+          :rows                 ="clientesExistentes"
+          :columns              ="[ { name: 'nombre', label: 'Tercero', field: 'nombre', align: 'left' }, { name: 'vendedores', label: 'Asesores', field: 'vendedores'}]"
+        />
+      </ventana>    
+    </q-dialog>
+  </ventana>
+</template>

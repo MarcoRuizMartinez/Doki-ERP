@@ -24,12 +24,7 @@ import {  getUsuarioDB,
           getCondicionesPagoDB,
           getOrigenesContactoDB         } from "src/composables/useDexie"
 import {  LocationQuery                 } from "vue-router"
-import {  getQueryRouterDate,
-          getQueryRouterNumber,
-          getQueryRouterString,
-          getQueryRouterBoolean,
-          getQueryRouterLabelValue,
-          getQueryRouterLabelValueArray } from "src/composables/useTools"
+import {  ToolQuery                     } from "src/composables/useTools"
 
 export interface      IQuery {
   //tipo                 ?: string
@@ -269,61 +264,61 @@ export class Busqueda implements IBusqueda
   {
     this.f.copiando           = true
     this.rourterQ             = this.router?.currentRoute.value.query ?? {}    
-    this.f.desde              = getQueryRouterDate      ( this.rourterQ .fechaDesde   )
-    this.f.hasta              = getQueryRouterDate      ( this.rourterQ .fechaHasta   )
-    this.f.buscar             = getQueryRouterString    ( this.rourterQ .buscar       )
-    this.f.contacto           = getQueryRouterString    ( this.rourterQ .contacto     )
-    this.f.nombre             = getQueryRouterString    ( this.rourterQ .nombre       )
-    this.f.valorMin           = getQueryRouterNumber    ( this.rourterQ .valorMin     )
-    this.f.valorMax           = getQueryRouterNumber    ( this.rourterQ .valorMax     )
-    this.f.qty                = getQueryRouterNumber    ( this.rourterQ .qty          )
-    this.f.peso               = getQueryRouterNumber    ( this.rourterQ .peso         )
-    this.f.altura             = getQueryRouterNumber    ( this.rourterQ .altura       )
-    this.f.ancho              = getQueryRouterNumber    ( this.rourterQ .ancho        )
-    this.f.fondo              = getQueryRouterNumber    ( this.rourterQ .fondo        )
-    this.f.destacado          = getQueryRouterBoolean   ( this.rourterQ .destacado    )
-    this.f.favorito           = getQueryRouterBoolean   ( this.rourterQ .favorito     )
-    this.f.color              = getQueryRouterBoolean   ( this.rourterQ .color        )    
+    this.f.desde              = ToolQuery.getQueryRouterDate      ( this.rourterQ .fechaDesde   )
+    this.f.hasta              = ToolQuery.getQueryRouterDate      ( this.rourterQ .fechaHasta   )
+    this.f.buscar             = ToolQuery.getQueryRouterString    ( this.rourterQ .buscar       )
+    this.f.contacto           = ToolQuery.getQueryRouterString    ( this.rourterQ .contacto     )
+    this.f.nombre             = ToolQuery.getQueryRouterString    ( this.rourterQ .nombre       )
+    this.f.valorMin           = ToolQuery.getQueryRouterNumber    ( this.rourterQ .valorMin     )
+    this.f.valorMax           = ToolQuery.getQueryRouterNumber    ( this.rourterQ .valorMax     )
+    this.f.qty                = ToolQuery.getQueryRouterNumber    ( this.rourterQ .qty          )
+    this.f.peso               = ToolQuery.getQueryRouterNumber    ( this.rourterQ .peso         )
+    this.f.altura             = ToolQuery.getQueryRouterNumber    ( this.rourterQ .altura       )
+    this.f.ancho              = ToolQuery.getQueryRouterNumber    ( this.rourterQ .ancho        )
+    this.f.fondo              = ToolQuery.getQueryRouterNumber    ( this.rourterQ .fondo        )
+    this.f.destacado          = ToolQuery.getQueryRouterBoolean   ( this.rourterQ .destacado    )
+    this.f.favorito           = ToolQuery.getQueryRouterBoolean   ( this.rourterQ .favorito     )
+    this.f.color              = ToolQuery.getQueryRouterBoolean   ( this.rourterQ .color        )    
 
     if(!!this.rourterQ .limite)
-      this.f.resultadosXPage  = getQueryRouterNumber    ( this.rourterQ .limite       )         ?? 10
-    this.f.area               = getQueryRouterLabelValue( this.rourterQ .area,                  Areas                         )    
-    this.f.facturado          = getQueryRouterLabelValue( this.rourterQ .facturado,             Busqueda.listaFacturado       )
-    this.f.incPago            = getQueryRouterLabelValue( this.rourterQ .incPago,               Incentivo.estadosPago         )
-    this.f.incEstado          = getQueryRouterLabelValue( this.rourterQ .incEstado,             Incentivo.estados             )
-    this.f.incRazon           = getQueryRouterLabelValue( this.rourterQ .incRazon,              Incentivo.razones             )
-    this.f.incOrigen          = getQueryRouterLabelValue( this.rourterQ .incOrigen,             Incentivo.origenes            )    
-    this.f.conIva             = getQueryRouterLabelValue( this.rourterQ .conIva,                Busqueda.listaIVA             )
-    this.f.totalizado         = getQueryRouterLabelValue( this.rourterQ .conTotal,              Busqueda.listaTotales         )
-    this.f.terceroInterno     = getQueryRouterLabelValue( this.rourterQ .interno,               Busqueda.listaTerceroInterno  )
-    this.f.conOrdenes         = getQueryRouterLabelValue( this.rourterQ .conOrdenes,            Busqueda.listaOrdenesProv     )
-    this.f.listoDespacho      = getQueryRouterLabelValue( this.rourterQ .listoDespacho,         Busqueda.listaListoDespachar  )
-    this.f.tipoTercero        = getQueryRouterLabelValue( this.rourterQ .tipoTercero,           Busqueda.listaTipoTercero     )
-    this.f.activo             = getQueryRouterLabelValue( this.rourterQ .activo,                Busqueda.listaActivo          )
-    this.f.dimension          = getQueryRouterLabelValue( this.rourterQ .dimension,             Busqueda.listaDimensiones,  "string")    
-    this.f.periodo            = getQueryRouterLabelValue( this.rourterQ .periodo,               Busqueda.listaPeriodos,     "string")
-    this.f.estadoAnticipo     = getQueryRouterLabelValueArray ( this.rourterQ .estadoAnticipo,  Anticipo.estados              )
-    this.f.tipoAnticipo       = getQueryRouterLabelValueArray ( this.rourterQ .tipoAnticipo,    Anticipo.tipos                )
-    this.f.estados            = getQueryRouterLabelValueArray ( this.rourterQ .estados,         this.o.estados                )    
-    this.f.cuando             = getQueryRouterLabelValueArray ( this.rourterQ .cuando,          Cuando                        )
-    this.f.prioridad          = getQueryRouterLabelValueArray ( this.rourterQ .prioridad,       Prioridades                   )
-    this.f.progreso           = getQueryRouterLabelValueArray ( this.rourterQ .progreso,        Progresos                     )
-    this.f.formaPago          = getQueryRouterLabelValueArray ( this.rourterQ .formaPago,       this.o.formasPago             )
-    this.f.entrega            = getQueryRouterLabelValueArray ( this.rourterQ .entrega,         this.o.metodosEntrega         )
-    this.f.usuarios           = getQueryRouterLabelValueArray ( this.rourterQ .usuarios,        this.o.usuarios               )
-    this.f.condiciones        = getQueryRouterLabelValueArray ( this.rourterQ .condiciones,     this.o.condicionesPago        )
-    this.f.origenes           = getQueryRouterLabelValueArray ( this.rourterQ .origenes,        this.o.origenes               )
+      this.f.resultadosXPage  = ToolQuery.getQueryRouterNumber    ( this.rourterQ .limite       )         ?? 10
+    this.f.area               = ToolQuery.getQueryRouterLabelValue( this.rourterQ .area,                  Areas                         )    
+    this.f.facturado          = ToolQuery.getQueryRouterLabelValue( this.rourterQ .facturado,             Busqueda.listaFacturado       )
+    this.f.incPago            = ToolQuery.getQueryRouterLabelValue( this.rourterQ .incPago,               Incentivo.estadosPago         )
+    this.f.incEstado          = ToolQuery.getQueryRouterLabelValue( this.rourterQ .incEstado,             Incentivo.estados             )
+    this.f.incRazon           = ToolQuery.getQueryRouterLabelValue( this.rourterQ .incRazon,              Incentivo.razones             )
+    this.f.incOrigen          = ToolQuery.getQueryRouterLabelValue( this.rourterQ .incOrigen,             Incentivo.origenes            )    
+    this.f.conIva             = ToolQuery.getQueryRouterLabelValue( this.rourterQ .conIva,                Busqueda.listaIVA             )
+    this.f.totalizado         = ToolQuery.getQueryRouterLabelValue( this.rourterQ .conTotal,              Busqueda.listaTotales         )
+    this.f.terceroInterno     = ToolQuery.getQueryRouterLabelValue( this.rourterQ .interno,               Busqueda.listaTerceroInterno  )
+    this.f.conOrdenes         = ToolQuery.getQueryRouterLabelValue( this.rourterQ .conOrdenes,            Busqueda.listaOrdenesProv     )
+    this.f.listoDespacho      = ToolQuery.getQueryRouterLabelValue( this.rourterQ .listoDespacho,         Busqueda.listaListoDespachar  )
+    this.f.tipoTercero        = ToolQuery.getQueryRouterLabelValue( this.rourterQ .tipoTercero,           Busqueda.listaTipoTercero     )
+    this.f.activo             = ToolQuery.getQueryRouterLabelValue( this.rourterQ .activo,                Busqueda.listaActivo          )
+    this.f.dimension          = ToolQuery.getQueryRouterLabelValue( this.rourterQ .dimension,             Busqueda.listaDimensiones,  "string")    
+    this.f.periodo            = ToolQuery.getQueryRouterLabelValue( this.rourterQ .periodo,               Busqueda.listaPeriodos,     "string")
+    this.f.estadoAnticipo     = ToolQuery.getQueryRouterLabelValueArray ( this.rourterQ .estadoAnticipo,  Anticipo.estados              )
+    this.f.tipoAnticipo       = ToolQuery.getQueryRouterLabelValueArray ( this.rourterQ .tipoAnticipo,    Anticipo.tipos                )
+    this.f.estados            = ToolQuery.getQueryRouterLabelValueArray ( this.rourterQ .estados,         this.o.estados                )    
+    this.f.cuando             = ToolQuery.getQueryRouterLabelValueArray ( this.rourterQ .cuando,          Cuando                        )
+    this.f.prioridad          = ToolQuery.getQueryRouterLabelValueArray ( this.rourterQ .prioridad,       Prioridades                   )
+    this.f.progreso           = ToolQuery.getQueryRouterLabelValueArray ( this.rourterQ .progreso,        Progresos                     )
+    this.f.formaPago          = ToolQuery.getQueryRouterLabelValueArray ( this.rourterQ .formaPago,       this.o.formasPago             )
+    this.f.entrega            = ToolQuery.getQueryRouterLabelValueArray ( this.rourterQ .entrega,         this.o.metodosEntrega         )
+    this.f.usuarios           = ToolQuery.getQueryRouterLabelValueArray ( this.rourterQ .usuarios,        this.o.usuarios               )
+    this.f.condiciones        = ToolQuery.getQueryRouterLabelValueArray ( this.rourterQ .condiciones,     this.o.condicionesPago        )
+    this.f.origenes           = ToolQuery.getQueryRouterLabelValueArray ( this.rourterQ .origenes,        this.o.origenes               )
 
-    const municipioId         = getQueryRouterNumber( this.rourterQ .municipio ) 
+    const municipioId         = ToolQuery.getQueryRouterNumber( this.rourterQ .municipio ) 
     this.f.municipio          = !!municipioId     ? await getMunicipioDB( municipioId )     : new Municipio()
 
-    const municipioContId     = getQueryRouterNumber( this.rourterQ .municipioContacto ) 
+    const municipioContId     = ToolQuery.getQueryRouterNumber( this.rourterQ .municipioContacto ) 
     this.f.municipioContacto  = !!municipioContId ? await getMunicipioDB( municipioContId ) : new Municipio()
 
-    const creadorId           = getQueryRouterNumber( this.rourterQ.creador ) ?? 0
+    const creadorId           = ToolQuery.getQueryRouterNumber( this.rourterQ.creador ) ?? 0
     this.f.creador            = creadorId > 0 ? await getUsuarioDB( creadorId ) : new Usuario()
     if(cambioEnQuery){
-      const usurioId          = getQueryRouterNumber( this.rourterQ.usuario ) ?? 0
+      const usurioId          = ToolQuery.getQueryRouterNumber( this.rourterQ.usuario ) ?? 0
       this.f.usuario          = usurioId > 0 ? await getUsuarioDB( usurioId ) : new Usuario()
     }
     else
@@ -372,7 +367,7 @@ export class Busqueda implements IBusqueda
     this.f.resultadosXPage    = resultadosXPage
     this.router               = r
     this.rourterQ             = this.router.currentRoute.value.query
-    this.usuarioIdInicio      = getQueryRouterNumber( this.rourterQ.usuario ) ?? 0
+    this.usuarioIdInicio      = ToolQuery.getQueryRouterNumber( this.rourterQ.usuario ) ?? 0
     const cambioTipo          = this.acuerdo != acuerdoTipo
     if(cambioTipo)
       this.acuerdo            = acuerdoTipo

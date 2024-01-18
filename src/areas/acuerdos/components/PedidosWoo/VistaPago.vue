@@ -1,3 +1,22 @@
+<script lang="ts" setup>
+  import {  ref, 
+            toRefs,
+            PropType,
+            computed          } from "vue"  
+  import {  IPedidoWoo        } from "src/areas/acuerdos/models/PedidoWoo"      
+  import {  Format, ToolDate  } from "src/composables/useTools"
+  ////////////////////////////////////////////////////////////////////////// Componentes
+  import    ventana             from "components/utilidades/Ventana.vue"  
+  import    item                from "components/utilidades/TrTdTd.vue"  
+  // * /////////////////////////////////////////////////////////////////////// Store
+  const props               = defineProps({
+    modelValue: { required: true, type: Object as PropType< IPedidoWoo > },      
+  })
+  const { modelValue }      = toRefs( props )
+  const boton               = ref<string>("0")
+  const pago                = computed(()=> modelValue.value.pagos[ parseInt( boton.value ) ] )
+</script>
+
 <template>
   <ventana                  cerrar
     titulo                  ="Datos de pago MercadoPago"
@@ -28,8 +47,8 @@
         <item titulo="Ref pedido tienda"          :label="modelValue.id" class="text-bold" copiar />
         <item titulo="Estado"                     :label="`${pago.estado} ${pago.estadoDetalles}`" class="text-bold text-capitalize"  :class-label="'text-'+pago.estadoColor"/>
         <item titulo="Tipo pago"                  :label="`${pago.metodo} - ${pago.tipoPago}`" class="text-uppercase"/>
-        <item :titulo="`Pagado ${pago.moneda}`"   :label="formatoPrecio( pago.total, 'decimales-no' )" :class-label="'text-bold fuente-mono text-'+pago.estadoColor" copiar />
-        <item :titulo="`Recibido ${pago.moneda}`" :label="formatoPrecio( pago.totalRecibido, 'decimales-no' )" class-label="fuente-mono"/>
+        <item :titulo="`Pagado ${pago.moneda}`"   :label="Format.precio( pago.total, 'decimales-no' )" :class-label="'text-bold fuente-mono text-'+pago.estadoColor" copiar />
+        <item :titulo="`Recibido ${pago.moneda}`" :label="Format.precio( pago.totalRecibido, 'decimales-no' )" class-label="fuente-mono"/>
         <item titulo="Descripción"                :label="pago.descripcion"/>
         <item titulo="Nombre"                     :label="pago.nombreCompleto" class="text-capitalize" copiar/>
         <item titulo="Usuario MP"                 :label="`${pago.usuarioRegistrado} ${pago.usuarioCorreo}`" class="text-capitalize"/>
@@ -37,30 +56,12 @@
         <item titulo="Correo"                     :label="pago.correo" copiar/>
         <item titulo="Teléfono"                   :label="pago.telefono" copiar/>
         <item titulo="Direccion"                  :label="pago.direccion" copiar/>
-        <item titulo="Fecha aprobado"             :label="fechaCorta(pago.fechaAprobado)"/>
+        <item titulo="Fecha aprobado"             :label="ToolDate.fechaCorta(pago.fechaAprobado)"/>
       </tbody>
     </table>
   </ventana>
 </template>
-<script lang="ts" setup>
-  import {  ref, 
-            toRefs,
-            PropType,
-            computed          } from "vue"  
-  import {  IPedidoWoo        } from "src/areas/acuerdos/models/PedidoWoo"      
-  import {  formatoPrecio,
-            fechaCorta        } from "src/composables/useTools"
-  ////////////////////////////////////////////////////////////////////////// Componentes
-  import    ventana             from "components/utilidades/Ventana.vue"  
-  import    item                from "components/utilidades/TrTdTd.vue"  
-  // * /////////////////////////////////////////////////////////////////////// Store
-  const props               = defineProps({
-    modelValue: { required: true, type: Object as PropType< IPedidoWoo > },      
-  })
-  const { modelValue }      = toRefs( props )
-  const boton               = ref<string>("0")
-  const pago                = computed(()=> modelValue.value.pagos[ parseInt( boton.value ) ] )
-</script>
+
 <style>
   .c-menu{
     padding: 0px !important;

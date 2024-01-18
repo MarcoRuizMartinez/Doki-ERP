@@ -1,5 +1,6 @@
-import { ILineaAcuerdo, LineaAcuerdo  } from "src/areas/acuerdos/models/LineaAcuerdo"
-import {  X100                        } from "src/composables/useTools"
+import {  ILineaAcuerdo,
+          LineaAcuerdo        } from "src/areas/acuerdos/models/LineaAcuerdo"
+import {  ToolNum             } from "src/composables/useTools"
 
 export interface IGrupoLineas {
   productos:                ILineaAcuerdo[]
@@ -96,7 +97,7 @@ export class GrupoLineas implements IGrupoLineas
   }
 
   get totalIva() : number {
-    return X100(this.totalConDescu, this.iva)
+    return ToolNum.X100(this.totalConDescu, this.iva)
   }
 
   get totalConIva() : number {

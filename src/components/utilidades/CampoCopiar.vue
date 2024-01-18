@@ -1,3 +1,27 @@
+<script lang="ts" setup>
+  import {  ref, 
+            toRefs            } from "vue"
+  import {  Tool              } from "src/composables/useTools"
+  import {  copyToClipboard   } from 'quasar'
+
+  const props               = defineProps({
+    dato:       { required: true,   type: [String, Number]  },
+    size:       { default:  "xs",   type: String  },
+    hideLabel:  { default:  false,  type: Boolean },
+    disable:    { default:  false,  type: Boolean },
+  })
+  const { dato }            = toRefs( props )
+  const copiando            = ref<boolean>(false)
+
+  async function copiar()
+  {
+    copiando.value          = true
+    await copyToClipboard( dato.value.toString() )
+    await Tool.pausa( 1000 )
+    copiando.value          = false
+  }
+</script>
+
 <template>
   <span
     v-if          ="!hideLabel"
@@ -21,26 +45,3 @@
     />
   </q-btn>
 </template>
-<script lang="ts" setup>
-  import {  ref, 
-            toRefs            } from "vue"
-  import {  pausa             } from "src/composables/useTools"
-  import {  copyToClipboard   } from 'quasar'
-
-  const props               = defineProps({
-    dato:       { required: true,   type: [String, Number]  },
-    size:       { default:  "xs",   type: String  },
-    hideLabel:  { default:  false,  type: Boolean },
-    disable:    { default:  false,  type: Boolean },
-  })
-  const { dato }            = toRefs( props )
-  const copiando            = ref<boolean>(false)
-
-  async function copiar()
-  {
-    copiando.value          = true
-    await copyToClipboard( dato.value.toString() )
-    await pausa( 1000 )
-    copiando.value          = false
-  }
-</script>

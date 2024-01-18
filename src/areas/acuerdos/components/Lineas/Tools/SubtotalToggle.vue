@@ -1,32 +1,14 @@
-<template>
-  <q-space/>
-  <!-- //* ///////////////////////////////////////////////////// Con total  -->
-  <q-toggle             dense
-    v-model             ="grupo.conTotal"
-    label               ="Subtotal"
-    class               ="q-mr-lg text-bold text-1_3em text-grey-8"
-    :icon               ="loading.subtotal ? 'mdi-loading mdi-spin' : ''"
-    :disable            ="disable || loading.subtotal"
-    @update:model-value ="actualizar"
-  /> 
-  <span
-    class               ="fuente-mono text-1_2em"
-    :class              ="{ 'text-grey-6' : !grupo.conTotal }"
-    >
-    {{ formatoPrecio( grupo.totalConDescu )}}
-  </span>
-</template>
 <script lang="ts" setup>
   // * ///////////////////////////////////////////////////////////////////////////// Core
   import {  toRefs, PropType    } from "vue"
   // * ///////////////////////////////////////////////////////////////////////////// Store
-  import {  storeToRefs           } from 'pinia'
-  import {  useStoreAcuerdo       } from 'src/stores/acuerdo'  
+  import {  storeToRefs         } from 'pinia'
+  import {  useStoreAcuerdo     } from 'src/stores/acuerdo'  
   // * ///////////////////////////////////////////////////////////////////////////// Modelos
   import {  IGrupoLineas        } from "src/areas/acuerdos/models/GrupoLineasAcuerdo"
   // * ///////////////////////////////////////////////////////////////////////////// Componibles
   import {  useControlProductos } from "src/areas/acuerdos/controllers/ControlLineasProductos"
-  import {  formatoPrecio       } from "src/composables/useTools"
+  import {  Format              } from "src/composables/useTools"
 
   const { loading               } = storeToRefs( useStoreAcuerdo() )  
   const { editarSubTotales      } = useControlProductos()  
@@ -43,3 +25,22 @@
 
   //subtotal
 </script>
+
+<template>
+  <q-space/>
+  <!-- //* ///////////////////////////////////////////////////// Con total  -->
+  <q-toggle             dense
+    v-model             ="grupo.conTotal"
+    label               ="Subtotal"
+    class               ="q-mr-lg text-bold text-1_3em text-grey-8"
+    :icon               ="loading.subtotal ? 'mdi-loading mdi-spin' : ''"
+    :disable            ="disable || loading.subtotal"
+    @update:model-value ="actualizar"
+  /> 
+  <span
+    class               ="fuente-mono text-1_2em"
+    :class              ="{ 'text-grey-6' : !grupo.conTotal }"
+    >
+    {{ Format.precio( grupo.totalConDescu )}}
+  </span>
+</template>

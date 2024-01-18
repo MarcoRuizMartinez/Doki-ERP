@@ -1,19 +1,7 @@
-//* ////////////////////////////////////////////////////////////////// Core
-import {  useRouter             } from 'vue-router'
-//* ////////////////////////////////////////////////////////////////// Store
-import {  storeToRefs           } from 'pinia'
-import {  useStoreAcuerdo       } from 'src/stores/acuerdo'
-import {  useStoreUser          } from 'src/stores/user'
 //* ////////////////////////////////////////////////////////////////// Componibles
 import {  useFetch              } from "src/composables/useFetch"
 import {  getURL, getFormData   } from "src/composables/APIMaco"
-import {  useTools,
-          getArrayFromAny,
-          getArrayInObject,
-          existeYEsValido,
-          getNumberValido,
-          ID_URL_Ok,
-          confeti               } from "src/composables/useTools"
+import {  ToolArray,  ToolType  } from "src/composables/useTools"
 
 //* ////////////////////////////////////////////////////////////////// Modelos
 import {  IPedidoWoo, PedidoWoo } from "src/areas/acuerdos/models/PedidoWoo"
@@ -23,7 +11,6 @@ import {  IMercadoPago,
 
 export function useControlPedidosWoo()
 {
-  const { aviso               } = useTools()
   const { miFetch             } = useFetch()
   //const { usuario             } = storeToRefs( useStoreUser() )
  
@@ -45,7 +32,7 @@ export function useControlPedidosWoo()
       p.total_tax   = parseInt( p?.total_tax ?? "0" )
 
       
-      const items   = getArrayInObject( p, "line_items")
+      const items   = ToolArray.getArrayInObject( p, "line_items")
       for (const i of items)
       {
         i.quantity  = parseInt( i?.quantity ?? "0" )
@@ -65,7 +52,7 @@ export function useControlPedidosWoo()
     const objetoForData       = { body: getFormData("", q ), method: "POST"}
     const { ok, data  }       = await miFetch( getURL("listas", "pedidos-woo"), objetoForData, { mensaje: "pedido tienda", dataEsArray: true } )
     if(ok)
-      return getArrayFromAny( data )
+      return ToolArray.getArrayFromAny( data )
     else{
       //aviso("negative", "Error al acceder a la tienda")
       return []
@@ -86,9 +73,9 @@ export function useControlPedidosWoo()
     let paging : IPaging      = { limit: 0, offset: 0, total: 0 }    
     if(ok)
     {
-      const results           = getArrayInObject( data, "results")
+      const results           = ToolArray.getArrayInObject( data, "results")
       const p                 = typeof data == "object" && "paging" in data ? data.paging : {}
-      paging                  = { limit: getNumberValido(p, "limit" ), offset: getNumberValido(p, "offset" ), total: getNumberValido(p, "total" ) }
+      paging                  = { limit: ToolType.getNumberValido(p, "limit" ), offset: ToolType.getNumberValido(p, "offset" ), total: ToolType.getNumberValido(p, "total" ) }
       if(!!results.length)
       {
         for (const p of results){
@@ -112,7 +99,7 @@ export function useControlPedidosWoo()
     const { ok, data  }       = await miFetch( getURL("listas", "pedidos"), objetoForData, { mensaje: "pedidos en sistema", dataEsArray: true } )
     if(!ok) return []
 
-    const refIdsRaw           = getArrayFromAny( data )
+    const refIdsRaw           = ToolArray.getArrayFromAny( data )
     const refIds  :IRefId[]   = []
     for (const i of refIdsRaw)
     {

@@ -1,3 +1,32 @@
+<script lang="ts" setup>
+//      style             ="min-width: 100px">
+  import {  ref,
+            watch,
+            toRefs,
+            PropType              } from "vue"  
+  import {  ILineaAcuerdo } from "src/areas/acuerdos/models/LineaAcuerdo"
+  import {  Format        } from "src/composables/useTools"
+  import    confirmar       from "components/utilidades/MenuConfirmar.vue"
+  import    popupCosto      from "./EditarCosto.vue"
+  // * /////////////////////////////////////////////////////////////////////// Store
+  import {  storeToRefs   } from 'pinia'
+  import {  useStoreUser  } from 'src/stores/user'
+
+  const { usuario         } = storeToRefs( useStoreUser() ) 
+  const props               = defineProps({
+    modelValue: { required: true, type: Object as PropType< ILineaAcuerdo > },
+    esValidado: { required: true, type: Boolean },
+  })
+  const { modelValue }      = toRefs(props)
+  const linea               = ref< ILineaAcuerdo >( modelValue.value )  
+  watch( modelValue, (newLinea)=> linea.value = newLinea )
+
+  const emit = defineEmits<{
+    (e: 'click',        value: void           ): void
+    (e: 'borrarLinea',  value: ILineaAcuerdo  ): void
+  }>()  
+</script>
+
 <template>
   <div
     @click              ="emit('click')"
@@ -22,13 +51,13 @@
           <tr>
             <td>Costo</td>
             <td>
-              {{formatoPrecio( linea.costo )}}
+              {{ Format.precio( linea.costo ) }}
             </td>
           </tr>
           <tr>
             <td>Venta</td>
             <td>
-              {{formatoPrecio( linea.precioFinal )}}
+              {{ Format.precio( linea.precioFinal ) }}
             </td>
           </tr>
           <tr>
@@ -82,31 +111,3 @@
     </div>
   </q-menu>
 </template>
-<script lang="ts" setup>
-//      style             ="min-width: 100px">
-  import {  ref,
-            watch,
-            toRefs,
-            PropType              } from "vue"  
-  import {  ILineaAcuerdo } from "src/areas/acuerdos/models/LineaAcuerdo"
-  import {  formatoPrecio } from "src/composables/useTools"
-  import    confirmar       from "components/utilidades/MenuConfirmar.vue"
-  import    popupCosto      from "./EditarCosto.vue"
-  // * /////////////////////////////////////////////////////////////////////// Store
-  import {  storeToRefs   } from 'pinia'
-  import {  useStoreUser  } from 'src/stores/user'
-
-  const { usuario         } = storeToRefs( useStoreUser() ) 
-  const props               = defineProps({
-    modelValue: { required: true, type: Object as PropType< ILineaAcuerdo > },
-    esValidado: { required: true, type: Boolean },
-  })
-  const { modelValue }      = toRefs(props)
-  const linea               = ref< ILineaAcuerdo >( modelValue.value )  
-  watch( modelValue, (newLinea)=> linea.value = newLinea )
-
-  const emit = defineEmits<{
-    (e: 'click',        value: void           ): void
-    (e: 'borrarLinea',  value: ILineaAcuerdo  ): void
-  }>()  
-</script>

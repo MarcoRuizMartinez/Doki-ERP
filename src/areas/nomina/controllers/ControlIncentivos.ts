@@ -8,7 +8,7 @@ import {  useStoreNomina      } from "src/stores/nomina"
 import {  useApiDolibarr        } from "src/composables/useApiDolibarr"
 import {  useFetch              } from "src/composables/useFetch"
 import {  getURL, getFormData   } from "src/composables/APIMaco"
-import {  useTools, anyToNum    } from "src/composables/useTools"
+import {  useTools, ToolType    } from "src/composables/useTools"
 //* ////////////////////////////////////////////////////////////////// Modelos
 import {  IIncentivo,
           Incentivo             } from "src/areas/nomina/models/Incentivo"
@@ -31,7 +31,7 @@ export function useControlIncentivos()
     if(ok)
     {
       aviso( "positive", "Comisión guardada" )
-      const id  = anyToNum( data )
+      const id  = ToolType.anyToNum( data )
       if(!!id)  return id
       else      return false
     }

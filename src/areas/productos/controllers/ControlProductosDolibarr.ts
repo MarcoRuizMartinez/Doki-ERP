@@ -8,9 +8,8 @@ import {  IProductoDoli         } from "src/areas/productos/models/ProductoDolib
 import {  TCodigosSiigo         } from 'src/areas/productos/models/Siigo';          
 //* ////////////////////////////////////////////////////////////////// Componibles
 import {  useTools,
-          ID_URL_Ok,            } from "src/composables/useTools"
+          ToolNum               } from "src/composables/useTools"
 import {  useApiDolibarr        } from "src/composables/useApiDolibarr"  
-import {  servicesProductos     } from "src/areas/productos/services/servicesProductos"
 import {  useFetch              } from "src/composables/useFetch"
 import {  getURL, getFormData   } from "src/composables/APIMaco"
 
@@ -50,7 +49,7 @@ export function useControlProductos()
 
     const { ok, data }          = await apiDolibarr("crear", "producto", pro.productoForApi )       
     if(ok && !!data && typeof data === "string"){
-      pro.id                    = ID_URL_Ok( data )
+      pro.id                    = ToolNum.ID_URL_Ok( data )
       aviso("positive", `Producto creado 👌🏼`)
     }
     else

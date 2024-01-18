@@ -1,3 +1,33 @@
+<script setup lang="ts">
+  // * /////////////////////////////////////////////////////////////////////////////////// Core
+  import {  ref,
+            watch,
+                                } from "vue"
+  // * /////////////////////////////////////////////////////////////////////// Store
+  import {  storeToRefs         } from 'pinia'                                            
+  import {  useStoreProducto    } from 'src/stores/producto'  
+  // * /////////////////////////////////////////////////////////////////////////////////// Modelos
+  import {  IProductoDoli       } from "src/areas/productos/models/ProductoDolibarr"  
+  // * /////////////////////////////////////////////////////////////////////////////////// Componibles
+  import {  ToolArray           } from "src/composables/useTools"  
+  // * /////////////////////////////////////////////////////////////////////////////////// Componentes
+  import    inputNumber           from "components/utilidades/input/InputFormNumber.vue"
+
+  const { busqueda,
+          productos,
+          productosFil,
+                            } = storeToRefs( useStoreProducto() )
+  const popupOn               = ref < boolean >(false)
+
+  function ordenar( tipo : "<" | ">" ) {
+    productosFil.value        = ToolArray.sortArray(productosFil.value, "precio", tipo)
+  }
+
+  watch([ ()=> busqueda.value.f.precioMinimo , ()=> busqueda.value.f.precioMaximo], ([newMin, newMax]) =>{
+    productosFil.value        = ToolArray.filterArrayMaxMin< IProductoDoli >( productos.value, newMin, newMax, "precio" )
+  })
+</script>
+
 <template>
   <q-th>
     <q-btn                flat dense no-caps
@@ -46,37 +76,6 @@
     </q-btn>
   </q-th>
 </template>
-<script setup lang="ts">
-  // * /////////////////////////////////////////////////////////////////////////////////// Core
-  import {  ref,
-            watch,
-                                } from "vue"
-  // * /////////////////////////////////////////////////////////////////////// Store
-  import {  storeToRefs         } from 'pinia'                                            
-  import {  useStoreProducto    } from 'src/stores/producto'  
-  // * /////////////////////////////////////////////////////////////////////////////////// Modelos
-  import {  IProductoDoli       } from "src/areas/productos/models/ProductoDolibarr"  
-  // * /////////////////////////////////////////////////////////////////////////////////// Componibles
-  import {  sortArray,
-            filterArrayMaxMin,
-                                } from "src/composables/useTools"  
-  // * /////////////////////////////////////////////////////////////////////////////////// Componentes
-  import    inputNumber           from "components/utilidades/input/InputFormNumber.vue"
-
-  const { busqueda,
-          productos,
-          productosFil,
-                            } = storeToRefs( useStoreProducto() )
-  const popupOn               = ref < boolean >(false)
-
-  function ordenar( tipo : "<" | ">" ) {
-    productosFil.value        = sortArray(productosFil.value, "precio", tipo)
-  }
-
-  watch([ ()=> busqueda.value.f.precioMinimo , ()=> busqueda.value.f.precioMaximo], ([newMin, newMax]) =>{
-    productosFil.value        = filterArrayMaxMin< IProductoDoli >( productos.value, newMin, newMax, "precio" )
-  })
-</script>
 <style>
   .filtro-panel{
     border-top: solid 6px #27313d;

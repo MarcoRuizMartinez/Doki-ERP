@@ -8,10 +8,9 @@ import {  Acuerdo, IAcuerdo } from "src/areas/acuerdos/models/Acuerdo"
 import {  TIPO_ACUERDO      } from "src/areas/acuerdos/models/ConstantesAcuerdos"
 import {  useQuasar,
           QSpinnerGears     } from "quasar"
-import {  fechaLarga,
-          limpiarHTML,
-          formatoPrecio,
-                            } from "src/composables/useTools"
+import {  ToolStr, 
+          ToolDate,
+          Format            } from "src/composables/useTools"
 import {  jsPDF             } from "jspdf"
 import    autoTable           from 'jspdf-autotable'
 //import    html2canvas         from 'html2canvas';
@@ -180,7 +179,7 @@ export function useCotizacionPDF()
         {
           doc.setFont           ( 10, 240 )
           doc.x                 = doc.margenDerX - 50
-          const subtotal        = "Subtotal sin IVA:   " + formatoPrecio(grupo.totalConDescu,  "decimales-no")
+          const subtotal        = "Subtotal sin IVA:   " + Format.precio(grupo.totalConDescu,  "decimales-no")
           pdf.text              (subtotal, doc.x, doc.y + 10, { align: alinacion })
   
         }*/
@@ -208,7 +207,7 @@ export function useCotizacionPDF()
         // * //////////////////////////////////////////////// Descripcion
         doc.setFont             ( 9, 40 )
         const posYDes           = nombreSplit.length === 1 ? doc.y + 19 : doc.y + 28
-        const descSlit          = pdf.splitTextToSize( limpiarHTML(producto.descripcion), anchoIzq - 4 ) as Array<string>
+        const descSlit          = pdf.splitTextToSize( ToolStr.limpiarHTML(producto.descripcion), anchoIzq - 4 ) as Array<string>
         pdf.text                ( descSlit, margenIzq, posYDes, { align: "left" })
 
         // * /////////////////////////////////////////////////////////////////
@@ -234,9 +233,9 @@ export function useCotizacionPDF()
 
         // * //////////////////////////////////////////////// Valores Publico sin negrita
         valorPrecio             = producto.descuentoX100 > 0  
-                                    ? formatoPrecio(producto.precioBase,  "decimales-no") + "\n\n"
+                                    ? Format.precio(producto.precioBase,  "decimales-no") + "\n\n"
                                     : "\n"
-        valorPrecio             += formatoPrecio(producto.ivaValorLinea,  "decimales-no") + "\n\n"
+        valorPrecio             += Format.precio(producto.ivaValorLinea,  "decimales-no") + "\n\n"
         valorPrecio             += producto.qtyUnd
 
         doc.setFont             ( 9, 90 )
@@ -245,9 +244,9 @@ export function useCotizacionPDF()
         // * //////////////////////////////////////////////// Valores Publico con negrita
         if(producto.descuentoX100)
           posY                  += 12
-        valorPrecioBold         = formatoPrecio(producto.precioFinal,       "decimales-no") + "\n\n"
-        valorPrecioBold         += formatoPrecio(producto.precioFinalConIVA,  "decimales-no") + "\n\n"
-        valorPrecioBold         += producto.qty > 1 ? formatoPrecio(producto.totalConIva,  "decimales-no") : ""
+        valorPrecioBold         = Format.precio(producto.precioFinal,       "decimales-no") + "\n\n"
+        valorPrecioBold         += Format.precio(producto.precioFinalConIVA,  "decimales-no") + "\n\n"
+        valorPrecioBold         += producto.qty > 1 ? Format.precio(producto.totalConIva,  "decimales-no") : ""
 
         doc.setFont             ( 9, 30 )
         pdf.text                (valorPrecioBold, doc.x + 2, posY, { align: "left", lineHeightFactor: 1.7, renderingMode: 'fillThenStroke'  })
@@ -308,11 +307,11 @@ export function useCotizacionPDF()
       body: [
         ...subtotales.map((g)=>[
           g.titulo,
-          formatoPrecio(g.totalSinDescu,  "decimales-si"),
-          formatoPrecio(g.descuento,      "decimales-si"),
-          formatoPrecio(g.totalConDescu,  "decimales-si"),
-          formatoPrecio(g.totalIva,       "decimales-si"),
-          formatoPrecio(g.totalConIva,    "decimales-si"),
+          Format.precio(g.totalSinDescu,  "decimales-si"),
+          Format.precio(g.descuento,      "decimales-si"),
+          Format.precio(g.totalConDescu,  "decimales-si"),
+          Format.precio(g.totalIva,       "decimales-si"),
+          Format.precio(g.totalConIva,    "decimales-si"),
         ])
       ],
     })
@@ -369,18 +368,18 @@ export function useCotizacionPDF()
 
 
     // * //////////////////////////////////////////////// Valores totales
-    let valores                 =  formatoPrecio(quote.totalSinDescu,   "decimales-si") + "\n"
+    let valores                 =  Format.precio(quote.totalSinDescu,   "decimales-si") + "\n"
     if(quote.hayDescuento){
-      valores                   += formatoPrecio(quote.descuentoValor,  "decimales-si") + "\n"
-      valores                   += formatoPrecio(quote.totalConDescu,   "decimales-si") + "\n"
+      valores                   += Format.precio(quote.descuentoValor,  "decimales-si") + "\n"
+      valores                   += Format.precio(quote.totalConDescu,   "decimales-si") + "\n"
     }
     if(quote.aiuOn){
-      valores                   += formatoPrecio(quote.aiuAdminValor,   "decimales-si") + "\n"
-      valores                   += formatoPrecio(quote.aiuImpreValor,   "decimales-si") + "\n"
-      valores                   += formatoPrecio(quote.aiuUtiliValor,   "decimales-si") + "\n"
+      valores                   += Format.precio(quote.aiuAdminValor,   "decimales-si") + "\n"
+      valores                   += Format.precio(quote.aiuImpreValor,   "decimales-si") + "\n"
+      valores                   += Format.precio(quote.aiuUtiliValor,   "decimales-si") + "\n"
     }
-    valores                     += formatoPrecio(quote.ivaValor,        "decimales-si") + "\n"
-    valores                     += formatoPrecio(quote.totalConIva,     "decimales-si")
+    valores                     += Format.precio(quote.ivaValor,        "decimales-si") + "\n"
+    valores                     += Format.precio(quote.totalConIva,     "decimales-si")
 
     doc.setFont                 ( 11, 20 )
     pdf.text                    ( valores, doc.margenDerX + 70, posY, { align: "right", lineHeightFactor: 1.4 })
@@ -585,7 +584,7 @@ export function useCotizacionPDF()
     textoDer            += quote.pdfContacto + "\n"
     textoDer            += quote.pdfCorreo + "\n"
     textoDer            += quote.pdfCiudad + "\n"
-    textoDer            += fechaLarga( new Date() ) + "\n"
+    textoDer            += ToolDate.fechaLarga( new Date() ) + "\n"
     textoDer            += quote.conIVA ? textoConIVA : textoSinIVA
     doc.x               = 63
     doc.setColor        ( 40 )

@@ -1,8 +1,7 @@
 import {  TTipoAcuerdo, 
-          TIPO_ACUERDO          } from "src/areas/acuerdos/models/ConstantesAcuerdos"
+          TIPO_ACUERDO    } from "src/areas/acuerdos/models/ConstantesAcuerdos"
 
-import {  getNumberValido,
-          getStringValido,      } from "src/composables/useTools"
+import {  ToolType        } from "src/composables/useTools"
 
 interface IIdTipo 
 {
@@ -53,9 +52,9 @@ export class EnlaceAcuerdo implements IEnlaceAcuerdo
 
   static enlaceApiToEnlace( eApi : any, padre : TTipoAcuerdo ) : IEnlaceAcuerdo
   {
-    const enlace        = new EnlaceAcuerdo( getNumberValido(eApi, "enlaceId" ),  padre )
-    enlace.destino      = getIdTipo( getNumberValido(eApi, "destinoId" ), getStringValido(eApi, "destinoTipo") )
-    enlace.origen       = getIdTipo( getNumberValido(eApi, "origenId" ),  getStringValido(eApi, "origenTipo") )
+    const enlace        = new EnlaceAcuerdo( ToolType.getNumberValido(eApi, "enlaceId" ),  padre )
+    enlace.destino      = getIdTipo( ToolType.getNumberValido(eApi, "destinoId" ), ToolType.getStringValido(eApi, "destinoTipo") )
+    enlace.origen       = getIdTipo( ToolType.getNumberValido(eApi, "origenId" ),  ToolType.getStringValido(eApi, "origenTipo") )
 
     return enlace
 

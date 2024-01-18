@@ -1,6 +1,6 @@
-import {  diferenciaFechas  } from "src/composables/useTools"
-import {  date              } from "quasar"
-import {  IMercadoPago      } from "./PagoMercadoPago"
+import {  ToolDate      } from "src/composables/useTools"
+import {  date          } from "quasar"
+import {  IMercadoPago  } from "./PagoMercadoPago"
 
 interface IDatos {
 	address_1             : string
@@ -138,7 +138,7 @@ export class PedidoWoo implements IPedidoWoo
   get documento       (): string  { return this.getValueByKey("MdN5UZMiyqmYmzK") }
   get calificacion    (): string  { return this.getValueByKey("AZ2uChdCU8HRMsI") }
   get enOtraDireccion (): boolean { return this.getValueByKey("_ship_to_different_address") !== "no" }
-  get hace            (): string  { return diferenciaFechas( Date.parse( this.date_created ), Date.now() ) }
+  get hace            (): string  { return ToolDate.diferenciaFechas( Date.parse( this.date_created ), Date.now() ) }
   get fecha           (): string  { return date.formatDate( Date.parse( this.date_created ), 'DD MMM h:mm a' ) }
   get municipioEnvio  (): string  { return this.shipping.city }
   get direccionFactura(): string  { return `${this.billing.city} ${this.billing.address_1} ${this.billing.address_2}` }
