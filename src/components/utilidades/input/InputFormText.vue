@@ -209,8 +209,8 @@
   {
     let texto               = txt
         texto               = uppercase.value               ? texto.toUpperCase()                         : texto
-        texto               = uppercase.value && AZ09.value ? texto.replace(/[^A-Z ÑÁÉÍÓÚ&./0-9]+/g, "")  : texto
-        texto               = uppercase.value && AZ.value   ? texto.replace(/[^A-Z ÑÁÉÍÓÚ]+/g, "")        : texto
+        texto               = uppercase.value && AZ09.value ? texto.replace(/[^A-Z ÑÁÉÍÓÚÜ&./0-9]+/g, "")  : texto
+        texto               = uppercase.value && AZ.value   ? texto.replace(/[^A-Z ÑÁÉÍÓÚÜ]+/g, "")        : texto
         texto               = sinEspacios.value             ? texto.replace(/[ ]+/g, "")                  : texto
         texto               = texto == "NaN" ? "" : texto
         

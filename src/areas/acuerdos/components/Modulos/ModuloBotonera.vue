@@ -144,7 +144,7 @@
         <Tooltip label        ="Ver calendario de eventos"/>
       </q-btn>
       <q-btn
-        v-if                  ="acuerdo.esPedido && ( usuario.esContable || usuario.esDev )"
+        v-if                  ="acuerdo.esPedido && ( usuario.esContable || usuario.esDev || usuario.esGerencia )"
         v-bind                ="style.btnBaseMd"
         color                 ="primary"
         icon                  ="mdi-file-table-box-multiple-outline"

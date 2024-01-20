@@ -1,12 +1,13 @@
 export interface IUnidad
 {
-  id:                 number
-  nombre:             string
-  label:              string
-  codigo:             string
-  tipo:               string
-  value:              number
-  orden:              number
+  id                  : number
+  nombre              : string
+  label               : string
+  codigo              : string
+  sigla               : string
+  tipo                : string
+  value               : number
+  orden               : number
 }
 
 export class Unidad implements IUnidad
@@ -14,6 +15,7 @@ export class Unidad implements IUnidad
   id                  : number  = 1
   nombre              : string  = ""
   codigo              : string  = ""
+  sigla               : string  = ""
   tipo                : string  = ""
   orden               : number  = 0
 
@@ -26,6 +28,6 @@ export class Unidad implements IUnidad
                         : this.nombre == "SurfaceUnitm2"  ? "Metro 2"
                         : this.nombre == "SizeUnitfoot"   ? "Pie"
                         : this.nombre
-    return this.codigo.toUpperCase() + " - " + label
+    return this.sigla.toUpperCase() + " - " + label
   }
 }

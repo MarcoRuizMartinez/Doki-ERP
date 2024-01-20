@@ -70,7 +70,7 @@ export class DBSimpleOk extends Dexie
   {
     super(process.env.PREFIJO + "DBSimpleOk")
 
-    this.version(3).stores(
+    this.version(3.1).stores(
     {
       [TABLAS.MUNICIPIOS]         : "++id, municipio, departamento, departamentoSigla, departamentoId, indicativo, codigoDian",
       [TABLAS.USUARIOS]           : "++id, nombre, apellido, puesto, foto, tipo, area, estado, gruposString, terceroIdCtz, cel, correo, reglaComisionId, color",
@@ -79,7 +79,7 @@ export class DBSimpleOk extends Dexie
       [TABLAS.FORMA_PAGO]         : "++id, label",
       [TABLAS.METODO_ENTREGA]     : "++id, label",
       [TABLAS.ORIGEN_CONTACTO]    : "++id, label",
-      [TABLAS.UNIDAD]             : "++id, nombre, codigo, tipo, orden",
+      [TABLAS.UNIDAD]             : "++id, nombre, codigo, sigla, tipo, orden",
       [TABLAS.TIEMPO_ENTREGA]     : "++id, label, codigo",
       [TABLAS.TIPO_CONTACTO]      : "++id, codigo, tipo,  origen",
       [TABLAS.CATEGORIA_PRODUCTO] : "++id, nombre, sigla, grupo, modificadorComision, codigoVenta, codigoCompra, grupoId",

@@ -1,6 +1,6 @@
 <script setup lang="ts">
   //* ///////////////////////////////////////////////////////////////////////////////// Core
-  import {  ref,
+  import {  ref, computed,
             onMounted             } from "vue"
 
   // * ///////////////////////////////////////////////////////////////////////////////// Store
@@ -38,7 +38,7 @@
   const { aviso                   } = useTools()
   const cargandoDatos               = ref<boolean>( true )
   const descargaOk                  = ref<boolean>( false )
-  const tab                         = ref<string>( "productos" )  
+  const tab                         = ref<string>( "" )  
   const lista                       = ref<TCodigosSiigo[]>([])
   const productosHijos              = ref<IProductoHijo[]>([])
   const columnas      : IColumna[]  = []
@@ -52,15 +52,21 @@
                                         new Columna({ name : "qty",         label : "CANTIDAD" }),
                                         new Columna({ name : "unidad",      label : "PESO" }),
                                       ]
+  const tabs                          = computed(()=> [
+                                          { value: 'productos', label: `Productos (${lista.value.length})` },
+                                          { value: 'kits',      label: `Kits (${productosHijos.value.length})` },
+                                        ])                                                
+  const itemsXPagina                  = 15
 
-
-
-  onMounted( async () => {
+  onMounted( async () => {    
     columnasSiigo.forEach( c => columnas.push( new Columna( c ) ) )
+    //columnas.splice(25, 0,  new Columna({ name: 'unidad', label: 'UNIDAD',    visible: false }))
+    columnas.splice(80, 0,  new Columna({ name: 'unidad', label: 'UNIDAD FE', visible: false }))
 
     cargandoDatos.value             = true
     await procesarProductos()
     cargandoDatos.value             = false
+    tab.value                       = "productos"
   })
 
   async function procesarProductos()
@@ -104,9 +110,10 @@
     lista.value.push( { ...p.siigo,
                         idProducto  : p.id,
                         ref         : p.ref,
-                        nombre      : p.nombre.toUpperCase().slice(0, 50)
+                        nombre      : p.nombre.toUpperCase().slice(0, 50),
+                        unidad      : p.unidad.codigo,
                       } )
-  } 
+  }
 
   async function procesarProductoCompuestos( p : ILineaAcuerdo )
   {
@@ -120,7 +127,8 @@
   {
     for (const hijo of hijos)
     {
-      if( !productosHijos.value.some( h => h.codigoFull === hijo.codigoFull ) ){
+      const yaExiste = productosHijos.value.some( h => h.codigoFull === hijo.codigoFull ) 
+      if( !yaExiste ){
         lista         .value.push( { ...hijo, idProducto : hijo.hijo_id } )
       }
       
@@ -147,28 +155,20 @@
 
   function descargar()
   {
-    if(tab.value  === "productos")
-    {
-      let ok = generarCSVDesdeTabla(  `${ acuerdo.value.ref} Siigo productos`, columnas, lista.value.filter( i => !i.enSiigo ))
+    let ok            = false
+    descargaOk.value  = false
 
-      if (ok){
-        aviso("positive", "Archivo generado", "file")
-        descargaOk.value = true
-      }
-      else
-        aviso("negative", "Error al generar el archivo...", "file")
+    if(tab.value      === "productos")
+      ok              = generarCSVDesdeTabla(  `${ acuerdo.value.ref} Siigo productos`, columnas,     lista.value.filter( i => !i.enSiigo ))
+    else
+      ok              = generarCSVDesdeTabla(  `${ acuerdo.value.ref} Siigo kits`,      columnasKits, productosHijos.value )
+
+    if(ok){
+      aviso("positive", "Archivo generado", "file")
+      descargaOk.value = true
     }
     else
-    {
-      let ok = generarCSVDesdeTabla(  `${ acuerdo.value.ref} Siigo kits`, columnasKits, productosHijos.value )
-
-      if (ok){
-        aviso("positive", "Archivo generado", "file")
-        descargaOk.value = true
-      }
-      else
-        aviso("negative", "Error al generar el archivo...", "file")
-    }    
+      aviso("negative", "Error al generar el archivo...", "file")    
   }
 </script>
 
@@ -184,21 +184,20 @@
     class-contenido               ="column items-center"    
     size-icon-carga               ="14em"
     padding-contenido             ="0"
-    style                         ="max-width: 800px;"
-    min-width                     ="800px"
+    style                         ="max-width: 700px;"
+    min-width                     ="700px"
     height-card-min               ="320px"
     :cargando                     ="cargandoDatos"
     >
     <template                     #menu>
+      <!-- //* /////////////////////////////////////////////////////////////////////// Boton Toggle Productos Kits -->
       <q-btn-toggle               spread glossy dense unelevated no-caps 
         v-model                   ="tab"
         toggle-color              ="primary"
-        style                     ="width: 200px;"
-        :options                  ="[
-                                      { label: 'Productos', value: 'productos'},
-                                      { label: 'Kits',      value: 'kits'},
-                                    ]"
+        style                     ="width: 250px;"
+        :options                  ="tabs"
       />
+      <!-- //* /////////////////////////////////////////////////////////////////////// Boton Descarga -->
       <q-btn
         v-bind                    ="style.btnBaseMd"
         label                     ="Descargar"
@@ -206,6 +205,7 @@
         color                     ="primary"
         @click                    ="descargar"
       />
+      <!-- //* /////////////////////////////////////////////////////////////////////// Boton Cargardo en Siigo -->
       <q-btn
         v-if                      ="tab === 'productos'"
         v-bind                    ="style.btnBaseMd"
@@ -243,15 +243,15 @@
         class                     ="q-pa-none"
         >
         <!-- //* ///////////////////////////////////////////////////////////////////// Tabla Productos Siigo -->
-        <q-table                  bordered dense flat hide-selected-banner hide-no-data
+        <q-table                  bordered dense flat
           id                      ="tabla-productos"
-          class                   ="fit tabla-maco"
-          row-key                 ="ref"
+          class                   ="fit tabla-maco tabla-siigo"
+          row-key                 ="ref"          
           :rows                   ="lista"
           :columns                ="columnas"
           :visible-columns        ="['enSiigo', 'idProducto', 'linea', 'grupo', 'codigo', 'nombre', 'ref' ]"      
-          style                   ="min-height: 200px;"
-          :rows-per-page-options  ="[15]"
+          :hide-bottom            ="lista.length <= itemsXPagina "
+          :rows-per-page-options  ="[itemsXPagina]"
           >
         </q-table>
       </q-tab-panel>
@@ -261,18 +261,18 @@
         class                     ="q-pa-none"
         >
         <!-- //* //////////////////////////////////////////////////////////////////// Tabla Kits Siigo -->
-        <q-table                  bordered dense flat hide-selected-banner hide-no-data
+        <q-table                  bordered dense flat
           id                      ="tabla-kits"
-          class                   ="fit tabla-maco"
-          row-key                 ="ref"
+          class                   ="fit tabla-maco tabla-siigo"
+          row-key                 ="ref"          
           :rows                   ="productosHijos"
           :columns                ="columnasKits"          
-          style                   ="min-height: 200px;"
-          :rows-per-page-options  ="[15]"
+          :hide-bottom            ="productosHijos.length <= itemsXPagina "
+          :rows-per-page-options  ="[itemsXPagina]"
           >
         </q-table>
       </q-tab-panel>
-    </q-tab-panels>    
+    </q-tab-panels>
   </ventana>
 </template>
 <style>
@@ -281,4 +281,10 @@
   flex-direction: row-reverse !important;
 }
 
+</style>
+<style scoped>
+.tabla-siigo{
+  min-height: 200px;
+  min-width: 700px;
+}
 </style>

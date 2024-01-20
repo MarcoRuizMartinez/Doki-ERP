@@ -8,7 +8,7 @@ import {  ToolType,
           ToolNum         } from "src/composables/useTools"
 import {  IProductoHijo,
           ProductoHijo    } from "../models/ProductoHijo"
-
+import {  getUnidadDB     } from "src/composables/useDexie"
 
 export function servicesProductos() 
 {
@@ -83,6 +83,7 @@ export function servicesProductos()
               hijo.enSiigo    = !!ToolType.anyToNum( item?.enSiigo ?? 0 )
               hijo.ref        = item?.ref     ?? ""
               hijo.nombre     = item?.nombre  ?? ""
+              hijo.unidad     = (await getUnidadDB( ToolType.anyToNum( item?.unidad_id ?? 0 ) )).codigo
         hijos.push( hijo )
       }
     }
@@ -92,7 +93,7 @@ export function servicesProductos()
 
   async function marcarEnSiigo( ids : string, on : boolean ) : Promise< boolean >
   {
-    const { ok, data }        = await miFetch(  getURL("servicios", "productos"),
+    const { ok }              = await miFetch(  getURL("servicios", "productos"),
                                                 { method: "POST", body: getFormData( "marcarEnSiigo", { ids, on } ) },
                                                 { mensaje: "marcar en Siigo" }
                                               )

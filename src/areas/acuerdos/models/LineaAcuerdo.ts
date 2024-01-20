@@ -298,7 +298,7 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
 
   // * /////////////////////////////////////////////////////////////////////////////// Cantidad con unidad
   get qtyUnd() : string {
-    return this.qty + " " + this.unidad.codigo
+    return this.qty + " " + this.unidad.sigla
   }
 
   get utilidad()      : number { return this.precioFinal - this.costo  }

@@ -39,6 +39,7 @@
                                     new Columna({ name: "id"}),
                                     new Columna({ name: "nombre"}),
                                     new Columna({ name: "codigo"}),
+                                    new Columna({ name: "sigla"}),
                                     new Columna({ name: "tipo"}),
                                     new Columna({ name: "orden"}),
                                   ]
