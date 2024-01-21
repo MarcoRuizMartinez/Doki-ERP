@@ -253,9 +253,9 @@ export function useCotizacionPDF()
         
         // * //////////////////////////////////////////////// Imagen
 
-        if(!!producto.imagen300px)
+        if(!!producto.img.img_300px)
         {
-          let imagen            = await crearImageHTML( producto.imagen300px )
+          let imagen            = await crearImageHTML( producto.img.img_300px )
           const margen          = { left: 6, top: 2 }
           const anchoImg        = doc.margenIzq - margen.left
           pdf.addImage(imagen, 'JPEG', margen.left, doc.y + margen.top, anchoImg, anchoImg)

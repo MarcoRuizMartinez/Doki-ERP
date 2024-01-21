@@ -1,10 +1,10 @@
 <template>
   <div
-    v-if                  ="!!linea.imagen"
+    v-if                  ="!!linea.img.url"
     :class                ="[ $attrs.class, { 'float-left' : float }]"
     >
     <q-img
-      :src                ="linea.imagen100px"
+      :src                ="linea.img.img_100px"
       class               ="cursor-pointer"
       spinner-color       ="white"
       :class              ="mini ? 'imagen-woo-xs' : 'imagen-woo-md'"
@@ -16,7 +16,7 @@
     </q-img>
     <q-tooltip            class="bg-black">
       <q-img
-        :src              ="linea.imagen300px"
+        :src              ="linea.img.img_300px"
         class             ="imagen-woo-lg"
         spinner-color     ="white"
         >
@@ -46,7 +46,7 @@
     mini:   { default:  false,  type: Boolean },
   })
   function clickImagen( linea : ILineaAcuerdo ){
-    imagenBig.value         = { titulo: linea.nombre, src: linea.imagenFull }
+    imagenBig.value         = { titulo: linea.nombre, src: linea.img.img_full }
     ventanaImagen.value     = true
   }
 </script>

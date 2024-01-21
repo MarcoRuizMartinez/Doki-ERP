@@ -11,7 +11,8 @@
   import {  ILineaAcuerdo         } from 'src/areas/acuerdos/models/LineaAcuerdo';
   import {  IProductoHijo         } from 'src/areas/productos/models/ProductoHijo';
   import {  IColumna, Columna     } from "src/models/Tabla"
-  import {  TCodigosSiigo,
+  import {  TKitSiigo,
+            TCodigosSiigo,
             columnasSiigo         } from 'src/areas/productos/models/Siigo';
 
   // * ///////////////////////////////////////////////////////////////////////////////// Componibles
@@ -32,8 +33,8 @@
           buscarCodigosSiigo,     } = useControlProductos()
   const { apiDolibarr             } = useApiDolibarr()
 
-  const { marcarEnSiigo,
-          buscarProductosHijos    } = servicesProductos()
+  const { buscarProductosHijosSiigo,
+          marcarEnSiigo           } = servicesProductos()
 
   const { aviso                   } = useTools()
   const cargandoDatos               = ref<boolean>( true )
@@ -41,6 +42,7 @@
   const tab                         = ref<string>( "" )  
   const lista                       = ref<TCodigosSiigo[]>([])
   const productosHijos              = ref<IProductoHijo[]>([])
+  const kitsSiigo                   = ref<TKitSiigo    []>([])
   const columnas      : IColumna[]  = []
   const columnasKits  : IColumna[]  = [
                                         new Columna({ name : "padreLinea",  label : "LÍNEA TERMINADO" }),
@@ -49,8 +51,8 @@
                                         new Columna({ name : "linea",       label : "LÍNEAS HIJO" }),
                                         new Columna({ name : "grupo",       label : "GRUPO HIJO" }),
                                         new Columna({ name : "codigo",      label : "PRODUCTO HIJO" }),
-                                        new Columna({ name : "qty",         label : "CANTIDAD" }),
-                                        new Columna({ name : "unidad",      label : "PESO" }),
+                                        new Columna({ name : "qty",         label : "QTY" }),
+                                        new Columna({ name : "unidadDian",  label : "PESO" }),
                                       ]
   const tabs                          = computed(()=> [
                                           { value: 'productos', label: `Productos (${lista.value.length})` },
@@ -60,8 +62,7 @@
 
   onMounted( async () => {    
     columnasSiigo.forEach( c => columnas.push( new Columna( c ) ) )
-    //columnas.splice(25, 0,  new Columna({ name: 'unidad', label: 'UNIDAD',    visible: false }))
-    columnas.splice(80, 0,  new Columna({ name: 'unidad', label: 'UNIDAD FE', visible: false }))
+    columnas.splice(80, 0,  new Columna({ name: 'unidadDian', label: 'UNIDAD FE', visible: false }))
 
     cargandoDatos.value             = true
     await procesarProductos()
@@ -80,6 +81,8 @@
             copiarLineaALista         ( p )
       await procesarProductoCompuestos( p )
     }
+
+    generarKits()
   }
 
   async function generarCodigosSiigo( p : ILineaAcuerdo )
@@ -111,7 +114,7 @@
                         idProducto  : p.id,
                         ref         : p.ref,
                         nombre      : p.nombre.toUpperCase().slice(0, 50),
-                        unidad      : p.unidad.codigo,
+                        unidadDian  : p.unidad.codigo,
                       } )
   }
 
@@ -119,7 +122,7 @@
   {
     if(!p.naturaleza.esCompuesto && !p.naturaleza.esKit ) return
 
-    const productos                 = await buscarProductosHijos( p.id )
+    const productos                 = await buscarProductosHijosSiigo( p.id )
     copiarHijosAListas( productos, p )
   }
 
@@ -127,18 +130,40 @@
   {
     for (const hijo of hijos)
     {
-      const yaExiste = productosHijos.value.some( h => h.codigoFull === hijo.codigoFull ) 
-      if( !yaExiste ){
-        lista         .value.push( { ...hijo, idProducto : hijo.hijo_id } )
+      const yaExiste          = productosHijos.value.some( h => h.siigo.codigoFull === hijo.siigo.codigoFull ) 
+      if( !yaExiste )
+      {
+        hijo.siigo.idProducto = hijo.hijo_id
+        hijo.siigo.nombre     = hijo.nombre
+        hijo.siigo.ref        = hijo.ref
+        lista.value.push( hijo.siigo )
       }
       
-      const newHijo                 = hijo
-            newHijo.padreLinea      = padre.siigo.linea
-            newHijo.padreGrupo      = padre.siigo.grupo
-            newHijo.padreCodigo     = padre.siigo.codigo
+      const newHijo                   = hijo
+            newHijo.siigoPadre        = padre.siigo
       productosHijos.value.push( newHijo )
     }
-  }  
+  }
+
+  function generarKits()
+  {
+    for (const hijo of productosHijos.value)
+    {
+      const kit : TKitSiigo = {
+        padreLinea  : hijo.siigoPadre.linea,
+        padreGrupo  : hijo.siigoPadre.grupo,
+        padreCodigo : hijo.siigoPadre.codigo,
+        linea       : hijo.siigo.linea,
+        grupo       : hijo.siigo.grupo,
+        codigo      : hijo.siigo.codigo,
+        qty         : hijo.qty,
+        unidadDian  : hijo.siigo.unidadDian,
+      }      
+
+      kitsSiigo.value.push( kit )
+    }
+  }
+
 
   async function marcarCargado( on : boolean )
   {
@@ -147,7 +172,7 @@
 
     if(ok){
       acuerdo.value.productos .forEach( p => p.siigo.enSiigo  = on )
-      productosHijos.value    .forEach( p => p.enSiigo        = on)
+      productosHijos.value    .forEach( p => p.siigo.enSiigo  = on)
       lista.value             .forEach( p => p.enSiigo        = on)
     }
   }
@@ -161,7 +186,7 @@
     if(tab.value      === "productos")
       ok              = generarCSVDesdeTabla(  `${ acuerdo.value.ref} Siigo productos`, columnas,     lista.value.filter( i => !i.enSiigo ))
     else
-      ok              = generarCSVDesdeTabla(  `${ acuerdo.value.ref} Siigo kits`,      columnasKits, productosHijos.value )
+      ok              = generarCSVDesdeTabla(  `${ acuerdo.value.ref} Siigo kits`,      columnasKits, kitsSiigo.value )
 
     if(ok){
       aviso("positive", "Archivo generado", "file")
@@ -265,7 +290,7 @@
           id                      ="tabla-kits"
           class                   ="fit tabla-maco tabla-siigo"
           row-key                 ="ref"          
-          :rows                   ="productosHijos"
+          :rows                   ="kitsSiigo"
           :columns                ="columnasKits"          
           :hide-bottom            ="productosHijos.length <= itemsXPagina "
           :rows-per-page-options  ="[itemsXPagina]"

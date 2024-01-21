@@ -1,55 +1,32 @@
-<template>
-  <titulo
-    class               ="col-12"
-  />
-  <formulario
-    class               ="col-md-6 col-12"
-  />
-  <imagen
-    class               ="col-md-3 col-12"
-  />
-  <documentos
-    class               ="col-md-3 col-12"
-    height-card-min     ="164px"
-    modulo              ="product"
-    :modulo-id          ="producto.id ?? 0"
-    :modulo-ref         ="producto.ref"
-    :puede-editar       ="true"
-    @subida-ok          ="cargarProductos"
-  />
-</template>
-
 <script setup lang="ts">
   //* ///////////////////////////////////////////////////////////////////////////////// Core
   import {  ref,
-            watch,
-            //toRefs,
-            provide,
-            PropType,
+            provide
                                   } from "vue"
-  import {  useTitle              } from "@vueuse/core"                                  
+  import {  useTitle              } from "@vueuse/core"
+  
   //* ///////////////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs           } from 'pinia'
-  import {  useStoreUser          } from 'src/stores/user'
   import {  useStoreProducto      } from 'src/stores/producto'
+
   //* ///////////////////////////////////////////////////////////////////////////////// Modelos
-  import {  IArchivo,
-            Archivo               } from "src/models/Archivo"
+  import {  IArchivo              } from "src/models/Archivo"
+  import {  IProductoDoli } from '../../models/ProductoDolibarr';
+
   //* ///////////////////////////////////////////////////////////////////////////////// Componibles
   import {  useControlProductos   } from "src/areas/productos/controllers/ControlProductosDolibarr"
+
   //* ///////////////////////////////////////////////////////////////////////////////// Componentes
   import    titulo                  from "src/areas/productos/components/Titulo.vue"
   import    imagen                  from "src/areas/productos/components/ImagenProducto.vue"
   import    formulario              from "src/areas/productos/components/FormularioProducto.vue"
+  import    productoCompuesto       from "src/areas/productos/components/ProductosCompuesto.vue"
   import    documentos              from "components/archivos/ModuloArchivos.vue"
   
-
   const { editarURL         } = useControlProductos()  
   const { producto,
           loading           } = storeToRefs( useStoreProducto() )
   
-
-          
   const minimizadoTodo        = ref< boolean >(false)
     
   const props                 = defineProps({
@@ -65,7 +42,38 @@
       const url               = archivos[0].url
       const ok                = await editarURL( url )
       if(ok)
-        producto.value.imagen = url
+        producto.value.img.url= url
     }    
   }
+
+  function productoEditado( prod : IProductoDoli )
+  {
+    producto.value =  prod
+  }
 </script>
+
+<template>
+  <titulo
+    class               ="col-12"
+  />
+  <formulario
+    class               ="col-md-6 col-12"
+    @editado            ="productoEditado"
+  />
+  <imagen
+    class               ="col-md-3 col-12"
+  />
+  <documentos
+    class               ="col-md-3 col-12"
+    height-card-min     ="164px"
+    modulo              ="product"
+    :modulo-id          ="producto.id ?? 0"
+    :modulo-ref         ="producto.ref"
+    :puede-editar       ="true"
+    @subida-ok          ="cargarProductos"
+  />
+  <producto-compuesto
+    v-if                ="producto.naturaleza.esCompuesto_o_Kit"
+    class               ="col-12"
+  />
+</template>

@@ -2,11 +2,39 @@ export type TCodigosSiigo = {
   codigo      : number
   linea       : number
   grupo       : number
+  codigoFull  : string
+
   enSiigo     : boolean
-  idProducto ?: number
-  nombre     ?: string
-  ref        ?: string
-  unidad     ?: string
+  idProducto  : number
+  nombre      : string
+  ref         : string
+  unidadDian  : string
+}
+
+export class CodigosSiigo implements TCodigosSiigo
+{
+  codigo      : number  = 0
+  linea       : number  = 0
+  grupo       : number  = 0
+  enSiigo     : boolean = false
+  idProducto  : number  = 0
+  nombre      : string  = ""
+  ref         : string  = ""
+  unidadDian  : string  = ""
+
+  get codigoFull() { return `${this.linea}${this.grupo}${this.codigo}`}
+}
+
+
+export type TKitSiigo = {
+  padreLinea  : number
+  padreGrupo  : number
+  padreCodigo : number
+  linea       : number
+  grupo       : number
+  codigo      : number
+  qty         : number
+  unidadDian  : string
 }
 
 export const columnasSiigo = [

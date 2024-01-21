@@ -4,13 +4,10 @@ import {  ILoading,
           IModales,
           ModalesDefault
                                 } from "src/models/TiposVarios"
-import {  ICategoriaProducto,
-          CategoriaProducto     } from "src/areas/productos/models/CategoriaProducto"
 import {  ProductoDoli,
           IProductoDoli         } from "src/areas/productos/models/ProductoDolibarr"
 import {  BusquedaProducto,
           IBusquedaProducto     } from "src/areas/productos/models/BusquedaProductos"
-
 
 interface IProductoState {
   producto            : IProductoDoli,

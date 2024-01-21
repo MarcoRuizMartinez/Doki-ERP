@@ -3,7 +3,7 @@
     class                 ="bg-black"
     >
     <q-img
-      :src                ="modelValue.imagen100px"
+      :src                ="modelValue.img.img_100px"
       class               ="imagen-woo-md cursor-pointer q-mr-sm"
       spinner-color       ="white"
     />

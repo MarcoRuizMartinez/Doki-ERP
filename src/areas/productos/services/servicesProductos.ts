@@ -1,14 +1,17 @@
 import {  IQueryProducto    } from "src/areas/productos/models/BusquedaProductos"
 import {  getURL,
-          getFormData     } from "src/composables/APIMaco"
-import {  useFetch        } from "src/composables/useFetch"
+          getFormData       } from "src/composables/APIMaco"
+import {  useFetch          } from "src/composables/useFetch"
+import {  ImagenProducto    } from '../models/ImagenProducto';
 import {  IProductoDoli,
-          ProductoDoli    } from "src/areas/productos/models/ProductoDolibarr"
+          ProductoDoli      } from "src/areas/productos/models/ProductoDolibarr"
 import {  ToolType, 
-          ToolNum         } from "src/composables/useTools"
+          ToolNum           } from "src/composables/useTools"
 import {  IProductoHijo,
-          ProductoHijo    } from "../models/ProductoHijo"
-import {  getUnidadDB     } from "src/composables/useDexie"
+          ProductoHijo      } from "../models/ProductoHijo"
+import {  getUnidadDB,
+          getNaturalezaDB   } from "src/composables/useDexie"
+import {  ProductoProveedor } from "../models/ProductoProveedor";
 
 export function servicesProductos() 
 {
@@ -60,6 +63,7 @@ export function servicesProductos()
     })
   }
 
+
   async function buscarProductosHijos( padre_id : number ) : Promise< IProductoHijo[] >
   {
     const { ok, data }        = await miFetch(  getURL("listas", "varios"),
@@ -71,19 +75,54 @@ export function servicesProductos()
     {
       for (const item of data)
       {
-        const hijo            = new ProductoHijo()
-              hijo.id         = ToolType.anyToNum( item?.id        ?? 0 )
-              hijo.padre_id   = ToolType.anyToNum( item?.padre_id  ?? 0 )
-              hijo.hijo_id    = ToolType.anyToNum( item?.hijo_id   ?? 0 )
-              hijo.qty        = ToolType.anyToNum( item?.qty       ?? 0 )
-              hijo.orden      = ToolType.anyToNum( item?.orden     ?? 0 )
-              hijo.linea      = ToolType.anyToNum( item?.linea     ?? 0 )
-              hijo.grupo      = ToolType.anyToNum( item?.grupo     ?? 0 )
-              hijo.codigo     = ToolType.anyToNum( item?.codigo    ?? 0 )
-              hijo.enSiigo    = !!ToolType.anyToNum( item?.enSiigo ?? 0 )
-              hijo.ref        = item?.ref     ?? ""
-              hijo.nombre     = item?.nombre  ?? ""
-              hijo.unidad     = (await getUnidadDB( ToolType.anyToNum( item?.unidad_id ?? 0 ) )).codigo
+        const hijo                  = new ProductoHijo()
+              hijo.ref              = item?.ref     ?? ""
+              hijo.nombre           = item?.nombre  ?? ""
+
+              hijo.id               = ToolType.getNumberValido( item, "id"          )
+              hijo.padre_id         = ToolType.getNumberValido( item, "padre_id"    )
+              hijo.hijo_id          = ToolType.getNumberValido( item, "hijo_id"     )
+              hijo.qty              = ToolType.getNumberValido( item, "qty"         )
+              hijo.orden            = ToolType.getNumberValido( item, "orden"       )
+              hijo.relacion_id      = ToolType.getNumberValido( item, "relacion_id" )
+              hijo.precio           = ToolType.getNumberValido( item, "precio"      )
+              hijo.costo            = ToolType.getNumberValido( item, "costo"       )
+
+              hijo.img              = new ImagenProducto( item?.img  ?? "" )
+              hijo.productosPro     = ProductoProveedor.getProductosFromAPI( item?.proveedores ?? "" )
+              hijo.naturaleza       = await getNaturalezaDB( item?.naturaleza_id ?? "0" )
+              hijo.unidad           = await getUnidadDB( ToolType.getNumberValido( item, "unidad_id" ) )
+        hijos.push( hijo )
+      }
+    }
+
+    return hijos
+  }
+
+  async function buscarProductosHijosSiigo( padre_id : number ) : Promise< IProductoHijo[] >
+  {
+    const { ok, data }        = await miFetch(  getURL("listas", "varios"),
+                                                { method: "POST", body: getFormData( "productosHijosSiigo", { padre_id } ) },
+                                                { dataEsArray: true, mensaje: "buscar productos hijos" }
+                                              )
+    const hijos : IProductoHijo [] = []
+    if( Array.isArray( data ) )
+    {
+      for (const item of data)
+      {
+        const hijo                  = new ProductoHijo()
+              hijo.ref              = item?.ref     ?? ""
+              hijo.nombre           = item?.nombre  ?? ""
+              hijo.id               = ToolType.getNumberValido( item, "id"        )
+              hijo.padre_id         = ToolType.getNumberValido( item, "padre_id"  )
+              hijo.hijo_id          = ToolType.getNumberValido( item, "hijo_id"   )
+              hijo.qty              = ToolType.getNumberValido( item, "qty"       )
+              hijo.orden            = ToolType.getNumberValido( item, "orden"     )              
+              hijo.siigo.linea      = ToolType.getNumberValido( item, "linea"     )
+              hijo.siigo.grupo      = ToolType.getNumberValido( item, "grupo"     )
+              hijo.siigo.codigo     = ToolType.getNumberValido( item, "codigo"    )
+              hijo.siigo.enSiigo    = !!ToolType.getNumberValido( item, "enSiigo" )
+              hijo.siigo.unidadDian = (await getUnidadDB( ToolType.getNumberValido( item, "unidad_id" ) )).codigo
         hijos.push( hijo )
       }
     }
@@ -106,6 +145,7 @@ export function servicesProductos()
     buscarProducto,
     buscarProductos,
     buscarProductosHijos,
+    buscarProductosHijosSiigo,
     marcarEnSiigo,
   }
 }

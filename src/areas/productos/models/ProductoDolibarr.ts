@@ -9,14 +9,16 @@ import {  ICategoriaProducto,
 import {  INaturalezaProducto,
           NaturalezaProducto  } from "src/models/Diccionarios/NaturalezaProducto"
 import {  IAccion             } from "src/areas/comunicacion/models/Accion"
-import {  TCodigosSiigo       } from 'src/areas/productos/models/Siigo';          
+import {  TCodigosSiigo,
+          CodigosSiigo        } from 'src/areas/productos/models/Siigo';          
+import {  IImagenProducto,
+          IMAGEN_DEFAULT,
+          ImagenProducto      } from "./ImagenProducto"
 
-export const imagenDefault  :string  = "https://dolibarr.mublex.com/_maco/img/box.jpg"
+
 const ivaX100                 = parseInt( process.env.IVA ?? "0" )
 
-
-
-export type TTipoPDF = "quote" | "cuentaCobro"
+export type TTipoPDF          = "quote" | "cuentaCobro"
 
 export interface IProductoDoli {
   id                        : number
@@ -33,10 +35,7 @@ export interface IProductoDoli {
   tipo                      : 0 | 1 | 9     // 0 producto 1 servicio 9 subtotal
   tipoProducto              : string
   naturaleza                : INaturalezaProducto
-  imagen                    : string
-  imagenFull                : string
-  imagen100px               : string
-  imagen300px               : string
+  img                       : IImagenProducto
   activo_proveedor          : boolean       // Activo proveedor
   aumento                   : number
   aumento_escom             : number
@@ -95,7 +94,7 @@ export class ProductoDoli implements IProductoDoli
   unidad                    : IUnidad             = new Unidad()
   tipo                      : 0 | 1 | 9           = 0
   naturaleza                : INaturalezaProducto = new NaturalezaProducto()
-  imagen                    : string              = imagenDefault
+  img                       : IImagenProducto     = new ImagenProducto()
   activo_proveedor          : boolean             = true
   aumento                   : number              = 0
   aumento_escom             : number              = 0
@@ -119,7 +118,7 @@ export class ProductoDoli implements IProductoDoli
   precio_publico            : number              = 0
   precio_promocion          : number              = 0
   precio                    : number              = 0
-  siigo                     : TCodigosSiigo       = { codigo : 0, linea : 0, grupo : 0, enSiigo : false }
+  siigo                     : TCodigosSiigo       = new CodigosSiigo()
   competencia               : number              = 0
   elegido                   : boolean             = false
   comentarios               : IAccion[]           = []
@@ -163,72 +162,6 @@ export class ProductoDoli implements IProductoDoli
   }
 
   get urlDolibarr() : string { return process.env.URL_DOLIBARR + "/product/card.php?id=" + this.id }
-
-  get imagenFull() : string
-  {
-    return this.imagen
-  }
-
-  get imagen100px() : string
-  {
-    
-    let urlImagen           = ""    
-    if( !!this.imagen )
-    {
-      const urlDolibarr = process.env.URL_DOLIBARR ?? ""
-      if( this.imagen.includes( urlDolibarr ))
-      {
-        const url = this.imagen.replace( urlDolibarr, '' )
-        urlImagen = `${urlDolibarr}/resizer/resizer.php?file=..${url}&width=100&height=100&action=resize&crop_pos=center&quality=90`
-      }
-      else
-      {
-        if( this.imagen.includes( ".jpg" ) || this.imagen.includes( ".jpeg" ))
-        
-          urlImagen       = this.imagen.replace(".j", "-100x100.j")
-        if( this.imagen.includes( ".webp" ) )
-        
-          urlImagen       = this.imagen.replace(".webp", "-100x100.webp")
-
-          
-        urlImagen           = this.imagen.replace("http:", "https:")
-      }
-
-    }
-
-    return  urlImagen
-  }
-
-  get imagen300px() : string
-  {
-    
-    let urlImagen           = ""
-    if( !!this.imagen )
-    {
-      const urlDolibarr = process.env.URL_DOLIBARR ?? ""
-      if( this.imagen.includes( urlDolibarr ))
-      {
-        const url = this.imagen.replace( urlDolibarr, '' )
-        
-        urlImagen = `${urlDolibarr}/resizer/resizer.php?file=..${url}&width=300&height=300&action=resize&crop_pos=center&quality=90`
-      }
-      else
-      {
-        if( this.imagen.includes( ".jpg" ) || this.imagen.includes( ".jpeg" ))
-        
-            urlImagen         = this.imagen.replace(".j", "-300x300.j")
-        if( this.imagen.includes( ".webp" ) )
-        
-            urlImagen         = this.imagen.replace(".webp", "-300x300.webp")
-
-            
-        urlImagen             = this.imagen.replace("http:", "https:")
-      }
-    }
-
-    
-    return  urlImagen
-  }
 
   get tipoProducto() :string {
     return  this.tipo == 0 ?  "producto"
@@ -381,7 +314,7 @@ export class ProductoDoli implements IProductoDoli
     producto.precio_proveedor       = parseFloat( productoApi.precio_proveedor    )
     producto.precio_publico         = parseFloat( productoApi.precio_publico      )
     producto.competencia            = parseFloat( productoApi.competencia         )
-    producto.imagen                 = !!producto.imagen ? producto.imagen : imagenDefault
+    producto.img.url                = productoApi?.imagen ?? IMAGEN_DEFAULT
 
     if(!producto.precio             && !!producto.aumento_escom ){
       producto.precio               = producto.precio_aumento_escom

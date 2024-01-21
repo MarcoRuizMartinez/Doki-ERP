@@ -1,17 +1,3 @@
-<template>
-  <q-page padding     class  ="row items-stretch content-start justify-start q-col-gutter-md">
-    <vista-producto  v-bind  ="props" />
-    <comentarios
-      v-model             ="producto.comentarios"
-      tipo                ="product"
-      :elemento-id        ="producto.id"
-      :funcion-buscar     ="buscarComentarios"
-      :asignado           ="usuario"
-      :cargando           ="loading?.commentsLoad ?? false"
-    />
-  </q-page>
-</template>
-
 <script setup lang="ts">
   // * /////////////////////////////////////////////////////////////////////// Core
   import {  toRefs,
@@ -75,3 +61,17 @@
     loading.value.commentsLoad  = false
   }
 </script>
+
+<template>
+  <q-page padding     class  ="row items-stretch content-start justify-start q-col-gutter-md">
+    <vista-producto  v-bind  ="props" />
+    <comentarios
+      v-model             ="producto.comentarios"
+      tipo                ="product"
+      :elemento-id        ="producto.id"
+      :funcion-buscar     ="buscarComentarios"
+      :asignado           ="usuario"
+      :cargando           ="loading?.commentsLoad ?? false"
+    />
+  </q-page>
+</template>

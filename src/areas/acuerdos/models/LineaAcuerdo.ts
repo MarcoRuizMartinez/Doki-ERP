@@ -1,6 +1,5 @@
 import {  IProductoDoli,
-          ProductoDoli,
-          imagenDefault     } from "src/areas/productos/models/ProductoDolibarr"
+          ProductoDoli      } from "src/areas/productos/models/ProductoDolibarr"
 import {  ToolNum           } from "src/composables/useTools"
 import {  getUnidadDB,
           getCategoriaDB,
@@ -16,6 +15,7 @@ import {  ComisionLinea,
           IComisionLinea    } from "src/areas/acuerdos/models/Comisiones/ComisionLinea"
 import {  Bodega,
           IBodega           } from "src/models/Diccionarios/Bodega"
+import {  IMAGEN_DEFAULT    } from "src/areas/productos/models/ImagenProducto"
 
 export type TipoLinea       = "producto" | "servicio" | "titulo" | "subtotal" | "descripcion"
 
@@ -415,7 +415,6 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
         linea.unidad        = await getUnidadDB( linea.unidadId )    
         if(!!linea.sigla)
           linea.categoria   = await getCategoriaDB( linea.sigla  )
-        linea.imagen        = !!linea.imagen ? linea.imagen : imagenDefault
         linea.bodegaId      = linea?.bodegaId       ?? 0
         linea.qtyTotal      = linea?.qtyTotal       ?? 0
         linea.lineaIdPedido = linea?.lineaIdPedido  ?? 0
@@ -425,6 +424,7 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
         lineaFinal.siigo.codigo         = +linea.codigo
         lineaFinal.siigo.enSiigo        = Boolean( +linea?.enSiigo ?? 0 )
         lineaFinal.comsionX100Division  = +(linea?.divisionComision ?? 100)
+        lineaFinal.img.url              = linea?.imagen ?? IMAGEN_DEFAULT
         
         if(!!linea.naturaleza_id)
           lineaFinal.naturaleza         = await getNaturalezaDB( linea.naturaleza_id.toString() )     

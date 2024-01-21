@@ -53,7 +53,7 @@
         class             ="column items-center q-pa-xs"
         >
         <q-img
-          :src            ="producto.imagen300px"
+          :src            ="producto.img.img_300px"
           ratio           ="1"
           >
           <template v-slot:loading>

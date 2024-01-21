@@ -1,6 +1,6 @@
 <template>
   <q-img
-    :src                ="producto.imagen100px"
+    :src                ="producto.img.img_100px"
     class               ="imagen-woo-sm q-mr-md"
     ratio               ="1"
     :class              ="{ 'op40' : !producto.activo  }"
@@ -10,7 +10,7 @@
     </template>
     <Tooltip>
     <q-img
-      :src              ="producto.imagen300px"
+      :src              ="producto.img.img_300px"
       class             ="imagen-woo-lg"
       ratio             ="1"
       >

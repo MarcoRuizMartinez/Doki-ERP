@@ -94,8 +94,9 @@ export class ToolType
       return !!numero ? parseFloat(numero) : defectoSiNull
   }
 
-  static getNumberValido( objeto : any, key : string ) : number {
-    let  numero : number = 0
+  static getNumberValido( objeto : any, key : string, defecto : number = 0 ) : number
+  {
+    let  numero : number = defecto
     if(key in objeto && ToolType.valorValido( objeto[key] ))
     {
       if( typeof objeto[key] === "number" )
@@ -105,7 +106,28 @@ export class ToolType
         numero = +objeto[key]
     }
     return numero
-  }    
+  }
+
+  static getBoolean( objeto : any, key : string ) : boolean
+  {
+    return Boolean( ToolType.getNumberValido( objeto, key, 0 ) )
+  }
+  
+
+  static getString( objeto : any, key : string ) : string
+  {
+    let str = ""
+    if(key in objeto && ToolType.valorValido( objeto[key] ))
+    {
+      if( typeof objeto[key] === "number" )
+        str = objeto[key].toString()
+      else
+      if( typeof objeto[key] === "string" )
+        str = objeto[key]
+    }
+
+    return str
+  }
 }
 
 
@@ -482,8 +504,6 @@ export class ToolColor
     return { color: colorFinal, promedio: promedio }
   }  
 }
-
-
 
 
 import confetti from 'canvas-confetti';

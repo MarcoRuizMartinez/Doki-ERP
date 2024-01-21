@@ -64,7 +64,7 @@
         id:     p.lineaId,
         ref:    p.ref,
         nombre: p.nombre,
-        imagen: p.imagen100px,
+        imagen: p.img.img_100px,
         orden:  p.orden,
       }
     })    
