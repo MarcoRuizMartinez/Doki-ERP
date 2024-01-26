@@ -1,14 +1,14 @@
 <template>
   <div
-    v-if                  ="!!linea.img.url"
+    v-if                  ="!!imagen.url"
     :class                ="[ $attrs.class, { 'float-left' : float }]"
     >
     <q-img
-      :src                ="linea.img.img_100px"
+      :src                ="imagen.img_100px"
       class               ="cursor-pointer"
       spinner-color       ="white"
       :class              ="mini ? 'imagen-woo-xs' : 'imagen-woo-md'"
-      @click              ="clickImagen( linea )"
+      @click              ="clickImagen( imagen )"
       >
       <template v-slot:loading>
         <q-spinner-dots color="white" />
@@ -16,7 +16,7 @@
     </q-img>
     <q-tooltip            class="bg-black">
       <q-img
-        :src              ="linea.img.img_300px"
+        :src              ="imagen.img_300px"
         class             ="imagen-woo-lg"
         spinner-color     ="white"
         >
@@ -33,20 +33,43 @@
   />
 </template>
 <script lang="ts" setup>
-  import {  ref, PropType } from "vue"
-  import {  ILineaAcuerdo } from "src/areas/acuerdos/models/LineaAcuerdo"
-  import    visorImagen     from "components/utilidades/VisorImagen.vue"
+  import {  ref,
+            toRefs,
+            PropType        } from "vue"  
+  import    visorImagen       from "components/utilidades/VisorImagen.vue"
+  import {  IImagenProducto } from 'src/areas/productos/models/ImagenProducto';
 
   const ventanaImagen       = ref< boolean >( false )
   type  TImagenBig          = { src : string, titulo: string }
   const imagenBig           = ref< TImagenBig >( { titulo: "", src: "" } )
-  const props               = defineProps({
-    linea:  { required: true,   type: Object as PropType< ILineaAcuerdo > },
+
+  type  TProps              = {
+    imagen  : IImagenProducto
+    nombre  : string
+    float  ?: boolean
+    mini   ?: boolean
+  }
+
+  const {
+    imagen,
+    nombre,
+    float = false,
+    mini  = false
+  }               = defineProps<TProps>()
+
+  /*
+  {
+    imagen: { required: true,   type: Object as PropType< IImagenProducto > },
+    nombre: { required: true,   type: String  },
     float:  { default:  false,  type: Boolean },
     mini:   { default:  false,  type: Boolean },
-  })
-  function clickImagen( linea : ILineaAcuerdo ){
-    imagenBig.value         = { titulo: linea.nombre, src: linea.img.img_full }
+  }
+  */
+
+  //const { nombre }          = toRefs( props )
+
+  function clickImagen( img : IImagenProducto ){
+    imagenBig.value         = { titulo: nombre, src: img.img_full }
     ventanaImagen.value     = true
   }
 </script>

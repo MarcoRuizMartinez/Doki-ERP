@@ -174,7 +174,7 @@
     opciones.value        = options.value
 
     if(!!optionsSort.value)
-      opciones.value      = ToolArray.sortArray(opciones.value, optionsSort.value)
+      opciones.value      = ToolArray.ordenar(opciones.value, optionsSort.value)
 
     if(!!modelValue.value.label && !!modelValue.value.value)
       modelo.value        = seleccionarEntreOpciones( modelValue.value.value )//newValue as ILabelValue

@@ -63,9 +63,9 @@
         <Tooltip v-if     ="!producto.activo">
           <div class      ="text-h6 text-center width200">Producto inactivo</div>
           <table    class ="text-1_1em">
-            <tr><td>Activo en Dolibarr:     </td><td>{{ Tool.siNo(producto.activoEnVenta)}}         </td></tr>
-            <tr><td>Activo en proveedor:    </td><td>{{ Tool.siNo(producto.activo_proveedor)}} </td></tr>
-            <tr><td>Disponible en proveedor:</td><td>{{ Tool.siNo(producto.disponible)}}       </td></tr>
+            <tr><td>Activo en Dolibarr:     </td><td>{{ Tool.siNo(producto.activoEnVenta)}}     </td></tr>
+            <tr><td>Activo en proveedor:    </td><td>{{ Tool.siNo(producto.activo_proveedor)}}  </td></tr>
+            <tr><td>Disponible en proveedor:</td><td>{{ Tool.siNo(producto.disponible)}}        </td></tr>
           </table>
         </Tooltip>
         <efecto efecto="UpDown">

@@ -16,7 +16,7 @@ export class ImagenProducto implements IImagenProducto
   get img_300px() : string { return this.img_Xpx( 300 ) }
 
   constructor( url : string = "" ){
-    this.url            = url
+    this.url            = !!url ? url : IMAGEN_DEFAULT
   }
 
   img_Xpx( px : number = 100 ) : string

@@ -20,7 +20,7 @@
   import    titulo                  from "src/areas/productos/components/Titulo.vue"
   import    imagen                  from "src/areas/productos/components/ImagenProducto.vue"
   import    formulario              from "src/areas/productos/components/FormularioProducto.vue"
-  import    productoCompuesto       from "src/areas/productos/components/ProductosCompuesto.vue"
+  import    productoCompuesto       from "src/areas/productos/components/ProductoCompuesto/ProductoCompuesto.vue"
   import    documentos              from "components/archivos/ModuloArchivos.vue"
   
   const { editarURL         } = useControlProductos()  
@@ -74,6 +74,6 @@
   />
   <producto-compuesto
     v-if                ="producto.naturaleza.esCompuesto_o_Kit"
-    class               ="col-12"
+    class               ="col-12 col-md-6"
   />
 </template>

@@ -949,12 +949,12 @@ https://dolibarr.mublex.com/fichinter/card.php?
     acuApi.conIVA             = Boolean( +acuApi.conIVA )
     acuApi.aiuOn              = Boolean( +acuApi.aiu )
 
-    acuApi.aiuAdmin           = ToolType.getNumberValido( acuApi, "aiuAdmin" )
-    acuApi.aiuImpre           = ToolType.getNumberValido( acuApi, "aiuImpre" )
-    acuApi.aiuUtili           = ToolType.getNumberValido( acuApi, "aiuUtili" )
-    acuApi.descuento          = ToolType.getNumberValido( acuApi, "descuento" )
-    acuApi.comercialId        = ToolType.getNumberValido( acuApi, "comercialId" )
-    acuApi.comercial2Id       = ToolType.getNumberValido( acuApi, "comercial2Id" )
+    acuApi.aiuAdmin           = ToolType.keyNumberValido( acuApi, "aiuAdmin" )
+    acuApi.aiuImpre           = ToolType.keyNumberValido( acuApi, "aiuImpre" )
+    acuApi.aiuUtili           = ToolType.keyNumberValido( acuApi, "aiuUtili" )
+    acuApi.descuento          = ToolType.keyNumberValido( acuApi, "descuento" )
+    acuApi.comercialId        = ToolType.keyNumberValido( acuApi, "comercialId" )
+    acuApi.comercial2Id       = ToolType.keyNumberValido( acuApi, "comercial2Id" )
 
     acuApi.condicionPagoId    = +acuApi.condicionPagoId
     acuApi.formaPagoId        = +acuApi.formaPagoId

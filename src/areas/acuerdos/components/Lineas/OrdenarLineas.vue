@@ -19,7 +19,7 @@
           v-for             ="linea in lineas"
           :key              ="linea.id"
           >
-          <div  class       ="item row">
+          <div  class       ="degradado-gris row">
             <q-img
               :src          ="linea.imagen" 
               class         ="imagen-woo-sm q-mr-sm"
@@ -84,7 +84,7 @@
     for (const p of grupoElegido.value.productos)
       p.orden = lineas.value.findIndex( ( l )=> p.lineaId === l.id ) + 1    
 
-    ToolArray.sortArray( grupoElegido.value.productos, "orden" )
+    ToolArray.ordenar( grupoElegido.value.productos, "orden" )
     deGruposAProductos()
   }
   
@@ -108,13 +108,6 @@
   }
 </script>
 <style scoped>
-.item{
-  background: linear-gradient(to bottom,#ffffff,#e5e5e5);
-  border: 1px solid #d3d3d3;
-  padding: 4px;
-  min-width: 100%;
-  border-radius: 8px;
-}
 .draggable-item{
   color: #dc3545;
   background-color: aqua;

@@ -33,16 +33,16 @@ export class ProductoProveedor implements IProductoProveedor
     for (const pp of item)
     {
       const pro               = new ProductoProveedor()
-            pro.ref           = ToolType.getString( pp, "ref"       )
-            pro.nombre        = ToolType.getString( pp, "nombre"    )
-            pro.proveedor     = ToolType.getString( pp, "proveedor" )
+            pro.ref           = ToolType.keyStringValido( pp, "ref"       )
+            pro.nombre        = ToolType.keyStringValido( pp, "nombre"    )
+            pro.proveedor     = ToolType.keyStringValido( pp, "proveedor" )
 
-            pro.activo        = ToolType.getBoolean( pp, "activo"     ) 
-            pro.disponible    = ToolType.getBoolean( pp, "disponible" ) 
+            pro.activo        = ToolType.keyBoolean( pp, "activo"     ) 
+            pro.disponible    = ToolType.keyBoolean( pp, "disponible" ) 
 
-            pro.id            = ToolType.getNumberValido( pp, "id"            ) 
-            pro.precio        = ToolType.getNumberValido( pp, "precio"        ) 
-            pro.proveedor_id  = ToolType.getNumberValido( pp, "proveedor_id"  )
+            pro.id            = ToolType.keyNumberValido( pp, "id"            ) 
+            pro.precio        = ToolType.keyNumberValido( pp, "precio"        ) 
+            pro.proveedor_id  = ToolType.keyNumberValido( pp, "proveedor_id"  )
 
       items.push( pro )
     }

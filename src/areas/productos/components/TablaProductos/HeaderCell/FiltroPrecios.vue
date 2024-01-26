@@ -20,7 +20,7 @@
   const popupOn               = ref < boolean >(false)
 
   function ordenar( tipo : "<" | ">" ) {
-    productosFil.value        = ToolArray.sortArray(productosFil.value, "precio", tipo)
+    productosFil.value        = ToolArray.ordenar(productosFil.value, "precio", tipo)
   }
 
   watch([ ()=> busqueda.value.f.precioMinimo , ()=> busqueda.value.f.precioMaximo], ([newMin, newMax]) =>{

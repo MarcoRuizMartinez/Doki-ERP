@@ -75,7 +75,7 @@ export function useControlPedidosWoo()
     {
       const results           = ToolArray.getArrayInObject( data, "results")
       const p                 = typeof data == "object" && "paging" in data ? data.paging : {}
-      paging                  = { limit: ToolType.getNumberValido(p, "limit" ), offset: ToolType.getNumberValido(p, "offset" ), total: ToolType.getNumberValido(p, "total" ) }
+      paging                  = { limit: ToolType.keyNumberValido(p, "limit" ), offset: ToolType.keyNumberValido(p, "offset" ), total: ToolType.keyNumberValido(p, "total" ) }
       if(!!results.length)
       {
         for (const p of results){

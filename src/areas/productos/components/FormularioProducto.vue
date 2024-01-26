@@ -11,10 +11,12 @@
   import {  storeToRefs           } from 'pinia'
   import {  useStoreProducto      } from 'src/stores/producto'
   import {  useStoreUser          } from "src/stores/user"
+
   //* ///////////////////////////////////////////////////////////////////////////////// Modelos
   import {  ICategoriaProducto    } from "src/areas/productos/models/CategoriaProducto"
   import {  IProductoDoli,
             ProductoDoli          } from "src/areas/productos/models/ProductoDolibarr"
+
   //* ///////////////////////////////////////////////////////////////////////////////// Componibles
   import {  Format,
             confeti               } from "src/composables/useTools"
@@ -24,6 +26,7 @@
             dexieNaturaleza,
             dexieCategoriasProducto
                                   } from "src/composables/useDexie"
+                                  
   //* ///////////////////////////////////////////////////////////////////////////////// Componentes
   import    efecto                  from "components/utilidades/Efecto.vue"
   import    ventana                 from "components/utilidades/Ventana.vue"
@@ -83,6 +86,12 @@
     }
     ,{ immediate: true }
   )
+
+
+  watch(()=>producto.value.costo, ()=>
+    {
+      proModel.value.costo = producto.value.costo
+    },)
 
   //* ////////////////////////////////////////////////////////////////////////////////////// Inicio
   function iniciar()

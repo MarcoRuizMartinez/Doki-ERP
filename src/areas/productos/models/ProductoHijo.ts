@@ -16,7 +16,9 @@ export interface IProductoHijo
   qty                 : number
   orden               : number
   precio              : number
+  precioTotal         : number
   costo               : number
+  costoTotal          : number
   unidad              : IUnidad
   img                 : IImagenProducto
   naturaleza          : INaturalezaProducto
@@ -44,4 +46,7 @@ export class ProductoHijo implements IProductoHijo
   siigo               : TCodigosSiigo         = new CodigosSiigo()
   siigoPadre          : TCodigosSiigo         = new CodigosSiigo()
   productosPro        : IProductoProveedor[]  = []
+
+  get precioTotal(): number { return this.qty * this.precio }
+  get costoTotal (): number { return this.qty * this.costo }
 }

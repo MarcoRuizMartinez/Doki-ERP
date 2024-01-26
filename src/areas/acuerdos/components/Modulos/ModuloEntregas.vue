@@ -74,7 +74,8 @@
                 <q-td   :props  ="props" class="text-0_8em q-ma-none q-pa-none">
                   <imagen-producto    float mini
                     class       ="col-shrink q-mr-sm"
-                    :linea      ="props.row"
+                    :imagen     ="props.row.img"
+                    :nombre     ="props.row.nombre"
                   />
                   <div class="row q-ma-none q-pa-none">
                     <div class="col-8 q-ma-none q-pa-none">
@@ -96,7 +97,7 @@
           <div  class             ="col-6 side-left">
             <div class            ="row justify-center full-width">
               <!-- //* ////////////////////////////////////////////////////////// Boton Remision -->            
-              <q-btn              dense
+              <q-btn
                 v-if              ="!!entrega.contactoEntrega.id"
                 v-bind            ="style.btnFlatMd"
                 color             ="grey-4"
@@ -106,7 +107,7 @@
                 @click            ="emit('clickRemision', entrega)"
               />
               <!-- //* ////////////////////////////////////////////////////////// Boton Rotulo -->
-              <q-btn              dense
+              <q-btn 
                 v-if              ="!!entrega.contactoEntrega.id"
                 v-bind            ="style.btnFlatMd"
                 color             ="grey-4"
@@ -143,7 +144,7 @@
   import    ventana                 from "components/utilidades/Ventana.vue"
   import    refAcuerdo              from "src/areas/acuerdos/components/Tools/RefAcuerdo.vue"
   import    estado                  from "src/areas/acuerdos/components/Tools/Estado.vue"
-  import    imagenProducto          from "src/areas/acuerdos/components/Lineas/Columnas/ImagenProducto.vue"
+  import    imagenProducto        from "src/areas/productos/components/Tools/ImagenProducto.vue"
   import    tablaEnvio              from "src/areas/acuerdos/components/Tools/TablaEnvio.vue" 
 
   const emit                  = defineEmits<{

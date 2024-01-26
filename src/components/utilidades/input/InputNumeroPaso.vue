@@ -4,7 +4,7 @@
       <q-btn
         v-bind                      ="estiloBotones('abajo')"
         v-touch-repeat:0:200.mouse  ="restar"
-        :disable                    ="disableResta || readonly"
+        :disable                    ="readonly"
       />
     </div>
     <q-input                        dense hide-bottom-space
@@ -31,12 +31,12 @@
       <q-btn
         v-bind                      ="estiloBotones('arriba')"
         v-touch-repeat:0:200.mouse  ="sumar"
-        :disable                    ="disableSuma || readonly"
+        :disable                    ="readonly"
       />
       <q-btn
         v-bind                      ="estiloBotones('abajo')"
         v-touch-repeat:0:200.mouse  ="restar"
-        :disable                    ="disableResta  || readonly"
+        :disable                    ="readonly"
       />
     </div>
     <div
@@ -46,13 +46,14 @@
       <q-btn
         v-bind                      ="estiloBotones('arriba')"
         v-touch-repeat:0:200.mouse  ="sumar"
-        :disable                    ="disableSuma || readonly"
+        :disable                    ="readonly"
       />
     </div>
   </div>
 </template>
 <script setup lang="ts">
 /*
+:disable                    ="disableResta  || readonly"
 conDecimales
 */
   import {  PropType,
@@ -68,7 +69,7 @@ conDecimales
   const props                 = defineProps({
     modelValue: { required: true,         type: Number },
     label:      { default:  undefined,    type: String },
-    maximo:     { default:  1000000,      type: Number },
+    maximo:     { default:  1_000_000,    type: Number },
     minimo:     { default:  1,            type: Number },
     paso:       { default:  1,            type: Number },
     porcentaje: { default:  false,        type: Boolean},
@@ -97,15 +98,20 @@ conDecimales
     model.value               = newValor
   })
 
-  const disableSuma           = computed(()=> model.value + paso.value > maximo.value )
-  const disableResta          = computed(()=> model.value - paso.value < minimo.value )
+  //const disableSuma           = computed(()=> model.value + paso.value > maximo.value )
+  //const disableResta          = computed(()=> model.value - paso.value < minimo.value )
 
   function sumar() {
-    model.value               = +Number( model.value + paso.value ).toFixed(2)    
+    const suma                = +Number( model.value + paso.value ).toFixed(2)
+    if(suma                   < maximo.value)         
+      model.value             = suma
   }
 
-  function restar() {
-    model.value               = +Number( model.value - paso.value ).toFixed(2)    
+  function restar()
+  {
+    const resta               = +Number( model.value - paso.value ).toFixed(2)
+    if(resta >  minimo.value)         
+      model.value             = resta
   }
 
   watch( model, ( newModel )=>{

@@ -77,6 +77,7 @@ export interface IProductoDoli {
   activo                    : boolean
   comentarios               : IAccion[]
   productoForApi            : any
+  productoForApiPrecios     : any
   siigo                     : TCodigosSiigo  // Codigo siigo que se utiliza en los productos
 }
 
@@ -160,6 +161,7 @@ export class ProductoDoli implements IProductoDoli
 
     return precio
   }
+
 
   get urlDolibarr() : string { return process.env.URL_DOLIBARR + "/product/card.php?id=" + this.id }
 
@@ -256,7 +258,7 @@ export class ProductoDoli implements IProductoDoli
       ref:                    this.ref,
       label:                  this.nombre,
       description:            this.descripcion,
-      price:                  !!this.precio_aumento ? this.precio_aumento : this.precio_aumento_escom,
+      price:                  this.precio_publico_final,
       cost_price:             this.costo,
       status:                 +this.activoEnVenta,
       status_buy:             +this.activoEnCompra,
@@ -277,6 +279,24 @@ export class ProductoDoli implements IProductoDoli
 
     return proForApi
   }
+
+
+  get productoForApiPrecios() : any
+  {
+    const proForApi : any = {
+      price:                  this.precio_publico_final,
+      cost_price:             this.costo,
+      array_options:
+      {
+        options_costo_adicional:      this.costo_adicional,
+        options_precio_publico:       this.precio_aumento,
+        options_precio_promocion:     this.precio_promocion,
+      },
+    }
+
+    return proForApi
+  }
+
 
 
   static async productoAPItoProducto( productoApi : any ) : Promise<IProductoDoli>

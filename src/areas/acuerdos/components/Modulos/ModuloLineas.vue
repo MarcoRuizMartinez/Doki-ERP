@@ -163,6 +163,4 @@
   const { crearNuevoGrupo     } = useControlProductos()
 
   watch( () => modales.value.formulario, (mostrarForm) => destacarLineaElegida( mostrarForm ?? false ) )
-
-
 </script>

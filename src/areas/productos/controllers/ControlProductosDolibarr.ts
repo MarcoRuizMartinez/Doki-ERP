@@ -1,11 +1,15 @@
 //* ////////////////////////////////////////////////////////////////// Core
 import {  useRouter             } from 'vue-router'
+
 //* ////////////////////////////////////////////////////////////////// Store
 import {  storeToRefs           } from 'pinia'  
 import {  useStoreProducto      } from 'src/stores/producto'
+
 //* ////////////////////////////////////////////////////////////////// Modelos
 import {  IProductoDoli         } from "src/areas/productos/models/ProductoDolibarr"    
-import {  TCodigosSiigo         } from 'src/areas/productos/models/Siigo';          
+import {  TCodigosSiigo,
+          CodigosSiigo          } from 'src/areas/productos/models/Siigo'
+
 //* ////////////////////////////////////////////////////////////////// Componibles
 import {  useTools,
           ToolNum               } from "src/composables/useTools"
@@ -26,17 +30,21 @@ export function useControlProductos()
           productos,
           loading             } = storeToRefs( useStoreProducto() )
 
-  //* ////////////////////////////////////////////////////////////////////// Editar URL de imagen
-  async function editarProducto( pro : IProductoDoli ) : Promise <boolean>
+  //* ////////////////////////////////////////////////////////////////////// Editar producto
+  async function editarProducto( pro : IProductoDoli, tipo : "full" | "precio" = "full" ) : Promise <boolean>
   {      
     loading.value.editar        = true
+    const objeto                =   tipo == "precio" ?  pro.productoForApiPrecios
+                                  :                     pro.productoForApi
 
-    const {ok}                  = await apiDolibarr("editar", "producto", pro.productoForApi, pro.id )       
-    if(ok){
+    const { ok }                = await apiDolibarr("editar", "producto", objeto, pro.id )
+
+    if(ok && tipo == "full"){
       aviso("positive", `Producto actualizado 👌🏼`)
     }
-    else
+    else if(!ok)
       aviso("negative", `Error actualizando producto`)
+
     loading.value.editar        = false
 
     return ok
@@ -77,25 +85,22 @@ export function useControlProductos()
 
   async function codigoYaExiste( codigo : number ) : Promise <boolean>
   {
-    const { ok }    = await miFetch( getURL("listas", "productos"), { method: "POST", body: getFormData( "codigoSiigoOk", { codigo } ) }, { mensaje: "buscar código producto existe" } )    
+    const { ok }          = await miFetch( getURL("listas", "productos"), { method: "POST", body: getFormData( "codigoSiigoOk", { codigo } ) }, { mensaje: "buscar código producto existe" } )    
     return ok
   }
 
   async function buscarCodigosSiigo( sigla : string, codigo : number, enSiigo : boolean ) : Promise <TCodigosSiigo>
   {
-    const { ok, data }    = await miFetch( getURL("listas", "productos"), { method: "POST", body: getFormData( "codigosPorSiglas", { sigla } ) }, { mensaje: "buscar codigos siigo" } )    
+    const { data }        = await miFetch( getURL("listas", "productos"), { method: "POST", body: getFormData( "codigosPorSiglas", { sigla } ) }, { mensaje: "buscar codigos siigo" } )    
 
-    const codigos : TCodigosSiigo = {
-      codigo  : codigo,
-      linea   : +data?.codigo_linea ?? 0,
-      grupo   : +data?.codigo_grupo ?? 0,
-      enSiigo,
-    }
-    
+    const codigos         = new CodigosSiigo()
+          codigos.codigo  = codigo 
+          codigos.linea   = +data?.codigo_linea ?? 0
+          codigos.grupo   = +data?.codigo_grupo ?? 0 
+          codigos.enSiigo = enSiigo
+  
     return codigos
   }
-
-
 
   //* /////////////////////////////////////////////////////////////// Return
   return {

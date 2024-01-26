@@ -52,9 +52,9 @@ export class EnlaceAcuerdo implements IEnlaceAcuerdo
 
   static enlaceApiToEnlace( eApi : any, padre : TTipoAcuerdo ) : IEnlaceAcuerdo
   {
-    const enlace        = new EnlaceAcuerdo( ToolType.getNumberValido(eApi, "enlaceId" ),  padre )
-    enlace.destino      = getIdTipo( ToolType.getNumberValido(eApi, "destinoId" ), ToolType.getStringValido(eApi, "destinoTipo") )
-    enlace.origen       = getIdTipo( ToolType.getNumberValido(eApi, "origenId" ),  ToolType.getStringValido(eApi, "origenTipo") )
+    const enlace        = new EnlaceAcuerdo( ToolType.keyNumberValido(eApi, "enlaceId" ),  padre )
+    enlace.destino      = getIdTipo( ToolType.keyNumberValido(eApi, "destinoId" ), ToolType.keyStringValido(eApi, "destinoTipo") )
+    enlace.origen       = getIdTipo( ToolType.keyNumberValido(eApi, "origenId" ),  ToolType.keyStringValido(eApi, "origenTipo") )
 
     return enlace
 

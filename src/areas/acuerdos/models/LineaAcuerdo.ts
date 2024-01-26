@@ -1,6 +1,6 @@
 import {  IProductoDoli,
           ProductoDoli      } from "src/areas/productos/models/ProductoDolibarr"
-import {  ToolNum           } from "src/composables/useTools"
+import {  ToolNum, ToolType           } from "src/composables/useTools"
 import {  getUnidadDB,
           getCategoriaDB,
           getNaturalezaDB,
@@ -424,7 +424,7 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
         lineaFinal.siigo.codigo         = +linea.codigo
         lineaFinal.siigo.enSiigo        = Boolean( +linea?.enSiigo ?? 0 )
         lineaFinal.comsionX100Division  = +(linea?.divisionComision ?? 100)
-        lineaFinal.img.url              = linea?.imagen ?? IMAGEN_DEFAULT
+        lineaFinal.img.url              = ToolType.keyStringValido( linea, "imagen", IMAGEN_DEFAULT)        
         
         if(!!linea.naturaleza_id)
           lineaFinal.naturaleza         = await getNaturalezaDB( linea.naturaleza_id.toString() )     

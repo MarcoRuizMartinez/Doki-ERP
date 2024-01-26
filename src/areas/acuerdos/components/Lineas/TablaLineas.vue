@@ -53,7 +53,8 @@
           <!-- //* //////////////////////////////////////////////////////// Imagen -->
           <imagen-producto
             class               ="col-shrink q-mr-sm"
-            :linea              ="(props.row as LineaAcuerdo)"
+            :imagen             ="props.row.img"
+            :nombre             ="props.row.nombre"
           />
           <!-- //* //////////////////////////////////////////////////////// Nombre-->
           <nombre-descripcion
@@ -130,22 +131,26 @@
             toRefs,
             watch,
             PropType            } from "vue"
+            
   // ////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs         } from 'pinia'
   import {  useStoreAcuerdo     } from 'src/stores/acuerdo'
+
   // ////////////////////////////////////////////////////////////////////// Models
   import {  IGrupoLineas        } from "src/areas/acuerdos/models/GrupoLineasAcuerdo"
   import {  ILineaAcuerdo,
             LineaAcuerdo        } from "src/areas/acuerdos/models/LineaAcuerdo"
   import {  IColumna,
             Columna             } from "src/models/Tabla"
+            
   // ////////////////////////////////////////////////////////////////////// Componibles
   import {  useControlProductos } from "src/areas/acuerdos/controllers/ControlLineasProductos"
+
   // ////////////////////////////////////////////////////////////////////// Componentes
   import    precioTabla           from "src/areas/productos/components/Tools/PrecioProducto.vue"
   import    btnEditarLote         from "./Tools/BotonesEditarEnLote.vue"
   import    subtotalToggle        from "./Tools/SubtotalToggle.vue"
-  import    imagenProducto        from "./Columnas/ImagenProducto.vue"
+  import    imagenProducto        from "src/areas/productos/components/Tools/ImagenProducto.vue"
   import    nombreDescripcion     from "./Columnas/NombreDescripcion.vue"
   import    cantidad              from "./Columnas/Cantidad.vue"
   import    descuento             from "./Columnas/Descuento.vue"

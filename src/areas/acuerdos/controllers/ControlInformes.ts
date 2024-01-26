@@ -148,7 +148,7 @@ export function useControlInformes()
           if(!existe)
           {
             serieApex.data.push( { x: fecha, y: null, fecha: "" })
-            serieApex.data        = ToolArray.sortArray(serieApex.data, "x", "<")
+            serieApex.data        = ToolArray.ordenar(serieApex.data, "x", "<")
           }
         }
       }

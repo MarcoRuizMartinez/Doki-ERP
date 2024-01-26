@@ -62,12 +62,6 @@ export class ToolType
     return key in objeto && !!objeto[key]
   }
 
-  static getStringValido( objeto : any, key : string ) : string {
-    const texto : string  = key in objeto && ToolType.valorValido( objeto[key] ) && typeof objeto[key] === "string"
-                            ? objeto[key] : ""
-    return texto
-  }
-
   static anyToNumOStr( v : any ) : number | string
   {
     if(typeof v === "number" || typeof v === "string")
@@ -78,12 +72,16 @@ export class ToolType
 
   static anyToNum( v : any ) : number
   {
-    if(typeof v === "number")
+    if(typeof v === "undefined") return 0
+
+    if(typeof v === "number" && !isNaN(v) )
       return v
     else if(typeof v === "string")
       return ToolType.strOrNumToNum( v, 0 )
 
-    return 0
+    if(isNaN(v)) return 0
+    
+    return v
   }
   
   static strOrNumToNum( numero : string | number, defectoSiNull : number  ) : number
@@ -94,7 +92,7 @@ export class ToolType
       return !!numero ? parseFloat(numero) : defectoSiNull
   }
 
-  static getNumberValido( objeto : any, key : string, defecto : number = 0 ) : number
+  static keyNumberValido ( objeto : any, key : string, defecto : number = 0 ) : number
   {
     let  numero : number = defecto
     if(key in objeto && ToolType.valorValido( objeto[key] ))
@@ -107,16 +105,18 @@ export class ToolType
     }
     return numero
   }
+  
 
-  static getBoolean( objeto : any, key : string ) : boolean
+  static keyBoolean( objeto : any, key : string ) : boolean
   {
-    return Boolean( ToolType.getNumberValido( objeto, key, 0 ) )
+    return Boolean( ToolType.keyNumberValido( objeto, key, 0 ) )
   }
   
 
-  static getString( objeto : any, key : string ) : string
+
+  static keyStringValido( objeto : any, key : string, defecto : string = "" ) : string
   {
-    let str = ""
+    let str = defecto
     if(key in objeto && ToolType.valorValido( objeto[key] ))
     {
       if( typeof objeto[key] === "number" )
@@ -124,6 +124,9 @@ export class ToolType
       else
       if( typeof objeto[key] === "string" )
         str = objeto[key]
+
+      if(str.length === 0)
+        str = defecto
     }
 
     return str
@@ -334,7 +337,7 @@ export class ToolNum
 
 export class ToolArray
 {
-  static sortArray( arraySort : any[], key : string, orden : '<' | '>' = '<' ) : any[]
+  static ordenar( arraySort : any[], key : string, orden : '<' | '>' = '<' ) : any[]
   {
     arraySort = arraySort.sort ( ( a , b ) =>
                                   {
@@ -344,6 +347,17 @@ export class ToolArray
                                   })
     return arraySort
   }  
+
+  static sumar( array : any[], key : string ) : number
+  {
+    if(!array.length) return 0
+
+    const arraySumar = array.map( ( i : any ) => i[key] )  
+          arraySumar.forEach( i => i = ToolType.anyToNum( i ) )
+    
+    return arraySumar.reduce ( ( v1:number, v2:number) : number  => v1 + v2 )
+  }
+    
 
   static valuesObjectArrayToNumber( array : any[] ) : any[]
   {
@@ -420,12 +434,16 @@ export class Tool
     })
   }  
 
-  static siNo( boleano : boolean, conIconos : boolean = true ) : string {
+  static siNo( boleano : boolean, modo : "texto" | "iconos" | "textoConIconos" = "textoConIconos" ) : string {
     let retorno           = ""
-    if(conIconos)
+
+          if(modo         === "textoConIconos")
       retorno             = boleano ? "✅ Si" : "❌ No"
+    else  if(modo         === "iconos")
+      retorno             = boleano ? "✅"    : "❌"    
     else
-      retorno             = boleano ? "Si" : "No"
+      retorno             = boleano ? "Si"    : "No"
+
     return retorno
   }  
 

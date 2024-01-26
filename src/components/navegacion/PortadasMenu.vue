@@ -44,7 +44,7 @@
           enlaces.value.push( item )
         }
         enlaces.value   = enlaces.value.filter( e => palabras.value.some( p => e.titulo.includes( p ) ) )
-        enlaces.value   = ToolArray.sortArray( enlaces.value, 'orden', "<")
+        enlaces.value   = ToolArray.ordenar( enlaces.value, 'orden', "<")
       }
     }
   }

@@ -5,7 +5,8 @@ import {  useFetch          } from "src/composables/useFetch"
 import {  ImagenProducto    } from '../models/ImagenProducto';
 import {  IProductoDoli,
           ProductoDoli      } from "src/areas/productos/models/ProductoDolibarr"
-import {  ToolType, 
+import {  ToolType,
+          ToolArray,
           ToolNum           } from "src/composables/useTools"
 import {  IProductoHijo,
           ProductoHijo      } from "../models/ProductoHijo"
@@ -79,19 +80,20 @@ export function servicesProductos()
               hijo.ref              = item?.ref     ?? ""
               hijo.nombre           = item?.nombre  ?? ""
 
-              hijo.id               = ToolType.getNumberValido( item, "id"          )
-              hijo.padre_id         = ToolType.getNumberValido( item, "padre_id"    )
-              hijo.hijo_id          = ToolType.getNumberValido( item, "hijo_id"     )
-              hijo.qty              = ToolType.getNumberValido( item, "qty"         )
-              hijo.orden            = ToolType.getNumberValido( item, "orden"       )
-              hijo.relacion_id      = ToolType.getNumberValido( item, "relacion_id" )
-              hijo.precio           = ToolType.getNumberValido( item, "precio"      )
-              hijo.costo            = ToolType.getNumberValido( item, "costo"       )
+              hijo.id               = ToolType.keyNumberValido( item, "id"          )
+              hijo.padre_id         = ToolType.keyNumberValido( item, "padre_id"    )
+              hijo.hijo_id          = ToolType.keyNumberValido( item, "hijo_id"     )
+              hijo.qty              = ToolType.keyNumberValido( item, "qty"         )
+              hijo.orden            = ToolType.keyNumberValido( item, "orden"       )
+              hijo.relacion_id      = ToolType.keyNumberValido( item, "relacion_id" )
+              hijo.precio           = ToolType.keyNumberValido( item, "precio"      )
+              hijo.costo            = ToolType.keyNumberValido( item, "costo"       )
 
               hijo.img              = new ImagenProducto( item?.img  ?? "" )
               hijo.productosPro     = ProductoProveedor.getProductosFromAPI( item?.proveedores ?? "" )
+              hijo.productosPro     = ToolArray.ordenar( hijo.productosPro, "precio" )
               hijo.naturaleza       = await getNaturalezaDB( item?.naturaleza_id ?? "0" )
-              hijo.unidad           = await getUnidadDB( ToolType.getNumberValido( item, "unidad_id" ) )
+              hijo.unidad           = await getUnidadDB( ToolType.keyNumberValido( item, "unidad_id" ) )
         hijos.push( hijo )
       }
     }
@@ -113,16 +115,16 @@ export function servicesProductos()
         const hijo                  = new ProductoHijo()
               hijo.ref              = item?.ref     ?? ""
               hijo.nombre           = item?.nombre  ?? ""
-              hijo.id               = ToolType.getNumberValido( item, "id"        )
-              hijo.padre_id         = ToolType.getNumberValido( item, "padre_id"  )
-              hijo.hijo_id          = ToolType.getNumberValido( item, "hijo_id"   )
-              hijo.qty              = ToolType.getNumberValido( item, "qty"       )
-              hijo.orden            = ToolType.getNumberValido( item, "orden"     )              
-              hijo.siigo.linea      = ToolType.getNumberValido( item, "linea"     )
-              hijo.siigo.grupo      = ToolType.getNumberValido( item, "grupo"     )
-              hijo.siigo.codigo     = ToolType.getNumberValido( item, "codigo"    )
-              hijo.siigo.enSiigo    = !!ToolType.getNumberValido( item, "enSiigo" )
-              hijo.siigo.unidadDian = (await getUnidadDB( ToolType.getNumberValido( item, "unidad_id" ) )).codigo
+              hijo.id               = ToolType.keyNumberValido( item, "id"        )
+              hijo.padre_id         = ToolType.keyNumberValido( item, "padre_id"  )
+              hijo.hijo_id          = ToolType.keyNumberValido( item, "hijo_id"   )
+              hijo.qty              = ToolType.keyNumberValido( item, "qty"       )
+              hijo.orden            = ToolType.keyNumberValido( item, "orden"     )              
+              hijo.siigo.linea      = ToolType.keyNumberValido( item, "linea"     )
+              hijo.siigo.grupo      = ToolType.keyNumberValido( item, "grupo"     )
+              hijo.siigo.codigo     = ToolType.keyNumberValido( item, "codigo"    )
+              hijo.siigo.enSiigo    = !!ToolType.keyNumberValido( item, "enSiigo" )
+              hijo.siigo.unidadDian = (await getUnidadDB( ToolType.keyNumberValido( item, "unidad_id" ) )).codigo
         hijos.push( hijo )
       }
     }
@@ -140,6 +142,36 @@ export function servicesProductos()
   }
 
 
+  async function ordenarProductosHijos( padreId : number, ids : string ) : Promise< boolean >
+  {
+    const { ok }              = await miFetch(  getURL("servicios", "productos"),
+                                                { method: "POST", body: getFormData( "ordenarProductosHijos", { padreId, ids } ) },
+                                                { mensaje: "ordenar productos" }
+                                              )
+    return ok
+  }
+
+  async function cambiarQtyHijo( relacion_id : number, qty : number ) : Promise< boolean >
+  {
+    const { ok }              = await miFetch(  getURL("servicios", "productos"),
+                                                { method: "POST", body: getFormData( "cambiarQtyHijo", { qty, relacion_id } ) },
+                                                { mensaje: "cambiando cantidad" }
+                                              )
+    //console.log("ok: ", ok, data);
+    return ok
+  }
+
+  
+/*
+  async function cambiarQtyHijo( relacion_id : number, qty : number ) : Promise< boolean >
+  {
+    const { ok }              = await miFetch(  getURL("servicios", "productos"),
+                                                { method: "POST", body: getFormData( "cambiarQtyHijo", { qty, relacion_id } ) },
+                                                { mensaje: "cambiando cantidad" }
+                                              )
+    return ok
+  }  
+*/
 
   return {
     buscarProducto,
@@ -147,6 +179,8 @@ export function servicesProductos()
     buscarProductosHijos,
     buscarProductosHijosSiigo,
     marcarEnSiigo,
+    ordenarProductosHijos,
+    cambiarQtyHijo
   }
 }
 

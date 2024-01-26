@@ -194,7 +194,7 @@ export function useCotizacionPDF()
         const anchoIzq          = fondosGrisesLinea( altoProducto )
       
         // * //////////////////////////////////////////////// Ref y nombre
-        //const anchoRef          = Math.round( pdf.getStringUnitWidth(producto.ref) ) 
+        //const anchoRef          = Math.round( pdf.keyStringValidoUnitWidth(producto.ref) ) 
         //const espacios          = " ".repeat( anchoRef * 6 ) + " "
         const nombre            = `${producto.ref} - ${producto.nombre}`//espacios + producto.nombre
         const margenIzq         = doc.margenIzq + 4

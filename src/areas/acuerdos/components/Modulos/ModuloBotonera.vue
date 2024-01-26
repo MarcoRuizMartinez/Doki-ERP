@@ -5,11 +5,13 @@
   import {  storeToRefs     } from 'pinia'
   import {  useStoreUser    } from 'src/stores/user'
   import {  useStoreAcuerdo } from 'src/stores/acuerdo'
+
   // * /////////////////////////////////////////////////////////////////////// Componibles
   import {  useTools        } from "src/composables/useTools"
   import {  menuDefault,
             style           } from "src/composables/useEstilos"
   import {  TTipoPDF        } from "src/areas/acuerdos/composables/pdf/useCotizacion"
+  
   // * /////////////////////////////////////////////////////////////////////// Componentes
   import    barra             from "components/utilidades/Barra.vue"
   import    efecto            from "components/utilidades/Efecto.vue"

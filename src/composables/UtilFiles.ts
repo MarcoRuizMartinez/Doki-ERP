@@ -40,7 +40,7 @@ export function generarCSVDesdeTabla( nombre :string = "", columnsTabla : IColum
       else if(tipo === "string") 
         celda               = fila[columna.name]
       else  if(tipo === "boolean") 
-        celda               = Tool.siNo( fila[columna.name], false )
+        celda               = Tool.siNo( fila[columna.name], "texto" )
       else  if(tipo === "number") 
         celda               = fila[columna.name].toString().replace(".", ",")
       else  if(tipo === "object" && !!fila[columna.name])
