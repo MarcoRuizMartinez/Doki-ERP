@@ -14,6 +14,8 @@ import {  TCodigosSiigo,
 import {  IImagenProducto,
           IMAGEN_DEFAULT,
           ImagenProducto      } from "./ImagenProducto"
+import {  IProductoHijo,
+          ProductoHijo        } from "./ProductoHijo"
 
 
 const ivaX100                 = parseInt( process.env.IVA ?? "0" )
@@ -78,6 +80,7 @@ export interface IProductoDoli {
   comentarios               : IAccion[]
   productoForApi            : any
   productoForApiPrecios     : any
+  getComoProductoHijo       : IProductoHijo
   siigo                     : TCodigosSiigo  // Codigo siigo que se utiliza en los productos
 }
 
@@ -288,13 +291,36 @@ export class ProductoDoli implements IProductoDoli
       cost_price:             this.costo,
       array_options:
       {
+        options_aumento_escom:        this.aumento_escom,
+        options_aumento:              this.aumento,
+        options_aumento_precio_desc:  this.aumento_descuento,
+        options_aumento_precio_loco:  this.aumento_loco,
         options_costo_adicional:      this.costo_adicional,
         options_precio_publico:       this.precio_aumento,
         options_precio_promocion:     this.precio_promocion,
+        options_sin_proveedor:        +this.sin_proveedor,
       },
     }
 
     return proForApi
+  }
+
+
+  get getComoProductoHijo() : IProductoHijo
+  {
+    const hijo              = new ProductoHijo()
+          hijo.ref          = this.ref
+          hijo.nombre       = this.nombre    
+          hijo.id           = this.id
+          hijo.hijo_id      = this.id
+          hijo.precio       = this.precio_publico_final
+          hijo.costo        = this.costoTotal
+          hijo.unidad       = this.unidad
+          hijo.img          = this.img
+          hijo.naturaleza   = this.naturaleza
+          hijo.siigo        = this.siigo
+
+    return hijo
   }
 
 

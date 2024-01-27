@@ -16,12 +16,14 @@
   //* /////////////////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs         } from 'pinia'                            
   import {  useStoreAcuerdo     } from 'stores/acuerdo'
+  
   // * ///////////////////////////////////////////////////////////////////////////////// Componibles
-  import {  useTools            } from "src/composables/useTools"  
+  import {  useTools            } from "src/composables/useTools"
   import {  useFetch            } from "src/composables/useFetch"
   import {  style               } from "src/composables/useEstilos"
   import {  dexieCuentasDinero  } from "src/composables/useDexie"  
   import {  getURL, getFormData } from "src/composables/APIMaco"
+
   // * ///////////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana               from "components/utilidades/Ventana.vue"
   import    inputText             from "components/utilidades/input/InputFormText.vue"

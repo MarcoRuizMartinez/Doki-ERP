@@ -31,7 +31,6 @@
     buscarSiProductosEstanEnGrupo()
   }
 
-
   function buscarSiProductosEstanEnGrupo(){
     productos.value.forEach( p => {
       p.elegido = grupoElegido.value.productos.some( pg => p.ref == pg.ref )

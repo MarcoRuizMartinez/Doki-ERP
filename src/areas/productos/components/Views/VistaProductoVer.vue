@@ -8,6 +8,7 @@
   //* ///////////////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs           } from 'pinia'
   import {  useStoreProducto      } from 'src/stores/producto'
+  import {  useStoreUser          } from 'src/stores/user'
 
   //* ///////////////////////////////////////////////////////////////////////////////// Modelos
   import {  IArchivo              } from "src/models/Archivo"
@@ -26,7 +27,7 @@
   const { editarURL         } = useControlProductos()  
   const { producto,
           loading           } = storeToRefs( useStoreProducto() )
-  
+  const { usuario           } = storeToRefs( useStoreUser() )
   const minimizadoTodo        = ref< boolean >(false)
     
   const props                 = defineProps({
@@ -73,7 +74,7 @@
     @subida-ok          ="cargarProductos"
   />
   <producto-compuesto
-    v-if                ="producto.naturaleza.esCompuesto_o_Kit"
+    v-if                ="(usuario.esProduccion || usuario.esGerencia) && producto.naturaleza.esCompuesto_o_Kit"
     class               ="col-12 col-md-6"
   />
 </template>

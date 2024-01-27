@@ -9,18 +9,19 @@ import {  IResultado,
           CODES_FETCH    } from "src/models/TiposVarios"
 
 type AccionDolibarr           = "crear"         | "editar"        | "ver"           | "contacto-desvincular"  | "contacto-vincular" |
-                                "buscar"        | "borrar"        | "borrar-linea"  |
+                                "buscar"        | "borrar"        | "borrar-linea"  | 
                                 "crear-linea"   | "crear-lineas"  | "borrar-lineas" | "editar-linea"  |
                                 "descargar"     | "subir"         | "generar"       | 
                                 "close"         | "setinvoiced"   | "settodraft"    | "validate"      | "reopen"
 //  | "crear-lineas"  |  |
 
-type ModuloDolibarr           = "" | "tercero" | "contacto" | "documento" | "saber" | "producto" | "proyecto" |
-                                "cotización"  | "cotizaciónPro" |
-                                "pedido"      | "pedidoPro"     |
-                                "entrega"     | "entregaPro"    | "entregasPedido" | 
-                                "factura"     | "facturaPro"    |
-                                "accion"
+type ModuloDolibarr           = "" | "tercero"  | "contacto"      | "documento" | "saber" | "producto" | "producto-hijo" |
+                                "cotización"    | "cotizaciónPro" |
+                                "pedido"        | "pedidoPro"     |
+                                "entrega"       | "entregaPro"    | "entregasPedido" | 
+                                "factura"       | "facturaPro"    |
+                                "accion"        | "proyecto"
+                                
 type Metodo                   = "post" | "put" | "get" | "delete"
 
 export function useApiDolibarr()
@@ -58,6 +59,7 @@ export function useApiDolibarr()
       case "pedido"         : endPoint = "orders";              break;
       case "saber"          : endPoint = "knowledgemanagement"; break;
       case "producto"       : endPoint = "products";            break;
+      case "producto-hijo"  : endPoint = "products";            break;
       case "proyecto"       : endPoint = "projects";            break;
       case "pedidoPro"      : endPoint = "supplierorders";      break;
       case "entregasPedido" : endPoint = "orders";              break;
@@ -90,14 +92,19 @@ export function useApiDolibarr()
     {
       metodo                  = "post"
       if(accion               === "crear-lineas")
-        endPoint              += "/" + id + "/lines"
+        endPoint              += `/${id}/lines`
       else 
       if(accion               === "crear-linea")
       {
         if(tipo               === "cotización")
-          endPoint            += "/" + id + "/line"
+          endPoint            += `/${id}/line`
         if(tipo               === "pedido")
-          endPoint            += "/" + id + "/lines"          
+          endPoint            += `/${id}/lines`
+      }
+      else 
+      if(accion === "crear" && tipo === "producto-hijo")
+      {
+        endPoint              += `/${id}/subproducts/add`
       }
     }
     else if(accion.includes("editar"))
@@ -131,16 +138,25 @@ export function useApiDolibarr()
     else if(accion.includes("borrar") && ( typeof objeto === "string" || typeof objeto === "number") )
     {
       metodo                  = "delete"
+
       if(typeof objeto        === "string" && objeto.length > 10)
         endPoint              += "?" + objeto // si es mas de 10, es una consulta ejem modulepart=thirdparty&id=1
-      else {                  // asume que cuando se manda un id es de largo maximo 10 ejem 2313
+      else                    // asume que cuando se manda un id es de largo maximo 10 ejem 2313
+      {
         if(accion             === "borrar-lineas")
-          endPoint            += "/" + id + "/lines/" + objeto
+          endPoint            += `/${id}/lines/${objeto}`
         //else 
         //if(accion               === "borrar-linea")
         //  endPoint            += "/" + id + "/line/" + objeto
         else
-          endPoint            += "/" + objeto        
+        {
+          endPoint            += "/" + objeto
+
+          if(tipo             === "producto-hijo" && accion === "borrar")
+          {
+            endPoint          = `/products/${id}/subproducts/remove/${objeto}`
+          }
+        }
       }
     }
     else if(accion            === "descargar" && typeof objeto === "string")
