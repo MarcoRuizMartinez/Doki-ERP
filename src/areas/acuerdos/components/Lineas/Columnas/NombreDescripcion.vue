@@ -3,16 +3,20 @@
   import {  ref,
             watch,
             toRefs,
-            PropType              } from "vue"  
-  import {  ILineaAcuerdo } from "src/areas/acuerdos/models/LineaAcuerdo"
-  import {  Format        } from "src/composables/useTools"
-  import    confirmar       from "components/utilidades/MenuConfirmar.vue"
-  import    popupCosto      from "./EditarCosto.vue"
+            PropType        } from "vue"  
+  import {  ILineaAcuerdo   } from "src/areas/acuerdos/models/LineaAcuerdo"
+  import {  Format          } from "src/composables/useTools"
+  import    confirmar         from "components/utilidades/MenuConfirmar.vue"
+  import    popupCosto        from "./EditarCosto.vue"
+  
   // * /////////////////////////////////////////////////////////////////////// Store
-  import {  storeToRefs   } from 'pinia'
-  import {  useStoreUser  } from 'src/stores/user'
+  import {  storeToRefs     } from 'pinia'
+  import {  useStoreUser    } from 'src/stores/user'
+  import {  useStoreAcuerdo } from 'src/stores/acuerdo'
 
-  const { usuario         } = storeToRefs( useStoreUser() ) 
+
+  const { usuario         } = storeToRefs( useStoreUser() )
+  const { acuerdo         } = storeToRefs( useStoreAcuerdo() )
   const props               = defineProps({
     modelValue: { required: true, type: Object as PropType< ILineaAcuerdo > },
     esValidado: { required: true, type: Boolean },
@@ -38,13 +42,18 @@
     <br/> <span class         ="text-subtitle1">Costo: {{linea.costo}}</span>
     <br/> <span class         ="text-subtitle1">Aumento: {{linea.aumentoFromCosto}}</span>
     <br/> <span class         ="text-subtitle1">Division: {{linea.comsionX100Division}}</span> -->
-    <br/>
-    <span 
+    <div
+      v-if              ="acuerdo.esOCProveedor"
+      class             ="text-bold text-grey-6"
+      >
+      {{linea.refProv}}
+    </div>
+    <div 
       v-if              ="!!linea.descripcion"
       v-html            ="linea.descripcion"
       class             ="text-0_8em"
       >
-    </span>
+    </div>
     <Tooltip v-if       ="false">
       <table  class     ="tabla-info text-1em rounded-borders q-px-sm min-w-x100">
         <tbody>

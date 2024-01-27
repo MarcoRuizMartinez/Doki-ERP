@@ -209,8 +209,8 @@
     class-contenido               ="column items-center"    
     size-icon-carga               ="14em"
     padding-contenido             ="0"
-    style                         ="max-width: 700px;"
-    min-width                     ="700px"
+    style                         ="max-width: 800px;"
+    min-width                     ="800px"
     height-card-min               ="320px"
     :cargando                     ="cargandoDatos"
     >
@@ -260,12 +260,13 @@
       </q-btn>
     </template>
     <q-tab-panels                 animated
-      v-model                     ="tab"      
+      v-model                     ="tab"
+      class="fit"
       >
       <!-- //* /////////////////////////////////////////////////////////////////////// Tab Productos Siigo -->
       <q-tab-panel
         name                      ="productos"
-        class                     ="q-pa-none"
+        class                     ="q-pa-none fit"
         >
         <!-- //* ///////////////////////////////////////////////////////////////////// Tabla Productos Siigo -->
         <q-table                  bordered dense flat

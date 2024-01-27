@@ -179,6 +179,9 @@ export interface IAcuerdo
   contactoSmartTel            : string
   productos                   : ILineaAcuerdo[]
   proGrupos                   : IGrupoLineas[]
+  productosCompuestosTotal    : number
+  productosNoSiigo            : number
+  productosAlertaSiigo        : number
   largo                       : number      // total de productos
   conIVA                      : boolean
   hayDescuento                : boolean
@@ -887,6 +890,10 @@ https://dolibarr.mublex.com/fichinter/card.php?
 
   get OC_a_ProveedorTotal() : number  { return this.OC_a_Proveedor.length   }
   get hay_OC_aProveedor()   : boolean { return !!this.OC_a_Proveedor.length }
+
+  get productosCompuestosTotal() : number { return this.productos.filter( p => p.naturaleza.esCompuesto_o_Kit ).length }
+  get productosNoSiigo        () : number { return this.productos.filter( p => !p.siigo.enSiigo ).length }
+  get productosAlertaSiigo    () : number { return this.productosCompuestosTotal + this.productosNoSiigo }
 
   static  getTipoAcuerdoPlural( tipo : TTipoAcuerdo ) : string {
     const singular                = tipo === TIPO_ACUERDO.COTIZACION_CLI  ? "cotizaciones"

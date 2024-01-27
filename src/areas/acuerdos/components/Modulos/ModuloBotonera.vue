@@ -153,8 +153,14 @@
         label                 ="Siigo"
         :disable              ="loading.carga"
         @click                ="modales.siigo = true"
-        >
+        > 
         <Tooltip label        ="Descargar productos para siigo"/>
+        <q-badge              rounded
+          v-if                ="!!acuerdo.productosAlertaSiigo"
+          color               ="red"
+          class               ="q-ml-sm"
+          :label              ="acuerdo.productosAlertaSiigo"
+        />   
       </q-btn>      
     </div>
     <!-- //* ////////////////////////////////////////////////////////////////////  Lado Derecho -->

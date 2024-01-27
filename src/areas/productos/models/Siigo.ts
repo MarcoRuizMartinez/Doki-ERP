@@ -38,7 +38,7 @@ export type TKitSiigo = {
 }
 
 export const columnasSiigo = [
-  { name: "enSiigo",  label: "En Siigo",  CSVOculto: true,      format: ( value : any)=> !!value ? "✅" : "❌" },
+  { name: "enSiigo",  label: "Ok",  CSVOculto: true,      format: ( value : any)=> !!value ? "✅" : "❌" },
   { name: "linea",                        clase: "fuente-mono"  },
   { name: "grupo",                        clase: "fuente-mono"  },
   { name: "codigo",                       clase: "fuente-mono"  },
