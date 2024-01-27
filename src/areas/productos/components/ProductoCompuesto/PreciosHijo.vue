@@ -25,18 +25,14 @@
             <td class="width200">Proveedor</td>
             <td class="width100">Ref</td>
             <td class="width80 text-right">Precio</td>
-            <td class="width60">Activo</td>
-            <td class="width60">Disponible</td>
           </tr>                
           <tr
             v-for           ="pp of producto.productosPro"
             :key            ="pp.id"
             >
-            <td>{{ pp.proveedor }}</td>
+            <td>{{ Tool.siNo( pp.disponible, "iconos" ) }} {{ pp.proveedor }}</td>
             <td>{{ pp.ref }}      </td>
             <td class="fuente-mono text-right"> {{ Format.precio( pp.precio,  "decimales-no" )  }}</td>
-            <td class="text-center">            {{ Tool.siNo( pp.activo,      "iconos" )        }}</td>
-            <td class="text-center">            {{ Tool.siNo( pp.disponible, "iconos" )         }}</td>
           </tr>
         </table>
       </Tooltip>

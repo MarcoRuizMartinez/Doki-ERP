@@ -19,8 +19,8 @@ export class ProductoProveedor implements IProductoProveedor
   proveedor           : string   = ""
   proveedor_id        : number   = 0
   precio              : number   = 0
-  activo              : boolean  = false
-  disponible          : boolean  = false
+  activo              : boolean  = true
+  disponible          : boolean  = true
 
  // * ////////////////////////////////////////////////////////////////////////// Get new LineaAcuerdo data de API
  static getProductosFromAPI( dataAPI : any ) : IProductoProveedor[]
