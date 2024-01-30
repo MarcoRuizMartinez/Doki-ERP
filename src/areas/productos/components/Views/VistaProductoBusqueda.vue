@@ -73,7 +73,7 @@
   import {  BusquedaProducto,
             IQueryProducto      } from "src/areas/productos/models/BusquedaProductos"
   import {  Columna, IColumna   } from "src/models/Tabla"
-  import {  ModosVentana,
+  import {  TModosVentana,
             ALMACEN_LOCAL       } from "src/models/TiposVarios"  
   // * /////////////////////////////////////////////////////////////////////// Componentes
   import    ventana               from "components/utilidades/Ventana.vue"  
@@ -94,7 +94,7 @@
                                 } = storeToRefs( useStoreProducto() )  
   const { esMobil, aviso        } = useTools()
   
-  const modo                      = ref< ModosVentana >("esperando-busqueda")  
+  const modo                      = ref< TModosVentana >("esperando-busqueda")  
   const indexSelect               = ref< number >(-1)
   const ventanaProducto           = ref< boolean >(false)
   const tipoFormulario            = ref< "crear" | "ver" >("ver")

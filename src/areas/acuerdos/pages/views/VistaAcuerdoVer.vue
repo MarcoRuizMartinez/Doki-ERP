@@ -169,7 +169,7 @@
   import    lineas                  from "./../../components/Modulos/ModuloLineas.vue"
   import    enlaces                 from "./../../components/Modulos/ModuloEnlaces.vue"
   import    contactos               from "./../../components/Modulos/ModuloContactos.vue"
-  //import    entregas                from "./../../components/Modulos/ModuloEntregas.vue"
+  import    entregas                from "./../../components/Modulos/ModuloEntregas.vue"
   //import    calificacion            from "./../../components/Modulos/ModuloCalificacion.vue"
   import    anticipos               from "./../../components/Modulos/ModuloAnticipos.vue"
 

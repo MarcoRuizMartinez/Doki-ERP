@@ -29,7 +29,7 @@
   import {  ref, onMounted  } from "vue"
   import {  useStoreUser    } from 'src/stores/user'
   import {  servicesTerceros} from "src/areas/terceros/services/servicesTerceros"
-  import {  ModosVentana    } from "src/models/TiposVarios"
+  import {  TModosVentana    } from "src/models/TiposVarios"
   import    linkTercero       from "src/areas/terceros/components/LinkTercero.vue"
   import {  IColumna,
             Columna         } from "src/models/Tabla"
@@ -40,7 +40,7 @@
   const storeUser             = useStoreUser()
   const { buscarTerceros    } = servicesTerceros()
   const busqueda              = ref< string   >("")
-  const modo                  = ref< ModosVentana >("esperando-busqueda")
+  const modo                  = ref< TModosVentana >("esperando-busqueda")
   const terceros              = ref< ITercero[] >([])
   const columnas: IColumna[]  = [ new Columna({ name: "nombre" }) ]
 

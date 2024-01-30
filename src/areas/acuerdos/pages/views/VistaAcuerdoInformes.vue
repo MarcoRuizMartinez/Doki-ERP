@@ -106,7 +106,7 @@
   import {  ToolDate            } from "src/composables/useTools"       
   // * /////////////////////////////////////////////////////////////////////// Modelos
   import {  IQuery, Busqueda    } from "src/models/Busqueda"  
-  import {  ModosVentana        } from "src/models/TiposVarios"  
+  import {  TModosVentana       } from "src/models/TiposVarios"  
   import {  Acuerdo             } from "src/areas/acuerdos/models/Acuerdo"
   import {  TTipoAcuerdo        } from "src/areas/acuerdos/models/ConstantesAcuerdos"
   import {  Periodo,
@@ -130,7 +130,7 @@
   const router                    = useRouter()
   const { getSeries             } = useControlInformes()
   
-  const modo                      = ref< ModosVentana >("esperando-busqueda")   
+  const modo                      = ref< TModosVentana >("esperando-busqueda")   
   const cuentas                   = ref< IApexSerie [] >([])
   const totales                   = ref< IApexSerie [] >([])
   const categorias                = ref< string     [] >([])

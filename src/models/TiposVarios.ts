@@ -19,7 +19,7 @@ export interface ILabelValue {
 export const labelValueNulo : ILabelValue = { label: "", value: null }
 
 export type  EstadoVerificar  = "off" | "verificando"  | "check" | "alert"
-export type  ModosVentana     = "normal" | "buscando" | "esperando-busqueda" | "sin-resultados"
+export type  TModosVentana    = "normal" | "buscando" | "esperando-busqueda" | "sin-resultados"
 
 export const enum ALMACEN_LOCAL {
   COLOR           = "v3-color",

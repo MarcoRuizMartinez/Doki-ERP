@@ -45,14 +45,14 @@
                               } from "vue"  
   import    ventana             from "components/utilidades/Ventana.vue"
   import {  File_B64_ToBlob   } from "src/composables/UtilFiles"
-  import {  ModosVentana      } from "src/models/TiposVarios"
+  import {  TModosVentana      } from "src/models/TiposVarios"
   import {  style             } from "src/composables/useEstilos"
 
   const visibleModel            = ref< boolean  >(false)
   const srcModel                = ref< string   >("")
   const cargando                = ref< boolean >(true)
   const fullScreen              = ref< boolean >(false)  
-  const modo                    = ref< ModosVentana >("buscando")
+  const modo                    = ref< TModosVentana >("buscando")
   const emit                    = defineEmits(["update:visible", "update:src"])
   const props                   = defineProps({
     titulo:     { required: true,   type: String  }, 

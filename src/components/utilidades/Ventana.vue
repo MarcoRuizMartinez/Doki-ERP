@@ -7,7 +7,7 @@
             inject,
             useSlots      } from 'vue';
   import {  useStoreUser  } from 'src/stores/user'
-  import {  ModosVentana  } from "src/models/TiposVarios"
+  import {  TModosVentana  } from "src/models/TiposVarios"
   import {  useTools      } from "src/composables/useTools"
   const emits                   = defineEmits(["minimizar", "maximizar", "cerrar"])
   const slots                   = useSlots()
@@ -58,7 +58,7 @@
       modo:
       {
         default:            "normal",
-        type:               String as PropType< ModosVentana >,
+        type:               String as PropType< TModosVentana >,
       }
     })
   const { modo,

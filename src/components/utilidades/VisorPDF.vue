@@ -3,7 +3,7 @@
             toRefs,
             watch,
                             } from "vue"
-  import {  ModosVentana    } from "src/models/TiposVarios"
+  import {  TModosVentana    } from "src/models/TiposVarios"
   import    ventana           from "components/utilidades/Ventana.vue"
   import {  File_B64_ToBlob } from "src/composables/UtilFiles"
   import {  useTools        } from "src/composables/useTools"
@@ -20,7 +20,7 @@
   })
   const { aviso, esMobil    } = useTools()
   const cargando              = ref< boolean >(true)
-  const modo                  = ref< ModosVentana >("buscando")
+  const modo                  = ref< TModosVentana >("buscando")
   const { src,
           visible,
           enBase64          } = toRefs( props )

@@ -31,7 +31,7 @@ class-maximizado      ="col-12"
             PropType          } from "vue"
   import    ventana             from "components/utilidades/Ventana.vue"
   import    apexchart           from "vue3-apexcharts"
-  import {  ModosVentana      } from "src/models/TiposVarios"
+  import {  TModosVentana      } from "src/models/TiposVarios"
   import {  estiloApexChart   } from "src/composables/useEstilos"
   import {  Periodo,
             IApexSerie        } from "src/models/TiposInformes" 
@@ -42,7 +42,7 @@ class-maximizado      ="col-12"
   const props             = defineProps({
     titulo:   { required: true,                 type: String},
     series:   { required: true,                 type: Array   as PropType<IApexSerie[]> },
-    //modo:     { default:  "esperando-busqueda", type: String  as PropType<ModosVentana> },
+    //modo:     { default:  "esperando-busqueda", type: String  as PropType<TModosVentana> },
     tiempo:   { required: true,                 type: String  as PropType<Periodo>       },
     formato:  { default:  "normal",             type: String  as PropType<formatos>     },
   })

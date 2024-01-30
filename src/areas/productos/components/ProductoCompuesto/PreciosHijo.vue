@@ -1,40 +1,36 @@
-<script setup lang="ts">
-  import { Format, Tool   } from "src/composables/useTools"
-  import { IProductoHijo  } from '../../models/ProductoHijo';
-
-  type TProps = {
-    producto : IProductoHijo
-  }
-
-  const { producto } = defineProps<TProps>()
-
-</script>
 <template>
-  <div class                ="row items-center">
+  <DefineTemplate>
+    <table  class="fit">
+      <tr   class="text-center text-bold">
+        <td>Proveedor</td>
+        <td>Ref</td>
+        <td class="text-right">Precio</td>
+      </tr>                
+      <tr
+        v-for           ="pp of producto.productosPro"
+        :key            ="pp.id"
+        >
+        <td>{{ Tool.siNo( pp.disponible, "iconos" ) }} {{ pp.proveedor }}</td>
+        <td class="q-px-md">{{ pp.ref }}      </td>
+        <td class="fuente-mono text-right"> {{ Format.precio( pp.precio,  "decimales-no" )  }}</td>
+      </tr>
+    </table>
+  </DefineTemplate>
+  <div
+    class                   ="row items-center"
+    :class                  ="$attrs.class"
+    >
     <!-- //* //////////////////////////////////////////////////////////////// Tooltip de precios de proveedor -->
     <div>
-      <q-icon
-        name                ="mdi-information"
-        color               ="grey-5"
-        size                ="sm"
+      <q-btn
+        v-bind              ="style.btnRedondoFlat"
+        icon                ="mdi-information"
+        color               ="grey-6"
         class               ="q-mr-sm"
+        @click              ="showPreciosProveedor = true"
       />
       <Tooltip>
-        <table>
-          <tr   class="text-center">
-            <td class="width200">Proveedor</td>
-            <td class="width100">Ref</td>
-            <td class="width80 text-right">Precio</td>
-          </tr>                
-          <tr
-            v-for           ="pp of producto.productosPro"
-            :key            ="pp.id"
-            >
-            <td>{{ Tool.siNo( pp.disponible, "iconos" ) }} {{ pp.proveedor }}</td>
-            <td>{{ pp.ref }}      </td>
-            <td class="fuente-mono text-right"> {{ Format.precio( pp.precio,  "decimales-no" )  }}</td>
-          </tr>
-        </table>
+        <ReuseTemplate />
       </Tooltip>
     </div>      
     <div class              ="fuente-mono text-right col column text-bold">
@@ -58,4 +54,38 @@
     </Tooltip>    
     </div>
   </div>
+  <q-dialog                     
+    v-model                     ="showPreciosProveedor"
+    v-bind                      ="style.dialogo"
+    >      
+    <ventana                    cerrar
+      icono                     ="mdi-currency-usd-circle"
+      titulo                    ="Precios de proveedores"
+      min-width                 ="500px"
+      >
+      <ReuseTemplate />
+    </ventana>
+  </q-dialog>  
 </template>
+
+<script setup lang="ts">
+  import {  ref                     } from 'vue'
+  import {  createReusableTemplate  } from '@vueuse/core'
+  import {  Format, Tool            } from "src/composables/useTools"
+  import {  IProductoHijo           } from '../../models/ProductoHijo'
+  import {  style                   } from "src/composables/useEstilos"
+  ////////////////////////////////////////////////////////////////////////// Componentes
+  import    ventana                   from "components/utilidades/Ventana.vue"
+
+
+  const [DefineTemplate, ReuseTemplate] = createReusableTemplate()
+
+  type TProps = {
+    producto : IProductoHijo
+  }
+
+  const { producto } = defineProps<TProps>()
+
+  const showPreciosProveedor = ref<boolean>(false)
+
+</script>

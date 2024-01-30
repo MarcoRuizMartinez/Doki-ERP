@@ -49,10 +49,10 @@
       <template #body-cell-pedidoId="props">
         <q-td   :props          ="props">
           <router-link :to      ="'/pedidos/cliente/' + props.value">      
-              {{ props.value }}
+            {{ props.value }}
           </router-link>
         </q-td>
-      </template>      
+      </template>
       <!-- //* ///////////////  Columna Tercero  -->
       <template
         #body-cell-tercero      ="props">
@@ -167,7 +167,7 @@
   // * /////////////////////////////////////////////////////////////////////// Modelos
   import {  IQuery              } from "src/models/Busqueda"
   import {  Columna, IColumna   } from "src/models/Tabla"
-  import {  ModosVentana,
+  import {  TModosVentana,
             ALMACEN_LOCAL       } from "src/models/TiposVarios"  
   import {  Acuerdo             } from "src/areas/acuerdos/models/Acuerdo"
   import {  TTipoAcuerdo        } from "src/areas/acuerdos/models/ConstantesAcuerdos"
@@ -200,7 +200,7 @@
   const { esMobil, aviso        } = useTools()
   const router                    = useRouter()
   
-  const modo                      = ref< ModosVentana >("esperando-busqueda")  
+  const modo                      = ref< TModosVentana >("esperando-busqueda")  
   const indexSelect               = ref< number >(-1)
   const ventanaVistaRapida        = ref< boolean >(false)  
   //const filtroMovil               = ref< boolean >(false)

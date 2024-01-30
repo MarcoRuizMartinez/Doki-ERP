@@ -205,7 +205,7 @@
   import {  IQuery                  } from "src/models/Busqueda"
   import {  IAccion, Accion,
             TASK, Cuando            } from "src/areas/comunicacion/models/Accion"
-  import {  ModosVentana,
+  import {  TModosVentana,
             ALMACEN_LOCAL           } from "src/models/TiposVarios"  
 
   // * /////////////////////////////////////////////////////////////////////// Componentes
@@ -234,7 +234,7 @@
   const columnasVisibles      = ref< string[]   >( [] )
   const formularioOn          = ref< boolean      >( false )
   const filtro                = ref< string       >( ""    )
-  const modo                  = ref< ModosVentana >( "esperando-busqueda" )
+  const modo                  = ref< TModosVentana >( "esperando-busqueda" )
   const tareas                = ref< IAccion[]> ([])
   const tarea                 = ref< IAccion>   ( new Accion( usuario.value.id ) )
 

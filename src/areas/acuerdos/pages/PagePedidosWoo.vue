@@ -117,7 +117,7 @@
   import {  servicesTerceros    } from "src/areas/terceros/services/servicesTerceros"
   // * /////////////////////////////////////////////////////////////////////// Modelos
   import {  Columna, IColumna   } from "src/models/Tabla"
-  import {  AREA, ModosVentana  } from "src/models/TiposVarios"    
+  import {  AREA, TModosVentana  } from "src/models/TiposVarios"    
   import {  IPedidoWoo,
             PedidoWoo           } from "src/areas/acuerdos/models/PedidoWoo"  
   import {  ITercero,
@@ -151,7 +151,7 @@
   const verPedidoOn           = ref< boolean      >( false )
   const verPagoOn             = ref< boolean      >( false )
   const filtro                = ref< string       >( ""    )
-  const modo                  = ref< ModosVentana >( "esperando-busqueda" )
+  const modo                  = ref< TModosVentana >( "esperando-busqueda" )
   const pedido                = ref< IPedidoWoo   >( new PedidoWoo() )
   const tercero               = ref< ITercero     >( new Tercero() )
 

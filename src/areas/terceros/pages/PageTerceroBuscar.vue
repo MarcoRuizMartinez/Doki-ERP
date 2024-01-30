@@ -17,7 +17,7 @@
   // * /////////////////////////////////////////////////////////////////////// Modelos
   import {  Columna, IColumna   } from "src/models/Tabla"
   import {  Tercero             } from "src/areas/terceros/models/Tercero"
-  import {  ModosVentana,
+  import {  TModosVentana,
             ALMACEN_LOCAL       } from "src/models/TiposVarios"
   import {  IQuery              } from "src/models/Busqueda"            
   // * /////////////////////////////////////////////////////////////////////// Componentes
@@ -33,7 +33,7 @@
   const { usuario, permisos     } = storeToRefs( useStoreUser() )  
   const { buscarTerceros        } = servicesTerceros()
   const { aviso                 } = useTools()
-  const modo                      = ref< ModosVentana >("esperando-busqueda")
+  const modo                      = ref< TModosVentana >("esperando-busqueda")
   const router                    = useRouter()
   const filtro                    = ref< string   >("")
   const title                     = useTitle("🔍 Buscar tercero")

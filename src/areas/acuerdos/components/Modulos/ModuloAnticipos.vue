@@ -127,7 +127,7 @@
   //* /////////////////////////////////////////////////////////////////////////////////// Modelos
   import {  IAnticipo, Anticipo,
             TTipoFileAnticipo     } from "src/areas/acuerdos/models/Anticipo"
-  import {  ModosVentana          } from "src/models/TiposVarios"
+  import {  TModosVentana         } from "src/models/TiposVarios"
   import {  IColumna, Columna     } from "src/models/Tabla"  
   import {  IArchivo, Archivo     } from "src/models/Archivo"
   //* /////////////////////////////////////////////////////////////////////////////////// Componibles
@@ -160,7 +160,7 @@
   const formadPago            = dexieFormasPago()
   const { editarFormaPago,
           editarCondicionPago}= useControlAcuerdo()
-  const modo                  = ref< ModosVentana >("buscando")
+  const modo                  = ref< TModosVentana >("buscando")
   const ventanaPDF            = ref< boolean    >(false)
   const ventanaPDFRecibo      = ref< boolean    >(false)
   const ventanaImagen         = ref< boolean    >(false)

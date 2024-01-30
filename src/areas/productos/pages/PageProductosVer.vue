@@ -1,6 +1,21 @@
+<template>
+  <q-page padding     class ="row items-stretch content-start justify-start q-col-gutter-md">
+    <vista-producto  v-bind ="props" />
+    <comentarios
+      v-model               ="producto.comentarios"
+      tipo                  ="product"
+      :elemento-id          ="producto.id"
+      :funcion-buscar       ="buscarComentarios"
+      :asignado             ="usuario"
+      :cargando             ="loading?.commentsLoad ?? false"
+    />
+  </q-page>
+</template>
+
 <script setup lang="ts">
   // * /////////////////////////////////////////////////////////////////////// Core
   import {  toRefs,
+            watch,
             onMounted,
                                   } from "vue"
   import {  useTitle              } from "@vueuse/core"      
@@ -29,9 +44,14 @@
   const { producto,
           loading           } = storeToRefs( useStoreProducto() )  
   const { usuario           } = storeToRefs( useStoreUser() )                                            
-  onMounted   ( iniciar )  
+  onMounted   ( cargarProducto )
 
-  async function iniciar()
+  watch( id, ( newId, oldId )=>{
+    if( !!newId && !!oldId && newId !== oldId)
+      cargarProducto()
+  })
+
+  async function cargarProducto()
   {
     loading.value.carga       = true
     const pro                 = await buscarProducto( id.value )
@@ -61,17 +81,3 @@
     loading.value.commentsLoad  = false
   }
 </script>
-
-<template>
-  <q-page padding     class  ="row items-stretch content-start justify-start q-col-gutter-md">
-    <vista-producto  v-bind  ="props" />
-    <comentarios
-      v-model             ="producto.comentarios"
-      tipo                ="product"
-      :elemento-id        ="producto.id"
-      :funcion-buscar     ="buscarComentarios"
-      :asignado           ="usuario"
-      :cargando           ="loading?.commentsLoad ?? false"
-    />
-  </q-page>
-</template>

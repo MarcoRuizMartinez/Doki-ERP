@@ -8,7 +8,7 @@
   import {  useStoreAcuerdo     } from 'src/stores/acuerdo'
   import {  useStoreUser        } from 'src/stores/user'
   // * /////////////////////////////////////////////////////////////////////////////////// Modelos
-  import {  ModosVentana        } from "src/models/TiposVarios"
+  import {  TModosVentana        } from "src/models/TiposVarios"
   import {  IColumna, Columna   } from "src/models/Tabla"
   import {  ILineaAcuerdo       } from "src/areas/acuerdos/models/LineaAcuerdo"
   import {  IIncentivo,
@@ -27,7 +27,7 @@
           modales,
           loading           } = storeToRefs( useStoreAcuerdo() )
   const { usuario           } = storeToRefs( useStoreUser() )
-  const modo                  = ref< ModosVentana >("normal")
+  const modo                  = ref< TModosVentana >("normal")
   const { buscarIncentivos  } = useControlIncentivos()  
 
   const emit = defineEmits<{

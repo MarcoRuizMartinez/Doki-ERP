@@ -76,7 +76,7 @@
   import {  style               } from "src/composables/useEstilos"
   // * /////////////////////////////////////////////////////////////////////// Modelos
   import {  Columna, IColumna   } from "src/models/Tabla"
-  import {  ModosVentana        } from "src/models/TiposVarios"
+  import {  TModosVentana        } from "src/models/TiposVarios"
   import {  IQuery              } from "src/models/Busqueda"
   import {  IMercadoPago,
             MercadoPago         } from "src/areas/acuerdos/models/PagoMercadoPago"
@@ -102,7 +102,7 @@
 
   const verPagoOn             = ref< boolean      >( false )
   const filtro                = ref< string       >( ""    )
-  const modo                  = ref< ModosVentana >( "esperando-busqueda" )
+  const modo                  = ref< TModosVentana >( "esperando-busqueda" )
 
   onMounted( iniciar )
 

@@ -7,7 +7,7 @@
             PropType
                             } from "vue"
   import {  useApiDolibarr  } from "src/composables/useApiDolibarr"
-  import {  ModosVentana    } from "src/models/TiposVarios"
+  import {  TModosVentana    } from "src/models/TiposVarios"
   import {  useTools, Tool  } from "src/composables/useTools"
   import {  DownloadFile_B64} from "src/composables/UtilFiles"
   import {  TModulosDolibarr} from "src/composables/UtilFiles"
@@ -24,7 +24,7 @@
 
   const { apiDolibarr       } = useApiDolibarr()
   const { aviso             } = useTools()
-  const modo                  = ref< ModosVentana >("buscando")
+  const modo                  = ref< TModosVentana >("buscando")
   const archivos              = ref< IArchivo[] >([])
 
   const props                 = defineProps({

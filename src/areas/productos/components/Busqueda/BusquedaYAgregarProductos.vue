@@ -7,7 +7,7 @@
   import {  useStoreProducto    } from 'src/stores/producto'
 
   // * /////////////////////////////////////////////////////////////////////////////////// Modelos
-  import {  ModosVentana        } from "src/models/TiposVarios"
+  import {  TModosVentana        } from "src/models/TiposVarios"
   import {  ICategoriaProducto,
             CategoriaProducto   } from "src/areas/productos/models/CategoriaProducto"
   import {  IProductoDoli       } from "src/areas/productos/models/ProductoDolibarr"
@@ -75,7 +75,7 @@
   const { aviso             } = useTools()
   const { usuario           } = storeToRefs( useStoreUser() )
   const busquedaTxt           = ref< string   >("")
-  const modo                  = ref< ModosVentana >("esperando-busqueda")
+  const modo                  = ref< TModosVentana >("esperando-busqueda")
   const categoria             = ref< ICategoriaProducto  >( new CategoriaProducto() )
 
   const { buscarProductos   } = servicesProductos()

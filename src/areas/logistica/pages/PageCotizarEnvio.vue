@@ -93,7 +93,7 @@
 
   // * /////////////////////////////////////////////////////////////////////// Modelos
   import {  Columna, IColumna   } from "src/models/Tabla"
-  import {  ModosVentana,
+  import {  TModosVentana,
             ALMACEN_LOCAL       } from "src/models/TiposVarios"
   import {  IQuery              } from "src/models/Busqueda"
   import {  CostoEnvio,
@@ -117,7 +117,7 @@
   const filtro                    = ref< string >("")
   
   
-  const modo                      = ref< ModosVentana >("esperando-busqueda")  
+  const modo                      = ref< TModosVentana >("esperando-busqueda")  
   const tipoListado               = ref< number >( 0 ) 
   const titulo                    = computed(()=>
   {

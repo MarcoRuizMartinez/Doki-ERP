@@ -1,158 +1,16 @@
-<script setup lang="ts">
-  ////////////////////////////////////////////////////////////////////////// Core
-  import {  ref,
-            computed,
-            onMounted
-                                } from "vue"
-  import {  VueDraggable        } from 'vue-draggable-plus'
-  ////////////////////////////////////////////////////////////////////////// Store
-  import {  storeToRefs         } from "pinia"
-  import {  useStoreProducto    } from "src/stores/producto"
-  import {  useStoreUser        } from 'src/stores/user'
-
-  ////////////////////////////////////////////////////////////////////////// Modelos
-  import {  IProductoHijo       } from 'src/areas/productos/models/ProductoHijo'
-  import {  IProductoDoli       } from 'src/areas/productos/models/ProductoDolibarr'
-
-  ////////////////////////////////////////////////////////////////////////// Componibles
-  import {  servicesProductos   } from "src/areas/productos/services/servicesProductos"
-  import {  useControlProductos } from "src/areas/productos/controllers/ControlProductosDolibarr"
-  import {  useApiDolibarr      } from "src/composables/useApiDolibarr"
-  import {  Tool,
-            ToolArray, useTools } from "src/composables/useTools"
-  import {  style               } from "src/composables/useEstilos"
-
-  ////////////////////////////////////////////////////////////////////////// Componentes
-  import    ventana             from "components/utilidades/Ventana.vue"
-  import    imagenProducto      from "src/areas/productos/components/Tools/ImagenProducto.vue"
-  import    confirmar           from "components/utilidades/MenuConfirmar.vue"
-  import    totales             from "./TotalesHijos.vue"
-  import    precios             from "./PreciosHijo.vue"
-  import    buscarProductos     from "src/areas/productos/components/Busqueda/BusquedaYAgregarProductos.vue"
-  import    numeroPaso          from "components/utilidades/input/InputNumeroPaso.vue"
-
-  const { producto,
-          productos : productosBusqueda,
-          loading               } = storeToRefs( useStoreProducto() )
-  const { usuario               } = storeToRefs( useStoreUser() )
-
-  const { buscarProductosHijos,
-          ordenarProductosHijos,
-          cambiarQtyHijo        } = servicesProductos()
-
-  const { editarProducto        } = useControlProductos()
-  const { apiDolibarr           } = useApiDolibarr()
-  const { aviso                 } = useTools()
-
-  const showModalAgregar          = ref<boolean>(false)
-  const productos                 = ref<IProductoHijo[]>([])
-  const totalCompra               = computed( () => ToolArray.sumar( productos.value, "costoTotal"   ) )
-  const totalVenta                = computed( () => ToolArray.sumar( productos.value, "precioTotal"  ) )
-  
-  onMounted( async ()=>{
-    await cargarHijos()
-  })
-
-  async function cargarHijos(){
-    productos.value                 = await buscarProductosHijos( producto.value.id )
-  }
-
-  async function reordenar()
-  {
-    for (let i = 0; i < productos.value.length; i++) {
-      productos.value[ i ].orden = i + 1      
-    }
-
-    const listaIds = productos.value.map( p => p.relacion_id ).join()
-    await ordenarProductosHijos( producto.value.id, listaIds )
-  }
-
-  async function cambiarQty( productoHijo : IProductoHijo )
-  {
-    producto.value.costo = totalCompra.value
-    await cambiarQtyHijo( productoHijo.relacion_id, productoHijo.qty )
-    await editarProducto( producto.value, "precio" )
-  }
-
-  async function agregarProductos( productoAdd : IProductoDoli[], cantidad : number = 1 )
-  {
-    loading.value.añadir              = true
-    let todoOk                        = true
-    let orden                         = productos.value.length
-
-    for (const hijo of productoAdd)
-    {
-      orden++
-      const objeto                    = {  subproduct_id : hijo.id,
-                                           qty           : cantidad,
-                                           incdec        : 1,
-                                           rang          : orden,
-                                         }
-
-      const { ok, data }              = await apiDolibarr("crear", "producto-hijo", objeto, producto.value.id)
-
-      if(ok)
-      {
-        const hijoPush                = hijo.getComoProductoHijo
-              hijoPush.padre_id       = producto.value.id
-              hijoPush.qty            = cantidad 
-              hijoPush.orden          = orden
-        productos.value.push( hijoPush )
-        producto.value.costo          = totalCompra.value
-      }
-      else{
-        todoOk                        = false
-        aviso( "negative", "Error al añadir producto hijo " + hijo.nombre)
-      }
-    }
-
-    if(todoOk)
-    {
-      await Tool.pausa( 100 )
-      await editarProducto( producto.value, "precio" )
-    }
-
-    loading.value.añadir              = false
-    cargarHijos()
-  }
-
-  async function borrarProducto( idHijo : number )
-  {
-    const { ok  }                     = await apiDolibarr("borrar", "producto-hijo", idHijo, producto.value.id)
-
-    if(ok){
-      const index                     = productos.value.findIndex( p => p.id === idHijo )
-      productos.value.splice(index, 1)
-      aviso("positive", "Producto hijo borrado")
-    }
-    else{
-      aviso("negative", "Error al eliminar producto hijo")
-    }
-
-    buscarSiProductosEsta()
-  }
-
-  function buscarSiProductosEsta()
-  {
-    productosBusqueda.value.forEach( p => {
-      p.elegido = productos.value.some( h => p.ref == h.ref )
-    })
-  }
-
-  function cerrar(){
-    showModalAgregar.value  = false
-  }
-
-</script>
-
-
 <template>
   <ventana
     class-contenido             ="column items-center"
-    :titulo                     ="`Composición de producto (${productos.length})`"
     icono                       ="mdi-focus-field"
+    icono-sin-resultados        ="mdi-focus-field"
     padding-contenido           ="6px"
+    size-icon-carga             ="200px"
+    height-card-min             ="250px"
+    mensaje-sin-resultados      ="Sin productos que lo compongan"
+    :class                      ="$attrs.class"
+    :titulo                     ="`Composición de producto (${productos.length})`"
     :cargando                   ="loading.carga"
+    :modo                       ="modo"
     >
     <!-- //* ///////////////////////////////////////////////////////////////////////// Boton recargar -->
     <template                   #barra>
@@ -165,7 +23,10 @@
       </q-btn>      
     </template>    
     <template #menu>
-      <div class                ="row full-width items-center">
+      <div
+        class                   ="row full-width items-center"
+        style                   ="height: 45px;"
+        >
         <!-- //* //////////////////////////////////////////////////////////////////// Boton agregar nuevo producto hijo -->
         <div class              ="col-grow">
           <q-btn
@@ -178,6 +39,7 @@
         </div>
         <!-- //* //////////////////////////////////////////////////////////////////// Totales -->
         <totales
+          v-if                  ="!!productos.length"
           :total-compra         ="totalCompra"
           :total-venta          ="totalVenta"
         />
@@ -256,20 +118,185 @@
         </q-menu>
       </div>
     </vue-draggable>
-    <!-- //* ///////////////////////////////////////////////////////////// Modal Buscar productos -->
-    <q-dialog                   maximized
-      v-model                   ="showModalAgregar"
-      v-bind                    ="style.dialogo"
-      >
-      <buscar-productos
-        @productos-add          ="agregarProductos"
-        @busqueda-ok            ="buscarSiProductosEsta"
-        @borrar                 ="borrarProducto"
-        @cerrar                 ="cerrar"
-      />
-    </q-dialog> 
   </ventana>
+  <!-- //* ///////////////////////////////////////////////////////////// Modal Buscar productos -->
+  <q-dialog                     maximized
+    v-model                     ="showModalAgregar"
+    v-bind                      ="style.dialogo"
+    >      
+    <buscar-productos
+      @productos-add            ="agregarProductos"
+      @busqueda-ok              ="buscarSiProductosEsta"
+      @borrar                   ="borrarProducto"
+      @cerrar                   ="cerrar"
+    />
+  </q-dialog>
 </template>
+
+
+<script setup lang="ts">
+  ////////////////////////////////////////////////////////////////////////// Core
+  import {  ref,
+            computed,
+            watch,
+            onMounted
+                                } from "vue"
+  import {  VueDraggable        } from 'vue-draggable-plus'
+  ////////////////////////////////////////////////////////////////////////// Store
+  import {  storeToRefs         } from "pinia"
+  import {  useStoreProducto    } from "src/stores/producto"
+  import {  useStoreUser        } from 'src/stores/user'
+
+  ////////////////////////////////////////////////////////////////////////// Modelos
+  import {  IProductoHijo       } from 'src/areas/productos/models/ProductoHijo'
+  import {  IProductoDoli       } from 'src/areas/productos/models/ProductoDolibarr'
+  import {  TModosVentana       } from "src/models/TiposVarios"
+  
+  ////////////////////////////////////////////////////////////////////////// Componibles
+  import {  servicesProductos   } from "src/areas/productos/services/servicesProductos"
+  import {  useControlProductos } from "src/areas/productos/controllers/ControlProductosDolibarr"
+  import {  useApiDolibarr      } from "src/composables/useApiDolibarr"
+  import {  Tool,
+            ToolArray, useTools } from "src/composables/useTools"
+  import {  style               } from "src/composables/useEstilos"
+
+  ////////////////////////////////////////////////////////////////////////// Componentes
+  import    ventana             from "components/utilidades/Ventana.vue"
+  import    imagenProducto      from "src/areas/productos/components/Tools/ImagenProducto.vue"
+  import    confirmar           from "components/utilidades/MenuConfirmar.vue"
+  import    totales             from "./TotalesHijos.vue"
+  import    precios             from "./PreciosHijo.vue"
+  import    buscarProductos     from "src/areas/productos/components/Busqueda/BusquedaYAgregarProductos.vue"
+  import    numeroPaso          from "components/utilidades/input/InputNumeroPaso.vue"
+
+  const { producto,
+          productos : productosBusqueda,
+          loading               } = storeToRefs( useStoreProducto() )
+  const { usuario               } = storeToRefs( useStoreUser() )
+
+  const { buscarProductosHijos,
+          ordenarProductosHijos,
+          cambiarQtyHijo        } = servicesProductos()
+
+  const { editarProducto        } = useControlProductos()
+  const { apiDolibarr           } = useApiDolibarr()
+  const { aviso                 } = useTools()
+
+  const showModalAgregar          = ref<boolean>(false)
+  const productos                 = ref<IProductoHijo[]>([])
+  const modo                      = ref< TModosVentana >("buscando")
+  const totalCompra               = computed( () => ToolArray.sumar( productos.value, "costoTotal"   ) )
+  const totalVenta                = computed( () => ToolArray.sumar( productos.value, "precioTotal"  ) )
+  
+  onMounted( async ()=>{
+    await cargarHijos()
+  })
+
+  watch( ()=>producto.value.id, cargarHijos )
+
+  async function cargarHijos(){
+    modo.value                    = "buscando"
+    productos.value               = await buscarProductosHijos( producto.value.id )    
+    actualizarModo()
+  }
+
+  async function reordenar()
+  {
+    for (let i = 0; i < productos.value.length; i++) {
+      productos.value[ i ].orden = i + 1      
+    }
+
+    const listaIds = productos.value.map( p => p.relacion_id ).join()
+    await ordenarProductosHijos( producto.value.id, listaIds )
+  }
+
+  async function cambiarQty( productoHijo : IProductoHijo )
+  {
+    producto.value.costo = totalCompra.value
+    await cambiarQtyHijo( productoHijo.relacion_id, productoHijo.qty )
+    await editarProducto( producto.value, "precio" )
+  }
+
+  async function agregarProductos( productoAdd : IProductoDoli[], cantidad : number = 1 )
+  {
+    loading.value.añadir              = true
+    let todoOk                        = true
+    let orden                         = productos.value.length
+    let totalAgregados                = 0
+
+    for (const hijo of productoAdd)
+    {
+      const yaExiste                  = productos.value.some( p => p.id === hijo.id )
+      if(yaExiste) continue
+      orden++
+      const objeto                    = {  subproduct_id : hijo.id,
+                                           qty           : cantidad,
+                                           incdec        : 1,
+                                           rang          : orden,
+                                         }
+
+      const { ok, data }              = await apiDolibarr("crear", "producto-hijo", objeto, producto.value.id)
+
+      if(ok)
+      {
+        const hijoPush                = hijo.getComoProductoHijo
+              hijoPush.padre_id       = producto.value.id
+              hijoPush.qty            = cantidad 
+              hijoPush.orden          = orden
+        productos.value.push( hijoPush )
+        producto.value.costo          = totalCompra.value
+        totalAgregados++
+      }
+      else{
+        todoOk                        = false
+        aviso( "negative", "Error al añadir producto hijo " + hijo.nombre)
+      }
+    }
+
+    if(todoOk && !!totalAgregados)
+    {
+      await Tool.pausa( 100 )
+      await editarProducto( producto.value, "precio" )
+    }
+
+    loading.value.añadir              = false
+    cargarHijos()
+  }
+
+  async function borrarProducto( idHijo : number )
+  {
+    const { ok  }                     = await apiDolibarr("borrar", "producto-hijo", idHijo, producto.value.id)
+
+    if(ok){
+      const index                     = productos.value.findIndex( p => p.id === idHijo )
+      productos.value.splice(index, 1)
+      aviso("positive", "Producto hijo borrado")
+    }
+    else{
+      aviso("negative", "Error al eliminar producto hijo")
+    }
+
+    buscarSiProductosEsta()
+    actualizarModo()
+  }
+
+  function buscarSiProductosEsta()
+  {
+    productosBusqueda.value.forEach( p => {
+      p.elegido = productos.value.some( h => p.ref == h.ref )
+    })
+  }
+
+  function cerrar(){
+    showModalAgregar.value  = false
+  }
+
+  function actualizarModo()
+  {
+    modo.value                    = !!productos.value.length ? "normal" : "sin-resultados"
+  }
+
+</script>
 
 <style scoped>
 .fila{

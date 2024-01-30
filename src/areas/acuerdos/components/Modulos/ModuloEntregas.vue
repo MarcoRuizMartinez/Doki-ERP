@@ -133,7 +133,7 @@
   import {  storeToRefs           } from 'pinia'                            
   import {  useStoreAcuerdo       } from 'src/stores/acuerdo'  
   //* /////////////////////////////////////////////////////////////////////////////////// Modelos
-  import {  ModosVentana          } from "src/models/TiposVarios"
+  import {  TModosVentana          } from "src/models/TiposVarios"
   import {  IColumna,
             Columna               } from "src/models/Tabla"
   import {  IAcuerdo              } from "../../models/Acuerdo"  

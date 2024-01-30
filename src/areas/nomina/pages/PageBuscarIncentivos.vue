@@ -17,7 +17,7 @@
 
   // * /////////////////////////////////////////////////////////////////////// Modelos
   import {  Columna, IColumna   } from "src/models/Tabla"
-  import {  ModosVentana,
+  import {  TModosVentana,
             ALMACEN_LOCAL       } from "src/models/TiposVarios"  
   import {  IQuery              } from "src/models/Busqueda"
   import {  IIncentivo          } from "src/areas/nomina/models/Incentivo"  
@@ -39,7 +39,7 @@
   const { esMobil, aviso        } = useTools()
   const router                    = useRouter()
   
-  const modo                      = ref< ModosVentana >("esperando-busqueda")  
+  const modo                      = ref< TModosVentana >("esperando-busqueda")  
   const indexSelect               = ref< number >(-1) 
   const titulo                    = computed(()=>
   {

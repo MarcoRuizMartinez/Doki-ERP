@@ -27,11 +27,11 @@
             watch,
                             } from "vue"
   import {  servicesTerceros     } from "src/areas/terceros/services/servicesTerceros"
-  import {  ModosVentana    } from "src/models/TiposVarios"
+  import {  TModosVentana    } from "src/models/TiposVarios"
   import    ventana           from "components/utilidades/Ventana.vue"
 
   const modelo                = ref< string > ("")
-  const modo                  = ref< ModosVentana >("buscando")
+  const modo                  = ref< TModosVentana >("buscando")
   const { setNota           } = servicesTerceros()
 
   const props                 = defineProps({

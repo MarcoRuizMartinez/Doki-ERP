@@ -70,7 +70,7 @@
   import {  IContacto,
             Contacto        } from "src/areas/terceros/models/Contacto"
   import {  useStoreUser    } from "src/stores/user"
-  import {  ModosVentana    } from "src/models/TiposVarios"
+  import {  TModosVentana    } from "src/models/TiposVarios"
   import {  IColumna,
             Columna         } from "src/models/Tabla"
   import    ventana           from "components/utilidades/Ventana.vue"
@@ -82,7 +82,7 @@
 
   const { apiDolibarr       } = useApiDolibarr()
   const storeUser             = useStoreUser()
-  const modo                  = ref< ModosVentana >("buscando")
+  const modo                  = ref< TModosVentana >("buscando")
   const contactos             = ref< IContacto[]  >([])
   const contactoSelect        = ref< IContacto    >()
   const ventanaOk             = ref< boolean      >(false)
