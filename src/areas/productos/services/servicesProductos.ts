@@ -119,11 +119,12 @@ export function servicesProductos()
               hijo.padre_id         = ToolType.keyNumberValido( item, "padre_id"  )
               hijo.hijo_id          = ToolType.keyNumberValido( item, "hijo_id"   )
               hijo.qty              = ToolType.keyNumberValido( item, "qty"       )
-              hijo.orden            = ToolType.keyNumberValido( item, "orden"     )              
+              hijo.orden            = ToolType.keyNumberValido( item, "orden"     )
               hijo.siigo.linea      = ToolType.keyNumberValido( item, "linea"     )
               hijo.siigo.grupo      = ToolType.keyNumberValido( item, "grupo"     )
               hijo.siigo.codigo     = ToolType.keyNumberValido( item, "codigo"    )
               hijo.siigo.enSiigo    = !!ToolType.keyNumberValido( item, "enSiigo" )
+              hijo.naturaleza       = await getNaturalezaDB( item?.naturaleza_id ?? "0" )
               hijo.siigo.unidadDian = (await getUnidadDB( ToolType.keyNumberValido( item, "unidad_id" ) )).codigo
         hijos.push( hijo )
       }

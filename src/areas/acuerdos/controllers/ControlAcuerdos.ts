@@ -130,7 +130,6 @@ export function useControlAcuerdo()
     loading.value.carga         = true
     acuerdo.value.productos     = []
     acuerdo.value               = await getAcuerdo( tipo, idOk )
-    console.log("acuerdo.value: ", acuerdo.value);
 
     if(!acuerdo.value.proGrupos.length) crearNuevoGrupo()
 
