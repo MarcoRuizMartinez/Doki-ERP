@@ -179,7 +179,7 @@
         :style                ="fondoBarra"
         >
         <!-- //?* ////////////////////////////////////////////////////////////// Titulo --> 
-        <div  class           ="col text-h6 fuente-delicada ellipsis">
+        <div  class           ="col-auto text-h6 fuente-delicada ellipsis">
           <q-icon
             v-if              ="icono != undefined"
             class             ="q-mr-sm"
@@ -200,6 +200,7 @@
             </span>
           </slot>
         </div>
+        <slot                 name="barra-centro"></slot>
         <div class            ="row col-auto q-gutter-xs items-center"> <!-- //?* / gap--> 
           <!-- //?* ////////////////////////////////////////////////////////////// Slot Barra --> 
           <slot               name="barra"></slot>
@@ -240,6 +241,7 @@
             </q-btn>
           </div>
         </div>
+        
       </q-card-section>
       <!-- //?* ////////////////////////////////////////////////////////////// SLOT Menu --> 
       <q-card-actions

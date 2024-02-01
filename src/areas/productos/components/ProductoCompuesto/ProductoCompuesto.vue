@@ -73,7 +73,10 @@
             {{pHijo.ref}}
           </router-link>
           <span class           ="width400 ellipsis">{{ pHijo.nombre }}
-            <Tooltip :label     ="pHijo.nombre"/>
+            <Tooltip>
+              <b>{{ pHijo.nombre }}</b><br/>
+              {{ pHijo.naturaleza.label }}
+            </Tooltip> 
           </span>
         </div>
         <!-- //* ////////////////////////////////////////////////////////////////// Cantidad -->

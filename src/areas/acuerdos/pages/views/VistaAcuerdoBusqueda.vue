@@ -10,9 +10,12 @@
     :padding-contenido          ="modo === 'normal' ? '0' : '12px' "
     :mensaje-sin-resultados     ="`No se encontraron ${Acuerdo.getTipoAcuerdoPlural( tipo)}`"
     >
-    <template                   #barra>
-      <tabs-busqueda/>
+    <template                   #barra-centro>      
+      <tabs-busqueda/>      
     </template>
+    <template                   #barra>
+      <div class="width200"></div>
+    </template>    
     <template                   #menu>
       <barra-busqueda
         @buscar                 ="buscar"
@@ -313,6 +316,8 @@
       new Columna(            { name: "contactoSmartDir",     label: "Dirección contacto"                     }),
       new Columna(            { name: "contactoSmartTel",     label: "Teléfono contacto"                      }),
       new Columna(            { name: "fechaEntregaCorta",    label: "Fecha compromiso"                       }),
+      new Columna(            { name: "estadoAnimoEmoji",     label: "Animo"                                }),
+      new Columna(            { name: "diasEntregarFormato",  label: "Días compromiso"                        }),
       new Columna(            { name: "fechaListoCorta",      label: "Fecha listo"                            }),
       new Columna(            { name: "fechaADespacharCorta", label: "Fecha a despachar"                      }), 
       new Columna(            { name: "metodoEntregaLabel",   label: "Entrega"                                }), 
@@ -331,9 +336,9 @@
       Columna.ColumnaPrecio ( { name: "totalConIva",          label: "Total",             clase: "text-bold"  }),
     ]
 
-    const colsEli = busqueda.value.esCotizacion   ? ["facturado", "pedidoId", "fechaListoCorta", "fechaADespacharCorta", "fechaEntregaCorta"]
+    const colsEli = busqueda.value.esCotizacion   ? ["diasEntregarFormato", "estadoAnimoEmoji", "facturado", "pedidoId", "fechaListoCorta", "fechaADespacharCorta", "fechaEntregaCorta"]
                   : busqueda.value.esPedido       ? ["pedidoId"]
-                  : busqueda.value.esEntrega      ? ["facturado", "condicionPagoLabel", "formaPagoLabel", "origenContactoLabel", "subTotalLimpio", "totalConDescu", "ivaValor", "totalConIva", "fechaListoCorta"]
+                  : busqueda.value.esEntrega      ? ["diasEntregarFormato", "estadoAnimoEmoji", "facturado", "condicionPagoLabel", "formaPagoLabel", "origenContactoLabel", "subTotalLimpio", "totalConDescu", "ivaValor", "totalConIva", "fechaListoCorta"]
                   : busqueda.value.esOCProveedor  ? ["refCliente", "comercial", "metodoEntregaLabel", "facturado", "origenContactoLabel", "subTotalLimpio", "pedidoId", "fechaListoCorta"]
                   : []
     Columna.eliminarColums( colsEli, columnas.value )

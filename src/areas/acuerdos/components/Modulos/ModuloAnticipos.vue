@@ -15,7 +15,7 @@
       <q-btn        
         v-bind                  ="style.btnBaseSm"
         color                   ="positive"
-        icon                    ="mdi-plus"        
+        icon                    ="mdi-plus"
         :disable                ="modo == 'buscando'"
         @click                  ="mostrarFormulario( 'nuevo' )"
         >
@@ -201,9 +201,9 @@
     }
   }
 
-  watch(  ()        => acuerdo.value.id,
+  watch(  ()=> acuerdo.value.id,
           async ( newId ) =>
-            {
+          {
               if(!!newId) {                
                 await buscarAnticipos( newId )
               }
@@ -239,6 +239,7 @@
                                                 { method: "POST", body: getFormData( "anticipos", { id } ) },
                                                 { dataEsArray: true, mensaje: "buscar anticipos" }
                                               )
+
     if(ok)
     {
       modo.value              = "normal"
@@ -294,11 +295,15 @@
     if(accion === "editar" || accion === "borrar")
     {
       const index                 = acuerdo.value.anticipos.findIndex( a => a.id === antici.id )
-      if(index >= 0){
-        if(accion === "editar")
+      if(index >= 0)
+      {
+        if(accion === "editar"){
           acuerdo.value.anticipos[index]  = antici
-        else{
+        }
+        else
+        {
           acuerdo.value.anticipos.splice(index, 1)
+
           if(!acuerdo.value.anticipos.length)
             modo.value            = "sin-resultados"
         }

@@ -39,13 +39,14 @@
     :readonly               ="readonly"
     @blur                   ="vericarNumero"
   />
-  <input-number             solo-positivo
+  <input-number             solo-positivo alerta
     v-model                 ="modelo.digito"
     label                   ="Dígito"
     icon                    ="mdi-card-account-details"
     class                   ="col-md-3 col-12"
     max-enteros             ="1"
     retorno                 ="String"
+    :rules                  ="[ validarDigito ]"
     :disable                ="modelo.tipo.label !== 'NIT'"
     :readonly               ="readonly"
   />
@@ -66,7 +67,7 @@
             TIPOS_DOCUMENTO
                               } from "src/areas/terceros/models/TiposDocumento"
   import {  EstadoVerificar   } from "src/models/TiposVarios"
-  import {  useTools          } from "src/composables/useTools"
+  import {  useTools, ToolType} from "src/composables/useTools"
   
   import {  dexieTiposDocumentos
                               } from "src/composables/useDexie"
@@ -375,6 +376,22 @@
     }
     return ok
   }
-  
+
+  function validarDigito( numeroTxt : string ) : boolean | string
+  {
+    let valido                  = true
+    let mensaje                 = ""
+
+    if(!modelo.value.tipo.esNIT) return valido
+
+    
+    if(numeroTxt.length         != 1)
+    {
+      valido                    = false
+      mensaje                   = "Error en digito de verificación"
+    }
+
+    return  valido || mensaje
+  }
   
 </script>

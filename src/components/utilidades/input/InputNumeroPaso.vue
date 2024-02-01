@@ -58,8 +58,7 @@ conDecimales
 */
   import {  PropType,
             toRefs,
-            watch,
-            computed
+            watch
                               } from "vue"
   import {  useClamp          } from "@vueuse/math"
   import {  btnNumeroPaso     } from "src/composables/useEstilos"
@@ -110,7 +109,7 @@ conDecimales
   function restar()
   {
     const resta               = +Number( model.value - paso.value ).toFixed(2)
-    if(resta >  minimo.value)         
+    if(resta >  minimo.value)
       model.value             = resta
   }
 

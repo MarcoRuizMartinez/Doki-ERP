@@ -27,20 +27,19 @@ export function useControlPedidosWoo()
 
     for (const p of pedidosRaw)
     {
-      p.id          = parseInt( p?.id ?? "0" )
-      p.total       = parseInt( p?.total ?? "0" )
-      p.total_tax   = parseInt( p?.total_tax ?? "0" )
-
+      p.id            = parseInt( p?.id ?? "0" )
+      p.total         = parseInt( p?.total ?? "0" )
+      p.total_tax     = parseInt( p?.total_tax ?? "0" )
       
-      const items   = ToolArray.getArrayInObject( p, "line_items")
+      const items     = ToolArray.getArrayInObject( p, "line_items")
       for (const i of items)
       {
-        i.quantity  = parseInt( i?.quantity ?? "0" )
-        i.total     = parseInt( i?.total ?? "0" ) 
-        i.price     = parseInt( i?.price ?? "0" )
+        i.quantity    = parseInt( i?.quantity ?? "0" )
+        i.total       = parseInt( i?.total ?? "0" ) 
+        i.price       = parseInt( i?.price ?? "0" )
       }
 
-      const newP    = Object.assign( new PedidoWoo(), p ) as IPedidoWoo
+      const newP      = Object.assign( new PedidoWoo(), p ) as IPedidoWoo
       pedidos.push( newP )
     }
 

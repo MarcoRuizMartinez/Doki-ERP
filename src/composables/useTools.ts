@@ -72,7 +72,7 @@ export class ToolType
 
   static anyToNum( v : any ) : number
   {
-    if(typeof v === "undefined") return 0
+    if(typeof v === "undefined" || v === null) return 0
 
     if(typeof v === "number" && !isNaN(v) )
       return v
@@ -224,6 +224,13 @@ export class ToolDate
     }
   
     return diferencia + " " + unidad
+  }
+
+  static diasEntreFechas( fechaReciente : Date, fechaAntigua : Date ) : number
+  {
+    const diferenciaEnMilisegundos  = fechaReciente.getTime() - fechaAntigua.getTime();
+    const dias                      = Math.ceil(diferenciaEnMilisegundos / 86400000 ) // (1000 * 60 * 60 * 24)
+    return dias
   }
 
   static fechaCorta = ( fecha : Date ) : string => {

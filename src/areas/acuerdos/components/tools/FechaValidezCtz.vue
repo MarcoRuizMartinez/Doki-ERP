@@ -32,7 +32,11 @@
       (!miliSec1970           && !!newDias && nuevo.value)
       ||
       // Los nuevos dias son validos y es una nueva cotizacion, y los nuevos son diferentes a los viejos dias
-      (+newDias > 0 && +newDias !== +oldDias && nuevo.value)
+      (     +newDias  > 0
+        &&  oldDias   !== undefined 
+        &&  +newDias  !== +oldDias
+        &&  nuevo.value
+      )
     )
     {
       modelo.value            = getFechaDefault()

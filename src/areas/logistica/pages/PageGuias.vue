@@ -45,7 +45,7 @@
         <div class            ="q-mt-sm">
           <btn-copiar         hide-label
             size              ="md"
-            :dato             ="src"
+            :label            ="src"
             :disable          ="!datosOk"
           />
         </div>

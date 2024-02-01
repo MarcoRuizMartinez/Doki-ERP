@@ -24,12 +24,12 @@
     <div>
       <q-btn
         v-bind              ="style.btnRedondoFlat"
-        icon                ="mdi-information"
-        color               ="grey-6"
+        :icon               ="producto.naturaleza.esCompuesto_o_Kit ? 'mdi-focus-field' : 'mdi-package'"
+        color               ="grey-8"
         class               ="q-mr-sm"
-        @click              ="showPreciosProveedor = true"
+        @click              ="clickBotonPreciosProveedor"
       />
-      <Tooltip>
+      <Tooltip v-if         ="producto.hayProductosPro">
         <ReuseTemplate />
       </Tooltip>
     </div>      
@@ -88,4 +88,9 @@
 
   const showPreciosProveedor = ref<boolean>(false)
 
+  function clickBotonPreciosProveedor()
+  {
+    if(producto.hayProductosPro)
+     showPreciosProveedor.value = true 
+  }
 </script>

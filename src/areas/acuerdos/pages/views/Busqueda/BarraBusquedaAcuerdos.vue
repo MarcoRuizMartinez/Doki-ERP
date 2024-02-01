@@ -1,87 +1,3 @@
-<script lang="ts" setup>
-  // * /////////////////////////////////////////////////////////////////////// Core
-  import {  watch,
-            computed,
-                                } from "vue"
-  // * /////////////////////////////////////////////////////////////////////// Store
-  import {  storeToRefs         } from 'pinia'
-  import {  useStoreApp         } from 'src/stores/app'
-  import {  useStoreUser        } from 'src/stores/user'
-  import {  useStoreAcuerdo     } from 'src/stores/acuerdo'
-  // * /////////////////////////////////////////////////////////////////////// Componibles
-  import {  Format              } from "src/composables/useTools"
-  // * /////////////////////////////////////////////////////////////////////// Modelos
-  import {  IQuery, Busqueda    } from "src/models/Busqueda"
-  import {  GRUPO_USUARIO       } from "src/models/TiposVarios"
-  // * /////////////////////////////////////////////////////////////////////// Componentes
-  import    fieldsetFiltro        from "components/utilidades/Fieldset.vue"
-  import    inputNumber           from "components/utilidades/input/InputFormNumber.vue"
-  import    selectLabelValue      from "components/utilidades/select/SelectLabelValue.vue"
-  import    municipios            from "components/utilidades/select/SelectMunicipios.vue"
-  import    multiLabelValue       from "components/utilidades/select/SelectLabelValueMulti.vue"
-  import    inputFecha            from "components/utilidades/input/InputFecha.vue"
-  import    selectUsuario         from "src/areas/usuarios/components/SelectUsuario.vue"
-  import    inputBuscar           from "components/utilidades/input/InputSimple.vue"
-  import    innerLoading          from "components/utilidades/InnerLoading.vue"
-
-  // * /////////////////////////////////////////////////////////////////////// Importaciones
-  const { usuario, permisos     } = storeToRefs( useStoreUser() )
-  const { busqueda : b,
-          acuerdos,
-          loading               } = storeToRefs( useStoreAcuerdo() )
-  const { tabs                  } = storeToRefs( useStoreApp() )
-
-  const emit = defineEmits<{
-    (e: 'buscar',   value: IQuery ): void
-    (e: 'limpiar',                ): void
-    (e: 'exportar',               ): void
-  }>()
-
-  watch(()=>b.value.f, ()=>
-    {
-      if(b.value.puedeBuscar && b.value.checkPage())
-        buscar()
-      else  if(b.value.queryVacia ) limpiarBusqueda()
-    },
-    { deep: true }
-  )
-
-  function buscar()
-  {
-    b.value.copiarQueryARourter()
-    const query       = b.value.query
-    query.acuerdo     = b.value.acuerdo
-    emit("buscar", query)
-  }
-
-  async function limpiarBusqueda(){
-    const todoLimpio  = await b.value.limpiarQueryDeRouter()
-    if(todoLimpio) emit("limpiar")
-  }
-
-  // * /////////////////////////////////////////////////////////////////////// Computed
-  const siguientePagina           = computed(()=> b.value.siguientePagina( acuerdos.value.length ) )
-  const sumaAcuerdosSubtotal      = computed(()=> {
-    let suma                      = 0
-    if(!!acuerdos.value && !!acuerdos.value.length)
-      suma                        = acuerdos.value.map( a => a.totalConDescu ?? 0 ).reduce((acu, now) => (acu ?? 0) + now)
-    return suma
-  })
-  const sumaAcuerdosSubtotalLimpio= computed(()=> {
-    let suma                      = 0
-    if(!!acuerdos.value && !!acuerdos.value.length)
-      suma                        = acuerdos.value.map( a => a.subTotalLimpio ).reduce((acu, now) => (acu ?? 0) + now)
-    return suma
-  })
-  const sumaAcuerdosTotal         = computed(()=> {
-    let suma                      = 0
-    if(!!acuerdos.value && !!acuerdos.value.length)
-      suma                        = acuerdos.value.map( a => a.totalConIva ).reduce((acu, now) => (acu ?? 0) + now)
-    return suma
-  })
-</script>
-
-
 <template>
   <q-tab-panels                 animated keep-alive vertical
     v-model                     ="tabs.activa"
@@ -115,31 +31,54 @@
         <select-label-value     use-input hundido clearable flat bordered
           v-if                  ="b.esOCProveedor"
           v-model               ="b.f.proveedores"
-          label                 ="Proveedores"
+          label                 ="Proveedor"
           icon                  ="mdi-storefront"
-          class                 ="width220"
+          class                 ="width200"
           :options              ="b.o.proveedores"
         />
       </fieldset-filtro>
       <!-- //* /////////////////////////////////////////////////// Fecha creacion -->
       <fieldset-filtro
-        titulo                  ="Creación"
+        titulo                  ="Fechas creación"
         class-contenido         ="column q-gutter-xs"
         >
         <!-- //* ///////////////////////////////////////////////// Fecha desde -->
         <input-fecha            hundido no-futuro clearable
           v-model               ="b.f.desde"
           label                 ="Desde"
-          class                 ="width160"
+          class                 ="width140"
           :hasta                ="b.f.hasta"
         />
         <!-- //* ///////////////////////////////////////////////// Fecha hasta -->
         <input-fecha            hundido no-futuro clearable
           v-model               ="b.f.hasta"
           label                 ="Hasta"
-          class                 ="width160"
+          class                 ="width140"
           :desde                ="b.f.desde"
         />
+      </fieldset-filtro>
+      <!-- //* /////////////////////////////////////////////////// Dias de entrega-->
+      <fieldset-filtro
+        v-if                    ="b.esPedido || b.esOCProveedor"
+        titulo                  ="Días entregar"
+        class-contenido         ="column q-gutter-xs"
+        >
+        <!-- //* ///////////////////////////////////////////////// Dias desde -->
+        <input-number           hundido  
+          v-model               ="b.f.diasDesde"
+          label                 ="Entre"
+          :paso                 ="1"
+          class                 ="width90"          
+          :maximo               ="b.f.diasHasta"
+        />
+        <!-- //* ///////////////////////////////////////////////// Dias hasta -->
+        <input-number           hundido  
+          v-model               ="b.f.diasHasta"
+          label                 ="Hasta"
+          :paso                 ="1"
+          class                 ="width90"
+          :minimo               ="b.f.diasDesde"
+        />        
       </fieldset-filtro>
       <fieldset-filtro
         titulo                  ="Estado"
@@ -470,3 +409,86 @@
     </q-tab-panel>
   </q-tab-panels>
 </template>
+
+<script lang="ts" setup>
+  // * /////////////////////////////////////////////////////////////////////// Core
+  import {  watch,
+            computed,
+                                } from "vue"
+  // * /////////////////////////////////////////////////////////////////////// Store
+  import {  storeToRefs         } from 'pinia'
+  import {  useStoreApp         } from 'src/stores/app'
+  import {  useStoreUser        } from 'src/stores/user'
+  import {  useStoreAcuerdo     } from 'src/stores/acuerdo'
+  // * /////////////////////////////////////////////////////////////////////// Componibles
+  import {  Format              } from "src/composables/useTools"
+  // * /////////////////////////////////////////////////////////////////////// Modelos
+  import {  IQuery, Busqueda    } from "src/models/Busqueda"
+  import {  GRUPO_USUARIO       } from "src/models/TiposVarios"
+  // * /////////////////////////////////////////////////////////////////////// Componentes
+  import    fieldsetFiltro        from "components/utilidades/Fieldset.vue"
+  import    inputNumber           from "components/utilidades/input/InputFormNumber.vue"
+  import    selectLabelValue      from "components/utilidades/select/SelectLabelValue.vue"
+  import    municipios            from "components/utilidades/select/SelectMunicipios.vue"
+  import    multiLabelValue       from "components/utilidades/select/SelectLabelValueMulti.vue"
+  import    inputFecha            from "components/utilidades/input/InputFecha.vue"
+  import    selectUsuario         from "src/areas/usuarios/components/SelectUsuario.vue"
+  import    inputBuscar           from "components/utilidades/input/InputSimple.vue"
+  import    innerLoading          from "components/utilidades/InnerLoading.vue"  
+
+  // * /////////////////////////////////////////////////////////////////////// Importaciones
+  const { usuario, permisos     } = storeToRefs( useStoreUser() )
+  const { busqueda : b,
+          acuerdos,
+          loading               } = storeToRefs( useStoreAcuerdo() )
+  const { tabs                  } = storeToRefs( useStoreApp() )
+
+  const emit = defineEmits<{
+    (e: 'buscar',   value: IQuery ): void
+    (e: 'limpiar',                ): void
+    (e: 'exportar',               ): void
+  }>()
+
+  watch(()=>b.value.f, ()=>
+    {
+      if(b.value.puedeBuscar && b.value.checkPage())
+        buscar()
+      else  if(b.value.queryVacia ) limpiarBusqueda()
+    },
+    { deep: true }
+  )
+
+  function buscar()
+  {
+    b.value.copiarQueryARourter()
+    const query       = b.value.query
+    query.acuerdo     = b.value.acuerdo
+    emit("buscar", query)
+  }
+
+  async function limpiarBusqueda(){
+    const todoLimpio  = await b.value.limpiarQueryDeRouter()
+    if(todoLimpio) emit("limpiar")
+  }
+
+  // * /////////////////////////////////////////////////////////////////////// Computed
+  const siguientePagina           = computed(()=> b.value.siguientePagina( acuerdos.value.length ) )
+  const sumaAcuerdosSubtotal      = computed(()=> {
+    let suma                      = 0
+    if(!!acuerdos.value && !!acuerdos.value.length)
+      suma                        = acuerdos.value.map( a => a.totalConDescu ?? 0 ).reduce((acu, now) => (acu ?? 0) + now)
+    return suma
+  })
+  const sumaAcuerdosSubtotalLimpio= computed(()=> {
+    let suma                      = 0
+    if(!!acuerdos.value && !!acuerdos.value.length)
+      suma                        = acuerdos.value.map( a => a.subTotalLimpio ).reduce((acu, now) => (acu ?? 0) + now)
+    return suma
+  })
+  const sumaAcuerdosTotal         = computed(()=> {
+    let suma                      = 0
+    if(!!acuerdos.value && !!acuerdos.value.length)
+      suma                        = acuerdos.value.map( a => a.totalConIva ).reduce((acu, now) => (acu ?? 0) + now)
+    return suma
+  })
+</script>

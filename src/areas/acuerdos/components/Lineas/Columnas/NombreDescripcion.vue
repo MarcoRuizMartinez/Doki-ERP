@@ -34,10 +34,12 @@
 <template>
   <div
     @click              ="emit('click')"
-    v-bind              ="$attrs"
+    v-bind              ="$attrs"    
     >
-    <span class         ="text-bold q-mr-sm">{{linea.ref}}</span>
-    <span class         ="text-subtitle1">{{linea.nombre}}</span>
+    <div class          ="text-1_1em lh_1_3 q-mb-xs">
+      <span class       ="text-bold q-mr-sm">{{linea.ref}}</span>
+      <span class       ="">{{linea.nombre}}</span>
+    </div>
 <!--     <br/> <span class         ="text-subtitle1">Modificador: {{linea.categoria.modificadorComision}}</span>
     <br/> <span class         ="text-subtitle1">Costo: {{linea.costo}}</span>
     <br/> <span class         ="text-subtitle1">Aumento: {{linea.aumentoFromCosto}}</span>

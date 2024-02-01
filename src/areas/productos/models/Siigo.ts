@@ -9,6 +9,7 @@ export type TCodigosSiigo = {
   nombre      : string
   ref         : string
   unidadDian  : string
+  esServicio  : boolean
 }
 
 export class CodigosSiigo implements TCodigosSiigo
@@ -23,6 +24,7 @@ export class CodigosSiigo implements TCodigosSiigo
   unidadDian  : string  = ""
 
   get codigoFull() { return `${this.linea}${this.grupo}${this.codigo}`}
+  get esServicio() { return this.linea.toString()[0] == "5" } // Para detectar lineas servicios que son 524 y 523 que son servicios
 }
 
 

@@ -74,7 +74,7 @@
     @subida-ok          ="cargarProductos"
   />
   <producto-compuesto
-    v-if                ="(usuario.esProduccion || usuario.esGerencia) && producto.naturaleza.esCompuesto_o_Kit"
+    v-if                ="(usuario.esProduccion || usuario.esGerencia || usuario.esContable ) && producto.naturaleza.esCompuesto_o_Kit"
     class               ="col-12 col-md-6"
   />
 </template>

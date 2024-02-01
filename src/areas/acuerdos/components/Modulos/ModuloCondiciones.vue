@@ -1,60 +1,3 @@
-<script setup lang="ts">
-  //* ///////////////////////////////////////////////////////////////////////////////// Core
-  import {  ref                   } from "vue"
-  // * ///////////////////////////////////////////////////////////////////////////////// Store
-  import {  storeToRefs           } from 'pinia'                            
-  import {  useStoreAcuerdo       } from 'src/stores/acuerdo'
-  // * ///////////////////////////////////////////////////////////////////////////////// Componibles
-  import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"
-  import {  dexieCondicionesPago,
-            dexieFormasPago,
-            dexieBodegas,
-            dexieMetodosEntrega,
-            dexieTiemposEntrega   } from "src/composables/useDexie"
-  import {  TIPOS_CONTACTO        } from "src/areas/terceros/models/Contacto"  
-  // * ///////////////////////////////////////////////////////////////////////////////// Componentes
-  import    ventana                 from "components/utilidades/Ventana.vue"
-  import    inputFecha              from "components/utilidades/input/InputFecha.vue"
-  import    selectLabelValue        from "components/utilidades/select/SelectLabelValue.vue"
-  import    selectContacto          from "src/areas/terceros/components/contactos/SelectContacto.vue"
-  import    fechaVencimiento        from "src/areas/acuerdos/components/Tools/FechaValidezCtz.vue"
-  import    tablaEnvio              from "src/areas/acuerdos/components/Tools/TablaEnvio.vue"                                          
-
-  const { acuerdo, loading        } = storeToRefs( useStoreAcuerdo() )
-  //* //////////////////////      ///////////////////////////////////////// Tablas Dexie
-  const condicPago                  = dexieCondicionesPago()
-  const formadPago                  = dexieFormasPago()
-  const entregas                    = dexieMetodosEntrega()
-  const bodegas                     = dexieBodegas()
-  const tiempoEntrega               = dexieTiemposEntrega()
-  const { editarTiempoEntrega,
-          editarMetodoEntrega,
-          editarFormaPago,
-          editarCondicionPago,
-          editarFechaEntrega,
-          editarFechaADespachar,
-          editarFechaFinValidez,
-          cambiarContactoAcuerdo,
-          vincularContactoAcuerdo,
-          desvincularContactoAcuerdo,
-          editarDatosEntregaSistemaViejo
-                                  } = useControlAcuerdo()
-
-  const errorFecha                  = ref<boolean>(false)
-  const errorMetodo                 = ref<boolean>(false)
-
-  defineExpose({  validar })  
-
-  function validar() : boolean
-  {
-    errorFecha.value  = !acuerdo.value.fechaEntrega
-    errorMetodo.value = !acuerdo.value.metodoEntrega.id
-    return !errorFecha.value && !errorMetodo.value
-  }
-
-</script>
-
-
 <template>
   <ventana                    minimizar
     titulo                    ="Condiciones"
@@ -102,16 +45,21 @@
       @update:contacto        ="editarDatosEntregaSistemaViejo"
     />
     <!-- //* ///////////////////////////////////////////////// Fecha Compromiso -->
-    <input-fecha              no-pasado
+    <input-fecha              
       v-model                 ="acuerdo.fechaEntrega"
       label                   ="Fecha compromiso"
       titulo                  ="Fecha compromiso entrega"
       class                   ="col-md-6 col-12"
       error-message           ="Es necesaria una fecha de entrega"
+      :dias                   ="20"
       :error                  ="errorFecha"
       :loading                ="loading.fechaEntrega"
       @update:model-value     ="editarFechaEntrega"
-    />
+      >
+      <span :class="{'text-red' : acuerdo.diasEntregar < 0}">
+        {{ acuerdo.diasEntregarFormato }}
+      </span>
+    </input-fecha>
     <!-- //* ///////////////////////////////////////////////// Fecha a despachar -->
     <input-fecha              no-pasado
       v-if                    ="acuerdo.esPedido"
@@ -179,3 +127,59 @@
     </div>
   </ventana>
 </template>
+
+<script setup lang="ts">
+  //* ///////////////////////////////////////////////////////////////////////////////// Core
+  import {  ref                   } from "vue"
+  // * ///////////////////////////////////////////////////////////////////////////////// Store
+  import {  storeToRefs           } from 'pinia'                            
+  import {  useStoreAcuerdo       } from 'src/stores/acuerdo'
+  // * ///////////////////////////////////////////////////////////////////////////////// Componibles
+  import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"
+  import {  dexieCondicionesPago,
+            dexieFormasPago,
+            dexieBodegas,
+            dexieMetodosEntrega,
+            dexieTiemposEntrega   } from "src/composables/useDexie"
+  import {  TIPOS_CONTACTO        } from "src/areas/terceros/models/Contacto"  
+  // * ///////////////////////////////////////////////////////////////////////////////// Componentes
+  import    ventana                 from "components/utilidades/Ventana.vue"
+  import    inputFecha              from "components/utilidades/input/InputFecha.vue"
+  import    selectLabelValue        from "components/utilidades/select/SelectLabelValue.vue"
+  import    selectContacto          from "src/areas/terceros/components/contactos/SelectContacto.vue"
+  import    fechaVencimiento        from "src/areas/acuerdos/components/Tools/FechaValidezCtz.vue"
+  import    tablaEnvio              from "src/areas/acuerdos/components/Tools/TablaEnvio.vue"                                          
+
+  const { acuerdo, loading        } = storeToRefs( useStoreAcuerdo() )
+  //* //////////////////////      ///////////////////////////////////////// Tablas Dexie
+  const condicPago                  = dexieCondicionesPago()
+  const formadPago                  = dexieFormasPago()
+  const entregas                    = dexieMetodosEntrega()
+  const bodegas                     = dexieBodegas()
+  const tiempoEntrega               = dexieTiemposEntrega()
+  const { editarTiempoEntrega,
+          editarMetodoEntrega,
+          editarFormaPago,
+          editarCondicionPago,
+          editarFechaEntrega,
+          editarFechaADespachar,
+          editarFechaFinValidez,
+          cambiarContactoAcuerdo,
+          vincularContactoAcuerdo,
+          desvincularContactoAcuerdo,
+          editarDatosEntregaSistemaViejo
+                                  } = useControlAcuerdo()
+
+  const errorFecha                  = ref<boolean>(false)
+  const errorMetodo                 = ref<boolean>(false)
+
+  defineExpose({  validar })  
+
+  function validar() : boolean
+  {
+    errorFecha.value  = !acuerdo.value.fechaEntrega
+    errorMetodo.value = !acuerdo.value.metodoEntrega.id
+    return !errorFecha.value && !errorMetodo.value
+  }
+
+</script>

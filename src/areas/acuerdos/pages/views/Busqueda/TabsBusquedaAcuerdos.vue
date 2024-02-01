@@ -34,13 +34,15 @@
       name            ="tab_1"
       icon            ="mdi-magnify"
       :alert          ="!!tabs.alerts[0] ? 'red' : false"
+      @mouseenter     ="tabs.activa = 'tab_1'"
       >
     </q-tab>
     <q-tab
       label           ="Otros"
       name            ="tab_2"
       icon            ="mdi-toolbox"
-      :alert          ="!!tabs.alerts[1] ? 'red' : false"      
+      :alert          ="!!tabs.alerts[1] ? 'red' : false"
+      @mouseenter     ="tabs.activa = 'tab_2'"
       >
       <Tooltip label  ="Mas opciones"/>
     </q-tab>

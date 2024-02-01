@@ -21,6 +21,7 @@
     @click-cuenta-cobro     ="generarPDF"
     @click-listo-entregar   ="setListoDespacho"
   />
+  <barra-tercero class      ="col-12"/>
   <tercero-y-contacto       scroll
     class                   ="col-md-4 col-12"
     height-card             ="320px" 
@@ -164,6 +165,7 @@
   import    titulo                  from "./../../components/Modulos/ModuloTitulo.vue"
   import    totales                 from "./../../components/Modulos/ModuloTotales.vue"
   import    botonera                from "./../../components/Modulos/ModuloBotonera.vue"
+  import    barraTercero            from "./../../components/Modulos/ModuloBarraNombreTercero.vue"
   import    terceroYContacto        from "./../../components/Modulos/ModuloTercero.vue"
   import    condiciones             from "./../../components/Modulos/ModuloCondiciones.vue"
   import    lineas                  from "./../../components/Modulos/ModuloLineas.vue"

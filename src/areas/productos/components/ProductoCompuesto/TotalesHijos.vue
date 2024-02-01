@@ -1,14 +1,3 @@
-<script setup lang="ts">
-  import { Format } from "src/composables/useTools"
-
-  type TProps = {
-    totalCompra : number
-    totalVenta  : number
-  }
-
-  const { totalCompra, totalVenta  } = defineProps<TProps>()
-</script>
-
 <template>
   <div class              ="text-bold text-grey-8" >
     <table style          ="line-height: 1.1;">
@@ -23,3 +12,14 @@
     </table>    
   </div>
 </template>
+
+<script setup lang="ts">
+  import { Format } from "src/composables/useTools"
+
+  type TProps = {
+    totalCompra : number
+    totalVenta  : number
+  }
+
+  const { totalCompra, totalVenta  } = defineProps<TProps>()
+</script>

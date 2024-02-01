@@ -24,7 +24,7 @@ import {  getUsuarioDB,
           getCondicionesPagoDB,
           getOrigenesContactoDB         } from "src/composables/useDexie"
 import {  LocationQuery                 } from "vue-router"
-import {  ToolQuery                     } from "src/composables/useTools"
+import {  ToolQuery, ToolType, Tool     } from "src/composables/useTools"
 
 export interface      IQuery {
   //tipo                 ?: string
@@ -49,6 +49,8 @@ export interface      IQuery {
   tipoAnticipo         ?: string
   fechaDesde           ?: string
   fechaHasta           ?: string
+  diasDesde            ?: number
+  diasHasta            ?: number
   proveedorId          ?: number
   facturado            ?: number
   conIva               ?: number
@@ -118,6 +120,8 @@ interface               ICampos {
   contacto              : string
   desde                 : Date | string
   hasta                 : Date | string
+  diasDesde             : number | undefined
+  diasHasta             : number | undefined
   valorMin              : number | undefined
   valorMax              : number | undefined
   estados               : ILabelValue[]
@@ -276,6 +280,9 @@ export class Busqueda implements IBusqueda
     this.f.altura             = ToolQuery.getQueryRouterNumber    ( this.rourterQ .altura       )
     this.f.ancho              = ToolQuery.getQueryRouterNumber    ( this.rourterQ .ancho        )
     this.f.fondo              = ToolQuery.getQueryRouterNumber    ( this.rourterQ .fondo        )
+    this.f.diasDesde          = ToolQuery.getQueryRouterNumber    ( this.rourterQ .diasDesde    )
+    this.f.diasHasta          = ToolQuery.getQueryRouterNumber    ( this.rourterQ .diasHasta    )
+    this.f.fondo              = ToolQuery.getQueryRouterNumber    ( this.rourterQ .fondo        )    
     this.f.destacado          = ToolQuery.getQueryRouterBoolean   ( this.rourterQ .destacado    )
     this.f.favorito           = ToolQuery.getQueryRouterBoolean   ( this.rourterQ .favorito     )
     this.f.color              = ToolQuery.getQueryRouterBoolean   ( this.rourterQ .color        )    
@@ -401,11 +408,24 @@ export class Busqueda implements IBusqueda
   async limpiarQueryDeRouter() : Promise< boolean >
   {
     if(!this.montadoOk) return false
+
     this.rourterQ           = {}
+
     if(!this.camposVacios)
+    {
+      if(!!this.router)
+      {
+        this.router.replace({ query: {} })
+      }
+      await Tool.pausa( 100 )  
       await this.copiarQueryACampos()
+    }
+    
     if(!!this.router)
+    {
       this.router.replace({ query: {} })
+    }
+
     this.f.pagina           = 1
 
     return true
@@ -428,7 +448,8 @@ export class Busqueda implements IBusqueda
     return pagNext
   }
 
-  get camposVacios        () : boolean {    
+  get camposVacios        () : boolean
+  {
     for(const [key, value] of Object.entries( this.f ))
     {
       if(key == "copiando" || key == "resultadosXPage" || key == "pagina" ) continue
@@ -438,6 +459,8 @@ export class Busqueda implements IBusqueda
           ( Array.isArray(value) && !!value.length )
           ||
           ( typeof value === "object" && "label" in value && !!value.label  )
+          ||
+          ( value instanceof Date )
       )
       {
         return false
@@ -462,6 +485,7 @@ export class Busqueda implements IBusqueda
   get query() : IQuery
   { 
     const q : IQuery       = {}
+
     if( this.camposVacios ) return q
 
     if(this.f.buscar.length  > 3)       q.buscar            = this.f.buscar
@@ -477,6 +501,10 @@ export class Busqueda implements IBusqueda
     if(!!this.f.altura)                 q.altura            = this.f.altura
     if(!!this.f.ancho)                  q.ancho             = this.f.ancho
     if(!!this.f.fondo)                  q.fondo             = this.f.fondo
+
+    if(ToolType.valorValido(this.f.diasDesde)) q.diasDesde  = this.f.diasDesde
+    if(ToolType.valorValido(this.f.diasHasta)) q.diasHasta  = this.f.diasHasta
+
     if(!!this.f.estados.length)         q.estados           = this.f.estados        .map( e => e.value ).join("_")
     if(!!this.f.cuando.length)          q.cuando            = this.f.cuando         .map( e => e.value ).join("_")
     if(!!this.f.prioridad.length)       q.prioridad         = this.f.prioridad      .map( e => e.value ).join("_")
@@ -511,7 +539,7 @@ export class Busqueda implements IBusqueda
       q.creador                                           = this.f.creador.id
     if(this.esOCProveedor && !!this.f.proveedores.label)
       q.proveedorId                                       = this.f.proveedores.value
-    // proveedores
+    
     if(this.f.desde instanceof Date && !isNaN(this.f.desde.valueOf()))  q.fechaDesde  = this.f.desde.toLocaleDateString('sv-SE')
     if(this.f.hasta instanceof Date && !isNaN(this.f.hasta.valueOf()))  q.fechaHasta  = this.f.hasta.toLocaleDateString('sv-SE')
 
@@ -579,7 +607,9 @@ export class Busqueda implements IBusqueda
       buscar              : "",
       contacto            : "",
       desde               : "",
-      hasta               : ""    ,
+      hasta               : "",
+      diasDesde           : undefined,
+      diasHasta           : undefined,
       valorMin            : undefined,
       valorMax            : undefined,
       estados             : [],

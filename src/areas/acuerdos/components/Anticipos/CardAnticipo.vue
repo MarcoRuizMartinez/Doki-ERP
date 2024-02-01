@@ -88,14 +88,12 @@
 </template>
 <script setup lang="ts">
   // * /////////////////////////////////////////////////////////////////////////////////// Core
-  import {  PropType            } from "vue"
+
   // * /////////////////////////////////////////////////////////////////////////////////// Modelos
   import {  IAnticipo           } from "src/areas/acuerdos/models/Anticipo"  
   import {  IArchivo, Archivo   } from "src/models/Archivo"
 
-  const props                 = defineProps({      
-    modelValue: { required: true,  type: Object as PropType< IAnticipo >  },
-  })
+  const modelValue            = defineModel<IAnticipo>( { required: true })
 
   const emit                  = defineEmits<{
     (e: "clickVerArchivo",  value: IArchivo   ): void

@@ -170,7 +170,7 @@ export class EstadosAcuerdos
       color                     = estado == ESTADO_OC.NO_GUARDADO       ? COLORES.NEGRO
                                 : estado == ESTADO_OC.BORRADOR          ? COLORES.GRIS
                                 : estado == ESTADO_OC.VALIDADO          ? COLORES.AZUL_OSCURO
-                                : estado == ESTADO_OC.APROBADO          ? COLORES.AZUL
+                                : estado == ESTADO_OC.APROBADO          ? COLORES.NARANJA
                                 : estado == ESTADO_OC.PEDIDO_ENVIADO    ? COLORES.AZUL
                                 : estado == ESTADO_OC.RECIBIDO_PARCIAL  ? COLORES.NARANJA
                                 : estado == ESTADO_OC.RECIBIDO_TOTAL    ? COLORES.VERDE

@@ -1,17 +1,3 @@
-<script lang="ts" setup>
-  import {  PropType          } from "vue"  
-  import {  IPedidoWoo        } from "src/areas/acuerdos/models/PedidoWoo"      
-  import {  style             } from "src/composables/useEstilos"
-  import {  Format            } from "src/composables/useTools"
-  ////////////////////////////////////////////////////////////////////////// Componentes
-  import    ventana               from "components/utilidades/Ventana.vue"  
-  import    item                from "components/utilidades/TrTdTd.vue"  
-
-  const props               = defineProps({
-    modelValue: { required: true, type: Object as PropType< IPedidoWoo > },      
-  })
-</script>
-
 <template>
   <ventana                  cerrar
     titulo                  ="Datos de pedido y envío"
@@ -36,8 +22,10 @@
       <!-- <thead><tr><th></th><th>Datos de envío</th></tr></thead> -->
       <tbody>
         <item titulo="Estado"             :label="modelValue.estado" class="text-bold" :style-label="`color:${modelValue.estadoColor};`"/>
+        <item titulo="Asesor"             :label="modelValue.asesor"/>
         <item titulo="Cuidado"            label="Datos de envio y factura diferentes ⚠️" v-if="modelValue.enOtraDireccion"/>
         <item titulo="Nombre"             :label="modelValue.nombre" copiar/>
+        <item titulo="Documento"          :label="modelValue.documento" copiar/>
         <item titulo="Nombre envío"       :label="modelValue.nombreEnvio" v-if="modelValue.enOtraDireccion" copiar/>
         <item titulo="Municipio"          :label="modelValue.municipioEnvio"/>
         <item titulo="Dirección envío"    :label="modelValue.direccionEnvio" copiar/>
@@ -72,6 +60,21 @@
     </table>
   </ventana>
 </template>
+
+<script lang="ts" setup>
+  import {  PropType          } from "vue"  
+  import {  IPedidoWoo        } from "src/areas/acuerdos/models/PedidoWoo"      
+  import {  style             } from "src/composables/useEstilos"
+  import {  Format            } from "src/composables/useTools"
+  ////////////////////////////////////////////////////////////////////////// Componentes
+  import    ventana               from "components/utilidades/Ventana.vue"  
+  import    item                from "components/utilidades/TrTdTd.vue"  
+
+  const props               = defineProps({
+    modelValue: { required: true, type: Object as PropType< IPedidoWoo > },      
+  })
+</script>
+
 
 <style>
   .pa{ padding-left: 6px; }

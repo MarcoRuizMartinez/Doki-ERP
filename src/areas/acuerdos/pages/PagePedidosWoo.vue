@@ -170,7 +170,6 @@
     pedidos.value             = []
     modo.value                = "buscando"
     pedidos.value             = await buscarOrdenesWoo( query )
-    //pedidosCopia.value        = pedidos.value
     modo.value                = !!pedidos.value.length ? "normal" : "sin-resultados"
     await consultarPedidosCreados()
     await consultarClienteYPago()

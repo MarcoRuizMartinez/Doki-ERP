@@ -114,6 +114,11 @@ export interface IAcuerdo
   fechaCierreCorta            : string
   fechaEntrega                : Date
   fechaEntregaCorta           : string
+  diasEntregar                : number
+  diasEntregarFormato         : string
+  diasEntregarMensaje         : string
+  estadoAnimoEmoji            : string
+  estadoAnimoColor            : string
   comercialId                 : number
   comercial                   : IUsuario
   comercial2Id                : number
@@ -770,6 +775,61 @@ https://dolibarr.mublex.com/fichinter/card.php?
   get fechaEntregaCorta()     : string { return ToolDate.fechaCorta( this.fechaEntrega     ) }
   get fechaListoCorta()       : string { return ToolDate.fechaCorta( this.fechaListo       ) }
   get fechaADespacharCorta()  : string { return ToolDate.fechaCorta( this.fechaADespachar  ) }
+
+  get diasEntregar()          : number { return ToolDate.diasEntreFechas( this.fechaEntrega, new Date() ) }
+  get diasEntregarFormato()   : string {
+    const dias    = this.diasEntregar
+
+    if(dias > 10_000 || dias < -10_000) // para que no coloque fechas desde 1970
+      return ""
+
+    let formato   = dias + " día"
+    if(dias != 1) formato += "s"
+
+    return formato
+  }
+
+  get estadoAnimoEmoji()   : string {
+    const dias    = this.diasEntregar
+    const emoji   =   dias  >=  2                 ? "😎"
+                    : dias ===  1                 ? "😉"
+                    : dias ===  0                 ? "😀"
+                    : dias === -1                 ? "🤔"
+                    : dias === -2                 ? "😫"
+                    : dias === -3                 ? "😤"
+                    : dias  <= -4 && dias >= -6   ? "😠"
+                    : dias  <= -4 && dias >= -365 ? "😡"
+                    :                               ""
+    return emoji
+  }
+
+  get estadoAnimoColor()   : string {
+    const dias    = this.diasEntregar
+    const color   =   dias  >=  2                 ? "green"
+                    : dias ===  1                 ? "cyan"
+                    : dias ===  0                 ? "green"
+                    : dias === -1                 ? "orange-3"
+                    : dias === -2                 ? "orange-5"
+                    : dias === -3                 ? "orange-6"
+                    : dias  <= -4 && dias >= -6   ? "orange-10"
+                    : dias  <= -4 && dias >= -365 ? "deep-orange-13"
+                    :                               "white"
+    return "text-" + color
+  }    
+
+  get diasEntregarMensaje() : string {
+    const dias    = this.diasEntregar
+    const msj     =   dias  >=  3                     ? `en ${dias} días`
+                    : dias ===  2                     ? "pasado mañana"
+                    : dias ===  1                     ? "mañana"
+                    : dias ===  0                     ? "hoy"
+                    : dias === -1                     ? "ayer"
+                    : dias  <= -2   && dias >= -1000  ? `hace ${-dias} días`
+                    :                                   "sin definir"
+    return msj
+  }
+
+  //get diasEntregarDiferencia(): string { return ToolDate.diferenciaFechas( new Date().getTime(), this.fechaEntrega.getTime() ) }
 
   get totalAnticipos()        : number {
     if(!this.anticipos.length) return 0

@@ -11,7 +11,7 @@ import {  TCodigosSiigo,
           CodigosSiigo          } from 'src/areas/productos/models/Siigo'
 
 //* ////////////////////////////////////////////////////////////////// Componibles
-import {  useTools,
+import {  useTools, ToolType,
           ToolNum               } from "src/composables/useTools"
 import {  useApiDolibarr        } from "src/composables/useApiDolibarr"  
 import {  useFetch              } from "src/composables/useFetch"
@@ -56,12 +56,13 @@ export function useControlProductos()
     loading.value.crear         = true
 
     const { ok, data }          = await apiDolibarr("crear", "producto", pro.productoForApi )       
-    if(ok && !!data && typeof data === "string"){
-      pro.id                    = ToolNum.ID_URL_Ok( data )
+    if(ok && !!data && ToolType.valorValido( data ) ) {
+      pro.id                    = ToolType.anyToNum( data )
       aviso("positive", `Producto creado 👌🏼`)
     }
     else
       aviso("negative", `Error crear producto`)
+
     loading.value.crear         = false
 
     return pro.id

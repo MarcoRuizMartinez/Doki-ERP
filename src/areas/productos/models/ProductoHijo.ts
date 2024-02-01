@@ -25,6 +25,7 @@ export interface IProductoHijo
   siigo               : TCodigosSiigo
   siigoPadre          : TCodigosSiigo
   productosPro        : IProductoProveedor[]
+  hayProductosPro     : boolean
 }
 
 export class ProductoHijo implements IProductoHijo
@@ -49,4 +50,5 @@ export class ProductoHijo implements IProductoHijo
 
   get precioTotal(): number { return this.qty * this.precio }
   get costoTotal (): number { return this.qty * this.costo }
+  get hayProductosPro():  boolean { return !(this.productosPro.length === 1 && this.productosPro[0].id == 0) }
 }

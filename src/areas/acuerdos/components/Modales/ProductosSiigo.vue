@@ -164,7 +164,8 @@
                                         ])                                                
   const itemsXPagina                  = 15
 
-/*   type TProducto = {
+/*
+  type TProducto = {
     id          : number
     ref         : string
     sigla      ?: string
@@ -172,7 +173,8 @@
     siigo       : TCodigosSiigo
     unidad      : IUnidad
     naturaleza  : INaturalezaProducto
-  } */
+  }
+*/
 
 
   onMounted( async () => {    
@@ -225,6 +227,8 @@
   function copiarLineaALista( p : ILineaAcuerdo )
   {
     if( lista.value.some( item => item.ref === p.ref ) ) return // Para que no haya items duplicados
+    if( p.siigo.esServicio ) return // Para que no me agregue lineas 524 y 523 que son servicios
+
     lista.value.push( { ...p.siigo,
                         idProducto  : p.id,
                         ref         : p.ref,
@@ -245,8 +249,11 @@
   {
     for (const hijo of hijos)
     {
+      if( hijo.siigo.esServicio ) continue
+
       const yaExiste          = productosHijos.value.some( h => h.siigo.codigoFull === hijo.siigo.codigoFull )
-      if( !yaExiste )
+
+      if( !yaExiste)
       {
         hijo.siigo.idProducto = hijo.hijo_id
         hijo.siigo.nombre     = hijo.nombre
@@ -258,7 +265,7 @@
             newHijo.siigoPadre        = siigoPadre
       productosHijos.value.push( newHijo )
 
-      if( hijo.naturaleza.esCompuesto_o_Kit )
+      if( hijo.naturaleza.esCompuesto_o_Kit)
         productosHijosConHijos.value.push( hijo )
     }
   }

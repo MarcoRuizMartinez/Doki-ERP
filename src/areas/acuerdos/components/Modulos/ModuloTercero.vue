@@ -18,7 +18,7 @@
         class                 ="link-limpio text-white"
         :to                   ="'/tercero/' + acuerdo.tercero.id"
         >
-        {{ acuerdo.tercero.nombre }}
+        Tercero
       </router-link>
       <tooltip-tercero
         v-if                  ="!!acuerdo.tercero.id"

@@ -77,6 +77,7 @@ export interface IPedidoWoo
   estadoColor           : string
   pagos                 : IMercadoPago[]
   productos             : string
+  url                   : string
 }
 
 export class PedidoWoo implements IPedidoWoo
@@ -134,9 +135,9 @@ export class PedidoWoo implements IPedidoWoo
                                           ? this.shipping.company
                                           : `${this.shipping.first_name} ${this.shipping.last_name}`
                                   }                                  
-  get asesor          (): string  { return this.getValueByKey("9EYFu5LUuYWAUdu") }
-  get documento       (): string  { return this.getValueByKey("MdN5UZMiyqmYmzK") }
-  get calificacion    (): string  { return this.getValueByKey("AZ2uChdCU8HRMsI") }
+  get asesor          (): string  { return this.getValueByKey("asesor_") }
+  get documento       (): string  { return this.getValueByKey("documento_") }
+  get calificacion    (): string  { return this.getValueByKey("noHay") }
   get enOtraDireccion (): boolean { return this.getValueByKey("_ship_to_different_address") !== "no" }
   get hace            (): string  { return ToolDate.diferenciaFechas( Date.parse( this.date_created ), Date.now() ) }
   get fecha           (): string  { return date.formatDate( Date.parse( this.date_created ), 'DD MMM h:mm a' ) }
@@ -151,6 +152,7 @@ export class PedidoWoo implements IPedidoWoo
                                           : this.status == "failed"     ? "Fallido"
                                           : this.status == "completed"  ? "Completado"
                                           : this.status == "on-hold"    ? "En espera"
+                                          : this.status == "pending"    ? "Pendiente"
                                           : "WTF"
                                   }
   get estadoColor     (): string  { return  this.status == "processing" ? "#314293"
@@ -159,9 +161,10 @@ export class PedidoWoo implements IPedidoWoo
                                           : this.status == "failed"     ? "#FF0000"
                                           : this.status == "completed"  ? "#008000"
                                           : this.status == "on-hold"    ? "#009797"
+                                          : this.status == "pending"    ? "#FF6805"
                                           : "#000"
                                   }                                  
-
+  get url() : string { return `${process.env.URL_MUBLEX}/wp-admin/post.php?post=${this.id}&action=edit` }
   getValueByKey( key : string ) : string {
     return this.meta_data.find( p => p.key.includes( key ) )?.value ?? ""
   }

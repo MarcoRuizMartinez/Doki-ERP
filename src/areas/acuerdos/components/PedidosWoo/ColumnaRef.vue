@@ -1,5 +1,5 @@
 <template>
-  <div class          ="row fuente-mono width180">
+  <div class          ="row fuente-mono width220">
     <btn-productos
       :pedido         ="modelValue"
     />
@@ -16,6 +16,16 @@
       >
       <Tooltip :label ="modelValue.estado"/>
     </q-btn>
+    <!-- //* //////// Ir a tienda-->
+    <q-btn           
+      v-bind          ="style.btnRedondoFlat"
+      icon            ="mdi-cart-outline"
+      color           ="grey-7"
+      target          ="_blank"
+      :href           ="modelValue.url"
+      >
+      <Tooltip label  ="Ver pedido en tienda"/>
+    </q-btn>    
     <!-- //* //////// Ref -->
     <span
       v-if            ="!modelValue.idPedido"
