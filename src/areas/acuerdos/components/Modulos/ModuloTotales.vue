@@ -1,19 +1,3 @@
-<script setup lang="ts">
-  import {  storeToRefs           } from 'pinia'                            
-  import {  useStoreAcuerdo       } from 'src/stores/acuerdo'  
-  import {  Format                } from "src/composables/useTools" 
-  import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"
-  import    ventana                 from "components/utilidades/Ventana.vue"
-  import    inputNumber             from "components/utilidades/input/InputFormNumber.vue"
-  import    retenciones             from "src/areas/acuerdos/components/Anticipos/Retenciones.vue"
-
-  const { acuerdo, loading    } = storeToRefs( useStoreAcuerdo() )  
-  const { editarConAIU,
-          editarValorAIU,
-          editarConTotal,
-          editarConIVA,
-                              } = useControlAcuerdo()
-</script>
 <template>
   <ventana                  minimizar
     titulo                  ="Totales"
@@ -134,7 +118,7 @@
             <td>TOTAL:</td>
             <td>{{ Format.precio( acuerdo.totalConIva )}}</td>
           </tr>
-          <template v-if="acuerdo.esPedido">  
+          <template v-if    ="acuerdo.esPedido">  
             <tr style="border-top: 1px solid;">
               <td>Pagado:</td>
               <td>{{ Format.precio( acuerdo.totalAnticipos )}}</td>
@@ -146,7 +130,9 @@
                         >
               <td>Saldo:</td>
               <td class="cursor-pointer">
-                <span>{{ Format.precio( acuerdo.saldo )}}</span>
+                <span @click="modalRetenciones = true ">
+                  {{ Format.precio( acuerdo.saldo )}}
+                </span>
                 <Tooltip>
                   <retenciones v-model="acuerdo.retenciones"/>
                 </Tooltip>
@@ -155,6 +141,44 @@
           </template>
         </table>
       </div>
-    </div>      
+    </div>
+    <!-- style   ="width: 700px;" -->
+    <!-- //* ///////////////////////////////////////////////////////////// Modal Buscar Formulario anticipo -->
+    <q-dialog                     full-width
+      v-model                     ="modalRetenciones"
+      v-bind                      ="style.dialogo"      
+      >
+      <ventana                    cerrar
+        titulo                    ="Posibles retenciones"
+        icono                     ="mdi-counter"
+        class-contenido           ="row justify-center"
+        style                     ="width: 700px !important;"
+        >
+        <retenciones
+          v-model      ="acuerdo.retenciones"
+        />
+      </ventana>
+    </q-dialog>    
   </ventana>
 </template>
+
+<script setup lang="ts">
+  import {  ref                   } from "vue"
+  import {  storeToRefs           } from 'pinia'                            
+  import {  useStoreAcuerdo       } from 'src/stores/acuerdo'  
+  import {  Format                } from "src/composables/useTools" 
+  import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"
+  import {  style                 } from "src/composables/useEstilos"
+  import    ventana                 from "components/utilidades/Ventana.vue"
+  import    inputNumber             from "components/utilidades/input/InputFormNumber.vue"
+  import    retenciones             from "src/areas/acuerdos/components/Anticipos/Retenciones.vue"
+
+  const { acuerdo, loading    } = storeToRefs( useStoreAcuerdo() )  
+  const { editarConAIU,
+          editarValorAIU,
+          editarConTotal,
+          editarConIVA,
+                              } = useControlAcuerdo()
+
+  const modalRetenciones        = ref<boolean>(false)
+</script>

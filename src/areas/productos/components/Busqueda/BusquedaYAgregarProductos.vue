@@ -1,204 +1,3 @@
-<script setup lang="ts">
-  // * /////////////////////////////////////////////////////////////////////////////////// Core
-  import {  ref, watch          } from "vue"
-  // * /////////////////////////////////////////////////////////////////////////////////// Store
-  import {  storeToRefs         } from 'pinia'
-  import {  useStoreUser        } from 'src/stores/user'
-  import {  useStoreProducto    } from 'src/stores/producto'
-
-  // * /////////////////////////////////////////////////////////////////////////////////// Modelos
-  import {  TModosVentana        } from "src/models/TiposVarios"
-  import {  ICategoriaProducto,
-            CategoriaProducto   } from "src/areas/productos/models/CategoriaProducto"
-  import {  IProductoDoli       } from "src/areas/productos/models/ProductoDolibarr"
-  import {  IQueryProducto      } from "src/areas/productos/models/BusquedaProductos"
-  import {  IColumna, Columna   } from "src/models/Tabla"
-
-// * /////////////////////////////////////////////////////////////////////////////////// Componibles
-  import {  servicesProductos   } from "src/areas/productos/services/servicesProductos"
-  import {  dexieCategoriasProducto
-                                } from "src/composables/useDexie"
-  import {  ToolArray,
-            useTools            } from "src/composables/useTools"
-
-  // * /////////////////////////////////////////////////////////////////////////////////// Componentes
-  import    efecto                from "components/utilidades/Efecto.vue"
-  import    ventana               from "components/utilidades/Ventana.vue"
-  import    grillaLista           from "components/utilidades/ToggleGrillaLista.vue"
-  import    inputBuscar           from "components/utilidades/input/InputSimple.vue"
-  import    inputNumber           from "components/utilidades/input/InputFormNumber.vue"
-  import    selectLabelValue      from "components/utilidades/select/SelectLabelValue.vue"
-  import    tabla                 from "src/areas/productos/components/TablaProductos/TablaProductos.vue"
-
-/*
-  const emit = defineEmits<{
-    (e: 'cerrar',         value: void           ): void
-    (e: 'addLineas',      value: ILineaAcuerdo[]): void
-  }>()
-  */
-
-  type TEmit = {
-    cerrar        : [value      : void]
-    borrar        : [idProducto : number]
-    busquedaOk    : [value      : void]
-    productosAdd  : [productos  : IProductoDoli[], cantidad : number ]
-  }
-
-  const emit                  = defineEmits<TEmit>()
-
-
-  /*
-  const emit = defineEmits<{
-    (e: 'cerrar',         value: void ): void
-    (e: 'borrar',         value: number   ): void
-    (e: 'busquedaOk',     value: void   ): void
-    (e: 'productosAdd',   value: ILineaAcuerdo[]): void
-  }>()
-  */
-
-  type TProps = {
-    loading         ?: boolean
-    calcularEscom   ?: boolean
-  }
-
-  const { loading = false, calcularEscom = false } = defineProps<TProps>()
-
-  const columnas: IColumna[]  = [
-    new Columna           ({ name: "sigla",   sortable: false, label: "Producto",  visible: false }),
-    new Columna           ({ name: "ref",     sortable: false, label: "Filtrar",  clase: "text-bold" }),
-    new Columna           ({ name: "nombre"                                     }),
-    new Columna           ({ name: "precio",  sortable: false                   }),
-  ]
-
-  const tipoVista             = ref<"grilla" | "lista">("grilla")
-
-  const { aviso             } = useTools()
-  const { usuario           } = storeToRefs( useStoreUser() )
-  const busquedaTxt           = ref< string   >("")
-  const modo                  = ref< TModosVentana >("esperando-busqueda")
-  const categoria             = ref< ICategoriaProducto  >( new CategoriaProducto() )
-
-  const { buscarProductos   } = servicesProductos()
-  const categorias            = dexieCategoriasProducto({ cargarSiempre : true})
-
-  const { productos,
-          productosFil,
-          seleccion         } = storeToRefs( useStoreProducto() )
-
-  const precioMinQuery        = ref < number >()
-  const precioMaxQuery        = ref < number >()
-  const cantidad              = ref < number >(1)
-  const soloConImagen         = ref < boolean>( false )
-
-  async function buscar()
-  {
-    if(busquedaVacia()) return
-
-    modo.value                = "buscando"
-    productos.value           = await buscarProductos( getQuery() )
-    productos.value           = procesarProductosDeBusqueda( productos.value )
-    productosFil.value        = productos.value
-    modo.value                = !!productos.value.length ? "normal" : "sin-resultados"
-    emit("busquedaOk")
-  }
-
-  function busquedaVacia() : boolean {
-    return  !categoria.value.value && busquedaTxt.value.length < 3
-  }
-
-  function procesarProductosDeBusqueda( productosProcesar : IProductoDoli[] ) : IProductoDoli[]
-  {
-    if(calcularEscom && usuario.value.areaEsEscom) asignarPreciosDeEscom()
-    return ToolArray.ordenar( productosProcesar, "activo", ">")
-
-    function asignarPreciosDeEscom()
-    {
-      productosProcesar.forEach( (p)=> {
-        let precioPromo     = 0
-        let precioPubli     = 0
-        if(p.precio_escom < p.precio_publico){
-          precioPromo       = p.precio_escom
-          precioPubli       = p.precio_publico
-        }
-        else{
-          precioPromo       = p.precio_escom
-          precioPubli       = p.precio_escom
-        }
-        p.precio            = precioPromo
-        p.precio_promocion  = precioPromo
-        p.precio_publico    = precioPubli
-      })
-    }
-  }
-
-  async function agregarProductos( productosAdd : IProductoDoli[] )
-  {
-    emit("productosAdd", productosAdd, cantidad.value ?? 1)
-    
-    aviso(  "positive",
-            seleccion.value.length > 1 ? "Productos agregados" : "Producto agregado",
-            "",
-            2000,
-            [{ label: 'Cerrar', color: 'white', handler: cerrar }]
-        )
-    seleccion.value           = []
-  }
-
-  function cerrar(){
-    emit("cerrar")
-  }
-
-
-  function editarBusqueda(txt : string ){
-    busquedaTxt.value = txt.trim()
-    if( txt.length >= 3 ) buscar()
-  }
-
-
-  watch([precioMinQuery, precioMaxQuery], ([newMin, newMax]) =>{
-    if(
-        (
-          busquedaTxt.value.length >= 3
-          ||
-          !!categoria.value.value
-        )
-        &&
-        (
-          (!!newMin && newMin > 0)
-          ||
-          (!!newMax && newMax > 0)
-        )
-      )
-      buscar()
-  })
-
-  async function eliminarDesdeBusqueda( producto : IProductoDoli  )
-  {
-    producto.elegido              = false
-    emit("borrar", producto.id)
-  }
-
-
-  function getQuery() : IQueryProducto
-  {
-    let q : IQueryProducto = { completa: +true }
-
-    if(busquedaTxt.value.length  >= 3  ) {
-      busquedaTxt.value       = busquedaTxt.value.trim()
-      q.busqueda              = busquedaTxt.value
-    }
-    if(!!categoria.value.value      ) q.sigla     = categoria.value.sigla
-    if(!!precioMinQuery.value       ) q.minimo    = precioMinQuery.value
-    if(!!precioMaxQuery.value       ) q.maximo    = precioMaxQuery.value
-    if(soloConImagen.value          ) q.soloConImg= 1 
-
-    q.tipo                    = "busqueda"
-    q.activo                  = 1
-    return q
-  }
-
-</script>
-
 <template>
   <ventana                    cerrar full-screen scroll
     titulo                    ="Buscar"
@@ -337,3 +136,204 @@
     </q-page-sticky>
   </ventana>
 </template>
+
+<script setup lang="ts">
+  // * /////////////////////////////////////////////////////////////////////////////////// Core
+  import {  ref, watch          } from "vue"
+  // * /////////////////////////////////////////////////////////////////////////////////// Store
+  import {  storeToRefs         } from 'pinia'
+  import {  useStoreUser        } from 'src/stores/user'
+  import {  useStoreProducto    } from 'src/stores/producto'
+
+  // * /////////////////////////////////////////////////////////////////////////////////// Modelos
+  import {  TModosVentana        } from "src/models/TiposVarios"
+  import {  ICategoriaProducto,
+            CategoriaProducto   } from "src/areas/productos/models/CategoriaProducto"
+  import {  IProductoDoli       } from "src/areas/productos/models/ProductoDolibarr"
+  import {  IQueryProducto      } from "src/areas/productos/models/BusquedaProductos"
+  import {  IColumna, Columna   } from "src/models/Tabla"
+
+// * /////////////////////////////////////////////////////////////////////////////////// Componibles
+  import {  servicesProductos   } from "src/areas/productos/services/servicesProductos"
+  import {  dexieCategoriasProducto
+                                } from "src/composables/useDexie"
+  import {  ToolArray,
+            useTools            } from "src/composables/useTools"
+
+  // * /////////////////////////////////////////////////////////////////////////////////// Componentes
+  import    efecto                from "components/utilidades/Efecto.vue"
+  import    ventana               from "components/utilidades/Ventana.vue"
+  import    grillaLista           from "components/utilidades/ToggleGrillaLista.vue"
+  import    inputBuscar           from "components/utilidades/input/InputSimple.vue"
+  import    inputNumber           from "components/utilidades/input/InputFormNumber.vue"
+  import    selectLabelValue      from "components/utilidades/select/SelectLabelValue.vue"
+  import    tabla                 from "src/areas/productos/components/TablaProductos/TablaProductos.vue"
+
+/*
+  const emit = defineEmits<{
+    (e: 'cerrar',         value: void           ): void
+    (e: 'addLineas',      value: ILineaAcuerdo[]): void
+  }>()
+  */
+
+  type TEmit = {
+    cerrar        : [value      : void]
+    borrar        : [idProducto : number]
+    busquedaOk    : [value      : void]
+    productosAdd  : [productos  : IProductoDoli[], cantidad : number ]
+  }
+
+  const emit                  = defineEmits<TEmit>()
+
+
+  /*
+  const emit = defineEmits<{
+    (e: 'cerrar',         value: void ): void
+    (e: 'borrar',         value: number   ): void
+    (e: 'busquedaOk',     value: void   ): void
+    (e: 'productosAdd',   value: ILineaAcuerdo[]): void
+  }>()
+  */
+
+  type TProps = {
+    loading         ?: boolean
+    calcularEscom   ?: boolean
+  }
+
+  const { loading = false, calcularEscom = false } = defineProps<TProps>()
+
+  const columnas: IColumna[]  = [
+    new Columna           ({ name: "sigla",   sortable: false, label: "Producto",  visible: false }),
+    new Columna           ({ name: "ref",     sortable: false, label: "Filtrar",  clase: "text-bold" }),
+    new Columna           ({ name: "nombre"                                     }),
+    new Columna           ({ name: "precio",  sortable: false                   }),
+  ]
+
+  const tipoVista             = ref<"grilla" | "lista">("grilla")
+
+  const { aviso             } = useTools()
+  const { usuario           } = storeToRefs( useStoreUser() )
+  const busquedaTxt           = ref< string   >("")
+  const modo                  = ref< TModosVentana >("esperando-busqueda")
+  const categoria             = ref< ICategoriaProducto  >( new CategoriaProducto() )
+
+  const { buscarProductos   } = servicesProductos()
+  const categorias            = dexieCategoriasProducto({ cargarSiempre : true})
+
+  const { productos,
+          productosFil,
+          seleccion         } = storeToRefs( useStoreProducto() )
+
+  const precioMinQuery        = ref < number >()
+  const precioMaxQuery        = ref < number >()
+  const cantidad              = ref < number >(1)
+  const soloConImagen         = ref < boolean>( false )
+
+  async function buscar()
+  {
+    if(busquedaVacia()) return
+
+    modo.value                = "buscando"
+    productos.value           = await buscarProductos( getQuery() )
+    productos.value           = procesarProductosDeBusqueda( productos.value )    
+    productosFil.value        = productos.value
+    modo.value                = !!productos.value.length ? "normal" : "sin-resultados"
+    emit("busquedaOk")
+  }
+
+  function busquedaVacia() : boolean {
+    return  !categoria.value.value && busquedaTxt.value.length < 3
+  }
+
+  function procesarProductosDeBusqueda( productosProcesar : IProductoDoli[] ) : IProductoDoli[]
+  {
+    if(calcularEscom && usuario.value.areaEsEscom) asignarPreciosDeEscom()
+    return ToolArray.ordenar( productosProcesar, "activo", ">")
+
+    function asignarPreciosDeEscom()
+    {
+      productosProcesar.forEach( (p)=> {
+        let precioPromo     = 0
+        let precioPubli     = 0
+        if(p.precio_escom < p.precio_publico){
+          precioPromo       = p.precio_escom
+          precioPubli       = p.precio_publico
+        }
+        else{
+          precioPromo       = p.precio_escom
+          precioPubli       = p.precio_escom
+        }
+        p.precio            = precioPromo
+        p.precio_promocion  = precioPromo
+        p.precio_publico    = precioPubli
+      })
+    }
+  }
+
+  async function agregarProductos( productosAdd : IProductoDoli[] )
+  {
+    emit("productosAdd", productosAdd, cantidad.value ?? 1)
+    
+    aviso(  "positive",
+            seleccion.value.length > 1 ? "Productos agregados" : "Producto agregado",
+            "",
+            2000,
+            [{ label: 'Cerrar', color: 'white', handler: cerrar }]
+        )
+    seleccion.value           = []
+  }
+
+  function cerrar(){
+    emit("cerrar")
+  }
+
+
+  function editarBusqueda(txt : string ){
+    busquedaTxt.value = txt.trim()
+    if( txt.length >= 3 ) buscar()
+  }
+
+
+  watch([precioMinQuery, precioMaxQuery], ([newMin, newMax]) =>{
+    if(
+        (
+          busquedaTxt.value.length >= 3
+          ||
+          !!categoria.value.value
+        )
+        &&
+        (
+          (!!newMin && newMin > 0)
+          ||
+          (!!newMax && newMax > 0)
+        )
+      )
+      buscar()
+  })
+
+  async function eliminarDesdeBusqueda( producto : IProductoDoli  )
+  {
+    producto.elegido              = false
+    emit("borrar", producto.id)
+  }
+
+
+  function getQuery() : IQueryProducto
+  {
+    let q : IQueryProducto = { completa: +true }
+
+    if(busquedaTxt.value.length  >= 3  ) {
+      busquedaTxt.value       = busquedaTxt.value.trim()
+      q.busqueda              = busquedaTxt.value
+    }
+    if(!!categoria.value.value      ) q.sigla     = categoria.value.sigla
+    if(!!precioMinQuery.value       ) q.minimo    = precioMinQuery.value
+    if(!!precioMaxQuery.value       ) q.maximo    = precioMaxQuery.value
+    if(soloConImagen.value          ) q.soloConImg= 1 
+
+    q.tipo                    = "busqueda"
+    q.activo                  = 1
+    return q
+  }
+
+</script>

@@ -56,7 +56,7 @@
       <div
         v-for                   ="pHijo of productos"
         :key                    ="pHijo.hijo_id"  
-        class                   ="row items-center fila q-px-sm gap-sm degradado-gris"
+        class                   ="row justify-between items-center fila q-px-sm degradado-gris"
         >
         <!-- //* ////////////////////////////////////////////////////////////////// Imagen de producto -->
         <imagen-producto        mini
@@ -65,14 +65,14 @@
           :nombre               ="pHijo.nombre"
         />
         <!-- //* ////////////////////////////////////////////////////////////////// Nombre y referencia -->
-        <div class              ="col-grow column">
+        <div class              ="col-auto column">
           <router-link
             class               ="link-limpio text-bold fuente-mono text-0_8em text-grey-9"
             :to                 ="'/productos/' + pHijo.id"
             >
             {{pHijo.ref}}
           </router-link>
-          <span class           ="width400 ellipsis">{{ pHijo.nombre }}
+          <span class           ="width370 ellipsis">{{ pHijo.nombre }}
             <Tooltip>
               <b>{{ pHijo.nombre }}</b><br/>
               {{ pHijo.naturaleza.label }}
@@ -80,7 +80,7 @@
           </span>
         </div>
         <!-- //* ////////////////////////////////////////////////////////////////// Cantidad -->
-        <div class              ="width50">
+        <div class              ="width80 text-right fuente-mono">
           {{ pHijo.qty }} {{ pHijo.unidad.sigla }}
           <q-popup-edit         buttons    
             v-if                ="usuario.esProduccion || usuario.esGerencia"
@@ -101,7 +101,7 @@
         </div>
         <!-- //* ////////////////////////////////////////////////////////////////// Precio y Costo -->
         <precios
-          class                 ="width120"
+          class                 ="width160"
           :producto             ="pHijo"
         />
         <!-- //* ////////////////////////////////////////////////////////////////// Icono Drag -->

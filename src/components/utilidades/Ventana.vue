@@ -14,6 +14,7 @@
   const props                   = defineProps(
     {
       titulo:               { type: String,   default: ""                         },
+      classTitulo:          { type: String,   default: "col"                      },
       linkTitulo:           { type: String,   default: undefined                  },
       cargando:             { type: Boolean,  default: false                      },
       icono:                { type: String,   default: undefined                  },
@@ -179,7 +180,10 @@
         :style                ="fondoBarra"
         >
         <!-- //?* ////////////////////////////////////////////////////////////// Titulo --> 
-        <div  class           ="col-auto text-h6 fuente-delicada ellipsis">
+        <div
+          class               ="text-h6 fuente-delicada ellipsis"
+          :class              ="classTitulo"
+          >
           <q-icon
             v-if              ="icono != undefined"
             class             ="q-mr-sm"

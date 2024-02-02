@@ -194,13 +194,20 @@ export class ProductoDoli implements IProductoDoli
 
   get activo() :boolean {
     return  (
-              this.activo_proveedor && this.disponible && this.activoEnVenta
+                  this.activo_proveedor
+              &&  this.disponible
+              &&  this.activoEnVenta
             )
             ||
             (
-              !this.aumento && !this.aumento_descuento && !!this.aumento_escom && this.activoEnVenta && !this.activo_proveedor && !this.disponible
+                  this.activoEnVenta
+              &&  !this.disponible
+              &&  !this.aumento
+              &&  !this.aumento_descuento
+              &&  !this.activo_proveedor
+              &&  !!this.aumento_escom
             )
-            || this.esRefEspecial
+            ||    this.esRefEspecial
   }
 
   get esProducto() : boolean  { return this.tipo === 0 }

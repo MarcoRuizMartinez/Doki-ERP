@@ -1,9 +1,12 @@
 <template>
   <barra
-    class                     ="row justify-between items-center text-white fuente-delicada text-h6"
+    class                     ="row justify-between items-center text-white text-h6"
     >
     <div class                ="row items-center q-ml-md">
-      <div class              ="text-h4">
+      <div
+        v-if                  ="acuerdo.esPedido || acuerdo.esOCProveedor"
+        class                 ="text-h4"
+        >
         {{ acuerdo.estadoAnimoEmoji }}
       </div>
       <div>
@@ -13,7 +16,7 @@
           color               ="white"
           >
           <router-link
-            class             ="link-limpio text-white"
+            class             ="link-limpio text-white fuente-delicada"
             :to               ="'/tercero/' + acuerdo.tercero.id"
             >
             {{ acuerdo.tercero.nombre }}
@@ -26,13 +29,16 @@
         />
       </div>
     </div>
-    <div class                ="q-mr-md">
+    <div
+      v-if                    ="(acuerdo.esPedido || acuerdo.esOCProveedor) && (!acuerdo.esEstadoEntregado && !acuerdo.esEstadoAnulado)"
+      class                   ="q-mr-md"
+      >
       Dia compromiso:
       <span
-        class                 ="text-bold fuente-delicada text-capitalize text-brillo-suave"
-        :class                ="acuerdo.estadoAnimoColor"
+        class                 ="radius-10 q-px-sm text-capitalize text-1_1em "        
+        :class                ="'bg-' + acuerdo.estadoAnimoColor"
         >
-        {{ acuerdo.diasEntregarMensaje }} 
+        {{ acuerdo.diasEntregarMensaje }}
       </span>
     </div>
   </barra>

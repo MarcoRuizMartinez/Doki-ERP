@@ -2,6 +2,7 @@
   <ventana
     class                       ="col-12"
     class-contenido             ="column items-center"
+    class-titulo                ="col-auto"
     height                      ="100%"
     size-icon-carga             ="22em"
     :modo                       ="modo"
@@ -316,7 +317,7 @@
       new Columna(            { name: "contactoSmartDir",     label: "Dirección contacto"                     }),
       new Columna(            { name: "contactoSmartTel",     label: "Teléfono contacto"                      }),
       new Columna(            { name: "fechaEntregaCorta",    label: "Fecha compromiso"                       }),
-      new Columna(            { name: "estadoAnimoEmoji",     label: "Animo"                                }),
+      new Columna(            { name: "estadoAnimoEmoji",     label: "Animo",           clase:"text-1_4em"    }),
       new Columna(            { name: "diasEntregarFormato",  label: "Días compromiso"                        }),
       new Columna(            { name: "fechaListoCorta",      label: "Fecha listo"                            }),
       new Columna(            { name: "fechaADespacharCorta", label: "Fecha a despachar"                      }), 

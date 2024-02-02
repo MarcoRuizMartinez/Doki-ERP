@@ -111,7 +111,7 @@ export interface IAcuerdo
   fechaValidacion             : Date
   fechaValidacionCorta        : string
   fechaCierre                 : Date
-  fechaCierreCorta            : string
+  fechaCierreCorta            : string  
   fechaEntrega                : Date
   fechaEntregaCorta           : string
   diasEntregar                : number
@@ -263,7 +263,12 @@ export class Acuerdo implements IAcuerdo
   fechaCreacion               : Date                = new Date()
   fechaValidacion             : Date                = new Date()
   fechaCierre                 : Date                = new Date(0)
-  fechaEntrega                : Date                = new Date(0)
+  _fechaEntrega               : Date                = new Date(0)
+  _diasEntregar               : number              = 0
+  _diasEntregarFormato        : string              = ""
+  _estadoAnimoEmoji           : string              = ""
+  _estadoAnimoColor           : string              = ""
+  _diasEntregarMensaje        : string              = ""
   creadorId                   : number              = 0
   creador                     : IUsuario            = new Usuario()
   estado                      : number             = ESTADO_ACU.NO_GUARDADO
@@ -347,6 +352,78 @@ export class Acuerdo implements IAcuerdo
         }
       }
     }
+  }
+
+  get fechaEntrega() : Date { return this._fechaEntrega }
+  set fechaEntrega( fecha : Date )
+  {
+    this._fechaEntrega        = fecha    
+    this._diasEntregar        = ToolDate.diasEntreFechas( this.fechaEntrega, new Date() )
+
+    const ok                  = this.esEstadoEntregado || this.esEstadoAnulado
+
+    this._diasEntregarFormato = formato ( this._diasEntregar )
+    this._estadoAnimoEmoji    = emoji   ( this._diasEntregar )
+    this._estadoAnimoColor    = color   ( this._diasEntregar )
+    this._diasEntregarMensaje = mensaje ( this._diasEntregar )
+    
+    
+
+    function emoji( d : number ) : string
+    {
+      const emoji   =   ok                      ? ""
+                      : d  >=  2                ? "😎"
+                      : d ===  1                ? "😉"
+                      : d ===  0                ? "😀"
+                      : d === -1                ? "🤔"
+                      : d === -2                ? "😫"
+                      : d === -3                ? "😤"
+                      : d  <= -4 && d >= -6     ? "😠"
+                      : d  <= -4 && d >= -365   ? "😡"
+                      :                            ""
+      return emoji
+    }
+
+    function color( d : number ) : string
+    {
+      const color   =   ok                      ? "white" 
+                      : d  >=  2                ? "light-blue-9"
+                      : d ===  1                ? "cyan"
+                      : d ===  0                ? "green"
+                      : d === -1                ? "orange-5"
+                      : d === -2                ? "orange-7"
+                      : d === -3                ? "orange-8"
+                      : d  <= -4 && d >= -6     ? "orange-10"
+                      : d  <= -4 && d >= -365   ? "deep-orange-13"
+                      :                           "white"
+      return color
+    }
+
+    function mensaje( d : number ) : string
+    {
+      const msj     =   ok                        ? ""
+                      : d  >=  3                  ? `en ${d} días`
+                      : d ===  2                  ? "pasado mañana"
+                      : d ===  1                  ? "mañana"
+                      : d ===  0                  ? "hoy"
+                      : d === -1                  ? "ayer"
+                      : d  <= -2   && d >= -1000  ? `hace ${-d} días`
+                      :                           "sin definir"
+      return msj
+    }
+
+
+    function formato( d : number ) : string
+    {
+      if(d > 10_000 || d < -10_000) // para que no coloque fechas desde 1970
+        return ""
+
+      let formato       = d + " día"
+      
+      if(d != 1) formato += "s"
+
+        return formato
+    }    
   }
 
   get label()       : string { 
@@ -745,7 +822,6 @@ https://dolibarr.mublex.com/fichinter/card.php?
 
   get esTerceroCtz() : boolean {
     //this.comercial
-    //console.log("this.comercial: ", this.comercial);
     return !!this.comercial && this.tercero.id === this.comercial.terceroIdCtz
   }
 
@@ -776,60 +852,11 @@ https://dolibarr.mublex.com/fichinter/card.php?
   get fechaListoCorta()       : string { return ToolDate.fechaCorta( this.fechaListo       ) }
   get fechaADespacharCorta()  : string { return ToolDate.fechaCorta( this.fechaADespachar  ) }
 
-  get diasEntregar()          : number { return ToolDate.diasEntreFechas( this.fechaEntrega, new Date() ) }
-  get diasEntregarFormato()   : string {
-    const dias    = this.diasEntregar
-
-    if(dias > 10_000 || dias < -10_000) // para que no coloque fechas desde 1970
-      return ""
-
-    let formato   = dias + " día"
-    if(dias != 1) formato += "s"
-
-    return formato
-  }
-
-  get estadoAnimoEmoji()   : string {
-    const dias    = this.diasEntregar
-    const emoji   =   dias  >=  2                 ? "😎"
-                    : dias ===  1                 ? "😉"
-                    : dias ===  0                 ? "😀"
-                    : dias === -1                 ? "🤔"
-                    : dias === -2                 ? "😫"
-                    : dias === -3                 ? "😤"
-                    : dias  <= -4 && dias >= -6   ? "😠"
-                    : dias  <= -4 && dias >= -365 ? "😡"
-                    :                               ""
-    return emoji
-  }
-
-  get estadoAnimoColor()   : string {
-    const dias    = this.diasEntregar
-    const color   =   dias  >=  2                 ? "green"
-                    : dias ===  1                 ? "cyan"
-                    : dias ===  0                 ? "green"
-                    : dias === -1                 ? "orange-3"
-                    : dias === -2                 ? "orange-5"
-                    : dias === -3                 ? "orange-6"
-                    : dias  <= -4 && dias >= -6   ? "orange-10"
-                    : dias  <= -4 && dias >= -365 ? "deep-orange-13"
-                    :                               "white"
-    return "text-" + color
-  }    
-
-  get diasEntregarMensaje() : string {
-    const dias    = this.diasEntregar
-    const msj     =   dias  >=  3                     ? `en ${dias} días`
-                    : dias ===  2                     ? "pasado mañana"
-                    : dias ===  1                     ? "mañana"
-                    : dias ===  0                     ? "hoy"
-                    : dias === -1                     ? "ayer"
-                    : dias  <= -2   && dias >= -1000  ? `hace ${-dias} días`
-                    :                                   "sin definir"
-    return msj
-  }
-
-  //get diasEntregarDiferencia(): string { return ToolDate.diferenciaFechas( new Date().getTime(), this.fechaEntrega.getTime() ) }
+  get diasEntregar()          : number { return this._diasEntregar }
+  get diasEntregarFormato()   : string { return this._diasEntregarFormato }
+  get estadoAnimoEmoji()      : string { return this._estadoAnimoEmoji }
+  get estadoAnimoColor()      : string { return this._estadoAnimoColor }
+  get diasEntregarMensaje()   : string { return this._diasEntregarMensaje }
 
   get totalAnticipos()        : number {
     if(!this.anticipos.length) return 0

@@ -1,7 +1,7 @@
 <template>
   <q-scroll-area
     class                   ="fit fill-available"
-    @mouseover              ="adentro = true"
+    @mouseenter             ="adentro = true"
     @mouseleave             ="salir"
     >
     <div

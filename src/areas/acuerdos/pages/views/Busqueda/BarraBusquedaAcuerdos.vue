@@ -66,7 +66,7 @@
         <!-- //* ///////////////////////////////////////////////// Dias desde -->
         <input-number           hundido  
           v-model               ="b.f.diasDesde"
-          label                 ="Entre"
+          label                 ="Desde"
           :paso                 ="1"
           class                 ="width90"          
           :maximo               ="b.f.diasHasta"

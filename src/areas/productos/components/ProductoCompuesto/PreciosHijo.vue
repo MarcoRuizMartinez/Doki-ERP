@@ -35,10 +35,10 @@
     </div>      
     <div class              ="fuente-mono text-right col column text-bold">
       <span class           ="text-orange-10">
-        {{ Format.precio( producto.costoTotal, "decimales-no" ) }}
+        {{ Format.precio( producto.costoTotal, "decimales-si" ) }}
       </span>
       <span class           ="text-light-green-10">
-        {{ Format.precio( producto.precioTotal, "decimales-no" ) }}
+        {{ Format.precio( producto.precioTotal, "decimales-si" ) }}
       </span>
       <Tooltip>
       <table class  ="text-right">

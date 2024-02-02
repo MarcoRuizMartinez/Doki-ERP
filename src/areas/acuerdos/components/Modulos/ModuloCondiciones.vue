@@ -56,7 +56,10 @@
       :loading                ="loading.fechaEntrega"
       @update:model-value     ="editarFechaEntrega"
       >
-      <span :class="{'text-red' : acuerdo.diasEntregar < 0}">
+      <span
+        v-if                  ="!acuerdo.esEstadoEntregado"
+        :class                ="'text-'+acuerdo.estadoAnimoColor"
+        >
         {{ acuerdo.diasEntregarFormato }}
       </span>
     </input-fecha>
