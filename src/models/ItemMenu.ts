@@ -7,12 +7,22 @@ export interface  IItemMenu {
   orden               : number
   titulo              : string
   descripcion         : string
+  label               : string
+  enlace              : string
 }
 
 export class ItemMenu implements IItemMenu
 {
   dataApi             : any    
-  constructor( data : any ) { this.dataApi  = data }
+  label               : string
+  enlace              : string
+  
+  constructor( data : any )
+  {
+    this.dataApi  = data
+    this.label    = this.titulo
+    this.enlace   = this.url
+  }
   
   get ref         (): string{ return this.dataApi?.ref ?? "" }
   get descripcion (): string{ return this.dataApi?.answer ?? "" }

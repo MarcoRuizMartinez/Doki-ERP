@@ -15,7 +15,12 @@
       <tabs-busqueda/>      
     </template>
     <template                   #barra>
-      <div class="width200"></div>
+      <div
+        class                   ="width200 text-bold text-1_1em text-center radius-6"
+        :style                  ="'background-color:' + busqueda.color + ';'"
+        >
+        <span v-if="!!busqueda.label">{{busqueda.label}} ({{acuerdos.length}})</span>
+      </div>
     </template>    
     <template                   #menu>
       <barra-busqueda

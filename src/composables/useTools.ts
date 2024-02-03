@@ -49,9 +49,10 @@ export class ToolType
 {
   static valorValido  = ( valor : any ) : boolean => {
     let valido              = true
-    if( valor               === undefined ||
-        valor               === null      ||
-        ( typeof valor      === "number" && isNaN( valor ) )
+    if(     valor           === undefined
+        ||  valor           === null
+        || ( typeof valor   === "number" && isNaN( valor ) )
+        || ( typeof valor   === "string" && !valor)
     )
       valido                = false
   
@@ -251,10 +252,12 @@ export class ToolDate
 
   static fechaValida( fecha : string | Date ) : boolean
   {
-    if( typeof fecha === "string")
+    if( typeof fecha      === "string")
       return !!fecha
-    else
+    else if( fecha instanceof Date)
       return fecha.toString() !== "Invalid Date"
+    else
+      return false
   }
   
   

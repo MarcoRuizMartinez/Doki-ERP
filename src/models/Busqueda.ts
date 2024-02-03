@@ -169,7 +169,7 @@ interface               ICampos {
 }
 
 import {  Router           } from "vue-router"
-import { Permisos } from '../areas/usuarios/models/Permisos';
+//import { Permisos } from '../areas/usuarios/models/Permisos';
 
 export interface        IBusqueda {
   query                 : IQuery
@@ -185,6 +185,8 @@ export interface        IBusqueda {
   puedeCambiarUser      : boolean
   haceAutoSelect        : boolean
   copiaPagina           : number
+  label                 : string
+  color                 : string
 
   // * /////////////////  Geters
   queryVacia            : boolean
@@ -228,6 +230,8 @@ export class Busqueda implements IBusqueda
   montadoOk             : boolean
   router                : Router | null = null
   copiaPagina           : number        = 1
+  label                 : string        = ""
+  color                 : string        = ""
 
   constructor()
   {
@@ -287,7 +291,7 @@ export class Busqueda implements IBusqueda
     this.f.favorito           = ToolQuery.getQueryRouterBoolean   ( this.rourterQ .favorito     )
     this.f.color              = ToolQuery.getQueryRouterBoolean   ( this.rourterQ .color        )    
 
-    if(!!this.rourterQ .limite)
+    if(!!this.rourterQ.limite)
       this.f.resultadosXPage  = ToolQuery.getQueryRouterNumber    ( this.rourterQ .limite       )         ?? 10
     this.f.area               = ToolQuery.getQueryRouterLabelValue( this.rourterQ .area,                  Areas                         )    
     this.f.facturado          = ToolQuery.getQueryRouterLabelValue( this.rourterQ .facturado,             Busqueda.listaFacturado       )
@@ -407,6 +411,8 @@ export class Busqueda implements IBusqueda
 
   async limpiarQueryDeRouter() : Promise< boolean >
   {
+    this.label              = ""
+    this.color              = ""
     if(!this.montadoOk) return false
 
     this.rourterQ           = {}

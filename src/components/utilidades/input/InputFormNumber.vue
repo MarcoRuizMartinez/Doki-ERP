@@ -170,10 +170,6 @@
   const valorMinModelo    = ref< number >( -NUM_MAX )
   watch(minimo, (newMin)=>{ valorMinModelo.value  = ToolType.strOrNumToNum( newMin, -NUM_MAX ) } )
 
-
-  //const btnSumarDisable   = computed( ()=> ( numero.value ?? 0 ) + paso.value > valorMaxModelo.value || readonly.value )
-  //const btnRestarDisable  = computed( ()=> ( numero.value ?? 0 ) - paso.value < ( +minimo.value ?? -NUM_MAX )  || readonly.value )
-
   let   regex             = new RegExp("",  "")
 
   onMounted ( ()=> {
@@ -182,7 +178,8 @@
     procesarNumero( modelo.value ) 
   })
 
-  watch(modelValue, (nuevoModelo)=>{
+  watch(modelValue, (nuevoModelo)=>
+  {
     if(!ToolType.valorValido(nuevoModelo))
       modelo.value = ""
   })
@@ -205,7 +202,7 @@
           (
             !noUndefined.value
             &&
-            !!nuevoModelo
+            ToolType.valorValido(nuevoModelo)
           )
         )
         {

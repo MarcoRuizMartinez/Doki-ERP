@@ -78,7 +78,7 @@
           :paso                 ="1"
           class                 ="width90"
           :minimo               ="b.f.diasDesde"
-        />        
+        />
       </fieldset-filtro>
       <fieldset-filtro
         titulo                  ="Estado"
@@ -407,6 +407,18 @@
         <inner-loading :cargando="loading?.carga ?? false"/>
       </fieldset-filtro>
     </q-tab-panel>
+    <!-- //* /////////////////////////////////////////////////////// Tab 1 -->
+    <q-tab-panel
+      name                      ="tab_3"
+      class                     ="row q-pa-none no-wrap scroll"
+      >
+      <fieldset-filtro
+        titulo                  ="Búsqueda"
+        class-contenido         ="column q-gutter-xs"
+        >
+        <busquedas-rapidas/>
+      </fieldset-filtro>
+    </q-tab-panel>
   </q-tab-panels>
 </template>
 
@@ -434,7 +446,8 @@
   import    inputFecha            from "components/utilidades/input/InputFecha.vue"
   import    selectUsuario         from "src/areas/usuarios/components/SelectUsuario.vue"
   import    inputBuscar           from "components/utilidades/input/InputSimple.vue"
-  import    innerLoading          from "components/utilidades/InnerLoading.vue"  
+  import    innerLoading          from "components/utilidades/InnerLoading.vue"
+  import    busquedasRapidas      from "./BusquedasRapidas.vue"
 
   // * /////////////////////////////////////////////////////////////////////// Importaciones
   const { usuario, permisos     } = storeToRefs( useStoreUser() )

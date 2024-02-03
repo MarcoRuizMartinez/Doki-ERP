@@ -264,11 +264,11 @@ export class Acuerdo implements IAcuerdo
   fechaValidacion             : Date                = new Date()
   fechaCierre                 : Date                = new Date(0)
   _fechaEntrega               : Date                = new Date(0)
-  _diasEntregar               : number              = 0
-  _diasEntregarFormato        : string              = ""
-  _estadoAnimoEmoji           : string              = ""
-  _estadoAnimoColor           : string              = ""
-  _diasEntregarMensaje        : string              = ""
+  private _diasEntregar       : number              = 0
+  private _diasEntregarFormato: string              = ""
+  private _estadoAnimoEmoji   : string              = ""
+  private _estadoAnimoColor   : string              = ""
+  private _diasEntregarMensaje: string              = ""
   creadorId                   : number              = 0
   creador                     : IUsuario            = new Usuario()
   estado                      : number             = ESTADO_ACU.NO_GUARDADO
