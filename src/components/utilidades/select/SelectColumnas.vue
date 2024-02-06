@@ -39,13 +39,17 @@
             onMounted
                             } from 'vue'
 
+  // * //////////////////////////////////////////////////////////////////////////////// Tools
+  import {  Tool  } from "src/composables/useTools"
+
   const pre                   = process.env.PREFIJO
   let columnasCargas          = false
   const emit                  = defineEmits(["update:modelValue"])
+  defineExpose({  cargarColumnasLocal })
   const props                 = defineProps(
   {
     modelValue:   { required: true,   type: Array   as PropType< string[] >       },
-    options:      { required: true,   type: Array     },
+    options:      { required: true,   type: Array                                 },
     label:        { default:  "",     type: String                                },
     almacen:      { required: true,   type: String                                },
   })
@@ -54,17 +58,17 @@
 
   const modelo                = ref< string[] > ( modelValue.value )
 
-  onMounted( cargarColumnasLocal ) 
+  //onMounted(  ()=> cargarColumnasLocal) 
   watch(almacen, cargarColumnasLocal)
   watch(modelValue, (m)=>{
     if(!columnasCargas)
       modelo.value = m
   })
 
-  function cargarColumnasLocal()
+  async function cargarColumnasLocal()
   {
-    let  columnas             = LocalStorage.getItem( pre + almacen.value) as string[]
-    if(!!columnas)
+    const  columnas           = LocalStorage.getItem( pre + almacen.value) as string[]
+    if(Array.isArray(columnas))
     {
       modelo.value            = columnas
       emit("update:modelValue", modelo.value)

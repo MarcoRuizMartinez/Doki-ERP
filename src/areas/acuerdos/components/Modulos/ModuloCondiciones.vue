@@ -176,7 +176,7 @@
   const errorFecha                  = ref<boolean>(false)
   const errorMetodo                 = ref<boolean>(false)
 
-  defineExpose({  validar })  
+  defineExpose({  validar })
 
   function validar() : boolean
   {

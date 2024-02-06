@@ -65,7 +65,8 @@ import {  IOrigenContacto,  OrigenContacto  } from "src/models/Diccionarios/Orig
 import {  ITiempoEntrega,   TiempoEntrega   } from "src/models/Diccionarios/TiempoEntrega"
 import {  IAccion,                          } from "src/areas/comunicacion/models/Accion"
 import {  IArchivo                          } from "src/models/Archivo"
-import {  ToolNum, ToolDate, ToolType       } from "src/composables/useTools"
+import {  ToolNum, ToolDate,
+          ToolType, Format                  } from "src/composables/useTools"
 import {  TModulosDolibarr                  } from "src/composables/UtilFiles"
 import {  storeToRefs                       } from 'pinia'
 import {  useStoreUser                      } from 'src/stores/user'
@@ -112,6 +113,8 @@ export interface IAcuerdo
   fechaValidacionCorta        : string
   fechaCierre                 : Date
   fechaCierreCorta            : string  
+
+  /* // Fechas compromiso de entrega */
   fechaEntrega                : Date
   fechaEntregaCorta           : string
   diasEntregar                : number
@@ -119,6 +122,19 @@ export interface IAcuerdo
   diasEntregarMensaje         : string
   estadoAnimoEmoji            : string
   estadoAnimoColor            : string
+
+  /* // Fechas aprobacion pedidos a proveedores */  
+  fechaAprobado               : Date
+  fechaAprobadoCorta          : string
+  diasAprobado                : number
+  diasAprobadoFormato         : string
+
+  /* // Fechas envio de pedido a proveedores */  
+  fechaEnviado                : Date
+  fechaEnviadoCorta           : string
+  diasEnviado                 : number
+  diasEnviadoFormato          : string
+
   comercialId                 : number
   comercial                   : IUsuario
   comercial2Id                : number
@@ -263,12 +279,28 @@ export class Acuerdo implements IAcuerdo
   fechaCreacion               : Date                = new Date()
   fechaValidacion             : Date                = new Date()
   fechaCierre                 : Date                = new Date(0)
-  _fechaEntrega               : Date                = new Date(0)
+
+  /* // Fechas compromiso entrega */
+  private _fechaEntrega       : Date                = new Date(0)
+  private _fechaEntregaCorta  : string              = ""
   private _diasEntregar       : number              = 0
   private _diasEntregarFormato: string              = ""
   private _estadoAnimoEmoji   : string              = ""
   private _estadoAnimoColor   : string              = ""
   private _diasEntregarMensaje: string              = ""
+
+  /* // Fechas aprobado */
+  private _fechaAprobado      : Date                = new Date(0)
+  private _fechaAprobadoCorta : string              = ""
+  private _diasAprobado       : number              = 0
+  private _diasAprobadoFormato: string              = ""
+
+  /* // Fechas enviado */
+  private _fechaEnviado       : Date                = new Date(0)
+  private _fechaEnviadoCorta  : string              = ""
+  private _diasEnviado        : number              = 0
+  private _diasEnviadoFormato : string              = ""
+
   creadorId                   : number              = 0
   creador                     : IUsuario            = new Usuario()
   estado                      : number             = ESTADO_ACU.NO_GUARDADO
@@ -354,77 +386,75 @@ export class Acuerdo implements IAcuerdo
     }
   }
 
+  get fechaEntregaCorta()     : string { return this._fechaEntregaCorta }
+  get diasEntregar()          : number { return this._diasEntregar }
+  get diasEntregarFormato()   : string { return this._diasEntregarFormato }
+  get estadoAnimoEmoji()      : string { return this._estadoAnimoEmoji }
+  get estadoAnimoColor()      : string { return this._estadoAnimoColor }
+  get diasEntregarMensaje()   : string { return this._diasEntregarMensaje }
+
   get fechaEntrega() : Date { return this._fechaEntrega }
   set fechaEntrega( fecha : Date )
   {
     this._fechaEntrega        = fecha    
     this._diasEntregar        = ToolDate.diasEntreFechas( this.fechaEntrega, new Date() )
+    this._fechaEntregaCorta   = ToolDate.fechaCorta( this.fechaEntrega     )
 
     const ok                  = this.esEstadoEntregado || this.esEstadoAnulado
 
-    this._diasEntregarFormato = formato ( this._diasEntregar )
-    this._estadoAnimoEmoji    = emoji   ( this._diasEntregar )
-    this._estadoAnimoColor    = color   ( this._diasEntregar )
-    this._diasEntregarMensaje = mensaje ( this._diasEntregar )
-    
-    
+    this._diasEntregarFormato = Format.formatoDia         ( this._diasEntregar)
+    this._diasEntregarMensaje = Format.formatoDiaMensaje  ( this._diasEntregar, ok )
+    this._estadoAnimoEmoji    = getEmojiByDia             ( this._diasEntregar, ok )
+    this._estadoAnimoColor    = getColorByDia             ( this._diasEntregar, ok )
+  }
 
-    function emoji( d : number ) : string
+  /* //* Fechas y Dias aprobados */
+  get diasAprobado()            : number { return this._diasAprobado }
+  get diasAprobadoFormato()     : string { return this._diasAprobadoFormato }  
+  get fechaAprobadoCorta()      : string { return this._fechaAprobadoCorta }
+
+  get fechaAprobado() : Date { return this._fechaAprobado }
+  set fechaAprobado( fecha : Date )
+  {
+    this._fechaAprobado         = fecha
+    if(ToolDate.fechaValida(fecha))
     {
-      const emoji   =   ok                      ? ""
-                      : d  >=  2                ? "😎"
-                      : d ===  1                ? "😉"
-                      : d ===  0                ? "😀"
-                      : d === -1                ? "🤔"
-                      : d === -2                ? "😫"
-                      : d === -3                ? "😤"
-                      : d  <= -4 && d >= -6     ? "😠"
-                      : d  <= -4 && d >= -365   ? "😡"
-                      :                            ""
-      return emoji
+      this._diasAprobado        = ToolDate.diasEntreFechas( this._fechaAprobado, new Date() )
+      this._diasAprobadoFormato = Format.formatoDia ( this._diasAprobado )
+      this._fechaAprobadoCorta  = ToolDate.fechaCorta( this._fechaAprobado )
     }
-
-    function color( d : number ) : string
+    else
     {
-      const color   =   ok                      ? "white" 
-                      : d  >=  2                ? "light-blue-9"
-                      : d ===  1                ? "cyan"
-                      : d ===  0                ? "green"
-                      : d === -1                ? "orange-5"
-                      : d === -2                ? "orange-7"
-                      : d === -3                ? "orange-8"
-                      : d  <= -4 && d >= -6     ? "orange-10"
-                      : d  <= -4 && d >= -365   ? "deep-orange-13"
-                      :                           "white"
-      return color
-    }
-
-    function mensaje( d : number ) : string
-    {
-      const msj     =   ok                        ? ""
-                      : d  >=  3                  ? `en ${d} días`
-                      : d ===  2                  ? "pasado mañana"
-                      : d ===  1                  ? "mañana"
-                      : d ===  0                  ? "hoy"
-                      : d === -1                  ? "ayer"
-                      : d  <= -2   && d >= -1000  ? `hace ${-d} días`
-                      :                           "sin definir"
-      return msj
-    }
-
-
-    function formato( d : number ) : string
-    {
-      if(d > 10_000 || d < -10_000) // para que no coloque fechas desde 1970
-        return ""
-
-      let formato       = d + " día"
-      
-      if(d != 1) formato += "s"
-
-        return formato
+      this._diasAprobado        = 0
+      this._diasAprobadoFormato = ""
+      this._fechaAprobadoCorta  = ""
     }    
   }
+
+  /* //* Fechas y Dias enviados */
+  get diasEnviado()             : number { return this._diasEnviado }
+  get diasEnviadoFormato()      : string { return this._diasEnviadoFormato }  
+  get fechaEnviadoCorta()       : string { return this._fechaEnviadoCorta }
+
+  get fechaEnviado() : Date { return this._fechaEnviado }
+  set fechaEnviado( fecha : Date )
+  {
+    this._fechaEnviado          = fecha
+    if(ToolDate.fechaValida(fecha))
+    {
+      this._diasEnviado         = ToolDate.diasEntreFechas( this._fechaEnviado, new Date() )
+      this._diasEnviadoFormato  = Format.formatoDia ( this._diasEnviado )
+      this._fechaEnviadoCorta   = ToolDate.fechaCorta( this._fechaEnviado )
+    }
+    else
+    {
+      this._diasEnviado         = 0
+      this._diasEnviadoFormato  = ""
+      this._fechaEnviadoCorta   = ""
+    }
+  }
+
+
 
   get label()       : string { 
     return  Acuerdo.getTipoAcuerdoSingular( this.tipo )
@@ -435,7 +465,6 @@ export class Acuerdo implements IAcuerdo
             : this.label
   }  
 
-  
 
   get labelPlural() : string { return Acuerdo.getTipoAcuerdoPlural    ( this.tipo ) }
   get icono()       : string { return Acuerdo.getIconoAcuerdo         ( this.tipo ) }
@@ -847,16 +876,11 @@ https://dolibarr.mublex.com/fichinter/card.php?
   get fechaFinValidezCorta()  : string { return ToolDate.fechaCorta( this.fechaFinValidez  ) }
   get fechaCreacionCorta()    : string { return ToolDate.fechaCorta( this.fechaCreacion    ) }
   get fechaValidacionCorta()  : string { return ToolDate.fechaCorta( this.fechaValidacion  ) }
-  get fechaCierreCorta()      : string { return ToolDate.fechaCorta( this.fechaCierre      ) }
-  get fechaEntregaCorta()     : string { return ToolDate.fechaCorta( this.fechaEntrega     ) }
+  get fechaCierreCorta()      : string { return ToolDate.fechaCorta( this.fechaCierre      ) }  
   get fechaListoCorta()       : string { return ToolDate.fechaCorta( this.fechaListo       ) }
   get fechaADespacharCorta()  : string { return ToolDate.fechaCorta( this.fechaADespachar  ) }
 
-  get diasEntregar()          : number { return this._diasEntregar }
-  get diasEntregarFormato()   : string { return this._diasEntregarFormato }
-  get estadoAnimoEmoji()      : string { return this._estadoAnimoEmoji }
-  get estadoAnimoColor()      : string { return this._estadoAnimoColor }
-  get diasEntregarMensaje()   : string { return this._diasEntregarMensaje }
+
 
   get totalAnticipos()        : number {
     if(!this.anticipos.length) return 0
@@ -1060,9 +1084,11 @@ https://dolibarr.mublex.com/fichinter/card.php?
     acuApi.fechaValidacion    = ToolDate.getDateToStr( acuApi.fechaValidacion  )
     acuApi.fechaCierre        = ToolDate.getDateToStr( acuApi.fechaCierre      )
     acuApi.fechaFinValidez    = ToolDate.getDateToStr( acuApi.fechaFinValidez  )
-    acuApi.fechaEntrega       = ToolDate.getDateToStr( acuApi.fechaEntrega,    "UTC")
-    acuApi.fechaListo         = ToolDate.getDateToStr( acuApi.fechaListo,      "UTC")
-    acuApi.fechaADespachar    = ToolDate.getDateToStr( acuApi.fechaADespachar, "UTC")
+    acuApi.fechaEntrega       = ToolDate.getDateToStr( acuApi.fechaEntrega,     "local")
+    acuApi.fechaAprobado      = ToolDate.getDateToStr( acuApi.fechaAprobado,    "local")
+    acuApi.fechaEnviado       = ToolDate.getDateToStr( acuApi.fechaEnviado,     "local")
+    acuApi.fechaListo         = ToolDate.getDateToStr( acuApi.fechaListo,       "local")
+    acuApi.fechaADespachar    = ToolDate.getDateToStr( acuApi.fechaADespachar,  "local")
 
     const acu                 = Object.assign( new Acuerdo( tipo ), acuApi ) as IAcuerdo
     acu.esNuevo               = false
@@ -1161,6 +1187,36 @@ https://dolibarr.mublex.com/fichinter/card.php?
 
     return entregas
   }
+}
+
+function getEmojiByDia( d : number, enBlanco : boolean = false ) : string
+{
+  const emoji   =   enBlanco                ? ""
+                  : d  >=  2                ? "😎"
+                  : d ===  1                ? "😉"
+                  : d ===  0                ? "😀"
+                  : d === -1                ? "🤔"
+                  : d === -2                ? "😫"
+                  : d === -3                ? "😤"
+                  : d  <= -4 && d >= -6     ? "😠"
+                  : d  <= -4 && d >= -365   ? "😡"
+                  :                            ""
+  return emoji
+}
+
+function getColorByDia( d : number, enBlanco : boolean = false ) : string
+{
+  const color   =   enBlanco                ? "white" 
+                  : d  >=  2                ? "light-blue-9"
+                  : d ===  1                ? "cyan"
+                  : d ===  0                ? "green"
+                  : d === -1                ? "orange-5"
+                  : d === -2                ? "orange-7"
+                  : d === -3                ? "orange-8"
+                  : d  <= -4 && d >= -6     ? "orange-10"
+                  : d  <= -4 && d >= -365   ? "deep-orange-13"
+                  :                           "white"
+  return color
 }
 
 

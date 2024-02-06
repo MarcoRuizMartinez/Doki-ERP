@@ -9,7 +9,7 @@
       class                     ="row q-pa-none no-wrap scroll"
       >
       <fieldset-filtro
-        titulo                  ="Búsqueda"
+        titulo                  ="Búsqueda" 
         class-contenido         ="column q-gutter-xs"
         >
         <!-- //* ///////////////////////////////////////////////// Busqueda general -->
@@ -37,49 +37,6 @@
           :options              ="b.o.proveedores"
         />
       </fieldset-filtro>
-      <!-- //* /////////////////////////////////////////////////// Fecha creacion -->
-      <fieldset-filtro
-        titulo                  ="Fechas creación"
-        class-contenido         ="column q-gutter-xs"
-        >
-        <!-- //* ///////////////////////////////////////////////// Fecha desde -->
-        <input-fecha            hundido no-futuro clearable
-          v-model               ="b.f.desde"
-          label                 ="Desde"
-          class                 ="width140"
-          :hasta                ="b.f.hasta"
-        />
-        <!-- //* ///////////////////////////////////////////////// Fecha hasta -->
-        <input-fecha            hundido no-futuro clearable
-          v-model               ="b.f.hasta"
-          label                 ="Hasta"
-          class                 ="width140"
-          :desde                ="b.f.desde"
-        />
-      </fieldset-filtro>
-      <!-- //* /////////////////////////////////////////////////// Dias de entrega-->
-      <fieldset-filtro
-        v-if                    ="b.esPedido || b.esOCProveedor"
-        titulo                  ="Días entregar"
-        class-contenido         ="column q-gutter-xs"
-        >
-        <!-- //* ///////////////////////////////////////////////// Dias desde -->
-        <input-number           hundido  
-          v-model               ="b.f.diasDesde"
-          label                 ="Desde"
-          :paso                 ="1"
-          class                 ="width90"          
-          :maximo               ="b.f.diasHasta"
-        />
-        <!-- //* ///////////////////////////////////////////////// Dias hasta -->
-        <input-number           hundido  
-          v-model               ="b.f.diasHasta"
-          label                 ="Hasta"
-          :paso                 ="1"
-          class                 ="width90"
-          :minimo               ="b.f.diasDesde"
-        />
-      </fieldset-filtro>
       <fieldset-filtro
         titulo                  ="Estado"
         class-contenido         ="grilla-ribom"
@@ -88,7 +45,7 @@
         <multi-label-value
           v-model               ="b.f.estados"
           label                 ="Estado"
-          class                 ="width160"
+          class                 ="width200"
           icon                  ="mdi-label"
           :options              ="b.o.estados"
         />
@@ -96,7 +53,7 @@
         <multi-label-value
           v-model               ="b.f.entrega"
           label                 ="Entrega"
-          class                 ="width160"
+          class                 ="width200"
           icon                  ="mdi-truck-delivery"
           :options              ="b.o.metodosEntrega"
         />
@@ -105,7 +62,7 @@
           v-if                  ="!b.esOCProveedor && !b.esEntrega"
           v-model               ="b.f.condiciones"
           label                 ="Condiciones"
-          class                 ="width160"
+          class                 ="width200"
           icon                  ="mdi-account-cash"
           :options              ="b.o.condicionesPago"
         />
@@ -113,7 +70,7 @@
         <select-usuario         hundido clearable
           v-if                  ="!b.esOCProveedor"
           v-model               ="b.f.usuario"
-          class                 ="width160"
+          class                 ="width200"
           label                 ="Asesor"
           :area                 ="usuario.area"
           :grupos               =[GRUPO_USUARIO.COMERCIALES]
@@ -122,7 +79,7 @@
         <!-- //* ///////////////////////////////////////////////// Creador -->
         <select-usuario         hundido clearable
           v-model               ="b.f.creador"
-          class                 ="width160"
+          class                 ="width200"
           label                 ="Creador"
           :area                 ="usuario.area"
           :grupos               ="b.esOCProveedor ? [GRUPO_USUARIO.PRODUCCION] : []"
@@ -132,7 +89,7 @@
         <municipios             hundido
           v-if                  ="b.esEntrega"
           v-model               ="b.f.municipioContacto"
-          class                 ="width160"
+          class                 ="width200"
           label                 ="Lugar envió"
           tooltip               ="Municipio contacto"
         />
@@ -142,7 +99,7 @@
           v-model               ="b.f.facturado"
           label                 ="Facturado"
           icon                  ="mdi-file-check"
-          class                 ="width160"
+          class                 ="width200"
           :options              ="Busqueda.listaFacturado"
         />
       </fieldset-filtro>
@@ -229,9 +186,104 @@
       </fieldset-filtro>
       <inner-loading :cargando    ="loading.carga || b.f.copiando"/>
     </q-tab-panel>
-    <!-- //* ///////////////////////////////////////////////////// Tab 2 -->
+    <!-- //* /////////////////////////////////////////////////////// Tab 2 -->
     <q-tab-panel
       name                      ="tab_2"
+      class                     ="row q-pa-none no-wrap scroll"
+      >
+      <!-- //* /////////////////////////////////////////////////// Fecha creacion -->
+      <fieldset-filtro
+        titulo                  ="Fechas creación"
+        class-contenido         ="column q-gutter-xs"
+        >
+        <!-- //* ///////////////////////////////////////////////// Fecha desde -->
+        <input-fecha            hundido no-futuro clearable
+          v-model               ="b.f.desde"
+          label                 ="Desde"
+          class                 ="width160"
+          :hasta                ="b.f.hasta"
+        />
+        <!-- //* ///////////////////////////////////////////////// Fecha hasta -->
+        <input-fecha            hundido no-futuro clearable
+          v-model               ="b.f.hasta"
+          label                 ="Hasta"
+          class                 ="width160"
+          :desde                ="b.f.desde"
+        />
+      </fieldset-filtro>
+      <!-- //* /////////////////////////////////////////////////// Dias de entrega-->
+      <fieldset-filtro
+        v-if                    ="b.esPedido || b.esOCProveedor"
+        titulo                  ="Días de compromiso"
+        class-contenido         ="column q-gutter-xs"
+        >
+        <!-- //* ///////////////////////////////////////////////// Dias desde -->
+        <input-number           hundido  
+          v-model               ="b.f.diasDesde"
+          label                 ="Desde x días"
+          :paso                 ="1"
+          class                 ="width160"          
+          :maximo               ="b.f.diasHasta"
+        />
+        <!-- //* ///////////////////////////////////////////////// Dias hasta -->
+        <input-number           hundido  
+          v-model               ="b.f.diasHasta"
+          label                 ="Hasta x días"
+          :paso                 ="1"
+          class                 ="width160"
+          :minimo               ="b.f.diasDesde"
+        />
+      </fieldset-filtro>
+      <!-- //* /////////////////////////////////////////////////// Fechas Validacion -->
+      <fieldset-filtro
+        v-if                    ="b.esOCProveedor"
+        titulo                  ="Días de aprobación de OC"
+        class-contenido         ="grilla-ribom"
+        >
+        <!-- //* ///////////////////////////////////////////////// Dias desde -->
+        <input-number           hundido
+          v-model               ="b.f.aproDesdeDia"
+          label                 ="Desde x días"
+          :paso                 ="1"
+          class                 ="width160"
+          :maximo               ="b.f.diasHasta"
+        />
+        <!-- //* ///////////////////////////////////////////////// Dias hasta -->
+        <input-number           hundido
+          v-model               ="b.f.aproHastaDia"
+          label                 ="Hasta x días"
+          :paso                 ="1"
+          class                 ="width160"
+          :minimo               ="b.f.diasDesde"
+        />
+      </fieldset-filtro>
+
+      <fieldset-filtro
+        v-if                    ="b.esOCProveedor"
+        titulo                  ="Días de envió de OC"
+        class-contenido         ="grilla-ribom"
+        >
+        <!-- //* ///////////////////////////////////////////////// Dias desde -->
+        <input-number           hundido
+          v-model               ="b.f.enviaDesdeDia"
+          label                 ="Desde x días"
+          :paso                 ="1"
+          class                 ="width160"
+          :maximo               ="b.f.diasHasta"
+        />
+        <!-- //* ///////////////////////////////////////////////// Dias hasta -->
+        <input-number           hundido
+          v-model               ="b.f.enviaHastaDia"
+          label                 ="Hasta x días"
+          :paso                 ="1"
+          class                 ="width160"
+          :minimo               ="b.f.diasDesde"
+        />
+      </fieldset-filtro>
+    </q-tab-panel>
+    <!-- //* ///////////////////////////////////////////////////// Tab 3 -->
+    <q-tab-panel
+      name                      ="tab_3"
       class                     ="row q-pa-none no-wrap scroll"
       >
       <fieldset-filtro
@@ -409,7 +461,7 @@
     </q-tab-panel>
     <!-- //* /////////////////////////////////////////////////////// Tab 1 -->
     <q-tab-panel
-      name                      ="tab_3"
+      name                      ="tab_4"
       class                     ="row q-pa-none no-wrap scroll"
       >
       <fieldset-filtro
@@ -437,6 +489,7 @@
   // * /////////////////////////////////////////////////////////////////////// Modelos
   import {  IQuery, Busqueda    } from "src/models/Busqueda"
   import {  GRUPO_USUARIO       } from "src/models/TiposVarios"
+  import {  ESTADO_OC           } from "src/areas/acuerdos/models/ConstantesAcuerdos"
   // * /////////////////////////////////////////////////////////////////////// Componentes
   import    fieldsetFiltro        from "components/utilidades/Fieldset.vue"
   import    inputNumber           from "components/utilidades/input/InputFormNumber.vue"

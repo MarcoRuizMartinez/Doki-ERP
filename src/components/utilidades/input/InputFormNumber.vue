@@ -175,7 +175,7 @@
   onMounted ( ()=> {
     definirLargoMax()
     crearRegExp()
-    procesarNumero( modelo.value ) 
+    procesarNumero( modelo.value )
   })
 
   watch(modelValue, (nuevoModelo)=>
@@ -189,22 +189,9 @@
     watch
     (
       modelValue,
-      (nuevoModelo, viejoModelo) =>
+      (nuevoModelo) =>
       {
-        if
-        (
-          (
-            noUndefined.value
-            &&
-            ToolType.valorValido(nuevoModelo)
-          )
-          ||
-          (
-            !noUndefined.value
-            &&
-            ToolType.valorValido(nuevoModelo)
-          )
-        )
+        if( ToolType.valorValido(nuevoModelo) && ( noUndefined.value || !noUndefined.value ) )
         {
           modelo.value    = typeof nuevoModelo == "string" ? nuevoModelo : nuevoModelo.toString()
         }

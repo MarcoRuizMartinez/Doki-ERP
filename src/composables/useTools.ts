@@ -229,6 +229,9 @@ export class ToolDate
 
   static diasEntreFechas( fechaReciente : Date, fechaAntigua : Date ) : number
   {
+    if( !ToolDate.fechaValida( fechaReciente ) || !ToolDate.fechaValida( fechaAntigua ) )
+      return 0
+    
     const diferenciaEnMilisegundos  = fechaReciente.getTime() - fechaAntigua.getTime();
     const dias                      = Math.ceil(diferenciaEnMilisegundos / 86400000 ) // (1000 * 60 * 60 * 24)
     return dias
@@ -250,7 +253,7 @@ export class ToolDate
     return horaFormateada
   }
 
-  static fechaValida( fecha : string | Date ) : boolean
+  static fechaValidaStrODate( fecha : string | Date ) : boolean
   {
     if( typeof fecha      === "string")
       return !!fecha
@@ -259,7 +262,21 @@ export class ToolDate
     else
       return false
   }
-  
+
+  static fechaValida( fecha : Date ) : boolean
+  {
+    let valida = true
+    if(
+          !(fecha instanceof Date)
+      ||  !ToolDate.fechaValidaStrODate( fecha )
+      ||  !fecha.getTime()
+    )
+      valida    = false 
+
+    return valida 
+  }
+
+
   
   static fechaLarga = ( fecha : Date ) : string => fecha.toLocaleDateString('es-CO', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
   static fechaYHora = ( fecha : Date ) : string => ToolDate.fechaLarga(fecha) + " " + fecha.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' })
@@ -633,6 +650,30 @@ export class Format
                             : label
 
     return label
+  }
+
+  static formatoDia( d : number ) : string
+  {
+    if(d > 10_000 || d < -10_000) // para que no coloque fechas desde 1970
+      return ""
+
+    let formato       = d + " día"
+    
+    if(d != 1) formato += "s"
+      return formato
+  }    
+
+  static formatoDiaMensaje( d : number, enBlanco : boolean = false ) : string
+  {
+    const msj     =   enBlanco                  ? ""
+                    : d  >=  3                  ? `en ${d} días`
+                    : d ===  2                  ? "pasado mañana"
+                    : d ===  1                  ? "mañana"
+                    : d ===  0                  ? "hoy"
+                    : d === -1                  ? "ayer"
+                    : d  <= -2   && d >= -1000  ? `hace ${-d} días`
+                    :                           "sin definir"
+    return msj
   }
 }
 

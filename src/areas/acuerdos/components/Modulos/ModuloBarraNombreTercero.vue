@@ -3,12 +3,6 @@
     class                     ="row justify-between items-center text-white text-h6"
     >
     <div class                ="row items-center q-ml-md">
-      <div
-        v-if                  ="acuerdo.esPedido || acuerdo.esOCProveedor"
-        class                 ="text-h4"
-        >
-        {{ acuerdo.estadoAnimoEmoji }}
-      </div>
       <div>
         <campo-copiar
           v-if                ="!!acuerdo.id"
@@ -31,15 +25,21 @@
     </div>
     <div
       v-if                    ="(acuerdo.esPedido || acuerdo.esOCProveedor) && (!acuerdo.esEstadoEntregado && !acuerdo.esEstadoAnulado)"
-      class                   ="q-mr-md"
+      class                   ="row q-mr-md items-center"
       >
-      Dia compromiso:
+      <span class="q-mr-sm">Dia compromiso:</span>
       <span
         class                 ="radius-10 q-px-sm text-capitalize text-1_1em "        
         :class                ="'bg-' + acuerdo.estadoAnimoColor"
         >
         {{ acuerdo.diasEntregarMensaje }}
       </span>
+      <div
+        v-if                  ="acuerdo.esPedido || acuerdo.esOCProveedor"
+        class                 ="text-h4 q-pl-sm"
+        >
+        {{ acuerdo.estadoAnimoEmoji }}
+      </div>      
     </div>
   </barra>
 </template>

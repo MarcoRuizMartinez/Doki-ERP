@@ -36,8 +36,8 @@
   function checkAlertTabs()
   {
     tabs.value.alerts[0]  = (     !!b.value.f.buscar
-                              || ToolDate.fechaValida( b.value.f.desde ) 
-                              || ToolDate.fechaValida( b.value.f.hasta ) 
+                              || ToolDate.fechaValidaStrODate( b.value.f.desde ) 
+                              || ToolDate.fechaValidaStrODate( b.value.f.hasta ) 
                               || !!b.value.f.estados.length
                               || !!b.value.f.origenes.length
                               || !!b.value.f.totalizado.label

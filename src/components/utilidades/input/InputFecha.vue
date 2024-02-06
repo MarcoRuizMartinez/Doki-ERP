@@ -123,7 +123,7 @@
   const avisoRangoOut   = debounce (()=>aviso("negative", "Fecha fuera de rango","clock"), 300)
   function emitir()
   {
-    if(ToolDate.fechaValida(fechaTem))
+    if(ToolDate.fechaValidaStrODate(fechaTem))
       emit("update:model-value", fechaTem)
     else 
       emit("update:model-value", "")

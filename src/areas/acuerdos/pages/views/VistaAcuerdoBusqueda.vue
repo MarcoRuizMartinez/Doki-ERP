@@ -30,6 +30,7 @@
         >
         <select-columnas
           v-model               ="columnasVisibles"
+          ref                   ="comColumnas"
           label                 ="Columnas"
           :almacen              ="almacenColumnas"
           :options              ="columnas"
@@ -166,6 +167,8 @@
   import {  storeToRefs         } from 'pinia'                                            
   import {  useStoreUser        } from 'src/stores/user'
   import {  useStoreAcuerdo     } from 'src/stores/acuerdo'
+  import {  useStoreApp         } from 'src/stores/app'
+
   // * /////////////////////////////////////////////////////////////////////// Componibles
   import {  useTitle            } from "@vueuse/core"
   import {  servicesAcuerdos    } from "src/areas/acuerdos/controllers/servicesAcuerdos"
@@ -173,6 +176,7 @@
   import {  useTools            } from "src/composables/useTools"
   import {  generarCSVDesdeTabla} from "src/composables/UtilFiles"
   import {  style               } from "src/composables/useEstilos"            
+
   // * /////////////////////////////////////////////////////////////////////// Modelos
   import {  IQuery              } from "src/models/Busqueda"
   import {  Columna, IColumna   } from "src/models/Tabla"
@@ -180,6 +184,7 @@
             ALMACEN_LOCAL       } from "src/models/TiposVarios"  
   import {  Acuerdo             } from "src/areas/acuerdos/models/Acuerdo"
   import {  TTipoAcuerdo        } from "src/areas/acuerdos/models/ConstantesAcuerdos"
+
   // * /////////////////////////////////////////////////////////////////////// Componentes
   import    ventana               from "components/utilidades/Ventana.vue"  
   import    selectColumnas        from "components/utilidades/select/SelectColumnas.vue"
@@ -188,6 +193,7 @@
   import    tabsBusqueda          from "./Busqueda/TabsBusquedaAcuerdos.vue"
   import    barraBusqueda         from "./Busqueda/BarraBusquedaAcuerdos.vue"
   import    vistaAcuerdo          from "./VistaAcuerdoVer.vue"
+
   // * ////////////////////////// Columnas
   import    refAcuerdo            from "src/areas/acuerdos/components/Tools/RefAcuerdo.vue"
   import    estado                from "src/areas/acuerdos/components/Tools/Estado.vue"
@@ -198,6 +204,7 @@
   })
   const { tipo }                  = toRefs(props)
   const { usuario, permisos     } = storeToRefs( useStoreUser() )  
+  const { tabs                  } = storeToRefs( useStoreApp() )
   const { acuerdo,
           acuerdos,
           busqueda,
@@ -208,7 +215,7 @@
           buscarProyecto        } = useControlAcuerdo()  
   const { esMobil, aviso        } = useTools()
   const router                    = useRouter()
-  
+  const comColumnas               = ref< InstanceType<typeof selectColumnas> | null>(null)
   const modo                      = ref< TModosVentana >("esperando-busqueda")  
   const indexSelect               = ref< number >(-1)
   const ventanaVistaRapida        = ref< boolean >(false)  
@@ -247,7 +254,6 @@
   const puedeSiguiente            = computed(()=> indexSelect.value < acuerdos.value.length - 1)
 
   watch(tipo, iniciar)
-
   onMounted(iniciar)
 
   async function iniciar()
@@ -255,6 +261,7 @@
     useTitle(`${Acuerdo.getEmojiAcuerdo(tipo.value)}🔍 Buscar ${Acuerdo.getTipoAcuerdoPlural(tipo.value)}`)
     acuerdos.value                = []
     modo.value                    = "esperando-busqueda"
+    tabs.value.activa             ="tab_1"
     await busqueda.value.montarBusqueda( usuario.value.id, router, usuario.value.esComercial, permisos.value.acceso_total, 10, tipo.value )
     crearColumnas()
   }
@@ -324,6 +331,8 @@
       new Columna(            { name: "fechaEntregaCorta",    label: "Fecha compromiso"                       }),
       new Columna(            { name: "estadoAnimoEmoji",     label: "Animo",           clase:"text-1_4em"    }),
       new Columna(            { name: "diasEntregarFormato",  label: "Días compromiso"                        }),
+      new Columna(            { name: "diasAprobadoFormato",  label: "Días aprobado"                          }),
+      new Columna(            { name: "diasEnviadoFormato",   label: "Días enviado"                           }),
       new Columna(            { name: "fechaListoCorta",      label: "Fecha listo"                            }),
       new Columna(            { name: "fechaADespacharCorta", label: "Fecha a despachar"                      }), 
       new Columna(            { name: "metodoEntregaLabel",   label: "Entrega"                                }), 
@@ -342,9 +351,9 @@
       Columna.ColumnaPrecio ( { name: "totalConIva",          label: "Total",             clase: "text-bold"  }),
     ]
 
-    const colsEli = busqueda.value.esCotizacion   ? ["diasEntregarFormato", "estadoAnimoEmoji", "facturado", "pedidoId", "fechaListoCorta", "fechaADespacharCorta", "fechaEntregaCorta"]
-                  : busqueda.value.esPedido       ? ["pedidoId"]
-                  : busqueda.value.esEntrega      ? ["diasEntregarFormato", "estadoAnimoEmoji", "facturado", "condicionPagoLabel", "formaPagoLabel", "origenContactoLabel", "subTotalLimpio", "totalConDescu", "ivaValor", "totalConIva", "fechaListoCorta"]
+    const colsEli = busqueda.value.esCotizacion   ? ["diasEnviadoFormato", "diasAprobadoFormato", "diasEntregarFormato", "estadoAnimoEmoji", "facturado", "pedidoId", "fechaListoCorta", "fechaADespacharCorta", "fechaEntregaCorta"]
+                  : busqueda.value.esPedido       ? ["diasEnviadoFormato", "diasAprobadoFormato", "pedidoId"]
+                  : busqueda.value.esEntrega      ? ["diasEnviadoFormato", "diasAprobadoFormato", "diasEntregarFormato", "estadoAnimoEmoji", "facturado", "condicionPagoLabel", "formaPagoLabel", "origenContactoLabel", "subTotalLimpio", "totalConDescu", "ivaValor", "totalConIva", "fechaListoCorta"]
                   : busqueda.value.esOCProveedor  ? ["refCliente", "comercial", "metodoEntregaLabel", "facturado", "origenContactoLabel", "subTotalLimpio", "pedidoId", "fechaListoCorta"]
                   : []
     Columna.eliminarColums( colsEli, columnas.value )
@@ -358,6 +367,7 @@
     Columna.ocultarColums( colsOcu, columnas.value )
     
     columnasVisibles.value  = columnas.value.filter(c => c.visible ).map( c => c.name )
+    comColumnas.value?.cargarColumnasLocal()
   } 
 
   function descargarAcuerdos()

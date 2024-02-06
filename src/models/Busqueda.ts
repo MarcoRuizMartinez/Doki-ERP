@@ -47,10 +47,22 @@ export interface      IQuery {
   entrega              ?: string
   estadoAnticipo       ?: string
   tipoAnticipo         ?: string
+
   fechaDesde           ?: string
   fechaHasta           ?: string
   diasDesde            ?: number
   diasHasta            ?: number
+
+  //valiDesde            ?: string
+  //valiHasta            ?: string
+  aproDesdeDia          ?: number
+  aproHastaDia          ?: number
+
+  //enviaDesde           ?: string
+  //enviaHasta           ?: string
+  enviaDesdeDia         ?: number
+  enviaHastaDia         ?: number
+
   proveedorId          ?: number
   facturado            ?: number
   conIva               ?: number
@@ -60,6 +72,7 @@ export interface      IQuery {
   listoDespacho        ?: number
   limite               ?: number
   offset               ?: number
+  count                ?: number
   area                 ?: string
   orden                ?: "ASC" | "DESC"
   municipio            ?: number | string
@@ -118,10 +131,22 @@ interface               ICampos {
   copiando              : boolean
   buscar                : string
   contacto              : string
+
   desde                 : Date | string
   hasta                 : Date | string
   diasDesde             : number | undefined
   diasHasta             : number | undefined
+
+  //valiDesde             : Date | string
+  //valiHasta             : Date | string
+  aproDesdeDia           : number | undefined
+  aproHastaDia           : number | undefined
+
+  //enviaDesde            : Date | string
+  //enviaHasta            : Date | string
+  enviaDesdeDia          : number | undefined
+  enviaHastaDia          : number | undefined
+
   valorMin              : number | undefined
   valorMax              : number | undefined
   estados               : ILabelValue[]
@@ -272,8 +297,16 @@ export class Busqueda implements IBusqueda
   {
     this.f.copiando           = true
     this.rourterQ             = this.router?.currentRoute.value.query ?? {}    
-    this.f.desde              = ToolQuery.getQueryRouterDate      ( this.rourterQ .fechaDesde   )
-    this.f.hasta              = ToolQuery.getQueryRouterDate      ( this.rourterQ .fechaHasta   )
+    this.f.desde              = ToolQuery.getQueryRouterDate      ( this.rourterQ .fechaDesde     )
+    this.f.hasta              = ToolQuery.getQueryRouterDate      ( this.rourterQ .fechaHasta     )
+
+    this.f.diasDesde          = ToolQuery.getQueryRouterNumber    ( this.rourterQ .diasDesde      )
+    this.f.diasHasta          = ToolQuery.getQueryRouterNumber    ( this.rourterQ .diasHasta      )
+    this.f.aproDesdeDia       = ToolQuery.getQueryRouterNumber    ( this.rourterQ .aproDesdeDia   )
+    this.f.aproHastaDia       = ToolQuery.getQueryRouterNumber    ( this.rourterQ .aproHastaDia   )
+    this.f.enviaDesdeDia      = ToolQuery.getQueryRouterNumber    ( this.rourterQ .enviaDesdeDia  )
+    this.f.enviaHastaDia      = ToolQuery.getQueryRouterNumber    ( this.rourterQ .enviaHastaDia  )
+
     this.f.buscar             = ToolQuery.getQueryRouterString    ( this.rourterQ .buscar       )
     this.f.contacto           = ToolQuery.getQueryRouterString    ( this.rourterQ .contacto     )
     this.f.nombre             = ToolQuery.getQueryRouterString    ( this.rourterQ .nombre       )
@@ -284,8 +317,6 @@ export class Busqueda implements IBusqueda
     this.f.altura             = ToolQuery.getQueryRouterNumber    ( this.rourterQ .altura       )
     this.f.ancho              = ToolQuery.getQueryRouterNumber    ( this.rourterQ .ancho        )
     this.f.fondo              = ToolQuery.getQueryRouterNumber    ( this.rourterQ .fondo        )
-    this.f.diasDesde          = ToolQuery.getQueryRouterNumber    ( this.rourterQ .diasDesde    )
-    this.f.diasHasta          = ToolQuery.getQueryRouterNumber    ( this.rourterQ .diasHasta    )
     this.f.fondo              = ToolQuery.getQueryRouterNumber    ( this.rourterQ .fondo        )    
     this.f.destacado          = ToolQuery.getQueryRouterBoolean   ( this.rourterQ .destacado    )
     this.f.favorito           = ToolQuery.getQueryRouterBoolean   ( this.rourterQ .favorito     )
@@ -508,8 +539,12 @@ export class Busqueda implements IBusqueda
     if(!!this.f.ancho)                  q.ancho             = this.f.ancho
     if(!!this.f.fondo)                  q.fondo             = this.f.fondo
 
-    if(ToolType.valorValido(this.f.diasDesde)) q.diasDesde  = this.f.diasDesde
-    if(ToolType.valorValido(this.f.diasHasta)) q.diasHasta  = this.f.diasHasta
+    if(ToolType.valorValido(this.f.diasDesde))    q.diasDesde     = this.f.diasDesde
+    if(ToolType.valorValido(this.f.diasHasta))    q.diasHasta     = this.f.diasHasta
+    if(ToolType.valorValido(this.f.aproDesdeDia))  q.aproDesdeDia   = this.f.aproDesdeDia
+    if(ToolType.valorValido(this.f.aproHastaDia))  q.aproHastaDia   = this.f.aproHastaDia
+    if(ToolType.valorValido(this.f.enviaDesdeDia)) q.enviaDesdeDia  = this.f.enviaDesdeDia
+    if(ToolType.valorValido(this.f.enviaHastaDia)) q.enviaHastaDia  = this.f.enviaHastaDia
 
     if(!!this.f.estados.length)         q.estados           = this.f.estados        .map( e => e.value ).join("_")
     if(!!this.f.cuando.length)          q.cuando            = this.f.cuando         .map( e => e.value ).join("_")
@@ -546,8 +581,8 @@ export class Busqueda implements IBusqueda
     if(this.esOCProveedor && !!this.f.proveedores.label)
       q.proveedorId                                       = this.f.proveedores.value
     
-    if(this.f.desde instanceof Date && !isNaN(this.f.desde.valueOf()))  q.fechaDesde  = this.f.desde.toLocaleDateString('sv-SE')
-    if(this.f.hasta instanceof Date && !isNaN(this.f.hasta.valueOf()))  q.fechaHasta  = this.f.hasta.toLocaleDateString('sv-SE')
+    if(this.f.desde       instanceof Date && !isNaN(this.f.desde.valueOf()))      q.fechaDesde  = this.f.desde.toLocaleDateString('sv-SE')
+    if(this.f.hasta       instanceof Date && !isNaN(this.f.hasta.valueOf()))      q.fechaHasta  = this.f.hasta.toLocaleDateString('sv-SE')
 
     if(!!Object.keys(q).length){
       q.limite                    = this.f.resultadosXPage
@@ -612,10 +647,22 @@ export class Busqueda implements IBusqueda
       copiando            : false,
       buscar              : "",
       contacto            : "",
+
       desde               : "",
       hasta               : "",
       diasDesde           : undefined,
       diasHasta           : undefined,
+
+      //valiDesde           : "",
+      //valiHasta           : "",
+      aproDesdeDia         : undefined,
+      aproHastaDia         : undefined,
+
+      //enviaDesde          : "",
+      //enviaHasta          : "",
+      enviaDesdeDia        : undefined,
+      enviaHastaDia        : undefined,
+
       valorMin            : undefined,
       valorMax            : undefined,
       estados             : [],

@@ -14,7 +14,7 @@
         <Tooltip label        ="Calculo de comisiones" v-if="esMobil"/>
       </q-btn>
       <q-btn
-        v-if                  ="acuerdo.esPedido"
+        v-if                  ="acuerdo.esPedido || acuerdo.esOCProveedor"
         v-bind                ="style.btnBaseMd"
         color                 ="primary"
         icon                  ="mdi-calendar-month"
