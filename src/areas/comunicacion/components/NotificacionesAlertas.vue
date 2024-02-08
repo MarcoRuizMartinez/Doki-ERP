@@ -1,6 +1,5 @@
 <template> 
   <div
-    v-if                  ="!!enlaces.length"
     :class                ="$attrs.class"
     class                 ="q-pa-md"     
     >
@@ -12,7 +11,9 @@
         @click            ="buscar"
       />      
     </div>
-    <div  class           ="column gap-sm">  
+    <div
+      v-if                ="!!enlaces.length"
+      class               ="column gap-sm">
       <div v-for          ="link of enlaces">
         <q-btn            rounded
           v-bind          ="style.btnFlatMd"
@@ -29,8 +30,12 @@
             :label        ="link.cuenta"
           />        
         </q-btn>
-        
       </div>      
+    </div>
+    <div v-else
+      class               ="text-center text-grey-6"
+      >
+      No estas suscrito a ninguna alerta
     </div>
   </div>
   <inner-loading :cargando="loading"/>
@@ -77,7 +82,11 @@
   const usuarioAfuera           = usePageLeave()
 
   onMounted(iniciar)
-  onUnmounted(()=> enlaces.value = [])
+  onUnmounted(()=> {
+    enlaces.value               = []
+    alertas.value               = 0
+  })
+    
 
   async function iniciar()
   {
@@ -141,8 +150,12 @@
       {
         const preQuery : any    = { acuerdo: item.tipoAcuerdo, tipo: "busqueda" } 
 
-        if(usuario.value.esComercial && item.tipoAcuerdo === TIPO_ACUERDO.PEDIDO_CLI) 
+        if(usuario.value.esComercial && item.tipoAcuerdo === TIPO_ACUERDO.PEDIDO_CLI)
+        {
           preQuery.usuario      = usuario.value.id
+          item.enlace           += "&usuario=" + usuario.value.id
+          //item.urlParams.push( ["usuario", usuario.value.id.toString()] )
+        }
         
         const query             = item.urlParams.reduce((acc, tupla) => ({ ...acc, ...ToolType.convertirTuplaAObjeto(tupla) }), preQuery) as IQuery
         item.cuenta             = await getCountAcuerdos( query )
@@ -158,13 +171,12 @@
   async function clickBoton( link : IItemMenu)
   {
     router.push( link.enlace )
+
     await Tool.pausa(10)
-    busqueda.value.copiarQueryACampos()
+    busqueda.value.copiarQueryACampos( true )
     busqueda.value.label = link.label
     busqueda.value.color = link.color
     tabs.value.activa ="tab_1"
   }
 
 </script>
-<style>
-</style>

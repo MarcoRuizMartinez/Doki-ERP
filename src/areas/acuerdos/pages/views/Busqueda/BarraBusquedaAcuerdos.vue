@@ -16,7 +16,7 @@
         <input-buscar           clearable hundido
           v-model               ="b.f.buscar"
           label                 ="Búsqueda"
-          class                 ="width200"
+          class                 ="width190"
           icon                  ="mdi-account-search"
         />
         <!-- //* ///////////////////////////////////////////////// Busqueda contacto -->
@@ -25,7 +25,7 @@
           v-model               ="b.f.contacto"
           label                 ="Contactos"
           icon                  ="mdi-target-account"
-          class                 ="width200"
+          class                 ="width190"
         />
         <!-- //* ///////////////////////////////////////////////// Proveedores -->
         <select-label-value     use-input hundido clearable flat bordered
@@ -33,7 +33,7 @@
           v-model               ="b.f.proveedores"
           label                 ="Proveedor"
           icon                  ="mdi-storefront"
-          class                 ="width200"
+          class                 ="width190"
           :options              ="b.o.proveedores"
         />
       </fieldset-filtro>
@@ -45,7 +45,7 @@
         <multi-label-value
           v-model               ="b.f.estados"
           label                 ="Estado"
-          class                 ="width200"
+          class                 ="width190"
           icon                  ="mdi-label"
           :options              ="b.o.estados"
         />
@@ -53,7 +53,7 @@
         <multi-label-value
           v-model               ="b.f.entrega"
           label                 ="Entrega"
-          class                 ="width200"
+          class                 ="width190"
           icon                  ="mdi-truck-delivery"
           :options              ="b.o.metodosEntrega"
         />
@@ -62,7 +62,7 @@
           v-if                  ="!b.esOCProveedor && !b.esEntrega"
           v-model               ="b.f.condiciones"
           label                 ="Condiciones"
-          class                 ="width200"
+          class                 ="width190"
           icon                  ="mdi-account-cash"
           :options              ="b.o.condicionesPago"
         />
@@ -70,7 +70,7 @@
         <select-usuario         hundido clearable
           v-if                  ="!b.esOCProveedor"
           v-model               ="b.f.usuario"
-          class                 ="width200"
+          class                 ="width190"
           label                 ="Asesor"
           :area                 ="usuario.area"
           :grupos               =[GRUPO_USUARIO.COMERCIALES]
@@ -79,7 +79,7 @@
         <!-- //* ///////////////////////////////////////////////// Creador -->
         <select-usuario         hundido clearable
           v-model               ="b.f.creador"
-          class                 ="width200"
+          class                 ="width190"
           label                 ="Creador"
           :area                 ="usuario.area"
           :grupos               ="b.esOCProveedor ? [GRUPO_USUARIO.PRODUCCION] : []"
@@ -89,7 +89,7 @@
         <municipios             hundido
           v-if                  ="b.esEntrega"
           v-model               ="b.f.municipioContacto"
-          class                 ="width200"
+          class                 ="width190"
           label                 ="Lugar envió"
           tooltip               ="Municipio contacto"
         />
@@ -99,7 +99,7 @@
           v-model               ="b.f.facturado"
           label                 ="Facturado"
           icon                  ="mdi-file-check"
-          class                 ="width200"
+          class                 ="width190"
           :options              ="Busqueda.listaFacturado"
         />
       </fieldset-filtro>
@@ -184,6 +184,35 @@
           </div>
         </div>
       </fieldset-filtro>
+      <fieldset-filtro
+        v-if                    ="!b.esEntrega && ( usuario.esGerencia || usuario.esComercial )"
+        titulo                  ="Totales"
+        class-contenido         ="column q-gutter-xs"
+        >
+        <table>
+          <tbody>
+            <tr>
+              <td>Subtotal:</td>
+              <td class         ="text-bold fuente-mono">
+                {{ Format.precio( sumaAcuerdosSubtotal ) }}
+              </td>
+            </tr>
+            <tr v-if            ="b.esPedido">
+              <td>Sin fletes:</td>
+              <td class         ="text-bold fuente-mono">
+                {{ Format.precio( sumaAcuerdosSubtotalLimpio ) }}
+              </td>
+            </tr>
+            <tr>
+              <td>Total:</td>
+              <td class         ="text-bold fuente-mono">
+                {{ Format.precio( sumaAcuerdosTotal ) }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <inner-loading :cargando="loading?.carga ?? false"/>
+      </fieldset-filtro>      
       <inner-loading :cargando    ="loading.carga || b.f.copiando"/>
     </q-tab-panel>
     <!-- //* /////////////////////////////////////////////////////// Tab 2 -->
@@ -429,37 +458,8 @@
           :maximo               ="999_999_999"
         />
       </fieldset-filtro>
-      <fieldset-filtro
-        v-if                    ="!b.esEntrega"
-        titulo                  ="Totales"
-        class-contenido         ="column q-gutter-xs"
-        >
-        <table>
-          <tbody>
-            <tr>
-              <td>Subtotal:</td>
-              <td class         ="text-bold fuente-mono">
-                {{ Format.precio( sumaAcuerdosSubtotal ) }}
-              </td>
-            </tr>
-            <tr v-if            ="b.esPedido">
-              <td>Sin fletes:</td>
-              <td class         ="text-bold fuente-mono">
-                {{ Format.precio( sumaAcuerdosSubtotalLimpio ) }}
-              </td>
-            </tr>
-            <tr>
-              <td>Total:</td>
-              <td class         ="text-bold fuente-mono">
-                {{ Format.precio( sumaAcuerdosTotal ) }}
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        <inner-loading :cargando="loading?.carga ?? false"/>
-      </fieldset-filtro>
     </q-tab-panel>
-    <!-- //* /////////////////////////////////////////////////////// Tab 1 -->
+    <!-- //* /////////////////////////////////////////////////////// Tab 4 -->
     <q-tab-panel
       name                      ="tab_4"
       class                     ="row q-pa-none no-wrap scroll"
