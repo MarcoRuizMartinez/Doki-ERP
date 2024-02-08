@@ -31,7 +31,7 @@ import {  TTipoAcuerdo,
           TIPO_ACUERDO      } from "src/areas/acuerdos/models/ConstantesAcuerdos"
 import {  Acuerdo,
           IAcuerdo,         } from "src/areas/acuerdos/models/Acuerdo"
-import {  Tool              } from "src/composables/useTools"
+import {  Tool, ToolType    } from "src/composables/useTools"
 
 export function servicesAcuerdos()
 {
@@ -119,6 +119,28 @@ export function servicesAcuerdos()
       }
     })
   }
+
+  async function getCountAcuerdos( query : IQuery ) : Promise< number >
+  {
+    return new Promise( async (resolver, rechazar ) =>
+    {
+      const { data, ok  }           = await miFetch(  getURL("listas", "acuerdos"),
+                                                    {
+                                                      body:   getFormData( "busqueda", { ...query, count: 1 } ),
+                                                      method: "POST"
+                                                    },
+                                                    {
+                                                      mensaje:      "buscar " + query.acuerdo,
+                                                      tiempoEspera: 15_000,
+                                                      dataEsArray:  false
+                                                    }
+                                                  )
+      if(ok)
+        resolver( ToolType.anyToNum( data ) )
+      else
+        resolver( 0 )
+    })
+  }  
 
   async function setFechaFinValidez( ctz_id : number, fecha : Date, acuerdo : TTipoAcuerdo ) : Promise< boolean > // Solo para coctizaciones
   {
@@ -449,6 +471,7 @@ export function servicesAcuerdos()
   return {
     getAcuerdo,
     getAcuerdos,
+    getCountAcuerdos,
     setFechaFinValidez,
     setFechaEntrega,
     setFechaADespachar,

@@ -12,7 +12,7 @@
         @click      ="clickBoton( link )"
       />
       <Tooltip>{{ link.descripcion }}</Tooltip>
-    </div>    
+    </div>
   </div>
 </template>
 

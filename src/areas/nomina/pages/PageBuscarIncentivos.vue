@@ -1,3 +1,76 @@
+<template>
+  <q-page padding class         ="row item-stretch content-start justify-start">
+    <ventana
+      class                     ="col-12"
+      class-contenido           ="column items-center"
+      height                    ="100%"
+      size-icon-carga           ="22em"
+      icono                     ="mdi-account-details"
+      :modo                     ="modo"
+      :titulo                   ="titulo"
+      :padding-contenido        ="modo === 'normal' ? '0' : '12px' "
+      >
+      <template                 #menu>
+        <barra-busqueda
+          @buscar               ="buscar"
+          @limpiar              ="limpiarBusqueda"
+          @exportar             ="descargarAcuerdos"
+          >
+          <select-columnas
+            v-model             ="columnasVisibles"
+            ref                 ="comColumnas"
+            label               ="Columnas"
+            :almacen            ="almacenColumnas"
+            :options            ="columnas"
+          />
+        </barra-busqueda>
+      </template>
+      <!-- //* //////////////////////////////////////////////////////// Tabla resultados-->
+      <q-table                  bordered dense flat square
+        v-model:selected        ="seleccion"
+        class                   ="fit tabla-maco tabla-alto-min"
+        row-key                 ="id"
+        selection               ="multiple"
+        :rows                   ="incentivos"
+        :columns                ="columnas"
+        :visible-columns        ="columnasVisibles"
+        :rows-per-page-options  ="[100]"
+        >
+        <!-- //* ///////////////  Columna Ref  -->
+        <template               #body-cell-origenRef="props">
+          <q-td   :props        ="props">
+            <router-link
+              class             ="link-limpio"
+              :to               ="props.row.origenURL"
+              >
+              {{ props.value }}
+            </router-link>
+          </q-td>
+        </template>
+        <!-- //* ///////////////  Columna Valor  -->
+        <template               #body-cell-valor="props">
+          <q-td   :props        ="props" class="text-right">
+            <span               
+              class             ="fuente-mono text-bold"              
+              :class            ="{ 'text-red' :  props.row.valor < 0 }"
+              >
+              {{ Format.precio( props.row.valor, "decimales-no") }}
+            </span>
+          </q-td>
+        </template>            
+        <!-- //* ///////////////  Columna Usuario  -->
+        <template               #body-cell-usuarioLabel="props">
+          <q-td   :props        ="props"><chip-usuario :usuario="props.row.usuario"/></q-td>
+        </template>    
+        <!-- //* ///////////////  Columna Creador  -->
+        <template               #body-cell-creadorLabel="props">
+          <q-td   :props        ="props"><chip-usuario :usuario="props.row.creador"/></q-td>
+        </template>
+      </q-table>
+    </ventana>
+  </q-page>
+</template>
+
 <script setup lang="ts">
   import {  ref,
             computed,
@@ -41,6 +114,8 @@
   
   const modo                      = ref< TModosVentana >("esperando-busqueda")  
   const indexSelect               = ref< number >(-1) 
+  const comColumnas               = ref< InstanceType<typeof selectColumnas> | null>(null)
+
   const titulo                    = computed(()=>
   {
     let   titulo                  = ""
@@ -111,6 +186,7 @@
       new Columna(  { name: "nota" }),
     ]
     columnasVisibles.value  = columnas.value.filter(c => c.visible ).map( c => c.name )
+    comColumnas.value?.cargarColumnasLocal()
   }
 
   function descargarAcuerdos()
@@ -121,75 +197,3 @@
     else    aviso("negative", "Error al generar el archivo...", "file")
   }  
 </script>
-
-<template>
-  <q-page padding class         ="row item-stretch content-start justify-start">
-    <ventana
-      class                     ="col-12"
-      class-contenido           ="column items-center"
-      height                    ="100%"
-      size-icon-carga           ="22em"
-      icono                     ="mdi-account-details"
-      :modo                     ="modo"
-      :titulo                   ="titulo"
-      :padding-contenido        ="modo === 'normal' ? '0' : '12px' "
-      >
-      <template                 #menu>
-        <barra-busqueda
-          @buscar               ="buscar"
-          @limpiar              ="limpiarBusqueda"
-          @exportar             ="descargarAcuerdos"
-          >
-          <select-columnas
-            v-model             ="columnasVisibles"
-            label               ="Columnas"
-            :almacen            ="almacenColumnas"
-            :options            ="columnas"
-          />
-        </barra-busqueda>
-      </template>
-      <!-- //* //////////////////////////////////////////////////////// Tabla resultados-->
-      <q-table                  bordered dense flat square
-        v-model:selected        ="seleccion"
-        class                   ="fit tabla-maco tabla-alto-min"
-        row-key                 ="id"
-        selection               ="multiple"
-        :rows                   ="incentivos"
-        :columns                ="columnas"
-        :visible-columns        ="columnasVisibles"
-        :rows-per-page-options  ="[100]"
-        >
-        <!-- //* ///////////////  Columna Ref  -->
-        <template               #body-cell-origenRef="props">
-          <q-td   :props        ="props">
-            <router-link
-              class             ="link-limpio"
-              :to               ="props.row.origenURL"
-              >
-              {{ props.value }}
-            </router-link>
-          </q-td>
-        </template>
-        <!-- //* ///////////////  Columna Valor  -->
-        <template               #body-cell-valor="props">
-          <q-td   :props        ="props" class="text-right">
-            <span               
-              class             ="fuente-mono text-bold"              
-              :class            ="{ 'text-red' :  props.row.valor < 0 }"
-              >
-              {{ Format.precio( props.row.valor, "decimales-no") }}
-            </span>
-          </q-td>
-        </template>            
-        <!-- //* ///////////////  Columna Usuario  -->
-        <template               #body-cell-usuarioLabel="props">
-          <q-td   :props        ="props"><chip-usuario :usuario="props.row.usuario"/></q-td>
-        </template>    
-        <!-- //* ///////////////  Columna Creador  -->
-        <template               #body-cell-creadorLabel="props">
-          <q-td   :props        ="props"><chip-usuario :usuario="props.row.creador"/></q-td>
-        </template>
-      </q-table>
-    </ventana>
-  </q-page>
-</template>

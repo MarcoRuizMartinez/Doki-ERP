@@ -35,18 +35,13 @@
   import {  ref,
             toRefs,
             watch,
-            PropType,
-            onMounted
-                            } from 'vue'
-
-  // * //////////////////////////////////////////////////////////////////////////////// Tools
-  import {  Tool  } from "src/composables/useTools"
+            PropType        } from 'vue'
 
   const pre                   = process.env.PREFIJO
   let columnasCargas          = false
-  const emit                  = defineEmits(["update:modelValue"])
-  defineExpose({  cargarColumnasLocal })
-  const props                 = defineProps(
+  const emit                  = defineEmits ([  "update:modelValue" ])
+                                defineExpose({  cargarColumnasLocal })
+  const props                 = defineProps (
   {
     modelValue:   { required: true,   type: Array   as PropType< string[] >       },
     options:      { required: true,   type: Array                                 },
@@ -57,8 +52,6 @@
           almacen         }   = toRefs( props )
 
   const modelo                = ref< string[] > ( modelValue.value )
-
-  //onMounted(  ()=> cargarColumnasLocal) 
   watch(almacen, cargarColumnasLocal)
   watch(modelValue, (m)=>{
     if(!columnasCargas)

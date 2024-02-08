@@ -39,6 +39,7 @@
   const title                     = useTitle("🔍 Buscar tercero")
   const columnas                  = ref< IColumna[] >([])
   const columnasVisibles          = ref< string[]   >([])
+  const comColumnas               = ref< InstanceType<typeof selectColumnas> | null>(null)
 
   onMounted(iniciar)
 
@@ -69,6 +70,7 @@
     ]
 
     columnasVisibles.value  = columnas.value.filter(c => c.visible ).map( c => c.name )
+    comColumnas.value?.cargarColumnasLocal()
   } 
 
   async function buscar( query : IQuery )
@@ -118,6 +120,7 @@
           >
           <select-columnas
             v-model               ="columnasVisibles"
+            ref                   ="comColumnas"
             label                 ="Columnas"
             :almacen              ="ALMACEN_LOCAL.COL_TERCEROS"
             :options              ="columnas"

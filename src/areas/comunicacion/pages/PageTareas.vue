@@ -23,6 +23,7 @@
           >
           <select-columnas
             v-model                   ="columnasVisibles"
+            ref                       ="comColumnas"
             label                     ="Columnas"
             :almacen                  ="ALMACEN_LOCAL.COL_TAREAS"
             :options                  ="columnas"
@@ -237,6 +238,7 @@
   const modo                  = ref< TModosVentana >( "esperando-busqueda" )
   const tareas                = ref< IAccion[]> ([])
   const tarea                 = ref< IAccion>   ( new Accion( usuario.value.id ) )
+  const comColumnas           = ref< InstanceType<typeof selectColumnas> | null>(null)
 
   watch(()=>router.currentRoute.value.query, async ( q )=>{
     if(modo.value !== "buscando")
@@ -328,6 +330,7 @@
     const colsOcu =[ "modificoLabel", "comentario", "fechaCreacionCorta", "fechaEdicionCorta", "cuandoValue" ]
     Columna.ocultarColums( colsOcu, columnas.value )    
     columnasVisibles.value    = columnas.value.filter(c => c.visible ).map( c => c.name )
+    comColumnas.value?.cargarColumnasLocal()
   }
 
   //* ///////////////////////////////////////////////////////////// Limpiar busqueda

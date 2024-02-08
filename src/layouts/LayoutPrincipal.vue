@@ -65,7 +65,7 @@
     <q-drawer           elevated overlay
       v-model           ="menuTareasOn"
       side              ="right"
-      :min-width        ="300"
+      :width            ="340"
       >      
       <notificaciones/>
     </q-drawer>
@@ -98,7 +98,7 @@
   import    menuUsuario         from "components/navegacion/usuario/MenuUsuario.vue"
   import    menuExpandible      from "components/navegacion/menus/MenuLateralLeft.vue"
   import    buscador            from "components/navegacion/Buscador.vue"
-  import    notificaciones      from "src/areas/comunicacion/components/NotificacionesTareas.vue"
+  import    notificaciones      from "src/areas/comunicacion/components/Notificaciones.vue"
   import    badgeNotificaciones from "src/areas/comunicacion/components/BadgeNotificaciones.vue"
   
   useMenu()  

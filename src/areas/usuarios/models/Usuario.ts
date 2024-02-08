@@ -32,6 +32,7 @@ export interface IUsuario {
   permisos          : string // Permisos un array crudo con los permisos
   color             : string
   gruposString      : string
+  gruposIds         : string
   grupos            : string[]
   esComercial       : boolean
   esProduccion      : boolean
@@ -66,6 +67,7 @@ export class Usuario implements IUsuario
   permisos          : string
   _color            : string  
   gruposString      : string
+  gruposIds         : string
   reglaComisionId   : number
   comision          : IReglaComision
   wooKey            : string
@@ -88,6 +90,7 @@ export class Usuario implements IUsuario
       this._color             = ""
       //this.color              = "#FFF"
       this.gruposString       = ""
+      this.gruposIds          = ""
       this.cel                = ""
       this.correo             = ""
       this.reglaComisionId    = 0
@@ -111,6 +114,7 @@ export class Usuario implements IUsuario
         this.permisos         = usuario.permisos
         //this.color            = usuario.color
         this.gruposString     = usuario.gruposString
+        this.gruposIds        = usuario.gruposIds
         this.cel              = usuario.cel
         this.correo           = usuario.correo
         this.wooKey           = usuario.wooKey

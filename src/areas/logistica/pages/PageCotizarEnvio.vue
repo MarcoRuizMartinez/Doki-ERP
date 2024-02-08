@@ -29,6 +29,7 @@
           <template             #columnas>
             <select-columnas
               v-model           ="columnasVisibles"
+              ref               ="comColumnas"
               label             ="Columnas"
               :almacen          ="almacenColumnas"
               :options          ="columnas"
@@ -71,6 +72,7 @@
     </ventana>
   </q-page>
 </template>
+
 <script setup lang="ts">
   import {  ref,
             computed,
@@ -115,6 +117,7 @@
   const costos                    = ref< ICostoEnvio[] >([])
   const quote                     = ref< ICostoEnvio[] >([])
   const filtro                    = ref< string >("")
+  const comColumnas               = ref< InstanceType<typeof selectColumnas> | null>(null)
   
   
   const modo                      = ref< TModosVentana >("esperando-busqueda")  
@@ -204,8 +207,8 @@
     {
       costo.origen                = b.value.f.municipio.label
       costo.destino               = b.value.f.municipioContacto.label
-      costo.peso                  = b.value.f.peso 
       costo.producto              = b.value.f.nombre
+      costo.peso                  = b.value.f.peso    ?? 0
       costo.qty                   = b.value.f.qty     ?? 1
       costo.altura                = b.value.f.altura  ?? 0
       costo.ancho                 = b.value.f.ancho   ?? 0
@@ -244,6 +247,7 @@
       new Columna(  { name: "tipoServicios",          label: "Tipo servicios",  visible: false }),
     ]
     columnasVisibles.value  = columnas.value.filter(c => c.visible ).map( c => c.name )
+    comColumnas.value?.cargarColumnasLocal()
   }
 
   function descargarAcuerdos()

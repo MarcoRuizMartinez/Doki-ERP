@@ -23,6 +23,7 @@
         >
         <!-- <select-columnas
           v-model             ="columnasVisibles"
+          ref                 ="comColumnas"
           label               ="Columnas"
           :almacen            ="ALMACEN_LOCAL.COL_PRODUCTOS"
           :options            ="columnas"
@@ -108,6 +109,7 @@
   const columnasVisibles          = ref< string[]   >([])
   const puedeAnterior             = computed(()=> indexSelect.value > 0 )
   const puedeSiguiente            = computed(()=> indexSelect.value < productos.value.length - 1)
+  //const comColumnas               = ref< InstanceType<typeof selectColumnas> | null>(null)
 
   onMounted(()=>{
     productos.value               = []
@@ -217,7 +219,8 @@
       */
     ]
 
-    columnasVisibles.value  = columnas.value.filter(c => c.visible ).map( c => c.name )       
+    columnasVisibles.value  = columnas.value.filter(c => c.visible ).map( c => c.name )
+    //comColumnas.value?.cargarColumnasLocal()
   } 
 
 /*   const columnas: IColumna[]  = [

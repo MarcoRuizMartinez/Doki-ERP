@@ -16,7 +16,8 @@
     </template>
     <template                   #barra>
       <div
-        class                   ="width200 text-bold text-1_1em text-center radius-6"
+        class                   ="text-bold text-1_1em text-center radius-6 q-px-md"
+        style                   ="min-width: 220px;"
         :style                  ="'background-color:' + busqueda.color + ';'"
         >
         <span v-if="!!busqueda.label">{{busqueda.label}} ({{acuerdos.length}})</span>
@@ -368,7 +369,7 @@
     
     columnasVisibles.value  = columnas.value.filter(c => c.visible ).map( c => c.name )
     comColumnas.value?.cargarColumnasLocal()
-  } 
+  }
 
   function descargarAcuerdos()
   {

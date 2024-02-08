@@ -11,6 +11,7 @@ export interface iApp {
   online      : boolean
   menu        : Array < iItemMenu >
   tabs        : ITab                    // Se usa para compartir el estado de algunos componentes que necesitan comunicar el estado de sus tabs
+  alertas     : number
 }
 
 export const useStoreApp = defineStore('app', {
@@ -18,5 +19,6 @@ export const useStoreApp = defineStore('app', {
     online        : navigator.onLine,
     menu          : [],
     tabs          : { activa : '', alerts : [] },
+    alertas       : 0
   }),
 });

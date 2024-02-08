@@ -6,6 +6,7 @@
   import {  TTipoPDF              } from "src/areas/acuerdos/composables/pdf/useCotizacion"
   import {  storeToRefs           } from 'pinia'
   import {  useStoreAcuerdo       } from 'src/stores/acuerdo'  
+  import    campoCopiar             from "components/utilidades/CampoCopiar.vue" 
 
   const { acuerdo,
           loading,
@@ -17,7 +18,6 @@
     (e: 'click',    value: TTipoPDF ): void
     (e: 'recargar',                 ): void
   }>()
-
 
   async function editarTitulo( titulo : string ){
     let ok                    = await setTitulo( acuerdo.value.id, titulo, acuerdo.value.tipo )
@@ -122,25 +122,18 @@
           class             ="fuente-delicada"
           :class            ="[ esMobil ? 'q-ma-none q-pa-none' : 'q-mt-sm', acuerdo.facturado ? 'titulo-md' : 'titulo-lg' ]"
           >
-          <a
-            :href           ="acuerdo.urlDolibarr"
-            target          ="_blank"
+          <campo-copiar     left-side
+            :label          ="acuerdo.ref"
+            color           ="white"
             >
-            {{acuerdo.ref}}
-            <Tooltip label  ="Ir a Dolibarr" />
-          </a>
-          <!--
-          <q-btn                  round flat
-            icon                  ="mdi-refresh"
-            padding               ="0"
-            class                 ="op40 op100-hover"
-            :disable              ="loading.carga"              
-            :loading              ="loading.carga"
-            @click                ="emit('recargar')"
-            >
-            <Tooltip label        ="Recargar"/>
-          </q-btn>
-          -->
+            <a
+              :href         ="acuerdo.urlDolibarr"
+              target        ="_blank"
+              >
+              {{acuerdo.ref}}
+              <Tooltip label="Ir a Dolibarr" />
+            </a>
+          </campo-copiar>
         </span>
         <div
           v-if              ="acuerdo.facturado"

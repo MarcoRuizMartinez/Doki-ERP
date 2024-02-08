@@ -71,6 +71,15 @@ export class ToolType
       return ""
   }
 
+  static anyToStr( v : any ) : string
+  {
+    if( typeof v === "string")
+      return v
+    else
+      return ""
+  }
+
+
   static anyToNum( v : any ) : number
   {
     if(typeof v === "undefined" || v === null) return 0
@@ -132,6 +141,8 @@ export class ToolType
 
     return str
   }
+
+  static convertirTuplaAObjeto = ([key, value]: [string, string]) => ({ [key]: value });
 }
 
 
@@ -445,6 +456,17 @@ export class ToolArray
   {
     return Array.isArray( a ) && a.length ? a : []
   }
+
+
+  static getArrayNumDeStr ( texto : string ) : number[]
+  {
+    const listaRaw        = ToolType.anyToStr( texto )
+    if(!listaRaw)         return []
+    const arrayRaw        = listaRaw.split(",")
+    if(!arrayRaw.length)  return []
+    const arrayFinal      = arrayRaw.map( i => ToolType.anyToNum(i) )
+    return arrayFinal
+  }  
 }
 
 

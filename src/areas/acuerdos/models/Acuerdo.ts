@@ -1191,16 +1191,16 @@ https://dolibarr.mublex.com/fichinter/card.php?
 
 function getEmojiByDia( d : number, enBlanco : boolean = false ) : string
 {
-  const emoji   =   enBlanco                ? ""
-                  : d  >=  2                ? "😎"
-                  : d ===  1                ? "😉"
-                  : d ===  0                ? "😀"
-                  : d === -1                ? "🤔"
-                  : d === -2                ? "😫"
-                  : d === -3                ? "😤"
-                  : d  <= -4 && d >= -6     ? "😠"
-                  : d  <= -4 && d >= -365   ? "😡"
-                  :                            ""
+  const emoji   =   enBlanco                  ? ""
+                  : d  >=   7                 ? "😎"
+                  : d  >=   1   && d <= 6     ? "😉"
+                  : d ===   0                 ? "😀"
+                  : d ===   -1                ? "🤔"
+                  : d ===   -2                ? "😫"
+                  : d ===   -3                ? "😤"
+                  : d  <=   -4  && d >= -6    ? "😠"
+                  : d  <=   -4  && d >= -365  ? "😡"
+                  :                           ""
   return emoji
 }
 
@@ -1218,83 +1218,3 @@ function getColorByDia( d : number, enBlanco : boolean = false ) : string
                   :                           "white"
   return color
 }
-
-
-/*   reorganizarProductosGrupos()
-  {
-    let orden                 = 0
-    for (const grupo of this.proGrupos)
-    {
-      if(grupo.tituloCreado)  orden++
-      for (let linea of grupo.productos){
-        orden++
-        linea.orden           = orden
-      }
-
-      if(grupo.totalCreado)   orden++
-    }
-  } */
-
-/*   get label() : string {
-    const label   = this.tipo === TIPO_ACUERDO.COTIZACION_CLI   ? "cotización"
-                  : this.tipo === TIPO_ACUERDO.PEDIDO_CLI       ? "pedido"
-                  : this.tipo === TIPO_ACUERDO.ENTREGA      ? "entrega"
-                  : this.tipo === TIPO_ACUERDO.PEDIDO_PRO ? "pedido proveedor"
-                  : this.tipo === TIPO_ACUERDO.FACTURA_CLI  ? "factura"
-                  : ""
-    return label
-  } */
-
-/*
-id: "2620"
-billed
-/////
-date_creation: 1675442604
-date_delivery:  1675918800
-date_valid: 1675442609
-
-lines
-  id
-
-  label
-  description
-  entrepot_id
-  fk_origin_line
-  origin_line_id
-  fk_product
-  tracking_number
-  fk_product_type
-  product_label  :   "Silla Shanghai con cabecero"
-  product_ref  :   "SIG-3-723"  
-  fk_unit
-  pa_ht: "282104.00000000"
-  price: "421832"
-  note_public: "Esta es una nota publica"
-  ref: "Entrega-23-02-1535"
-  ref_customer: "XX33"
-  shipping_method  :   "Recoge en oficina"
-  shipping_method_id  :   "9"  
-  statut : "1"
-  details_entrepot
-    entrepot_id
-    line_id
-    qty_shipped
-
-  qty  :   "1"
-  qty_asked  :   "3"
-  qty_shipped  :    "1"
-  rang  :   "1"
-  ref  :   "SIG-3-723"
-
-array_options
-  options_transportadora_id
-
-
-  statutshorts: 
-    0 :    StatusSendingDraftShort
-    1 :  StatusSendingValidatedShort
-    2 :  StatusSendingProcessedShort
-    -1 : StatusSendingCanceledShort
-
-
-*/
