@@ -128,6 +128,18 @@
         class               ="col-12 col-md-6"
         :disable            ="readonly"
       />              
+      <!-- //* ///////////  Link pedido-->
+      <div class            ="col-12">
+        <q-btn              rounded
+          v-if              ="!!tarea.toTipo"          
+          class             ="full-width text-bold"
+          v-bind            ="style.btnBaseMd"
+          color             ="primary"
+          type              ="a"
+          :label            ="'Ir a ' + tarea.tipoLabel"
+          :to               ="tarea.toTipo"
+        />
+      </div>
       <!-- //* ///////////  Descripción  -->
       <q-input              filled dense autogrow
         v-model             ="tarea.comentario"
@@ -274,7 +286,7 @@
       aviso("positive", "Tarea editada", "shield" )
       emit("tareaEditada", tarea.value, true )
     }
-  }
+  } 
 
   async function ejecutarCambiarProgreso( progreso : number )
   {

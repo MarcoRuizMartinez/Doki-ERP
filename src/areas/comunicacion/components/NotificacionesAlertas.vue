@@ -90,7 +90,7 @@
 
   async function iniciar()
   {
-    await Tool.pausa( 6_000 )
+    await Tool.pausa( 3_500 )
     buscar()
   }
 
