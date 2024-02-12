@@ -76,7 +76,8 @@ export function useApiDolibarr()
     accion  : AccionDolibarr,
     tipo    : ModuloDolibarr,
     objeto  : any             = "",
-    id      : number          = 0
+    id      : number          = 0,
+    timeout : number          = 20_000
   ) : Promise <IResultado>
   {
     if(!tipo) return { ok: false, codigo: 20 }
@@ -199,7 +200,7 @@ export function useApiDolibarr()
         
         //console.log({metodo}, {endPoint}, {objeto} )
 
-        idTimeout             = setTimeout( abortarSiDemora, 20000)
+        idTimeout             = setTimeout( abortarSiDemora, timeout)
         cargando              = true
         let resultado
         if(metodo             === "get" || metodo === "delete" )

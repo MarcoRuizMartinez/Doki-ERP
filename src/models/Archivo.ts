@@ -3,7 +3,7 @@ import { ToolDate } from "src/composables/useTools"
 
 const { humanStorageSize } = format
 
-export type TFamiliaArchivos   = "PDF" | "Excel" | "Word" | "Texto" | "Calculo" | "PowerP" | "Imagen"
+export type TFamiliaArchivos   = "PDF" | "Excel" | "Word" | "Texto" | "Calculo" | "PowerP" | "Imagen" | "Video"
 
 export interface IArchivo
 {
@@ -101,10 +101,18 @@ export class Archivo implements IArchivo
       case "png":   tipo  = "Imagen";   break;
       case "gif":   tipo  = "Imagen";   break;
       case "webp":  tipo  = "Imagen";   break;
+      case "mp4":   tipo  = "Video";    break;
+      case "avi":   tipo  = "Video";    break;
+      case "mov":   tipo  = "Video";    break;
+      case "mkv":   tipo  = "Video";    break;
+      case "mpeg":  tipo  = "Video";    break;     
+      case "ogv":   tipo  = "Video";    break;  
       default: break;
     }
     return tipo
   }
+
+  // https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types
 
   get fileType() : string {
     let tipo  =  ""
@@ -116,6 +124,12 @@ export class Archivo implements IArchivo
       case "png":   tipo  = "image/png";        break;
       case "gif":   tipo  = "image/gif";        break;
       case "webp":  tipo  = "image/webp";       break;
+      case "txt":   tipo  = "text/plain";       break;
+      case "zip":   tipo  = "application/zip";  break;
+      case "mp4":   tipo  = "video/mp4";        break;
+      case "mpeg":  tipo  = "video/mpeg";       break;
+      case "ogv":   tipo  = "video/ogg";        break;  
+      case "avi":   tipo  = "video/x-msvideo";  break;
       default: break;
     }
     return tipo
@@ -132,6 +146,7 @@ export class Archivo implements IArchivo
       case "Word":    icono = "mdi-microsoft-word";         break;
       case "PowerP":  icono = "mdi-microsoft-powerpoint";   break;
       case "Imagen":  icono = "mdi-file-image";             break;
+      case "Video":   icono = "mdi-video";                  break;
       default: break;
     }
     return icono
@@ -148,6 +163,7 @@ export class Archivo implements IArchivo
       case "Word":    color = "indigo-10";    break;
       case "PowerP":  color = "deep-orange";  break;
       case "Imagen":  color = "light-blue-9"; break;
+      case "Video":   color = "pink-8";       break;
       default: break;
     }
     return color
