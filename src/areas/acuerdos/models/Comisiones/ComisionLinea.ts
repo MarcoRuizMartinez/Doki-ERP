@@ -19,20 +19,14 @@ export interface IComisionLinea
 
 export class ComisionLinea implements IComisionLinea
 {
-  X100                      : number
-  X100_Bruto                : number 
-  valor                     : number
+  X100                      : number  = 0
+  X100_Bruto                : number  = 0
+  valor                     : number  = 0
   esComercial_1             : boolean
 
-  constructor( numeroComercial : "comercial 1" | "comercial 2" )
-  {
-    this.X100               = 0
-    this.X100_Bruto         = 0
-    this.valor              = 0
+  constructor( numeroComercial : "comercial 1" | "comercial 2" ){
     this.esComercial_1      = numeroComercial === "comercial 1"
   }
-
-  
 
   calcular
   (
@@ -45,7 +39,6 @@ export class ComisionLinea implements IComisionLinea
   {
     if(this.esComercial_2)
       divisor = 100 - divisor   // Si es 20 / 80, la comsion del segundo comercial es 80 y toca invertir el divisor
-    
     this.X100_Bruto = regla.getX100Comision( nivel )    
     this.X100       =   this.X100_Bruto > 0
                       ? this.X100_Bruto + modificador

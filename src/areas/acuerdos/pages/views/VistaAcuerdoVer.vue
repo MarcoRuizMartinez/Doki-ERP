@@ -42,7 +42,7 @@
   />
   <enlaces                  minimizar
     class                   ="col-md-4 col-12"
-    height-card             ="220px"    
+    height-card             ="260px"    
   />
   <documentos               minimizar
     class                   ="col-md-4 col-12"
@@ -68,12 +68,12 @@
   <lineas
     class                   ="col-12"
   />
-  <!-- <entregas
+  <entregas
     v-if                    ="acuerdo.esPedido && !acuerdo.esEstadoBoceto"
     class                   ="col-8"
     @click-nueva-entrega    ="clickNuevaEntrega"
     @click-remision         ="abrirModalRemision"
-  /> -->
+  />
   <!-- <calificacion
     v-if                    ="acuerdo.esEstadoValido && ( acuerdo.esPedido || acuerdo.esCotizacion )"
     class                   ="col-md-4 col-12"

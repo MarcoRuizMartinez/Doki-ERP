@@ -17,7 +17,7 @@ export class CategoriaProducto implements ICategoriaProducto
   nombre              : string = ""
   sigla               : string = ""
   grupo               : string = ""
-  modificadorComision : number = 0.3
+  modificadorComision : number = 0
   codigoVenta         : number = 0
   codigoCompra        : number = 0
   grupoId             : number = 0

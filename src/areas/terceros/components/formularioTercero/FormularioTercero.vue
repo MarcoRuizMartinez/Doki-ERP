@@ -384,14 +384,14 @@
     let responsables          = JSON.stringify( tercero.value.responsables ) 
     let cambioEnResponsables  = responsables != copiaResponsables
     const terceroApi          = tercero.value.getTerceroToAPIDolibarr()
-    let { ok }                = await apiDolibarr( "editar", "tercero", terceroApi, tercero.value.id )
+    let { ok, data }                = await apiDolibarr( "editar", "tercero", terceroApi, tercero.value.id )
 
     if(cambioEnResponsables)
     {
       copiaResponsables       = responsables
       let url                 = getURL( "servicios", "terceros")
-      let { ok : borrado    } = await miFetch( url, { method: "POST", body: getFormData( "borrarResponsables",  { id: tercero.value.id } ) },                                               { mensaje: "borrar responsables de tercero" } )
-      let { ok : okUsuarios } = await miFetch( url, { method: "POST", body: getFormData( "asignarResponsables", { id: tercero.value.id , responsables: tercero.value.responsablesIDS } ) }, { mensaje: "asignar usuarios a tercero"     } )
+      let { ok : borrado, data : data1   } = await miFetch( url, { method: "POST", body: getFormData( "borrarResponsables",  { id: tercero.value.id } ) },                                               { mensaje: "borrar responsables de tercero" } )
+      let { ok : okUsuarios, data : data2  } = await miFetch( url, { method: "POST", body: getFormData( "asignarResponsables", { id: tercero.value.id , responsables: tercero.value.responsablesIDS } ) }, { mensaje: "asignar usuarios a tercero"     } )
       if(!borrado || !okUsuarios )
         aviso( "negative", "Error al asignar el responsable del tercero" )
     }
@@ -409,7 +409,7 @@
     {
       if(!!newTercero.id || tipo.value == "crear-cliente")
       {        
-        tercero.value           = newTercero
+        tercero.value           = Object.assign( new Tercero(), newTercero) 
         copiaResponsables       = JSON.stringify( tercero.value.responsables ) // Para luego ver si cambiaron
         cargando.value          = false
       }

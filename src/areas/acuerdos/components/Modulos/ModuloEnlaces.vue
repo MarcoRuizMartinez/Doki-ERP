@@ -25,6 +25,7 @@
       :rows                     ="acuerdo.acuerdosEnlazados"
       :columns                  ="columnas"
       style                     ="min-height: 208px;"
+      :rows-per-page-options    ="[50, 100]"
       >
       <!-- //* ///////////////  Columna Ref  -->
       <template #body-cell-ref  ="props">

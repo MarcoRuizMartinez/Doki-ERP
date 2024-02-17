@@ -1,3 +1,75 @@
+<template>
+  <q-page                     padding
+    class                     ="row justify-start items-start q-col-gutter-md"
+    >
+    <!-- <TransitionGroup          appear
+      enter-active-class      ="animated fadeInDown"
+      > -->
+      <div class              ="col-md-6 col-12 row q-col-gutter-sm">
+        <formulario-tercero
+          class               ="col-12"
+          :tercero-carga      ="tercero"
+          :puede-editar       ="puedeModificar"
+        />
+      </div>
+    <!-- </TransitionGroup> -->
+    <div class                ="col-md-6 col-12 row q-col-gutter-sm">
+      <contactos              minimizar
+        v-if                  ="permisos.contactos_ver"
+        class                 ="col-12"
+        height-card           ="200px"
+        :tercero-id           ="tercero.id ?? 0"
+        :puede-editar         ="puedeModificar"
+      />
+      <!-- <efecto> -->
+        <notas
+          v-show              ="!!tercero.id"
+          class               ="col-12"
+          :tercero-id         ="tercero.id ?? 0"
+          :nota               ="tercero.notaPrivada"
+          :puede-editar       ="puedeModificar"
+        />
+      <!-- </efecto> -->
+    </div>
+      <acuerdos
+        v-if                  ="permisos.cotizar_ver && tercero.esCliente"
+        class                 ="col-12 col-md-4"
+        :tipo                 ="TIPO_ACUERDO.COTIZACION_CLI"        
+        :tercero              ="tercero"
+      />
+      <acuerdos
+        v-if                  ="permisos.pedido_ver && tercero.esCliente"
+        class                 ="col-12 col-md-4"
+        :tipo                 ="TIPO_ACUERDO.PEDIDO_CLI"
+        :tercero              ="tercero"
+      />
+      <acuerdos
+        v-if                  ="permisos.prove_pedido_ver && tercero.esProveedor"
+        class                 ="col-12 col-md-4"
+        :tipo                 ="TIPO_ACUERDO.PEDIDO_PRO"        
+        :tercero              ="tercero"
+      />      
+      <!-- <efecto> -->
+        <documentos
+          v-show              ="!!tercero.id"
+          class               ="col-12 col-md-4"
+          modulo              ="thirdparty"
+          height-card         ="180px"
+          :modulo-id          ="tercero.id ?? 0"
+          :modulo-ref         ="(tercero.id ?? 0).toString()"
+          :puede-editar       ="puedeModificar"
+        />
+      <!-- </efecto> -->
+      <comentarios
+        v-model               ="tercero.comentarios"
+        :funcion-buscar       ="buscarComentarios"
+        :asignado             ="tercero.responsables[0]"        
+        :terceroId            ="tercero.id"
+        :cargando             ="loadComentarios"
+      />
+  </q-page>
+</template>
+
 <script setup lang="ts">
   //* ///////////////////////////////////////////////////////////////////////////////////// Core
   import {  ref,
@@ -127,75 +199,3 @@
     }
   }
 </script>
-
-<template>
-  <q-page                     padding
-    class                     ="row justify-start items-start q-col-gutter-md"
-    >
-    <!-- <TransitionGroup          appear
-      enter-active-class      ="animated fadeInDown"
-      > -->
-      <div class              ="col-md-6 col-12 row q-col-gutter-sm">
-        <formulario-tercero
-          class               ="col-12"
-          :tercero-carga      ="tercero"
-          :puede-editar       ="puedeModificar"
-        />
-      </div>
-    <!-- </TransitionGroup> -->
-    <div class                ="col-md-6 col-12 row q-col-gutter-sm">
-      <contactos              minimizar
-        v-if                  ="permisos.contactos_ver"
-        class                 ="col-12"
-        height-card           ="200px"
-        :tercero-id           ="tercero.id ?? 0"
-        :puede-editar         ="puedeModificar"
-      />
-      <!-- <efecto> -->
-        <notas
-          v-show              ="!!tercero.id"
-          class               ="col-12"
-          :tercero-id         ="tercero.id ?? 0"
-          :nota               ="tercero.notaPrivada"
-          :puede-editar       ="puedeModificar"
-        />
-      <!-- </efecto> -->
-    </div>
-      <acuerdos
-        v-if                  ="permisos.cotizar_ver && tercero.esCliente"
-        class                 ="col-12 col-md-4"
-        :tipo                 ="TIPO_ACUERDO.COTIZACION_CLI"        
-        :tercero              ="tercero"
-      />
-      <acuerdos
-        v-if                  ="permisos.pedido_ver && tercero.esCliente"
-        class                 ="col-12 col-md-4"
-        :tipo                 ="TIPO_ACUERDO.PEDIDO_CLI"
-        :tercero              ="tercero"
-      />
-      <acuerdos
-        v-if                  ="permisos.prove_pedido_ver && tercero.esProveedor"
-        class                 ="col-12 col-md-4"
-        :tipo                 ="TIPO_ACUERDO.PEDIDO_PRO"        
-        :tercero              ="tercero"
-      />      
-      <!-- <efecto> -->
-        <documentos
-          v-show              ="!!tercero.id"
-          class               ="col-12 col-md-4"
-          modulo              ="thirdparty"
-          height-card         ="180px"
-          :modulo-id          ="tercero.id ?? 0"
-          :modulo-ref         ="(tercero.id ?? 0).toString()"
-          :puede-editar       ="puedeModificar"
-        />
-      <!-- </efecto> -->
-      <comentarios
-        v-model               ="tercero.comentarios"
-        :funcion-buscar       ="buscarComentarios"
-        :asignado             ="tercero.responsables[0]"        
-        :terceroId            ="tercero.id"
-        :cargando             ="loadComentarios"
-      />
-  </q-page>
-</template>
