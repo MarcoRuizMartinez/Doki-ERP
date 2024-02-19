@@ -78,6 +78,7 @@
         />
         <!-- //* ///////////////////////////////////////////////// Creador -->
         <select-usuario         hundido clearable
+          v-if                  ="b.esPedido || b.esCotizacion"
           v-model               ="b.f.creador"
           class                 ="width190"
           label                 ="Creador"
@@ -85,6 +86,15 @@
           :grupos               ="b.esOCProveedor ? [GRUPO_USUARIO.PRODUCCION] : []"
           :readonly             ="!permisos.acceso_total"
         />
+        <multi-label-value
+          v-if                  ="b.esOCProveedor"
+          v-model               ="b.f.creadores"
+          label                 ="Creadores"
+          class                 ="width190"
+          icon                  ="mdi-account-multiple"
+          :options              ="b.o.creadores"
+          :readonly             ="!permisos.acceso_total"
+        />                
         <!-- //* ///////////////////////////////////////////////// Municipio contacto -->
         <municipios             hundido
           v-if                  ="b.esEntrega"

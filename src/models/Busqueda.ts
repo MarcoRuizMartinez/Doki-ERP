@@ -33,6 +33,7 @@ export interface      IQuery {
   user                 ?: number
   usuario              ?: string | number
   usuarios             ?: string  // Array de IDs de usuarios 1_2_4
+  creadores            ?: string  // Array de IDs de usuarios 1_2_4
   creador              ?: string | number
   buscar               ?: string
   idTercero            ?: number
@@ -119,6 +120,7 @@ export interface      IQuery {
 interface               IOpciones {
   opcionesOk            : boolean
   usuarios              : ILabelValue[]
+  creadores             : ILabelValue[]  
   condicionesPago       : ILabelValue[]
   formasPago            : ILabelValue[]
   metodosEntrega        : ILabelValue[]
@@ -155,6 +157,7 @@ interface               ICampos {
   progreso              : ILabelValue[]
   origenes              : ILabelValue[]
   usuarios              : ILabelValue[]
+  creadores             : ILabelValue[]  
   condiciones           : ILabelValue[]
   formaPago             : ILabelValue[]
   entrega               : ILabelValue[]
@@ -278,6 +281,7 @@ export class Busqueda implements IBusqueda
   {
     this.o.opcionesOk                       = false
     this.o.usuarios                         = await getUsuariosByGrupoDB( grupoUsuarios )
+    this.o.creadores                        = await getUsuariosByGrupoDB( "Producci" )
     this.o.origenes                         = await getOrigenesContactoDB()
     this.o.condicionesPago                  = await getCondicionesPagoDB()
     this.o.formasPago                       = await getFormasPagoDB()
@@ -348,6 +352,7 @@ export class Busqueda implements IBusqueda
     this.f.formaPago          = ToolQuery.getQueryRouterLabelValueArray ( this.rourterQ .formaPago,       this.o.formasPago             )
     this.f.entrega            = ToolQuery.getQueryRouterLabelValueArray ( this.rourterQ .entrega,         this.o.metodosEntrega         )
     this.f.usuarios           = ToolQuery.getQueryRouterLabelValueArray ( this.rourterQ .usuarios,        this.o.usuarios               )
+    this.f.creadores          = ToolQuery.getQueryRouterLabelValueArray ( this.rourterQ .creadores,       this.o.creadores              )
     this.f.condiciones        = ToolQuery.getQueryRouterLabelValueArray ( this.rourterQ .condiciones,     this.o.condicionesPago        )
     this.f.origenes           = ToolQuery.getQueryRouterLabelValueArray ( this.rourterQ .origenes,        this.o.origenes               )
 
@@ -552,6 +557,7 @@ export class Busqueda implements IBusqueda
     if(!!this.f.progreso.length)        q.progreso          = this.f.progreso       .map( e => e.value ).join("_")
     if(!!this.f.origenes.length)        q.origenes          = this.f.origenes       .map( e => e.value ).join("_")
     if(!!this.f.usuarios.length)        q.usuarios          = this.f.usuarios       .map( e => e.value ).join("_")
+    if(!!this.f.creadores.length)       q.creadores         = this.f.creadores      .map( e => e.value ).join("_")
     if(!!this.f.condiciones.length)     q.condiciones       = this.f.condiciones    .map( e => e.value ).join("_")
     if(!!this.f.formaPago.length)       q.formaPago         = this.f.formaPago      .map( e => e.value ).join("_")
     if(!!this.f.entrega.length)         q.entrega           = this.f.entrega        .map( e => e.value ).join("_")
@@ -631,7 +637,8 @@ export class Busqueda implements IBusqueda
   {
     return {
       opcionesOk          : false,
-      usuarios            : [],      
+      usuarios            : [],
+      creadores           : [],
       condicionesPago     : [],
       formasPago          : [],
       metodosEntrega      : [],
@@ -671,6 +678,7 @@ export class Busqueda implements IBusqueda
       progreso            : [],
       origenes            : [],
       usuarios            : [],
+      creadores           : [],
       condiciones         : [],
       formaPago           : [],
       entrega             : [],
