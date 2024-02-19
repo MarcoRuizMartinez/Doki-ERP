@@ -169,6 +169,25 @@
   const columnas: IColumna[]  = [
     new Columna({ name: "ref",        label: "Producto"  })
   ]
+
+  /*
+{
+  "user_author_id": "1",  
+  "socid": "7",  
+  "origin_type": "commande",
+  "origin": "commande",
+  "origin_id": "12327",
+  "lines": [
+    {
+      "origin_line_id": "24874",
+      "qty": "1"
+    }
+  ], 
+  "array_options": {
+    "options_comercial_id": "14"
+  }  
+}
+  */
 </script>
 <style>
 .side-left{

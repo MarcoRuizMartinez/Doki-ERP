@@ -1,52 +1,16 @@
-[
-  {
-    "label": "comentario 2",    
-    "note_private": "Mensaje",
-    "type_id": "50",
-    "code": "AC_OTH",    
-    "fulldayevent": "0",    
-    "percentage": "0",
-    
-    "socid": "11",
-    "elementid": "9",
-    "elementtype": "order",    
-    "event_paid": "0"    
-  },
-
-  {
-    
-    "code": "AC_OTH",
-    "usermodid": "1",
-    "event_paid": "0",
-    "status": "0",
-    "entity": "1",    
-    "specimen": 0,
-    "durationp": -1,
-    "transparency": "1",
-    "priority": "0",
-    "userassigned": {
-      "1": {
-        "id": "1",
-        "mandatory": "0",
-        "answer_status": "0",
-        "transparency": "1"
-      }
-    },
-    "userownerid": "1",
-    "datem": 1687306202,            
-    "datef": 1687305840,
-    "type": "systemauto"
-  },  
-  {
-    "type_code": "AC_OTH",    
-    "label": "6 Este es un comentario",
-    "note_private": "6 Con descripcion",
-    "socid": "11",
-    "fk_element": "9",
-    "elementtype": "order",
-    "fulldayevent": "0",
-    "percentage": "0", 
-    "userownerid": "1",    
-    "datep": 1687302240
-  }
-]
+{
+  "user_author_id": "1",  
+  "socid": "7",  
+  "origin_type": "commande",
+  "origin": "commande",
+  "origin_id": "12327",
+  "lines": [
+    {
+      "origin_line_id": "24874",
+      "qty": "1"
+    }
+  ], 
+  "array_options": {
+    "options_comercial_id": "14"
+  }  
+}

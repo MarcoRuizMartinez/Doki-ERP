@@ -70,7 +70,7 @@
   />
   <entregas
     v-if                    ="acuerdo.esPedido && !acuerdo.esEstadoBoceto"
-    class                   ="col-8"
+    class                   ="col-12"
     @click-nueva-entrega    ="clickNuevaEntrega"
     @click-remision         ="abrirModalRemision"
   />

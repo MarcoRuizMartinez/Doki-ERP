@@ -142,6 +142,16 @@
           </q-menu>          
         </q-btn>
       </efecto>
+      <q-btn 
+        v-bind            ="style.btnBaseMd"
+        color             ="positive"
+        icon              ="mdi-truck-fast"
+        :label            ="esMobil ? '' : 'Programar entrega'"
+        :loading          ="loading.anular"
+        @click            ="emit('clickNuevaEntrega')"
+        > 
+        <Tooltip label    ="Generar nueva entrega"/>
+      </q-btn>        
         <!-- //* ////////////////////////////////////////////////////////// Botones Instalacion y entrega
           v-if              ="acuerdo.hayServicios"
         -->

@@ -37,6 +37,14 @@
       <!-- //* ///////////////////////////////////////////////////////////// Boton nuevo grupo   -->
       <q-btn
         v-bind                  ="style.btnBaseSm"
+        label                   ="Ordenar productos"
+        color                   ="positive"
+        icon                    ="mdi-sort-alphabetical-ascending"        
+        @click                  ="modales.ordenar = true"
+      />      
+      <!-- //* ///////////////////////////////////////////////////////////// Boton nuevo grupo   -->
+      <q-btn
+        v-bind                  ="style.btnBaseSm"
         label                   ="Nuevo grupo"
         color                   ="positive"
         icon                    ="mdi-tab-plus"
@@ -63,19 +71,7 @@
           <q-item-section       side
             v-if                ="acuerdo.esEstadoNoValidado"
             >
-            <div class          ="row items-center">
-              <!-- //* /////////////////////////////////////////////////////// Boton ordenar productos  -->
-              <q-btn
-                v-if            ="!acuerdo.esEstadoBoceto"
-                v-bind          ="style.btnBaseSm"
-                class           ="text-black q-mr-sm"
-                color           ="grey-1"
-                label           ="Ordenar"
-                icon            ="mdi-sort-alphabetical-ascending"
-                @click          ="mostrarOrdenarProductos(grupo)"
-                >
-                <Tooltip label  ="Ordenar productos"/>
-              </q-btn>                    
+            <div class          ="row items-center">           
               <!-- //* /////////////////////////////////////////////////////// Boton agregar producto  -->
               <q-btn
                 v-bind          ="style.btnBaseSm"
@@ -120,7 +116,7 @@
       <editar-en-lote />
     </q-dialog>
     <!-- //* ///////////////////////////////////////////////////////////// Modal ordenar lineas -->
-    <q-dialog
+    <q-dialog                   full-width
       v-model                   ="modales.ordenar"
       v-bind                    ="style.dialogo"
       :persistent               ="loading.ordenando"
@@ -152,8 +148,7 @@
   import    confirmar               from "components/utilidades/MenuConfirmar.vue"
   
   const { destacarLineaElegida,
-          mostrarBuscarProductos,
-          mostrarOrdenarProductos   } = useControlProductos()
+          mostrarBuscarProductos    } = useControlProductos()
   const { actualizarPreciosAcuerdo  } = useControlAcuerdo()  
                               
   const { acuerdo,
