@@ -225,6 +225,7 @@
     tercero.value.correo            = p.billing.email.toLowerCase()
     tercero.value.telefono          = p.billing.phone
     tercero.value.area              = AREA.MUBLEX
+    tercero.value.esCliente         = true
     pedido.value                    = p
     formClienteOn.value             = true
   }

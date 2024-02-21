@@ -461,7 +461,7 @@ export class Acuerdo implements IAcuerdo
   }
   get labelEspecial()       : string { 
     return    this.esPedido   ? this.condicionPago.label
-            : this.esEntrega  ? this.metodoEntrega.label
+            : this.esEntrega  ? "Entrega " + this.metodoEntrega.label
             : this.label
   }  
 
@@ -901,6 +901,7 @@ https://dolibarr.mublex.com/fichinter/card.php?
       socid:                  this.tercero.id,
       ref_client:             this.refCliente,
       date:                   ToolDate.getMilisecShortForApiDolibarr( new Date() ),
+      delivery_date:          ToolDate.getMilisecShortForApiDolibarr( this.fechaEntrega ),
       user_author_id:         usuarioId,
       note_private:           this.notaPrivada,
       note_public:            this.notaPublica,

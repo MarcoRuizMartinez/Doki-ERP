@@ -1,34 +1,3 @@
-<script setup lang="ts">
-  import {  servicesAcuerdos      } from "src/areas/acuerdos/controllers/servicesAcuerdos"
-  import {  useTools              } from "src/composables/useTools"
-  import    titulo                  from "components/utilidades/Titulo.vue"
-  import    efecto                  from "components/utilidades/Efecto.vue"
-  import {  TTipoPDF              } from "src/areas/acuerdos/composables/pdf/useCotizacion"
-  import {  storeToRefs           } from 'pinia'
-  import {  useStoreAcuerdo       } from 'src/stores/acuerdo'  
-  import    campoCopiar             from "components/utilidades/CampoCopiar.vue" 
-
-  const { acuerdo,
-          loading,
-          modales           } = storeToRefs( useStoreAcuerdo() )  
-  const { esMobil, aviso    } = useTools()
-  const { setTitulo         } = servicesAcuerdos()
-
-  const emit = defineEmits<{
-    (e: 'click',    value: TTipoPDF ): void
-    (e: 'recargar',                 ): void
-  }>()
-
-  async function editarTitulo( titulo : string ){
-    let ok                    = await setTitulo( acuerdo.value.id, titulo, acuerdo.value.tipo )
-    aviso("positive", "Titulo editado", "comment")
-  }
-  
-  function clickBtn(){
-    emit('click', acuerdo.value.esCotizacion ? 'quote' : 'cuentaCobro')
-  }
-</script>
-
 <template>
   <titulo
     :color-left               ="acuerdo.estadoColor"
@@ -186,3 +155,34 @@
     </template>
   </titulo>
 </template>
+
+<script setup lang="ts">
+  import {  servicesAcuerdos      } from "src/areas/acuerdos/controllers/servicesAcuerdos"
+  import {  useTools              } from "src/composables/useTools"
+  import    titulo                  from "components/utilidades/Titulo.vue"
+  import    efecto                  from "components/utilidades/Efecto.vue"
+  import {  TTipoPDF              } from "src/areas/acuerdos/composables/pdf/useCotizacion"
+  import {  storeToRefs           } from 'pinia'
+  import {  useStoreAcuerdo       } from 'src/stores/acuerdo'  
+  import    campoCopiar             from "components/utilidades/CampoCopiar.vue" 
+
+  const { acuerdo,
+          loading,
+          modales           } = storeToRefs( useStoreAcuerdo() )  
+  const { esMobil, aviso    } = useTools()
+  const { setTitulo         } = servicesAcuerdos()
+
+  const emit = defineEmits<{
+    (e: 'click',    value: TTipoPDF ): void
+    (e: 'recargar',                 ): void
+  }>()
+
+  async function editarTitulo( titulo : string ){
+    let ok                    = await setTitulo( acuerdo.value.id, titulo, acuerdo.value.tipo )
+    aviso("positive", "Titulo editado", "comment")
+  }
+  
+  function clickBtn(){
+    emit('click', acuerdo.value.esCotizacion ? 'quote' : 'cuentaCobro')
+  }
+</script>

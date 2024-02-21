@@ -143,14 +143,15 @@
         </q-btn>
       </efecto>
       <q-btn 
-        v-bind            ="style.btnBaseMd"
-        color             ="positive"
-        icon              ="mdi-truck-fast"
-        :label            ="esMobil ? '' : 'Programar entrega'"
-        :loading          ="loading.anular"
-        @click            ="emit('clickNuevaEntrega')"
+        v-if                  ="acuerdo.esPedido"
+        v-bind                ="style.btnBaseMd"
+        color                 ="positive"
+        icon                  ="mdi-truck-fast"
+        :label                ="esMobil ? '' : 'Programar entrega'"
+        :loading              ="loading.anular"
+        @click                ="emit('clickNuevaEntrega')"
         > 
-        <Tooltip label    ="Generar nueva entrega"/>
+        <Tooltip label        ="Generar nueva entrega"/>
       </q-btn>        
         <!-- //* ////////////////////////////////////////////////////////// Botones Instalacion y entrega
           v-if              ="acuerdo.hayServicios"
@@ -240,7 +241,7 @@
       </q-btn>
       <!-- //* ////////////////////////////////////////////////////////// Boton Cerrar pedido -->
       <q-btn
-        v-if                  ="acuerdo.esEstadoValidado"
+        v-if                  ="(acuerdo.esPedido || acuerdo.esOCProveedor) && acuerdo.esEstadoValidado"
         v-bind                ="style.btnBaseMd"
         color                 ="blue-7"
         icon                  ="mdi-truck-check"
