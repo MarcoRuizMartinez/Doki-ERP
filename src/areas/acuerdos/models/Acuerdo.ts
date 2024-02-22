@@ -679,13 +679,23 @@ https://dolibarr.mublex.com/fichinter/card.php?
 
   // * /////////////////////////////////////////////////////////////////////////////// IVA valor
 
-  get ivaValor() :number {
+  get ivaValor() :number
+  {
     let ivaTotal            = 0
     let ivaX100             = parseInt( process.env.IVA ?? "0" )
 
+    for (const linea of this.productos)
+    {
+      if( linea.esTituloOsubTotal ) continue
+
+      ivaTotal              += linea.ivaValorTotal
+      //console.log( linea.iva, linea.ivaValorLinea,  )
+    }
+
+    /*
     if( ( this.conIVA       && !this.aiuOn ) || this.esOCProveedor)
       ivaTotal              = ToolNum.X100( this.totalConDescu, ivaX100 )
-    else
+    else*/
     if(this.aiuOn)
       ivaTotal              = ToolNum.X100( this.aiuUtiliValor, ivaX100 )
 

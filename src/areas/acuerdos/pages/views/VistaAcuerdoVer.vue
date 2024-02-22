@@ -37,7 +37,7 @@
     :height-card            ="alturaFila1"
   />
   <contactos
-    v-if                    ="acuerdo.tercero.esEmpresa && !acuerdo.esEntrega && !acuerdo.esOCProveedor"
+    v-if                    ="acuerdo.tercero.esEmpresa && acuerdo.esPedido"
     class                   ="col-12"
   />
   <enlaces                  minimizar
@@ -220,7 +220,8 @@
   
   const alturaFila1           = computed( ()=>    acuerdo.value.esPedido      ? "320px"
                                                 : acuerdo.value.esOCProveedor ? "150px"
-                                                :                               "200px"
+                                                : acuerdo.value.esCotizacion  ? "260px"
+                                                :                               "320px"
                                         )
 
   watch ( [()=>acuerdo.value.id, ()=>acuerdo.value.tipo],

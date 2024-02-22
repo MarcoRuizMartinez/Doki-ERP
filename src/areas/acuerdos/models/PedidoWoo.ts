@@ -39,6 +39,7 @@ interface IMeta {
 }
 
 type TEstados           = "🖐🏻" | "🔎" | "✅" | "✖️"
+
 export interface IPedidoWoo
 {
   id                    : number
@@ -78,54 +79,32 @@ export interface IPedidoWoo
   pagos                 : IMercadoPago[]
   productos             : string
   url                   : string
+  hayPagoSinPedido      : boolean
+  pagoAprobado          : boolean
 }
 
 export class PedidoWoo implements IPedidoWoo
 {
-  id                    : number
-  idPedido              : number
-  idTercero             : number
-  currency              : string 
-  payment_method        : string
-  payment_method_title  : string 
-  status                : string
-  total                 : number
-  total_tax             : number 
-  date_created          : string 
-  date_modified         : string 
-  date_paid             : string
-  customer_note         : string
-  billing               : IDatos
-  shipping              : IDatos
-  line_items            : IItems[]
-  meta_data             : IMeta[]
-  estadoCliente         : TEstados
-  estadoPago            : TEstados
-  pagos                 : IMercadoPago[]
-
-  constructor()
-  {
-    this.id                   = 0
-    this.idPedido             = 0
-    this.idTercero            = 0
-    this.currency             = ""
-    this.payment_method       = ""
-    this.payment_method_title = ""
-    this.status               = ""
-    this.total                = 0
-    this.total_tax            = 0
-    this.date_created         = ""
-    this.date_modified        = ""
-    this.date_paid            = ""
-    this.customer_note        = ""
-    this.billing              = datosVoid
-    this.shipping             = datosVoid
-    this.line_items           = []    
-    this.meta_data            = []
-    this.estadoCliente        = "🖐🏻"
-    this.estadoPago           = "🖐🏻"
-    this.pagos                = []
-  }
+  id                    : number          = 0
+  idPedido              : number          = 0
+  idTercero             : number          = 0
+  currency              : string          = "" 
+  payment_method        : string          = ""
+  payment_method_title  : string          = "" 
+  status                : string          = ""
+  total                 : number          = 0
+  total_tax             : number          = 0
+  date_created          : string          = "" 
+  date_modified         : string          = "" 
+  date_paid             : string          = ""
+  customer_note         : string          = ""
+  billing               : IDatos          = datosVoid
+  shipping              : IDatos          = datosVoid
+  line_items            : IItems[]        = []
+  meta_data             : IMeta[]         = []
+  estadoCliente         : TEstados        = "🖐🏻"
+  estadoPago            : TEstados        = "🖐🏻"
+  pagos                 : IMercadoPago[]  = []
 
   get nombre          (): string  { return  this.billing.company.length > 4
                                           ? this.billing.company
@@ -163,8 +142,12 @@ export class PedidoWoo implements IPedidoWoo
                                           : this.status == "on-hold"    ? "#009797"
                                           : this.status == "pending"    ? "#FF6805"
                                           : "#000"
-                                  }                                  
+                                  }
   get url() : string { return `${process.env.URL_MUBLEX}/wp-admin/post.php?post=${this.id}&action=edit` }
+  
+  get pagoAprobado()      : boolean { return this.pagos.some( p => p.aprobado )   }
+  get hayPagoSinPedido()  : boolean { return this.pagoAprobado && !this.idPedido  }
+
   getValueByKey( key : string ) : string {
     return this.meta_data.find( p => p.key.includes( key ) )?.value ?? ""
   }

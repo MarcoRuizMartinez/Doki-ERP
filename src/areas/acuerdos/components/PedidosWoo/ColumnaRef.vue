@@ -1,5 +1,5 @@
 <template>
-  <div class          ="row fuente-mono width220">
+  <div class          ="row fuente-mono width280">
     <btn-productos
       :pedido         ="modelValue"
     />
@@ -27,12 +27,25 @@
       <Tooltip label  ="Ver pedido en tienda"/>
     </q-btn>    
     <!-- //* //////// Ref -->
-    <span
+    <div
       v-if            ="!modelValue.idPedido"
-      class           ="pa"
-      >
+      class           ="pa row items-center"
+      >      
       {{ modelValue.id }}
-    </span>
+      <div
+        v-if          ="modelValue.hayPagoSinPedido"
+        class         ="q-ml-sm"
+        >
+        <q-icon
+          name        ="mdi-alert"
+          size        ="sm"
+          color       ="warning"
+          class       ="width20"
+          >
+          <Tooltip>No se ha creado el pedido y hay pago</Tooltip>
+        </q-icon>
+      </div>
+    </div>
     <div v-else>
       <router-link
         class         ="link-limpio"

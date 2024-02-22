@@ -1,22 +1,3 @@
-<script lang="ts" setup>
-  import {  ref, 
-            toRefs,
-            PropType,
-            computed          } from "vue"  
-  import {  IPedidoWoo        } from "src/areas/acuerdos/models/PedidoWoo"      
-  import {  Format, ToolDate  } from "src/composables/useTools"
-  ////////////////////////////////////////////////////////////////////////// Componentes
-  import    ventana             from "components/utilidades/Ventana.vue"  
-  import    item                from "components/utilidades/TrTdTd.vue"  
-  // * /////////////////////////////////////////////////////////////////////// Store
-  const props               = defineProps({
-    modelValue: { required: true, type: Object as PropType< IPedidoWoo > },      
-  })
-  const { modelValue }      = toRefs( props )
-  const boton               = ref<string>("0")
-  const pago                = computed(()=> modelValue.value.pagos[ parseInt( boton.value ) ] )
-</script>
-
 <template>
   <ventana                  cerrar
     titulo                  ="Datos de pago MercadoPago"
@@ -61,6 +42,25 @@
     </table>
   </ventana>
 </template>
+
+<script lang="ts" setup>
+  import {  ref, 
+            toRefs,
+            PropType,
+            computed          } from "vue"  
+  import {  IPedidoWoo        } from "src/areas/acuerdos/models/PedidoWoo"      
+  import {  Format, ToolDate  } from "src/composables/useTools"
+  ////////////////////////////////////////////////////////////////////////// Componentes
+  import    ventana             from "components/utilidades/Ventana.vue"  
+  import    item                from "components/utilidades/TrTdTd.vue"  
+  // * /////////////////////////////////////////////////////////////////////// Store
+  const props               = defineProps({
+    modelValue: { required: true, type: Object as PropType< IPedidoWoo > },      
+  })
+  const { modelValue }      = toRefs( props )
+  const boton               = ref<string>("0")
+  const pago                = computed(()=> modelValue.value.pagos[ parseInt( boton.value ) ] )
+</script>
 
 <style>
   .c-menu{
