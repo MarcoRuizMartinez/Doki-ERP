@@ -110,6 +110,28 @@
           <q-icon name      ="mdi-shield-check" size="sm"/>
           Facturado
         </div>
+        <div
+          v-if              ="acuerdo.esOCProveedor"
+          class             ="text-right"
+          >
+          <q-chip           dense
+            v-if            ="acuerdo.esEstadoValido"
+            :color          ="acuerdo.fechaEnvioOCExiste ? 'positive' : 'warning'"
+            :icon           ="acuerdo.fechaEnvioOCExiste ? 'mdi-email-check' : 'mdi-email-alert'"
+            text-color      ="white"
+            class           ="q-px-sm"
+            >
+              {{ acuerdo.fechaEnvioOCExiste ? 'Correo enviado' : 'Correo no enviado' }}
+              <Tooltip
+                v-if        ="acuerdo.fechaEnvioOCExiste"
+                >
+                Enviado el {{ acuerdo.fechaEnvioOCCorta }}
+              </Tooltip>
+            </q-chip>
+          <chip-usuario
+            :usuario        ="acuerdo.creador"
+          />
+        </div>
       </div>
       </div>
       <!-- //* ///////////////////////////////////////////////////////// Spiner cargando -->
@@ -165,6 +187,7 @@
   import {  storeToRefs           } from 'pinia'
   import {  useStoreAcuerdo       } from 'src/stores/acuerdo'  
   import    campoCopiar             from "components/utilidades/CampoCopiar.vue" 
+  import    chipUsuario             from "src/areas/usuarios/components/ChipUsuario.vue";    
 
   const { acuerdo,
           loading,

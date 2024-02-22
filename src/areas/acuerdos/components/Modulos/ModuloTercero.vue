@@ -61,13 +61,14 @@
     />
     <!-- //* ///////////////////////////////////////////////// Comercial principal -->
     <comercial
+      v-if                    ="!acuerdo.esOCProveedor"
       :class                  ="acuerdo.esOCProveedor ? 'col-12' : 'col-6'"
       label                   ="Comercial"
       v-model                 ="acuerdo.comercial"
       :grupos                 ="[GRUPO_USUARIO.COMERCIALES]"
       :autoselect             ="acuerdo.esNuevo"
       :loading                ="loading.comercial"
-      :readonly               ="acuerdo.esEntrega"
+      :readonly               ="acuerdo.esEntrega || acuerdo.esEstadoValido"
       @select                 ="editarComercialPrincial"
     />
     <!-- //* ///////////////////////////////////////////////// Comercial apoyo -->
@@ -79,28 +80,31 @@
       :grupos                 ="[GRUPO_USUARIO.COMERCIALES]"
       :loading                ="loading.comercial"
       :ids-negativos          ="[ acuerdo.comercial?.id ?? 0 ]"
-      :readonly               ="acuerdo.esEntrega"
+      :readonly               ="acuerdo.esEstadoValido || acuerdo.esEntrega"
       @select                 ="editarComercialApoyo"
       @clear                  ="borrarComercialApoyo"
-    />
+    />           
     <!-- {{ typeof acuerdo.comercial.comision.comision_alfa }} -->
     <!-- //* ///////////////////////////////////////////////// Origen -->
     <select-label-value
-      v-if                    ="!acuerdo.esEntrega"
+      v-if                    ="!acuerdo.esEntrega && !acuerdo.esOCProveedor"
       v-model                 ="acuerdo.origenContacto"
       label                   ="Origen contacto"
       icon                    ="mdi-source-branch"
       class                   ="col-md-6 col-12"
+      :readonly               ="acuerdo.esEstadoValido"
       :options                ="origenNego"
       :loading                ="loading.origen"
       @select                 ="editarOrigen"
     />
     <!-- //* ///////////////////////////////////////////////// Ref Cliente -->
     <input-text               sin-espacios uppercase
+      v-if                    ="!acuerdo.esOCProveedor"
       v-model                 ="acuerdo.refCliente"
       label                   ="REF cliente"
       icon                    ="mdi-signature-text"
       class                   ="col-md-6 col-12"
+      :readonly               ="acuerdo.esEstadoValido"
       :loading                ="loading.ref"
       @blur                   ="editarRefCliente"
     />

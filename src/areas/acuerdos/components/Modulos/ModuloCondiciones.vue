@@ -7,7 +7,7 @@
     >
     <!-- //* ///////////////////////////////////////////////// Fecha Creacion -->
     <input-fecha              readonly
-      v-if                    ="!acuerdo.esNuevo && !acuerdo.esPedido && !acuerdo.esEntrega"
+      v-if                    ="!acuerdo.esNuevo && !acuerdo.esPedido && !acuerdo.esEntrega && !acuerdo.esOCProveedor"
       v-model                 ="acuerdo.fechaCreacion"
       label                   ="Fecha creación"
       class                   ="col-md-6 col-12"
@@ -77,7 +77,7 @@
 
     <!-- //* ///////////////////////////////////////////////// Condiciones pago -->
     <select-label-value
-      v-if                    ="acuerdo.esNuevo || (!acuerdo.esPedido && !acuerdo.esEntrega)"
+      v-if                    ="acuerdo.esNuevo || (!acuerdo.esPedido && !acuerdo.esEntrega) "
       v-model                 ="acuerdo.condicionPago"
       label                   ="Condiciones de pago"
       icon                    ="mdi-account-cash"
@@ -89,7 +89,7 @@
     />
     <!-- //* ///////////////////////////////////////////////// Forma de pago -->
     <select-label-value
-      v-if                    ="!acuerdo.esPedido && !acuerdo.esEntrega"
+      v-if                    ="!acuerdo.esPedido && !acuerdo.esEntrega && !acuerdo.esOCProveedor"
       v-model                 ="acuerdo.formaPago"
       label                   ="Forma de pago"
       icon                    ="mdi-cash-refund"

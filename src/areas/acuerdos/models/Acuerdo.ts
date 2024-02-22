@@ -129,11 +129,14 @@ export interface IAcuerdo
   diasAprobado                : number
   diasAprobadoFormato         : string
 
-  /* // Fechas envio de pedido a proveedores */  
+  /* // Fechas envio de pedido a proveedores */
   fechaEnviado                : Date
   fechaEnviadoCorta           : string
   diasEnviado                 : number
   diasEnviadoFormato          : string
+  fechaEnvioOC                : Date
+  fechaEnvioOCCorta           : string
+  fechaEnvioOCExiste          : boolean
 
   comercialId                 : number
   comercial                   : IUsuario
@@ -300,6 +303,9 @@ export class Acuerdo implements IAcuerdo
   private _fechaEnviadoCorta  : string              = ""
   private _diasEnviado        : number              = 0
   private _diasEnviadoFormato : string              = ""
+  private _fechaEnvioOC       : Date                = new Date(0)
+  private _fechaEnvioOCCorta  : string              = ""
+
 
   creadorId                   : number              = 0
   creador                     : IUsuario            = new Usuario()
@@ -453,6 +459,23 @@ export class Acuerdo implements IAcuerdo
       this._fechaEnviadoCorta   = ""
     }
   }
+
+  get fechaEnvioOCCorta()       : string  { return this._fechaEnvioOCCorta }
+  get fechaEnvioOCExiste()      : boolean { return !!this._fechaEnvioOCCorta}
+  get fechaEnvioOC() : Date { return this._fechaEnvioOC }
+  set fechaEnvioOC( fecha : Date )
+  {
+    this._fechaEnvioOC          = fecha
+    if(ToolDate.fechaValida(fecha))
+    {
+      this._fechaEnvioOCCorta   = ToolDate.fechaCorta( this._fechaEnvioOC )
+    }
+    else
+    {
+      this._fechaEnvioOCCorta   = ""
+    }
+  }
+
 
 
 
@@ -1087,7 +1110,13 @@ https://dolibarr.mublex.com/fichinter/card.php?
     acuApi.fechaFinValidez    = ToolDate.getDateToStr( acuApi.fechaFinValidez  )
     acuApi.fechaEntrega       = ToolDate.getDateToStr( acuApi.fechaEntrega,     "local")
     acuApi.fechaAprobado      = ToolDate.getDateToStr( acuApi.fechaAprobado,    "local")
-    acuApi.fechaEnviado       = ToolDate.getDateToStr( acuApi.fechaEnviado,     "local")
+
+    if(tipo                   === TIPO_ACUERDO.PEDIDO_PRO)
+    {
+      acuApi.fechaEnviado     = ToolDate.getDateToStr( acuApi.fechaEnviado,     "local")
+      acuApi.fechaEnvioOC     = ToolDate.getDateToStr( acuApi.fechaEnvioOC,     "local")
+    }
+
     acuApi.fechaListo         = ToolDate.getDateToStr( acuApi.fechaListo,       "local")
     acuApi.fechaADespachar    = ToolDate.getDateToStr( acuApi.fechaADespachar,  "local")
 

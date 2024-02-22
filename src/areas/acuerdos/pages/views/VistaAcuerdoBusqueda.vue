@@ -334,6 +334,7 @@
       new Columna(            { name: "diasEntregarFormato",  label: "Días compromiso"                        }),
       new Columna(            { name: "diasAprobadoFormato",  label: "Días aprobado"                          }),
       new Columna(            { name: "diasEnviadoFormato",   label: "Días enviado"                           }),
+      new Columna(            { name: "fechaEnvioOCCorta",    label: "Fecha envió OC"                         }),
       new Columna(            { name: "fechaListoCorta",      label: "Fecha listo"                            }),
       new Columna(            { name: "fechaADespacharCorta", label: "Fecha a despachar"                      }), 
       new Columna(            { name: "metodoEntregaLabel",   label: "Entrega"                                }), 
@@ -352,9 +353,9 @@
       Columna.ColumnaPrecio ( { name: "totalConIva",          label: "Total",             clase: "text-bold"  }),
     ]
 
-    const colsEli = busqueda.value.esCotizacion   ? ["diasEnviadoFormato", "diasAprobadoFormato", "diasEntregarFormato", "estadoAnimoEmoji", "facturado", "pedidoId", "fechaListoCorta", "fechaADespacharCorta", "fechaEntregaCorta"]
-                  : busqueda.value.esPedido       ? ["diasEnviadoFormato", "diasAprobadoFormato", "pedidoId"]
-                  : busqueda.value.esEntrega      ? ["diasEnviadoFormato", "diasAprobadoFormato", "diasEntregarFormato", "estadoAnimoEmoji", "facturado", "condicionPagoLabel", "formaPagoLabel", "origenContactoLabel", "subTotalLimpio", "totalConDescu", "ivaValor", "totalConIva", "fechaListoCorta"]
+    const colsEli = busqueda.value.esCotizacion   ? ["fechaEnvioOCCorta", "diasEnviadoFormato", "diasAprobadoFormato", "diasEntregarFormato", "estadoAnimoEmoji", "facturado", "pedidoId", "fechaListoCorta", "fechaADespacharCorta", "fechaEntregaCorta"]
+                  : busqueda.value.esPedido       ? ["fechaEnvioOCCorta", "diasEnviadoFormato", "diasAprobadoFormato", "pedidoId"]
+                  : busqueda.value.esEntrega      ? ["fechaEnvioOCCorta", "diasEnviadoFormato", "diasAprobadoFormato", "diasEntregarFormato", "estadoAnimoEmoji", "facturado", "condicionPagoLabel", "formaPagoLabel", "origenContactoLabel", "subTotalLimpio", "totalConDescu", "ivaValor", "totalConIva", "fechaListoCorta"]
                   : busqueda.value.esOCProveedor  ? ["refCliente", "comercial", "metodoEntregaLabel", "facturado", "origenContactoLabel", "subTotalLimpio", "pedidoId", "fechaListoCorta"]
                   : []
     Columna.eliminarColums( colsEli, columnas.value )

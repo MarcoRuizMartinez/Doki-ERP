@@ -86,6 +86,7 @@
           :grupos               ="b.esOCProveedor ? [GRUPO_USUARIO.PRODUCCION] : []"
           :readonly             ="!permisos.acceso_total"
         />
+        <!-- //* ///////////////////////////////////////////////// Pedido facturado -->
         <multi-label-value
           v-if                  ="b.esOCProveedor"
           v-model               ="b.f.creadores"
@@ -94,7 +95,15 @@
           icon                  ="mdi-account-multiple"
           :options              ="b.o.creadores"
           :readonly             ="!permisos.acceso_total"
-        />                
+        />
+        <select-label-value     use-input hundido clearable flat bordered
+          v-if                  ="b.esOCProveedor"
+          v-model               ="b.f.envioOC"
+          label                 ="Correo enviado"
+          icon                  ="mdi-email-check"
+          class                 ="width190"
+          :options              ="Busqueda.listaEnvioOC"
+        />
         <!-- //* ///////////////////////////////////////////////// Municipio contacto -->
         <municipios             hundido
           v-if                  ="b.esEntrega"
@@ -340,14 +349,14 @@
           :options              ="b.o.formasPago"
         />
         <!-- //* ///////////////////////////////////////////////// Métodos de entrega -->
-        <multi-label-value
+        <!-- <multi-label-value
           v-if                  ="!b.esEntrega"
           v-model               ="b.f.entrega"
           label                 ="Entrega"
           class                 ="width160"
           icon                  ="mdi-truck-delivery"
           :options              ="b.o.metodosEntrega"
-        />
+        /> -->
         <!-- //* ///////////////////////////////////////////////// Origen contacto -->
         <multi-label-value
           v-if                  ="!b.esEntrega"

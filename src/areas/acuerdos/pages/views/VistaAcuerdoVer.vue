@@ -24,20 +24,20 @@
   <barra-tercero class      ="col-12"/>
   <tercero-y-contacto       scroll
     class                   ="col-md-4 col-12"
-    height-card             ="320px" 
+    :height-card            ="alturaFila1"
   />
   <condiciones              scroll
     ref                     ="moduloCondiciones"
     class                   ="col-md-4 col-12"
-    height-card             ="320px"
+    :height-card            ="alturaFila1"
   />
   <totales                  scroll
     v-if                    ="!acuerdo.esEntrega"
     class                   ="col-md-4 col-12"
-    height-card-min         ="320px"
+    :height-card            ="alturaFila1"
   />
   <contactos
-    v-if                    ="acuerdo.tercero.esEmpresa && !acuerdo.esEntrega"
+    v-if                    ="acuerdo.tercero.esEmpresa && !acuerdo.esEntrega && !acuerdo.esOCProveedor"
     class                   ="col-12"
   />
   <enlaces                  minimizar
@@ -137,6 +137,7 @@
             watch,
             toRefs,
             provide,
+            computed,
             PropType,
                                   } from "vue"
   import {  useTitle              } from "@vueuse/core"
@@ -217,6 +218,10 @@
 
   const { id, tipo }          = toRefs( props )
   
+  const alturaFila1           = computed( ()=>    acuerdo.value.esPedido      ? "320px"
+                                                : acuerdo.value.esOCProveedor ? "150px"
+                                                :                               "200px"
+                                        )
 
   watch ( [()=>acuerdo.value.id, ()=>acuerdo.value.tipo],
           ()=> {

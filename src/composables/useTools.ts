@@ -178,7 +178,8 @@ export class ToolStr
 
 export class ToolDate
 {
-  static getDateToStr( fechaStr : string, tipo : "UTC" | "local" = "local" ) : Date{
+  static getDateToStr( fechaStr : string, tipo : "UTC" | "local" = "local" ) : Date
+  {
     const miliExtras    = tipo == "UTC" ? new Date().getTimezoneOffset() * 60 * 1000 : 0
     const milisegundos  = !!fechaStr ? Date.parse( fechaStr ) + miliExtras : 0
     return new Date ( milisegundos )

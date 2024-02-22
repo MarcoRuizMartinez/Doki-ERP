@@ -5,7 +5,7 @@
     class-contenido         ="q-col-gutter-sm"
     >
     <div
-      v-if                  ="!!acuerdo.id"
+      v-if                  ="!!acuerdo.id && !acuerdo.esOCProveedor"
       class                 ="col-12 row">
       <!-- //* /////////////////////////////////////////////////////////////  Con Total -->
       <q-toggle             dense
@@ -91,7 +91,7 @@
     <div        class       ="col-12">
       <div      class       ="row justify-center bg-grey-3 rounded-borders transi"
                 :class      ="{ 'op40' : !acuerdo.conTotal && acuerdo.esCotizacion} "
-                style       ="min-height: 170px;"
+                :style      ="acuerdo.esOCProveedor ? 'min-height: 120px;' : 'min-height: 170px;'"
         >
         <table  class       ="tabla-totales">
           <tr>
@@ -182,3 +182,9 @@
 
   const modalRetenciones        = ref<boolean>(false)
 </script>
+
+<style scoped>
+.tabla-totales tr {
+  line-height: 1;
+}
+</style>

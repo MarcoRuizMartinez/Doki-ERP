@@ -6,8 +6,8 @@
     class-contenido         ="column gap-sm"
     padding-contenido       ="0"
     >
-    <template               #barra>
-      <!-- //* ///////////////////////////////////////////////////////////// Boton nuevo grupo   -->
+    <!-- //* ///////////////////////////////////////////////////////////// Boton nuevo grupo   -->
+    <!-- <template               #barra>
       <q-btn
         v-if                ="!modelValue.idPedido"
         v-bind              ="style.btnBaseSm"
@@ -15,9 +15,9 @@
         color               ="positive"
         icon                ="mdi-plus"
         target              ="_blank"
-        href                ="pedidos/cliente/crear"
+        href                ="/pedidos/cliente/crear"
       />
-    </template>
+    </template> -->
     <table class            ="tabla-prop">
       <!-- <thead><tr><th></th><th>Datos de envío</th></tr></thead> -->
       <tbody>
