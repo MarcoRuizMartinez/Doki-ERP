@@ -7,16 +7,16 @@
     :cargando                   ="loading.carga"
     >
     <q-img
-      :src                      ="producto.img.url"
+      :src                      ="producto.img.img_300px"
       class                     ="cursor-pointer"
       @click                    ="ventanaImagen = true"
     />
     <visor-imagen
       v-model:visible           ="ventanaImagen"
-      :src                      ="producto.img.url"
+      :src                      ="producto.img.img_full"
       :ratio                    ="''"
       :titulo                   ="producto.nombre"
-    />    
+    />
   </ventana>
 </template>
 

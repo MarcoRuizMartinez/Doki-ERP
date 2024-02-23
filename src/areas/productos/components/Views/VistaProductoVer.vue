@@ -1,7 +1,34 @@
+<template>
+  <titulo
+    class               ="col-12"
+  />
+  <formulario
+    class               ="col-md-6 col-12"
+    @editado            ="productoEditado"
+  />
+  <imagen
+    class               ="col-md-3 col-12"
+  />
+  <documentos
+    class               ="col-md-3 col-12"
+    height-card-min     ="164px"
+    modulo              ="product"
+    :modulo-id          ="producto.id ?? 0"
+    :modulo-ref         ="producto.ref"
+    :puede-editar       ="true"
+    @subida-ok          ="cargarProductos"
+  />
+  <producto-compuesto
+    v-if                ="(usuario.esProduccion || usuario.esGerencia || usuario.esContable ) && producto.naturaleza.esCompuesto_o_Kit"
+    class               ="col-12 col-md-6"
+  />
+</template>
+
 <script setup lang="ts">
   //* ///////////////////////////////////////////////////////////////////////////////// Core
   import {  ref,
-            provide
+            provide,
+            onUnmounted
                                   } from "vue"
   import {  useTitle              } from "@vueuse/core"
   
@@ -12,7 +39,8 @@
 
   //* ///////////////////////////////////////////////////////////////////////////////// Modelos
   import {  IArchivo              } from "src/models/Archivo"
-  import {  IProductoDoli } from '../../models/ProductoDolibarr';
+  import {  ProductoDoli,
+            IProductoDoli         } from "src/areas/productos/models/ProductoDolibarr"
 
   //* ///////////////////////////////////////////////////////////////////////////////// Componibles
   import {  useControlProductos   } from "src/areas/productos/controllers/ControlProductosDolibarr"
@@ -49,32 +77,10 @@
 
   function productoEditado( prod : IProductoDoli )
   {
-    producto.value =  prod
+    producto.value    =  prod
   }
-</script>
 
-<template>
-  <titulo
-    class               ="col-12"
-  />
-  <formulario
-    class               ="col-md-6 col-12"
-    @editado            ="productoEditado"
-  />
-  <imagen
-    class               ="col-md-3 col-12"
-  />
-  <documentos
-    class               ="col-md-3 col-12"
-    height-card-min     ="164px"
-    modulo              ="product"
-    :modulo-id          ="producto.id ?? 0"
-    :modulo-ref         ="producto.ref"
-    :puede-editar       ="true"
-    @subida-ok          ="cargarProductos"
-  />
-  <producto-compuesto
-    v-if                ="(usuario.esProduccion || usuario.esGerencia || usuario.esContable ) && producto.naturaleza.esCompuesto_o_Kit"
-    class               ="col-12 col-md-6"
-  />
-</template>
+  onUnmounted(()=>{
+    producto.value    = new ProductoDoli()
+  })
+</script>

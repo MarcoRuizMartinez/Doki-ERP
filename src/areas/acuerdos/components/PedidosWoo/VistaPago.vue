@@ -27,6 +27,7 @@
         <item titulo="ID"                         :label="pago.id" class="text-bold" copiar />
         <item titulo="Ref pedido tienda"          :label="modelValue.id" class="text-bold" copiar />
         <item titulo="Estado"                     :label="`${pago.estado} ${pago.estadoDetalles}`" class="text-bold text-capitalize"  :class-label="'text-'+pago.estadoColor"/>
+        <item titulo="Fecha aprobado"             :label="ToolDate.fechaCorta(pago.fechaAprobado)"/>
         <item titulo="Tipo pago"                  :label="`${pago.metodo} - ${pago.tipoPago}`" class="text-uppercase"/>
         <item :titulo="`Pagado ${pago.moneda}`"   :label="Format.precio( pago.total, 'decimales-no' )" :class-label="'text-bold fuente-mono text-'+pago.estadoColor" copiar />
         <item :titulo="`Recibido ${pago.moneda}`" :label="Format.precio( pago.totalRecibido, 'decimales-no' )" class-label="fuente-mono"/>
@@ -37,7 +38,6 @@
         <item titulo="Correo"                     :label="pago.correo" copiar/>
         <item titulo="Teléfono"                   :label="pago.telefono" copiar/>
         <item titulo="Direccion"                  :label="pago.direccion" copiar/>
-        <item titulo="Fecha aprobado"             :label="ToolDate.fechaCorta(pago.fechaAprobado)"/>
       </tbody>
     </table>
   </ventana>

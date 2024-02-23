@@ -23,7 +23,7 @@
         size          ="12px"
         icon          ="mdi-open-in-new"
         target        ="_blank"
-        :href         ="'/tercero/' + modelValue.idTercero"
+        :to           ="'/tercero/' + modelValue.idTercero"
       />      
     </div>
     <div class        ="col text-bold q-ml-xs">

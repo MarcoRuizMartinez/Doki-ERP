@@ -22,6 +22,7 @@
       <!-- <thead><tr><th></th><th>Datos de envío</th></tr></thead> -->
       <tbody>
         <item titulo="Estado"             :label="modelValue.estado" class="text-bold" :style-label="`color:${modelValue.estadoColor};`"/>
+        <item titulo="Fecha"              :label="modelValue.fecha"/>
         <item titulo="Asesor"             :label="modelValue.asesor"/>
         <item titulo="Cuidado"            label="Datos de envio y factura diferentes ⚠️" v-if="modelValue.enOtraDireccion"/>
         <item titulo="Nombre"             :label="modelValue.nombre" copiar/>
