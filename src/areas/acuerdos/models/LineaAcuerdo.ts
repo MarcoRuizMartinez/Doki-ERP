@@ -109,6 +109,7 @@ export interface ILineaAcuerdo extends IProductoDoli {
   // */ /////////////////// Para pedido pero se calcula con las entregas
   qtyProgramado             : number
   qtyEntregado              : number
+  qtyBorrador               : number
   entregaTotalOk            : boolean
   entregaProgramadoOk       : boolean
 }
@@ -134,6 +135,7 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
   lineaIdPedido             : number              = 0
   qtyProgramado             : number              = 0
   qtyEntregado              : number              = 0
+  qtyBorrador               : number              = 0
 
   // */ /////////////////// Comisiones
   comsionX100Division       : number              = 100

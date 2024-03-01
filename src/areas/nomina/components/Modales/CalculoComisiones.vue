@@ -176,6 +176,10 @@
   import {  Format              } from "src/composables/useTools"
   import {  style               } from "src/composables/useEstilos"  
   import {  useControlIncentivos} from "src/areas/nomina/controllers/ControlIncentivos"  
+  import {  getUsuarioDB,
+            getReglaComisionDB,
+            getCategoriaDB      } from "src/composables/useDexie"
+
   // * /////////////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana               from "components/utilidades/Ventana.vue"
   import    tooltipLinea          from "src/areas/acuerdos/components/Tools/Tooltips/TooltipLinea.vue"
@@ -202,6 +206,7 @@
   ])
 
   onMounted( async ()=>{
+    await revisarDatosDexie()
     acuerdo.value.comision.calcular()
     arreglarColumnas()
     acuerdo.value.incentivo = await buscarIncentivos( { origenTipo: INCENTIVO_ORIGEN.PEDIDO_CLI, origenId : acuerdo.value.id } ) as IIncentivo
@@ -227,7 +232,6 @@
     acuerdo.value.incentivo   = i
     modales.value.incentivo   = false  
   }
-
   
   function cerrar(){
     emit("cerrar")
@@ -239,4 +243,15 @@
     ||
     acuerdo.value.incentivo.esEstadoAnulado || acuerdo.value.incentivo.esEstadoAprobado
   )
+
+  async function revisarDatosDexie() // Para asegurarnos que los datos estan completos para poder hacer los calculos necesarios
+  {
+    acuerdo.value.comercial           = await getUsuarioDB        ( acuerdo.value.comercialId )
+    acuerdo.value.comercial.comision  = await getReglaComisionDB  ( acuerdo.value.comercial.reglaComisionId )
+    for (const linea of lineas.value)
+    {
+      if(!linea.sigla) continue
+      linea.categoria                 = await getCategoriaDB( linea.sigla  )
+    }    
+  }
 </script>

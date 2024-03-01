@@ -18,6 +18,9 @@
   import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"
   import {  useControlProductos   } from "src/areas/acuerdos/controllers/ControlLineasProductos"
   import {  TTipoAcuerdo          } from "src/areas/acuerdos/models/ConstantesAcuerdos"
+  import {  dexieReglaComision,
+            dexieCategoriasProducto,
+                                  } from "src/composables/useDexie"
   //* ///////////////////////////////////////////////////////////////////////////////// Componentes
   import    vistaAcuerdo            from "./views/VistaAcuerdoVer.vue"
 
@@ -25,7 +28,11 @@
   const { copiarProductos,
           deGruposAProductos }= useControlProductos()
   const { acuerdo           } = storeToRefs( useStoreAcuerdo() )
+  
   const storeAcuerdo          = useStoreAcuerdo()
+
+  dexieCategoriasProducto() 
+  dexieReglaComision()
 
   const props                 = defineProps({
     id:   { required: true, type: String },

@@ -162,7 +162,7 @@ export function dexieCuentasDinero      ( { cargarSiempre = false, demora = 0 } 
 }
 
 //* ///////////////////////////////////////////////////////////// Reglas comision
-export function dexieReglaComision ( { cargarSiempre = false, demora = 0 } = paramDefault ) :Ref< IReglaComision[] > {
+export function dexieReglaComision ( { cargarSiempre = false, demora = 0 } = paramDefault ) :Ref< IReglaComision[] > {  
   const { lista } = useDexie( TABLAS.REGLA_COMISION, { cargarSiempre, demora } )
   return lista as Ref< IReglaComision[] >
 }
@@ -193,7 +193,6 @@ function useDexie( tabla : TABLAS, { cargarSiempre = false, demora = 0 } = param
   {
     await Tool.pausa( demora )
     const largoDBTabla             = await db[ tabla ].count()
-
 
     if(largoDBTabla               == 0 && online.value )
     {

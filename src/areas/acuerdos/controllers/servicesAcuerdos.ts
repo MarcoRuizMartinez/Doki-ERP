@@ -1,37 +1,38 @@
 export interface IBusquedaCotizacion {
-  idTercero?:     number
-  idComercial?:   string | number
-  tercero?:       string
-  contacto?:      string
-  estado?:        number
-  origen?:        number
-  fechaDesde?:    string
-  fechaHasta?:    string
-  subtotalMin?:   number
-  subtotalMax?:   number
-  conIva?:        number
-  conTotal?:      number
-  limite?:        number
-  offset?:        number
-  //idEspecial?:  number
-  area?:          string
-  orden?:       "ASC" | "DESC"
-  municipio?:     string
+  idTercero       ?: number
+  idComercial     ?: string | number
+  tercero         ?: string
+  contacto        ?: string
+  estado          ?: number
+  origen          ?: number
+  fechaDesde      ?: string
+  fechaHasta      ?: string
+  subtotalMin     ?: number
+  subtotalMax     ?: number
+  conIva          ?: number
+  conTotal        ?: number
+  limite          ?: number
+  offset          ?: number  
+  area            ?: string
+  orden           ?: "ASC" | "DESC"
+  municipio       ?: string
 }
+//* ///////////////////////////////////////////////////////////////////////////////// Core
+import {  date              } from "quasar"
 
+//* ///////////////////////////////////////////////////////////////////////////////// Componibles
+import {  Tool, ToolType    } from "src/composables/useTools"
 import {  useApiDolibarr    } from "src/composables/useApiDolibarr"
 import {  getURL,
           getFormData       } from "src/composables/APIMaco"
 import {  useFetch          } from "src/composables/useFetch"
-import {  date              } from "quasar"
+//* ///////////////////////////////////////////////////////////////////////////////// Modelos
+import {  Acuerdo,  IAcuerdo} from "src/areas/acuerdos/models/Acuerdo"
 import {  ILineaApi         } from "src/areas/acuerdos/models/LineaAcuerdo"
 import {  TIPOS_CONTACTO_ID } from "src/areas/terceros/models/Contacto"
 import {  IQuery            } from "src/models/Busqueda"
 import {  TTipoAcuerdo,
           TIPO_ACUERDO      } from "src/areas/acuerdos/models/ConstantesAcuerdos"
-import {  Acuerdo,
-          IAcuerdo,         } from "src/areas/acuerdos/models/Acuerdo"
-import {  Tool, ToolType    } from "src/composables/useTools"
 
 export function servicesAcuerdos()
 {

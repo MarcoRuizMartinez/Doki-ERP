@@ -377,6 +377,7 @@ export class Acuerdo implements IAcuerdo
     {
       lineaP.qtyProgramado    = 0
       lineaP.qtyEntregado     = 0
+      lineaP.qtyBorrador      = 0
 
       for (const entrega of this.entregas)
       {
@@ -386,6 +387,7 @@ export class Acuerdo implements IAcuerdo
           {
             lineaP.qtyProgramado += entrega.esEstadoEntregando  ? lineaE.qty : 0
             lineaP.qtyEntregado  += entrega.esEstadoEntregado   ? lineaE.qty : 0
+            lineaP.qtyBorrador   += entrega.esEstadoBoceto   ? lineaE.qty : 0
           }
         }
       }

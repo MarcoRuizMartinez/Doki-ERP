@@ -3,7 +3,7 @@ import {  useRouter             } from 'vue-router'
 //* ////////////////////////////////////////////////////////////////// Store
 import {  storeToRefs           } from 'pinia'
 import {  useStoreAcuerdo       } from 'src/stores/acuerdo'
-import {  useStoreUser          } from 'src/stores/user'
+//import {  useStoreUser          } from 'src/stores/user'
 //* ////////////////////////////////////////////////////////////////// Componibles
 import {  useControlProductos   } from "src/areas/acuerdos/controllers/ControlLineasProductos"
 import {  servicesAcuerdos      } from "src/areas/acuerdos/controllers/servicesAcuerdos"
@@ -80,9 +80,8 @@ export function useControlAcuerdo()
   const { miFetch             } = useFetch()
   const { acuerdo,
           loading             } = storeToRefs( useStoreAcuerdo() )
-  const { usuario             } = storeToRefs( useStoreUser() )
-          
-  const reglasComision          = dexieReglaComision()
+  //const { usuario             } = storeToRefs( useStoreUser() )
+
   const endPoint                = ( tipo : "servicios" | "listas" ) => getURL(tipo, "acuerdos")
 
   //* /////////////////////////////////////////////////////////////// Crear Acuerdo
@@ -393,6 +392,8 @@ export function useControlAcuerdo()
 
   async function asignarReglaComision( comercial : IUsuario )
   {
+    const reglasComision          = dexieReglaComision()
+    
     if(!reglasComision.value.length){
       return
     }
