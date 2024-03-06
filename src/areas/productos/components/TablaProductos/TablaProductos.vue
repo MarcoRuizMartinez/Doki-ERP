@@ -38,13 +38,13 @@
         <imagen :producto     ="props.row"/>        
         <template v-if        ="modoBusqueda">
           <q-btn              
-            v-bind            ="style.btnRedondoFlat"
+            v-bind            ="style.btnRedondoFlatMd"
             icon              ="mdi-alpha-d-circle"
             target            ="_blank"
             :href             ="props.row.urlDolibarr"
           />
           <q-btn              
-            v-bind            ="style.btnRedondoFlat"
+            v-bind            ="style.btnRedondoFlatMd"
             icon              ="mdi-lead-pencil"
             @click            ="emit('clickEditar', props.row)"
           />
@@ -95,7 +95,7 @@
   import {  useRouter           } from 'vue-router'
   // * /////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs         } from 'pinia'                                            
-  import {  useStoreProducto    } from 'src/stores/producto'  
+  import {  useStoreProducto    } from 'stores/producto'  
   // * /////////////////////////////////////////////////////////////////////////////////// Modelos
   import {  IColumna            } from "src/models/Tabla"
   import {  IProductoDoli       } from "src/areas/productos/models/ProductoDolibarr"  

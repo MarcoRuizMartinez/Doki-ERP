@@ -164,8 +164,8 @@
             onMounted           } from "vue"
   // * /////////////////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs         } from 'pinia'
-  import {  useStoreAcuerdo     } from 'src/stores/acuerdo'
-  import {  useStoreUser        } from 'src/stores/user'
+  import {  useStoreAcuerdo     } from 'stores/acuerdo'
+  import {  useStoreUser        } from 'stores/user'
   // * /////////////////////////////////////////////////////////////////////////////////// Modelos
   import {  TModosVentana        } from "src/models/TiposVarios"
   import {  IColumna, Columna   } from "src/models/Tabla"

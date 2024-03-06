@@ -3,7 +3,7 @@
   import {  useTools              } from "src/composables/useTools"
   import    titulo                  from "components/utilidades/Titulo.vue"
   import {  storeToRefs           } from 'pinia'
-  import {  useStoreProducto      } from 'src/stores/producto'  
+  import {  useStoreProducto      } from 'stores/producto'  
   const { producto          } = storeToRefs( useStoreProducto() )  
   const { esMobil           } = useTools()
   

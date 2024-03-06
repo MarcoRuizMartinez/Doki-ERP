@@ -85,42 +85,39 @@
           </q-popup-edit> 
         </div>
         <div>
-        <!-- //* ////////////////////////////////////////////////////// Ref  -->
-        <span
-          v-if              ="!acuerdo.esNuevo"
-          class             ="fuente-delicada"
-          :class            ="[ esMobil ? 'q-ma-none q-pa-none' : 'q-mt-sm', acuerdo.facturado ? 'titulo-md' : 'titulo-lg' ]"
-          >
-          <campo-copiar     left-side
-            :label          ="acuerdo.ref"
-            color           ="white"
+          <!-- //* ////////////////////////////////////////////////////// Ref  -->
+          <span
+            v-if              ="!acuerdo.esNuevo"
+            class             ="fuente-delicada"
+            :class            ="[ esMobil ? 'q-ma-none q-pa-none' : 'q-mt-sm', acuerdo.facturado ? 'titulo-md' : 'titulo-lg' ]"
             >
-            <a
-              :href         ="acuerdo.urlDolibarr"
-              target        ="_blank"
+            <campo-copiar     left-side
+              :label          ="acuerdo.ref"
+              color           ="white"
               >
-              {{acuerdo.ref}}
-              <Tooltip label="Ir a Dolibarr" />
-            </a>
-          </campo-copiar>
-        </span>
-        <div
-          v-if              ="acuerdo.facturado"
-          class             ="text-1_2em text-right text-uppercase">
-          <q-icon name      ="mdi-shield-check" size="sm"/>
-          Facturado
-        </div>
-        <div
-          v-if              ="acuerdo.esOCProveedor"
-          class             ="text-right"
-          >
-          <q-chip           dense
-            v-if            ="acuerdo.esEstadoValido"
-            :color          ="acuerdo.fechaEnvioOCExiste ? 'positive' : 'warning'"
-            :icon           ="acuerdo.fechaEnvioOCExiste ? 'mdi-email-check' : 'mdi-email-alert'"
-            text-color      ="white"
-            class           ="q-px-sm"
-            >
+              <a
+                :href         ="acuerdo.urlDolibarr"
+                target        ="_blank"
+                >
+                {{acuerdo.ref}}
+                <Tooltip label="Ir a Dolibarr" />
+              </a>
+            </campo-copiar>
+          </span>
+          <div
+            v-if              ="acuerdo.facturado"
+            class             ="text-1_2em text-right text-uppercase">
+            <q-icon name      ="mdi-shield-check" size="sm"/>
+            Facturado
+          </div>
+          <div  class         ="text-right">
+            <q-chip           dense
+              v-if            ="acuerdo.esOCProveedor && acuerdo.esEstadoValido"
+              :color          ="acuerdo.fechaEnvioOCExiste ? 'positive' : 'warning'"
+              :icon           ="acuerdo.fechaEnvioOCExiste ? 'mdi-email-check' : 'mdi-email-alert'"
+              text-color      ="white"
+              class           ="q-px-sm"
+              >
               {{ acuerdo.fechaEnvioOCExiste ? 'Correo enviado' : 'Correo no enviado' }}
               <Tooltip
                 v-if        ="acuerdo.fechaEnvioOCExiste"
@@ -128,11 +125,11 @@
                 Enviado el {{ acuerdo.fechaEnvioOCCorta }}
               </Tooltip>
             </q-chip>
-          <chip-usuario
-            :usuario        ="acuerdo.creador"
-          />
+            <chip-usuario
+              :usuario        ="acuerdo.creador"
+            />
+          </div>
         </div>
-      </div>
       </div>
       <!-- //* ///////////////////////////////////////////////////////// Spiner cargando -->
       <div
@@ -185,7 +182,7 @@
   import    efecto                  from "components/utilidades/Efecto.vue"
   import {  TTipoPDF              } from "src/areas/acuerdos/composables/pdf/useCotizacion"
   import {  storeToRefs           } from 'pinia'
-  import {  useStoreAcuerdo       } from 'src/stores/acuerdo'  
+  import {  useStoreAcuerdo       } from 'stores/acuerdo'  
   import    campoCopiar             from "components/utilidades/CampoCopiar.vue" 
   import    chipUsuario             from "src/areas/usuarios/components/ChipUsuario.vue";    
 

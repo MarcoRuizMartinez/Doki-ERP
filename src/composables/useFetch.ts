@@ -2,7 +2,7 @@ import {  useQuasar           } from 'quasar'
 import {  IResultado,
           CODES_FETCH         } from "src/models/TiposVarios"
 import {  computed            } from 'vue'
-import {  useStoreApp         } from 'src/stores/app'
+import {  useStoreApp         } from 'stores/app'
 
 export function useFetch()
 {

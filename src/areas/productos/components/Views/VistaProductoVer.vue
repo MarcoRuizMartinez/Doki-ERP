@@ -34,8 +34,8 @@
   
   //* ///////////////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs           } from 'pinia'
-  import {  useStoreProducto      } from 'src/stores/producto'
-  import {  useStoreUser          } from 'src/stores/user'
+  import {  useStoreProducto      } from 'stores/producto'
+  import {  useStoreUser          } from 'stores/user'
 
   //* ///////////////////////////////////////////////////////////////////////////////// Modelos
   import {  IArchivo              } from "src/models/Archivo"

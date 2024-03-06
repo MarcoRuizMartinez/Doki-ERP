@@ -28,7 +28,7 @@
       </q-btn>
       <!-- //* ///////////////  Boton crear acuerdo  -->
       <q-btn
-        v-if                    ="tipo !== TIPO_ACUERDO.PEDIDO_PRO"
+        v-if                    ="tipo !== TIPO_ACUERDO.PEDIDO_PRO && tercero.usuarioEsResponsable( usuario.id  ) "
         v-bind                  ="style.btnBaseSm"
         label                   ="Crear"
         color                   ="positive"
@@ -70,7 +70,8 @@
   import {  useRouter             } from 'vue-router'
   // * /////////////////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs           } from 'pinia'
-  import {  useStoreAcuerdo       } from 'src/stores/acuerdo'      
+  import {  useStoreAcuerdo       } from 'stores/acuerdo'
+  import {  useStoreUser          } from 'stores/user'
   //* /////////////////////////////////////////////////////////////////////////////////// Modelos
   import {  TModosVentana          } from "src/models/TiposVarios"
   import {  IColumna,
@@ -91,6 +92,7 @@
   const { getAcuerdos       } = servicesAcuerdos()
   const router                = useRouter()
   const { acuerdo           } = storeToRefs( useStoreAcuerdo() )
+  const { usuario           } = storeToRefs( useStoreUser() )
   const modo                  = ref< TModosVentana >("esperando-busqueda")
   
   const columnas: IColumna[]  = [

@@ -75,7 +75,7 @@
                                   } from "vue"
   // * /////////////////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs         } from 'pinia'
-  import {  useStoreUser        } from 'src/stores/user'
+  import {  useStoreUser        } from 'stores/user'
 
   // * ///////////////////////////////////////////////////////////////////////////////// Modelos
   import {  IIncentivo,

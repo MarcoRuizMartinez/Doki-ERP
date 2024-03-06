@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import {  storeToRefs         } from 'pinia'                                            
-  import {  useStoreApp         } from 'src/stores/app'  
+  import {  useStoreApp         } from 'stores/app'  
 
   const { tabs } = storeToRefs( useStoreApp() )
 </script>

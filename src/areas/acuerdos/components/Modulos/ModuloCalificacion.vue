@@ -4,8 +4,8 @@
             watchEffect         } from "vue"
   //* ///////////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs         } from 'pinia'                            
-  import {  useStoreAcuerdo     } from 'src/stores/acuerdo'  
-  import {  useStoreUser        } from 'src/stores/user'
+  import {  useStoreAcuerdo     } from 'stores/acuerdo'  
+  import {  useStoreUser        } from 'stores/user'
   import {  Archivo             } from "src/models/Archivo"
   //* ///////////////////////////////////////////////////////////////////////////// Componibles  
   import {  useControlAcuerdo   } from "src/areas/acuerdos/controllers/ControlAcuerdos"

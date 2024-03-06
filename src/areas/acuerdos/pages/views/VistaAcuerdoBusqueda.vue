@@ -120,6 +120,13 @@
           :tipo                 ="tipo"
         />
         <template               #barra>
+          <q-btn
+            v-bind              ="style.btnRedondoFlatMd"
+            icon                ="mdi-open-in-new"
+            :to                 ="acuerdo.urlDoki"
+            >
+            <Tooltip :label     ="'Ir a ' + acuerdo.tipo"/>            
+          </q-btn>
           <q-btn                dense flat   
             icon                ="mdi-chevron-left"
             class               ="op100-hover"
@@ -129,7 +136,7 @@
             :disable            ="!puedeAnterior"
             @click              ="anteriorAcuerdo"
             >
-            <tooltip
+            <Tooltip
               v-if              ="puedeAnterior"
               label             ="Anterior"
             />
@@ -143,7 +150,7 @@
             :disable            ="!puedeSiguiente"
             @click              ="siguienteAcuerdo"
             >
-            <tooltip
+            <Tooltip
               v-if              ="puedeSiguiente"
               label             ="Siguiente"
             />
@@ -166,9 +173,9 @@
   import {  useRouter           } from "vue-router"            
   // * /////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs         } from 'pinia'                                            
-  import {  useStoreUser        } from 'src/stores/user'
-  import {  useStoreAcuerdo     } from 'src/stores/acuerdo'
-  import {  useStoreApp         } from 'src/stores/app'
+  import {  useStoreUser        } from 'stores/user'
+  import {  useStoreAcuerdo     } from 'stores/acuerdo'
+  import {  useStoreApp         } from 'stores/app'
 
   // * /////////////////////////////////////////////////////////////////////// Componibles
   import {  useTitle            } from "@vueuse/core"

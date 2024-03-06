@@ -46,7 +46,7 @@
   import {  useApiDolibarr        } from "src/composables/useApiDolibarr"      
   ////////////////////////////////////////////////////////////////////////// Store
   //import {  storeToRefs         } from 'pinia'
-  //import {  useStoreUser        } from 'src/stores/user'
+  //import {  useStoreUser        } from 'stores/user'
 
   //const { usuario           } = storeToRefs( useStoreUser() )
   const { apiDolibarr       } = useApiDolibarr()

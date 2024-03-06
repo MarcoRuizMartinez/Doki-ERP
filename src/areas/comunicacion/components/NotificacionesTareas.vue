@@ -129,8 +129,8 @@
   
   // * /////////////////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs             } from 'pinia'
-  import {  useStoreAcciones        } from 'src/stores/acciones'
-  import {  useStoreUser            } from 'src/stores/user'
+  import {  useStoreAcciones        } from 'stores/acciones'
+  import {  useStoreUser            } from 'stores/user'
 
   // * /////////////////////////////////////////////////////////////////////////////////// Componibles
   import {  Tool                    } from "src/composables/useTools"

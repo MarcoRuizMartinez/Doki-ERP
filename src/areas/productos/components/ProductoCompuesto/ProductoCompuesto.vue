@@ -59,8 +59,9 @@
         class                   ="row justify-between items-center fila q-px-sm degradado-gris"
         >
         <!-- //* ////////////////////////////////////////////////////////////////// Imagen de producto -->
-        <imagen-producto        mini
+        <imagen-producto
           class                 ="col-auto q-mr-sm"
+          size                  ="xs"
           :imagen               ="pHijo.img"
           :nombre               ="pHijo.nombre"
         />
@@ -147,8 +148,8 @@
   import {  VueDraggable        } from 'vue-draggable-plus'
   ////////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs         } from "pinia"
-  import {  useStoreProducto    } from "src/stores/producto"
-  import {  useStoreUser        } from 'src/stores/user'
+  import {  useStoreProducto    } from "stores/producto"
+  import {  useStoreUser        } from 'stores/user'
 
   ////////////////////////////////////////////////////////////////////////// Modelos
   import {  IProductoHijo       } from 'src/areas/productos/models/ProductoHijo'

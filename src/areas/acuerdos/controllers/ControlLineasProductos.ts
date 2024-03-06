@@ -1,6 +1,6 @@
 // * //////////////////////////////////////////////////////////////////////////////// Store
 import {  storeToRefs           } from 'pinia'
-import {  useStoreAcuerdo       } from 'src/stores/acuerdo'
+import {  useStoreAcuerdo       } from 'stores/acuerdo'
 // * //////////////////////////////////////////////////////////////////////////////// Componibles
 import {  useApiDolibarr        } from "src/composables/useApiDolibarr"
 import {  servicesAcuerdos      } from "src/areas/acuerdos/controllers/servicesAcuerdos"

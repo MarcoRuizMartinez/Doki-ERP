@@ -84,8 +84,8 @@
 
   // * /////////////////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs     } from 'pinia'
-  import {  useStoreUser    } from 'src/stores/user'
-  import {  useStoreAcuerdo } from 'src/stores/acuerdo'    
+  import {  useStoreUser    } from 'stores/user'
+  import {  useStoreAcuerdo } from 'stores/acuerdo'    
   //* ///////////////////////////////////////////////////////////////////////////////////// Modelos
   import {  ITercero,
             Tercero,
@@ -121,13 +121,13 @@
   const cargando              = ref< boolean >(false)
   const loadComentarios       = ref< boolean >(false)
   const title                 = useTitle( "🏪 Cargando..." )
-  const usuarioEsDueño        = computed( () =>{ return tercero.value.responsables.some( r => r.id == usuario.value.id ) })
+  const usuarioEsDueño        = computed( () =>{ return tercero.value.usuarioEsResponsable( usuario.value.id ) })
   const puedeModificar        = computed( () =>{
                                   if
                                   (
                                     permisos.value.terceros_crear
                                     &&
-                                    ( usuarioEsDueño.value || permisos.value.acceso_total )
+                                    ( usuarioEsDueño.value || ( permisos.value.acceso_total && usuario.value.esGerencia ) )
                                   )
                                     return true
                                   else

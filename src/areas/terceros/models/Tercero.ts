@@ -57,6 +57,7 @@ export interface ITercero
   esFamoso:                 boolean
   comentarios:              IAccion[]
   getTerceroToAPIDolibarr: () => any
+  usuarioEsResponsable   : ( idUsuario : number ) => boolean
 }
 
 export class Tercero implements ITercero
@@ -188,6 +189,10 @@ export class Tercero implements ITercero
 
   get esTerceroCtz() : boolean{
     return this.responsables.some( r => +r.terceroIdCtz === this.id ) 
+  }
+
+  usuarioEsResponsable( idUsuario : number ) : boolean {
+    return this.responsables.some( r => r.id === idUsuario )
   }
 
   getTerceroToAPIDolibarr( ) : any

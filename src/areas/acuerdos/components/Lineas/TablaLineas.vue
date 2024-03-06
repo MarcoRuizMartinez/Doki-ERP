@@ -134,7 +134,7 @@
             
   // ////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs         } from 'pinia'
-  import {  useStoreAcuerdo     } from 'src/stores/acuerdo'
+  import {  useStoreAcuerdo     } from 'stores/acuerdo'
 
   // ////////////////////////////////////////////////////////////////////// Models
   import {  IGrupoLineas        } from "src/areas/acuerdos/models/GrupoLineasAcuerdo"

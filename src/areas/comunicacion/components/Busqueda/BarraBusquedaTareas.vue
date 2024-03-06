@@ -178,7 +178,7 @@
             computed            } from "vue"
   // * /////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs         } from "pinia"
-  import {  useStoreAcciones    } from "src/stores/acciones"
+  import {  useStoreAcciones    } from "stores/acciones"
   // * /////////////////////////////////////////////////////////////////////// Modelos
   import {  IQuery              } from "src/models/Busqueda"
   import {  Cuando,

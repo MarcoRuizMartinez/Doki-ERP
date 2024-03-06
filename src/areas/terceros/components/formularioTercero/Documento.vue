@@ -4,7 +4,7 @@
     label                   ="Tipo documento*"
     class                   ="col-md-5 col-12 text-caption"
     options-selected-class  ="text-weight-bold"
-    :options                ="tiposDeDocumentos"
+    :options                ="tiposDocumento"
     :readonly               ="readonly"
     :rules                  ="[ validarTipoDocumento ]"
     @update:model-value     ="cambiarTipo"
@@ -60,6 +60,9 @@
             watch,
             onMounted
                               } from 'vue'
+  //* ///////////////////////////////////////////////////////////////////////////// Store
+  import {  storeToRefs       } from 'pinia'      
+  import {  useStoreDexie     } from 'stores/dexieStore'
 
   import {  IDocumento        } from "src/areas/terceros/models/DocumentoId"
 
@@ -67,7 +70,7 @@
             TIPOS_DOCUMENTO
                               } from "src/areas/terceros/models/TiposDocumento"
   import {  EstadoVerificar   } from "src/models/TiposVarios"
-  import {  useTools, ToolType} from "src/composables/useTools"
+  import {  useTools          } from "src/composables/useTools"
   
   import {  dexieTiposDocumentos
                               } from "src/composables/useDexie"
@@ -80,8 +83,8 @@
 
   const { aviso               } = useTools()
   const { miFetch             } = useFetch()  
-  const lista                   = dexieTiposDocumentos()
-  const tiposDeDocumentos       = computed( () => lista.value as ITipoDocumento [] )  
+  dexieTiposDocumentos()
+  const { tiposDocumento      } = storeToRefs( useStoreDexie() )
   
   const { vericarDocumentoEnDolibarr
                               } = servicesTerceros()
@@ -135,7 +138,7 @@
   )
 
   watch(
-    tiposDeDocumentos,
+    tiposDocumento,
     (newTipos, oldTipos) =>
     {
       if(newTipos.length > 0 && oldTipos.length == 0 )
@@ -163,10 +166,10 @@
       let tipoDoc
 
       if( numeroDoc           >= 1_000_000_000 )
-        tipoDoc               = tiposDeDocumentos.value[1] // Cedula
+        tipoDoc               = tiposDocumento.value[1] // Cedula
       else
       if( numeroDoc           >= 800_000_000 )
-        tipoDoc               = tiposDeDocumentos.value[0] // Nit
+        tipoDoc               = tiposDocumento.value[0] // Nit
 
       if(tipoDoc              != undefined)
       {

@@ -23,7 +23,7 @@
     <!-- //* //////////////////////////////////////////////////////////////// Tooltip de precios de proveedor -->
     <div>
       <q-btn
-        v-bind              ="style.btnRedondoFlat"
+        v-bind              ="style.btnRedondoFlatMd"
         :icon               ="producto.naturaleza.esCompuesto_o_Kit ? 'mdi-focus-field' : 'mdi-package'"
         color               ="grey-8"
         class               ="q-mr-sm"

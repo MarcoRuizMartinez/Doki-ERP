@@ -13,7 +13,7 @@
                                   } from "vue"
   //* ///////////////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs           } from 'pinia'
-  import {  useStoreAcuerdo       } from 'src/stores/acuerdo'
+  import {  useStoreAcuerdo       } from 'stores/acuerdo'
   //* ///////////////////////////////////////////////////////////////////////////////// Componibles
   import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"
   import {  useControlProductos   } from "src/areas/acuerdos/controllers/ControlLineasProductos"

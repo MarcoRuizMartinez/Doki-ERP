@@ -15,7 +15,7 @@
 
 <script setup lang="ts">
   import {  computed,         } from 'vue'
-  import {  useStoreApp       } from 'src/stores/app'
+  import {  useStoreApp       } from 'stores/app'
   import    lista               from "./MenuTopLi.vue"
 
   const storeApp          = useStoreApp()

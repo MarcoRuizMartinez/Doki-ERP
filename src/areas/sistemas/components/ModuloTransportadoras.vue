@@ -1,11 +1,11 @@
 <template>
   <ventana                      minimizar
     class-contenido             ="column items-center"
-    titulo                      ="Unidades"
-    icono                       ="mdi-ruler-square-compass"
+    titulo                      ="Transportadoras"
+    icono                       ="mdi-truck"
     size-icon-carga             ="14em"
     padding-contenido           ="0"
-    :cargando                   ="!unidades.length"
+    :cargando                   ="!transportadoras.length"
     >
     <template                   #menu>
       <input-buscar             clearable hundido
@@ -17,7 +17,7 @@
     <q-table                    bordered dense flat
       class                     ="fit tabla-maco"
       row-key                   ="id"
-      :rows                     ="unidades"
+      :rows                     ="transportadoras"
       :columns                  ="columnas"
       :filter                   ="filtro"
       >
@@ -34,7 +34,7 @@
   import {  useStoreDexie         } from 'stores/dexieStore'
 
   //* ///////////////////////////////////////////////////////////////////////////// Componibles
-  import {  dexieUnidades         } from "src/composables/useDexie"
+  import {  dexieTransportadoras  } from "src/composables/useDexie"
 
   //* ///////////////////////////////////////////////////////////////////////////// Modelos
   import {  IColumna,     
@@ -43,16 +43,14 @@
   //* ///////////////////////////////////////////////////////////////////////////// Componentes 
   import    ventana                 from "components/utilidades/Ventana.vue"
   import    inputBuscar             from "components/utilidades/input/InputSimple.vue"
-
+  
   const filtro                = ref< string >("")
-  dexieUnidades()
-  const { unidades          } = storeToRefs( useStoreDexie() )
+  dexieTransportadoras()
+  const { transportadoras   } = storeToRefs( useStoreDexie() )
+
   const columnas: IColumna[]  = [
                                   new Columna({ name: "id"}),
                                   new Columna({ name: "nombre"}),
-                                  new Columna({ name: "codigo"}),
-                                  new Columna({ name: "sigla"}),
-                                  new Columna({ name: "tipo"}),
-                                  new Columna({ name: "orden"}),
+                                  new Columna({ name: "color"}),
                                 ]
 </script>

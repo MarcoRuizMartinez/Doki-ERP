@@ -24,7 +24,7 @@
   import {  ref,
                             } from "vue"
   import {  storeToRefs     } from "pinia"
-  import {  useStoreProducto} from "src/stores/producto"
+  import {  useStoreProducto} from "stores/producto"
   import    ventana           from "components/utilidades/Ventana.vue"
   import    visorImagen       from "components/utilidades/VisorImagen.vue"
 

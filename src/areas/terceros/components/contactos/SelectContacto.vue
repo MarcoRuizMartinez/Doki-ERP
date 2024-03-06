@@ -1,10 +1,11 @@
 <template>
-  <q-select                   filled use-input dense fill-input hide-selected
+  <q-select                   use-input dense fill-input hide-selected
     v-model                   ="modelo"
     input-debounce            ="400"
     behavior                  ="dialog"
+    :filled                   ="!hundido"
     :label                    ="label"
-    :class                    ="$attrs.class"
+    :class                    ="[$attrs.class, { 'campo-hundido' : hundido }]"
     :loading                  ="cargando"
     :options                  ="contactos"
     :disable                  ="disable"
@@ -119,6 +120,7 @@
     tercero:          { required: true,           type: Object as PropType< ITercero >  },
     quitarContacto:   { default:  false,          type: Boolean                         },
     tipoEntrega:      { default:  false,          type: Boolean                         },
+    hundido:          { default: false,           type: Boolean                         },
   })
   const { contacto,
           tipoEntrega,

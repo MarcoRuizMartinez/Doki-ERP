@@ -39,8 +39,8 @@
         icon                    ="mdi-wallet"
         class                   ="col-12"
         :rules                  ="[ reglaCuenta ]"
-        :options                ="cuentas"
-        :loading                ="!cuentas.length"
+        :options                ="cuentasDinero"
+        :loading                ="!cuentasDinero.length"
       />
       <!-- //* ///////////////////////////////////////////////////////////// Valor -->
       <input-number             no-undefined alerta solo-positivo 
@@ -55,7 +55,7 @@
       />
       <div class                ="col-1">
         <q-btn
-          v-bind                ="style.btnRedondoFlat"
+          v-bind                ="style.btnRedondoFlatMd"
           icon                  ="mdi-account-cash"
           class                 ="q-mt-sm"
           @click                ="modelo.valor = acuerdo.saldo"
@@ -139,6 +139,7 @@
   //* /////////////////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs         } from 'pinia'                            
   import {  useStoreAcuerdo     } from 'stores/acuerdo'
+  import {  useStoreDexie       } from 'stores/dexieStore'
   
   // * ///////////////////////////////////////////////////////////////////////////////// Componibles
   import {  useTools            } from "src/composables/useTools"
@@ -159,7 +160,8 @@
   const { acuerdo           } = storeToRefs( useStoreAcuerdo() )
   const { aviso             } = useTools()
   const { miFetch           } = useFetch()
-  const cuentas               = dexieCuentasDinero()
+  dexieCuentasDinero()
+  const { cuentasDinero     } = storeToRefs( useStoreDexie() )
   const modelo                = ref< IAnticipo  >( new Anticipo() )
   const cargando              = ref< boolean    >( false )
   const formulario            = ref< any >()

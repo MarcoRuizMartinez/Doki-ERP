@@ -24,8 +24,8 @@
 <script setup lang="ts">
   import  { watch               } from "vue"
   import  { storeToRefs         } from 'pinia'                                            
-  import  { useStoreApp         } from 'src/stores/app'
-  import  { useStoreAcuerdo     } from 'src/stores/acuerdo'  
+  import  { useStoreApp         } from 'stores/app'
+  import  { useStoreAcuerdo     } from 'stores/acuerdo'  
   import  { ToolDate            } from "src/composables/useTools"  
   const   { tabs                } = storeToRefs( useStoreApp() )
   const   { busqueda : b        } = storeToRefs( useStoreAcuerdo() )

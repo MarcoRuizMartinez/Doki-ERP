@@ -50,9 +50,11 @@
                             } from "src/models/Municipio"
   
   import { dexieMunicipios  } from "src/composables/useDexie"
-
+  import {  storeToRefs     } from 'pinia'      
+  import {  useStoreDexie   } from 'stores/dexieStore'
   const model                 = ref< IMunicipio >( new Municipio() )
-  const lista                 = dexieMunicipios()
+  dexieMunicipios()
+  const { municipios : lista }= storeToRefs( useStoreDexie() )
   const municipios            = ref< IMunicipio [] > ( lista.value as IMunicipio[] )
 
   const emit                  = defineEmits(["update:modelValue", "clear"])

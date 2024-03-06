@@ -22,9 +22,9 @@
   </q-select>
 </template>
 <script setup lang="ts">
-
+  import {  storeToRefs       } from 'pinia'
   import {  servicesTerceros  } from "src/areas/terceros/services/servicesTerceros"
-  import {  useStoreUser      } from 'src/stores/user'
+  import {  useStoreUser      } from 'stores/user'
   import {  IQuery            } from "src/models/Busqueda"
   import {  ref,
             toRefs,
@@ -38,7 +38,8 @@
   const cargando              = ref< boolean >(false)
   const virgen                = ref< boolean >(true)
 
-  const storeUser             = useStoreUser()
+  
+  const { usuario, permisos } = storeToRefs( useStoreUser() )
   const { buscarTerceros,
           buscarTercero     } = servicesTerceros()
 
@@ -76,17 +77,17 @@
     else
     if(virgen.value)
     {
-      if(!!storeUser.usuario.terceroIdCtz && conTerceroEspecial.value)
-        terce.push( await buscarTercero( storeUser.usuario.terceroIdCtz ) )
+      if(!!usuario.value.terceroIdCtz && conTerceroEspecial.value)
+        terce.push( await buscarTercero( usuario.value.terceroIdCtz ) )
 
-      query                   = { usuario: storeUser.usuario.id, limite: 10, offset: 0, orden: "DESC", esCliente: 1 }
+      query                   = { usuario: usuario.value.id, limite: 10, offset: 0, orden: "DESC", esCliente: 1 }
     }
     else
     {
       cargando.value          = false
       query                   = { buscar: busqueda, esCliente: 1, limite: 30, offset: 0 }
-      if( !storeUser.permisos.acceso_total )
-          query.usuario       = storeUser.usuario.id
+      if( /* !permisos.value.acceso_total && */ !usuario.value.esGerencia )
+          query.usuario       = usuario.value.id
     }
 
     cargando.value            = true
@@ -97,11 +98,11 @@
 
     function borrarDuplicados()
     {
-      if(!!storeUser.usuario.terceroIdCtz){ // Es posible que cargue dos veces el mismo tercero, hay que borrarlo
-        let duplicados        = terce.filter( (t) => t.id == storeUser.usuario.terceroIdCtz )
+      if(!!usuario.value.terceroIdCtz){ // Es posible que cargue dos veces el mismo tercero, hay que borrarlo
+        let duplicados        = terce.filter( (t) => t.id == usuario.value.terceroIdCtz )
         if( duplicados.length > 1 || (!conTerceroEspecial.value && duplicados.length === 1 ))  // Si hay terceros duplicados
         {
-          let indiceBorrar    = terce.findIndex( (t, index) => t.id == storeUser.usuario.terceroIdCtz && index > 0)
+          let indiceBorrar    = terce.findIndex( (t, index) => t.id == usuario.value.terceroIdCtz && index > 0)
           terce.splice(indiceBorrar, 1)
         }
       }

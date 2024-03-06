@@ -84,9 +84,9 @@
   import {  LocalStorage      } from 'quasar'                              
   ///////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs       } from 'pinia'
-  import {  useStoreApp       } from 'src/stores/app'
-  import {  useStoreAcciones  } from 'src/stores/acciones'
-  import {  useStoreUser      } from 'src/stores/user'
+  import {  useStoreApp       } from 'stores/app'
+  import {  useStoreAcciones  } from 'stores/acciones'
+  import {  useStoreUser      } from 'stores/user'
   ///////////////////////////////////////////////////////////////////////// Modelos
   import {  ALMACEN_LOCAL     } from "src/models/TiposVarios"
   ///////////////////////////////////////////////////////////////////////// Componibles

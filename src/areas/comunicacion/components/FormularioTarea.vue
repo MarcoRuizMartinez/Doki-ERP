@@ -167,7 +167,7 @@
         @descarga-ok        ="( f:IArchivo[] )=> totalArchivos = f.length"
         >
         <!-- <q-btn        
-          v-bind            ="style.btnRedondoFlat"
+          v-bind            ="style.btnRedondoFlatMd"
           icon              ="mdi-file-upload"
           class             ="op60 op100-hover"
           target            ="_blank"
@@ -188,7 +188,7 @@
                                   } from "vue"
   //* ///////////////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs           } from 'pinia'
-  import {  useStoreUser          } from "src/stores/user"
+  import {  useStoreUser          } from "stores/user"
   //* ///////////////////////////////////////////////////////////////////////////////// Modelos
   import {  IAccion,
             Accion,

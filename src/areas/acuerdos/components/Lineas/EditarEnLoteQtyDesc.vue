@@ -52,7 +52,7 @@
   import {  ref                 } from "vue"
   ////////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs         } from 'pinia'
-  import {  useStoreAcuerdo     } from 'src/stores/acuerdo'            
+  import {  useStoreAcuerdo     } from 'stores/acuerdo'            
   ////////////////////////////////////////////////////////////////////////// Controles
   import {  useControlProductos } from "src/areas/acuerdos/controllers/ControlLineasProductos"
   ////////////////////////////////////////////////////////////////////////// Componentes

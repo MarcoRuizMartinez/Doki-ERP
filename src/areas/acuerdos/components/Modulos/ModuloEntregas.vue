@@ -1,67 +1,67 @@
 <template>
-  <ventana                      minimizar
-    titulo                      ="Entregas"
-    icono                       ="mdi-truck-delivery"
-    iconoSinResultados          ="mdi-truck-outline"
-    size-icon-carga             ="10em"
-    class-contenido             ="row"
-    padding-contenido           ="0"
-    mensaje-sin-resultados      ="Sin entregas"
-    :modo                       ="modo"
+  <ventana                          minimizar
+    titulo                          ="Entregas"
+    icono                           ="mdi-truck-delivery"
+    iconoSinResultados              ="mdi-truck-outline"
+    size-icon-carga                 ="10em"
+    class-contenido                 ="row"
+    padding-contenido               ="0"
+    mensaje-sin-resultados          ="Sin entregas"
+    :modo                           ="modo"
     >
     <!-- //* /////////////////  Botones barra -->
-    <template                   #barra>
+    <template                       #barra>
       <!-- //* ///////////////////////////////////////////////////////////// Boton nuevo grupo   -->
       <q-btn
-        v-bind                  ="style.btnBaseSm"
-        label                   ="Nueva entrega"
-        color                   ="positive"
-        icon                    ="mdi-truck-fast"
-        :disable                ="!acuerdo.puedeCrearNuevoGrupo"
-        @click                  ="emit('clickNuevaEntrega')"
+        v-bind                      ="style.btnBaseSm"
+        label                       ="Nueva entrega"
+        color                       ="positive"
+        icon                        ="mdi-truck-fast"
+        :disable                    ="!acuerdo.puedeCrearNuevoGrupo"
+        @click                      ="emit('clickNuevaEntrega')"
       /> 
-      <q-btn                    round dense flat
-        icon                    ="mdi-refresh"
-        class                   ="op60 op100-hover"
-        @click                  ="buscarAcuerdoEnlazados()"
+      <q-btn                        round dense flat
+        icon                        ="mdi-refresh"
+        class                       ="op60 op100-hover"
+        @click                      ="buscarAcuerdoEnlazados()"
         >
-        <Tooltip label          ="Recargar entregas"/>
+        <Tooltip label              ="Recargar entregas"/>
       </q-btn>   
     </template>
-    <q-list class               ="fit">
+    <q-list class                   ="fit">
       <!-- //* ///////////////////////////////////////////////////////////////  For expansion item -->
-      <q-expansion-item         expand-separator default-opened dense expand-icon-toggle dense-toggle
-        v-for                   ="(entrega, index) of acuerdo.entregas"
-        :index                  ="entrega.id"
-        header-class            ="bg-gris-dark text-white"
-        expand-icon-class       ="q-pr-none text-white"
+      <q-expansion-item             expand-separator default-opened dense expand-icon-toggle dense-toggle
+        v-for                       ="(entrega, index) of acuerdo.entregas"
+        :index                      ="entrega.id"
+        header-class                ="bg-gris-dark text-white"
+        expand-icon-class           ="q-pr-none text-white"
         >
         <!-- //* ///////////////////////////////////////////////////////////// Slot cabezote expansion item-->
-        <template               #header>
-          <q-item-section       avatar class="hidden"></q-item-section>
+        <template                   #header>
+          <q-item-section           avatar class="hidden"></q-item-section>
           <q-item-section>
-            <div class=         "row items-center h-40px full-width">
-              <ref-acuerdo      ref-larga white
-                class           ="col-auto"
-                :acuerdo        ="entrega"
+            <div class=             "row items-center h-40px full-width">
+              <ref-acuerdo          ref-larga white
+                class               ="col-auto"
+                :acuerdo            ="entrega"
               />
-              <span class       ="col text-center">{{ entrega.metodoEntrega.label }}</span>
+              <span class           ="col text-center">{{ entrega.metodoEntrega.label }}</span>
             </div>
           </q-item-section>
-          <q-item-section       side>
-            <div class          ="row items-center">
-              <span class       ="q-mr-sm text-grey-5">
+          <q-item-section           side>
+            <div class              ="row items-center">
+              <span class           ="q-mr-sm text-grey-5">
                 {{ entrega.contactoEntrega.municipio.label }}
               </span>
               <!-- //* /////////////////////////////////////////////////////// Boton agregar producto  -->
-              <estado :acuerdo  ="entrega" con-icono/>
+              <estado :acuerdo      ="entrega" con-icono/>
             </div>
           </q-item-section>
         </template>
         <!-- //* ///////////////////////////////////////////////////////////// Contenido   -->
-        <div    class           ="row">
-          <!-- //* /////////////////////////////////////////////////////////// Lado Izquierdo   -->
-          <div  class           ="col-6">
+        <div    class               ="row">
+          <!-- //* /////////////////////////////////////////////////////////// Lado Productos   -->
+          <div  class               ="col-md-5 col-12 order-1">
             <!-- //* ///////////////////////////////////////////////////////// Tabla productos  -->
             <q-table            bordered dense flat hide-bottom
               class             ="fit tabla-maco"
@@ -72,8 +72,9 @@
               <!-- //* ///////////////  Columna ref  -->
               <template #body-cell-ref="props">
                 <q-td   :props  ="props" class="text-0_8em q-ma-none q-pa-none">
-                  <imagen-producto    float mini
+                  <imagen-producto    float
                     class       ="col-shrink q-mr-sm"
+                    size        ="xs"
                     :imagen     ="props.row.img"
                     :nombre     ="props.row.nombre"
                   />
@@ -93,33 +94,55 @@
               </template>
             </q-table>
           </div>
-          <!-- //* /////////////////////////////////////////////////////////// Lado derecho   -->
-          <div  class             ="col-6 side-left">
-            <div class            ="row justify-center full-width">
+          <!-- //* /////////////////////////////////////////////////////////// Lado Datos  row justify-center full-width -->
+          <div  class               ="col-md-7 col-12 row lado-gris-oscuro order-2">
+            <!-- //* ////////////////////////////////////////////////////////// Info de envio -->
+            <tabla-envio            dark
+              class                 ="col-md-7 col-12"
+              :acuerdo              ="entrega"
+            />
+            <!-- //* /////////////////////////////////////////////////////////// Lado Inputs   -->
+            <div  class             ="col-md-5 col-12 lado-gris-claro"> 
               <!-- //* ////////////////////////////////////////////////////////// Boton Remision -->            
               <q-btn
-                v-if              ="!!entrega.contactoEntrega.id"
-                v-bind            ="style.btnFlatMd"
-                color             ="grey-4"
-                icon              ="mdi-pdf-box"
-                label             ="Remisión"
-                :loading          ="loading.editar"
-                @click            ="emit('clickRemision', entrega)"
+                v-if                ="!!entrega.contactoEntrega.id"
+                v-bind              ="style.btnFlatMd"
+                color               ="grey-4"
+                icon                ="mdi-pdf-box"
+                label               ="Remisión"
+                :loading            ="loading.editar"
+                @click              ="emit('clickRemision', entrega)"
               />
               <!-- //* ////////////////////////////////////////////////////////// Boton Rotulo -->
               <q-btn 
-                v-if              ="!!entrega.contactoEntrega.id"
-                v-bind            ="style.btnFlatMd"
-                color             ="grey-4"
-                icon              ="mdi-pdf-box"
-                label             ="Rotulo"
-                :loading          ="loading.editar"                
+                v-if                ="!!entrega.contactoEntrega.id"
+                v-bind              ="style.btnFlatMd"
+                color               ="grey-4"
+                icon                ="mdi-pdf-box"
+                label               ="Rotulo"
+                :loading            ="loading.editar"                
               />
+              <div class            ="invertir column gap-sm">
+                <select-contacto    tipo-entrega hundido
+                  v-model:contacto  ="acuerdo.contactoEntrega"
+                  label             ="Contacto entregas"
+                  icon              ="mdi-account"
+                  :quitar-contacto  ="!acuerdo.esEntrega"
+                  :tercero          ="acuerdo.tercero"
+                  :disable          ="!acuerdo.tercero.id"
+                />
+
+
+                <select-label-value       alerta hundido
+        v-model                 ="acuerdo.transportadora"
+        label                   ="Transportadora"
+        icon                    ="mdi-truck"
+        class                   ="col-md-6 col-12"
+        :options                ="transportadoras"
+      />     
+      
+              </div>
             </div>
-            <!-- //* ////////////////////////////////////////////////////////// Info de envio -->
-            <tabla-envio        dark
-              :acuerdo          ="entrega"
-            />
           </div>
         </div>
       </q-expansion-item>
@@ -131,7 +154,8 @@
   import {  computed              } from "vue"
   //* ///////////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs           } from 'pinia'                            
-  import {  useStoreAcuerdo       } from 'src/stores/acuerdo'  
+  import {  useStoreAcuerdo       } from 'stores/acuerdo'
+  import {  useStoreDexie         } from 'stores/dexieStore'  
   //* /////////////////////////////////////////////////////////////////////////////////// Modelos
   import {  TModosVentana          } from "src/models/TiposVarios"
   import {  IColumna,
@@ -140,12 +164,15 @@
   //* ///////////////////////////////////////////////////////////////////////////// Componibles  
   import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"
   import {  style                 } from "src/composables/useEstilos"
+  import {  dexieTransportadoras  } from "src/composables/useDexie"
   //* ///////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana                 from "components/utilidades/Ventana.vue"
   import    refAcuerdo              from "src/areas/acuerdos/components/Tools/RefAcuerdo.vue"
   import    estado                  from "src/areas/acuerdos/components/Tools/Estado.vue"
-  import    imagenProducto        from "src/areas/productos/components/Tools/ImagenProducto.vue"
+  import    imagenProducto          from "src/areas/productos/components/Tools/ImagenProducto.vue"
   import    tablaEnvio              from "src/areas/acuerdos/components/Tools/TablaEnvio.vue" 
+  import    selectContacto          from "src/areas/terceros/components/contactos/SelectContacto.vue"
+  import    selectLabelValue        from "components/utilidades/select/SelectLabelValue.vue"
 
   const emit                  = defineEmits<{
     (e: "clickNuevaEntrega",        ): void
@@ -153,9 +180,11 @@
     (e: "clickRotulo",      value: IAcuerdo[] ): void
   }>()
 
-  const { acuerdo, loading        } = storeToRefs( useStoreAcuerdo() )  
+  const { acuerdo, loading        } = storeToRefs( useStoreAcuerdo() )
+  const { transportadoras         } = storeToRefs( useStoreDexie() )  
   const { buscarAcuerdoEnlazados  } = useControlAcuerdo()
-
+  
+  dexieTransportadoras()
   const modo = computed(()=> {
     if(loading.value.enlaces)
       return "buscando"
@@ -189,11 +218,19 @@
 }
   */
 </script>
-<style>
-.side-left{
+<style scoped>
+.lado-gris-claro{
+  padding: 16px;
+  border-left: 1px solid #525252;
+}
+
+.lado-gris-oscuro{
   background-color: #484848;
   color: white;
   padding: 10px;
   box-shadow: inset 0px 1px 3px 3px #363636;
 }
+.invertir{
+  filter: invert(82%);
+}    
 </style>

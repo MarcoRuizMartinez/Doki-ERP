@@ -44,7 +44,7 @@
   import { Container, Draggable } from "vue-dndrop";
   ////////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs         } from 'pinia'
-  import {  useStoreAcuerdo     } from 'src/stores/acuerdo'            
+  import {  useStoreAcuerdo     } from 'stores/acuerdo'            
   ////////////////////////////////////////////////////////////////////////// Controles
   import {  useControlProductos } from "src/areas/acuerdos/controllers/ControlLineasProductos"
   import {  ToolArray           } from "src/composables/useTools"  

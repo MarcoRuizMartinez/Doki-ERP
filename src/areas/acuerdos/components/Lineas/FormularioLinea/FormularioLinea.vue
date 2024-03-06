@@ -7,7 +7,8 @@
   import {  useQuasar           } from 'quasar'
   //* ////////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs         } from 'pinia'
-  import {  useStoreAcuerdo     } from 'src/stores/acuerdo'
+  import {  useStoreAcuerdo     } from 'stores/acuerdo'
+  import {  useStoreDexie       } from 'stores/dexieStore'
   //* ////////////////////////////////////////////////////////////////////////// Modelos
   import {  ILineaAcuerdo,
             LineaAcuerdo        } from "src/areas/acuerdos/models/LineaAcuerdo"
@@ -27,7 +28,8 @@
 
   const { dialog              } = useQuasar()
   const { aviso               } = useTools()  
-  const unidades                = dexieUnidades()
+  dexieUnidades()
+  const { unidades            } = storeToRefs( useStoreDexie() )
   /* const emit                    = defineEmits<{
     (e: 'update:model-value',   value: ILineaAcuerdo        ): void
     (e: 'cerrar',               value: void ): void

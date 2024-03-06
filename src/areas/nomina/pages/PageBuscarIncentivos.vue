@@ -79,8 +79,8 @@
   import {  useRouter           } from "vue-router"                  
   // * /////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs         } from 'pinia'                                            
-  import {  useStoreUser        } from 'src/stores/user'
-  import {  useStoreNomina      } from "src/stores/nomina"
+  import {  useStoreUser        } from 'stores/user'
+  import {  useStoreNomina      } from "stores/nomina"
   // * /////////////////////////////////////////////////////////////////////// Componibles
   import {  useTitle            } from "@vueuse/core"
   import {  useTools, 

@@ -155,7 +155,7 @@
         style                     ="width: 700px !important;"
         >
         <retenciones
-          v-model      ="acuerdo.retenciones"
+          v-model                 ="acuerdo.retenciones"
         />
       </ventana>
     </q-dialog>    
@@ -165,7 +165,7 @@
 <script setup lang="ts">
   import {  ref                   } from "vue"
   import {  storeToRefs           } from 'pinia'                            
-  import {  useStoreAcuerdo       } from 'src/stores/acuerdo'  
+  import {  useStoreAcuerdo       } from 'stores/acuerdo'  
   import {  Format                } from "src/composables/useTools" 
   import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"
   import {  style                 } from "src/composables/useEstilos"

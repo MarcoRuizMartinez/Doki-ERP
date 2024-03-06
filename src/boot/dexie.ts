@@ -20,6 +20,7 @@ import {  ICategoriaProducto, CategoriaProducto } from "src/areas/productos/mode
 import {  ICategoriaGrupo,    CategoriaGrupo    } from "src/areas/productos/models/CategoriaGrupo"
 import {  IBodega,            Bodega            } from "src/models/Diccionarios/Bodega"
 import {  INaturalezaProducto,NaturalezaProducto} from "src/models/Diccionarios/NaturalezaProducto"
+import {  ITransportadora,    Transportadora    } from "src/models/Diccionarios/Transportadoras"
 
 //* ///////////////////////////////////////////////////////////// 
 export enum TABLAS
@@ -42,9 +43,9 @@ export enum TABLAS
   REGLA_COMISION              = "reglasComision",
   BODEGA                      = "bodegas",
   NATURALEZA_PRODUCTO         = "naturaleza",
+  TRANSPORTADORAS             = "transportadoras",
 }
 
-const cosa = TABLAS
 export class DBSimpleOk extends Dexie
 {
   [TABLAS.USUARIOS]             !: Dexie.Table< IUsuario,             number >
@@ -65,17 +66,18 @@ export class DBSimpleOk extends Dexie
   [TABLAS.REGLA_COMISION]       !: Dexie.Table< IReglaComision,       number >
   [TABLAS.BODEGA]               !: Dexie.Table< IBodega,              number >
   [TABLAS.NATURALEZA_PRODUCTO]  !: Dexie.Table< INaturalezaProducto,  number >
+  [TABLAS.TRANSPORTADORAS]      !: Dexie.Table< ITransportadora,      number >
 
   constructor()
   {
     super(process.env.PREFIJO + "DBSimpleOk")
 
-    this.version(3.4).stores(
+    this.version(3.5).stores(
     {
       [TABLAS.MUNICIPIOS]         : "++id, municipio, departamento, departamentoSigla, departamentoId, indicativo, codigoDian",
       [TABLAS.USUARIOS]           : "++id, nombre, apellido, puesto, foto, tipo, area, estado, gruposString, gruposIds, terceroIdCtz, cel, correo, reglaComisionId, color",
       [TABLAS.TIPOS_DOCUMENTOS]   : "++id, codigo, nombre",
-      [TABLAS.CONDICION_PAGO]     : "++id, label, descripcion, dias",
+      [TABLAS.CONDICION_PAGO]     : "++id, label, descripcion, dias, orden",
       [TABLAS.FORMA_PAGO]         : "++id, label",
       [TABLAS.METODO_ENTREGA]     : "++id, label",
       [TABLAS.ORIGEN_CONTACTO]    : "++id, label",
@@ -90,6 +92,7 @@ export class DBSimpleOk extends Dexie
       [TABLAS.REGLA_COMISION]     : "++id, nombre, descripcion, alfa, a, b, c, d, e",
       [TABLAS.BODEGA]             : "++id, ref, nombre, estado, padre_id, proyecto_id, descripcion, direccion, area",
       [TABLAS.NATURALEZA_PRODUCTO]: "++id, nombre, codigo",
+      [TABLAS.TRANSPORTADORAS]    : "++id, nombre, color",
     })
 
     this[TABLAS.MUNICIPIOS]         = this.table( TABLAS.MUNICIPIOS )
@@ -144,7 +147,10 @@ export class DBSimpleOk extends Dexie
     this[TABLAS.BODEGA]             .mapToClass( Bodega )
 
     this[TABLAS.NATURALEZA_PRODUCTO]= this.table( TABLAS.NATURALEZA_PRODUCTO )
-    this[TABLAS.NATURALEZA_PRODUCTO].mapToClass( NaturalezaProducto )    
+    this[TABLAS.NATURALEZA_PRODUCTO].mapToClass( NaturalezaProducto )  
+    
+    this[TABLAS.TRANSPORTADORAS]    = this.table( TABLAS.TRANSPORTADORAS )
+    this[TABLAS.TRANSPORTADORAS]    .mapToClass( Transportadora )
   }
 }
 

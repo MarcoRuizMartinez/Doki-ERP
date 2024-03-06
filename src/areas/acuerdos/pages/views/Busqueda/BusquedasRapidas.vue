@@ -26,8 +26,8 @@
 
   // * /////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs         } from 'pinia'
-  import {  useStoreApp         } from 'src/stores/app'
-  import {  useStoreAcuerdo     } from 'src/stores/acuerdo'
+  import {  useStoreApp         } from 'stores/app'
+  import {  useStoreAcuerdo     } from 'stores/acuerdo'
   import {  useApiDolibarr      } from "src/composables/useApiDolibarr"      
   import {  ToolArray           } from "src/composables/useTools"  
   import {  IItemMenu, ItemMenu } from "src/models/ItemMenu"

@@ -106,7 +106,7 @@
 
   // * ///////////////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs           } from 'pinia'                            
-  import {  useStoreAcuerdo       } from 'src/stores/acuerdo'  
+  import {  useStoreAcuerdo       } from 'stores/acuerdo'  
 
   // * ///////////////////////////////////////////////////////////////////////////////// Modelos
   import {  ILineaAcuerdo         } from 'src/areas/acuerdos/models/LineaAcuerdo';

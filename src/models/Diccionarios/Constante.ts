@@ -41,5 +41,4 @@ export function useConstantes( constanteBuscada : CONSTANTES )
   })
 
   return constante
-
 }

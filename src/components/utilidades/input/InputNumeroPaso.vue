@@ -102,14 +102,14 @@ conDecimales
 
   function sumar() {
     const suma                = +Number( model.value + paso.value ).toFixed(2)
-    if(suma                   < maximo.value)         
+    if(suma                   <= maximo.value)         
       model.value             = suma
   }
 
   function restar()
   {
     const resta               = +Number( model.value - paso.value ).toFixed(2)
-    if(resta >  minimo.value)
+    if(resta                  >= minimo.value)
       model.value             = resta
   }
 

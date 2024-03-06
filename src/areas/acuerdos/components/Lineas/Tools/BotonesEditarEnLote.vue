@@ -29,7 +29,7 @@
 <script lang="ts" setup>
   // * //////////////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs     } from 'pinia'  
-  import {  useStoreAcuerdo } from 'src/stores/acuerdo'  
+  import {  useStoreAcuerdo } from 'stores/acuerdo'  
   // * //////////////////////////////////////////////////////////////////////////////// Componentes
   import    efecto            from "components/utilidades/Efecto.vue"
   import    confirmar         from "components/utilidades/MenuConfirmar.vue"

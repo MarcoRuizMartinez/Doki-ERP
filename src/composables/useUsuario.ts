@@ -1,5 +1,5 @@
 import {  computed      } from 'vue'
-import {  useStoreUser  } from 'src/stores/user'
+import {  useStoreUser  } from 'stores/user'
 
 export function useUsuario() 
 {

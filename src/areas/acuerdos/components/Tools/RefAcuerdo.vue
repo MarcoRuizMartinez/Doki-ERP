@@ -73,7 +73,7 @@
   import    tooltipAcuerdo    from "src/areas/acuerdos/components/Tools/Tooltips/TooltipAcuerdo.vue"
   // * /////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs   } from 'pinia'
-  import {  useStoreUser  } from 'src/stores/user'
+  import {  useStoreUser  } from 'stores/user'
 
   const { usuario         } = storeToRefs( useStoreUser() ) 
 

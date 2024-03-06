@@ -5,7 +5,7 @@
             onMounted             } from "vue"
   // * ///////////////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs           } from 'pinia'                            
-  import {  useStoreAcuerdo       } from 'src/stores/acuerdo'  
+  import {  useStoreAcuerdo       } from 'stores/acuerdo'  
 
   // * ///////////////////////////////////////////////////////////////////////////////// Componibles
   import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"
@@ -151,7 +151,7 @@
     >
     <div  class               ="row items-center">
       <q-btn
-        v-bind                ="style.btnRedondoFlat"
+        v-bind                ="style.btnRedondoFlatMd"
         icon                  ="mdi-chevron-left"
         @click                ="calendario.prev()"
       /> 
@@ -159,7 +159,7 @@
         {{ mesSeleccionado }}
       </div>
       <q-btn
-        v-bind                ="style.btnRedondoFlat"
+        v-bind                ="style.btnRedondoFlatMd"
         icon                  ="mdi-chevron-right"
         @click                ="calendario.next()"
       />       

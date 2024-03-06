@@ -63,13 +63,14 @@ import {  IFormaPago,       FormaPago       } from "src/models/Diccionarios/Form
 import {  IMetodoEntrega,   MetodoEntrega   } from "src/models/Diccionarios/MetodoEntrega"
 import {  IOrigenContacto,  OrigenContacto  } from "src/models/Diccionarios/OrigenContacto"
 import {  ITiempoEntrega,   TiempoEntrega   } from "src/models/Diccionarios/TiempoEntrega"
+import {  ITransportadora,  Transportadora  } from "src/models/Diccionarios/Transportadoras"
 import {  IAccion,                          } from "src/areas/comunicacion/models/Accion"
 import {  IArchivo                          } from "src/models/Archivo"
 import {  ToolNum, ToolDate,
           ToolType, Format                  } from "src/composables/useTools"
 import {  TModulosDolibarr                  } from "src/composables/UtilFiles"
 import {  storeToRefs                       } from 'pinia'
-import {  useStoreUser                      } from 'src/stores/user'
+import {  useStoreUser                      } from 'stores/user'
 
 export interface IAcuerdo
 {
@@ -97,6 +98,7 @@ export interface IAcuerdo
   refCliente                  : string
   proyectoId                  : number
   proyecto                    : IProyecto
+  urlDoki                     : string
   urlDolibarr                 : string
   urlDolibarrOC               : string
   urlDolibarrNuevoEnvio       : string
@@ -262,6 +264,7 @@ export interface IAcuerdo
   transportadoraId            : number
   numeroGuia                  : string
   pedidoId                    : number
+  transportadora              : ITransportadora
   calcularEntregado           : () => void
 }
 
@@ -362,6 +365,7 @@ export class Acuerdo implements IAcuerdo
   /* Solo para entregas */
   transportadoraId            : number              = 0
   numeroGuia                  : string              = ""
+  transportadora              : ITransportadora     = new Transportadora()
 
   constructor( tipo : TTipoAcuerdo = TIPO_ACUERDO.NULO )
   {
@@ -371,26 +375,32 @@ export class Acuerdo implements IAcuerdo
 
   calcularEntregado()
   {
-    if(!this.entregas.length) return
+    //if(!this.entregas.length) return
     
     for (const lineaP of this.productos)
     {
       lineaP.qtyProgramado    = 0
       lineaP.qtyEntregado     = 0
       lineaP.qtyBorrador      = 0
+      lineaP.qtyEnEntregas    = 0
+      lineaP.qtyAEntregar     = lineaP.qty
 
       for (const entrega of this.entregas)
       {
         for (const lineaE of entrega.productos)
         {
-          if( lineaP.lineaId === lineaE.lineaIdPedido )
+          if( lineaP.lineaId  === lineaE.lineaIdPedido )
           {
             lineaP.qtyProgramado += entrega.esEstadoEntregando  ? lineaE.qty : 0
             lineaP.qtyEntregado  += entrega.esEstadoEntregado   ? lineaE.qty : 0
-            lineaP.qtyBorrador   += entrega.esEstadoBoceto   ? lineaE.qty : 0
+            lineaP.qtyBorrador   += entrega.esEstadoEdicion     ? lineaE.qty : 0
+            lineaP.qtyEnEntregas++
+            lineaP.qtyAEntregar--
           }
         }
       }
+
+      lineaP.qtyPendiente     = lineaP.qtyAEntregar
     }
   }
 
@@ -504,6 +514,7 @@ export class Acuerdo implements IAcuerdo
 
 
 
+  get urlDoki()     : string { return `/${this.ruta}/${this.id}` }
   get urlDolibarr() : string {
     const ruta    = this.tipo === TIPO_ACUERDO.COTIZACION_CLI   ? "/comm/propal/card.php?id="
                   : this.tipo === TIPO_ACUERDO.PEDIDO_CLI       ? "/commande/card.php?id="

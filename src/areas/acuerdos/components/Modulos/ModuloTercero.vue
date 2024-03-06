@@ -93,7 +93,7 @@
       icon                    ="mdi-source-branch"
       class                   ="col-md-6 col-12"
       :readonly               ="acuerdo.esEstadoValido"
-      :options                ="origenNego"
+      :options                ="origenesContacto"
       :loading                ="loading.origen"
       @select                 ="editarOrigen"
     />
@@ -114,6 +114,7 @@
   //* ///////////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs           } from 'pinia'
   import {  useStoreAcuerdo       } from 'stores/acuerdo'
+  import {  useStoreDexie         } from 'stores/dexieStore'
   //* ///////////////////////////////////////////////////////////////////////////// Componibles
   import {  dexieOrigenesContacto } from "src/composables/useDexie"
   import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"
@@ -142,7 +143,8 @@
           vincularContactoAcuerdo,
                                   } = useControlAcuerdo()
 
-  const origenNego                  = dexieOrigenesContacto()
+  dexieOrigenesContacto()
+  const { origenesContacto        } = storeToRefs( useStoreDexie() )
 
   async function editarComercialPrincial( u : IUsuario )
   {

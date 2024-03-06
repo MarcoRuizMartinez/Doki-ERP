@@ -10,7 +10,7 @@ import    autoTable           from 'jspdf-autotable'
 
 //* /////////////////////////////////////////////////////////////////////////////////// Store
 import {  storeToRefs       } from 'pinia'                            
-import {  useStoreUser      } from 'src/stores/user'  
+import {  useStoreUser      } from 'stores/user'  
 
 export interface IParams  {
   lineas                  : ILineaLite[]

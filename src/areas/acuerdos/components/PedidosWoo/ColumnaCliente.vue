@@ -12,14 +12,14 @@
       />
       <q-btn
         v-else-if     ="modelValue.estadoCliente == '✖️'"
-        v-bind        ="style.btnRedondoFlat"
+        v-bind        ="style.btnRedondoFlatMd"
         color         ="green"        
         icon          ="mdi-plus-circle"
         @click        ="emit('crearTercero', modelValue)"
       />      
       <q-btn
         v-else-if     ="modelValue.estadoCliente == '✅'"
-        v-bind        ="style.btnRedondoFlat"
+        v-bind        ="style.btnRedondoFlatMd"
         size          ="12px"
         icon          ="mdi-open-in-new"
         target        ="_blank"

@@ -233,7 +233,7 @@
       <slot></slot>
       <q-btn
         v-if                    ="sinTitulo"
-        v-bind                  ="style.btnRedondoFlat"
+        v-bind                  ="style.btnRedondoFlatMd"
         icon                    ="mdi-refresh"
         class                   ="op60 op100-hover"
         @click                  ="buscarArchivos()"

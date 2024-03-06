@@ -157,8 +157,8 @@
             computed            } from "vue"
   // * /////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs         } from "pinia"
-  import {  useStoreUser        } from "src/stores/user"
-  import {  useStoreNomina      } from "src/stores/nomina"
+  import {  useStoreUser        } from "stores/user"
+  import {  useStoreNomina      } from "stores/nomina"
 
   // * /////////////////////////////////////////////////////////////////////// Modelos
   import {  Incentivo           } from "src/areas/nomina//models/Incentivo"            

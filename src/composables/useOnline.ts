@@ -1,5 +1,5 @@
 import {  onMounted       }                           from 'vue'
-import {  useStoreApp     } from 'src/stores/app' 
+import {  useStoreApp     } from 'stores/app' 
 import {  useQuasar       } from 'quasar'
 
 

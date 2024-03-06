@@ -37,7 +37,7 @@
         label                   ="Condiciones de pago"
         icon                    ="mdi-account-cash"
         class                   ="col-md-6 col-12"
-        :options                ="condicPago"
+        :options                ="condicionesPago"
         :loading                ="loading.condicionPago"
         @select                 ="editarCondicionPago"
       />
@@ -47,7 +47,7 @@
         label                   ="Forma de pago"
         icon                    ="mdi-cash-refund"
         class                   ="col-md-6 col-12"
-        :options                ="formadPago"
+        :options                ="formasPago"
         :loading                ="loading.formaPago"
         @select                 ="editarFormaPago"
       />
@@ -124,6 +124,7 @@
   //* /////////////////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs           } from 'pinia'                            
   import {  useStoreAcuerdo       } from 'stores/acuerdo'
+  import {  useStoreDexie         } from 'stores/dexieStore'
   //* /////////////////////////////////////////////////////////////////////////////////// Modelos
   import {  IAnticipo, Anticipo,
             TTipoFileAnticipo     } from "src/areas/acuerdos/models/Anticipo"
@@ -156,8 +157,10 @@
   const { miFetch           } = useFetch()
   const { aviso             } = useTools()
   const { apiDolibarr       } = useApiDolibarr()
-  const condicPago            = dexieCondicionesPago()
-  const formadPago            = dexieFormasPago()
+  dexieCondicionesPago()
+  dexieFormasPago()
+  const { condicionesPago,
+          formasPago        } = storeToRefs( useStoreDexie() )
   const { editarFormaPago,
           editarCondicionPago}= useControlAcuerdo()
   const modo                  = ref< TModosVentana >("buscando")
@@ -327,7 +330,7 @@
       const encontro              = antici.cuenta.label.toLowerCase().includes(formaLabel)
       if(encontro)
       {
-        const forma               = formadPago.value.find( f => f.label.toLowerCase().includes(formaLabel))
+        const forma               = formasPago.value.find( f => f.label.toLowerCase().includes(formaLabel))
         if(!!forma){
           acuerdo.value.formaPago = forma
           await editarFormaPago(forma)

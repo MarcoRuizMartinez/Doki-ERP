@@ -17,7 +17,7 @@
     @click-recargar         ="recargar"
     @click-entregado        ="cerrarPedido"
     @click-comisiones       ="modales.comisiones = true"
-    @click-nueva-entrega    ="clickNuevaEntrega"
+    @click-nueva-entrega    ="modales.entrega = true"
     @click-cuenta-cobro     ="generarPDF"
     @click-listo-entregar   ="setListoDespacho"
   />
@@ -68,12 +68,12 @@
   <lineas
     class                   ="col-12"
   />
-  <entregas
+  <!-- <entregas
     v-if                    ="acuerdo.esPedido && !acuerdo.esEstadoBoceto"
     class                   ="col-12"
-    @click-nueva-entrega    ="clickNuevaEntrega"
+    @click-nueva-entrega    ="modales.entrega = true"
     @click-remision         ="abrirModalRemision"
-  />
+  /> -->
   <!-- <calificacion
     v-if                    ="acuerdo.esEstadoValido && ( acuerdo.esPedido || acuerdo.esCotizacion )"
     class                   ="col-md-4 col-12"
@@ -124,7 +124,13 @@
     v-bind                  ="style.dialogo"
     >
     <productos-siigo />
-  </q-dialog>    
+  </q-dialog>
+  <q-dialog                 full-width
+    v-model                 ="modales.entrega"
+    v-bind                  ="style.dialogo"
+    >
+    <nueva-entrega />
+  </q-dialog>
     <!-- <remision v-model:visible ="modales.pdfRemision"/> -->
     <!--   <div id="capture" style="padding: 10px; background: #f5da55">
     <h4 style="color: #000; ">Hello world!</h4>
@@ -143,12 +149,13 @@
   import {  useTitle              } from "@vueuse/core"
   //* ///////////////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs           } from 'pinia'
-  import {  useStoreAcuerdo       } from 'src/stores/acuerdo'
+  import {  useStoreAcuerdo       } from 'stores/acuerdo'
+  //import {  useStoreDexie         } from 'stores/dexieStore'
   //* ///////////////////////////////////////////////////////////////////////////////// Modelos
   import {  Acuerdo, IAcuerdo     } from "src/areas/acuerdos/models/Acuerdo"
   import {  LineaAcuerdo          } from "src/areas/acuerdos/models/LineaAcuerdo"
   import {  IArchivo              } from "src/models/Archivo"
-  import {  AREA                  } from "src/models/TiposVarios"
+  //import {  AREA                  } from "src/models/TiposVarios"
   import {  Accion                } from "src/areas/comunicacion/models/Accion"  
   //* ///////////////////////////////////////////////////////////////////////////////// Componibles
   import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"
@@ -158,8 +165,8 @@
   //import {  useControlProductos   } from "src/areas/acuerdos/controllers/ControlLineasProductos"
   import {  TTipoAcuerdo          } from "src/areas/acuerdos/models/ConstantesAcuerdos"
   import {  style                 } from "src/composables/useEstilos"  
-  import {  dexieBodegas          } from "src/composables/useDexie"  
-  import {  Tool                  } from "src/composables/useTools"
+  //import {  dexieBodegas          } from "src/composables/useDexie"  
+  //import {  Tool                  } from "src/composables/useTools"
   //* ///////////////////////////////////////////////////////////////////////////////// Componentes
   import    visorPdf                from "components/utilidades/VisorPDF.vue"
   import    notas                   from "./../../components/Modulos/ModuloNotas.vue"
@@ -175,6 +182,7 @@
   import    entregas                from "./../../components/Modulos/ModuloEntregas.vue"
   //import    calificacion            from "./../../components/Modulos/ModuloCalificacion.vue"
   import    anticipos               from "./../../components/Modulos/ModuloAnticipos.vue"
+  import    nuevaEntrega            from "./../../components/Entregas/NuevaEntrega.vue"
 
   import    calendario              from "./../../components/Modales/CalendarioAcuerdos.vue"
   import    productosSiigo          from "./../../components/Modales/ProductosSiigo.vue"
@@ -209,7 +217,8 @@
   const nombrePDF             = ref< string   >("")
   const acuerdoRemsion        = ref< IAcuerdo >( new Acuerdo() )  
   const moduloCondiciones     = ref<InstanceType<typeof condiciones>  | null>(null)
-  const bodegas               = dexieBodegas()
+  //dexieBodegas()
+  //const { bodegas           } = storeToRefs( useStoreDexie() )
 
   const props                 = defineProps({
     id:   { required: true, type: String },
@@ -244,7 +253,7 @@
 
   function cargarArchivos( files : IArchivo[] ) { acuerdo.value.archivos = files }
 
-  async function clickNuevaEntrega()
+  /* async function clickNuevaEntrega()
   {
     const fechaYmetodoOk = moduloCondiciones.value?.validar()
     if(!fechaYmetodoOk) {
@@ -255,14 +264,14 @@
     window.open(url, '_blank')
 
     await Tool.pausa( 16_000 )
-    await buscarAcuerdoEnlazados( /* true */ )
+    await buscarAcuerdoEnlazados()
 
     function getIdBodegaByArea( area : AREA ) : number
     {
       const idBodega= bodegas.value.find( b => b.padre_id == 0 && b.area == area )?.id ?? 0
       return idBodega
     }
-  }
+  } */
 
   async function generarPDF( tipo : TTipoPDF = "quote")
   {
@@ -290,7 +299,7 @@
 import {  useRouter             } from 'vue-router'
 const router                = useRouter()
 
-import {  useStoreUser          } from 'src/stores/user'
+import {  useStoreUser          } from 'stores/user'
 const { usuario, permisos } = storeToRefs( useStoreUser() )
 const usuarioEsDueño        = computed( () =>{ return acuerdo.value.tercero.responsables.some( r => r.id == usuario.value.id ) })
 const puedeModificar        = computed( () =>{

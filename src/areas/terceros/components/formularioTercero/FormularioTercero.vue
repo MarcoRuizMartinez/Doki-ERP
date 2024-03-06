@@ -261,7 +261,7 @@
   import {  useApiDolibarr  } from "src/composables/useApiDolibarr"
   import {  getURL,
             getFormData     } from "src/composables/APIMaco"
-  import {  useStoreUser    } from "src/stores/user"
+  import {  useStoreUser    } from "stores/user"
   import {  useFetch        } from "src/composables/useFetch"
   import {  ITercero,
             Tercero
@@ -317,7 +317,8 @@
       cargando.value          = true
       return
     }
-    
+
+    tercero.value             = new Tercero()    
     tercero.value.esCliente   = tipo.value == "crear-cliente"
     tercero.value.esProveedor = tipo.value == "crear-proveedor"
     tercero.value.area        = storeUser.usuario.area

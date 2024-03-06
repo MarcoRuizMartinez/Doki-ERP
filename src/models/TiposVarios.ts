@@ -205,6 +205,7 @@ export interface IModales {
   detalles        ?: boolean
   calendario      ?: boolean
   siigo           ?: boolean
+  entrega         ?: boolean
 }
 
 export const ModalesDefault = {
@@ -221,6 +222,7 @@ export const ModalesDefault = {
   detalles        : false,
   calendario      : false,
   siigo           : false,
+  entrega         : false,
 }
 
 

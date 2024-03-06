@@ -1,7 +1,7 @@
 import {  useQuasar     } from 'quasar'
 import {  computed      } from 'vue'
-import {  useStoreUser  } from 'src/stores/user'
-import {  useStoreApp   } from 'src/stores/app'
+import {  useStoreUser  } from 'stores/user'
+import {  useStoreApp   } from 'stores/app'
 import {  axios,
           apiDolibarrAxios
                         } from "src/boot/axios"

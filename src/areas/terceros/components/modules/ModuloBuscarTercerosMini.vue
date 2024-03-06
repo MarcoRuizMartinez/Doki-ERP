@@ -34,7 +34,7 @@
 
 <script setup lang="ts">
   import {  ref             } from "vue"
-  import {  useStoreUser    } from 'src/stores/user'
+  import {  useStoreUser    } from 'stores/user'
   import {  servicesTerceros} from "src/areas/terceros/services/servicesTerceros"
   import {  TModosVentana    } from "src/models/TiposVarios"
   import {  IColumna,

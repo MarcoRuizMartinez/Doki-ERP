@@ -69,7 +69,7 @@
   import {  useApiDolibarr  } from "src/composables/useApiDolibarr"
   import {  IContacto,
             Contacto        } from "src/areas/terceros/models/Contacto"
-  import {  useStoreUser    } from "src/stores/user"
+  import {  useStoreUser    } from "stores/user"
   import {  TModosVentana    } from "src/models/TiposVarios"
   import {  IColumna,
             Columna         } from "src/models/Tabla"

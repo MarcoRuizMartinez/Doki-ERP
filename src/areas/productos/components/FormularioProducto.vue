@@ -64,7 +64,7 @@
         icon                    ="mdi-file-tree-outline"
         class                   ="col-12 col-md-6"
         options-sort            ="nombre"
-        :options                ="categorias"
+        :options                ="categoriasProductos"
         @select                 ="( c : ICategoriaProducto )=> proModel.ref = c.sigla + '-'"
       />
     <template v-if            ="usuario.esProduccion || usuario.esGerencia">
@@ -202,7 +202,7 @@
         class                   ="col-6"
         options-sort            ="orden"
         defecto                 ="Producto terminado"
-        :options                ="naturalezas"
+        :options                ="naturalezaProductos"
         :readonly               ="readonly"
       />      
       <!-- //* //////////////   Descripción  -->
@@ -234,8 +234,9 @@
                                   } from "vue"
   //* ///////////////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs           } from 'pinia'
-  import {  useStoreProducto      } from 'src/stores/producto'
-  import {  useStoreUser          } from "src/stores/user"
+  import {  useStoreProducto      } from 'stores/producto'
+  import {  useStoreUser          } from "stores/user"
+  import {  useStoreDexie         } from 'stores/dexieStore'
 
   //* ///////////////////////////////////////////////////////////////////////////////// Modelos
   import {  ICategoriaProducto    } from "src/areas/productos/models/CategoriaProducto"
@@ -267,9 +268,12 @@
 
   const proModel              = ref< IProductoDoli >( new ProductoDoli() )
   const formulario            = ref< any >()
-  const categorias            = dexieCategoriasProducto({ cargarSiempre : true})
-  const unidades              = dexieUnidades()
-  const naturalezas           = dexieNaturaleza()
+  dexieCategoriasProducto({ cargarSiempre : true})
+  const { categoriasProductos } = storeToRefs( useStoreDexie() )
+  dexieUnidades()
+  dexieNaturaleza()
+  const { unidades,
+          naturalezaProductos}= storeToRefs( useStoreDexie() )
   const { crearProducto,
           editarProducto    } = useControlProductos()
 

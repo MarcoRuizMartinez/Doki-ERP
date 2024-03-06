@@ -61,8 +61,8 @@
             onUnmounted         } from "vue"
   // * /////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs         } from 'pinia'                                            
-  import {  useStoreUser        } from 'src/stores/user'
-  import {  useStoreProducto    } from 'src/stores/producto'
+  import {  useStoreUser        } from 'stores/user'
+  import {  useStoreProducto    } from 'stores/producto'
   // * /////////////////////////////////////////////////////////////////////// Componibles
   import {  servicesProductos   } from "src/areas/productos/services/servicesProductos"
   import {  useTools            } from "src/composables/useTools"

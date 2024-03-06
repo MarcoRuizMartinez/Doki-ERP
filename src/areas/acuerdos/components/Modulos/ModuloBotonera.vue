@@ -143,7 +143,7 @@
         </q-btn>
       </efecto>
       <q-btn 
-        v-if                  ="acuerdo.esPedido"
+        v-if                  ="false && acuerdo.esPedido && ( acuerdo.esEstadoValidado || acuerdo.esEstadoEntregado )"
         v-bind                ="style.btnBaseMd"
         color                 ="positive"
         icon                  ="mdi-truck-fast"
@@ -319,8 +319,8 @@
   import {  computed        } from "vue"
   // * /////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs     } from 'pinia'
-  import {  useStoreUser    } from 'src/stores/user'
-  import {  useStoreAcuerdo } from 'src/stores/acuerdo'
+  import {  useStoreUser    } from 'stores/user'
+  import {  useStoreAcuerdo } from 'stores/acuerdo'
 
   // * /////////////////////////////////////////////////////////////////////// Componibles
   import {  useTools        } from "src/composables/useTools"
@@ -373,6 +373,7 @@
                                               &&  !acuerdo.value.esEstadoNoValidado
                                               &&  !acuerdo.value.esEstadoAnulado
                                               &&  !acuerdo.value.esEstadoEntregado
+                                              &&  !acuerdo.value.esEstadoEntregando
                                             )
                                           )
                                   )

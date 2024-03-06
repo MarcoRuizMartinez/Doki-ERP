@@ -3,8 +3,8 @@
 
   // * /////////////////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs         } from 'pinia'
-  import {  useStoreAcuerdo     } from 'src/stores/acuerdo'
-  import {  useStoreProducto    } from 'src/stores/producto'
+  import {  useStoreAcuerdo     } from 'stores/acuerdo'
+  import {  useStoreProducto    } from 'stores/producto'
 
   // * /////////////////////////////////////////////////////////////////////////////////// Modelos
   import {  ILineaAcuerdo       } from "src/areas/acuerdos/models/LineaAcuerdo"

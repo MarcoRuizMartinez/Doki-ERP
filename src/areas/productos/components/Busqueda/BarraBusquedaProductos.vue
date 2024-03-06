@@ -53,7 +53,7 @@
           label                 ="Categoría"
           icon                  ="mdi-file-tree-outline"
           options-sort          ="nombre"
-          :options              ="categorias"          
+          :options              ="categoriasProductos"          
         />
         <!-- //* /////////////////////////////////////////////////////////////  Con Total -->
         <q-toggle               
@@ -190,9 +190,10 @@
   import {  useRouter           } from "vue-router"
   // * /////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs         } from 'pinia'
-  import {  useStoreApp         } from 'src/stores/app'
-  import {  useStoreUser        } from 'src/stores/user'
-  import {  useStoreProducto    } from 'src/stores/producto'
+  import {  useStoreApp         } from 'stores/app'
+  import {  useStoreUser        } from 'stores/user'
+  import {  useStoreProducto    } from 'stores/producto'
+  import {  useStoreDexie       } from 'stores/dexieStore'
   // * /////////////////////////////////////////////////////////////////////// Componibles
   //import {                      } from "src/composables/useDexie"
   import {  ToolQuery           } from "src/composables/useTools"
@@ -221,7 +222,8 @@
   const { busqueda,
           productos,            } = storeToRefs( useStoreProducto() )
   const { tabs                  } = storeToRefs( useStoreApp() )
-  const categorias                = dexieCategoriasProducto() 
+  dexieCategoriasProducto() 
+  const { categoriasProductos   } = storeToRefs( useStoreDexie() )
   const siguientePagina           = computed(()=> busqueda.value.pagina + (productos.value.length >= busqueda.value.resultadosXPage ? 1 : 0) )
   const haySiguientePagina        = computed(()=> busqueda.value.pagina !== siguientePagina.value )
   let   copiaQ                    = ""

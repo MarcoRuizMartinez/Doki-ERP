@@ -6,8 +6,8 @@
   import {  useRouter           } from "vue-router"            
   // * /////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs         } from 'pinia'
-  import {  useStoreUser        } from 'src/stores/user'
-  import {  useStoreTercero     } from 'src/stores/terceros'
+  import {  useStoreUser        } from 'stores/user'
+  import {  useStoreTercero     } from 'stores/terceros'
 
   // * /////////////////////////////////////////////////////////////////////// Componibles
   import {  servicesTerceros    } from "src/areas/terceros/services/servicesTerceros"

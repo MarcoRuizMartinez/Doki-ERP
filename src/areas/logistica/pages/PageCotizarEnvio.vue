@@ -61,7 +61,7 @@
         <template               #body-cell-servicio="props">
           <q-td   :props        ="props">
             <q-btn
-              v-bind            ="style.btnRedondoFlat"
+              v-bind            ="style.btnRedondoFlatMd"
               :icon             ="tipoListado == 0 ? 'mdi-plus' : 'mdi-close'"
               @click            ="agregarQuitarCosto( props.row )" 
             />               
@@ -82,8 +82,8 @@
 
   // * /////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs         } from 'pinia'                                            
-  import {  useStoreUser        } from 'src/stores/user'
-  import {  useStoreAcuerdo     } from "src/stores/acuerdo"
+  import {  useStoreUser        } from 'stores/user'
+  import {  useStoreAcuerdo     } from "stores/acuerdo"
 
   // * /////////////////////////////////////////////////////////////////////// Componibles
   import {  useTitle            } from "@vueuse/core"

@@ -49,9 +49,9 @@
   import {  usePageLeave            } from '@vueuse/core'
   // * /////////////////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs             } from 'pinia'
-  import {  useStoreUser            } from 'src/stores/user'
-  import {  useStoreApp             } from 'src/stores/app'
-  import {  useStoreAcuerdo         } from 'src/stores/acuerdo'  
+  import {  useStoreUser            } from 'stores/user'
+  import {  useStoreApp             } from 'stores/app'
+  import {  useStoreAcuerdo         } from 'stores/acuerdo'  
 
   // * /////////////////////////////////////////////////////////////////////////////////// Componibles
 

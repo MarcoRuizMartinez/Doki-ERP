@@ -1,7 +1,7 @@
 import {  INivelesComision,
           NivelesComision   } from "./NivelesComision"
 import {  storeToRefs       } from 'pinia'
-import {  useStoreAcuerdo   } from 'src/stores/acuerdo'
+import {  useStoreAcuerdo   } from 'stores/acuerdo'
 
 export interface IComision
 {

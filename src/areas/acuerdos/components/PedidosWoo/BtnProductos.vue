@@ -1,6 +1,6 @@
 <template>
   <q-btn
-    v-bind            ="style.btnRedondoFlat"
+    v-bind            ="style.btnRedondoFlatMd"
     icon              ="mdi-package-variant-closed"
     >
     <Tooltip>

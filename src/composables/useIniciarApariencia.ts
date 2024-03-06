@@ -1,7 +1,7 @@
 import {  onMounted             } from 'vue';
 import {  setCssVar,
           useQuasar             } from 'quasar'
-import {  useStoreUser          } from 'src/stores/user'
+import {  useStoreUser          } from 'stores/user'
 import {  ALMACEN_LOCAL         } from "src/models/TiposVarios"
 
 export function useInciarApariencia() : void

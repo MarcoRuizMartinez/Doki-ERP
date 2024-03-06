@@ -12,7 +12,7 @@
             extend          } from 'quasar'
   import {  storeToRefs     } from 'pinia'            
   import {  useApiDolibarr  } from "src/composables/useApiDolibarr"
-  import {  useStoreUser    } from 'src/stores/user'
+  import {  useStoreUser    } from 'stores/user'
   import {  useTools,
             Tool,
             ToolStr         } from "src/composables/useTools"

@@ -6,7 +6,7 @@ import {  getUnidadDB,
           getNaturalezaDB,
           getBodegaDB       } from "src/composables/useDexie"
 import {  storeToRefs       } from 'pinia'
-import {  useStoreAcuerdo   } from 'src/stores/acuerdo'
+import {  useStoreAcuerdo   } from 'stores/acuerdo'
 import {  NivelesComision,
           INivelesComision,
           TNivelesComision,
@@ -106,12 +106,17 @@ export interface ILineaAcuerdo extends IProductoDoli {
   qtyDeTotal                : string  // 2 de 4
   bodegaLabel               : string
   lineaIdPedido             : number
+
   // */ /////////////////// Para pedido pero se calcula con las entregas
   qtyProgramado             : number
   qtyEntregado              : number
   qtyBorrador               : number
+  qtyEnEntregas             : number
+  qtyAEntregar              : number
+  qtyPendiente              : number
+  qtyMaximoEntregar         : number
   entregaTotalOk            : boolean
-  entregaProgramadoOk       : boolean
+  entregaProgramadoTodo     : boolean
 }
 
 
@@ -136,6 +141,9 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
   qtyProgramado             : number              = 0
   qtyEntregado              : number              = 0
   qtyBorrador               : number              = 0
+  qtyEnEntregas             : number              = 0
+  qtyAEntregar              : number              = 0
+  qtyPendiente              : number              = 0
 
   // */ /////////////////// Comisiones
   comsionX100Division       : number              = 100
@@ -146,9 +154,6 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
   {
     super()   
   }*/
-
-  get entregaTotalOk()      : boolean { return !!this.qty && this.qty === this.qtyEntregado }
-  get entregaProgramadoOk() : boolean { return !!this.qty && this.qty === this.qtyProgramado }
 
   // * /////////////////////////////////////////////////////////////////////////////// Tipo de linea
   get tipoLinea() : TipoLinea {
@@ -347,12 +352,22 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
     return x100s
   }
 
-  get qtyDeTotal () : string{
+  // * ///////////////////////////////////////////////////////////////////////////////////////////////
+  // * ///////////////////////////////////////////////////////////////////////////////////// ENTREGAS
+
+  get qtyDeTotal() : string{
     return `${this.qty} de ${this.qtyTotal}`
+  }
+
+  get qtyMaximoEntregar() : number {
+    return this.qty - this.qtyEnEntregas
   }
   get bodegaLabel() : string{
     return this.bodega.label
   }
+
+  get entregaTotalOk()        : boolean { return !!this.qty && this.qty === this.qtyEntregado }
+  get entregaProgramadoTodo() : boolean { return !!this.qty && this.qty === this.qtyProgramado }  
 
   // * /////////////////////////////////////////////////////////////////////////////// Destacar con clase
   destacar( accion  : TAccionDestacar = "seleccionar",

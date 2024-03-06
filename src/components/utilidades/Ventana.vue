@@ -6,7 +6,7 @@
             watch,
             inject,
             useSlots      } from 'vue';
-  import {  useStoreUser  } from 'src/stores/user'
+  import {  useStoreUser  } from 'stores/user'
   import {  TModosVentana  } from "src/models/TiposVarios"
   import {  useTools      } from "src/composables/useTools"
   const emits                   = defineEmits(["minimizar", "maximizar", "cerrar"])

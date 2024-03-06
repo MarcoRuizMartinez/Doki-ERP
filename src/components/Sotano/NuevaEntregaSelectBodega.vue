@@ -25,25 +25,30 @@
 <script setup lang="ts">
   //* ////////////////////////////////////////////////////////////////////////// Core
   import {  ref                 } from "vue"
+
   //* ////////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs         } from 'pinia'
-  import {  useStoreAcuerdo     } from 'src/stores/acuerdo'
+  import {  useStoreAcuerdo     } from 'stores/acuerdo'
+  import {  useStoreDexie       } from 'stores/dexieStore'
+
   //* ////////////////////////////////////////////////////////////////////////// Modelos
   import {  ILineaAcuerdo,
             LineaAcuerdo        } from "src/areas/acuerdos/models/LineaAcuerdo"
+
   //* ////////////////////////////////////////////////////////////////////////// Componibles
   import {  dexieBodegas        } from "src/composables/useDexie"  
 
   //* ////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana               from "components/utilidades/Ventana.vue"
   import    selectLabelValue      from "components/utilidades/select/SelectLabelValue.vue"
+  
   //* //////////////////////////////////////////////////////////////////////////////// Componibles
 
   import {  ILabelValue,
             labelValueNulo        } from "src/models/TiposVarios"
 
-
-  const bodegas                 = dexieBodegas()
+  dexieBodegas()
+  const { bodegas             } = storeToRefs( useStoreDexie() )
 
   const { acuerdo,
           lineaElegida        } = storeToRefs( useStoreAcuerdo() )

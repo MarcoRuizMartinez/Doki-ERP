@@ -3,7 +3,7 @@ import {  useRouter             } from 'vue-router'
 
 //* ////////////////////////////////////////////////////////////////// Store
 import {  storeToRefs           } from 'pinia'  
-import {  useStoreProducto      } from 'src/stores/producto'
+import {  useStoreProducto      } from 'stores/producto'
 
 //* ////////////////////////////////////////////////////////////////// Modelos
 import {  IProductoDoli         } from "src/areas/productos/models/ProductoDolibarr"    

@@ -2,8 +2,8 @@
 import {  useRouter             } from 'vue-router'
 //* ////////////////////////////////////////////////////////////////// Store
 import {  storeToRefs           } from 'pinia'
-import {  useStoreAcuerdo       } from 'src/stores/acuerdo'
-import {  useStoreUser          } from 'src/stores/user'
+import {  useStoreAcuerdo       } from 'stores/acuerdo'
+import {  useStoreUser          } from 'stores/user'
 //* ////////////////////////////////////////////////////////////////// Componibles
 import {  useApiDolibarr        } from "src/composables/useApiDolibarr"
 import {  useFetch              } from "src/composables/useFetch"

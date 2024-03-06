@@ -41,13 +41,14 @@
       <modulo-constantes          class="col-md-4 col-12" height-card="260px"/>
       <modulo-cuentas-dinero      class="col-md-4 col-12" height-card="260px"/>
       <modulo-naturaleza          class="col-md-4 col-12" height-card="260px"/>
+      <modulo-transportadoras     class="col-md-4 col-12" height-card="260px"/>
     </template>
   </q-page>
 </template>
 
 <script setup lang="ts">
   import {  ref,  provide           } from 'vue'
-  import {  useStoreUser            } from 'src/stores/user'
+  import {  useStoreUser            } from 'stores/user'
   import    buscarTerceros            from "src/areas/terceros/components/modules/ModuloBuscarTercerosMini.vue"
   import    tercerosFavoritos         from "src/areas/terceros/components/modules/ModuloTercerosFavoritos.vue"
   import    misTerceros               from "src/areas/terceros/components/modules/ModuloMisTerceros.vue"
@@ -73,6 +74,7 @@
   import    moduloReglasComision      from "src/areas/sistemas/components/ModuloReglasComision.vue"
   import    moduloBodegas             from "src/areas/sistemas/components/ModuloBodegas.vue"
   import    moduloNaturaleza          from "src/areas/sistemas/components/ModuloNaturalezaProductos.vue"
+  import    moduloTransportadoras     from "src/areas/sistemas/components/ModuloTransportadoras.vue"
 
   import {  cargarListasIndex       } from "src/composables/useDexie"
 

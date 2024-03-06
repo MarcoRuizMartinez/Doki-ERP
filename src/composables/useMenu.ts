@@ -4,8 +4,8 @@ import {
           watch
                         } from 'vue'
 import {  storeToRefs   } from 'pinia'
-import {  useStoreUser  } from 'src/stores/user'
-import {  useStoreApp   } from 'src/stores/app'
+import {  useStoreUser  } from 'stores/user'
+import {  useStoreApp   } from 'stores/app'
 import {  ItemMenu      } from 'components/navegacion/menus/iItemMenu'
 
 export function useMenu() 

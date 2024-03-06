@@ -193,8 +193,8 @@
   import {  useRouter               } from "vue-router"
   // * /////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs             } from "pinia"
-  import {  useStoreUser            } from "src/stores/user"
-  import {  useStoreAcciones        } from "src/stores/acciones"
+  import {  useStoreUser            } from "stores/user"
+  import {  useStoreAcciones        } from "stores/acciones"
   // * /////////////////////////////////////////////////////////////////////// Componibles
   import {  useTitle                } from "@vueuse/core"
   import {  useTools                } from "src/composables/useTools"

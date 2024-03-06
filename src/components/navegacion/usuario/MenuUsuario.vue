@@ -3,7 +3,7 @@
   import {  ref,
             computed          } from "vue"
   import    apariencia          from "./Apariencia.vue"
-  import {  useStoreUser      } from 'src/stores/user'
+  import {  useStoreUser      } from 'stores/user'
   import {  limpiarDB         } from "src/composables/useDexie"
   import {  style             } from "src/composables/useEstilos"
   import {  useRouter         } from 'vue-router'

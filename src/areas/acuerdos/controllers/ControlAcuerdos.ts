@@ -2,8 +2,8 @@
 import {  useRouter             } from 'vue-router'
 //* ////////////////////////////////////////////////////////////////// Store
 import {  storeToRefs           } from 'pinia'
-import {  useStoreAcuerdo       } from 'src/stores/acuerdo'
-//import {  useStoreUser          } from 'src/stores/user'
+import {  useStoreAcuerdo       } from 'stores/acuerdo'
+import {  useStoreDexie         } from 'stores/dexieStore'
 //* ////////////////////////////////////////////////////////////////// Componibles
 import {  useControlProductos   } from "src/areas/acuerdos/controllers/ControlLineasProductos"
 import {  servicesAcuerdos      } from "src/areas/acuerdos/controllers/servicesAcuerdos"
@@ -39,7 +39,8 @@ import {  IMetodoEntrega        } from "src/models/Diccionarios/MetodoEntrega"
 import {  ITiempoEntrega        } from "src/models/Diccionarios/TiempoEntrega"
 import {  IProyecto, Proyecto   } from "src/areas/proyectos/models/Proyecto"
 import {  Acuerdo               } from "src/areas/acuerdos/models/Acuerdo"
-import {  EnlaceAcuerdo, IEnlaceAcuerdo         } from "src/areas/acuerdos/models/EnlaceAcuerdo"
+import {  EnlaceAcuerdo,
+          IEnlaceAcuerdo        } from "src/areas/acuerdos/models/EnlaceAcuerdo"
 import {  Calificacion          } from "src/areas/acuerdos/models/Calificacion"
 import {  IContacto,
           Contacto,
@@ -80,7 +81,9 @@ export function useControlAcuerdo()
   const { miFetch             } = useFetch()
   const { acuerdo,
           loading             } = storeToRefs( useStoreAcuerdo() )
-  //const { usuario             } = storeToRefs( useStoreUser() )
+          
+  dexieReglaComision()
+  const { reglasComision      } = storeToRefs( useStoreDexie() )
 
   const endPoint                = ( tipo : "servicios" | "listas" ) => getURL(tipo, "acuerdos")
 
@@ -236,6 +239,7 @@ export function useControlAcuerdo()
   //* ////////////////////////////////////////////////////////////////////// Cambiar contacto
   async function cambiarContactoAcuerdo( contacto : IContacto, idOld : number, tipo : TTipoContacto )
   {
+    console.log("cambiarContactoAcuerdo: ");
     if(!acuerdo.value.id) return
 
     if(!acuerdo.value.esEntrega)
@@ -253,7 +257,9 @@ export function useControlAcuerdo()
   //* ////////////////////////////////////////////////////////////////////// Cambiar contacto entrega
   async function cambiarContactoEntrega( contacto_id : number)
   {
+    console.log("cambiarContactoEntrega: ");
     const objeto                = { contacto_id, entrega_id: acuerdo.value.id, acuerdo: acuerdo.value.tipo }
+    console.log("objeto: ", objeto);
     const objetoForData         = { body: getFormData("editarContactoEntrega", objeto), method: "POST"}
     const { ok  }               = await miFetch( endPoint("servicios"), objetoForData, { mensaje: "contacto de entrega" } )
 
@@ -268,6 +274,7 @@ export function useControlAcuerdo()
   //* ////////////////////////////////////////////////////////////////////// Asignar nuevo contacto
   async function vincularContactoAcuerdo( contacto : IContacto, tipo : TTipoContacto )
   {
+    console.log("vincularContactoAcuerdo: ", contacto, tipo);
     if(!acuerdo.value.id) return
 
     if(acuerdo.value.esEntrega)
@@ -301,6 +308,7 @@ export function useControlAcuerdo()
   //* ////////////////////////////////////////////////////////////////////// Asignar nuevo contacto
   async function desvincularContactoAcuerdo( id : number, tipo : TTipoContacto, mostrarAviso : boolean = false  ) : Promise<boolean>
   {
+    console.log("desvincularContactoAcuerdo: ");
     const { ok : desvinculado } = await apiDolibarr("contacto-desvincular",  acuerdo.value.tipo,
                                                       { id, tipo },
                                                       acuerdo.value.id
@@ -326,6 +334,7 @@ export function useControlAcuerdo()
 
   async function editarDatosEntregaSistemaViejo() : Promise<boolean>
   {
+    console.log("editarDatosEntregaSistemaViejo: ");
     const objeto                = {
                                     pedido_id:    acuerdo.value.id,
                                     acuerdo:      acuerdo.value.tipo,
@@ -391,9 +400,7 @@ export function useControlAcuerdo()
   }
 
   async function asignarReglaComision( comercial : IUsuario )
-  {
-    const reglasComision          = dexieReglaComision()
-    
+  {    
     if(!reglasComision.value.length){
       return
     }

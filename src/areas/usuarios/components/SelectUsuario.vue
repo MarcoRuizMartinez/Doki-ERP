@@ -70,10 +70,11 @@
                               } from 'vue'
   import {  IUsuario, Usuario } from "src/areas/usuarios/models/Usuario"
   import {  dexieUsuarios     } from "src/composables/useDexie"
-  import {  useStoreUser      } from 'src/stores/user'
+  import {  useStoreUser      } from 'stores/user'
   import {  storeToRefs       } from 'pinia'
   import {  AREA              } from "src/models/TiposVarios"
-  import    chipUsuario       from "./ChipUsuario.vue"
+  import {  useStoreDexie     } from 'stores/dexieStore'    
+  import    chipUsuario         from "./ChipUsuario.vue"
 
   interface IScope {
     index:          number
@@ -84,7 +85,8 @@
     tabindex:       number
   }
 
-  const usuariosDB            = dexieUsuarios()
+  dexieUsuarios()
+  const { usuarios : usuariosDB } = storeToRefs( useStoreDexie() )
   const { usuario           } = storeToRefs( useStoreUser() )
   const usuarios              = ref< IUsuario [] > ( [] )
   const emit                  = defineEmits<{

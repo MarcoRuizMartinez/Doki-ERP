@@ -4,7 +4,7 @@
   import {  QScrollArea           } from 'quasar';
   // * /////////////////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs           } from 'pinia'
-  import {  useStoreUser          } from 'src/stores/user'
+  import {  useStoreUser          } from 'stores/user'
   // * /////////////////////////////////////////////////////////////////////////////////// Componibles
   import {  useApiDolibarr        } from "src/composables/useApiDolibarr"
   import {  useTools, Tool        } from "src/composables/useTools"
@@ -203,7 +203,7 @@
             <!-- //* ///////////////////////////////////////////////// Boton enviar -->
             <q-btn
               v-if              ="!!textoComentario"
-              v-bind            ="style.btnRedondoFlat"
+              v-bind            ="style.btnRedondoFlatMd"
               icon              ="mdi-send"
               @click            ="crearComentario"
               >
@@ -211,7 +211,7 @@
             </q-btn>
             <!-- //* ///////////////////////////////////////////////// Boton recargar -->
             <q-btn
-              v-bind            ="style.btnRedondoFlat"
+              v-bind            ="style.btnRedondoFlatMd"
               icon              ="mdi-reload"
               :loading          ="cargando"
               @click            ="recargar"

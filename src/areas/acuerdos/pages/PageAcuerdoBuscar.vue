@@ -8,7 +8,7 @@
   // * /////////////////////////////////////////////////////////////////////////////////// Core
   import {  PropType,
             onUnmounted       } from "vue"
-  import {  useStoreAcuerdo   } from 'src/stores/acuerdo'
+  import {  useStoreAcuerdo   } from 'stores/acuerdo'
   import {  TTipoAcuerdo      } from "src/areas/acuerdos/models/ConstantesAcuerdos"
   import    vistaBusqueda       from "./views/VistaAcuerdoBusqueda.vue"
   //* /////////////////////////////////////////////////////////////// Props

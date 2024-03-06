@@ -22,8 +22,8 @@
   import {  useRouter             } from 'vue-router'                                   
   //* ///////////////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs           } from 'pinia'    
-  import {  useStoreUser          } from 'src/stores/user'    
-  import {  useStoreProducto      } from 'src/stores/producto'
+  import {  useStoreUser          } from 'stores/user'    
+  import {  useStoreProducto      } from 'stores/producto'
   //* ///////////////////////////////////////////////////////////////////////////////// Componibles
   import {  servicesProductos     } from "src/areas/productos/services/servicesProductos"
   import {  useControlComunicacion} from "src/areas/comunicacion/controllers/ControlComunicacion"

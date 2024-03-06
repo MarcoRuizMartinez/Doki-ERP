@@ -261,9 +261,9 @@
                                 } from "vue"
   // * /////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs         } from 'pinia'
-  import {  useStoreApp         } from 'src/stores/app'
-  import {  useStoreUser        } from 'src/stores/user'
-  import {  useStoreAcuerdo     } from 'src/stores/acuerdo'
+  import {  useStoreApp         } from 'stores/app'
+  import {  useStoreUser        } from 'stores/user'
+  import {  useStoreAcuerdo     } from 'stores/acuerdo'
   // * /////////////////////////////////////////////////////////////////////// Componibles
 
   // * /////////////////////////////////////////////////////////////////////// Modelos  

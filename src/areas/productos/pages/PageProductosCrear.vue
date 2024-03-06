@@ -15,8 +15,8 @@
   import {  useTitle        } from "@vueuse/core"
   // * /////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs         } from 'pinia'                                            
-  import {  useStoreUser        } from 'src/stores/user'
-  import {  useStoreProducto    } from 'src/stores/producto'  
+  import {  useStoreUser        } from 'stores/user'
+  import {  useStoreProducto    } from 'stores/producto'  
   import {  ProductoDoli,
             IProductoDoli       } from "src/areas/productos/models/ProductoDolibarr"
   //* ///////////////////////////////////////////////////////////////////////////////// Componentes

@@ -61,4 +61,5 @@
     acuerdo:  { required: true,   type: Object as PropType< IAcuerdo > },
     dark:     { default:  false,  type: Boolean },
   })
+
 </script>

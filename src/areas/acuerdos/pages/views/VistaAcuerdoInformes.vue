@@ -97,8 +97,8 @@
 
   // * /////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs         } from 'pinia'                                            
-  import {  useStoreUser        } from 'src/stores/user'
-  import {  useStoreAcuerdo     } from 'src/stores/acuerdo'
+  import {  useStoreUser        } from 'stores/user'
+  import {  useStoreAcuerdo     } from 'stores/acuerdo'
 
   // * /////////////////////////////////////////////////////////////////////// Componibles
   import {  useTitle            } from "@vueuse/core"

@@ -10,7 +10,7 @@ import    autoTable           from 'jspdf-autotable'
 //* /////////////////////////////////////////////////////////////////////////////////// Store
 import {  storeToRefs       } from 'pinia'                            
 import {  useStoreAcuerdo   } from 'stores/acuerdo'
-import {  useStoreUser      } from 'src/stores/user'  
+import {  useStoreUser      } from 'stores/user'  
 
 export function useReciboCajaPDF()
 {

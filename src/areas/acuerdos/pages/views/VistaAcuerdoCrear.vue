@@ -57,8 +57,8 @@
   import {  useRouter             } from "vue-router"
   // * /////////////////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs           } from 'pinia'
-  import {  useStoreUser          } from 'src/stores/user'
-  import {  useStoreAcuerdo       } from 'src/stores/acuerdo'
+  import {  useStoreUser          } from 'stores/user'
+  import {  useStoreAcuerdo       } from 'stores/acuerdo'
   // * /////////////////////////////////////////////////////////////////////////////////// Modelos
   import {  Acuerdo               } from "src/areas/acuerdos/models/Acuerdo"
   import {  TTipoAcuerdo          } from "src/areas/acuerdos/models/ConstantesAcuerdos"

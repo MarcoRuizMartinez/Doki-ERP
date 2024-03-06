@@ -35,8 +35,8 @@
 <script setup lang="ts">
   ///////////////////////////////////////////////////////////////////////// Store  
   import {  storeToRefs       } from 'pinia'    
-  import {  useStoreAcciones  } from 'src/stores/acciones'  
-  import {  useStoreApp       } from 'src/stores/app'
+  import {  useStoreAcciones  } from 'stores/acciones'  
+  import {  useStoreApp       } from 'stores/app'
 
   const { alertas         } = storeToRefs( useStoreApp() )
   const { tareas, yaBusco,

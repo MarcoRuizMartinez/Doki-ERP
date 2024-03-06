@@ -2,8 +2,8 @@ import {
           onMounted,
           computed,
           watch           } from 'vue'
-import {  useStoreUser    } from 'src/stores/user'
-import {  useStoreApp     } from 'src/stores/app'
+import {  useStoreUser    } from 'stores/user'
+import {  useStoreApp     } from 'stores/app'
 import {  useRouter       } from 'vue-router'
 import {  useTools        } from "src/composables/useTools"
 import {  LocalStorage    } from 'quasar'

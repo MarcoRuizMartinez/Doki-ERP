@@ -44,7 +44,7 @@
           icon                ="mdi-file-tree-outline"
           class               ="col-md-2 col-6"
           options-sort        ="nombre"
-          :options            ="categorias"
+          :options            ="categoriasProductos"
           @update:model-value ="buscar"
         />
         <input-number         hundido clearable
@@ -142,11 +142,12 @@
   import {  ref, watch          } from "vue"
   // * /////////////////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs         } from 'pinia'
-  import {  useStoreUser        } from 'src/stores/user'
-  import {  useStoreProducto    } from 'src/stores/producto'
+  import {  useStoreUser        } from 'stores/user'
+  import {  useStoreProducto    } from 'stores/producto'
+  import {  useStoreDexie       } from 'stores/dexieStore'
 
   // * /////////////////////////////////////////////////////////////////////////////////// Modelos
-  import {  TModosVentana        } from "src/models/TiposVarios"
+  import {  TModosVentana       } from "src/models/TiposVarios"
   import {  ICategoriaProducto,
             CategoriaProducto   } from "src/areas/productos/models/CategoriaProducto"
   import {  IProductoDoli       } from "src/areas/productos/models/ProductoDolibarr"
@@ -218,7 +219,8 @@
   const categoria             = ref< ICategoriaProducto  >( new CategoriaProducto() )
 
   const { buscarProductos   } = servicesProductos()
-  const categorias            = dexieCategoriasProducto({ cargarSiempre : true})
+  dexieCategoriasProducto({ cargarSiempre : true})
+  const { categoriasProductos}= storeToRefs( useStoreDexie() )
 
   const { productos,
           productosFil,

@@ -5,10 +5,12 @@ import {
           onUnmounted
                             } from 'vue'
 import {  db, TABLAS        } from "src/boot/dexie"
-import {  useStoreApp       } from 'src/stores/app'
+import {  useStoreApp       } from 'stores/app'
+import {  useStoreDexie     } from 'stores/dexieStore'
 import {  ALMACEN_LOCAL     } from "src/models/TiposVarios"
 import {  LocalStorage      } from 'quasar'
-import {  Tool              } from "src/composables/useTools"
+import {  Tool, ToolArray   } from "src/composables/useTools"
+import {  storeToRefs       } from 'pinia' 
 
 import {  IMunicipio,         Municipio         } from "src/models/Municipio"
 import {  Usuario,            IUsuario          } from "src/areas/usuarios/models/Usuario"
@@ -19,22 +21,21 @@ import {  IMetodoEntrega,     MetodoEntrega     } from "src/models/Diccionarios/
 import {  IOrigenContacto,    OrigenContacto    } from "src/models/Diccionarios/OrigenContacto"
 import {  IUnidad,            Unidad            } from "src/models/Diccionarios/Unidad"
 import {  ITiempoEntrega,     TiempoEntrega     } from "src/models/Diccionarios/TiempoEntrega"
-import {  ITipoContacto,      TipoContacto      } from "src/models/Diccionarios/TipoContacto"
+import {  ITipoContacto,      /* TipoContacto */      } from "src/models/Diccionarios/TipoContacto"
 import {  ICategoriaProducto, CategoriaProducto } from "src/areas/productos/models/CategoriaProducto"
-import {  ICategoriaGrupo,    CategoriaGrupo    } from "src/areas/productos/models/CategoriaGrupo"
+import {  ICategoriaGrupo,    /* CategoriaGrupo */    } from "src/areas/productos/models/CategoriaGrupo"
 import {  IConstante,         Constante         } from "src/models/Diccionarios/Constante"
 import {  IProveedor,         Proveedor         } from "src/models/Diccionarios/Proveedor"
 import {  ICuentaDinero,      CuentaDinero      } from "src/models/Diccionarios/CuentaDinero"
 import {  IReglaComision,     ReglaComision     } from "src/models/Diccionarios/ReglasComision"
 import {  IBodega,            Bodega            } from "src/models/Diccionarios/Bodega"
 import {  INaturalezaProducto,NaturalezaProducto} from "src/models/Diccionarios/NaturalezaProducto"
-import {  storeToRefs                           } from 'pinia'
+import {  ITransportadora,    /* Transportadora */    } from "src/models/Diccionarios/Transportadoras"
 
-
-
-export type ITabla            = IMunicipio      | IUsuario        | ITipoDocumento      | ICondicionPago | IReglaComision | IProveedor    |
-                                IFormaPago      | IMetodoEntrega  | IOrigenContacto     | IUnidad        | ICuentaDinero  | IBodega       |
-                                ITiempoEntrega  | ITipoContacto   | ICategoriaProducto  | ICategoriaGrupo| IConstante     | INaturalezaProducto
+export type ITabla            = IMunicipio      | IUsuario        | ITipoDocumento      | ICondicionPago | IReglaComision | IProveedor          |
+                                IFormaPago      | IMetodoEntrega  | IOrigenContacto     | IUnidad        | ICuentaDinero  | IBodega             |
+                                ITiempoEntrega  | ITipoContacto   | ICategoriaProducto  | ICategoriaGrupo| IConstante     | INaturalezaProducto |
+                                ITransportadora
 
 const pre                     = process.env.PREFIJO
 
@@ -64,6 +65,7 @@ export function cargarListasIndex() {
                                           dexieNaturaleza         (param)
                                           dexieCategoriasProducto (param)
                                           dexieCategoriasGrupo    (param)
+                                          dexieTransportadoras    (param)
   }
 }
 
@@ -72,73 +74,73 @@ interface IParametros         { cargarSiempre?:  boolean , demora?:         numb
 const paramDefault : IParametros = { cargarSiempre : false, demora : 0 }
 
 //* ///////////////////////////////////////////////////////////// Usuarios
-export function dexieUsuarios         ( { cargarSiempre = false, demora = 0 } = paramDefault ) :Ref< IUsuario[] > {
+export function dexieUsuarios           ( { cargarSiempre = false, demora = 0 } = paramDefault ) :Ref< IUsuario[] > {
   const { lista : usuarios  }  = useDexie( TABLAS.USUARIOS,        { cargarSiempre, demora } )
   return usuarios as Ref< IUsuario[] >
 }
 
 //* ///////////////////////////////////////////////////////////// Municipios
-export function dexieMunicipios       ( { cargarSiempre = false, demora = 0 } = paramDefault ) :Ref< IMunicipio[] > {
+export function dexieMunicipios         ( { cargarSiempre = false, demora = 0 } = paramDefault ) :Ref< IMunicipio[] > {
   const { lista } = useDexie( TABLAS.MUNICIPIOS, { cargarSiempre, demora } )
   return lista as Ref< IMunicipio[] >
 }
 
 //* ///////////////////////////////////////////////////////////// Condicios de pago
-export function dexieCondicionesPago  ( { cargarSiempre = false, demora = 0 } = paramDefault ) :Ref< ICondicionPago[] > {
+export function dexieCondicionesPago    ( { cargarSiempre = false, demora = 0 } = paramDefault ) :Ref< ICondicionPago[] > {
   const { lista } = useDexie( TABLAS.CONDICION_PAGO, { cargarSiempre, demora } )
   return lista as Ref< ICondicionPago[] >
 }
 
 //* ///////////////////////////////////////////////////////////// Formas de pago
-export function dexieFormasPago       ( { cargarSiempre = false, demora = 0 } = paramDefault ) :Ref< IFormaPago[] > {
+export function dexieFormasPago         ( { cargarSiempre = false, demora = 0 } = paramDefault ) :Ref< IFormaPago[] > {
   const { lista } = useDexie( TABLAS.FORMA_PAGO, { cargarSiempre, demora } )
   return lista as Ref< IFormaPago[] >
 }
 
 //* ///////////////////////////////////////////////////////////// Metodos de entrega
-export function dexieMetodosEntrega   ( { cargarSiempre = false, demora = 0 } = paramDefault ) :Ref< IMetodoEntrega[] > {
+export function dexieMetodosEntrega     ( { cargarSiempre = false, demora = 0 } = paramDefault ) :Ref< IMetodoEntrega[] > {
   const { lista } = useDexie( TABLAS.METODO_ENTREGA, { cargarSiempre, demora } )
   return lista as Ref< IMetodoEntrega[] >
 }
 
 //* ///////////////////////////////////////////////////////////// Tiempos de entrega
-export function dexieTiemposEntrega   ( { cargarSiempre = false, demora = 0 } = paramDefault ) :Ref< ITiempoEntrega[] > {
+export function dexieTiemposEntrega     ( { cargarSiempre = false, demora = 0 } = paramDefault ) :Ref< ITiempoEntrega[] > {
   const { lista } = useDexie( TABLAS.TIEMPO_ENTREGA, { cargarSiempre, demora } )
   return lista as Ref< ITiempoEntrega[] >
 }
 
 //* ///////////////////////////////////////////////////////////// Tipos de contacto
-export function dexieTiposContacto    ( { cargarSiempre = false, demora = 0 } = paramDefault ) :Ref< ITipoContacto[] > {
+export function dexieTiposContacto      ( { cargarSiempre = false, demora = 0 } = paramDefault ) :Ref< ITipoContacto[] > {
   const { lista } = useDexie( TABLAS.TIPO_CONTACTO, { cargarSiempre, demora } )
   return lista as Ref< ITipoContacto[] >
 }
 
 //* ///////////////////////////////////////////////////////////// Origenes de contacto
-export function dexieOrigenesContacto ( { cargarSiempre = false, demora = 0 } = paramDefault ) :Ref< IOrigenContacto[] > {
+export function dexieOrigenesContacto   ( { cargarSiempre = false, demora = 0 } = paramDefault ) :Ref< IOrigenContacto[] > {
   const { lista } = useDexie( TABLAS.ORIGEN_CONTACTO, { cargarSiempre, demora } )
   return lista as Ref< IOrigenContacto[] >
 }
 
 //* ///////////////////////////////////////////////////////////// Tipos de documentos
-export function dexieTiposDocumentos  ( { cargarSiempre = false, demora = 0 } = paramDefault ) :Ref< ITipoDocumento[] > {
+export function dexieTiposDocumentos    ( { cargarSiempre = false, demora = 0 } = paramDefault ) :Ref< ITipoDocumento[] > {
   const { lista } = useDexie( TABLAS.TIPOS_DOCUMENTOS, { cargarSiempre, demora } )
   return lista as Ref< ITipoDocumento[] >
 }
 
 //* ///////////////////////////////////////////////////////////// Unidades
-export function dexieUnidades         ( { cargarSiempre = false, demora = 0 } = paramDefault ) :Ref< IUnidad[] > {
+export function dexieUnidades           ( { cargarSiempre = false, demora = 0 } = paramDefault ) :Ref< IUnidad[] > {
   const { lista } = useDexie( TABLAS.UNIDAD, { cargarSiempre, demora } )
   return lista as Ref< IUnidad[] >
 }
 
 //* ///////////////////////////////////////////////////////////// Categorias de productos
-export function dexieCategoriasProducto( { cargarSiempre = false, demora = 0 } = paramDefault ) :Ref< ICategoriaProducto[] > {
+export function dexieCategoriasProducto ( { cargarSiempre = false, demora = 0 } = paramDefault ) :Ref< ICategoriaProducto[] > {
   const { lista } = useDexie( TABLAS.CATEGORIA_PRODUCTO, { cargarSiempre, demora } )
   return lista as Ref< ICategoriaProducto[] >
 }
 
 //* ///////////////////////////////////////////////////////////// Categorias de productos
-export function dexieCategoriasGrupo( { cargarSiempre = false, demora = 0 } = paramDefault ) :Ref< ICategoriaGrupo[] > {
+export function dexieCategoriasGrupo    ( { cargarSiempre = false, demora = 0 } = paramDefault ) :Ref< ICategoriaGrupo[] > {
   const { lista } = useDexie( TABLAS.CATEGORIA_GRUPO, { cargarSiempre, demora } )
   return lista as Ref< ICategoriaGrupo[] >
 }
@@ -162,37 +164,44 @@ export function dexieCuentasDinero      ( { cargarSiempre = false, demora = 0 } 
 }
 
 //* ///////////////////////////////////////////////////////////// Reglas comision
-export function dexieReglaComision ( { cargarSiempre = false, demora = 0 } = paramDefault ) :Ref< IReglaComision[] > {  
+export function dexieReglaComision      ( { cargarSiempre = false, demora = 0 } = paramDefault ) :Ref< IReglaComision[] > {  
   const { lista } = useDexie( TABLAS.REGLA_COMISION, { cargarSiempre, demora } )
   return lista as Ref< IReglaComision[] >
 }
 
 //* ///////////////////////////////////////////////////////////// Bodegas
-export function dexieBodegas ( { cargarSiempre = false, demora = 0 } = paramDefault ) :Ref< IBodega[] > {
+export function dexieBodegas            ( { cargarSiempre = false, demora = 0 } = paramDefault ) :Ref< IBodega[] > {
   const { lista } = useDexie( TABLAS.BODEGA, { cargarSiempre, demora } )
   return lista as Ref< IBodega[] >
 }
 
 //* ///////////////////////////////////////////////////////////// Tipos productos
-export function dexieNaturaleza ( { cargarSiempre = false, demora = 0 } = paramDefault ) :Ref< INaturalezaProducto[] > {
+export function dexieNaturaleza         ( { cargarSiempre = false, demora = 0 } = paramDefault ) :Ref< INaturalezaProducto[] > {
   const { lista } = useDexie( TABLAS.NATURALEZA_PRODUCTO, { cargarSiempre, demora } )
   return lista as Ref< INaturalezaProducto[] >
 }
 
+//* ///////////////////////////////////////////////////////////// Categorias de productos
+export function dexieTransportadoras    ( { cargarSiempre = false, demora = 0 } = paramDefault ) :Ref< ITransportadora[] > {
+  const { lista } = useDexie( TABLAS.TRANSPORTADORAS, { cargarSiempre, demora } )
+  return lista as Ref< ITransportadora[] >
+}
+
 function useDexie( tabla : TABLAS, { cargarSiempre = false, demora = 0 } = paramDefault )
 {
-  const{ online }             = storeToRefs( useStoreApp() )
-  const lista                     = ref< Array < any > >( [] )
+  const{ online }                 = storeToRefs( useStoreApp() )
+  const store                     = useStoreDexie()
+  const lista                     = ref< any[] >( [] )
 
   //* ///////////////////////////////////////////////////////////////////////// On Mounted
   onMounted( motorTabla )
 
-  onUnmounted( ()=> lista.value = [] )
+  onUnmounted( ()=> lista.value   = [] )
 
   async function motorTabla()
   {
     await Tool.pausa( demora )
-    const largoDBTabla             = await db[ tabla ].count()
+    const largoDBTabla            = await db[ tabla ].count()
 
     if(largoDBTabla               == 0 && online.value )
     {
@@ -205,8 +214,9 @@ function useDexie( tabla : TABLAS, { cargarSiempre = false, demora = 0 } = param
       if(online.value)
       {
         let DBsIguales            = true
+        const hacerCount          = puedeHacerCount()
 
-        if(!cargarSiempre){
+        if(!cargarSiempre && hacerCount){
           DBsIguales              = await DBLocalEsIgualADBHosting( largoDBTabla )
         }
 
@@ -222,6 +232,93 @@ function useDexie( tabla : TABLAS, { cargarSiempre = false, demora = 0 } = param
   async function cargarTablaDBLocal()
   {
     lista.value                   = await getDatosDBToArray()
+    copiarListaEnPinia()
+  }
+
+  function copiarListaEnPinia()
+  {
+    if(tabla                    == TABLAS.MUNICIPIOS){
+      store.municipios          = lista.value;  store.municipiosC++;
+    }
+    else if(tabla               == TABLAS.USUARIOS){
+      store.usuarios            = lista.value;  store.usuariosC++;
+    }
+    else if(tabla               == TABLAS.TIPOS_DOCUMENTOS){
+      store.tiposDocumento      = lista.value;  store.tiposDocumentoC++;
+    }
+    else if(tabla               == TABLAS.CONDICION_PAGO){
+      store.condicionesPago     = ToolArray.ordenar( lista.value, "orden" );  store.condicionesPagoC++;
+    }
+    else if(tabla               == TABLAS.FORMA_PAGO){
+      store.formasPago          = lista.value;  store.formasPagoC++;
+    }
+    else if(tabla               == TABLAS.METODO_ENTREGA){
+      store.metodosEntrega      = lista.value;  store.metodosEntregaC++;
+    }
+    else if(tabla               == TABLAS.ORIGEN_CONTACTO){
+      store.origenesContacto    = lista.value;  store.origenesContactoC++;
+    }
+    else if(tabla               == TABLAS.UNIDAD){
+      store.unidades            = lista.value;  store.unidadesC++;
+    }
+    else if(tabla               == TABLAS.TIEMPO_ENTREGA){
+      store.tiemposEntrega      = lista.value;  store.tiemposEntregaC++;
+    }
+    else if(tabla               == TABLAS.TIPO_CONTACTO){
+      store.tiposContacto       = lista.value;  store.tiposContactoC++;
+    }
+    else if(tabla               == TABLAS.CATEGORIA_PRODUCTO){
+      store.categoriasProductos = lista.value;  store.categoriasProductosC++;
+    }
+    else if(tabla               == TABLAS.CATEGORIA_GRUPO){
+      store.gruposCategoria     = lista.value;  store.gruposCategoriaC++;
+    }
+    else if(tabla               == TABLAS.CONSTANTE){
+      store.constantes          = lista.value;  store.constantesC++;
+    }
+    else if(tabla               == TABLAS.PROVEEDORES){
+      store.proveedores         = lista.value;  store.proveedoresC++;
+    }
+    else if(tabla               == TABLAS.CUENTA_DINERO){
+      store.cuentasDinero       = lista.value;  store.cuentasDineroC++;
+    }
+    else if(tabla               == TABLAS.REGLA_COMISION){
+      store.reglasComision      = lista.value;  store.reglasComisionC++;
+    }
+    else if(tabla               == TABLAS.BODEGA){
+      store.bodegas             = lista.value;  store.bodegasC++;
+    }
+    else if(tabla               == TABLAS.NATURALEZA_PRODUCTO){
+      store.naturalezaProductos = lista.value;  store.naturalezaProductosC++;
+    }
+    else if(tabla               == TABLAS.TRANSPORTADORAS){
+      store.transportadoras     = lista.value;  store.transportadorasC++;
+    }
+  }
+
+  function puedeHacerCount() : boolean
+  {
+    const puede : boolean   =   tabla == TABLAS.MUNICIPIOS          ? store.municipiosC          <= 1 
+                              : tabla == TABLAS.USUARIOS            ? store.usuariosC            <= 1 
+                              : tabla == TABLAS.TIPOS_DOCUMENTOS    ? store.tiposDocumentoC      <= 1 
+                              : tabla == TABLAS.CONDICION_PAGO      ? store.condicionesPagoC     <= 1 
+                              : tabla == TABLAS.FORMA_PAGO          ? store.formasPagoC          <= 1 
+                              : tabla == TABLAS.METODO_ENTREGA      ? store.metodosEntregaC      <= 1 
+                              : tabla == TABLAS.ORIGEN_CONTACTO     ? store.origenesContactoC    <= 1 
+                              : tabla == TABLAS.UNIDAD              ? store.unidadesC            <= 1 
+                              : tabla == TABLAS.TIEMPO_ENTREGA      ? store.tiemposEntregaC      <= 1 
+                              : tabla == TABLAS.TIPO_CONTACTO       ? store.tiposContactoC       <= 1 
+                              : tabla == TABLAS.CATEGORIA_PRODUCTO  ? store.categoriasProductosC <= 1 
+                              : tabla == TABLAS.CATEGORIA_GRUPO     ? store.gruposCategoriaC     <= 1 
+                              : tabla == TABLAS.CONSTANTE           ? store.constantesC          <= 1 
+                              : tabla == TABLAS.PROVEEDORES         ? store.proveedoresC         <= 1 
+                              : tabla == TABLAS.CUENTA_DINERO       ? store.cuentasDineroC       <= 1 
+                              : tabla == TABLAS.REGLA_COMISION      ? store.reglasComisionC      <= 1 
+                              : tabla == TABLAS.BODEGA              ? store.bodegasC             <= 1 
+                              : tabla == TABLAS.NATURALEZA_PRODUCTO ? store.naturalezaProductosC <= 1 
+                              : tabla == TABLAS.TRANSPORTADORAS     ? store.transportadorasC     <= 1 
+                              : true
+    return puede
   }
 
   async function getDatosDBToArray() : Promise < ITabla[] >
@@ -272,9 +369,7 @@ function useDexie( tabla : TABLAS, { cargarSiempre = false, demora = 0 } = param
               !item.hasOwnProperty( "id" )
             ) continue
 
-
             item.id               = parseInt( item.id )
-
             listaCarga.push( item )
           }
 
@@ -339,6 +434,9 @@ function useDexie( tabla : TABLAS, { cargarSiempre = false, demora = 0 } = param
                     break;
                   case TABLAS.NATURALEZA_PRODUCTO :
                     await db[ TABLAS.NATURALEZA_PRODUCTO].bulkAdd( listaCarga )
+                    break;
+                  case TABLAS.TRANSPORTADORAS :
+                    await db[ TABLAS.TRANSPORTADORAS].bulkAdd( listaCarga )
                     break;
                   default:
                     break;
@@ -517,7 +615,7 @@ export async function getCondicionDePagoDB( id : number ) : Promise < ICondicion
 export async function getCondicionesPagoDB() : Promise < ICondicionPago[] >
 {
   // const{ db }               = storeToRefs( useStoreApp() )
-  return db.transaction('r', db[ TABLAS.CONDICION_PAGO ], async () => await db[ TABLAS.CONDICION_PAGO ].toArray()
+  return db.transaction('r', db[ TABLAS.CONDICION_PAGO ], async () => ToolArray.ordenar( await db[ TABLAS.CONDICION_PAGO ].toArray(), "orden" ) 
   )
 }
 

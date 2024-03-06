@@ -9,7 +9,7 @@
     />
     <!-- //* //////// Vista Rapida -->
     <q-btn           
-      v-bind          ="style.btnRedondoFlat"
+      v-bind          ="style.btnRedondoFlatMd"
       icon            ="mdi-eye"
       :style          ="`color:${modelValue.estadoColor};`"
       @click          ="emit('vistaRapida', modelValue)"
@@ -18,7 +18,7 @@
     </q-btn>
     <!-- //* //////// Ir a tienda-->
     <q-btn           
-      v-bind          ="style.btnRedondoFlat"
+      v-bind          ="style.btnRedondoFlatMd"
       icon            ="mdi-cart-outline"
       color           ="grey-7"
       target          ="_blank"
@@ -54,7 +54,7 @@
         {{ modelValue.id }}
       </router-link>
       <q-btn
-        v-bind        ="style.btnRedondoFlat"
+        v-bind        ="style.btnRedondoFlatMd"
         size          ="12px"
         icon          ="mdi-open-in-new"
         target        ="_blank"

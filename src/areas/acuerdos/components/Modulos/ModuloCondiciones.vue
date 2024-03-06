@@ -83,7 +83,7 @@
       icon                    ="mdi-account-cash"
       class                   ="col-md-6 col-12"
       defecto                 ="Anticipo 100%"
-      :options                ="condicPago.filter( c => c.esFacturable || !acuerdo.esCotizacion )"
+      :options                ="condicionesPago.filter( c => c.esFacturable || !acuerdo.esCotizacion )"
       :loading                ="loading.condicionPago"
       @select                 ="editarCondicionPago"
     />
@@ -94,7 +94,7 @@
       label                   ="Forma de pago"
       icon                    ="mdi-cash-refund"
       class                   ="col-md-6 col-12"
-      :options                ="formadPago"
+      :options                ="formasPago"
       :loading                ="loading.formaPago"
       @select                 ="editarFormaPago"
     />
@@ -106,7 +106,7 @@
       class                   ="col-md-6 col-12"
       error-message           ="Indique un método de entrega"
       :error                  ="errorMetodo"
-      :options                ="entregas"
+      :options                ="metodosEntrega"
       :loading                ="loading.metodoEntrega"
       @select                 ="editarMetodoEntrega"
     />
@@ -117,7 +117,7 @@
       label                   ="Tiempo de entrega"
       icon                    ="mdi-calendar-check"
       class                   ="col-md-6 col-12"
-      :options                ="tiempoEntrega"
+      :options                ="tiemposEntrega"
       :loading                ="loading.tiempoEntrega"
       @select                 ="editarTiempoEntrega"
     />
@@ -136,7 +136,8 @@
   import {  ref                   } from "vue"
   // * ///////////////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs           } from 'pinia'                            
-  import {  useStoreAcuerdo       } from 'src/stores/acuerdo'
+  import {  useStoreAcuerdo       } from 'stores/acuerdo'
+  import {  useStoreDexie         } from 'stores/dexieStore'
   // * ///////////////////////////////////////////////////////////////////////////////// Componibles
   import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"
   import {  dexieCondicionesPago,
@@ -155,11 +156,17 @@
 
   const { acuerdo, loading        } = storeToRefs( useStoreAcuerdo() )
   //* //////////////////////      ///////////////////////////////////////// Tablas Dexie
-  const condicPago                  = dexieCondicionesPago()
-  const formadPago                  = dexieFormasPago()
-  const entregas                    = dexieMetodosEntrega()
-  const bodegas                     = dexieBodegas()
-  const tiempoEntrega               = dexieTiemposEntrega()
+  dexieCondicionesPago()
+  dexieFormasPago()
+  dexieMetodosEntrega()
+  dexieBodegas()
+  dexieTiemposEntrega()
+
+  const { condicionesPago,
+          formasPago,
+          metodosEntrega,
+          tiemposEntrega
+                                  } = storeToRefs( useStoreDexie() )
   const { editarTiempoEntrega,
           editarMetodoEntrega,
           editarFormaPago,

@@ -52,10 +52,13 @@
                               } from 'vue'
   import {  IUsuario          } from "src/areas/usuarios/models/Usuario"
   import {  dexieUsuarios     } from "src/composables/useDexie"
-  import {  useStoreUser      } from 'src/stores/user'
+  import {  storeToRefs       } from 'pinia'
+  import {  useStoreUser      } from 'stores/user'
   import {  AREA              } from "src/models/TiposVarios"
+  import {  useStoreDexie     } from 'stores/dexieStore'    
 
-  const usuariosDB            = dexieUsuarios()
+  dexieUsuarios()
+  const { usuarios : usuariosDB }= storeToRefs( useStoreDexie() )
   const storeUser             = useStoreUser()
   const usuarios              = ref< IUsuario [] > ( [] )
   const usuario               = computed( () => storeUser.usuario )

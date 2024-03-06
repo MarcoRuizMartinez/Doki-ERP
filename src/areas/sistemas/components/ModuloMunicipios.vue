@@ -5,7 +5,7 @@
       icono                       ="mdi-map-marker"
       size-icon-carga             ="14em"
       padding-contenido           ="0"
-      :cargando                   ="!lista.length"
+      :cargando                   ="!municipios.length"
       >
       <template                   #menu>
         <input-buscar             clearable hundido
@@ -17,7 +17,7 @@
       <q-table                    bordered dense flat
         class                     ="fit tabla-maco"
         row-key                   ="id"
-        :rows                     ="lista"
+        :rows                     ="municipios"
         :columns                  ="columnas"
         :filter                   ="filtro"
         >
@@ -26,15 +26,28 @@
   </template>
 
 <script setup lang="ts">
-  import {  ref             } from "vue"
-  import {  IColumna,
-            Columna         } from "src/models/Tabla"
-  import    ventana           from "components/utilidades/Ventana.vue"
-  import    inputBuscar       from "components/utilidades/input/InputSimple.vue"
-  import {  dexieMunicipios } from "src/composables/useDexie"
+  //* ///////////////////////////////////////////////////////////////////////////// Core
+  import {  ref                   } from "vue"
+  
+  //* ///////////////////////////////////////////////////////////////////////////// Store
+  import {  storeToRefs           } from 'pinia'      
+  import {  useStoreDexie         } from 'stores/dexieStore'
 
+  //* ///////////////////////////////////////////////////////////////////////////// Componibles
+  import {  dexieMunicipios       } from "src/composables/useDexie"
+
+  //* ///////////////////////////////////////////////////////////////////////////// Modelos
+  import {  IColumna,     
+            Columna               } from "src/models/Tabla"
+
+  //* ///////////////////////////////////////////////////////////////////////////// Componentes 
+  import    ventana                 from "components/utilidades/Ventana.vue"
+  import    inputBuscar             from "components/utilidades/input/InputSimple.vue"
+  
+  
   const filtro                = ref< string >("")
-  const lista                 = dexieMunicipios()
+  dexieMunicipios()
+  const { municipios }        = storeToRefs( useStoreDexie() )
   const columnas: IColumna[]  = [
                                   new Columna({ name: "id"}),
                                   new Columna({ name: "municipio"}),

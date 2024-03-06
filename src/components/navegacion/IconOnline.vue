@@ -17,7 +17,7 @@
 </template>
 <script setup lang="ts">
   import {    computed            } from 'vue'
-  import {  useStoreApp       } from 'src/stores/app'
+  import {  useStoreApp       } from 'stores/app'
 
   const storeApp    = useStoreApp()
   const online      = computed(() => storeApp.online)

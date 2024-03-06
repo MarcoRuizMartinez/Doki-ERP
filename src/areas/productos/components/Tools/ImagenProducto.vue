@@ -7,7 +7,7 @@
       :src                ="imagen.img_100px"
       class               ="cursor-pointer"
       spinner-color       ="white"
-      :class              ="mini ? 'imagen-woo-xs' : 'imagen-woo-md'"
+      :class              ="'imagen-woo-'+size"
       @click              ="clickImagen( imagen )"
       >
       <template v-slot:loading>
@@ -43,18 +43,19 @@
   type  TImagenBig          = { src : string, titulo: string }
   const imagenBig           = ref< TImagenBig >( { titulo: "", src: "" } )
 
+  type  TSize               = "xs" | "sm" | "md"
   type  TProps              = {
     imagen  : IImagenProducto
     nombre  : string
     float  ?: boolean
-    mini   ?: boolean
+    size   ?: TSize
   }
 
   const {
     imagen,
     nombre,
     float = false,
-    mini  = false
+    size  = "md"
   }               = defineProps<TProps>()
 
   /*

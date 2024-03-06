@@ -101,8 +101,8 @@
   import {  useRouter         } from "vue-router"
   // * /////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs       } from 'pinia'
-  import {  useStoreUser      } from 'src/stores/user'
-  import {  useStoreApp       } from 'src/stores/app'  
+  import {  useStoreUser      } from 'stores/user'
+  import {  useStoreApp       } from 'stores/app'  
   // * /////////////////////////////////////////////////////////////////////// Componibles
   import {  useLogin          } from "src/composables/useLogin"
   import {  style             } from "src/composables/useEstilos"
