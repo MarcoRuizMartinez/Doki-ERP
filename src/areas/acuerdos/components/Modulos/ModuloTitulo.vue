@@ -57,7 +57,7 @@
             :color          ="acuerdo.estadoDespachoColor"
             :name           ="acuerdo.estadoDespachoIcono"
           />
-          <span class       =" q-ml-sm text-white text-1_3em">{{ acuerdo.estadoDespachoLabel }}</span>
+          <span class       =" q-ml-sm text-white text-1_3em text-center op50" v-html="acuerdo.estadoDespachoLabel"></span>
         </div>
         <!-- //* ////////////////////////////////////////////////////// Titulo  -->
         <div

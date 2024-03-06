@@ -40,12 +40,12 @@
 :get-child-payload="getChildPayload"
 */
   ////////////////////////////////////////////////////////////////////////// Core
-  import { ref, onMounted       } from "vue"
-  import { Container, Draggable } from "vue-dndrop";
-  ////////////////////////////////////////////////////////////////////////// Store
+  import {  ref, onMounted      } from "vue"
+  import {  Container, Draggable} from "vue-dndrop"
+    ////////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs         } from 'pinia'
   import {  useStoreAcuerdo     } from 'stores/acuerdo'            
-  ////////////////////////////////////////////////////////////////////////// Controles
+  ////////////////////////////////////////////////////////////////////////// Componibles
   import {  useControlProductos } from "src/areas/acuerdos/controllers/ControlLineasProductos"
   import {  ToolArray           } from "src/composables/useTools"  
 

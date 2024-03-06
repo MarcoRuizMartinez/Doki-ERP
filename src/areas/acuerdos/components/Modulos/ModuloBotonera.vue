@@ -199,7 +199,7 @@
       </efecto>     -->
       <!-- <efecto efecto          ="Down"> -->
         <!-- //* //////////////////////////////////////////////////////////  Boton Aprobar -->
-        <q-btn-group  v-if    ="acuerdo.esEstadoValidado">        
+        <q-btn-group  v-if    ="acuerdo.esEstadoAbierto">        
           <q-btn 
             v-if              ="!acuerdo.esTerceroCtz && acuerdo.esCotizacion"
             v-bind            ="style.btnBaseMd"
@@ -217,7 +217,7 @@
             v-bind            ="style.btnBaseMd"
             color             ="deep-purple-10"
             icon              ="mdi-close-circle"
-            :label            ="esMobil ? '' : (acuerdo.esCotizacion ? 'Cerrar' : 'Anular')"
+            :label            ="esMobil ? '' : (acuerdo.esCotizacion ? 'Cerrar' : 'Cancelar')"
             :disable          ="cargandoAlgo"
             :loading          ="loading.anular"
             >

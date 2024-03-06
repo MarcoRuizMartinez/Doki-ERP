@@ -18,11 +18,7 @@
           :label                ="tipo == 'ver' ? 'Guardar' : 'Crear'" 
           @click                ="validar"
         />
-        <span                   v-else>
-          <span class           ="op40 op100-hover q-mt-sm">
-            {{tercero.fechaCreado.slice(0,10)}}
-            <Tooltip label      ="Fecha de creación"/>            
-          </span>          
+        <span                   v-else>       
           <q-btn                flat round dense
             v-if                ="!cargando"
             color               ="white"
@@ -33,6 +29,13 @@
             :href               ="urlDolibarr + '/societe/card.php?socid=' + tercero.id"
             >
             <Tooltip label      ="Ir a Dolibarr"/>
+          </q-btn>
+          <q-btn                flat round dense
+            icon                ="mdi-refresh"
+            class               ="op60 op100-hover"
+            @click              ="emit('recargar')"
+            >
+            <Tooltip label      ="Recargar"/>
           </q-btn>
         </span>
       <!-- </TransitionGroup> -->
@@ -296,7 +299,8 @@
   })
 
   const emit                  = defineEmits<{
-    (e: 'terceroCreado', value: number ): void
+    (e: 'terceroCreado',  value: number ): void
+    (e: 'recargar',       value: void ): void
   }>()
 
   const { tipo,
@@ -434,7 +438,7 @@
     if(tipo.value             == "ver")
     {
       if(tercero.value.nombre.length > 1)
-        title                 = tercero.value.nombre 
+        title                 = "Datos de tercero"
       else
         title                 = "Cargando..."
     }

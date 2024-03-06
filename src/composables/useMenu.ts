@@ -47,9 +47,9 @@ export function useMenu()
                           } ),
         },
         { ...new ItemMenu({
-                              label:    "Mejora continua",
-                              icon:     "mdi-rocket-launch",
-                              to:       "/ideas",
+                              label:    "Registro de fallas",
+                              icon:     "mdi-clipboard-text",
+                              to:       "/fallas",
                               visible:  true
                           } ),
         },

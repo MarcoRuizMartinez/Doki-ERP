@@ -5,11 +5,16 @@
     <!-- <TransitionGroup          appear
       enter-active-class      ="animated fadeInDown"
       > -->
+      <nombre
+        class                 ="col-12"
+        :tercero              ="tercero"
+      />
       <div class              ="col-md-6 col-12 row q-col-gutter-sm">
         <formulario-tercero
           class               ="col-12"
           :tercero-carga      ="tercero"
           :puede-editar       ="puedeModificar"
+          @recargar           ="evaluarID_y_buscar"
         />
       </div>
     <!-- </TransitionGroup> -->
@@ -104,6 +109,7 @@
   import  notas                 from "src/areas/terceros/components/helper/ModuloNotasTercero.vue"
   import  formularioTercero     from "src/areas/terceros/components/formularioTercero/FormularioTercero.vue"
   import  acuerdos              from "src/areas/terceros/components/modules/ModuloAcuerdosTercero.vue"
+  import  nombre                from "src/areas/terceros/components/BarraNombreTercero.vue"
   import  comentarios           from "src/areas/comunicacion/components/ModuloComentarios.vue"
 
   const { usuario, permisos } = storeToRefs( useStoreUser() )

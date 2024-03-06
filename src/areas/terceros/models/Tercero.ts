@@ -17,78 +17,81 @@ import {  getMunicipioDB,
 
 export interface ITercero
 {
-  id:                       number                  // rowid
-  nombre:                   string                  // nom
-  contactos:                IContacto[]             // Tabla llx_socpeople
-  area:                     AREA
-  areaNombre:               string
-  alias:                    string                  // name_alias
-  documento:                IDocumento,
-  numeroDocumento:          string
-  direccion:                string                  // address
-  correo:                   string                  // email
-  telefono:                 string                  // phone
-  url:                      string                  // url
-  logo:                     string                  // logo
-  ulrFoto:                  string
-  activo:                   boolean                 // status
-  esCliente:                boolean                 // client
-  esProveedor:              boolean                 // fournisseur
-  aplicaIVA:                boolean                 // tva_assuj
-  codigoProveedor:          string                  // code_fournisseur
-  municipio:                IMunicipio
-  ciudad:                   string
-  pais:                     string                  // fk_pays
-  responsables:             IUsuario[]
-  responsablesLista:        string
-  color:                    string
-  favorito:                 boolean
+  id                        : number                  // rowid
+  nombre                    : string                  // nom
+  contactos                 : IContacto[]             // Tabla llx_socpeople
+  area                      : AREA
+  areaNombre                : string
+  alias                     : string                  // name_alias
+  documento                 : IDocumento,
+  numeroDocumento           : string
+  direccion                 : string                  // address
+  correo                    : string                  // email
+  telefono                  : string                  // phone
+  url                       : string                  // url
+  logo                      : string                  // logo
+  ulrFoto                   : string
+  activo                    : boolean                 // status
+  esCliente                 : boolean                 // client
+  esProveedor               : boolean                 // fournisseur
+  aplicaIVA                 : boolean                 // tva_assuj
+  codigoProveedor           : string                  // code_fournisseur
+  municipio                 : IMunicipio
+  ciudad                    : string
+  pais                      : string                  // fk_pays
+  responsables              : IUsuario[]
+  responsablesLista         : string
+  color                     : string
+  favorito                  : boolean  
+  responsablesIDS           : string
+  fechaCreado               : string
+  fechaCreadoCorta          : string
+  idTipoDocumento           : number
+  municipioId               : number
+  esEmpresa                 : boolean
+  tiposTerceros             : string
+  notaPublica               : string                  // note_public
+  notaPrivada               : string                  // note_private
+  esTerceroCtz              : boolean
+  esFamoso                  : boolean
+  comentarios               : IAccion[]
+  areaEsEscom               : boolean
+  areaEsMublex              : boolean
+  areaEsGlobal              : boolean    
+  getTerceroToAPIDolibarr   : () => any
+  usuarioEsResponsable      : ( idUsuario : number ) => boolean
   //getFormDataAPIDolibarr:   FormData
-  responsablesIDS:          string
-  fechaCreado:              string
-  fechaCreadoCorta:         string
-  idTipoDocumento:          number
-  municipioId:              number
-  esEmpresa:                boolean
-  tiposTerceros:            string
-  notaPublica:              string                  // note_public
-  notaPrivada:              string                  // note_private
-  esTerceroCtz:             boolean
-  esFamoso:                 boolean
-  comentarios:              IAccion[]
-  getTerceroToAPIDolibarr: () => any
-  usuarioEsResponsable   : ( idUsuario : number ) => boolean
 }
 
 export class Tercero implements ITercero
 {
-  id:                       number      
-  nombre:                   string                  
-  contactos:                IContacto[]
-  area:                     AREA  
-  alias:                    string
-  documento:                IDocumento
-  direccion:                string
-  correo:                   string                  
-  telefono:                 string      
-  url:                      string
-  logo:                     string                  
-  activo:                   boolean                 
-  esCliente:                boolean                 
-  esProveedor:              boolean                 
-  aplicaIVA:                boolean                 
-  codigoProveedor:          string                  
-  municipio:                IMunicipio
-  pais:                     string
-  responsables:             IUsuario[]
-  color:                    string
-  favorito:                 boolean
-  fechaCreado:              string
-  idTipoDocumento:          number
-  municipioId:              number
-  notaPublica:              string
-  notaPrivada:              string
-  esFamoso:                 boolean
+  id                        : number      
+  nombre                    : string                  
+  contactos                 : IContacto[]
+  area                      : AREA  
+  alias                     : string
+  documento                 : IDocumento
+  direccion                 : string
+  correo                    : string                  
+  telefono                  : string      
+  url                       : string
+  logo                      : string                  
+  activo                    : boolean                 
+  esCliente                 : boolean                 
+  esProveedor               : boolean                 
+  aplicaIVA                 : boolean                 
+  codigoProveedor           : string                  
+  municipio                 : IMunicipio
+  pais                      : string
+  responsables              : IUsuario[]
+  color                     : string
+  favorito                  : boolean
+  fechaCreado               : string
+  idTipoDocumento           : number
+  municipioId               : number
+  notaPublica               : string
+  notaPrivada               : string
+  esFamoso                  : boolean
   comentarios               : IAccion[]   = []
 
   constructor()
@@ -190,6 +193,10 @@ export class Tercero implements ITercero
   get esTerceroCtz() : boolean{
     return this.responsables.some( r => +r.terceroIdCtz === this.id ) 
   }
+
+  get areaEsEscom ():boolean { return this.area === AREA.ESCOM  }
+  get areaEsMublex():boolean { return this.area === AREA.MUBLEX }
+  get areaEsGlobal():boolean { return this.area === AREA.GLOBAL }
 
   usuarioEsResponsable( idUsuario : number ) : boolean {
     return this.responsables.some( r => r.id === idUsuario )

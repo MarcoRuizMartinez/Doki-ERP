@@ -72,14 +72,14 @@ const routes: RouteRecordRaw[] = [
         component: () => import('src/pages/PaginaIframe.vue')
       },
       {
-        path: 'ideas',
-        name: 'ideas',
+        path: 'fallas',
+        name: 'fallas',
         props: {
-                src:            "https://airtable.com/embed/shrD7MAAGTDI2ysVW?backgroundColor=cyan&viewControls=on",
-                titulo:         "Mejora continua",
-                icono:          "mdi-rocket-launch",
-                link:           "https://airtable.com/shrD7MAAGTDI2ysVW",
-                srcFormulario:  "https://airtable.com/embed/shrYhHH17wVSAe389?backgroundColor=cyan",
+                src:            "https://airtable.com/embed/appwY52jvbFGvShlG/shrjH5UsOlzn2rTKd?backgroundColor=green&viewControls=on",
+                titulo:         "Registro de fallas",
+                icono:          "mdi-clipboard-text",
+                link:           "https://airtable.com/shrD7MAAGTDI2ysVWhttps://airtable.com/appwY52jvbFGvShlG/tblN694S22sSZd7LT/viwApOgldI3sSXRuH?blocks=hide",
+                srcFormulario:  "https://airtable.com/embed/appwY52jvbFGvShlG/paguSZUv9qCXftfID/form",
               },
         component: () => import('src/pages/PaginaIframe.vue')
       },

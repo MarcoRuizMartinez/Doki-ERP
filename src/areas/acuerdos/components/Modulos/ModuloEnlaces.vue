@@ -8,7 +8,16 @@
     icono-sin-resultados        ="mdi-link-variant-off"
     :padding-contenido          ="modo == 'normal' ? '0' : '12px' "
     :modo                       ="modo"
+    :menu-visible               ="monstrarMenu"
     >
+    <template                   #menu
+      v-if                      ="monstrarMenu"
+      >
+      <div class                ="row text-grey-9 items-center justify-around fit">
+        <span>Total compras:</span>
+        <span class="fuente-mono text-bold">{{ Format.precio(sumaOC) }}</span>
+      </div>
+    </template>
     <!-- //* /////////////////  Botones barra -->
     <template                   #barra>
       <q-btn                    round dense flat
@@ -50,17 +59,20 @@
   //* /////////////////////////////////////////////////////////////////////////////////// Core
   import {  ref,
             watch,
+            computed
                                   } from "vue"
   // * /////////////////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs           } from 'pinia'
   import {  useStoreAcuerdo       } from 'stores/acuerdo'      
+  import {  useStoreUser          } from 'stores/user'
   //* /////////////////////////////////////////////////////////////////////////////////// Modelos
-  import {  TModosVentana          } from "src/models/TiposVarios"
+  import {  TModosVentana         } from "src/models/TiposVarios"
   import {  IColumna,
             Columna               } from "src/models/Tabla"
   import {  IAcuerdo              } from "src/areas/acuerdos/models/Acuerdo"  
   //* /////////////////////////////////////////////////////////////////////////////////// Componibles  
   import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"  
+  import {  ToolArray, Format     } from "src/composables/useTools"  
   //* /////////////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana                 from "components/utilidades/Ventana.vue"
   import    refAcuerdo              from "src/areas/acuerdos/components/Tools/RefAcuerdo.vue"
@@ -68,7 +80,10 @@
   
   const { buscarAcuerdoEnlazados  } = useControlAcuerdo()
   const { acuerdo                 } = storeToRefs( useStoreAcuerdo() )
+  const { usuario                 } = storeToRefs( useStoreUser() )
   const modo                        = ref< TModosVentana >("esperando-busqueda")
+  const sumaOC                      = ref< number >(0)
+  const monstrarMenu                = computed( () => !usuario.value.esComercial && !!sumaOC.value )
   
   const columnas: IColumna[]  = [
     new Columna({ name: "ref"       }),
@@ -79,6 +94,7 @@
       modo.value    = !!largo                   ? "normal"
                     : modo.value === "buscando" ? modo.value
                     : "esperando-busqueda"
+      sumarOC()
     },
     { immediate: true}
   )  
@@ -88,5 +104,12 @@
     modo.value                = "buscando"
     await buscarAcuerdoEnlazados( /* true */ )
     modo.value                = !!acuerdo.value.acuerdosEnlazados.length ? "normal" : "sin-resultados"
+    sumarOC()
+  }
+
+  function sumarOC()
+  {
+    const ocs     = acuerdo.value.acuerdosEnlazados.filter( a => a.esOCProveedor && a.esEstadoValido && !a.esEstadoAnulado )
+    sumaOC.value  = ToolArray.sumar( ocs, "totalConDescu" )
   }
 </script>

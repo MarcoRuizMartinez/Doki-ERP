@@ -614,9 +614,10 @@ export async function getCondicionDePagoDB( id : number ) : Promise < ICondicion
 
 export async function getCondicionesPagoDB() : Promise < ICondicionPago[] >
 {
-  // const{ db }               = storeToRefs( useStoreApp() )
-  return db.transaction('r', db[ TABLAS.CONDICION_PAGO ], async () => ToolArray.ordenar( await db[ TABLAS.CONDICION_PAGO ].toArray(), "orden" ) 
-  )
+  let lista = await db.transaction('r', db[ TABLAS.CONDICION_PAGO ], async () =>await db[ TABLAS.CONDICION_PAGO ].toArray() )
+      lista = ToolArray.ordenar(lista, "orden" )
+  console.log("getCondicionesPagoDB: ", lista);
+  return lista
 }
 
 export async function getFormaDePagoDB( id : number ) : Promise < IFormaPago >

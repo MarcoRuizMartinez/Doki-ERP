@@ -24,6 +24,7 @@ import {  dexieReglaComision    } from "src/composables/useDexie"
 //* ////////////////////////////////////////////////////////////////// Modelos
 import {  ESTADO_CTZ,
           ESTADO_PED,
+          ESTADO_OC,
           ESTADO_ACU,
           TTipoAcuerdo,
           TIPO_ACUERDO
@@ -524,6 +525,12 @@ export function useControlAcuerdo()
       estado                  = { statut: ESTADO_PED.CANCELADO, notrigger: 0 }
       accion                  = "editar"
     }
+    else if(acuerdo.value.esOCProveedor)
+    {
+      estado                  = { statut: ESTADO_OC.CANCELADO, notrigger: 0 }
+      accion                  = "editar"
+    }
+
     const { ok, data }        = await apiDolibarr(accion, acuerdo.value.tipo, estado, acuerdo.value.id)
 
     if(ok){

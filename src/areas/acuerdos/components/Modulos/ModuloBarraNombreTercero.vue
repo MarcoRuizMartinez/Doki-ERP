@@ -10,7 +10,7 @@
           color               ="white"
           >
           <router-link
-            class             ="link-limpio text-white fuente-delicada"
+            class             ="link-limpio text-white fuente-delicada el-md"
             :to               ="'/tercero/' + acuerdo.tercero.id"
             >
             {{ acuerdo.tercero.nombre }}

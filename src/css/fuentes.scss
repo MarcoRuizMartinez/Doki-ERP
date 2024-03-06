@@ -75,6 +75,7 @@
 }
   
 .text-0_6em { font-size: 0.6em !important; }
+.text-0_7em { font-size: 0.7em !important; }
 .text-0_8em { font-size: 0.8em !important; }
 .text-0_9em { font-size: 0.9em !important; }
 .text-1em   { font-size: 1em !important;   }
@@ -91,3 +92,7 @@
 .lh_1_3 { line-height: 1.3;  }
 
 .q-field__messages{ font-size: 1.2em;   }
+
+.el-md{
+  letter-spacing: 0.035em;
+}

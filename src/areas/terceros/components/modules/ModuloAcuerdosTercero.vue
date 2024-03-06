@@ -28,7 +28,7 @@
       </q-btn>
       <!-- //* ///////////////  Boton crear acuerdo  -->
       <q-btn
-        v-if                    ="tipo !== TIPO_ACUERDO.PEDIDO_PRO && tercero.usuarioEsResponsable( usuario.id  ) "
+        v-if                    ="puedeCrear"
         v-bind                  ="style.btnBaseSm"
         label                   ="Crear"
         color                   ="positive"
@@ -63,9 +63,10 @@
 <script setup lang="ts">
   //* /////////////////////////////////////////////////////////////////////////////////// Core
   import {  ref,
-            toRefs,
-            PropType,
             watch,
+            toRefs,
+            computed,
+            PropType,
                                   } from "vue"
   import {  useRouter             } from 'vue-router'
   // * /////////////////////////////////////////////////////////////////////////////////// Store
@@ -107,6 +108,17 @@
 
   const { tercero, tipo }     = toRefs( props )
   const acuerdos              = ref< IAcuerdo[] >([])
+  // TODO
+  const puedeCrear            = computed( ()=>      tipo.value !== TIPO_ACUERDO.PEDIDO_PRO
+                                                &&  (
+                                                      tercero.value.usuarioEsResponsable( usuario.value.id  )
+                                                      ||
+                                                      (
+                                                        tercero.value.areaEsMublex && usuario.value.areaEsMublex && usuario.value.esComercial
+                                                      )
+                                                    )
+                                        )
+                                        
 
   //onMounted( buscar )
 

@@ -43,6 +43,7 @@ import {  TTipoAcuerdo,
           ESTADO_ACU,
           ESTADO_PED,
           ESTADO_ENT,
+          ESTADO_OC,
                                             } from "./ConstantesAcuerdos"
 
 //* ///////////////////////////////////////// Modelos
@@ -745,21 +746,36 @@ https://dolibarr.mublex.com/fichinter/card.php?
       ( this.esCotizacion && this.estado == ESTADO_CTZ.COTIZADO )
       ||
       (
-        this.esPedido     &&
-        ( this.estado == ESTADO_PED.VALIDADO || this.estado == ESTADO_PED.ENTREGANDO )
+        this.esPedido
+        &&
+        (     this.estado == ESTADO_PED.VALIDADO 
+          ||  this.estado == ESTADO_PED.ENTREGANDO
+        )
+      )
+      ||
+      (
+        this.esOCProveedor
+        &&
+        (     this.estado == ESTADO_OC.VALIDADO
+          ||  this.estado == ESTADO_OC.APROBADO
+          ||  this.estado == ESTADO_OC.PEDIDO_ENVIADO
+          ||  this.estado == ESTADO_OC.RECIBIDO_PARCIAL
+        )
       )
     )
       abierto             = true
     return abierto
   }
-  
+
   get esEstadoAnulado     ():boolean {
     let anulado           = false
     if
     (
-      ( this.esCotizacion && this.estado == ESTADO_CTZ.RECHAZADO )
+      ( this.esCotizacion   && this.estado == ESTADO_CTZ.RECHAZADO )
       ||
-      ( this.esPedido     && this.estado == ESTADO_PED.CANCELADO  )
+      ( this.esPedido       && this.estado == ESTADO_PED.CANCELADO  )
+      ||
+      ( this.esOCProveedor  && ( this.estado == ESTADO_OC.CANCELADO || this.estado == ESTADO_OC.CANCELADO_OLD ))
     )
       anulado             = true
     return anulado
@@ -773,8 +789,8 @@ https://dolibarr.mublex.com/fichinter/card.php?
   
   get estadoDespachoLabel(): string {
     return    this.listoEntregar      ? 'Listo para despacho'
-            : this.hay_OC_aProveedor  ? `No esta listo. Ordenes a proveedor : ${this.OC_a_ProveedorTotal}`
-            :                           'No esta listo. Sin ordenes a proveedor'
+            : this.hay_OC_aProveedor  ? `No esta listo. <br/>Ordenes a proveedor : ${this.OC_a_ProveedorTotal}`
+            :                           'No esta listo. <br/>Sin ordenes a proveedor'
    }
    
   get estadoDespachoColor(): string {

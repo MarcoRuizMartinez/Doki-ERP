@@ -115,7 +115,7 @@
     await Tool.pausa(50)
     cargandoRaiz.value  = true
     modelSrc.value      = src.value
-    await Tool.pausa(4000)
+    await Tool.pausa(3000)
     cargandoRaiz.value  = false
   }
 
@@ -123,7 +123,7 @@
   {
     formularioOk.value  = true
     cargandoModel.value = true    
-    await Tool.pausa(5000)
+    await Tool.pausa(1000)
     cargandoModel.value = false
   }
   async function copiarSRC()
