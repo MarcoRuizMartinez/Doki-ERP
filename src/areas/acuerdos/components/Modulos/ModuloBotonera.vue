@@ -143,7 +143,7 @@
         </q-btn>
       </efecto>
       <q-btn 
-        v-if                  ="false && acuerdo.esPedido && ( acuerdo.esEstadoValidado || acuerdo.esEstadoEntregado )"
+        v-if                  ="acuerdo.esPedido && ( acuerdo.esEstadoValidado || acuerdo.esEstadoEntregado )"
         v-bind                ="style.btnBaseMd"
         color                 ="positive"
         icon                  ="mdi-truck-fast"

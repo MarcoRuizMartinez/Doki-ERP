@@ -68,12 +68,12 @@
   <lineas
     class                   ="col-12"
   />
-  <!-- <entregas
+  <entregas
     v-if                    ="acuerdo.esPedido && !acuerdo.esEstadoBoceto"
     class                   ="col-12"
     @click-nueva-entrega    ="modales.entrega = true"
     @click-remision         ="abrirModalRemision"
-  /> -->
+  />
   <!-- <calificacion
     v-if                    ="acuerdo.esEstadoValido && ( acuerdo.esPedido || acuerdo.esCotizacion )"
     class                   ="col-md-4 col-12"

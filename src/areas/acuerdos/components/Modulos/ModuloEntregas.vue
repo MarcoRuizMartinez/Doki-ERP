@@ -20,9 +20,18 @@
         :disable                    ="!acuerdo.puedeCrearNuevoGrupo"
         @click                      ="emit('clickNuevaEntrega')"
       /> 
-      <q-btn                        round dense flat
+      <btn-toggle
+        v-model                     ="expandido"
+        icon-true                   ="mdi-arrow-collapse"
+        icon-false                  ="mdi-arrow-expand"
+        msj-true                    ="Colapsar"
+        msj-false                   ="Expandir"
+        size                        ="sm"
+        @click  ="console.log('hdhd')"
+      />
+      <q-btn                        
+        v-bind                      ="style.btnRedondoFlat2Sm"
         icon                        ="mdi-refresh"
-        class                       ="op60 op100-hover"
         @click                      ="buscarAcuerdoEnlazados()"
         >
         <Tooltip label              ="Recargar entregas"/>
@@ -32,30 +41,32 @@
       <!-- //* ///////////////////////////////////////////////////////////////  For expansion item -->
       <q-expansion-item             expand-separator default-opened dense expand-icon-toggle dense-toggle
         v-for                       ="(entrega, index) of acuerdo.entregas"
+        v-model                     ="expandido"
         :index                      ="entrega.id"
         header-class                ="bg-gris-dark text-white"
         expand-icon-class           ="q-pr-none text-white"
         >
         <!-- //* ///////////////////////////////////////////////////////////// Slot cabezote expansion item-->
-        <template                   #header>
-          <q-item-section           avatar class="hidden"></q-item-section>
-          <q-item-section>
-            <div class=             "row items-center h-40px full-width">
+        <template                   #header>          
+          <q-item-section class     ="col">
+            <div class              ="row items-center justify-between h-40px full-width">
               <ref-acuerdo          ref-larga white
-                class               ="col-auto"
+                class               ="col-2"
                 :acuerdo            ="entrega"
               />
-              <span class           ="col text-center">{{ entrega.metodoEntrega.label }}</span>
-            </div>
-          </q-item-section>
-          <q-item-section           side>
-            <div class              ="row items-center">
-              <span class           ="q-mr-sm text-grey-5">
+              <span class           ="col-2 text-center">{{ entrega.metodoEntrega.label }}</span>
+              <span class           ="col-2 q-mr-sm text-grey-5">
                 {{ entrega.contactoEntrega.municipio.label }}
               </span>
               <!-- //* /////////////////////////////////////////////////////// Boton agregar producto  -->
-              <estado :acuerdo      ="entrega" con-icono/>
+              <div class            ="col-shrink">
+                <estado             con-icono                  
+                  :acuerdo          ="entrega"
+                />
+              </div>
             </div>
+          </q-item-section>
+          <q-item-section           side>
           </q-item-section>
         </template>
         <!-- //* ///////////////////////////////////////////////////////////// Contenido   -->
@@ -124,23 +135,28 @@
               />
               <div class            ="invertir column gap-sm">
                 <select-contacto    tipo-entrega hundido
-                  v-model:contacto  ="acuerdo.contactoEntrega"
+                  v-model:contacto  ="entrega.contactoEntrega"
                   label             ="Contacto entregas"
                   icon              ="mdi-account"
                   :quitar-contacto  ="!acuerdo.esEntrega"
                   :tercero          ="acuerdo.tercero"
                   :disable          ="!acuerdo.tercero.id"
                 />
-
-
-                <select-label-value       alerta hundido
-        v-model                 ="acuerdo.transportadora"
-        label                   ="Transportadora"
-        icon                    ="mdi-truck"
-        class                   ="col-md-6 col-12"
-        :options                ="transportadoras"
-      />     
-      
+                <select-label-value hundido
+                  v-model           ="entrega.metodoEntrega"
+                  label             ="Método de entrega"
+                  icon              ="mdi-truck-delivery"
+                  error-message     ="Indique un método de entrega"
+                  :options          ="metodosEntrega"
+                  :loading          ="loading.metodoEntrega"
+                />                
+                <select-label-value alerta hundido
+                  v-model           ="entrega.transportadora"
+                  label             ="Transportadora"
+                  icon              ="mdi-truck"
+                  class             ="col-md-6 col-12"
+                  :options          ="transportadoras"
+                />
               </div>
             </div>
           </div>
@@ -151,20 +167,22 @@
 </template>
 <script setup lang="ts">
   // * /////////////////////////////////////////////////////////////////////// Core
-  import {  computed              } from "vue"
+  import {  ref,
+            computed              } from "vue"
+  import {  QExpansionItem        } from "quasar"            
   //* ///////////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs           } from 'pinia'                            
   import {  useStoreAcuerdo       } from 'stores/acuerdo'
   import {  useStoreDexie         } from 'stores/dexieStore'  
   //* /////////////////////////////////////////////////////////////////////////////////// Modelos
-  import {  TModosVentana          } from "src/models/TiposVarios"
   import {  IColumna,
             Columna               } from "src/models/Tabla"
   import {  IAcuerdo              } from "../../models/Acuerdo"  
   //* ///////////////////////////////////////////////////////////////////////////// Componibles  
   import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"
   import {  style                 } from "src/composables/useEstilos"
-  import {  dexieTransportadoras  } from "src/composables/useDexie"
+  import {  dexieTransportadoras,
+            dexieMetodosEntrega   } from "src/composables/useDexie"
   //* ///////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana                 from "components/utilidades/Ventana.vue"
   import    refAcuerdo              from "src/areas/acuerdos/components/Tools/RefAcuerdo.vue"
@@ -173,17 +191,21 @@
   import    tablaEnvio              from "src/areas/acuerdos/components/Tools/TablaEnvio.vue" 
   import    selectContacto          from "src/areas/terceros/components/contactos/SelectContacto.vue"
   import    selectLabelValue        from "components/utilidades/select/SelectLabelValue.vue"
+  import    btnToggle               from "components/utilidades/BtnToggle.vue"
+
 
   const emit                  = defineEmits<{
-    (e: "clickNuevaEntrega",        ): void
+    (e: "clickNuevaEntrega",                  ): void
     (e: "clickRemision",    value: IAcuerdo   ): void
     (e: "clickRotulo",      value: IAcuerdo[] ): void
   }>()
 
   const { acuerdo, loading        } = storeToRefs( useStoreAcuerdo() )
-  const { transportadoras         } = storeToRefs( useStoreDexie() )  
+  const { transportadoras,
+          metodosEntrega          } = storeToRefs( useStoreDexie() )  
   const { buscarAcuerdoEnlazados  } = useControlAcuerdo()
-  
+  const expandido                   = ref<boolean>(true)
+
   dexieTransportadoras()
   const modo = computed(()=> {
     if(loading.value.enlaces)

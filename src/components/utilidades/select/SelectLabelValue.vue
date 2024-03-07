@@ -49,7 +49,8 @@
             PropType,
             onMounted,
                             } from 'vue'
-  import {  ToolArray,
+  import {  Tool,
+            ToolArray,
             ToolType     } from "src/composables/useTools"                            
   import {  ILabelValue,
             labelValueNulo  } from "src/models/TiposVarios"
@@ -99,8 +100,9 @@
                               } = toRefs( props )
   const opciones                = ref< ILabelValue[] > ( options.value )
   const modelo                  = ref< ILabelValue >( )
-  if(!!modelValue.value.label)
+  if(!!modelValue.value.label){
     modelo.value = modelValue.value
+  }
   //let   esVirgen                = true
 
   watch( options,   (n, o)=>
@@ -119,10 +121,12 @@
     if(modeloYvModelSonIguales()) return
       
     if(!!newValue && ToolType.valorValido( newValue.value )){
-      if(!!opciones.value.length)
+      if(!!opciones.value.length){
         modelo.value            = seleccionarEntreOpciones( newValue.value )//newValue as ILabelValue
-      else 
+      }
+      else {
         modelo.value            = newValue
+      }
     }
     else{  
       modelo.value              = labelValueNulo
@@ -137,8 +141,10 @@
     //if(esVirgen)// && noInmediato.value)
     //  esVirgen                  = false
     //else
-    if(!!newValue && ToolType.valorValido( newValue.value ) )
+    if(!!newValue && ToolType.valorValido( newValue.value ) ){
       emit("update:modelValue", newValue)
+
+    }
     else
       emit("update:modelValue", { value: null, label: ""  })
   })
@@ -154,8 +160,10 @@
       emit("select", labelValueNulo)     
   }
 
-  function setDefecto()
+  async function setDefecto()
   {
+    await Tool.pausa(100)
+
     if(!options.value.length || !defecto.value || (!!modelValue.value && !!modelValue.value.value )) 
       return
     
@@ -166,7 +174,8 @@
   }
 
   function seleccionarEntreOpciones( value : any ) : ILabelValue {
-    return options.value.find( i => i.value == value) ?? { value: null, label : "" }
+    const item = options.value.find( i => i.value == value) ?? { value: null, label : "" }
+    return item
   }
       
   function copiarOptionsToOpciones()
@@ -176,8 +185,10 @@
     if(!!optionsSort.value)
       opciones.value      = ToolArray.ordenar(opciones.value, optionsSort.value)
 
-    if(!!modelValue.value.label && !!modelValue.value.value)
+    if(!!modelValue.value.label && !!modelValue.value.value){
       modelo.value        = seleccionarEntreOpciones( modelValue.value.value )//newValue as ILabelValue
+
+    }
   }
 
   function limpiar( cosa :any )

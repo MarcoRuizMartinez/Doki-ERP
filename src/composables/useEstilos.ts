@@ -54,7 +54,21 @@ export const style  = {
     size            : "sm",
     padding         : "none",
     class           : "op60 op100-hover q-ml-sm"
-  },  
+  },
+  btnRedondoFlat2Md  : {
+    dense           : true,
+    flat            : true,
+    round           : true,
+    size            : "md",
+    class           : "op60 op100-hover q-ml-sm"
+  },
+  btnRedondoFlat2Sm  : {
+    dense           : true,
+    flat            : true,
+    round           : true,
+    size            : "sm",
+    class           : "op60 op100-hover q-ml-sm"
+  },    
   btnRedondoFlatSple: {
     dense           : true,
     flat            : true,

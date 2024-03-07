@@ -49,11 +49,9 @@
           <!-- //?* ////////////////////////////////////////////////////////////// Botones --> 
           <!-- <q-btn label="Prueba" @click="test()"/> -->
           <div v-if           ="minimizar">
-            <q-btn            dense round glossy push unelevated
-              class           ="boton-ventana"
+            <q-btn            
+              v-bind          ="style.btnRedondoFlat2Sm"
               :icon           ="minimizadoModel ? 'mdi-arrow-expand' : 'mdi-window-minimize'"
-              color           ="positive"
-              size            ="sm"
               @click          ="minimizadoModel = !minimizadoModel; $emit('minimizar')"
               v-touch-hold.mouse="clickLargoMinMax"
               >
@@ -61,11 +59,9 @@
             </q-btn>
           </div>
           <div v-if           ="maximizar">
-            <q-btn            dense round glossy push unelevated              
-              class           ="boton-ventana"
+            <q-btn
+              v-bind          ="style.btnRedondoFlat2Md"
               :icon           ="maximizado ? 'mdi-window-restore' : 'mdi-window-maximize'"
-              color           ="warning"
-              size            ="sm"
               @click          ="maximizado = !maximizado; $emit('maximizar')"
               >
               <Tooltip :label ="maximizado ?  'Restaurar' : 'Expandir'"/>
@@ -170,8 +166,9 @@
             inject,
             useSlots      } from 'vue';
   import {  useStoreUser  } from 'stores/user'
-  import {  TModosVentana  } from "src/models/TiposVarios"
+  import {  TModosVentana } from "src/models/TiposVarios"
   import {  useTools      } from "src/composables/useTools"
+  import {  style         } from "src/composables/useEstilos"
   const emits                   = defineEmits(["minimizar", "maximizar", "cerrar"])
   const slots                   = useSlots()
   const props                   = defineProps(

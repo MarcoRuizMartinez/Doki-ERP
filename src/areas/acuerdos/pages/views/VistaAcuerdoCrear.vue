@@ -145,8 +145,17 @@
     const origenOk            = !!acuerdo.value.origenContacto.id
     const pagoOk              = !!acuerdo.value.condicionPago.id
     const vencimientoOk       = !!acuerdo.value.fechaFinValidezCorta || !acuerdo.value.esCotizacion
-
-    return terceroOk && ( contactoOk || ( esPersona && !esEspecial ) ) && comercialOk && origenOk && vencimientoOk && pagoOk
+    const ok                  = terceroOk
+                                && 
+                                ( contactoOk
+                                  ||
+                                  ( esPersona && !esEspecial )
+                                )
+                                && comercialOk
+                                && origenOk
+                                && vencimientoOk
+                                && pagoOk;
+    return ok
   })
 
   async function generarPDFAcuerdo(){
