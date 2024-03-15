@@ -84,6 +84,17 @@ const routes: RouteRecordRaw[] = [
         component: () => import('src/pages/PaginaIframe.vue')
       },
       {
+        path: 'calendario-mublex',
+        name: 'calendario-mublex',
+        props: {
+                src:            "https://airtable.com/embed/appiQ9sPOQhJGRovr/shrly7qTr1kgO4hun?backgroundColor=blue",
+                titulo:         "Calendario de comerciales Mublex",
+                icono:          "mdi-calendar-month",
+                link:           "https://airtable.com/appiQ9sPOQhJGRovr/tblU4IGtbdXpntJKE/viwmI6aFPOAYjoYVu?blocks=hide",                
+              },
+        component: () => import('src/pages/PaginaIframe.vue')
+      },      
+      {
         path: 'garantias',
         name: 'garantias',
         props: {

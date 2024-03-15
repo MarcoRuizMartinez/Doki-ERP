@@ -97,7 +97,8 @@
                                   { 'minimizado'        : minimizadoModel },
                                   { 'full-screen'       : fullScreen      },
                                   { 'scroll q-mt-none'  : scroll          },
-                                  { 'q-mt-none'         : hayAcciones     }
+                                  { 'q-mt-none'         : hayAcciones     },
+                                  { 'content-center'    : modo != 'normal'},
                                 ]"
         :style                ="estiloCard"
         >  <!-- //?* /   :style                ="estiloAlto" :style="estiloCard" --> 

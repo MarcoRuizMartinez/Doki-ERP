@@ -20,7 +20,7 @@
         <q-icon name            ="mdi-image" />
       </template>
       <!-- //?* ///////////////////////////////////////////////////////////// Item fondo --> 
-      <template #option   ="scope">
+      <template #option         ="scope">
         <q-item v-bind          ="scope.itemProps">
           <q-item-section       avatar>
             <q-img :src         ="'/images/fondos/' + scope.opt.src"/>

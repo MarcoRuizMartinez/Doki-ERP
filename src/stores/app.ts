@@ -12,6 +12,7 @@ export interface iApp {
   menu        : Array < iItemMenu >
   tabs        : ITab                    // Se usa para compartir el estado de algunos componentes que necesitan comunicar el estado de sus tabs
   alertas     : number
+  toggle      : string    // Para guardar en los toggle generales
 }
 
 export const useStoreApp = defineStore('app', {
@@ -19,6 +20,7 @@ export const useStoreApp = defineStore('app', {
     online        : navigator.onLine,
     menu          : [],
     tabs          : { activa : '', alerts : [] },
-    alertas       : 0
+    alertas       : 0,
+    toggle        : "",
   }),
 });

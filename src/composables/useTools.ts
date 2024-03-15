@@ -73,8 +73,8 @@ export class ToolType
 
   static anyToStr( v : any ) : string
   {
-    if( typeof v === "string")
-      return v
+    if( typeof v === "string")  return v
+    if( typeof v === "number")  return v.toString()
     else
       return ""
   }
@@ -596,6 +596,22 @@ export function confeti( total : number = 1 )
 
   setTimeout(()=> clearInterval(clock), mili * ( total - 1 ) )
 }
+
+export function confetiXY( x : number, y : number, particulas = 50)
+{
+  const preset  = { particleCount: particulas, spread: 360, zIndex: 2001, startVelocity: 20, gravity: 0.4, ticks: 250 }
+  confetti({ origin: { x, y } , ...preset})
+}
+
+export function confetiClick( e : Event, particulas = 50 )
+{
+  const mouseX = ToolType.keyNumberValido( e, "screenX" )
+  const mouseY = ToolType.keyNumberValido( e, "screenY" )
+  const x = mouseX / screen.width * 1
+  const y = mouseY / screen.height * 1
+  confetiXY( x, y, particulas )
+}
+
 
 
 export type TFormatosNumero = "normal" | "precio" | "porcentaje"

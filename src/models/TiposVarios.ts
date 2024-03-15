@@ -41,6 +41,7 @@ export const enum ALMACEN_LOCAL {
   COL_TAREAS      = "v3-coltTareas",
   COL_COTZ_ENVI   = "v3-colCotizEnvio",
   FECHA_LISTAS    = "v3-fechaListas",
+  VERSION_DEXIE   = "v3-VD",
 }
 
 export const AlmacenesLimpiar  : string[] = [
@@ -145,6 +146,7 @@ export interface ILoading {
   calificacion    ?: boolean
   commentsLoad    ?: boolean
   eventosLoad     ?: boolean
+  entregas        ?: boolean
 }
 
 export const LoadingDefault = {
@@ -188,6 +190,7 @@ export const LoadingDefault = {
   calificacion    : false,
   commentsLoad    : false,
   eventosLoad     : false,
+  entregas        : false,
 }
 
 
@@ -224,5 +227,36 @@ export const ModalesDefault = {
   siigo           : false,
   entrega         : false,
 }
+
+
+
+
+export interface IOrdenCSS {
+  productos       : number
+  entregas        : number
+  /* tercero         : number
+  condiciones     : number
+  totales         : number
+  contactos       : number
+  enlaces         : number
+  documentos      : number
+  anticipos       : number
+  notas           : number */
+}
+
+
+export const OrdenCSS : IOrdenCSS = {
+  productos       : 80,
+  entregas        : 90,
+  /* tercero         : 10,
+  condiciones     : 20,
+  totales         : 30,
+  contactos       : 40,
+  enlaces         : 50,
+  documentos      : 60,
+  anticipos       : 70,
+  notas           : 100, */
+}
+
 
 

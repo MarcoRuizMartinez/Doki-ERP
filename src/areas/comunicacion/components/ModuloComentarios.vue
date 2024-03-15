@@ -1,3 +1,109 @@
+<template>
+  <q-page-sticky
+    v-bind                      ="$attrs"
+    position                    ="bottom-right"
+    :offset                     ="[18, 18]"
+    >
+    <!-- //* ///////////////////////////////////////////////////////// Boton Flotante -->
+    <q-fab
+      v-model                   ="isOpen"
+      direction                 ="up"
+      padding                   ="sm"
+      :color                    ="isOpen ? 'red' : 'positive'"
+      >
+      <template                 #icon>
+        <q-icon
+          :name                 ="cargando ? 'mdi-loading' : 'mdi-comment-multiple'"
+          :class                ="{'mdi-spin' : cargando}"
+        />
+      </template>
+      <!-- //* /////////////////////////////////////////////////////// Boton nueva Tarea -->
+      <q-btn                    round unelevated
+        color                   ="positive"
+        icon                    ="mdi-check"
+        @click                  ="abrirFormularioTarea"
+        >
+        <Tooltip label          ="Nueva tarea"/>
+      </q-btn>
+      <div class                ="chat panel-blur-70 shadow-6 radius-10 column justify-between">
+        <!-- //* ///////////////////////////////////////////////////// Sroll Area -->
+        <q-scroll-area
+          ref                   ="componenteScroll"
+          class                 ="col q-py-none q-px-md"
+          >
+          <template
+            v-for               ="(comentario, index) of modelValue"
+            :key                ="index"
+            >
+            <!-- //* /////////////////////////////////////////////////// Chat Mensaje -->
+            <mensaje  
+              :msj              ="comentario"
+              @click            ="verTarea"
+            />
+          </template>
+        </q-scroll-area>
+        <div>
+          <!-- //* /////////////////////////////////////////////////// Escribir comentario -->
+          <input-buscar         autogrow
+            v-model             ="textoComentario"
+            label               ="Nuevo comentario... Control+Enter"
+            class               ="col-md-2 col-6"
+            debounce            ="0"
+            type                ="textarea"
+            :icon               ="editando ? 'mdi-loading' : 'mdi-chat'"
+            :loading            ="editando"
+            :dense              ="false"
+            @ctrl-enter         ="crearComentario"
+            >
+            <!-- //* ///////////////////////////////////////////////// Boton enviar -->
+            <q-btn
+              v-if              ="!!textoComentario"
+              v-bind            ="style.btnRedondoFlatMd"
+              icon              ="mdi-send"
+              @click            ="crearComentario"
+              >
+              <Tooltip>Enviar</Tooltip>
+            </q-btn>
+            <!-- //* ///////////////////////////////////////////////// Boton recargar -->
+            <q-btn
+              v-bind            ="style.btnRedondoFlatMd"
+              icon              ="mdi-reload"
+              :loading          ="cargando"
+              @click            ="recargar"
+              >
+              <Tooltip>Cargar comentarios</Tooltip>
+            </q-btn>
+          </input-buscar>
+        </div>
+      </div>
+      <template                 #tooltip
+        v-if                    ="!isOpen && !!modelValue.length"
+        >
+        <!-- //* ///////////////////////////////////////////////////// Cantidad de mensajes -->
+        <q-badge                floating
+          color                 ="red"
+          :label                ="modelValue.length"
+        />
+      </template>
+    </q-fab>
+  </q-page-sticky>
+  <!-- //* ///////////////////////////////////////////////////////////// Modal Buscar Formulario anticipo -->
+  <q-dialog
+    v-model                     ="formularioOn"
+    v-bind                      ="style.dialogo"
+    >
+    <formulario-tarea
+      v-model                   ="tareaSelect"
+      :elemento-id              ="elementoId"
+      :tipo                     ="tipo"
+      :tercero-id               ="terceroId"
+      :proyecto-id              ="proyectoId"
+      @tarea-creada             ="recibirTareaCreada"
+      @tarea-editada            ="recibirTareaEditada"
+    />
+  </q-dialog>
+</template>
+
 <script setup lang="ts">
   // * /////////////////////////////////////////////////////////////////////////////////// Core
   import {  ref, onMounted, watch } from 'vue'
@@ -139,115 +245,7 @@
     comentario.value.creacion   = new Date()
     //console.log("asignarValoresAComentario: ", comentario.value);
   }
-
-
 </script>
-
-<template>
-  <q-page-sticky
-    v-bind                      ="$attrs"
-    position                    ="bottom-right"
-    :offset                     ="[18, 18]"
-    >
-    <!-- //* ///////////////////////////////////////////////////////// Boton Flotante -->
-    <q-fab
-      v-model                   ="isOpen"
-      direction                 ="up"
-      padding                   ="sm"
-      :color                    ="isOpen ? 'red' : 'positive'"
-      >
-      <template                 #icon>
-        <q-icon
-          :name                 ="cargando ? 'mdi-loading' : 'mdi-comment-multiple'"
-          :class                ="{'mdi-spin' : cargando}"
-        />
-      </template>
-      <!-- //* /////////////////////////////////////////////////////// Boton nueva Tarea -->
-      <q-btn                    round unelevated
-        color                   ="positive"
-        icon                    ="mdi-check"
-        @click                  ="abrirFormularioTarea"
-        >
-        <Tooltip label          ="Nueva tarea"/>
-      </q-btn>
-      <div class                ="chat panel-blur-70 shadow-6 radius-10 column justify-between">
-        <!-- //* ///////////////////////////////////////////////////// Sroll Area -->
-        <q-scroll-area
-          ref                   ="componenteScroll"
-          class                 ="col q-py-none q-px-md"
-          >
-          <template
-            v-for               ="(comentario, index) of modelValue"
-            :key                ="index"
-            >
-            <!-- //* /////////////////////////////////////////////////// Chat Mensaje -->
-            <mensaje  
-              :msj              ="comentario"
-              @click            ="verTarea"
-            />
-          </template>
-        </q-scroll-area>
-        <div>
-          <!-- //* /////////////////////////////////////////////////// Escribir comentario -->
-          <input-buscar         autogrow
-            v-model             ="textoComentario"
-            label               ="Nuevo comentario... Control+Enter"
-            class               ="col-md-2 col-6"
-            debounce            ="0"
-            type                ="textarea"
-            :icon               ="editando ? 'mdi-loading' : 'mdi-chat'"
-            :loading            ="editando"
-            :dense              ="false"
-            @ctrl-enter         ="crearComentario"
-            >
-            <!-- //* ///////////////////////////////////////////////// Boton enviar -->
-            <q-btn
-              v-if              ="!!textoComentario"
-              v-bind            ="style.btnRedondoFlatMd"
-              icon              ="mdi-send"
-              @click            ="crearComentario"
-              >
-              <Tooltip>Enviar</Tooltip>
-            </q-btn>
-            <!-- //* ///////////////////////////////////////////////// Boton recargar -->
-            <q-btn
-              v-bind            ="style.btnRedondoFlatMd"
-              icon              ="mdi-reload"
-              :loading          ="cargando"
-              @click            ="recargar"
-              >
-              <Tooltip>Cargar comentarios</Tooltip>
-            </q-btn>
-          </input-buscar>
-        </div>
-      </div>
-      <template                 #tooltip
-        v-if                    ="!isOpen && !!modelValue.length"
-        >
-        <!-- //* ///////////////////////////////////////////////////// Cantidad de mensajes -->
-        <q-badge                floating
-          color                 ="red"
-          :label                ="modelValue.length"
-        />
-      </template>
-    </q-fab>
-  </q-page-sticky>
-  <!-- //* ///////////////////////////////////////////////////////////// Modal Buscar Formulario anticipo -->
-  <q-dialog
-    v-model                     ="formularioOn"
-    v-bind                      ="style.dialogo"
-    >
-    <formulario-tarea
-      v-model                   ="tareaSelect"
-      :elemento-id              ="elementoId"
-      :tipo                     ="tipo"
-      :tercero-id               ="terceroId"
-      :proyecto-id              ="proyectoId"
-      @tarea-creada             ="recibirTareaCreada"
-      @tarea-editada            ="recibirTareaEditada"
-    />
-  </q-dialog>
-</template>
 
 <style>
 .chat{

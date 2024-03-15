@@ -1,11 +1,11 @@
 <template>
   <titulo
-    class                   ="col-12"
+    class                   ="col-12 order-1"
     @click                  ="generarPDF"
     @recargar               ="recargar"
   />
   <botonera
-    class                   ="col-12"
+    class                   ="col-12 order-1"
     @click-pdf              ="generarPDF"
     @click-aprobar          ="clickAprobarCotizacion"
     @click-anular           ="anularAcuerdo"
@@ -21,33 +21,32 @@
     @click-cuenta-cobro     ="generarPDF"
     @click-listo-entregar   ="setListoDespacho"
   />
-  <barra-tercero class      ="col-12"/>
+  <barra-tercero class      ="col-12 order-1"/>
   <tercero-y-contacto       scroll
-    class                   ="col-md-4 col-12"
+    class                   ="col-md-4 col-12 o-10"
     :height-card            ="alturaFila1"
   />
   <condiciones              scroll
     ref                     ="moduloCondiciones"
-    class                   ="col-md-4 col-12"
+    class                   ="col-md-4 col-12 o-20"
     :height-card            ="alturaFila1"
   />
   <totales                  scroll
     v-if                    ="!acuerdo.esEntrega"
-    class                   ="col-md-4 col-12"
+    class                   ="col-md-4 col-12 o-30"
     :height-card            ="alturaFila1"
   />
   <contactos
     v-if                    ="acuerdo.tercero.esEmpresa && acuerdo.esPedido"
-    class                   ="col-12"
+    class                   ="col-12 o-40"
   />
   <enlaces                  minimizar
-    class                   ="col-md-4 col-12"
+    class                   ="col-md-4 col-12 o-50"
     height-card             ="260px"    
   />
   <documentos               minimizar
-    class                   ="col-md-4 col-12"
+    class                   ="col-md-4 col-12 o-60"
     height-card-min         ="164px"
-    :class                  ="{ 'order-1' : acuerdo.esEntrega }"
     :modulo                 ="acuerdo.modulo"
     :modulo-id              ="acuerdo.id ?? 0"
     :modulo-ref             ="acuerdo.ref"
@@ -57,27 +56,28 @@
   />
   <anticipos                minimizar scroll
     v-if                    ="acuerdo.esPedido"
-    class                   ="col-md-4 col-12"
-    
-  />
-  <notas
-    class                   ="col-md-4 col-12"
-    height-card             ="220px"
-    :class                  ="{ 'order-1' : acuerdo.esPedido || acuerdo.esEntrega }"
+    class                   ="col-md-4 col-12 o-70"
   />
   <lineas
-    class                   ="col-12"
+    class                   ="col-12 o-productos"
   />
   <entregas
     v-if                    ="acuerdo.esPedido && !acuerdo.esEstadoBoceto"
-    class                   ="col-12"
+    class                   ="col-12 o-entregas"
     @click-nueva-entrega    ="modales.entrega = true"
     @click-remision         ="abrirModalRemision"
   />
+  <!-- :class                  ="{ 'order-1' : acuerdo.esPedido || acuerdo.esEntrega }"
+  :class                  ="{ 'order-1' : acuerdo.esEntrega }"
+ -->
   <!-- <calificacion
     v-if                    ="acuerdo.esEstadoValido && ( acuerdo.esPedido || acuerdo.esCotizacion )"
     class                   ="col-md-4 col-12"
   /> -->
+  <notas
+    class                   ="col-md-4 col-12 o-100"
+    height-card             ="220px"
+  />
   <comentarios
     v-model                 ="acuerdo.comentarios"
     :asignado               ="acuerdo.comercial"
@@ -116,7 +116,7 @@
     v-model                 ="modales.calendario"
     v-bind                  ="style.dialogo"
     >
-    <calendario />
+    <calendario :acuerdo    ="acuerdo"/>
   </q-dialog>
   <!-- //* ///////////////////////////////////////////////////////////// Modal productos siigo -->
   <q-dialog
@@ -129,7 +129,9 @@
     v-model                 ="modales.entrega"
     v-bind                  ="style.dialogo"
     >
-    <nueva-entrega />
+    <nueva-entrega
+      @entrega-creada       ="modales.entrega = false"
+    />
   </q-dialog>
     <!-- <remision v-model:visible ="modales.pdfRemision"/> -->
     <!--   <div id="capture" style="padding: 10px; background: #f5da55">
@@ -150,13 +152,15 @@
   //* ///////////////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs           } from 'pinia'
   import {  useStoreAcuerdo       } from 'stores/acuerdo'
-  //import {  useStoreDexie         } from 'stores/dexieStore'
+  import {  useStoreApp           } from 'stores/app'
+
   //* ///////////////////////////////////////////////////////////////////////////////// Modelos
   import {  Acuerdo, IAcuerdo     } from "src/areas/acuerdos/models/Acuerdo"
   import {  LineaAcuerdo          } from "src/areas/acuerdos/models/LineaAcuerdo"
   import {  IArchivo              } from "src/models/Archivo"
   //import {  AREA                  } from "src/models/TiposVarios"
   import {  Accion                } from "src/areas/comunicacion/models/Accion"  
+  import {  IOrdenCSS, OrdenCSS   } from "src/models/TiposVarios"
   //* ///////////////////////////////////////////////////////////////////////////////// Componibles
   import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"
   import {  useCotizacionPDF,
@@ -197,6 +201,7 @@
           modales,
           lineaElegida,
           loading           } = storeToRefs( useStoreAcuerdo() )
+  const { toggle            } = storeToRefs( useStoreApp() )
   const { getQuotePDF,
           saveQuotePDF      } = useCotizacionPDF()
   
@@ -217,6 +222,7 @@
   const nombrePDF             = ref< string   >("")
   const acuerdoRemsion        = ref< IAcuerdo >( new Acuerdo() )  
   const moduloCondiciones     = ref<InstanceType<typeof condiciones>  | null>(null)
+  const orden                 = ref< IOrdenCSS  >(OrdenCSS)
   //dexieBodegas()
   //const { bodegas           } = storeToRefs( useStoreDexie() )
 
@@ -295,6 +301,25 @@
     //acuerdoRemsion.value        = acu    
   }
 
+  watch( toggle, (modo)=>{
+    if(modo === "general")
+    {
+      orden.value.productos     = 80
+      orden.value.entregas      = 90
+    } else 
+    if(modo === "productos")
+    {
+      orden.value.productos     = 2
+      orden.value.entregas      = 90
+    } else 
+    if(modo === "entregas")
+    {
+      orden.value.productos     = 3
+      orden.value.entregas      = 2
+    }
+
+  })
+
 /*
 import {  useRouter             } from 'vue-router'
 const router                = useRouter()
@@ -333,3 +358,9 @@ const disableBtnValidar     = computed( () =>{
     }
   } */  
 </script>
+
+
+<style scoped>
+  .o-productos    { order: v-bind( 'orden.productos'  )}
+  .o-entregas     { order: v-bind( 'orden.entregas'   )}
+</style>

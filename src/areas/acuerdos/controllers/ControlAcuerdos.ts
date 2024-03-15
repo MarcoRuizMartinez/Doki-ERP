@@ -32,14 +32,14 @@ import {  ESTADO_CTZ,
 import {  IOrigenContacto       } from "src/models/Diccionarios/OrigenContacto"
 import {  IUsuario              } from "src/areas/usuarios/models/Usuario"
 import {  ITercero              } from "src/areas/terceros/models/Tercero"
-import {  Accion                } from "src/areas/comunicacion/models/Accion"
+import {  IAccion, Accion       } from "src/areas/comunicacion/models/Accion"
 import {  ICondicionPago        } from "src/models/Diccionarios/CondicionPago"
 import {  IFormaPago            } from "src/models/Diccionarios/FormaPago"
 import {  LineaAcuerdo          } from "src/areas/acuerdos/models/LineaAcuerdo"
 import {  IMetodoEntrega        } from "src/models/Diccionarios/MetodoEntrega"
 import {  ITiempoEntrega        } from "src/models/Diccionarios/TiempoEntrega"
 import {  IProyecto, Proyecto   } from "src/areas/proyectos/models/Proyecto"
-import {  Acuerdo               } from "src/areas/acuerdos/models/Acuerdo"
+import {  IAcuerdo, Acuerdo     } from "src/areas/acuerdos/models/Acuerdo"
 import {  EnlaceAcuerdo,
           IEnlaceAcuerdo        } from "src/areas/acuerdos/models/EnlaceAcuerdo"
 import {  Calificacion          } from "src/areas/acuerdos/models/Calificacion"
@@ -240,7 +240,6 @@ export function useControlAcuerdo()
   //* ////////////////////////////////////////////////////////////////////// Cambiar contacto
   async function cambiarContactoAcuerdo( contacto : IContacto, idOld : number, tipo : TTipoContacto )
   {
-    console.log("cambiarContactoAcuerdo: ");
     if(!acuerdo.value.id) return
 
     if(!acuerdo.value.esEntrega)
@@ -250,37 +249,45 @@ export function useControlAcuerdo()
     }
     else
     {
-      await cambiarContactoEntrega( contacto.id )
+      await cambiarContactoEntrega( contacto.id, acuerdo.value.id )
     }
   }
 
 
   //* ////////////////////////////////////////////////////////////////////// Cambiar contacto entrega
-  async function cambiarContactoEntrega( contacto_id : number)
+  async function cambiarContactoEntrega( contacto_id : number, entrega_id : number  ) : Promise<boolean>
   {
-    console.log("cambiarContactoEntrega: ");
-    const objeto                = { contacto_id, entrega_id: acuerdo.value.id, acuerdo: acuerdo.value.tipo }
-    console.log("objeto: ", objeto);
-    const objetoForData         = { body: getFormData("editarContactoEntrega", objeto), method: "POST"}
+    const objeto                = { contacto_id, entrega_id, acuerdo: "entrega"}
+    const objetoForData         = { body: getFormData("editarContactoEntrega", objeto ), method: "POST"}
     const { ok  }               = await miFetch( endPoint("servicios"), objetoForData, { mensaje: "contacto de entrega" } )
 
     if(ok){
-      aviso("positive", `Contacto de entrega cambiado 👌🏼`)
+      const msj                 = !!contacto_id ? `Contacto de entrega cambiado 👌🏼` : "Contacto desvinculado"
+      aviso("positive", msj)
     }
     else
-      aviso("negative", `Error cambiar contacto de ${acuerdo.value.tipo}`)
+      aviso("negative", `Error cambiar contacto de entrega`)
+    
+    return ok
   }
 
+  //* ////////////////////////////////////////////////////////////////////// Cambiar contacto entrega
+  async function cambiarTransportadora( transportadora_id : number, entrega_id: number) : Promise<boolean>
+  {
+    const objeto                = { transportadora_id, entrega_id, acuerdo: "entrega" }
+    const objetoForData         = { body: getFormData("editarTransportadora", objeto), method: "POST"}
+    const { ok  }               = await miFetch( endPoint("servicios"), objetoForData, { mensaje: "transportadora" } )
 
+    return ok
+  }
   //* ////////////////////////////////////////////////////////////////////// Asignar nuevo contacto
   async function vincularContactoAcuerdo( contacto : IContacto, tipo : TTipoContacto )
   {
-    console.log("vincularContactoAcuerdo: ", contacto, tipo);
     if(!acuerdo.value.id) return
 
     if(acuerdo.value.esEntrega)
     {
-      await cambiarContactoEntrega( contacto.id )
+      await cambiarContactoEntrega( contacto.id, acuerdo.value.id )
       return
     }
 
@@ -309,7 +316,6 @@ export function useControlAcuerdo()
   //* ////////////////////////////////////////////////////////////////////// Asignar nuevo contacto
   async function desvincularContactoAcuerdo( id : number, tipo : TTipoContacto, mostrarAviso : boolean = false  ) : Promise<boolean>
   {
-    console.log("desvincularContactoAcuerdo: ");
     const { ok : desvinculado } = await apiDolibarr("contacto-desvincular",  acuerdo.value.tipo,
                                                       { id, tipo },
                                                       acuerdo.value.id
@@ -335,7 +341,6 @@ export function useControlAcuerdo()
 
   async function editarDatosEntregaSistemaViejo() : Promise<boolean>
   {
-    console.log("editarDatosEntregaSistemaViejo: ");
     const objeto                = {
                                     pedido_id:    acuerdo.value.id,
                                     acuerdo:      acuerdo.value.tipo,
@@ -730,7 +735,7 @@ export function useControlAcuerdo()
   }
 
   //* /////////////////////////////////////////////////////////////// Editar con Total
-  async function editarConTotal( on : boolean ) : Promise <boolean>
+  async function editarConTotal( on : boolean ) : Promise<boolean>
   {
     loading.value.conTotal      = true
     const ok                    = await setTotal( acuerdo.value.id, on, acuerdo.value.tipo)
@@ -740,7 +745,7 @@ export function useControlAcuerdo()
   }
 
   //* /////////////////////////////////////////////////////////////// Editar con IVA
-  async function editarConIVA( on : boolean ) : Promise <boolean>
+  async function editarConIVA( on : boolean ) : Promise<boolean>
   {
     let todoOk                  = true
     loading.value.conIVA        = true
@@ -801,7 +806,7 @@ export function useControlAcuerdo()
       acuerdo.value.acuerdosEnlazados.push( ...acuerdosI )
     }
 
-    acuerdo.value.acuerdosEnlazados.forEach( a => a.tercero = acuerdo.value.tercero )
+    acuerdo.value.acuerdosEnlazados.forEach( ( a : IAcuerdo ) => a.tercero = acuerdo.value.tercero )
 
     if( acuerdo.value.esPedido  )
       acuerdo.value.calcularEntregado()
@@ -819,8 +824,8 @@ export function useControlAcuerdo()
 
   async function buscarEnlacesAcuerdo()
   {
-    const objeto          = { ref: acuerdo.value.ref, id: acuerdo.value.id }
-    const { ok, data }    = await miFetch( getURL("listas", "varios"), { method: "POST", body: getFormData( "buscarEnlacesAcuerdo", objeto ) }, { mensaje: "buscar enlaces" } )
+    const objeto            = { ref: acuerdo.value.ref, id: acuerdo.value.id }
+    const { ok, data }      = await miFetch( getURL("listas", "varios"), { method: "POST", body: getFormData( "buscarEnlacesAcuerdo", objeto ) }, { mensaje: "buscar enlaces" } )
     if(ok)
       acuerdo.value.enlaces = EnlaceAcuerdo.enlacesApiToEnlaces( data, acuerdo.value.tipo )
   }
@@ -836,22 +841,24 @@ export function useControlAcuerdo()
     }
 
     loading.value.commentsLoad= true
-    acuerdo.value.comentarios = await buscarAcciones( query, "comentarios" )
+    acuerdo.value.comentarios = (await buscarAcciones( query, "comentarios" )).filter( a => a.codigo !== "AC_OTH_AUTO" ) // Para que no cargue las acciones tipo AC_OTH_AUTO
     loading.value.commentsLoad= false
   }
 
-  async function buscarEventos()
+  async function buscarEventos( acu : IAcuerdo ) : Promise<IAccion[]>
   {
     const query     = {
-      codigo        : Accion.getCodigoByAcuerdo( acuerdo.value.tipo ),
-      idTercero     : acuerdo.value.tercero.id,
-      elementoId    : acuerdo.value.id,
-      elementoTipo  : Accion.getTipoByAcuerdo( acuerdo.value.tipo )
+      codigo        : Accion.getCodigoByAcuerdo( acu.tipo ),
+      idTercero     : acu.tercero.id,
+      elementoId    : acu.id,
+      elementoTipo  : Accion.getTipoByAcuerdo( acu.tipo )
     }
 
     loading.value.eventosLoad = true
-    acuerdo.value.eventos     = await buscarAcciones( query, "eventos", false )
+    const e : IAccion[]       = await buscarAcciones( query, "eventos", false )
     loading.value.eventosLoad = false
+
+    return e
   }
 
 
@@ -937,6 +944,8 @@ export function useControlAcuerdo()
     buscarAcuerdoEnlazados,
     actualizarPreciosAcuerdo,
     setListoDespacho,
-    editarCrearCalificacion
+    editarCrearCalificacion,
+    cambiarContactoEntrega,
+    cambiarTransportadora
   }
 }

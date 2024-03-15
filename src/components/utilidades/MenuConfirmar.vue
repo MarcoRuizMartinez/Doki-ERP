@@ -19,14 +19,15 @@
         color       ="positive"
         icon        ="mdi-check"
         :label      ="conLabel ? 'Si' : ''"
-        @click      ="emit('ok')"
+        @click      ="(e)=>emit('ok', e)"
       />
     </q-btn-group>
   </q-menu>
 </template>
 <script setup lang="ts">
   import { style } from "src/composables/useEstilos"
-  const emit        = defineEmits(["ok"])
+  type TEmit = { ok  : [value : Event]  }
+  const emit        = defineEmits<TEmit>()
   const props       = defineProps({
     conLabel:       { default: true, type: Boolean }
   })

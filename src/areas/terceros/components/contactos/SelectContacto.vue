@@ -3,13 +3,13 @@
     v-model                   ="modelo"
     input-debounce            ="400"
     behavior                  ="dialog"
+    :label
+    :disable
+    :readonly
+    :loading
     :filled                   ="!hundido"
-    :label                    ="label"
     :class                    ="[$attrs.class, { 'campo-hundido' : hundido }]"
-    :loading                  ="cargando"
     :options                  ="contactos"
-    :disable                  ="disable"
-    :readonly                 ="readonly"
     :option-label             ="( contacto : IContacto ) => !contacto ? '' : contacto.nombreCompleto + ( !!contacto.empresa ? ' - ' + contacto.empresa : '') "
     @filter                   ="buscar"
     @popup-show               ="virgen = true"
@@ -30,7 +30,7 @@
     </template>
     <template                 #append>
       <q-btn                  dense flat
-        v-if                  ="!!contacto.id"
+        v-if                  ="!!contacto.id && !readonly && !disable"
         icon                  ="mdi-pencil"
         padding               ="0"
         @click.stop           ="mostrarVentana('editar')"
@@ -54,6 +54,7 @@
         <Tooltip label        ="Crear contacto"/>
       </q-btn>
       <q-btn                  dense flat
+        v-if                  ="!readonly && !disable"
         icon                  ="mdi-information"
         padding               ="0"
         @click.stop           ="mostrarVentana('ver')"
@@ -97,7 +98,7 @@
   const contactos             = ref< IContacto[] > ([])
   const modelo                = ref< IContacto >()
   const contactoEditar        = ref< IContacto >()
-  const cargando              = ref< boolean >(false)
+  const loading               = ref< boolean >(false)
   const virgen                = ref< boolean >(true)
   const { apiDolibarr       } = useApiDolibarr()
   const editar                = ref< boolean >(true)
@@ -120,7 +121,7 @@
     tercero:          { required: true,           type: Object as PropType< ITercero >  },
     quitarContacto:   { default:  false,          type: Boolean                         },
     tipoEntrega:      { default:  false,          type: Boolean                         },
-    hundido:          { default: false,           type: Boolean                         },
+    hundido:          { default:  false,          type: Boolean                         },
   })
   const { contacto,
           tipoEntrega,
@@ -138,7 +139,7 @@
 
   watch( modelo, (newContacto, oldContacto)=>
   {
-    // Se asume que si oldContacto es undefinide, y newContacto es valido, es porque se esta cargando por primeva vez
+    // Se asume que si oldContacto es undefined, y newContacto es valido, es porque se esta cargando por primeva vez
     if(!!newContacto && !oldContacto) {
       emit('contactoInicial', newContacto )
     }
@@ -164,13 +165,13 @@
   {
     if((!busqueda || busqueda.length < 2) && !virgen.value)
     {
-      cargando.value          = false
+      loading.value           = false
       doneFn(() => { contactos.value = [] } )
       return 
     }
 
     virgen.value              = false
-    cargando.value            = true
+    loading.value             = true
 
     let url                   = "thirdparty_ids=" + tercero.value.id + "&search_status=1&limit=10"
     //if(!!busqueda) url        += `&sqlfilters=(t.firstname%3Alike%3A'%25${busqueda}%25')||(t.lastname%3Alike%3A'%25${busqueda}%25')||(t.email%3Alike%3A'%25${busqueda}%25')||(t.phone_mobile%3Alike%3A'%25${busqueda}%25')||(t.note_public%3Alike%3A'%25${busqueda}%25')`.replaceAll(" ", "%20")
@@ -189,7 +190,7 @@
     doneFn( () => contactos.value =  contacts )
     //tipoEntrega.value ? contacts.filter( c => !!c.municipio.id && !!c.direccion) : contacts )
 
-    cargando.value            = false
+    loading.value             = false
   }
 
   function contactoCreado( contac : IContacto )

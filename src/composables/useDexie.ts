@@ -30,7 +30,7 @@ import {  ICuentaDinero,      CuentaDinero      } from "src/models/Diccionarios/
 import {  IReglaComision,     ReglaComision     } from "src/models/Diccionarios/ReglasComision"
 import {  IBodega,            Bodega            } from "src/models/Diccionarios/Bodega"
 import {  INaturalezaProducto,NaturalezaProducto} from "src/models/Diccionarios/NaturalezaProducto"
-import {  ITransportadora,    /* Transportadora */    } from "src/models/Diccionarios/Transportadoras"
+import {  ITransportadora,    Transportadora    } from "src/models/Diccionarios/Transportadoras"
 
 export type ITabla            = IMunicipio      | IUsuario        | ITipoDocumento      | ICondicionPago | IReglaComision | IProveedor          |
                                 IFormaPago      | IMetodoEntrega  | IOrigenContacto     | IUnidad        | ICuentaDinero  | IBodega             |
@@ -611,12 +611,10 @@ export async function getCondicionDePagoDB( id : number ) : Promise < ICondicion
   )
 }
 
-
 export async function getCondicionesPagoDB() : Promise < ICondicionPago[] >
 {
   let lista = await db.transaction('r', db[ TABLAS.CONDICION_PAGO ], async () =>await db[ TABLAS.CONDICION_PAGO ].toArray() )
       lista = ToolArray.ordenar(lista, "orden" )
-  console.log("getCondicionesPagoDB: ", lista);
   return lista
 }
 
@@ -815,6 +813,22 @@ export async function getNaturalezaDB( codigo : string ) : Promise < INaturaleza
       }
       else
         return new NaturalezaProducto()
+    }
+  )
+}
+
+export async function getTransportadoraDB( id : number ) : Promise < ITransportadora >
+{
+  return db.transaction('r', db[ TABLAS.TRANSPORTADORAS ], async () =>
+    {
+      const listaDB         = await db[ TABLAS.TRANSPORTADORAS ].where("id").equals(id).toArray()
+      if(listaDB.length     == 1)
+      {
+        listaDB[0].id       = +listaDB[0].id
+        return listaDB[0]
+      }
+      else
+        return new Transportadora()
     }
   )
 }

@@ -38,60 +38,61 @@ export const enum TIPOS_CONTACTO { // llx_c_type_contact
 export type TTipoContacto = TIPOS_CONTACTO.NO_ASIGNADO | TIPOS_CONTACTO.CONTABLE | TIPOS_CONTACTO.COMERCIAL | TIPOS_CONTACTO.ENTREGA
 
 export interface IContacto {
-    id:                   number
-    idRelacion:           number
-    tipo:                 TTipoContacto
-    tipoId:               TIPOS_CONTACTO_ID
-    tipoLabel:            string
-    nombres:              string
-    apellidos:            string
-    empresa:              string // para cotizaciones - nota publica en Dolibarr
-    cargo:                string
-    correo:               string
-    documento:            number
-    telefono:             string
-    telefono_2:           string
-    extension:            string
-    direccion:            string
-    fechaCreado:          Date 
-    fechaModificado:      Date 
-    fechaCreadoCorta:     string
-    fechaModificadoCorta: string
-    terceroId:            number
-    nota:                 string  // nota privada en Dolibarr
-    activo:               boolean
-    nombreCompleto:       string
-    empresaYnombre:       string
-    municipio:            IMunicipio
-    municipioId:          number
-    esTipoComercial:      boolean
-    esTipoContable:       boolean
-    esTipoEntrega:        boolean
-    getContactoToAPIDolibarr: () => object
+    id                        : number
+    idRelacion                : number
+    tipo                      : TTipoContacto
+    tipoId                    : TIPOS_CONTACTO_ID
+    tipoLabel                 : string
+    nombres                   : string
+    apellidos                 : string
+    empresa                   : string // para cotizaciones - nota publica en Dolibarr
+    cargo                     : string
+    correo                    : string
+    documento                 : number
+    telefono                  : string
+    telefono_2                : string
+    extension                 : string
+    direccion                 : string
+    fechaCreado               : Date 
+    fechaModificado           : Date 
+    fechaCreadoCorta          : string
+    fechaModificadoCorta      : string
+    terceroId                 : number
+    nota                      : string  // nota privada en Dolibarr
+    activo                    : boolean
+    nombreCompleto            : string
+    empresaYnombre            : string
+    municipio                 : IMunicipio
+    municipioId               : number
+    esTipoComercial           : boolean
+    esTipoContable            : boolean
+    esTipoEntrega             : boolean
+    alerta                    : boolean
+    getContactoToAPIDolibarr  : () => object
 }
 
 export class Contacto implements IContacto
 {
-  id:                     number
-  idRelacion:             number
-  tipoId:                 TIPOS_CONTACTO_ID
-  nombres:                string
-  apellidos:              string
-  empresa:                string
-  cargo:                  string
-  correo:                 string
-  documento:              number
-  telefono:               string
-  telefono_2:             string
-  extension:              string  
-  direccion:              string
-  fechaCreado:            Date 
-  fechaModificado:        Date
-  terceroId:              number
-  nota:                   string
-  activo:                 boolean 
-  municipio:              IMunicipio
-  municipioId:            number
+  id                          : number
+  idRelacion                  : number
+  tipoId                      : TIPOS_CONTACTO_ID
+  nombres                     : string
+  apellidos                   : string
+  empresa                     : string
+  cargo                       : string
+  correo                      : string
+  documento                   : number
+  telefono                    : string
+  telefono_2                  : string
+  extension                   : string  
+  direccion                   : string
+  fechaCreado                 : Date 
+  fechaModificado             : Date
+  terceroId                   : number
+  nota                        : string
+  activo                      : boolean 
+  municipio                   : IMunicipio
+  municipioId                 : number
 
   constructor( terceroId : number = 0 )
   {
@@ -149,6 +150,12 @@ export class Contacto implements IContacto
             : this.esTipoContable   ? "contable"
             : this.esTipoEntrega    ? "entrega"
             : ""
+  }
+
+  get alerta (): boolean
+  {
+    const alerta = !this.id || this.direccion.length < 10 || !this.municipio.id || ( !this.telefono && !this.telefono_2 )
+    return alerta
   }
 
   getContactoToAPIDolibarr() : any

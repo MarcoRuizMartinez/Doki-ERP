@@ -269,6 +269,7 @@ export class ProductoDoli implements IProductoDoli
       label:                  this.nombre,
       description:            this.descripcion,
       price:                  this.precio_publico_final,
+      tva_tx:                 this.iva,
       cost_price:             this.costo,
       status:                 +this.activoEnVenta,
       status_buy:             +this.activoEnCompra,

@@ -122,6 +122,13 @@ export function useMenu()
                             visible:    permisos.value.terceros_ver
                           }),
         },
+        { ...new ItemMenu({
+                            label:      "Calendario Mublex",
+                            icon:       "mdi-calendar-month",
+                            to:         "/calendario-mublex",
+                            visible:    permisos.value.terceros_ver
+                          }),
+        },        
 /*        
         { ...new ItemMenu({ separator: true }), },
         { ...new ItemMenu({

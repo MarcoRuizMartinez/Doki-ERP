@@ -1,5 +1,5 @@
 <template>
-  <barra  class               ="row justify-between">
+  <barra  class               ="row justify-between items-center">
     <!-- //* ////////////////////////////////////////////////////////////////////  Lado izquierdo -->
     <div class                ="row gap-sm">
       <q-btn
@@ -14,7 +14,7 @@
         <Tooltip label        ="Calculo de comisiones" v-if="esMobil"/>
       </q-btn>
       <q-btn
-        v-if                  ="acuerdo.esPedido || acuerdo.esOCProveedor"
+        v-if                  ="acuerdo.esPedido || acuerdo.esOCProveedor || acuerdo.esEntrega"
         v-bind                ="style.btnBaseMd"
         color                 ="primary"
         icon                  ="mdi-calendar-month"
@@ -40,7 +40,23 @@
           class               ="q-ml-sm"
           :label              ="acuerdo.productosAlertaSiigo"
         />   
-      </q-btn>      
+      </q-btn>
+    </div>
+    <div>
+      <q-btn-toggle dense no-caps 
+        v-model="toggle"
+        padding="4px 20px"
+        push
+        size="sm"
+        glossy
+        toggle-color="primary"
+        :options="[
+          {label: 'General',    value: 'general'},
+          {label: 'Productos',    value: 'productos'},
+          {label: 'Entregas',  value: 'entregas'}
+        ]"
+        @update:model-value ="cambiarOrden"
+      />
     </div>
     <!-- //* ////////////////////////////////////////////////////////////////////  Lado Derecho -->
     <div class                ="row gap-sm">
@@ -143,7 +159,7 @@
         </q-btn>
       </efecto>
       <q-btn 
-        v-if                  ="acuerdo.esPedido && ( acuerdo.esEstadoValidado || acuerdo.esEstadoEntregado )"
+        v-if                  ="false && acuerdo.esPedido && ( acuerdo.esEstadoValidado || acuerdo.esEstadoEntregado )"
         v-bind                ="style.btnBaseMd"
         color                 ="positive"
         icon                  ="mdi-truck-fast"
@@ -316,11 +332,12 @@
 
 <script lang="ts" setup>
   // * /////////////////////////////////////////////////////////////////////// Core
-  import {  computed        } from "vue"
+  import {  ref, computed   } from "vue"
   // * /////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs     } from 'pinia'
   import {  useStoreUser    } from 'stores/user'
   import {  useStoreAcuerdo } from 'stores/acuerdo'
+  import {  useStoreApp     } from 'stores/app'
 
   // * /////////////////////////////////////////////////////////////////////// Componibles
   import {  useTools        } from "src/composables/useTools"
@@ -338,8 +355,10 @@
           modales,
           loading     } = storeToRefs( useStoreAcuerdo() )
   const { usuario     } = storeToRefs( useStoreUser() )
+  const { toggle      } = storeToRefs( useStoreApp() )
 
   const { esMobil     } = useTools()
+  
 
   const emit = defineEmits<{
     (e: 'clickPdf',           value: TTipoPDF ): void
@@ -427,5 +446,10 @@
   {
     if(usuario.value.esProduccion)
       emit('clickListoEntregar')    
+  }
+
+  function cambiarOrden()
+  {
+    //modoVista.value    
   }
 </script>

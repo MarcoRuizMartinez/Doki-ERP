@@ -51,5 +51,6 @@
   const columnas: IColumna[]  = [
                                   new Columna({ name: "id"}),
                                   new Columna({ name: "label"}),
+                                  new Columna({ name: "seguimiento"}),
                                 ]
 </script>

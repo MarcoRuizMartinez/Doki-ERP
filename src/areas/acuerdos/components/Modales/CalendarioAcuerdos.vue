@@ -1,11 +1,67 @@
+<template>
+  <ventana                    cerrar
+    :titulo                   ="'Calendario de ' + acuerdo.label"
+    icono                     ="mdi-calendar-month"
+    class-contenido           ="column items-center"
+    style                     ="max-width: 1200px;"
+    min-width                 ="1200px"
+    >
+    <div  class               ="row items-center">
+      <q-btn
+        v-bind                ="style.btnRedondoFlatMd"
+        icon                  ="mdi-chevron-left"
+        @click                ="calendario.prev()"
+      /> 
+      <div class              ="text-capitalize text-1_4em ">
+        {{ mesSeleccionado }}
+      </div>
+      <q-btn
+        v-bind                ="style.btnRedondoFlatMd"
+        icon                  ="mdi-chevron-right"
+        @click                ="calendario.next()"
+      />       
+    </div>
+    <q-calendar-month         no-active-date focusable hoverable
+      v-model                 ="selectedDate"
+      ref                     ="calendario"
+      locale                  ="es"
+      :day-min-height         ="80"
+      :weekdays               ="[1,2,3,4,5,6,0]"
+      >
+      <template #day          ="{ scope }">
+        <template
+          v-for               ="event in getEvents(scope.timestamp)"
+          :key                ="event.time"
+          >
+          <div
+            class             ="radius-6 text-white q-px-sm q-mx-sm mi-event text-0_9em"
+            :class            ="'bg-' + event.color"
+            >
+            {{ event.titulo + ( !!event.hora ? ' ' + event.hora : '' )  }}
+            <Tooltip
+              v-if            ="!!event.detalles"
+              :label          ="event.detalles"
+            />
+          </div>
+          </template>
+      </template>
+    </q-calendar-month>
+  </ventana>
+</template>
+
 <script setup>
   //* ///////////////////////////////////////////////////////////////////////////////// Core
   import {  ref,
+            toRefs,
             computed,
             onMounted             } from "vue"
   // * ///////////////////////////////////////////////////////////////////////////////// Store
-  import {  storeToRefs           } from 'pinia'                            
-  import {  useStoreAcuerdo       } from 'stores/acuerdo'  
+  /* import {  storeToRefs           } from 'pinia'                            
+  import {  useStoreAcuerdo       } from 'stores/acuerdo' */
+
+  // * ///////////////////////////////////////////////////////////////////////////////// Modelos
+  import {  Acuerdo               } from "../../models/Acuerdo"
+  
 
   // * ///////////////////////////////////////////////////////////////////////////////// Componibles
   import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"
@@ -19,7 +75,12 @@
 
   //* //////////////////////      /////////////////////////////////////////     
   const { buscarEventos           } = useControlAcuerdo()
-  const { acuerdo                 } = storeToRefs( useStoreAcuerdo() )
+  //const { acuerdo                 } = storeToRefs( useStoreAcuerdo() )
+  const props                       = defineProps({
+    acuerdo: { required: true, default: new Acuerdo(),  type: Object },
+  })
+
+  const { acuerdo }                 = toRefs(props)
   const formatoFecha                = new Intl.DateTimeFormat( 'es-CO', { month: 'long', timeZone: 'UTC' })
   const calendario                  = ref()
   const eventos                     = ref([])
@@ -32,7 +93,6 @@
               
 
     
-
   onMounted( ()=>{
     crearEventosLocales()
     crearEventosNube()
@@ -45,7 +105,6 @@
     agregarEvento( "✅Esta listo",    acuerdo.value.fechaListo,       "blue-10", false)
     agregarEvento( "😯Compromiso",    acuerdo.value.fechaEntrega,     "red-7", false, "Fecha de compromiso con el cliente")
 
-
     for( const oc of acuerdo.value.OC_a_Proveedor )
     {
       const detalles = `${oc.creador.nombre} - ${oc.estadoLabel} ${oc.ref}`
@@ -57,7 +116,6 @@
       agregarEvento( `📜 Cotización`, ctz.fechaCreacion, "cyan-5", true, ctz.ref)
     }
     
-
     for( const ant of acuerdo.value.anticipos )
     {
       const titulo    = `${ant.tipoSelect.label} ${Format.precio( ant.valor, "decimales-no" )}`
@@ -75,8 +133,9 @@
 
   async function crearEventosNube()
   {
-    await buscarEventos()
-    for( const evento of acuerdo.value.eventos )
+    const listaEventos  = await buscarEventos( acuerdo.value )
+    
+    for( const evento of listaEventos )
     {
       let titulo        = ToolStr.mayusculasPrimeraLetra( evento.titulo.split(" ").slice(2).join(" ") )      
       let color         = "blue-grey-7"
@@ -141,56 +200,6 @@
   }
 </script>
 
-<template>
-  <ventana                    cerrar
-    :titulo                   ="'Calendario del ' + acuerdo.label"
-    icono                     ="mdi-calendar-month"
-    class-contenido           ="column items-center"
-    style                     ="max-width: 1200px;"
-    min-width                 ="1200px"
-    >
-    <div  class               ="row items-center">
-      <q-btn
-        v-bind                ="style.btnRedondoFlatMd"
-        icon                  ="mdi-chevron-left"
-        @click                ="calendario.prev()"
-      /> 
-      <div class              ="text-capitalize text-1_4em ">
-        {{ mesSeleccionado }}
-      </div>
-      <q-btn
-        v-bind                ="style.btnRedondoFlatMd"
-        icon                  ="mdi-chevron-right"
-        @click                ="calendario.next()"
-      />       
-    </div>
-    <q-calendar-month         no-active-date focusable hoverable
-      v-model                 ="selectedDate"
-      ref                     ="calendario"
-      locale                  ="es"
-      :day-min-height         ="80"
-      :weekdays               ="[1,2,3,4,5,6,0]"
-      >
-      <template #day          ="{ scope }">
-        <template
-          v-for               ="event in getEvents(scope.timestamp)"
-          :key                ="event.time"
-          >
-          <div
-            class             ="radius-6 text-white q-px-sm q-mx-sm mi-event text-0_9em"
-            :class            ="'bg-' + event.color"
-            >
-            {{ event.titulo + ( !!event.hora ? ' ' + event.hora : '' )  }}
-            <Tooltip
-              v-if            ="!!event.detalles"
-              :label          ="event.detalles"
-            />
-          </div>
-          </template>
-      </template>
-    </q-calendar-month>
-  </ventana>
-</template>
 
 <style scoped>
 .mi-event{

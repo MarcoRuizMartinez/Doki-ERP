@@ -1,6 +1,7 @@
-
 import {  boot                } from 'quasar/wrappers'
 import    Dexie                 from 'dexie';
+import {  LocalStorage        } from 'quasar'
+import {  ALMACEN_LOCAL       } from "src/models/TiposVarios"
 //import {  TABLAS              } from "src/composables/useDexie"
 import {  IMunicipio,         Municipio         } from "src/models/Municipio"
 import {  IUsuario,           Usuario           } from "src/areas/usuarios/models/Usuario"
@@ -46,6 +47,8 @@ export enum TABLAS
   TRANSPORTADORAS             = "transportadoras",
 }
 
+const KEY_LOCAL               = process.env.PREFIJO + ALMACEN_LOCAL.VERSION_DEXIE
+
 export class DBSimpleOk extends Dexie
 {
   [TABLAS.USUARIOS]             !: Dexie.Table< IUsuario,             number >
@@ -72,14 +75,25 @@ export class DBSimpleOk extends Dexie
   {
     super(process.env.PREFIJO + "DBSimpleOk")
 
-    this.version(3.5).stores(
+    const version : number      = 4.4
+    let   vLocal  : number      = LocalStorage.getItem( KEY_LOCAL ) as number    
+
+    // Para que vuelva a cargar todo cuando detecte un cambio de version
+    if(!vLocal || vLocal !== version){
+      vLocal                    = version
+      LocalStorage.set(KEY_LOCAL, vLocal)
+      this.delete()      
+      location.reload();
+    }
+
+    this.version(version).stores(
     {
       [TABLAS.MUNICIPIOS]         : "++id, municipio, departamento, departamentoSigla, departamentoId, indicativo, codigoDian",
       [TABLAS.USUARIOS]           : "++id, nombre, apellido, puesto, foto, tipo, area, estado, gruposString, gruposIds, terceroIdCtz, cel, correo, reglaComisionId, color",
       [TABLAS.TIPOS_DOCUMENTOS]   : "++id, codigo, nombre",
       [TABLAS.CONDICION_PAGO]     : "++id, label, descripcion, dias, orden",
       [TABLAS.FORMA_PAGO]         : "++id, label",
-      [TABLAS.METODO_ENTREGA]     : "++id, label",
+      [TABLAS.METODO_ENTREGA]     : "++id, label, seguimiento",
       [TABLAS.ORIGEN_CONTACTO]    : "++id, label",
       [TABLAS.UNIDAD]             : "++id, nombre, codigo, sigla, tipo, orden",
       [TABLAS.TIEMPO_ENTREGA]     : "++id, label, codigo",

@@ -137,22 +137,22 @@ export class Accion implements IAccion
 
   get accionToApiDolibarr() : any {
     const data    = {
-      type_code:    this.codigo,
-      label:        this.titulo,
-      note_private: this.comentario,      
-      fulldayevent: +this.cuando.value > 0,
-      percentage:   this.progreso,
-      userownerid:  this.asignado.id,      
-      status:       this.cuando.value,
-      priority:     this.prioridad.value,
-      transparency: +this.publico,
-      event_paid:   +this.aceptado,
-      datep:        ToolDate.getMilisecShortForApiDolibarr( this.fechaInicio ),
-      datef:        ToolDate.getMilisecShortForApiDolibarr( this.fechaFin ),
-      socid:        !!this.terceroId  ? this.terceroId  : null,
-      fk_element:   !!this.elementoId ? this.elementoId : null,
-      elementtype:  !!this.tipo       ? this.tipo       : null,
-      fk_project:   !!this.proyectoId ? this.proyectoId : null,
+      type_code       : this.codigo,
+      label           : this.titulo,
+      note_private    : this.comentario,      
+      fulldayevent    : +this.cuando.value > 0,
+      percentage      : this.progreso,
+      userownerid     : this.asignado.id,
+      status          : this.cuando.value,
+      priority        : this.prioridad.value,
+      transparency    : +this.publico,
+      event_paid      : +this.aceptado,
+      datep           : ToolDate.getMilisecShortForApiDolibarr( this.fechaInicio ),
+      datef           : ToolDate.getMilisecShortForApiDolibarr( this.fechaFin ),
+      socid           : !!this.terceroId  ? this.terceroId  : null,
+      fk_element      : !!this.elementoId ? this.elementoId : null,
+      elementtype     : !!this.tipo       ? this.tipo       : null,
+      fk_project      : !!this.proyectoId ? this.proyectoId : null,
     }
 
     return data

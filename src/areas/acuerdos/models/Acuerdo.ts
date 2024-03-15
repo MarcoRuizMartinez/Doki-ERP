@@ -34,7 +34,8 @@ import {  getCondicionDePagoDB,
           getOrigenContactoDB,
           getTiempoEntregaDB,
           getUsuarioDB,
-          getReglaComisionDB
+          getReglaComisionDB,
+          getTransportadoraDB,
                                             } from "src/composables/useDexie"
 import {  TTipoAcuerdo,
           TIPO_ACUERDO,
@@ -235,6 +236,7 @@ export interface IAcuerdo
   pdfCiudad                   : string
   esTerceroCtz                : boolean
   getAcuerdoForApi            : ( usuarioId : number ) => any
+  getEntregaForApi            : ( usuarioId : number, pedidoId : number, lineas : ILineaAcuerdo[] ) => any
   //reorganizarProductosGrupos: () => void
 
   /* Solo para pedidos */
@@ -266,6 +268,8 @@ export interface IAcuerdo
   numeroGuia                  : string
   pedidoId                    : number
   transportadora              : ITransportadora
+  alertasEntrega              : string[]
+  alertaEntrega               : boolean
   calcularEntregado           : () => void
 }
 
@@ -376,25 +380,26 @@ export class Acuerdo implements IAcuerdo
 
   calcularEntregado()
   {
+    console.log("Calcular entregado")
     //if(!this.entregas.length) return
     
     for (const lineaP of this.productos)
     {
-      lineaP.qtyProgramado    = 0
-      lineaP.qtyEntregado     = 0
-      lineaP.qtyBorrador      = 0
-      lineaP.qtyEnEntregas    = 0
-      lineaP.qtyAEntregar     = lineaP.qty
+      lineaP.qtyProgramado        = 0
+      lineaP.qtyEntregado         = 0
+      lineaP.qtyBorrador          = 0
+      lineaP.qtyEnEntregas        = 0
+      lineaP.qtyAEntregar         = lineaP.qty
 
       for (const entrega of this.entregas)
       {
         for (const lineaE of entrega.productos)
         {
-          if( lineaP.lineaId  === lineaE.lineaIdPedido )
+          if( lineaP.lineaId      === lineaE.lineaIdPedido )
           {
-            lineaP.qtyProgramado += entrega.esEstadoEntregando  ? lineaE.qty : 0
-            lineaP.qtyEntregado  += entrega.esEstadoEntregado   ? lineaE.qty : 0
-            lineaP.qtyBorrador   += entrega.esEstadoEdicion     ? lineaE.qty : 0
+            lineaP.qtyProgramado  += entrega.esEstadoEntregando  ? lineaE.qty : 0
+            lineaP.qtyEntregado   += entrega.esEstadoEntregado   ? lineaE.qty : 0
+            lineaP.qtyBorrador    += entrega.esEstadoEdicion     ? lineaE.qty : 0
             lineaP.qtyEnEntregas++
             lineaP.qtyAEntregar--
           }
@@ -1006,6 +1011,32 @@ https://dolibarr.mublex.com/fichinter/card.php?
     return acuForApi
   }
 
+
+  getEntregaForApi( usuarioId : number, pedidoId : number, lineas : ILineaAcuerdo[] ) : any
+  {
+    const lines                   = lineas.map(( l )=>{ return { origin_line_id: l.lineaId, qty: l.qtyAEntregar }})
+
+    const acuForApi : any = {
+      socid                       : this.tercero.id,
+      user_author_id              : usuarioId,
+      ref_client                  : this.refCliente,
+      ref_customer                : this.refCliente,
+      origin_type                 : "commande",
+      origin                      : "commande",
+      origin_id                   : pedidoId,
+      shipping_method_id          : this.metodoEntrega.id,
+      lines                       : lines,
+      array_options               : 
+      {
+        options_comercial_id      : this.comercial.id,
+        options_contacto_id       : this.contactoEntrega.id,
+        options_transportadora_id : this.transportadora.id,
+      }
+    }
+
+    return acuForApi
+  }  
+
   get contactoSmart() : IContacto {
     if
     (
@@ -1053,6 +1084,22 @@ https://dolibarr.mublex.com/fichinter/card.php?
     }
  */
   }
+
+  get alertasEntrega() : string[]
+  {
+    const alertas     = []
+    if(!this.metodoEntrega.value)
+      alertas.push("Método de entrega no definido")
+    if(!this.metodoEntrega.seguimiento)
+      alertas.push("Método de entrega no valido")
+    if(this.metodoEntrega.seguimiento.includes("Transportadora")  && !this.transportadora.value )
+      alertas.push("El método de entrega exige una transportadora")
+    if(this.contactoEntrega.alerta)
+      alertas.push("El contacto tiene la información incompleta")
+
+    return alertas
+  }
+  get alertaEntrega() : boolean { return !!this.alertasEntrega.length }
 
   get cotizaciones() : IAcuerdo[] {
     return this.acuerdosEnlazados.filter( a => a.tipo === TIPO_ACUERDO.COTIZACION_CLI )
@@ -1159,7 +1206,10 @@ https://dolibarr.mublex.com/fichinter/card.php?
     acuApi.fechaListo         = ToolDate.getDateToStr( acuApi.fechaListo,       "local")
     acuApi.fechaADespachar    = ToolDate.getDateToStr( acuApi.fechaADespachar,  "local")
 
+    //* ////////////////////////////////////////////////////////////////////////////////////////
+
     const acu                 = Object.assign( new Acuerdo( tipo ), acuApi ) as IAcuerdo
+
     acu.esNuevo               = false
     acu.tipo                  = tipo
     acu.conTotal              = acu.esCotizacion ? acu.conTotal : true
@@ -1171,9 +1221,15 @@ https://dolibarr.mublex.com/fichinter/card.php?
       acu.comercial.comision  = await getReglaComisionDB  ( acu.comercial.reglaComisionId )
     }
     if(!!acu.comercial2Id){
-      acu.comercial2          = await getUsuarioDB       ( acu.comercial2Id )
-      acu.comercial2.comision = await getReglaComisionDB ( acu.comercial2.reglaComisionId )
+      acu.comercial2          = await getUsuarioDB        ( acu.comercial2Id )
+      acu.comercial2.comision = await getReglaComisionDB  ( acu.comercial2.reglaComisionId )
     }
+
+    if(tipo                   === TIPO_ACUERDO.ENTREGA_CLI)
+    {
+      const transId           = ToolType.anyToNum( acuApi.transportadoraId )
+      acu.transportadora      = await getTransportadoraDB ( transId )
+    }    
 
     acu.tercero               = await Tercero.convertirDataApiATercero( acuApi.tercero )
 

@@ -1,5 +1,5 @@
 .panel-blur {
-  background-color: rgba(255,255,255,0.3) !important;
+  background-color: rgba(255,255,255, 0.6) !important;
   backdrop-filter: blur(7px);
 }
 
@@ -160,7 +160,16 @@
 .order-1{  order: 1; }
 .order-2{  order: 2; }
 .order-3{  order: 3; }
-
+.o-10{  order: 10; }
+.o-20{  order: 20; }
+.o-30{  order: 30; }
+.o-40{  order: 40; }
+.o-50{  order: 50; }
+.o-60{  order: 60; }
+.o-70{  order: 70; }
+.o-80{  order: 80; }
+.o-90{  order: 90; }
+.o-100{  order: 100; }
 
 .min-w-max{ min-width: max-content;}
 .min-w-x100{ min-width: 100%; }

@@ -2,6 +2,8 @@
   <div>
     <q-select                 dense options-dense hide-bottom-space borderless
       v-model                 ="modelo"
+      :disable
+      :readonly
       :error                  ="error"
       :error-message          ="errorMessage"
       options-selected-class  ="text-weight-bold"
@@ -16,7 +18,6 @@
       :options                ="opciones"
       :clearable              ="clearable && !!modelValue && !!modelo && !!modelo.label"
       :loading                ="(options.length == 0 || loading) && !noLoading"
-      :readonly               ="readonly"
       :use-input              ="useInput"
       :behavior               ="behavior"
       :fill-input             ="useInput"      
@@ -81,6 +82,7 @@
     options:      { required: true,           type: Array   as PropType<ILabelValue[]>  },
     clearable:    { default: false,           type: Boolean                             },
     loading:      { default: false,           type: Boolean                             },
+    disable:      { default: false,           type: Boolean                             },
     noLoading:    { default: false,           type: Boolean                             },
     defecto:      { default: "",              type: String,                             },
     optionsSort:  { default: "",              type: String                              },

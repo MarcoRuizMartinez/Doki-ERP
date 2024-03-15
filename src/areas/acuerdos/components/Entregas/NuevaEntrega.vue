@@ -5,14 +5,27 @@
     size-icon-carga             ="10em"
     class-contenido             ="row"
     padding-contenido           ="0"
-    style                       ="width: 800px !important;"     
+    style                       ="width: 800px !important;"
+    :cargando                   ="loading.entregas"
     >
+    <template                   #barra>
+      <alerta                   :entrega/>
+      <!-- //* ///////////////////////////////////////////////////////////// Boton nueva entrega -->
+      <q-btn
+        v-bind                  ="style.btnBaseSm"
+        label                   ="Crear"
+        color                   ="positive"
+        icon                    ="mdi-truck-fast"
+        :disable                ="noSePuedeCrear"
+        @click                  ="crearEntrega"
+      /> 
+    </template>
     <template                   #menu>
       <div class                ="row fit q-col-gutter-sm">
         <!-- //* ///////////////////////////////////////////////// Contacto entrega -->
-        <div class              ="col-6">
+        <div class              ="col-4">
           <select-contacto      tipo-entrega hundido
-            v-model:contacto    ="acuerdo.contactoEntrega"
+            v-model:contacto    ="entrega.contactoEntrega"
             label               ="Contacto entrega"
             icon                ="mdi-truck-delivery"
             :quitar-contacto    ="!acuerdo.esEntrega"
@@ -21,14 +34,24 @@
           />
         </div>
         <!-- //* ///////////////////////////////////////////////// Metodo entrega -->
-        <div class              ="col-6">
+        <div class              ="col-4">
           <select-label-value   hundido
-            v-model             ="acuerdo.metodoEntrega"
+            v-model             ="entrega.metodoEntrega"
             label               ="Método de entrega"
             icon                ="mdi-truck-delivery"
             error-message       ="Indique un método de entrega"
             :options            ="metodosEntrega"
             :loading            ="loading.metodoEntrega"
+          />
+        </div>
+        <!-- //* ///////////////////////////////////////////////// Transportadora -->
+        <div class              ="col-4">
+          <select-label-value   hundido clearable
+            v-model             ="entrega.transportadora"
+            label               ="Transportadora"
+            icon                ="mdi-truck"
+            :options            ="transportadoras"
+            :loading            ="!transportadoras.length"
           />
         </div>
       </div>
@@ -37,7 +60,7 @@
       table-header-class        ="bg-gris text-grey-10"
       class                     ="fit"            
       row-key                   ="lineaId"
-      :rows                     ="acuerdo.productos.filter( p => p.esProducto )"
+      :rows                     ="lineas"
       :rows-per-page-options    ="[200, 400]"
       :columns                  ="columnas"
       >
@@ -110,18 +133,30 @@
 </template>
 <script setup lang="ts">
   // * ///////////////////////////////////////////////////////////////////////////// Core
-  import {  onMounted             } from "vue"
+  import {  ref,
+            computed,
+            onMounted             } from "vue"
+
   //* ///////////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs           } from 'pinia'      
+  import {  useStoreUser          } from 'stores/user'
   import {  useStoreAcuerdo       } from 'stores/acuerdo'
   import {  useStoreDexie         } from 'stores/dexieStore'
+
   //* /////////////////////////////////////////////////////////////////////////////////// Modelos
+  import {  IAcuerdo, Acuerdo     } from "src/areas/acuerdos/models/Acuerdo"
+  import {  ILineaAcuerdo         } from "src/areas/acuerdos/models/LineaAcuerdo"
+  import {  TIPO_ACUERDO          } from "src/areas/acuerdos/models/ConstantesAcuerdos"
   import {  IColumna,
             Columna               } from "src/models/Tabla"
+
   //* ///////////////////////////////////////////////////////////////////////////// Componibles  
   import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"
+  import {  useApiDolibarr        } from "src/composables/useApiDolibarr"
+  import {  ToolType, useTools    } from "src/composables/useTools"
   import {  style                 } from "src/composables/useEstilos"
-  import {  dexieMetodosEntrega   } from "src/composables/useDexie"
+  import {  dexieMetodosEntrega,
+            dexieTransportadoras  } from "src/composables/useDexie"
 
   //* ///////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana                 from "components/utilidades/Ventana.vue"
@@ -129,11 +164,27 @@
   import    numeroPaso              from "components/utilidades/input/InputNumeroPaso.vue"
   import    selectContacto          from "src/areas/terceros/components/contactos/SelectContacto.vue"
   import    selectLabelValue        from "components/utilidades/select/SelectLabelValue.vue"
+  import    alerta                  from "./Alerta.vue"
   
+  const { apiDolibarr             } = useApiDolibarr()
+  const { aviso                   } = useTools()
+  const { usuario                 } = storeToRefs( useStoreUser() )
   const { acuerdo, loading        } = storeToRefs( useStoreAcuerdo() )
+  const { buscarAcuerdoEnlazados  } = useControlAcuerdo()
+  const entrega                     = ref<IAcuerdo>( new Acuerdo( TIPO_ACUERDO.ENTREGA_CLI ) )
+  const lineas                      = ref<ILineaAcuerdo[]>([])
+
+  type TEmit                        = { entregaCreada : [ id : number ]}
+  const emit                        = defineEmits<TEmit>()
+
   dexieMetodosEntrega()
-  const { metodosEntrega          } = storeToRefs( useStoreDexie() )
-  const columnas: IColumna[]  = [
+  dexieTransportadoras()
+  const { metodosEntrega,
+          transportadoras         } = storeToRefs( useStoreDexie() )
+
+  const noSePuedeCrear              = computed(()=> entrega.value.alertaEntrega || lineas.value.every( l => !l.qtyAEntregar) )
+    
+  const columnas: IColumna[]        = [
     new Columna({ name: "ref",            label: "Producto",    sortable: false }),
     new Columna({ name: "qty",            label: "Total",       sortable: false, align: "center"  }),
     new Columna({ name: "qtyEnEntregas",  label: "En entregas", sortable: false, align: "center"  }),
@@ -142,6 +193,30 @@
 
   onMounted( () => {
     acuerdo.value.calcularEntregado()
+    lineas.value                    = acuerdo.value.productos.filter( p => p.esProducto )
+    entrega.value.metodoEntrega     = Object.assign( acuerdo.value.metodoEntrega,   {} )
+    entrega.value.contactoEntrega   = Object.assign( acuerdo.value.contactoEntrega, {} )
+    entrega.value.tercero           = Object.assign( acuerdo.value.tercero,         {} )
+    entrega.value.comercial         = Object.assign( acuerdo.value.comercial,       {} )
+    entrega.value.refCliente        = acuerdo.value.refCliente
   })
+
+  async function crearEntrega()
+  {
+    loading.value.entregas    = true
+    const entregaForApi = entrega.value.getEntregaForApi( usuario.value.id, acuerdo.value.id, lineas.value )
+    console.log("entregaForApi: ", entregaForApi);
+    
+    
+    const { ok, data }        = await apiDolibarr("crear", "entrega", entregaForApi )
+    if(!!ok){
+      await buscarAcuerdoEnlazados()
+      emit("entregaCreada", ToolType.anyToNum( data ))
+    }
+   
+
+    console.log("ok, data: ", ok, data);
+    loading.value.entregas    = false
+  }
 
 </script>
