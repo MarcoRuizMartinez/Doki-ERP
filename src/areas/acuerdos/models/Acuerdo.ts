@@ -380,7 +380,6 @@ export class Acuerdo implements IAcuerdo
 
   calcularEntregado()
   {
-    console.log("Calcular entregado")
     //if(!this.entregas.length) return
     
     for (const lineaP of this.productos)
@@ -400,13 +399,22 @@ export class Acuerdo implements IAcuerdo
             lineaP.qtyProgramado  += entrega.esEstadoEntregando  ? lineaE.qty : 0
             lineaP.qtyEntregado   += entrega.esEstadoEntregado   ? lineaE.qty : 0
             lineaP.qtyBorrador    += entrega.esEstadoEdicion     ? lineaE.qty : 0
-            lineaP.qtyEnEntregas++
-            lineaP.qtyAEntregar--
           }
         }
       }
 
-      lineaP.qtyPendiente     = lineaP.qtyAEntregar
+      lineaP.qtyEnEntregas        = lineaP.qtyProgramado + lineaP.qtyEntregado + lineaP.qtyBorrador
+      lineaP.qtyAEntregar         = lineaP.qty - lineaP.qtyEnEntregas
+      lineaP.qtyPendiente         = lineaP.qtyAEntregar
+
+      /* console.table({
+        qtyProgramado : lineaP.qtyProgramado,
+        qtyEntregado  : lineaP.qtyEntregado,
+        qtyBorrador   : lineaP.qtyBorrador,
+        qtyEnEntregas : lineaP.qtyEnEntregas,
+        qtyAEntregar  : lineaP.qtyAEntregar,
+        qtyPendiente  : lineaP.qtyPendiente
+      }) */
     }
   }
 
@@ -1088,12 +1096,17 @@ https://dolibarr.mublex.com/fichinter/card.php?
   get alertasEntrega() : string[]
   {
     const alertas     = []
+    
     if(!this.metodoEntrega.value)
       alertas.push("Método de entrega no definido")
+    else
     if(!this.metodoEntrega.seguimiento)
       alertas.push("Método de entrega no valido")
+    else
     if(this.metodoEntrega.seguimiento.includes("Transportadora")  && !this.transportadora.value )
       alertas.push("El método de entrega exige una transportadora")
+
+
     if(this.contactoEntrega.alerta)
       alertas.push("El contacto tiene la información incompleta")
 

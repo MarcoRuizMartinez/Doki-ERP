@@ -173,9 +173,9 @@
   import {  useRouter           } from "vue-router"            
   // * /////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs         } from 'pinia'                                            
+  import {  useStoreApp         } from 'stores/app'
   import {  useStoreUser        } from 'stores/user'
   import {  useStoreAcuerdo     } from 'stores/acuerdo'
-  import {  useStoreApp         } from 'stores/app'
 
   // * /////////////////////////////////////////////////////////////////////// Componibles
   import {  useTitle            } from "@vueuse/core"

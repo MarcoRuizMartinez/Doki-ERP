@@ -1,11 +1,11 @@
 <template>
   <titulo
-    class                   ="col-12 order-1"
+    class                   ="col-12"
     @click                  ="generarPDF"
     @recargar               ="recargar"
   />
   <botonera
-    class                   ="col-12 order-1"
+    class                   ="col-12"
     @click-pdf              ="generarPDF"
     @click-aprobar          ="clickAprobarCotizacion"
     @click-anular           ="anularAcuerdo"
@@ -21,7 +21,8 @@
     @click-cuenta-cobro     ="generarPDF"
     @click-listo-entregar   ="setListoDespacho"
   />
-  <barra-tercero class      ="col-12 order-1"/>
+  <barra-tercero class      ="col-12"/>
+  <modo-vista    class      ="col-12"/>
   <tercero-y-contacto       scroll
     class                   ="col-md-4 col-12 o-10"
     :height-card            ="alturaFila1"
@@ -66,6 +67,7 @@
     class                   ="col-12 o-entregas"
     @click-nueva-entrega    ="modales.entrega = true"
     @click-remision         ="abrirModalRemision"
+    @entrega-cerrada        ="recargar"
   />
   <!-- :class                  ="{ 'order-1' : acuerdo.esPedido || acuerdo.esEntrega }"
   :class                  ="{ 'order-1' : acuerdo.esEntrega }"
@@ -196,6 +198,7 @@
   import    remision                from "src/areas/acuerdos/components/PDF/RemisionPDF.vue"
   import    documentos              from "components/archivos/ModuloArchivos.vue"
   import    comisiones              from "src/areas/nomina/components/Modales/CalculoComisiones.vue" 
+  import    modoVista               from "./../../components/Modulos/ModuloModoVista.vue"
 
   const { acuerdo,
           modales,
@@ -221,7 +224,7 @@
   const srcPDF                = ref< string   >("")
   const nombrePDF             = ref< string   >("")
   const acuerdoRemsion        = ref< IAcuerdo >( new Acuerdo() )  
-  const moduloCondiciones     = ref<InstanceType<typeof condiciones>  | null>(null)
+  const moduloCondiciones     = ref< InstanceType<typeof condiciones>  | null>(null)
   const orden                 = ref< IOrdenCSS  >(OrdenCSS)
   //dexieBodegas()
   //const { bodegas           } = storeToRefs( useStoreDexie() )
@@ -317,7 +320,6 @@
       orden.value.productos     = 3
       orden.value.entregas      = 2
     }
-
   })
 
 /*

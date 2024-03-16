@@ -19,7 +19,7 @@
         label                       ="Nueva entrega"
         color                       ="positive"
         icon                        ="mdi-truck-fast"
-        :disable                    ="!acuerdo.puedeCrearNuevoGrupo"
+        :disable                    ="!acuerdo.puedeCrearNuevoGrupo || acuerdo.esEstadoEdicion"
         @click                      ="emit('clickNuevaEntrega')"
       /> 
       <!-- //* ///////////////////////////////////////////////////////////// Boton expandir -->
@@ -54,6 +54,7 @@
           <botonera
             :entrega                ="entrega"
             @solicitar-recarga      ="buscarAcuerdoEnlazados()"
+            @entrega-cerrada        ="emit('entregaCerrada')"
           />
         </template>
         <!-- //* ///////////////////////////////////////////////////////////// Contenido   -->
@@ -64,32 +65,35 @@
           </div>
           <!-- //* /////////////////////////////////////////////////////////// Lado Datos  row justify-center full-width -->
           <div  class               ="col-md-7 col-12 row lado-gris-oscuro order-2">
-            <!-- //* ////////////////////////////////////////////////////////// Info de envio -->
-            <tabla-envio            dark
-              class                 ="col-md-7 col-12"
-              :acuerdo              ="entrega"
-            />
-            <!-- //* /////////////////////////////////////////////////////////// Lado Inputs   -->
-            <div  class             ="col-md-5 col-12 lado-gris-claro"> 
-              <!-- //* ////////////////////////////////////////////////////////// Boton Remision -->            
-              <q-btn
-                v-if                ="!!entrega.contactoEntrega.id"
-                v-bind              ="style.btnFlatMd"
-                color               ="grey-4"
-                icon                ="mdi-pdf-box"
-                label               ="Remisión"
-                :loading            ="loading.editar"
-                @click              ="emit('clickRemision', entrega)"
+            <div class              ="col-md-7 col-12 column">
+              <!-- //* ////////////////////////////////////////////////////////// Info de envio -->
+              <tabla-envio          dark
+                :acuerdo            ="entrega"
               />
-              <!-- //* ////////////////////////////////////////////////////////// Boton Rotulo -->
-              <q-btn 
-                v-if                ="!!entrega.contactoEntrega.id"
-                v-bind              ="style.btnFlatMd"
-                color               ="grey-4"
-                icon                ="mdi-pdf-box"
-                label               ="Rotulo"
-                :loading            ="loading.editar"                
-              />          
+            </div>
+            <!-- //* /////////////////////////////////////////////////////////// Lado Inputs   -->
+            <div  class             ="col-md-5 col-12 lado-gris-claro">
+              <div class            ="row justify-center q-mb-sm">
+                <!-- //* ////////////////////////////////////////////////////////// Boton Remision -->            
+                <q-btn
+                  v-if              ="!!entrega.contactoEntrega.id"
+                  v-bind            ="style.btnFlatMd"
+                  color             ="grey-4"
+                  icon              ="mdi-signature-freehand"
+                  label             ="Remisión"
+                  :loading          ="loading.editar"
+                  @click            ="emit('clickRemision', entrega)"
+                />
+                <!-- //* ////////////////////////////////////////////////////////// Boton Rotulo -->
+                <q-btn 
+                  v-if              ="!!entrega.contactoEntrega.id"
+                  v-bind            ="style.btnFlatMd"
+                  color             ="grey-4"
+                  icon              ="mdi-barcode-scan"
+                  label             ="Rotulo"
+                  :loading          ="loading.editar"                
+                />
+              </div>
               <div class            ="invertir column gap-sm">
                 <inputs-entrega
                   :entrega          ="entrega"
@@ -129,11 +133,14 @@
   import    productos               from "./../Entregas/ProductosAEnviar.vue"
   import    inputsEntrega           from "./../Entregas/InputDeEntrega.vue"
 
-  const emit                  = defineEmits<{
-    (e: "clickNuevaEntrega",                  ): void
-    (e: "clickRemision",    value: IAcuerdo   ): void
-    (e: "clickRotulo",      value: IAcuerdo[] ): void
-  }>()
+  type TEmit                  = {
+    clickNuevaEntrega : [ value : void        ]
+    clickRemision     : [ value : IAcuerdo    ]
+    clickRotulo       : [ value : IAcuerdo[]  ]
+    entregaCerrada    : [ value : void        ]
+  }  
+
+  const emit                  = defineEmits<TEmit>()
 
   const { acuerdo, loading        } = storeToRefs( useStoreAcuerdo() )
   const { usuario                 } = storeToRefs( useStoreUser() )
@@ -165,7 +172,7 @@
 
 <style scoped>
 .lado-gris-claro{
-  padding: 16px;
+  padding: 6px 16px;
   border-left: 1px solid #525252;
 }
 

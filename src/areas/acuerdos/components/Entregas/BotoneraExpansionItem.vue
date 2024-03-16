@@ -4,17 +4,11 @@
     class                   ="col"
     >
     <div class              ="row items-center justify-between h-40px full-width">
-      <div class            ="col-4 row items-center">
+      <div class            ="col-3 row items-center">
         <ref-acuerdo        ref-larga white
           class             ="width210"
           :acuerdo          ="entrega"
-        />        
-        <div class          ="width100 q-ml-md">
-          <!-- //* ////////////////////////////////////////////////////////// Estado entrega-->
-          <estado           con-icono            
-            :acuerdo        ="entrega"
-          />
-        </div>
+        />
       </div>
       <div class            ="col-2 text-grey-5 text-right">
           {{ entrega.contactoEntrega.municipio.label }}
@@ -23,11 +17,12 @@
         <span class         ="q-ml-md">{{ entrega.metodoEntrega.label }}</span>
       </div>
       <!-- //* /////////////////////////////////////////////////////// Boton agregar producto  -->
-      <div class            ="col-4 row gap-sm items-center justify-end">
+      <div class            ="col-5 row gap-sm items-center justify-end">
         <!-- //* ////////////////////////////////////////////////////////// Boton Clasificar entregado -->
         <q-btn
           v-if              ="entrega.esEstadoValidado && !entrega.alertaEntrega"
-          v-bind            ="style.btnFlatMd"
+          v-bind            ="style.btnBaseSm"
+          color             ="positive"
           class             ="op80 op100-hover"
           icon              ="mdi-check-circle"
           label             ="Clasificar entregado"
@@ -37,12 +32,13 @@
         <!-- //* ////////////////////////////////////////////////////////// Boton Clasificar validado -->
         <q-btn
           v-if              ="entrega.esEstadoEdicion"
-          v-bind            ="style.btnFlatMd"
+          v-bind            ="style.btnBaseSm"
           class             ="op80 op100-hover"
-          icon              ="mdi-check-circle-outline"
-          label             ="Clasificar validado"
-          >          
-          <confirmar  @ok   ="validarEntrega"/>        
+          color             ="warning"
+          icon              ="mdi-alert"
+          label             ="Validar"
+          @click            ="validarEntrega"
+          >
         </q-btn>        
         <!-- //* ////////////////////////////////////////////////////////// Alerta -->
         <alerta :entrega/>
@@ -84,7 +80,13 @@
             >
             <Tooltip label  ="Generar rótulos"/>
           </q-btn>        
-        </div>        
+        </div>
+        <div class          ="width100 q-ml-md">
+          <!-- //* ////////////////////////////////////////////////////////// Estado entrega-->
+          <estado           con-icono            
+            :acuerdo        ="entrega"
+          />
+        </div>
       </div>
     </div>
     <!-- //* //////////////////////////////// Loading edicion -->
@@ -108,7 +110,9 @@
 
 <script setup lang="ts">
   // * /////////////////////////////////////////////////////////////////////// Core
-  import {  ref, inject           } from "vue"
+  import {  ref,
+            inject,
+            onMounted             } from "vue"
   //* ///////////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs           } from 'pinia'
   import {  useStoreAcuerdo       } from 'stores/acuerdo'
@@ -141,7 +145,8 @@
   const { aviso                   } = useTools()
 
   type TEmit = {
-    solicitarRecarga  : [value : void]   
+    solicitarRecarga  : [value : void],
+    entregaCerrada    : [value : void],
   }
 
   const emit                        = defineEmits<TEmit>()
@@ -149,6 +154,11 @@
   const cargandoOn                  = () => cargando.value = true
   const cargandoOff                 = () => cargando.value = false
   const accion                      = inject('accion', new Accion( usuario.value.id ))
+
+  onMounted(()=>{
+    if(entrega.esEstadoEdicion)     // Para que no haya riesgo que al comercial se le olvide validar
+      validarEntrega()
+  })
    
   async function clasificarEntregado( e : Event )
   {
@@ -170,7 +180,9 @@
     accion.elementoId         = entrega.id
 
     const { ok : ok2  }       = await apiDolibarr("crear", "accion", accion.accionToApiDolibarr )
-    if(!ok2)
+    if(ok2)
+      emit("entregaCerrada")
+    else
       aviso("negative", `Error cerrando entrega`)
 
     cargandoOff()
@@ -180,8 +192,7 @@
   {
     cargandoOn()
     const { ok }              = await apiDolibarr("validate", entrega.tipo, {notrigger:0}, entrega.id )
-    if(ok){
-      aviso("positive", `Entrega validada`)
+    if(ok){      
       entrega.estado          = ESTADO_ENT.VALIDADO
     }
     else{
@@ -191,7 +202,6 @@
     emit("solicitarRecarga")
     cargandoOff()
   }
-  
 
   async function borrarEntrega()
   {

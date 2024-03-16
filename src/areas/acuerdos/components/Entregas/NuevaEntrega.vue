@@ -34,7 +34,7 @@
           />
         </div>
         <!-- //* ///////////////////////////////////////////////// Metodo entrega -->
-        <div class              ="col-4">
+        <div class              ="col-3">
           <select-label-value   hundido
             v-model             ="entrega.metodoEntrega"
             label               ="Método de entrega"
@@ -45,7 +45,7 @@
           />
         </div>
         <!-- //* ///////////////////////////////////////////////// Transportadora -->
-        <div class              ="col-4">
+        <div class              ="col-3">
           <select-label-value   hundido clearable
             v-model             ="entrega.transportadora"
             label               ="Transportadora"
@@ -53,6 +53,22 @@
             :options            ="transportadoras"
             :loading            ="!transportadoras.length"
           />
+        </div>
+        <div class              ="col">
+          <q-btn-group          push spread>
+            <q-btn              push glossy
+              icon              ="mdi-minus-circle"
+              @click            ="entregarNada"
+              >
+              <Tooltip label    ="Todas las cantidades en cero"/>
+            </q-btn>
+            <q-btn              push glossy
+              icon              ="mdi-plus-circle" 
+              @click            ="entregarTodo"
+              >
+              <Tooltip label    ="Entregar todo lo pendiente"/>
+            </q-btn>     
+          </q-btn-group>
         </div>
       </div>
     </template>
@@ -183,7 +199,9 @@
           transportadoras         } = storeToRefs( useStoreDexie() )
 
   const noSePuedeCrear              = computed(()=> entrega.value.alertaEntrega || lineas.value.every( l => !l.qtyAEntregar) )
-    
+  const entregarTodo                = ()=> lineas.value.forEach( l => l.qtyAEntregar = l.qtyPendiente )
+  const entregarNada                = ()=> lineas.value.forEach( l => l.qtyAEntregar = 0 )
+
   const columnas: IColumna[]        = [
     new Columna({ name: "ref",            label: "Producto",    sortable: false }),
     new Columna({ name: "qty",            label: "Total",       sortable: false, align: "center"  }),
@@ -204,19 +222,15 @@
   async function crearEntrega()
   {
     loading.value.entregas    = true
-    const entregaForApi = entrega.value.getEntregaForApi( usuario.value.id, acuerdo.value.id, lineas.value )
-    console.log("entregaForApi: ", entregaForApi);
-    
+    const entregaForApi = entrega.value.getEntregaForApi( usuario.value.id, acuerdo.value.id, lineas.value.filter( l => !!l.qtyAEntregar ) )
     
     const { ok, data }        = await apiDolibarr("crear", "entrega", entregaForApi )
     if(!!ok){
       await buscarAcuerdoEnlazados()
       emit("entregaCreada", ToolType.anyToNum( data ))
+      aviso("positive", "Nueva entrega creada")
     }
-   
 
-    console.log("ok, data: ", ok, data);
     loading.value.entregas    = false
   }
-
 </script>

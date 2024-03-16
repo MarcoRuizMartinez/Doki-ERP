@@ -42,6 +42,10 @@ export const enum ALMACEN_LOCAL {
   COL_COTZ_ENVI   = "v3-colCotizEnvio",
   FECHA_LISTAS    = "v3-fechaListas",
   VERSION_DEXIE   = "v3-VD",
+  VISTA_PEDIDO    = "v3-vPedido",
+  VISTA_ENTREGA   = "v3-vEntrega",
+  VISTA_OC        = "v3-vOC",
+  VISTA_COTIZA    = "v3-vCotizacion",
 }
 
 export const AlmacenesLimpiar  : string[] = [
@@ -55,7 +59,11 @@ export const AlmacenesLimpiar  : string[] = [
   ALMACEN_LOCAL.COL_INVENTIVOS,
   ALMACEN_LOCAL.COL_TAREAS,
   ALMACEN_LOCAL.COL_COTZ_ENVI,
-  ALMACEN_LOCAL.FECHA_LISTAS
+  ALMACEN_LOCAL.FECHA_LISTAS,
+  ALMACEN_LOCAL.VISTA_PEDIDO,
+  ALMACEN_LOCAL.VISTA_ENTREGA,
+  ALMACEN_LOCAL.VISTA_OC,
+  ALMACEN_LOCAL.VISTA_COTIZA,
 ]
 
 export const enum ORIGEN {

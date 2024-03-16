@@ -42,22 +42,6 @@
         />   
       </q-btn>
     </div>
-    <div>
-      <q-btn-toggle dense no-caps 
-        v-model="toggle"
-        padding="4px 20px"
-        push
-        size="sm"
-        glossy
-        toggle-color="primary"
-        :options="[
-          {label: 'General',    value: 'general'},
-          {label: 'Productos',    value: 'productos'},
-          {label: 'Entregas',  value: 'entregas'}
-        ]"
-        @update:model-value ="cambiarOrden"
-      />
-    </div>
     <!-- //* ////////////////////////////////////////////////////////////////////  Lado Derecho -->
     <div class                ="row gap-sm">
       <!-- //* //////////////////////////////////////////////////////////  Notas acuerdo -->
@@ -159,7 +143,7 @@
         </q-btn>
       </efecto>
       <q-btn 
-        v-if                  ="false && acuerdo.esPedido && ( acuerdo.esEstadoValidado || acuerdo.esEstadoEntregado )"
+        v-if                  ="acuerdo.esPedido && ( acuerdo.esEstadoValidado )"
         v-bind                ="style.btnBaseMd"
         color                 ="positive"
         icon                  ="mdi-truck-fast"
@@ -244,11 +228,11 @@
       <!-- </efecto> -->
       <!-- //* ////////////////////////////////////////////////////////// Boton Validar -->
       <q-btn
-        v-if                  ="acuerdo.esEstadoNoValidado || ( acuerdo.esPedido && acuerdo.esEstadoEntregado )"
+        v-if                  ="acuerdo.esEstadoNoValidado"
         v-bind                ="style.btnBaseMd"
         color                 ="positive"
-        :icon                 ="acuerdo.esEstadoEntregado ? 'mdi-lock-open-variant' : 'mdi-check-circle-outline'"
-        :label                ="esMobil ? '' : acuerdo.esEstadoEntregado ? 'Reabrir' : 'Validar'"
+        icon                  ="mdi-check-circle-outline"
+        :label                ="esMobil ? '' : 'Validar'"
         :disable              ="disableBtnValidar"
         :loading              ="loading.validar"
         @click                ="emit('clickValidar')"
@@ -283,7 +267,7 @@
       </q-btn>
       <!-- //* ////////////////////////////////////////////////////////// Boton Reabrir -->
       <q-btn
-        v-if                  ="acuerdo.esPedido && acuerdo.esEstadoAnulado"
+        v-if                  ="acuerdo.esPedido && ( acuerdo.esEstadoAnulado || acuerdo.esEstadoEntregado )"
         v-bind                ="style.btnBaseMd"
         color                 ="positive"
         icon                  ="mdi-lock-open-check"
@@ -332,12 +316,11 @@
 
 <script lang="ts" setup>
   // * /////////////////////////////////////////////////////////////////////// Core
-  import {  ref, computed   } from "vue"
+  import {  computed        } from "vue"
   // * /////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs     } from 'pinia'
   import {  useStoreUser    } from 'stores/user'
   import {  useStoreAcuerdo } from 'stores/acuerdo'
-  import {  useStoreApp     } from 'stores/app'
 
   // * /////////////////////////////////////////////////////////////////////// Componibles
   import {  useTools        } from "src/composables/useTools"
@@ -355,8 +338,6 @@
           modales,
           loading     } = storeToRefs( useStoreAcuerdo() )
   const { usuario     } = storeToRefs( useStoreUser() )
-  const { toggle      } = storeToRefs( useStoreApp() )
-
   const { esMobil     } = useTools()
   
 
@@ -446,10 +427,5 @@
   {
     if(usuario.value.esProduccion)
       emit('clickListoEntregar')    
-  }
-
-  function cambiarOrden()
-  {
-    //modoVista.value    
   }
 </script>

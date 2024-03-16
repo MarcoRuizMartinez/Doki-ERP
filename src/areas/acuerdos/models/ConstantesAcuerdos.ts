@@ -24,7 +24,7 @@ export type TTipoAcuerdo      =   TIPO_ACUERDO.COTIZACION_CLI
 enum COLORES
 {
   NEGRO                       = "#1A1A1A",
-  GRIS                        = "#BCBABA",
+  GRIS                        = "#a0a0a0",
   MORADO                      = "#832362",
   AZUL                        = "#0f61dd",
   AZUL_OSCURO                 = "#0B215B",
