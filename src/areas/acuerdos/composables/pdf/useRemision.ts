@@ -26,13 +26,13 @@ export function useRemisionPDF()
 {
   const { usuario           } = storeToRefs( useStoreUser() )  
   const pdf         : jsPDF       = new jsPDF('p','px')
-  const setup       : IInicioPDF  = { ancho:      447,
-                                      alto:       631,
-                                      margenIzq:  10,
-                                      margenDer:  10,
-                                      pie:        8,
-                                      path:       "/images/pdf/",
-                                      pdf:        pdf
+  const setup       : IInicioPDF  = { ancho       : 447,
+                                      alto        : 631,
+                                      margenIzq   : 10,
+                                      margenDer   : 10,
+                                      pie         : 8,
+                                      path        : "/images/pdf/",
+                                      pdf         : pdf,
                                     }
   const doc         : IUtilPDF    = new UtilPDF( setup )
   let acuerdo       : IAcuerdo    = new Acuerdo()

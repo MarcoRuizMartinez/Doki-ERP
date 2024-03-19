@@ -17,7 +17,7 @@
 
 <script setup lang="ts">
   import {  IAccion } from "../models/Accion"
-  const modelValue            = defineModel<IAccion>( { required: true })
+  const modelValue            = defineModel<IAccion>( { required: true } )
   const emit                  = defineEmits<{
     set: [ value: number ]
   }>()

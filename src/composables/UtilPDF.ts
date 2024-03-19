@@ -2,14 +2,15 @@ import { AREA   } from 'src/models/TiposVarios'
 import { jsPDF  } from "jspdf"
 
 export interface IInicioPDF {
-  ancho:            number
-  alto:             number
-  path:             string
-  margenIzq:        number
-  margenDer:        number
-  pie:              number
-  pdf:              jsPDF
+  ancho                 : number
+  alto                  : number
+  path                  : string
+  margenIzq             : number
+  margenDer             : number
+  pie                   : number
+  pdf                   : jsPDF
 }
+
 type TAlinacion = "center" | "left" | "right"
 export interface    INegrita {
   align:            TAlinacion
@@ -18,36 +19,41 @@ export interface    INegrita {
 }
 
 export interface IUtilPDF extends IInicioPDF {
-  pdf:                  jsPDF
-  x:                    number
-  y:                    number
-  hojaNow:              number
-  hojas:                number
-  color:                string
-  area:                 AREA
-  imgLogo:              string
-  imgFondo:             string
-  imgBar:               string
-  areaNombre:           string
-  headText:             string
-  pieText:              string
-  headAlto:             number
-  fontBase:             string
-  fontBold:             string
-  anchoMitad:           number
-  altoMitad:            number
-  margenDerX:           number
-  margen1:              number
-  margen2:              number
-  posXMargenDerecha:    number
-  empresaNit:           string
-  urlPoliticas:         string
-  seNecesitaNuevaHoja:  ( posY  : number, altura : number ) => boolean
-  setFont:              ( size  : number, color  : number ) => void
-  negrita:              ( align : TAlinacion, espaciado?: number  ) => INegrita
-  setColor:             ( color: number )=> void
-  setNewPage:           ()=>void
-  limpiarPDF:           ()=>void
+  pdf                 : jsPDF
+  x                   : number
+  y                   : number
+  hojaNow             : number
+  hojas               : number
+  color               : string
+  area                : AREA
+  imgLogo             : string
+  imgFondo            : string
+  imgBar              : string
+  areaNombre          : string
+  headText            : string
+  pieText             : string
+  headAlto            : number
+  fontBase            : string
+  fontBold            : string
+  anchoMitad          : number
+  altoMitad           : number
+  margenDerX          : number
+  margen1             : number
+  margen2             : number
+  posXMargenDerecha   : number
+  empresa             : string
+  nit                 : string
+  empresaNit          : string
+  direccion           : string
+  telefono            : string
+  urlPoliticas        : string
+  addY                : ( aumento : number ) => void
+  seNecesitaNuevaHoja : ( posY  : number, altura : number ) => boolean
+  setFont             : ( size  : number, color  : number ) => void
+  negrita             : ( align : TAlinacion, espaciado?: number  ) => INegrita
+  setColor            : ( color: number )=> void
+  setNewPage          : ()=>void
+  limpiarPDF          : ()=>void
 }
 
 
@@ -71,54 +77,49 @@ const TEL_ESCOM     = "PBX 601 813 7505"
 const TEL_MUBLEX    = "PBX 601 722 7881"
 
 export class UtilPDF implements IUtilPDF {
-  x:                number
-  y:                number
-  hojaNow:          number
-  hojas:            number
-  ancho:            number
-  alto:             number
-  path:             string
-  area:             AREA
-  fontBase:         string
-  fontBold:         string
-  headAlto:         number
-  margenIzq:        number
-  margenDer:        number
-  margen1:          number
-  margen2:          number
-  pie:              number
-  pdf:              jsPDF
+  x                 : number  = 0
+  y                 : number  = 0
+  hojaNow           : number  = 1
+  hojas             : number  = 1
+  area              : AREA    = AREA.NULO
+  fontBase          : string  = ""
+  fontBold          : string  = ""
+  headAlto          : number  = 0
+  margen1           : number  = 0
+  margen2           : number  = 0  
+  ancho             : number
+  alto              : number
+  path              : string
+  margenIzq         : number
+  margenDer         : number
+  pie               : number  
+  pdf               : jsPDF
 
-  constructor( inicio : IInicioPDF ) {
-    this.x          = 0
-    this.y          = 0
-    this.hojaNow    = 1
-    this.hojas      = 1
+  constructor( inicio : IInicioPDF )
+  {
     this.ancho      = inicio.ancho
     this.alto       = inicio.alto
     this.path       = inicio.path
     this.margenIzq  = inicio.margenIzq
     this.margenDer  = inicio.margenDer
-    this.margen1    = 0
-    this.margen2    = 0
     this.pie        = inicio.pie
-    this.area       = AREA.NULO
-    this.fontBase   = ""
-    this.fontBold   = ""
-    this.headAlto   = 0
     this.pdf        = inicio.pdf
   }
 
   get anchoMitad  (){ return this.ancho / 2 }
   get altoMitad   (){ return this.alto  / 2 }
-  get color       (){ return this.area === AREA.MUBLEX ? "red"    : "orange"  } //
+  get color       (){ return this.area === AREA.MUBLEX ? "red"    : "orange" } //
   get areaNombre  (){ return this.area === AREA.MUBLEX ? "Mublex" : "Escom" }
   get imgLogo     (){ return this.path + "logo" + this.areaNombre + ".png" }
   get imgFondo    (){ return this.path + "fondoGris.png" }
   get imgBar      (){ return this.path + "bar_" + this.color + ".png" }
   get margenDerX  (){ return this.ancho - this.margenDer }
   get posXMargenDerecha (){ return this.ancho - this.margenDer - this.margenIzq }
+  get empresa     (){ return EMPRESA }
+  get nit         (){ return NIT }
+  get direccion   (){ return DIR }
   get empresaNit  (){ return EMPRESA + " " + NIT}
+  get telefono    (){ return this.area === AREA.MUBLEX ? TEL_MUBLEX : TEL_ESCOM }
   get headText    (){
     return EMPRESA + " " + NIT + "\n" + DIR + "\n" + (this.area === AREA.MUBLEX ? TEL_MUBLEX : TEL_ESCOM) 
   }
@@ -132,7 +133,7 @@ export class UtilPDF implements IUtilPDF {
           : "https://www.escoming.com/documentos/Politica_Proteccion_de_Datos_Personales_Escom.pdf"
   }
 
-
+  addY( aumento : number ) { this.y += aumento }
   setFont( size : number, color : number )
   {
     this.setColor       ( color )

@@ -68,15 +68,17 @@
           <q-btn
             v-bind          ="style.btnRedondoFlat2Sm"            
             icon            ="mdi-signature-freehand"
+            @click          ="emit('clickRemision')"
             >
-            <Tooltip label  ="Generar remisión"/>
+            <Tooltip label  ="Generar remisión"/> 
           </q-btn>        
         </div>
-        <!-- //* ////////////////////////////////////////////////////////// Boton Remision -->
+        <!-- //* ////////////////////////////////////////////////////////// Boton rótulos -->
         <div>
           <q-btn
             v-bind          ="style.btnRedondoFlat2Sm"            
             icon            ="mdi-barcode-scan"
+            @click          ="emit('clickRotulo')"
             >
             <Tooltip label  ="Generar rótulos"/>
           </q-btn>        
@@ -115,7 +117,6 @@
             onMounted             } from "vue"
   //* ///////////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs           } from 'pinia'
-  import {  useStoreAcuerdo       } from 'stores/acuerdo'
   import {  useStoreUser          } from 'stores/user'
 
   //* /////////////////////////////////////////////////////////////////////////////////// Modelos
@@ -140,13 +141,14 @@
   const calendarioOn                = ref<boolean>(false)
 
   const { apiDolibarr             } = useApiDolibarr()
-  const { acuerdo, loading        } = storeToRefs( useStoreAcuerdo() )
-  const { usuario                 } = storeToRefs( useStoreUser() )  
+  const { usuario                 } = storeToRefs( useStoreUser() )
   const { aviso                   } = useTools()
 
   type TEmit = {
-    solicitarRecarga  : [value : void],
-    entregaCerrada    : [value : void],
+    solicitarRecarga  : [ value : void]
+    entregaCerrada    : [ value : void]
+    clickRemision     : [ value : void]
+    clickRotulo       : [ value : void]
   }
 
   const emit                        = defineEmits<TEmit>()

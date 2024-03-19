@@ -3,7 +3,7 @@
     <div v-if                       ="modo === 'center'">
       <q-btn
         v-bind                      ="estiloBotones('abajo')"
-        v-touch-repeat:0:200.mouse  ="restar"
+        v-touch-repeat:0:300.mouse  ="restar"
         :disable                    ="readonly"
       />
     </div>
@@ -30,12 +30,12 @@
       >
       <q-btn
         v-bind                      ="estiloBotones('arriba')"
-        v-touch-repeat:0:200.mouse  ="sumar"
+        v-touch-repeat:0:300.mouse  ="sumar"
         :disable                    ="readonly"
       />
       <q-btn
         v-bind                      ="estiloBotones('abajo')"
-        v-touch-repeat:0:200.mouse  ="restar"
+        v-touch-repeat:0:300.mouse  ="restar"
         :disable                    ="readonly"
       />
     </div>
@@ -45,7 +45,7 @@
       >
       <q-btn
         v-bind                      ="estiloBotones('arriba')"
-        v-touch-repeat:0:200.mouse  ="sumar"
+        v-touch-repeat:0:300.mouse  ="sumar"
         :disable                    ="readonly"
       />
     </div>

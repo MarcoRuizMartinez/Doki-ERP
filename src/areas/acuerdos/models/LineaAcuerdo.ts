@@ -103,10 +103,10 @@ export interface ILineaAcuerdo extends IProductoDoli {
   qtyTotal                  : number
   bodegaId                  : number
   bodega                    : IBodega
-  qtyDeTotal                : string  // 2 de 4
+  qtyDeTotal                : string    // 2 de 4
   bodegaLabel               : string
   lineaIdPedido             : number
-
+  visible                   : boolean   // Para ver si son visibles en Rotulos
   // */ /////////////////// Para pedido pero se calcula con las entregas
   qtyProgramado             : number
   qtyEntregado              : number
@@ -144,6 +144,7 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
   qtyEnEntregas             : number              = 0
   qtyAEntregar              : number              = 0
   qtyPendiente              : number              = 0
+  visible                   : boolean             = true
 
   // */ /////////////////// Comisiones
   comsionX100Division       : number              = 100

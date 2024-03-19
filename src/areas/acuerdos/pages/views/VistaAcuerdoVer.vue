@@ -4,6 +4,7 @@
     @click                  ="generarPDF"
     @recargar               ="recargar"
   />
+  <!-- @click-remision         ="abrirModalRemision" -->
   <botonera
     class                   ="col-12"
     @click-pdf              ="generarPDF"
@@ -12,7 +13,7 @@
     @click-validar          ="validarAcuerdo"
     @click-editar           ="pasarABorradorAcuerdo"
     @click-borrar           ="eliminarAcuerdo"
-    @click-remision         ="abrirModalRemision"
+    
     @click-reabrir          ="reabrirPedido"
     @click-recargar         ="recargar"
     @click-entregado        ="cerrarPedido"
@@ -67,6 +68,7 @@
     class                   ="col-12 o-entregas"
     @click-nueva-entrega    ="modales.entrega = true"
     @click-remision         ="abrirModalRemision"
+    @click-rotulo           ="abrirModalRotulos"
     @entrega-cerrada        ="recargar"
   />
   <!-- :class                  ="{ 'order-1' : acuerdo.esPedido || acuerdo.esEntrega }"
@@ -77,10 +79,12 @@
     class                   ="col-md-4 col-12"
   /> -->
   <notas
-    class                   ="col-md-4 col-12 o-100"
+    class                   ="col-md-4 col-12"
+    :class                  ="acuerdo.esOCProveedor ? 'o-60' : 'o-100'"
     height-card             ="220px"
   />
   <comentarios
+    style                   ="z-index: 1000;"
     v-model                 ="acuerdo.comentarios"
     :asignado               ="acuerdo.comercial"
     :elemento-id            ="acuerdo.id"
@@ -105,12 +109,23 @@
     <comisiones style       ="max-width: initial;"/>
   </q-dialog>
   <!-- //* ///////////////////////////////////////////////////////////// Modal remision -->
+  
   <q-dialog                 maximized
     v-model                 ="modales.remision"
     v-bind                  ="style.dialogo"
     >
     <remision
-      :acuerdo              ="acuerdoRemsion"
+      :acuerdo              ="acuerdoRemision"
+    />
+  </q-dialog> 
+ 
+  <!-- //* ///////////////////////////////////////////////////////////// Modal Rotulo -->
+  <q-dialog                 maximized
+    v-model                 ="modales.rotulos"
+    v-bind                  ="style.dialogo"
+    >
+    <rotulos
+      :acuerdos             ="entregasRotulos"
     />
   </q-dialog>
   <!-- //* ///////////////////////////////////////////////////////////// Modal calendario de enventos de acuerdo -->
@@ -196,6 +211,7 @@
   import    comentarios             from "src/areas/comunicacion/components/ModuloComentarios.vue"
   //import    nuevaEntrega          from ".././Modals/NuevaEntregaSelectBodega.vue"
   import    remision                from "src/areas/acuerdos/components/PDF/RemisionPDF.vue"
+  import    rotulos                 from "src/areas/acuerdos/components/PDF/RotulosPDF.vue"
   import    documentos              from "components/archivos/ModuloArchivos.vue"
   import    comisiones              from "src/areas/nomina/components/Modales/CalculoComisiones.vue" 
   import    modoVista               from "./../../components/Modulos/ModuloModoVista.vue"
@@ -220,10 +236,11 @@
           setListoDespacho,
           buscarComentarios
                             } = useControlAcuerdo()
-  const minimizadoTodo        = ref< boolean  >(false)
-  const srcPDF                = ref< string   >("")
-  const nombrePDF             = ref< string   >("")
-  const acuerdoRemsion        = ref< IAcuerdo >( new Acuerdo() )  
+  const minimizadoTodo        = ref< boolean    >(false)
+  const srcPDF                = ref< string     >("")
+  const nombrePDF             = ref< string     >("")
+  const entregasRotulos       = ref< IAcuerdo[] >( [] )  
+  const acuerdoRemision       = ref< IAcuerdo   >( new Acuerdo() )  
   const moduloCondiciones     = ref< InstanceType<typeof condiciones>  | null>(null)
   const orden                 = ref< IOrdenCSS  >(OrdenCSS)
   //dexieBodegas()
@@ -291,18 +308,23 @@
       srcPDF.value              = await getQuotePDF( acuerdo.value, tipo )
       loading.value.pdf         = false
     }
-    else
-    if(acuerdo.value.esEntrega){
-      abrirModalRemision(/* acuerdo.value */)
-    }
+    //else
+    //if(acuerdo.value.esEntrega){
+    //  abrirModalRemision( acuerdo.value )
+    //}
   }
 
 
-  function abrirModalRemision( /*acu : IAcuerdo */)
-  {
+  function abrirModalRemision( entrega : IAcuerdo ){
     modales.value.remision      = true
-    //acuerdoRemsion.value        = acu    
+    acuerdoRemision.value       = entrega
   }
+
+  function abrirModalRotulos( entregas_ : IAcuerdo[] ){
+    modales.value.rotulos       = true
+    entregasRotulos.value       = entregas_
+  }
+
 
   watch( toggle, (modo)=>{
     if(modo === "general")

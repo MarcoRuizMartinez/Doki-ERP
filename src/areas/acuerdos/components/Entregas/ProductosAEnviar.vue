@@ -4,6 +4,7 @@
     row-key               ="lineaId"
     :rows                 ="entrega.productos"
     :columns              ="columnas"
+    :rows-per-page-options="[200, 400]"
     >
     <!-- //* ///////////////  Columna ref  -->
     <template
@@ -27,7 +28,7 @@
             <Tooltip>{{ 'Bodega: ' + props.row.bodega.label }}</Tooltip>
           </div>
         </div>
-        <div>{{props.row.nombre}}</div>
+        <div>{{props.row.nombre}} - {{props.row.precioBase}} - {{props.row.totalConIva}} - {{entrega.totalConIva}} </div>
       </q-td>
     </template>
   </q-table>

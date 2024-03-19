@@ -267,12 +267,12 @@
       </q-btn>
       <!-- //* ////////////////////////////////////////////////////////// Boton Reabrir -->
       <q-btn
-        v-if                  ="acuerdo.esPedido && ( acuerdo.esEstadoAnulado || acuerdo.esEstadoEntregado )"
+        v-if                  ="acuerdo.esPedido && ( acuerdo.esEstadoAnulado || acuerdo.esEstadoEntregado || acuerdo.esEstadoEntregando )"
         v-bind                ="style.btnBaseMd"
         color                 ="positive"
         icon                  ="mdi-lock-open-check"
         :label                ="esMobil ? '' : 'Reabrir'"
-        :disable              ="cargandoAlgo"
+        :disable              ="cargandoAlgo || !!acuerdo.entregas.length"
         :loading              ="loading.editar"
         >
         <confirmar  @ok       ="emit('clickReabrir')" :con-label="!esMobil"/>

@@ -10,28 +10,22 @@ export enum TIPOS_DOCUMENTO {
 }
 
 export interface ITipoDocumento {
-  id:       number
-  codigo:   TIPOS_DOCUMENTO | ""
-  nombre:   string
-  value:    TIPOS_DOCUMENTO | ""
-  label:    string
-  esCedula: boolean
-  esNIT:    boolean
+  id        : number
+  codigo    : TIPOS_DOCUMENTO | ""
+  nombre    : string
+  value     : TIPOS_DOCUMENTO | ""
+  label     : string
+  esCedula  : boolean
+  esNIT     : boolean
+  esTI      : boolean
 }
 
 export class TipoDocumento implements ITipoDocumento
 {
-  id:       number
-  codigo:   TIPOS_DOCUMENTO | ""
-  nombre:   string
+  id        : number                = 0
+  codigo    : TIPOS_DOCUMENTO | ""  = ""
+  nombre    : string                = ""
   
-  constructor()
-  {
-    this.id       = 0
-    this.codigo   = ""
-    this.nombre   = ""
-  }
-
   get value() : TIPOS_DOCUMENTO | ""
   {
     return this.codigo
@@ -48,6 +42,11 @@ export class TipoDocumento implements ITipoDocumento
   get esNIT() : boolean {
     return this.codigo === TIPOS_DOCUMENTO.NIT
   }  
+
+  get esTI() : boolean {
+    return this.codigo === TIPOS_DOCUMENTO.TARJETA_IDENTIDAD
+  }  
+  
   
 }
 

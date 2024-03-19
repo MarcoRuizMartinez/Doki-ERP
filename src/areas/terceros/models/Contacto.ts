@@ -51,6 +51,7 @@ export interface IContacto {
     documento                 : number
     telefono                  : string
     telefono_2                : string
+    telefonos                 : string
     extension                 : string
     direccion                 : string
     fechaCreado               : Date 
@@ -152,9 +153,22 @@ export class Contacto implements IContacto
             : ""
   }
 
+  get telefonos() : string 
+  {
+    const tels =    !!this.telefono && !!this.telefono_2  ? this.telefono + " " + this.telefono_2
+                  : !!this.telefono                       ? this.telefono
+                  : !!this.telefono_2                     ? this.telefono_2
+                  : ""
+    return tels
+  }
+
   get alerta (): boolean
   {
-    const alerta = !this.id || this.direccion.length < 10 || !this.municipio.id || ( !this.telefono && !this.telefono_2 )
+    const alerta =      !this.id
+                    ||  this.direccion.length < 10
+                    || !this.municipio.id
+                    || !this.nota
+                    || ( !this.telefono && !this.telefono_2 )
     return alerta
   }
 

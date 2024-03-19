@@ -1,11 +1,12 @@
 <template>
-  <ventana                      cerrar
+  <ventana                      cerrar scroll
     titulo                      ="Nueva entrega"
     icono                       ="mdi-truck-delivery"      
     size-icon-carga             ="10em"
     class-contenido             ="row"
     padding-contenido           ="0"
     style                       ="width: 800px !important;"
+    height-card-max             ="80vh"
     :cargando                   ="loading.entregas"
     >
     <template                   #barra>
@@ -31,6 +32,7 @@
             :quitar-contacto    ="!acuerdo.esEntrega"
             :tercero            ="acuerdo.tercero"
             :disable            ="!acuerdo.tercero.id"
+            @quitar-contacto    ="entrega.contactoEntrega = new Contacto()"
           />
         </div>
         <!-- //* ///////////////////////////////////////////////// Metodo entrega -->
@@ -163,6 +165,7 @@
   import {  IAcuerdo, Acuerdo     } from "src/areas/acuerdos/models/Acuerdo"
   import {  ILineaAcuerdo         } from "src/areas/acuerdos/models/LineaAcuerdo"
   import {  TIPO_ACUERDO          } from "src/areas/acuerdos/models/ConstantesAcuerdos"
+  import {  IContacto, Contacto   } from "src/areas/terceros/models/Contacto"
   import {  IColumna,
             Columna               } from "src/models/Tabla"
 

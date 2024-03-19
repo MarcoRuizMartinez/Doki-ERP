@@ -4,26 +4,31 @@ import {  TIPOS_DOCUMENTO,
                           } from "./TiposDocumento"
 
 //* ///////////////////////////////////////////////////////////// Documento
-export interface IDocumento {
-  numero:   string                    // siren
-  tipo:     ITipoDocumento            // fk_typent -> Tabla llx_c_typent
-  digito:   string                    // siret
-  esNumero: boolean
+export interface IDocumento
+{
+  numero          : string                    // siren
+  tipo            : ITipoDocumento            // fk_typent -> Tabla llx_c_typent
+  digito          : string                    // siret
+  esNumero        : boolean
+  label           : string
 }
 
 export class Documento implements IDocumento
 {
-  numero:   string   
-  tipo:     ITipoDocumento
-  digito:   string
+  numero          : string          = ""   
+  digito          : string          = ""
+  tipo            : ITipoDocumento  = new TipoDocumento()
 
-  constructor()
-  {
-    this.numero   = ""
-    this.tipo     = new TipoDocumento()
-    this.digito   = ""
+  get label() : string {
+    let numero  : string  = this.numero
+    if(this.tipo.esCedula || this.tipo.esNIT || this.tipo.esTI){      
+      numero              = this.numero.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+    }
+
+    return this.tipo.label + " " + numero
   }
 
+  
   get esNumero() : boolean
   {
     let esNumero_ = false

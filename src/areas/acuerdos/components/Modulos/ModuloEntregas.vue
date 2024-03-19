@@ -7,7 +7,7 @@
     class-contenido                 ="row"
     padding-contenido               ="0"
     mensaje-sin-resultados          ="Sin entregas"
-    :height-card-min                ="expandido ? '260px' : ''"
+    :height-card-min                ="expandido ? '240px' : ''"
     :modo                           ="modo"
     :cargando                       ="loading.entregas"
     >
@@ -55,6 +55,8 @@
             :entrega                ="entrega"
             @solicitar-recarga      ="buscarAcuerdoEnlazados()"
             @entrega-cerrada        ="emit('entregaCerrada')"
+            @click-remision         ="emit('clickRemision', entrega)"
+            @click-rotulo           ="emit('clickRotulo',   [entrega])"
           />
         </template>
         <!-- //* ///////////////////////////////////////////////////////////// Contenido   -->
@@ -74,7 +76,7 @@
             <!-- //* /////////////////////////////////////////////////////////// Lado Inputs   -->
             <div  class             ="col-md-5 col-12 lado-gris-claro">
               <div class            ="row justify-center q-mb-sm">
-                <!-- //* ////////////////////////////////////////////////////////// Boton Remision -->            
+                <!-- //* ////////////////////////////////////////////////////////// Boton Remision -->
                 <q-btn
                   v-if              ="!!entrega.contactoEntrega.id"
                   v-bind            ="style.btnFlatMd"
@@ -92,6 +94,7 @@
                   icon              ="mdi-barcode-scan"
                   label             ="Rotulo"
                   :loading          ="loading.editar"                
+                  @click            ="emit('clickRotulo', [entrega])"
                 />
               </div>
               <div class            ="invertir column gap-sm">
