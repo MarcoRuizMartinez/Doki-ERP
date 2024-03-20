@@ -45,9 +45,19 @@
               titulo                  ="Método"
             />
             <td-edit                  precio
-              v-model                 ="entrega.totalConIva"
+              v-model                 ="entrega.numTemporal"
               titulo                  ="Total"
             />
+            <tr>
+              <td class               ="text-bold">Seguro por total</td>
+              <td></td>
+              <td>
+                <q-toggle             dense
+                  v-model             ="entrega.seguroRotuloTotal"
+                  @update:model-value ="seguroPorTotal(entrega)"
+                />
+              </td>
+            </tr>
             <td-edit                  editar
               v-model                 ="entrega.contactoEntrega.municipio.municipio"
               titulo                  ="Municipio"
@@ -95,7 +105,8 @@
                 <!-- //?* //////////////////////////////////////////////////////// Ref, Nombre y Cantidad -->
                 <div class            ="col text-bold text-grey-8">
                   <div class          ="width360 ellipsis">
-                    {{producto.qty}} X {{producto.ref}} {{producto.nombre}}
+                    {{ producto.qty }} X {{ producto.ref }} {{ producto.nombre }}<br/>
+                    Total: {{ Format.precio( producto.precio, 'decimales-no' )  }}
                     <Tooltip :label   ="producto.nombre"/>
                   </div>
                   <q-popup-edit       auto-save
@@ -106,12 +117,13 @@
                     <q-input          dense autofocus
                       v-model         ="producto.nombre"  
                       @keyup.enter    ="scope.set"
+                      @update:model-value="generarPDF"
                     />
                   </q-popup-edit>
                 </div>
                 <!-- //?* //////////////////////////////////////////////////////// Total producto -->
                 <div class            ="col-shrink fuente-mono text-right text-bold">
-                  {{Format.precio(producto.precioBase, "decimales-no") }}
+                  {{Format.precio(producto.precioBaseConIVA, "decimales-no") }}
                   <q-popup-edit       auto-save
                     v-model           ="producto.precioBase"
                     v-slot            ="scope"
@@ -126,6 +138,7 @@
                       debounce        ="2500"
                       :minimo         ="0"
                       @keyup.enter    ="scope.set"
+                      @update:model-value="generarPDF"
                     />
                   </q-popup-edit>                
                   <Tooltip label      ="Editar Valor unitario sin IVA"/>
@@ -145,6 +158,25 @@
               </div>
               <!-- //?* ///////////////////////////////////////////////////////////// ROTULOS segun cantidad de productos -->
               <div class              ="row q-col-gutter-sm">
+                <!-- //?* /////////////////////////////////////////////////////////// Botones de aumentar o disminuir -->
+                <div class            ="col-3">
+                  <q-btn
+                    v-bind            ="style.btnRedondoFlat2Md"
+                    icon              ="mdi-tag-minus"
+                    :disable          ="producto.qty <= 1"
+                    @click            ="calcularRotulo( 'restar', producto )"
+                    >
+                    <Tooltip label    ="Quitar rotulo"/>
+                  </q-btn>                  
+                  <q-btn
+                    v-bind            ="style.btnRedondoFlat2Md"
+                    icon              ="mdi-tag-plus"
+                    @click            ="calcularRotulo( 'sumar', producto )"
+                    >
+                    <Tooltip label    ="Agregar rotulo"/>
+                  </q-btn>
+                </div>                
+                <!-- //?* /////////////////////////////////////////////////////////// Rotulos -->
                 <div
                   v-for               ="i in producto.qty"
                   :index              ="i"
@@ -157,15 +189,6 @@
                       {{ Format.precio( producto.precioBaseConIVA, 'decimales-no' ) }}
                     </span>
                   </div>
-                </div>
-                <div class            ="col-auto">
-                  <q-btn
-                    v-bind            ="style.btnRedondoFlat2Md"
-                    icon              ="mdi-tag-plus"
-                    @click            ="()=>{ producto.qty++;generarPDF();}"
-                    >
-                    <Tooltip label    ="Agregar rotulo"/>
-                  </q-btn>
                 </div>
               </div>            
             </div>
@@ -189,12 +212,15 @@
 
   // * /////////////////////////////////////////////////////////////////////////////////// Modelos
   import {  IAcuerdo, Acuerdo   } from "../../models/Acuerdo";
-  import {  LineaAcuerdo        } from "src/areas/acuerdos/models/LineaAcuerdo"  
+  import {  ILineaAcuerdo,
+            LineaAcuerdo        } from "src/areas/acuerdos/models/LineaAcuerdo"  
   import {  Contacto            } from "src/areas/terceros/models/Contacto"  
   // * /////////////////////////////////////////////////////////////////////////////////// Componibles
   import {  useRotulosPDF       } from "src/areas/acuerdos/composables/pdf/useRotulos"
   import {  style               } from "src/composables/useEstilos"
-  import {  useTools, Format    } from "src/composables/useTools"
+  import {  useTools, 
+            ToolNum,
+            Format              } from "src/composables/useTools"
 
   // * /////////////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana               from "components/utilidades/Ventana.vue"
@@ -228,6 +254,7 @@
       entrega.tercero.nombre        = e.tercero.nombre
       entrega.metodoEntrega.label   = e.metodoEntrega.label
       entrega.tercero.documento     = e.tercero.documento
+      
 
       const contacto                = new Contacto()
       contacto.nombres              = e.contactoEntrega.nombreCompleto
@@ -241,15 +268,20 @@
       {
         const linea                 = new LineaAcuerdo()
         linea.precioBase            = p.precioBase
+        linea.numTemporal           = p.precioBase
+        linea.precio                = p.totalConIva     // Utilizo 'precio' para guardar el total para tenerlo en cuenta en el seguro
         linea.descuentoX100         = p.descuentoX100
         linea.iva                   = p.iva
         linea.nombre                = p.nombre
         linea.qty                   = p.qty
+        linea.qtyTotal              = p.qty             // Para tener guardardo este valor  para los rotulos cuando se suma y se resta
         linea.ref                   = p.ref
         linea.img                   = p.img
 
         entrega.productos.push( linea )
       }
+
+      entrega.numTemporal           = entrega.totalConIva
 
       entregas.value.push( entrega )
     }
@@ -257,19 +289,32 @@
 
   const srcPDF                = ref< string >( "" )
 
-  function prosesarRotulos( origen_ : string = "")
-  {
-  }
-
-
   async function generarPDF() {
     srcPDF.value              = await getRotulosPDF( entregas.value  )
   }
+
+  function calcularRotulo( accion : "restar" | "sumar", linea : ILineaAcuerdo )
+  {
+    if(accion                 == "restar" )
+      linea.qty--
+    else if(accion            == "sumar" )
+      linea.qty++
+
+    if(linea.qty              <= linea.qtyTotal)
+      linea.precioBase        = ToolNum.X100_Reduccion( linea.precio, linea.iva ) / linea.qty    
+    generarPDF()
+  }
+
+  function seguroPorTotal( entrega : IAcuerdo )
+  {
+    for (const p of entrega.productos)
+      p.precioBase            = entrega.seguroRotuloTotal ? entrega.numTemporal : p.numTemporal
+
+    generarPDF()
+  }
 </script>
 
-
 <style scoped>
-
   table th:first-child {
     width: 120px;
   }

@@ -270,6 +270,8 @@ export interface IAcuerdo
   transportadora              : ITransportadora
   alertasEntrega              : string[]
   alertaEntrega               : boolean
+  seguroRotuloTotal           : boolean
+  numTemporal                 : number              // Se utiliza para guardar informarcion temporal
   calcularEntregado           : () => void
 }
 
@@ -371,6 +373,8 @@ export class Acuerdo implements IAcuerdo
   transportadoraId            : number              = 0
   numeroGuia                  : string              = ""
   transportadora              : ITransportadora     = new Transportadora()
+  seguroRotuloTotal           : boolean             = false
+  numTemporal                 : number              = 0
 
   constructor( tipo : TTipoAcuerdo = TIPO_ACUERDO.NULO )
   {

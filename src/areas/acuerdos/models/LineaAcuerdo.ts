@@ -63,16 +63,16 @@ export interface ILineaAcuerdo extends IProductoDoli {
   esTituloOsubTotal         : boolean
   fixed                     : boolean
   precioBase                : number
-  precioBaseConIVA          : number
-  precioFinal               : number
-  precioFinalConIVA         : number
-  precioMinimo              : number
-  precioMinimoConIVA        : number
+  precioBaseConIVA          : number      // get
+  precioFinal               : number      // get
+  precioFinalConIVA         : number      // get
+  precioMinimo              : number      // get
+  precioMinimoConIVA        : number      // get
   descuentoX100             : number      // Descuento bruto
-  descuentoValor            : number      // Descuento valor
-  totalSinDescu             : number      // Subtotal sin descuento
-  totalConDescu             : number      // Subtotal con descuento
-  totalDescuento            : number
+  descuentoValor            : number      // get Descuento valor
+  totalSinDescu             : number      // get Subtotal sin descuento
+  totalConDescu             : number      // get Subtotal con descuento
+  totalDescuento            : number      // get
   ivaValorLinea             : number
   ivaValorTotal             : number
   totalConIva               : number
@@ -117,6 +117,8 @@ export interface ILineaAcuerdo extends IProductoDoli {
   qtyMaximoEntregar         : number
   entregaTotalOk            : boolean
   entregaProgramadoTodo     : boolean
+
+  numTemporal               : number              // Se utiliza para guardar informarcion temporal
 }
 
 
@@ -150,6 +152,8 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
   comsionX100Division       : number              = 100
   comision_c1               : IComisionLinea      = new ComisionLinea( "comercial 1" )
   comision_c2               : IComisionLinea      = new ComisionLinea( "comercial 2" )
+
+  numTemporal               : number              = 0
 
   /*constructor()
   {

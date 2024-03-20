@@ -98,7 +98,9 @@ export function useRotulosPDF()
           pdf.setFontSize     ( 17 )
           const qty           = producto.qty
           const qtyTxt        = qty == 1 ? "" :  `${i+1}/${qty}`
-          const productoTxt   = `Seguro: ${Format.precio( producto.precioBaseConIVA )} - ${qtyTxt} - ${producto.nombre}`
+          let productoTxt     = `Seguro: ${Format.precio( producto.precioBaseConIVA )}`
+              productoTxt    += !!qtyTxt          ? ` - ${qtyTxt}` : ""
+              productoTxt    += !!producto.nombre ? ` - ${producto.nombre}` : ""
           const productoSplit = pdf.splitTextToSize(productoTxt, doc.ancho - 145)
           pdf.text            ( productoSplit, 132, doc.y, {align: "left"} )
           doc.addY            ( 12 * productoSplit.length )

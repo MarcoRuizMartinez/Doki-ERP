@@ -47,7 +47,8 @@
     height-card             ="260px"    
   />
   <documentos               minimizar
-    class                   ="col-md-4 col-12 o-60"
+    class                   ="col-md-4 col-12"
+    :class                  ="acuerdo.esEntrega ? 'o-100' : 'o-60'"
     height-card-min         ="164px"
     :modulo                 ="acuerdo.modulo"
     :modulo-id              ="acuerdo.id ?? 0"

@@ -43,12 +43,12 @@ export interface IProductoDoli {
   aumento_escom             : number
   aumento_descuento         : number
   aumento_loco              : number
-  precio_aumento            : number
-  precio_aumento_escom      : number
-  precio_aumento_descuento  : number
-  precio_aumento_loco       : number
-  precio_publico_final      : number
-  precio_escom              : number
+  precio_aumento            : number        // get
+  precio_aumento_escom      : number        // get
+  precio_aumento_descuento  : number        // get
+  precio_aumento_loco       : number        // get
+  precio_publico_final      : number        // get
+  precio_escom              : number        // get
   descuentoCalculado        : number
   costo                     : number        // precio que viene de la tabla llx_product > cost_price
   costo_adicional           : number
@@ -68,8 +68,8 @@ export interface IProductoDoli {
   precio_proveedor          : number        // precio que es el minimo de la tabla productos_proveedor > precio
   precio_publico            : number
   precio_promocion          : number
-  precioPublicoConIVA       : number
-  precioPromocionConIVA     : number
+  precioPublicoConIVA       : number        // get
+  precioPromocionConIVA     : number        // get
   precio                    : number        // Precio final, el menor entre publico y promocion  
   competencia               : number
   esProducto                : boolean
