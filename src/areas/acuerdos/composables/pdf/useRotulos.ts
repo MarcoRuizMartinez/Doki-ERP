@@ -73,14 +73,14 @@ export function useRotulosPDF()
           const direccion     = entrega.contactoEntrega.direccion
           const largoCiudad   = ciudad.length
           const posXDireccion = doc.margen1 + ( largoCiudad * 6 ) + 20
-          const direccionSplit= pdf.splitTextToSize( direccion, doc.ancho - posXDireccion -200 ) as Array<string>
+          const direccionSplit= pdf.splitTextToSize( direccion, doc.ancho - posXDireccion - 20 ) as Array<string>
           pdf.text            ( direccionSplit, posXDireccion, doc.y )
           doc.addY            ( 15 * direccionSplit.length )
           doc.addY            ( 3 )
 
           //* /////////////////////////////////////////////////////////////////////////////////// Indicaciones
-          const indicaciones  = entrega.contactoEntrega.nota 
-          if(!!indicaciones)
+          const indicaciones  = entrega.contactoEntrega.nota
+          if(indicaciones.length > 6) 
           {
             const anchoIndica = 60
             pdf.text          ("Indicaciones:", doc.margen1, doc.y, { renderingMode: 'fillThenStroke' })
@@ -106,11 +106,11 @@ export function useRotulosPDF()
           doc.addY            ( 12 * productoSplit.length )
 
           //* /////////////////////////////////////////////////////////////////////////////////// Caja que rodea
-          const altoCaja      = doc.y - inicioY - 2
+          const altoCaja      = doc.y - inicioY - 6
           pdf.roundedRect     (doc.margenIzq, inicioY, doc.margen2, altoCaja, 5, 5 )
 
           //* /////////////////////////////////////////////////////////////////////////////////// Final
-          doc.addY            ( 8 )
+          doc.addY            ( 3 )
         }        
       }      
     }

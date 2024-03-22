@@ -18,6 +18,7 @@ export interface ITipoDocumento {
   esCedula  : boolean
   esNIT     : boolean
   esTI      : boolean
+  sigla     : string
 }
 
 export class TipoDocumento implements ITipoDocumento
@@ -46,6 +47,25 @@ export class TipoDocumento implements ITipoDocumento
   get esTI() : boolean {
     return this.codigo === TIPOS_DOCUMENTO.TARJETA_IDENTIDAD
   }  
+
+  get sigla() : string {
+    const partes      = this.nombre.split(" ")
+    let sigla         = ""
+
+    for (const parte of partes)
+    {
+      if(parte.length   <= 2 ) continue
+      
+      if(partes.length  === 1)
+      { 
+        sigla           = parte.toUpperCase()        
+      }
+      else
+        sigla           += parte[0].toUpperCase()
+    }
+
+    return sigla
+  }
   
   
 }

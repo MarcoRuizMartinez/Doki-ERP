@@ -28,7 +28,7 @@
             <Tooltip>{{ 'Bodega: ' + props.row.bodega.label }}</Tooltip>
           </div>
         </div>
-        <div>{{props.row.nombre}} - {{props.row.precioBase}} - {{props.row.totalConIva}} - {{entrega.totalConIva}} </div>
+        <div>{{props.row.nombre}}</div>
       </q-td>
     </template>
   </q-table>

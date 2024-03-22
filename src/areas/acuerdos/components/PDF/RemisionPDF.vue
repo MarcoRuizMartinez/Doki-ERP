@@ -38,22 +38,48 @@
         <input-fecha                
           v-model                   ="datos.fechaEntrega"
           label                     ="Fecha entrega"
-          class                     ="col-4"
+          class                     ="col-6"
           @update:model-value       ="generarPDF"
-        />        
+        />
+        <!-- //* ///////////////////////////////////////////////// Paquetes -->
+        <input-number               no-undefined alerta solo-positivo 
+          v-model                   ="datos.paquetes"
+          label                     ="Paquetes"
+          class                     ="col-6"
+          icon                      ="mdi-package-variant-closed"
+          debounce                  ="1400"
+          :paso                     ="1"
+          :minimo                   ="0"
+          @update:model-value       ="generarPDF"
+        />
         <!-- //?* ////////////////////////////////////////////////////////////// Mostrar Descripciones--> 
-        <div class                  ="col-4 q-pt-md">
+        <div class                  ="col-3 q-pt-md">
           <q-toggle                   
             label                   ="Con descripción"
             v-model                 ="datos.conDescripcion"
             @update:model-value     ="toggleMostrarDescripciones"
           />
         </div>
-        <div class                  ="col-4 q-pt-md">
+        <div class                  ="col-3 q-pt-md">
           <q-toggle                   
             label                   ="Hoja completa"
             v-model                 ="datos.dosHojas"
             @update:model-value     ="generarPDF"
+          />
+        </div>
+        <div class                  ="col-3 q-pt-md">
+          <q-toggle                   
+            v-model                 ="datos.sinDatosNuestros"
+            label                   ="Sin datos nuestros"
+            @update:model-value     ="generarPDF"
+          />
+        </div>
+        <div class                  ="col-3 q-pt-md">
+          <q-toggle                   
+            v-model                 ="datos.paraTransportadora"
+            label                   ="Para transportadora"
+            :disable                ="!acuerdo.transportadora.id"
+            @update:model-value     ="cambiarParaTransportadora"
           />
         </div>
       </div>
@@ -134,24 +160,30 @@
             PropType            } from "vue"
   // * /////////////////////////////////////////////////////////////////////////////////// Modelos
   import {  IAcuerdo            } from "../../models/Acuerdo";
+  import {  ITercero, Tercero   } from "src/areas/terceros/models/Tercero";
   // * /////////////////////////////////////////////////////////////////////////////////// Componibles
   import {  IParams,
             useRemisionPDF      } from "src/areas/acuerdos/composables/pdf/useRemision"
   import {  style               } from "src/composables/useEstilos"
   import {  useTools            } from "src/composables/useTools"
+  import {  servicesTerceros    } from "src/areas/terceros/services/servicesTerceros"
   // * /////////////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana               from "components/utilidades/Ventana.vue"
   import    inputFecha            from "components/utilidades/input/InputFecha.vue"
   import    inputText             from "components/utilidades/input/InputFormText.vue"
+  import    inputNumber           from "components/utilidades/input/InputFormNumber.vue"
 
   const { getRemisionPDF,
           saveRemisionPDF   } = useRemisionPDF()
-  const {  esMobil          } = useTools()          
+  const {  esMobil          } = useTools()
+  const { buscarTercero     } = servicesTerceros()
   const props                 = defineProps({
     acuerdo:  { required: true, type: Object as PropType< IAcuerdo >  },
   })
 
   const { acuerdo }           = toRefs( props )
+  const srcPDF                = ref< string   >( "" )
+  const transportadora        = ref< ITercero >( new Tercero() )
   const datos                 = ref< IParams  >( {
     lineas                    : [],
     direccion                 : "",
@@ -160,8 +192,12 @@
     conDescripcion            : false,
     dosHojas                  : false,
     metodo                    : "",
+    paquetes                  : 0,
+    paraTransportadora        : false,
+    transportadora            : "",
+    sinDatosNuestros          : false,
   } )
-  const srcPDF                = ref< string   >( "" )
+  
 
   onMounted(()=>{
     if(acuerdo.value.productos.length > 8){
@@ -209,6 +245,15 @@
       } )
     }
 
+    generarPDF()
+  }
+
+  async function cambiarParaTransportadora()
+  {
+    if(datos.value.paraTransportadora){
+      transportadora.value        = await buscarTercero( acuerdo.value.transportadora.id )
+      datos.value.transportadora  = transportadora.value.nombre + " " + transportadora.value.documento.label
+    }
     generarPDF()
   }
 </script>

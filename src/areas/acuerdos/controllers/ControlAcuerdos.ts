@@ -483,7 +483,7 @@ export function useControlAcuerdo()
     if(ok){
       aviso("positive", `Aprobación de ${acuerdo.value.tipo} 👌🏼`)
       confeti(6)
-      acuerdo.value.estado    = ESTADO_CTZ.APROBADO
+      acuerdo.value.cerrarAcuerdo()
     }
     else
       aviso("negative", `"Error al aprobar ${acuerdo.value.tipo}`)
@@ -492,26 +492,18 @@ export function useControlAcuerdo()
   }
 
   //* ////////////////////////////////////////////////////////////////////// Cerrar pedido
-  async function cerrarPedido()
+  async function cerrarAcuerdo()
   {
     loading.value.cerrar      = true
-    const ok                  = await cerrarAcuerdo( acuerdo.value.tipo,  acuerdo.value.id)
-
+    const ok                  = await apiDolibarr("close", acuerdo.value.tipo, { notrigger: 0 }, acuerdo.value.id)
     if(ok){
-      aviso("positive", `Entrega de ${acuerdo.value.label} 👌🏼`)
-      acuerdo.value.estado    = ESTADO_PED.ENTREGADO
+      aviso("positive", `Cierre de ${acuerdo.value.label} 👌🏼`)
+      acuerdo.value.cerrarAcuerdo()      
     }
     else
       aviso("negative", `"Error al cerrar ${acuerdo.value.tipo}`)
 
     loading.value.cerrar      = false
-  }
-
-  //* ////////////////////////////////////////////////////////////////////// Cerrar pedido
-  async function cerrarAcuerdo( tipo : TIPO_ACUERDO , id : number)
-  {
-    const { ok }        = await apiDolibarr("close", tipo, { notrigger: 0 }, id)
-    return ok
   }
 
   //* ////////////////////////////////////////////////////////////////////// Anular acuerdo
@@ -920,7 +912,7 @@ export function useControlAcuerdo()
     pasarABorradorAcuerdo,
     reabrirPedido,
     editarOrigen,
-    cerrarPedido,
+    cerrarAcuerdo,
     editarRefCliente,
     editarTiempoEntrega,
     editarMetodoEntrega,

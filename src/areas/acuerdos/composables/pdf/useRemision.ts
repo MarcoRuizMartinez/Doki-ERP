@@ -20,6 +20,10 @@ export interface IParams  {
   conDescripcion          : boolean
   dosHojas                : boolean
   metodo                  : string
+  paquetes                : number
+  paraTransportadora      : boolean
+  transportadora          : string
+  sinDatosNuestros        : boolean
 }
 
 export function useRemisionPDF()
@@ -44,6 +48,10 @@ export function useRemisionPDF()
     conDescripcion          : false,
     dosHojas                : false,
     metodo                  : "",
+    paquetes                : 0,
+    paraTransportadora      : false,
+    transportadora          : "",
+    sinDatosNuestros        : false,
   }  
   
   
@@ -53,9 +61,10 @@ export function useRemisionPDF()
     datos                     = Object.assign( {}, parametros )
 
     if(!!acuerdoEntrega.contactoEntrega.id)
-      datos.indicaciones      = `${acuerdoEntrega.contactoEntrega.nombreCompleto} ${acuerdoEntrega.contactoEntrega.telefono} - ` 
+      datos.indicaciones      = `${acuerdoEntrega.contactoEntrega.nombreCompleto} ${acuerdoEntrega.contactoEntrega.telefono}` 
 
-    datos.indicaciones       += parametros.indicaciones
+    if(!!parametros.indicaciones)
+      datos.indicaciones      += ` - ${parametros.indicaciones}`
 
     doc.limpiarPDF()
     await configurarPDF()
@@ -103,19 +112,29 @@ export function useRemisionPDF()
   function  generarCabezote()
   {
     //*                 ////////////////////////////////////////////////////////////////////// Logo
-    pdf.addImage        ( doc.imgLogo,   "PNG", 10, doc.y + 8, 110, 24)
+    if(!datos.sinDatosNuestros)
+      pdf.addImage        ( doc.imgLogo,   "PNG", 10, doc.y + 8, 110, 24)
     doc.y               += 20
 
     //*                 ////////////////////////////////////////////////////////////////////// Textos Cabezote 
     doc.setFont         ( 12, 20 )
-    pdf.text            ("Grupo Escom SAS", doc.anchoMitad - 28,  doc.y,  doc.negrita("center") )
-    pdf.text            ("900.419.912-7",   doc.anchoMitad + 12,  doc.y)
-    //pdf.text          ("|",               doc.anchoMitad,       doc.y,  { align: "center"})
-    pdf.text            ("REMISIÓN #",      doc.margenDerX - 8,   doc.y,  doc.negrita("right"))
+    if(!datos.sinDatosNuestros)
+    {
+      pdf.text          ("Grupo Escom SAS", doc.anchoMitad - 28,  doc.y,  doc.negrita("center") )
+      pdf.text          ("900.419.912-7",   doc.anchoMitad + 12,  doc.y)
+
+    }
+
+    pdf.text            ("REMISIÓN #",      doc.margenDerX - 12,   doc.y-4,  doc.negrita("right"))
     doc.y               += 10
-    doc.setFont         ( 10, 30 )
-    pdf.text            ("CRR 49A # 85 - 05 - Bogotá – PBX 601 813 7505", doc.anchoMitad, doc.y, { align: "center"} )
-    pdf.text            (acuerdo.ref, doc.margenDerX - 3,   doc.y,  { align: "right"})
+    if(!datos.sinDatosNuestros){
+      doc.setFont       ( 10, 30 )
+      pdf.text          ("CRR 49A # 85 - 05 - Bogotá – PBX 601 813 7505", doc.anchoMitad, doc.y, { align: "center"} )
+
+    }
+    
+    const refSplit      = pdf.splitTextToSize(`${acuerdo.refPedido}\n${acuerdo.ref}` , 360)
+    pdf.text            (refSplit,       doc.margenDerX - 40,   doc.y-6,  { align: "center"})    
 
     //*                 ////////////////////////////////////////////////////////////////////// Rectangulo 
     doc.y               += 8
@@ -127,15 +146,16 @@ export function useRemisionPDF()
     doc.margen2         = doc.margenIzq + 60
     doc.y               += 12
     doc.setFont         ( 10, 0 )
-    pdf.text            ("CLIENTE:", doc.margen1, doc.y, { align: "left", renderingMode: 'fillThenStroke' } )
+    const titulo        = datos.paraTransportadora ? "RECIBE:" : "CLIENTE:"
+    pdf.text            (titulo, doc.margen1, doc.y, { align: "left", renderingMode: 'fillThenStroke' } )
 
-    const cliente       = acuerdo.tercero.nombre
-    const clienteSplit  = pdf.splitTextToSize(cliente, 360)
-    pdf.setFontSize    ( SIZE_FONT(cliente) ) 
-    pdf.text           ( clienteSplit, doc.margen2, doc.y, { align: "left", renderingMode: 'fillThenStroke' } )
+    const recibe       = datos.paraTransportadora ? datos.transportadora : acuerdo.tercero.nombre
+    const recibeSplit  = pdf.splitTextToSize(recibe, 360)
+    pdf.setFontSize    ( SIZE_FONT(recibe) ) 
+    pdf.text           ( recibeSplit, doc.margen2, doc.y, { align: "left", renderingMode: 'fillThenStroke' } )
 
     //*                 ////////////////////////////////////////////////////////////////////// DIRECCIÓN 
-    doc.y               += getEspaciado( clienteSplit )
+    doc.y               += getEspaciado( recibeSplit )
     pdf.setFontSize     (10)
     pdf.text            ("DIRECCIÓN:", doc.margen1, doc.y, { align: "left", renderingMode: 'fillThenStroke' })
 
@@ -159,14 +179,30 @@ export function useRemisionPDF()
     doc.y               += getEspaciado( indicaSplit ) 
 
     //*                 ////////////////////////////////////////////////////////////////////// Tabla datos
+    //['TELÉFONO', acuerdo.tercero.documento.tipo.label, 'ASESOR', "ELABORO", 'ORDEN', 'MÉTODO', 'FECHA' ] 
+    // o, 
+    const head          = ['TELÉFONO', 'ORDEN', 'MÉTODO', 'FECHA' ] 
+    const body          = [ acuerdo.tercero.telefono, acuerdo.refCliente, datos.metodo, ToolDate.fechaCorta( datos.fechaEntrega ) ]
+    if(!datos.sinDatosNuestros)
+    {
+      head.splice(1, 0, 'ASESOR', "ELABORO")
+      body.splice(1, 0, acuerdo.comercial.nombreCompleto, usuario.value.nombreCompleto)
+    }
+
+    if(!datos.paraTransportadora)
+    {
+      head.splice(1, 0, acuerdo.tercero.documento.tipo.sigla)
+      body.splice(1, 0, acuerdo.tercero.numeroDocumento )
+    }    
+
     autoTable(pdf, {      
       startY:     doc.y, tableLineColor:  50, tableLineWidth: 0.5,
       theme:      "plain",
       styles:     { halign: 'center', cellPadding: 1, lineWidth: 0,  lineColor: 255, fillColor: 255, textColor: 20, fontSize: 9 },
       margin:     { left: doc.margenIzq, right: doc.margenDer, bottom: 0 },
       headStyles: { fontStyle: 'bold', cellPadding: { top: 3, bottom: 0 }},
-      head:       [ ['TELÉFONO', acuerdo.tercero.documento.tipo.label, 'ASESOR', "ELABORO", 'ORDEN', 'MÉTODO', 'FECHA' ]],
-      body:       [ [ acuerdo.tercero.telefono, acuerdo.tercero.numeroDocumento, acuerdo.comercial.nombreCompleto, usuario.value.nombreCompleto, acuerdo.refCliente, datos.metodo, ToolDate.fechaCorta( datos.fechaEntrega ) ], ],
+      head:       [ head ],
+      body:       [ body ],
     }) 
   }
 
@@ -202,10 +238,14 @@ export function useRemisionPDF()
     pdf.line            ( doc.margenIzq + 10, doc.y, doc.anchoMitad - 16, doc.y)
     pdf.line            ( doc.anchoMitad, doc.y, doc.posXMargenDerecha - 20, doc.y)    
     doc.y               += 10
-    pdf.text            ( "FIRMA AUTORIZADA\nGrupo Escom SAS",  doc.anchoMitad - 110, doc.y, { align: "center" })
+    let firmaNuestra    = "FIRMA AUTORIZADA"
+        firmaNuestra    += datos.sinDatosNuestros ? "" : "\nGrupo Escom SAS"
+    pdf.text            ( firmaNuestra,  doc.anchoMitad - 110, doc.y, { align: "center" })
     pdf.text            ( "NOMBRE Y FIRMA DE QUIEN RECIBE\nCC Y CARGO",     doc.anchoMitad + 90, doc.y, { align: "center" })
     doc.y               += 22
-    const obser         = "NOTA: DECLARO QUE HE RECIBIDO LA MERCANCÍA AQUÍ DESCRITA EN PERFECTAS CONDICIONES "
+    let obser           = "NOTA: DECLARO QUE HE RECIBIDO LA MERCANCÍA AQUÍ DESCRITA EN PERFECTAS CONDICIONES"
+    if(!!datos.paquetes)
+      obser             += ` EN ${datos.paquetes} PAQUETES`
     doc.setFont         ( 11, 80 )
     pdf.text            ( obser, doc.anchoMitad, doc.y, doc.negrita('center'))    
   }

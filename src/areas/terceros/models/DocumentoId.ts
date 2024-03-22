@@ -25,7 +25,7 @@ export class Documento implements IDocumento
       numero              = this.numero.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
     }
 
-    return this.tipo.label + " " + numero
+    return this.tipo.sigla + " " + numero
   }
 
   

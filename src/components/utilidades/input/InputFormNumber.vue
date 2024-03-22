@@ -65,11 +65,11 @@
           >
           <q-btn
             v-bind        ="estiloBotones('arriba')"
-            v-touch-repeat:0:100.mouse  ="sumar"            
+            v-touch-repeat:0:300.mouse  ="sumar"            
           />
           <q-btn
             v-bind        ="estiloBotones('abajo')"
-            v-touch-repeat:0:100.mouse  ="restar"            
+            v-touch-repeat:0:300.mouse  ="restar"            
           />
         </div>
       </template>
@@ -246,7 +246,6 @@
     modelo.value          = ''
     emit('clear')
     emit('update:modelValue', undefined)
-    
   }
 
   function procesarNumero( valor : string | number, emitir : boolean = true  )

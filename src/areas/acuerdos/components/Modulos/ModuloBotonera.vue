@@ -241,7 +241,7 @@
       </q-btn>
       <!-- //* ////////////////////////////////////////////////////////// Boton Cerrar pedido -->
       <q-btn
-        v-if                  ="(acuerdo.esPedido || acuerdo.esOCProveedor) && acuerdo.esEstadoValidado"
+        v-if                  ="(acuerdo.esOCProveedor || acuerdo.esEntrega) && acuerdo.esEstadoValidado"
         v-bind                ="style.btnBaseMd"
         color                 ="blue-7"
         icon                  ="mdi-truck-check"

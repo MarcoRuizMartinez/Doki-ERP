@@ -167,7 +167,6 @@ export class Contacto implements IContacto
     const alerta =      !this.id
                     ||  this.direccion.length < 10
                     || !this.municipio.id
-                    || !this.nota
                     || ( !this.telefono && !this.telefono_2 )
     return alerta
   }

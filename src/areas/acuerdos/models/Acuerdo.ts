@@ -223,6 +223,7 @@ export interface IAcuerdo
   puedeCrearNuevoGrupo        : boolean  
   comentarios                 : IAccion[]
   eventos                     : IAccion[]
+  cerrarAcuerdo               : () => void
 
   /* Solo para cotizaciones */
   titulo                      : string
@@ -236,7 +237,7 @@ export interface IAcuerdo
   pdfCiudad                   : string
   esTerceroCtz                : boolean
   getAcuerdoForApi            : ( usuarioId : number ) => any
-  getEntregaForApi            : ( usuarioId : number, pedidoId : number, lineas : ILineaAcuerdo[] ) => any
+  getEntregaForApi            : ( usuarioId : number, pedidoId : number, lineas : ILineaAcuerdo[], refPedido : string ) => any
   //reorganizarProductosGrupos: () => void
 
   /* Solo para pedidos */
@@ -272,6 +273,7 @@ export interface IAcuerdo
   alertaEntrega               : boolean
   seguroRotuloTotal           : boolean
   numTemporal                 : number              // Se utiliza para guardar informarcion temporal
+  refPedido                   : string
   calcularEntregado           : () => void
 }
 
@@ -375,6 +377,7 @@ export class Acuerdo implements IAcuerdo
   transportadora              : ITransportadora     = new Transportadora()
   seguroRotuloTotal           : boolean             = false
   numTemporal                 : number              = 0
+  refPedido                   : string              = ""
 
   constructor( tipo : TTipoAcuerdo = TIPO_ACUERDO.NULO )
   {
@@ -974,6 +977,14 @@ https://dolibarr.mublex.com/fichinter/card.php?
   get retenciones()       : IRetenciones { return new  Retenciones( this.totalConDescu, this.totalAnticipos, this.ivaValor ) }
 
 
+  cerrarAcuerdo(){
+    this.estado               =   this.esCotizacion ? ESTADO_CTZ.APROBADO
+                                : this.esEntrega    ? ESTADO_ENT.ENTREGADO
+                                : this.esPedido     ? ESTADO_PED.ENTREGADO
+                                : this.esOCProveedor? ESTADO_OC.RECIBIDO_TOTAL
+                                :                     ESTADO_ACU.NO_GUARDADO
+  }
+
 
   getAcuerdoForApi( usuarioId : number ) : any {
     const acuForApi : any = {
@@ -1024,7 +1035,7 @@ https://dolibarr.mublex.com/fichinter/card.php?
   }
 
 
-  getEntregaForApi( usuarioId : number, pedidoId : number, lineas : ILineaAcuerdo[] ) : any
+  getEntregaForApi( usuarioId : number, pedidoId : number, lineas : ILineaAcuerdo[], refPedido : string ) : any
   {
     const lines                   = lineas.map(( l )=>{ return { origin_line_id: l.lineaId, qty: l.qtyAEntregar }})
 
@@ -1043,6 +1054,7 @@ https://dolibarr.mublex.com/fichinter/card.php?
         options_comercial_id      : this.comercial.id,
         options_contacto_id       : this.contactoEntrega.id,
         options_transportadora_id : this.transportadora.id,
+        ref_pedido                : refPedido,
       }
     }
 
@@ -1109,10 +1121,17 @@ https://dolibarr.mublex.com/fichinter/card.php?
     else
     if(this.metodoEntrega.seguimiento.includes("Transportadora")  && !this.transportadora.value )
       alertas.push("El método de entrega exige una transportadora")
-
-
+    if(this.metodoEntrega.seguimiento == "1" && !this.contactoEntrega.nota )
+      alertas.push("Contacto requiere indicaciones")
     if(this.contactoEntrega.alerta)
       alertas.push("El contacto tiene la información incompleta")
+/*
+      
+      
+      Recoge en oficina
+      Entrega Escom
+      Desde Proveedor
+*/
 
     return alertas
   }
@@ -1309,7 +1328,6 @@ https://dolibarr.mublex.com/fichinter/card.php?
     e.estado              = +ee?.statut             ?? 0
     e.numeroGuia          = ee?.tracking_number     ?? ""
     e.metodoEntregaId     = +ee?.shipping_method_id ?? 0
-      
 
     const entre           = Object.assign( new Acuerdo( TIPO_ACUERDO.ENTREGA_CLI ), e ) as IAcuerdo
 

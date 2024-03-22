@@ -16,7 +16,7 @@
     
     @click-reabrir          ="reabrirPedido"
     @click-recargar         ="recargar"
-    @click-entregado        ="cerrarPedido"
+    @click-entregado        ="cerrarAcuerdo"
     @click-comisiones       ="modales.comisiones = true"
     @click-nueva-entrega    ="modales.entrega = true"
     @click-cuenta-cobro     ="generarPDF"
@@ -233,7 +233,7 @@
           buscarAcuerdoEnlazados,
           eliminarAcuerdo,
           validarAcuerdo,
-          cerrarPedido,
+          cerrarAcuerdo,
           setListoDespacho,
           buscarComentarios
                             } = useControlAcuerdo()

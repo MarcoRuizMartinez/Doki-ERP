@@ -225,7 +225,7 @@
   async function crearEntrega()
   {
     loading.value.entregas    = true
-    const entregaForApi = entrega.value.getEntregaForApi( usuario.value.id, acuerdo.value.id, lineas.value.filter( l => !!l.qtyAEntregar ) )
+    const entregaForApi       = entrega.value.getEntregaForApi( usuario.value.id, acuerdo.value.id, lineas.value.filter( l => !!l.qtyAEntregar ), acuerdo.value.ref )
     
     const { ok, data }        = await apiDolibarr("crear", "entrega", entregaForApi )
     if(!!ok){

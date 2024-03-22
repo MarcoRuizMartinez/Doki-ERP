@@ -1,7 +1,7 @@
 <template>
   <div
     class                   ="text-right"
-    :class                  ="$attrs.class"
+    :class                  ="[$attrs.class, clase]"
     >
     {{ linea.qtyUnd }}
   </div>
@@ -22,30 +22,31 @@
       @enter                ="scope.set"
     />
   </q-popup-edit>
+  <!-- //* ///////////////////////////////////////////////////////////////////// ENTREGAS -->
   <div class                ="text-center lh_1_2">
-    <template
-      v-if                  ="!!linea.qtyEntregado || !!linea.qtyProgramado || !!linea.qtyBorrador"
-      >
-      <div
-        class               ="text-green"
-        >
+    <template v-if          ="!!linea.qtyEntregado || !!linea.qtyProgramado || !!linea.qtyBorrador">
+      <!-- //* ///////////////////////////////////////////////////////////////// Entregado -->
+      <div class            ="text-green">
         <q-icon :name       ="linea.entregaTotalOk ? 'mdi-check-all' : 'mdi-check'"/>
         {{ linea.qtyEntregado }}
       </div>
+      <!-- //* ///////////////////////////////////////////////////////////////// Programado -->
       <div
-        v-if                ="!!linea.qtyProgramado"
+        v-if                ="!!linea.qtyProgramado && !linea.entregaTotalOk "
         class               ="text-orange"
         >
         <q-icon :name       ="linea.entregaProgramadoTodo ? 'mdi-check-all' : 'mdi-calendar-clock'"/>
         {{ linea.qtyProgramado }}
       </div>
+      <!-- //* ///////////////////////////////////////////////////////////////// Borrador -->
       <div
-        v-if                ="!!linea.qtyBorrador"
+        v-if                ="!!linea.qtyBorrador && !linea.entregaTotalOk "
         class               ="text-grey-8"
         >
         <q-icon name        ="mdi-eraser-variant"/>
         {{ linea.qtyBorrador }}
-      </div>    
+      </div>
+      <!-- //* ///////////////////////////////////////////////////////////////// Borrador -->
       <Tooltip>
         <table  class       ="tabla-tooltip">
           <tr>
@@ -74,12 +75,17 @@
 <script lang="ts" setup>
   import {  ref,
             watch,
+            computed,
             toRefs,
             PropType              } from "vue"    
   import {  ILineaAcuerdo         } from "src/areas/acuerdos/models/LineaAcuerdo"
   import {  useControlProductos   } from "src/areas/acuerdos/controllers/ControlLineasProductos"            
   import    numeroPaso              from "components/utilidades/input/InputNumeroPaso.vue"
+  // * /////////////////////////////////////////////////////////////////////////////////// Store
+  import {  storeToRefs         } from 'pinia'
+  import {  useStoreAcuerdo     } from 'stores/acuerdo'
 
+  const { acuerdo         } = storeToRefs( useStoreAcuerdo() )
   const { editarLinea  }    = useControlProductos()  
 
   const props               = defineProps({
@@ -93,6 +99,30 @@
   }>()  
 
   watch( modelValue, (newLinea)=> linea.value = newLinea )
+
+  const clase               = computed(()=>{
+    let clase               = ""
+    if( linea.value.esProducto
+        &&
+        ( acuerdo.value.esEntrega
+          ||
+          (
+            acuerdo.value.esPedido
+            &&
+            (
+              acuerdo.value.esEstadoEntregando
+              ||
+              acuerdo.value.esEstadoValidado
+            )
+          )
+        )
+      )
+    {
+      clase                 = linea.value.entregaTotalOk ? "text-green text-bold" : "text-orange-14"
+    }
+    
+    return clase
+  })
 
   function actualizar()
   {
