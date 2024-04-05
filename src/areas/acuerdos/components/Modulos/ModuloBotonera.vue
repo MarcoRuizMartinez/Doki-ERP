@@ -45,7 +45,7 @@
     <!-- //* ////////////////////////////////////////////////////////////////////  Lado Derecho -->
     <div class                ="row gap-sm">
       <!-- //* //////////////////////////////////////////////////////////  Notas acuerdo -->
-      <efecto efecto          ="Down">      
+      <efecto efecto          ="Down">
         <q-btn                dense round flat
           v-if                ="acuerdo.esPedido"
           icon                ="mdi-comment-multiple"
@@ -115,21 +115,22 @@
       <!-- //* //////////////////////////////////////////////////////////  Boton PDF -->
       <efecto efecto          ="Down">      
         <q-btn
-          v-if                ="acuerdo.esEstadoValido"
+          v-if                ="acuerdo.esEstadoValido && !acuerdo.esEntrega"
           v-bind              ="style.btnBaseMd"
           color               ="primary"
           icon                ="mdi-pdf-box"
-          :label              ="esMobil ? '' : acuerdo.esEntrega ? 'Remisión' : 'PDF'"
           :disable            ="cargandoAlgo"
           :loading            ="loading.pdf"          
           >
           <q-menu
             v-bind            ="menuDefault"
-            class             ="column transparent panel-blur-70 " 
+            class             ="column transparent panel-blur-70 content-start" 
             >
             <q-btn
               v-if            ="!!labelBtnPDFDefault"
               v-bind          ="style.btnSimple"
+              icon            ="mdi-pdf-box"
+              align           ="left"
               :label          ="labelBtnPDFDefault"
               @click          ="pdfDefault"
             />
@@ -137,13 +138,50 @@
               v-if            ="acuerdo.esCotizacion || acuerdo.esPedido"
               v-bind          ="style.btnSimple"
               label           ="Cuenta de cobro"
+              icon            ="mdi-file-document-outline"
+              align           ="left"
               @click          ="emit('clickCuentaCobro', 'cuentaCobro')"
+            />
+            <q-btn
+              v-if            ="acuerdo.esPedido"
+              v-bind          ="style.btnSimple"
+              label           ="Remisión"
+              icon            ="mdi-signature-freehand"
+              align           ="left"
+              @click          ="emit('clickRemision')"
+            />
+            <q-btn
+              v-if            ="acuerdo.esPedido"
+              v-bind          ="style.btnSimple"
+              label           ="Rótulos"
+              icon            ="mdi-barcode-scan"
+              align           ="left"
+              @click          ="emit('clickRotulos')"
             />
           </q-menu>          
         </q-btn>
       </efecto>
+      <!-- //* //////////////////////////////////////////////////////////  Boton PDF Remisión y Rótulos -->
+      <q-btn-group              push
+        v-if                    ="acuerdo.esEntrega"
+        >
+        <q-btn
+          v-bind                ="style.btnBaseMd"
+          label                 ="Remisión"
+          color                 ="secondary"
+          icon                  ="mdi-signature-freehand"
+          @click                ="emit('clickRemision')"
+        />
+        <q-btn
+          v-bind                ="style.btnBaseMd"
+          label                 ="Rótulos"
+          color                 ="secondary"
+          icon                  ="mdi-barcode-scan"
+          @click                ="emit('clickRotulos')"
+        />
+      </q-btn-group>
       <q-btn 
-        v-if                  ="acuerdo.esPedido && ( acuerdo.esEstadoValidado )"
+        v-if                  ="acuerdo.esPedido && !acuerdo.soloServicios && ( acuerdo.esEstadoValidado )"
         v-bind                ="style.btnBaseMd"
         color                 ="positive"
         icon                  ="mdi-truck-fast"
@@ -241,7 +279,7 @@
       </q-btn>
       <!-- //* ////////////////////////////////////////////////////////// Boton Cerrar pedido -->
       <q-btn
-        v-if                  ="(acuerdo.esOCProveedor || acuerdo.esEntrega) && acuerdo.esEstadoValidado"
+        v-if                  ="(acuerdo.esOCProveedor || acuerdo.esEntrega || ( acuerdo.esPedido && acuerdo.soloServicios ) ) && acuerdo.esEstadoValidado"
         v-bind                ="style.btnBaseMd"
         color                 ="blue-7"
         icon                  ="mdi-truck-check"
@@ -349,6 +387,7 @@
     (e: 'clickEditar',        ): void
     (e: 'clickBorrar',        ): void  
     (e: 'clickRemision',      ): void
+    (e: 'clickRotulos',       ): void
     (e: 'clickReabrir',       ): void
     (e: 'clickRecargar',      ): void  
     (e: 'clickEntregado',     ): void

@@ -221,6 +221,7 @@ export interface IAcuerdo
   vinculado                   : boolean     // Tiene un vinculo con otro elemento en dolibarr como facturas o pedidos
   puedeCrearSubtotal          : boolean
   puedeCrearNuevoGrupo        : boolean  
+  soloServicios               : boolean  
   comentarios                 : IAccion[]
   eventos                     : IAccion[]
   cerrarAcuerdo               : () => void
@@ -267,12 +268,12 @@ export interface IAcuerdo
   entregas                    : IAcuerdo[]  
   transportadoraId            : number
   numeroGuia                  : string
-  pedidoId                    : number
   transportadora              : ITransportadora
   alertasEntrega              : string[]
   alertaEntrega               : boolean
   seguroRotuloTotal           : boolean
   numTemporal                 : number              // Se utiliza para guardar informarcion temporal
+  pedidoId                    : number
   refPedido                   : string
   calcularEntregado           : () => void
 }
@@ -377,6 +378,7 @@ export class Acuerdo implements IAcuerdo
   transportadora              : ITransportadora     = new Transportadora()
   seguroRotuloTotal           : boolean             = false
   numTemporal                 : number              = 0
+  pedidoId                    : number              = 0
   refPedido                   : string              = ""
 
   constructor( tipo : TTipoAcuerdo = TIPO_ACUERDO.NULO )
@@ -1051,10 +1053,9 @@ https://dolibarr.mublex.com/fichinter/card.php?
       lines                       : lines,
       array_options               : 
       {
-        options_comercial_id      : this.comercial.id,
-        options_contacto_id       : this.contactoEntrega.id,
-        options_transportadora_id : this.transportadora.id,
-        ref_pedido                : refPedido,
+        comercial_id              : this.comercial.id,
+        contacto_id               : this.contactoEntrega.id,
+        transportadora_id         : this.transportadora.id,
       }
     }
 
@@ -1084,9 +1085,9 @@ https://dolibarr.mublex.com/fichinter/card.php?
   }
 
 
-  get pedidoId()  : number{
+  /* get pedidoId()  : number{
     return this.enlaces.find( e => e.origen.tipo === TIPO_ACUERDO.PEDIDO_CLI  )?.origen.id ?? 0
-  }
+  } */
 
   static getTipoAcuerdoSingular( tipo : TTipoAcuerdo ) : string {
     const label                   = tipo === TIPO_ACUERDO.COTIZACION_CLI  ? "cotización"
@@ -1151,6 +1152,8 @@ https://dolibarr.mublex.com/fichinter/card.php?
   get productosCompuestosTotal() : number { return this.productos.filter( p => p.naturaleza.esCompuesto_o_Kit ).length }
   get productosNoSiigo        () : number { return this.productos.filter( p => !p.siigo.enSiigo ).length }
   get productosAlertaSiigo    () : number { return this.productosCompuestosTotal + this.productosNoSiigo }
+
+  get soloServicios           () : boolean { return this.productos.every( p => p.esTituloOsubTotal || p.esServicio ) }
 
   static  getTipoAcuerdoPlural( tipo : TTipoAcuerdo ) : string {
     const singular                = tipo === TIPO_ACUERDO.COTIZACION_CLI  ? "cotizaciones"

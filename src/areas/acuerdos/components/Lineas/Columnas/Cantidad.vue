@@ -110,9 +110,9 @@
             acuerdo.value.esPedido
             &&
             (
-              acuerdo.value.esEstadoEntregando
-              ||
-              acuerdo.value.esEstadoValidado
+                  acuerdo.value.esEstadoEntregando
+              ||  acuerdo.value.esEstadoValidado
+              //||  acuerdo.value.esEstadoEntregado
             )
           )
         )

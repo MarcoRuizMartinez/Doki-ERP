@@ -1,5 +1,6 @@
 <template>
   <ventana
+    v-bind                      ="$attrs"
     class                       ="col-12"
     class-contenido             ="column items-center"
     class-titulo                ="col-auto"
@@ -40,8 +41,10 @@
     </template>
     <!-- //* //////////////////////////////////////////////////////// Tabla resultados-->
     <q-table                    bordered dense flat
+      v-model:selected          ="seleccion"
       class                     ="fit tabla-maco tabla-alto-min"
       row-key                   ="id"
+      :selection                ="tipo === TIPO_ACUERDO.ENTREGA_CLI ? 'multiple' : 'none'"
       :rows                     ="acuerdos"
       :columns                  ="columnas"
       :visible-columns          ="columnasVisibles"
@@ -60,7 +63,7 @@
       <template #body-cell-pedidoId="props">
         <q-td   :props          ="props">
           <router-link :to      ="'/pedidos/cliente/' + props.value">      
-            {{ props.value }}
+            {{ props.row.refPedido }}
           </router-link>
         </q-td>
       </template>
@@ -116,8 +119,8 @@
         class-contenido         ="row items-start content-start justify-start q-col-gutter-md q-mt-none"
         >
         <vista-acuerdo
+          :tipo
           :id                   ="acuerdo.id.toString()"
-          :tipo                 ="tipo"
         />
         <template               #barra>
           <q-btn
@@ -157,8 +160,20 @@
           </q-btn>
         </template>
       </ventana>
-    </q-dialog>    
+    </q-dialog>
   </ventana>
+  <botones-seleccion
+    @click-rotulos              ="modales.rotulos = true"
+  />
+  <!-- //* ///////////////////////////////////////////////////////////// Modal Rotulo -->
+  <q-dialog                     maximized
+    v-model                     ="modales.rotulos"
+    v-bind                      ="style.dialogo"
+    >
+    <rotulos
+      :acuerdos                 ="seleccion"
+    />
+  </q-dialog>  
 </template>
   
 <script setup lang="ts">
@@ -170,7 +185,8 @@
             computed,
             onMounted,
             onUnmounted         } from "vue"
-  import {  useRouter           } from "vue-router"            
+  import {  useRouter           } from "vue-router"
+
   // * /////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs         } from 'pinia'                                            
   import {  useStoreApp         } from 'stores/app'
@@ -191,7 +207,8 @@
   import {  TModosVentana,
             ALMACEN_LOCAL       } from "src/models/TiposVarios"  
   import {  Acuerdo             } from "src/areas/acuerdos/models/Acuerdo"
-  import {  TTipoAcuerdo        } from "src/areas/acuerdos/models/ConstantesAcuerdos"
+  import {  TTipoAcuerdo,
+            TIPO_ACUERDO        } from "src/areas/acuerdos/models/ConstantesAcuerdos"
 
   // * /////////////////////////////////////////////////////////////////////// Componentes
   import    ventana               from "components/utilidades/Ventana.vue"  
@@ -201,6 +218,8 @@
   import    tabsBusqueda          from "./Busqueda/TabsBusquedaAcuerdos.vue"
   import    barraBusqueda         from "./Busqueda/BarraBusquedaAcuerdos.vue"
   import    vistaAcuerdo          from "./VistaAcuerdoVer.vue"
+  import    botonesSeleccion      from "./../../components/Modulos/BotonesSeleccion.vue"
+  import    rotulos               from "src/areas/acuerdos/components/PDF/RotulosPDF.vue"
 
   // * ////////////////////////// Columnas
   import    refAcuerdo            from "src/areas/acuerdos/components/Tools/RefAcuerdo.vue"
@@ -215,6 +234,8 @@
   const { tabs                  } = storeToRefs( useStoreApp() )
   const { acuerdo,
           acuerdos,
+          seleccion,
+          modales,
           busqueda,
           loading               } = storeToRefs( useStoreAcuerdo() )  
   const { getAcuerdos           } = servicesAcuerdos()
@@ -328,7 +349,7 @@
     columnas.value = [
       new Columna(            { name: "ref"                                                                   }),
       new Columna(            { name: "estado"                                                                }),
-      new Columna(            { name: "pedidoId",             label: "Pedido ID"                              }),
+      new Columna(            { name: "pedidoId",             label: "Pedido"                                 }),
       new Columna(            { name: "tercero"                                                               }),
       new Columna(            { name: "refCliente",           label: "Ref cliente"                            }),
       new Columna(            { name: "comercial",            label: "Asesor"                                 }),
@@ -360,10 +381,10 @@
       Columna.ColumnaPrecio ( { name: "totalConIva",          label: "Total",             clase: "text-bold"  }),
     ]
 
-    const colsEli = busqueda.value.esCotizacion   ? ["fechaEnvioOCCorta", "diasEnviadoFormato", "diasAprobadoFormato", "diasEntregarFormato", "estadoAnimoEmoji", "facturado", "pedidoId", "fechaListoCorta", "fechaADespacharCorta", "fechaEntregaCorta"]
-                  : busqueda.value.esPedido       ? ["fechaEnvioOCCorta", "diasEnviadoFormato", "diasAprobadoFormato", "pedidoId"]
+    const colsEli = busqueda.value.esCotizacion   ? ["fechaEnvioOCCorta", "diasEnviadoFormato", "diasAprobadoFormato", "diasEntregarFormato", "estadoAnimoEmoji", "facturado", "pedidoId", "refPedido", "fechaListoCorta", "fechaADespacharCorta", "fechaEntregaCorta"]
+                  : busqueda.value.esPedido       ? ["fechaEnvioOCCorta", "diasEnviadoFormato", "diasAprobadoFormato", "pedidoId", "refPedido"]
                   : busqueda.value.esEntrega      ? ["fechaEnvioOCCorta", "diasEnviadoFormato", "diasAprobadoFormato", "diasEntregarFormato", "estadoAnimoEmoji", "facturado", "condicionPagoLabel", "formaPagoLabel", "origenContactoLabel", "subTotalLimpio", "totalConDescu", "ivaValor", "totalConIva", "fechaListoCorta"]
-                  : busqueda.value.esOCProveedor  ? ["refCliente", "comercial", "metodoEntregaLabel", "facturado", "origenContactoLabel", "subTotalLimpio", "pedidoId", "fechaListoCorta"]
+                  : busqueda.value.esOCProveedor  ? ["refCliente", "comercial", "metodoEntregaLabel", "facturado", "origenContactoLabel", "subTotalLimpio", "pedidoId", "refPedido", "fechaListoCorta"]
                   : []
     Columna.eliminarColums( colsEli, columnas.value )
 
@@ -385,5 +406,5 @@
 
     if (ok) aviso("positive", "Archivo generado", "file")
     else    aviso("negative", "Error al generar el archivo...", "file")
-  }
+  } 
 </script>

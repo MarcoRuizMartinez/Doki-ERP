@@ -21,6 +21,8 @@
     @click-nueva-entrega    ="modales.entrega = true"
     @click-cuenta-cobro     ="generarPDF"
     @click-listo-entregar   ="setListoDespacho"
+    @click-remision         ="clickRemisionPDF"
+    @click-rotulos          ="clickRotuloPDF"
   />
   <barra-tercero class      ="col-12"/>
   <modo-vista    class      ="col-12"/>
@@ -93,7 +95,7 @@
     :terceroId              ="acuerdo.tercero.id"
     :proyectoId             ="acuerdo.proyecto.id"
     :cargando               ="loading?.commentsLoad ?? false"
-    :funcion-buscar         ="buscarComentarios"
+    :funcion-buscar         ="()=> buscarComentarios( acuerdo )"
   />
   <!-- //* /////////////////  Visor PDF  -->
   <visor-pdf                descargar
@@ -264,7 +266,9 @@
           ()=> {
             useTitle(`${acuerdo.value.emoji} ${acuerdo.value.title}`)
             lineaElegida.value  = new LineaAcuerdo()
+            //buscarComentarios( acuerdo.value )
           }
+          //,{ immediate: true}
         )
 
   provide('superminimizado', minimizadoTodo)
@@ -326,6 +330,33 @@
     entregasRotulos.value       = entregas_
   }
 
+  function clickRemisionPDF()
+  {
+    if(acuerdo.value.esPedido)
+    {    
+      if(acuerdo.value.entregas.length === 0)
+        return
+      else
+      if(acuerdo.value.entregas.length === 1)
+        abrirModalRemision( acuerdo.value.entregas[0] )
+      else
+      {
+        const entregasPDF         = acuerdo.value.entregas.filter( e => e.esEstadoEntregando )
+        if(!!entregasPDF.length)
+          abrirModalRemision( entregasPDF[0] )
+      }  
+    }
+    else if(acuerdo.value.esEntrega)
+    {
+      abrirModalRemision( acuerdo.value )      
+    }
+  }
+
+  function clickRotuloPDF()
+  {
+          if(acuerdo.value.esPedido)  abrirModalRotulos(  acuerdo.value.entregas  )
+    else  if(acuerdo.value.esEntrega) abrirModalRotulos( [acuerdo.value         ] )
+  }
 
   watch( toggle, (modo)=>{
     if(modo === "general")

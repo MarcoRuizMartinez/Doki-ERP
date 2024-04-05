@@ -142,7 +142,7 @@ export function useControlAcuerdo()
       await buscarTerceroDolibarr ( acuerdo.value.terceroId   )
       await buscarProyecto        ( acuerdo.value.proyectoId  )
       await buscarAcuerdoEnlazados()
-      await buscarComentarios()
+      await buscarComentarios( acuerdo.value )
 
       if( acuerdo.value.esCotizacion || acuerdo.value.esPedido )
         buscarCalificacion()
@@ -823,17 +823,17 @@ export function useControlAcuerdo()
   }
 
 
-  async function buscarComentarios()
+  async function buscarComentarios( acuerdo_ : IAcuerdo )
   {
     const query     = {
       codigo        : "AC_OTH",
-      idTercero     : acuerdo.value.tercero.id,
-      elementoId    : acuerdo.value.id,
-      elementoTipo  : Accion.getTipoByAcuerdo( acuerdo.value.tipo )
+      idTercero     : acuerdo_.tercero.id,
+      elementoId    : acuerdo_.id,
+      elementoTipo  : Accion.getTipoByAcuerdo( acuerdo_.tipo )
     }
 
     loading.value.commentsLoad= true
-    acuerdo.value.comentarios = (await buscarAcciones( query, "comentarios" )).filter( a => a.codigo !== "AC_OTH_AUTO" ) // Para que no cargue las acciones tipo AC_OTH_AUTO
+    acuerdo_.comentarios      = (await buscarAcciones( query, "comentarios" )).filter( a => a.codigo !== "AC_OTH_AUTO" ) // Para que no cargue las acciones tipo AC_OTH_AUTO
     loading.value.commentsLoad= false
   }
 

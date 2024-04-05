@@ -39,7 +39,7 @@ export function useRemisionPDF()
                                       pdf         : pdf,
                                     }
   const doc         : IUtilPDF    = new UtilPDF( setup )
-  let acuerdo       : IAcuerdo    = new Acuerdo()
+  let entrega       : IAcuerdo    = new Acuerdo()
   let datos         : IParams     = {
     lineas                  : [],
     direccion               : "",
@@ -54,14 +54,18 @@ export function useRemisionPDF()
     sinDatosNuestros        : false,
   }  
   
-  
+  async function getRemisionesPDF( entregas : IAcuerdo[], parametros : IParams ) : Promise<string>
+  {
+    return ""
+  }
+
   async function getRemisionPDF( acuerdoEntrega : IAcuerdo, parametros : IParams ) : Promise<string>
   {
-    acuerdo                   = acuerdoEntrega
+    entrega                   = acuerdoEntrega
     datos                     = Object.assign( {}, parametros )
 
-    if(!!acuerdoEntrega.contactoEntrega.id)
-      datos.indicaciones      = `${acuerdoEntrega.contactoEntrega.nombreCompleto} ${acuerdoEntrega.contactoEntrega.telefono}` 
+    if(!!entrega.contactoEntrega.id)
+      datos.indicaciones      = `${entrega.contactoEntrega.nombreCompleto} ${entrega.contactoEntrega.telefono}` 
 
     if(!!parametros.indicaciones)
       datos.indicaciones      += ` - ${parametros.indicaciones}`
@@ -86,10 +90,41 @@ export function useRemisionPDF()
     const pdf_final = pdf_blob.toString()
     return pdf_final
   }
+  
+
+/*   async function buildRemisionInPDF()
+  {
+    datos                     = Object.assign( {}, parametros )
+
+    if(!!entrega.contactoEntrega.id)
+      datos.indicaciones      = `${entrega.contactoEntrega.nombreCompleto} ${entrega.contactoEntrega.telefono}` 
+
+    if(!!parametros.indicaciones)
+      datos.indicaciones      += ` - ${parametros.indicaciones}`
+
+    doc.limpiarPDF()
+    await configurarPDF()
+    for(let copia = 1; copia <= 2; copia++)
+    {
+      if(datos.dosHojas && copia == 2){
+        doc.setNewPage()
+        doc.y = 0
+      }
+      else
+        doc.y                   = copia === 1 ? 0 : doc.altoMitad
+
+      generarCabezote()
+      generarCuerpo()
+      generarPie()
+    }
+  } */
+
+
+
 
   function saveRemisionPDF()
   {    
-    const nombre  = `Remisión ${acuerdo.ref}.pdf`
+    const nombre  = `Remisión ${entrega.ref}.pdf`
     pdf.save( nombre );
   }
 
@@ -99,7 +134,7 @@ export function useRemisionPDF()
 
       const { Candara }     = await import("src/assets/fonts/Candara.js")
 
-      doc.area              = acuerdo.tercero.area 
+      doc.area              = entrega.tercero.area 
       doc.fontBase          = "Candara"
       pdf.addFileToVFS      ("Candara.ttf",      Candara) // "Identity-H"
       pdf.addFont           ("Candara.ttf",      doc.fontBase,  "normal" )
@@ -133,7 +168,7 @@ export function useRemisionPDF()
 
     }
     
-    const refSplit      = pdf.splitTextToSize(`${acuerdo.refPedido}\n${acuerdo.ref}` , 360)
+    const refSplit      = pdf.splitTextToSize(`${entrega.refPedido}\n${entrega.ref}` , 360)
     pdf.text            (refSplit,       doc.margenDerX - 40,   doc.y-6,  { align: "center"})    
 
     //*                 ////////////////////////////////////////////////////////////////////// Rectangulo 
@@ -149,7 +184,7 @@ export function useRemisionPDF()
     const titulo        = datos.paraTransportadora ? "RECIBE:" : "CLIENTE:"
     pdf.text            (titulo, doc.margen1, doc.y, { align: "left", renderingMode: 'fillThenStroke' } )
 
-    const recibe       = datos.paraTransportadora ? datos.transportadora : acuerdo.tercero.nombre
+    const recibe       = datos.paraTransportadora ? datos.transportadora : entrega.tercero.nombre
     const recibeSplit  = pdf.splitTextToSize(recibe, 360)
     pdf.setFontSize    ( SIZE_FONT(recibe) ) 
     pdf.text           ( recibeSplit, doc.margen2, doc.y, { align: "left", renderingMode: 'fillThenStroke' } )
@@ -160,7 +195,7 @@ export function useRemisionPDF()
     pdf.text            ("DIRECCIÓN:", doc.margen1, doc.y, { align: "left", renderingMode: 'fillThenStroke' })
 
     
-    const direccion     = acuerdo.contactoEntrega.municipio.label + " " + datos.direccion
+    const direccion     = entrega.contactoEntrega.municipio.label + " " + datos.direccion
     const dirSplit      = pdf.splitTextToSize(direccion, 360 )
     pdf.setFontSize     ( SIZE_FONT(direccion) ) 
     pdf.text            ( dirSplit, doc.margen2, doc.y )
@@ -182,18 +217,18 @@ export function useRemisionPDF()
     //['TELÉFONO', acuerdo.tercero.documento.tipo.label, 'ASESOR', "ELABORO", 'ORDEN', 'MÉTODO', 'FECHA' ] 
     // o, 
     const head          = ['TELÉFONO', 'ORDEN', 'MÉTODO', 'FECHA' ] 
-    const body          = [ acuerdo.tercero.telefono, acuerdo.refCliente, datos.metodo, ToolDate.fechaCorta( datos.fechaEntrega ) ]
+    const body          = [ entrega.tercero.telefono, entrega.refCliente, datos.metodo, ToolDate.fechaCorta( datos.fechaEntrega ) ]
     if(!datos.sinDatosNuestros)
     {
       head.splice(1, 0, 'ASESOR', "ELABORO")
-      body.splice(1, 0, acuerdo.comercial.nombreCompleto, usuario.value.nombreCompleto)
+      body.splice(1, 0, entrega.comercial.nombreCompleto, usuario.value.nombreCompleto)
     }
 
     if(!datos.paraTransportadora)
     {
-      head.splice(1, 0, acuerdo.tercero.documento.tipo.sigla)
-      body.splice(1, 0, acuerdo.tercero.numeroDocumento )
-    }    
+      head.splice(1, 0, entrega.tercero.documento.tipo.sigla)
+      body.splice(1, 0, entrega.tercero.numeroDocumento )
+    }
 
     autoTable(pdf, {      
       startY:     doc.y, tableLineColor:  50, tableLineWidth: 0.5,

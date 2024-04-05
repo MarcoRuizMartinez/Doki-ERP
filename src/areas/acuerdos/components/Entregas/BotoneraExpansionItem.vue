@@ -127,7 +127,7 @@
   //* ///////////////////////////////////////////////////////////////////////////// Componibles  
   import {  useApiDolibarr        } from "src/composables/useApiDolibarr"
   import {  style                 } from "src/composables/useEstilos"
-  import {  useTools, confetiClick   } from "src/composables/useTools"
+  import {  useTools, confetiClick} from "src/composables/useTools"
 
   //* ///////////////////////////////////////////////////////////////////////////// Componentes
   import    calendario              from "src/areas/acuerdos/components/Modales/CalendarioAcuerdos.vue"

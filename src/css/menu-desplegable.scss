@@ -232,23 +232,18 @@ ul.maco-menu > li > ul > li > ul > li:hover > ul {
 }
 
 /* //////////////////////////////////////////////////* Mega Menu */ 
-ul.maco-menu > li.maco-menu-mega > div,
-ul.maco-menu > li.maco-menu-mega-blog > div,
-ul.maco-menu > li.maco-menu-mega-shop > div {
+ul.maco-menu > li.maco-menu-mega > div {
     visibility: hidden;
     opacity: 0;
 }
 
-ul.maco-menu > li.maco-menu-mega:hover > div,
-ul.maco-menu > li.maco-menu-mega-blog:hover > div,
-ul.maco-menu > li.maco-menu-mega-shop:hover > div {
+ul.maco-menu > li.maco-menu-mega:hover > div {
+    transition-delay: 300ms;
     visibility: visible;
     opacity: 1;
 }
 
-ul.maco-menu > li.maco-menu-mega > div,
-ul.maco-menu > li.maco-menu-mega-blog > div,
-ul.maco-menu > li.maco-menu-mega-shop > div {
+ul.maco-menu > li.maco-menu-mega > div {
     position: absolute;
     width: 100%;
     height: auto;

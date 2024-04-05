@@ -76,6 +76,9 @@
             <!-- //* /////////////////////////////////////////////////////////// Lado Inputs   -->
             <div  class             ="col-md-5 col-12 lado-gris-claro">
               <div class            ="row justify-center q-mb-sm">
+                <comentarios
+                  :entrega          ="entrega"
+                />
                 <!-- //* ////////////////////////////////////////////////////////// Boton Remision -->
                 <q-btn
                   v-if              ="!!entrega.contactoEntrega.id"
@@ -135,6 +138,7 @@
   import    botonera                from "./../Entregas/BotoneraExpansionItem.vue"
   import    productos               from "./../Entregas/ProductosAEnviar.vue"
   import    inputsEntrega           from "./../Entregas/InputDeEntrega.vue"
+  import    comentarios             from "./../Entregas/ComentariosEntrega.vue"
 
   type TEmit                  = {
     clickNuevaEntrega : [ value : void        ]

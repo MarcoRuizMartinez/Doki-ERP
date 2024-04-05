@@ -189,7 +189,15 @@
     {
       /////////////////////// Tercero
       p.estadoCliente         = "🔎"
-      const doc               = parseInt( p.documento ).toString()
+      let docRaw              = p.documento.replaceAll(".","").replaceAll(",","")
+      if(                             // Caso Colombia NIT
+        docRaw.length         === 11  // Ejemplo un NIT 900421706-2
+        &&
+        docRaw.includes("-")          // digito de verificacion -
+      )
+        docRaw                = docRaw.slice(0,9)      
+      
+      const doc               = parseInt( docRaw ).toString()
       p.idTercero             = await vericarDocumentoEnDolibarr( doc, false)
       p.estadoCliente         = !!p.idTercero ? "✅" : "✖️"
       /////////////////////// Pago
