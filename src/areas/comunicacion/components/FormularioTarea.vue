@@ -131,7 +131,7 @@
       <!-- //* ///////////  Link pedido-->
       <div class            ="col-12">
         <q-btn              rounded
-          v-if              ="!!tarea.toTipo"          
+          v-if              ="!!tarea.toTipo && !!tarea.id"
           class             ="full-width text-bold"
           v-bind            ="style.btnBaseMd"
           color             ="primary"
