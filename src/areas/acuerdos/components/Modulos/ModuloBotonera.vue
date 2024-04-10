@@ -113,9 +113,9 @@
         </q-btn>
       </efecto>      
       <!-- //* //////////////////////////////////////////////////////////  Boton PDF -->
-      <efecto efecto          ="Down">      
+      <efecto efecto          ="Down">
         <q-btn
-          v-if                ="acuerdo.esEstadoValido && !acuerdo.esEntrega"
+          v-if                ="acuerdo.esEstadoValido && !acuerdo.esEntrega && !(acuerdo.esCotizacion && usuario.esProduccion)"
           v-bind              ="style.btnBaseMd"
           color               ="primary"
           icon                ="mdi-pdf-box"

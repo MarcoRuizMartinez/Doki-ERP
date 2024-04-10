@@ -3,12 +3,17 @@
     v-model           ="tabs.activa"
     class             ="q-ma-none"
     >
+    <!-- @mouseenter     ="tabs.activa = 'tab_1'"
+    @mouseenter     ="tabs.activa = 'tab_2'"
+    @mouseenter     ="tabs.activa = 'tab_3'"
+    @mouseenter     ="tabs.activa = 'tab_4'" -->
+
     <q-tab
       label           ="Busqueda"
       name            ="tab_1"
       icon            ="mdi-magnify"
       :alert          ="alertTab1 ? 'red' : false"
-      @mouseenter     ="tabs.activa = 'tab_1'"
+      
       >
     </q-tab>
     <q-tab
@@ -16,7 +21,7 @@
       name            ="tab_2"
       icon            ="mdi-calendar-month"
       :alert          ="alertTab2 ? 'red' : false"
-      @mouseenter     ="tabs.activa = 'tab_2'"
+      
       >
     </q-tab>
     <q-tab
@@ -24,7 +29,7 @@
       name            ="tab_3"
       icon            ="mdi-toolbox"
       :alert          ="alertTab3 ? 'red' : false"
-      @mouseenter     ="tabs.activa = 'tab_3'"
+      
       >
       <Tooltip label  ="Mas opciones"/>
     </q-tab>
@@ -32,7 +37,7 @@
       label           ="Busquedas"
       name            ="tab_4"
       icon            ="mdi-magnify-scan"
-      @mouseenter     ="tabs.activa = 'tab_4'"
+      
       >
       <Tooltip label  ="Búsquedas rápidas"/>
     </q-tab>

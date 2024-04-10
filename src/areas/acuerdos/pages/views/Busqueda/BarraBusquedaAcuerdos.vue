@@ -190,7 +190,9 @@
             </q-btn>
           </div>
           <!-- //* /////////////////////////////////////////////// Boton exportar -->
-          <div>
+          <div
+            v-if                  ="!(usuario.esProduccion && b.esCotizacion)"
+            >
             <q-btn                round push glossy
               icon                ="mdi-microsoft-excel"
               color               ="primary"
@@ -454,7 +456,7 @@
         />        
       </fieldset-filtro>
       <fieldset-filtro
-        v-if                    ="!b.esEntrega"
+        v-if                    ="!b.esEntrega && !(usuario.esProduccion && b.esCotizacion)"
         titulo                  ="Subtotal"
         class-contenido         ="column q-gutter-xs"
         >

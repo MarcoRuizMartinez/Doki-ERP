@@ -7,6 +7,7 @@
         class           ="op50 op100-hover"
         >     
         <tooltip-lineas
+          v-if          ="verDatosToolTip"
           :lineas       ="acuerdo.productos"
         />
       </q-icon>
@@ -43,6 +44,7 @@
     </q-btn>
     <!-- //* //////// Link a Dolibarr -->
     <q-btn            flat dense round
+      v-if            ="verDatosToolTip"
       icon            ="mdi-alpha-d-circle"
       class           ="op40 op100-hover q-ml-sm"
       padding         ="none"
@@ -67,7 +69,10 @@
   </div>
 </template>
 <script lang="ts" setup>
-  import {  PropType, toRefs} from "vue"    
+  import {  computed,
+            PropType, 
+            toRefs
+                            } from "vue"    
   import {  IAcuerdo        } from "src/areas/acuerdos/models/Acuerdo"
   import    tooltipLineas     from "src/areas/acuerdos/components/Tools/Tooltips/TooltipLineas.vue"
   import    tooltipAcuerdo    from "src/areas/acuerdos/components/Tools/Tooltips/TooltipAcuerdo.vue"
@@ -88,7 +93,9 @@
     (e: "vistaRapida",  value: void     ): void
     (e: "clickAcuerdo", value: IAcuerdo ): void
   }>()  
-  const { acuerdo        }   = toRefs( props )
+  const { acuerdo        }    = toRefs( props )
+
+  const verDatosToolTip       = computed(()=> !(acuerdo.value.esCotizacion && usuario.value.esProduccion ) )
 
   function clickLink(){    
     emit("clickAcuerdo", acuerdo.value)

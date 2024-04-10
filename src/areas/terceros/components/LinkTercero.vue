@@ -1,3 +1,15 @@
+<template>
+  <div class      ="ellipsis box-link">
+    <router-link
+      :class      ="{ 'link-tercero-color' : !tercero.color.includes( '#FFF' ) && !!tercero.color }"
+      :to         ="'/tercero/' + tercero.id "
+      >      
+        {{ tercero.nombre }}
+        <tooltip-tercero :tercero="tercero"/>
+    </router-link>
+  </div>
+</template>
+
 <script setup lang="ts">
   import {  PropType,
             toRefs,
@@ -14,20 +26,8 @@
   const { color,
           promedio    } = ToolColor.getColorTextFromHexa( tercero.value.color )
   const colorSombra     = promedio > 190 ? "white" : "black"
-
 </script>
 
-<template>
-  <div class      ="ellipsis box-link">
-    <router-link
-      :class      ="{ 'link-tercero-color' : !tercero.color.includes( '#FFF' ) && !!tercero.color }"
-      :to         ="'/tercero/' + tercero.id "
-      >      
-        {{ tercero.nombre }}
-        <tooltip-tercero :tercero="tercero"/>
-    </router-link>
-  </div>
-</template>
 
 <style>
   .link-tercero-color{

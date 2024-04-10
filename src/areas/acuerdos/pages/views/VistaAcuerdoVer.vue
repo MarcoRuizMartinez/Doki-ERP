@@ -24,7 +24,10 @@
     @click-remision         ="clickRemisionPDF"
     @click-rotulos          ="clickRotuloPDF"
   />
-  <barra-tercero class      ="col-12"/>
+  <barra-tercero
+    v-if                    ="!(acuerdo.esCotizacion && usuario.esProduccion)"
+    class                   ="col-12"
+  />
   <modo-vista    class      ="col-12"/>
   <tercero-y-contacto       scroll
     class                   ="col-md-4 col-12 o-10"
@@ -167,12 +170,14 @@
             provide,
             computed,
             PropType,
+            onUnmounted,
                                   } from "vue"
   import {  useTitle              } from "@vueuse/core"
   //* ///////////////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs           } from 'pinia'
   import {  useStoreAcuerdo       } from 'stores/acuerdo'
   import {  useStoreApp           } from 'stores/app'
+  import {  useStoreUser          } from 'stores/user'
 
   //* ///////////////////////////////////////////////////////////////////////////////// Modelos
   import {  Acuerdo, IAcuerdo     } from "src/areas/acuerdos/models/Acuerdo"
@@ -249,6 +254,13 @@
   //dexieBodegas()
   //const { bodegas           } = storeToRefs( useStoreDexie() )
 
+
+  const { usuario         } = storeToRefs( useStoreUser() ) 
+
+  onUnmounted(()=>{
+    acuerdo.value             = new Acuerdo()
+  })
+
   const props                 = defineProps({
     id:   { required: true, type: String },
     tipo: { required: true, type: String as PropType< TTipoAcuerdo > },
@@ -306,6 +318,7 @@
 
   async function generarPDF( tipo : TTipoPDF = "quote")
   {
+    if(acuerdo.value.esCotizacion && usuario.value.esProduccion) return
     if(acuerdo.value.esCotizacion || acuerdo.value.esPedido ){
       loading.value.pdf         = true
       modales.value.pdf         = true

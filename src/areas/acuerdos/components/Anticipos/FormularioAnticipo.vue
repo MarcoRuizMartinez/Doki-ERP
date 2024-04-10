@@ -142,7 +142,7 @@
   import {  useStoreDexie       } from 'stores/dexieStore'
   
   // * ///////////////////////////////////////////////////////////////////////////////// Componibles
-  import {  useTools            } from "src/composables/useTools"
+  import {  useTools, ToolType  } from "src/composables/useTools"
   import {  useFetch            } from "src/composables/useFetch"
   import {  style               } from "src/composables/useEstilos"
   import {  dexieCuentasDinero  } from "src/composables/useDexie"  
@@ -187,6 +187,8 @@
       modelo.value.index      =   modelo.value.esNuevo
                                 ? acuerdo.value.anticipos.length + 1
                                 : acuerdo.value.anticipos.findIndex( a => a.id == modelo.value.id ) + 1
+      console.log("modelo.value.index: objetoToFetch ", modelo.value.index);
+      console.log("modelo.value.anticipoToApi: ", modelo.value.anticipoToApi);
       return {
         body:   getFormData( modelo.value.esNuevo ? "nuevoAnticipo" : "editarAnticipo", modelo.value.anticipoToApi ),
         method: "POST"
@@ -217,20 +219,24 @@
     cargando.value            = true    
     
     const { data, ok  }       = await miFetch( endPoint, objetoToFetch.value, { mensaje: "guardar anticipo" } )
-    if(ok)
+    console.log("objetoToFetch.value: ", objetoToFetch.value);
+    const id                  = ToolType.anyToNum(data)
+    if(ok && id > 3500)
     {
-      aviso( "positive", "Anticipo guardaro exitosamente" )
+      aviso( "positive", "Anticipo guardaro exitosamente con ID: " + id, "file", 6000 )
 
       if(modelo.value.esNuevo){
-        modelo.value.id     = parseInt( data as string )
+        modelo.value.id       = id
         emit("creado", modelo.value)
       }
       else{
         emit("update:modelValue", modelo.value)
       }
     }
-    else
-      aviso( "negative", "Error al guardar anticipo. Por favor vuelve a intentarlo" )
+    else {
+      // Por favor vuelve a intentarlo
+      aviso( "negative", "Error al guardar anticipo. INFORMAR A MARCO. ID: " + id, "file", 20000 )
+    }
 
     modelo.value.estado       = modelo.value.estadoSelect.value
     cargando.value            = false

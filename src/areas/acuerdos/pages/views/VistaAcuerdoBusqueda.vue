@@ -59,7 +59,7 @@
           />
         </q-td>
       </template>
-      <!-- //* ///////////////  Columna Ref  -->
+      <!-- //* ///////////////  Columna Pedido  -->
       <template #body-cell-pedidoId="props">
         <q-td   :props          ="props">
           <router-link :to      ="'/pedidos/cliente/' + props.value">      
@@ -386,6 +386,9 @@
                   : busqueda.value.esEntrega      ? ["fechaEnvioOCCorta", "diasEnviadoFormato", "diasAprobadoFormato", "diasEntregarFormato", "estadoAnimoEmoji", "facturado", "condicionPagoLabel", "formaPagoLabel", "origenContactoLabel", "subTotalLimpio", "totalConDescu", "ivaValor", "totalConIva", "fechaListoCorta"]
                   : busqueda.value.esOCProveedor  ? ["refCliente", "comercial", "metodoEntregaLabel", "facturado", "origenContactoLabel", "subTotalLimpio", "pedidoId", "refPedido", "fechaListoCorta"]
                   : []
+
+    if(usuario.value.esProduccion && busqueda.value.esCotizacion)
+      colsEli.push("contactoSmartTel", "contactoSmart", "subTotalLimpio", "totalConDescu", "ivaValor", "totalConIva")
     Columna.eliminarColums( colsEli, columnas.value )
 
     const colHide = ["refCliente", "contactoSmartDir", "contactoSmartTel", "formaPagoLabel", "area", "municipioTercero", "creador", "fechaCreacionCorta", "fechaValidacionCorta", "subTotalLimpio", "ivaValor", "totalConIva"]

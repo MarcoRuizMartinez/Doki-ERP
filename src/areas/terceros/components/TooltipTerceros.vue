@@ -25,11 +25,11 @@
           <td>{{tercero.documento.tipo.nombre}}</td>
           <td>{{tercero.documento.numero}} {{tercero.documento.digito}}</td>
         </tr>
-        <tr v-if="!!tercero.telefono">
+        <tr v-if="verDatosContacto && !!tercero.telefono">
           <td>Teléfono</td>
           <td>{{tercero.telefono}}</td>
         </tr>
-        <tr v-if="!!tercero.correo">
+        <tr v-if="verDatosContacto && !!tercero.correo">
           <td>Correo</td>
           <td>{{tercero.correo}}</td>
         </tr>
@@ -37,7 +37,7 @@
           <td>Municipio</td>
           <td>{{tercero.municipio.label}}</td>
         </tr>
-        <tr v-if="!!tercero.direccion">
+        <tr v-if="verDatosContacto && !!tercero.direccion">
           <td>Dirección</td>
           <td>{{tercero.direccion}}</td>
         </tr>
@@ -51,10 +51,19 @@
   </q-tooltip>
 </template>
 <script setup lang="ts">
-  import {  PropType } from "vue"
+  
+  import {  computed,
+            PropType      } from "vue"  
   import {  ITercero } from "src/areas/terceros/models/Tercero"
-                              
+  // * /////////////////////////////////////////////////////////////////////// Store
+  import {  storeToRefs   } from 'pinia'
+  import {  useStoreUser  } from 'stores/user'
+
+  const { usuario         } = storeToRefs( useStoreUser() )
+  
   const props = defineProps({
     tercero:  { required: true, type: Object as PropType<ITercero> }
   })
+
+  const verDatosContacto    = computed(()=> !usuario.value.esProduccion )
 </script>

@@ -186,6 +186,7 @@ export class Usuario implements IUsuario
     get esProduccion  ():boolean { return this.grupos.length > 0 ? this.grupos.some( g => g == GRUPO_USUARIO.PRODUCCION   ) : false }
     get esGerencia    ():boolean { return this.grupos.length > 0 ? this.grupos.some( g => g == GRUPO_USUARIO.GERENCIA     ) : false }
     get esContable    ():boolean { return this.grupos.length > 0 ? this.grupos.some( g => g == GRUPO_USUARIO.CONTABLE     ) : false }
+    get esProducto    ():boolean { return this.grupos.length > 0 ? this.grupos.some( g => g == GRUPO_USUARIO.PRODUCTOS    ) : false }
 
     get esDev       ():boolean { return this.grupos.length > 0 ? this.grupos.some( g => g == GRUPO_USUARIO.DESARROLLO  ) : false }
     get areaEsEscom ():boolean { return this.area === AREA.ESCOM  }
