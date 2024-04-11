@@ -113,6 +113,7 @@ export const enum GRUPO_USUARIO {
   MIEMBRO         = "Miembro",
 }
 
+// #region Loading
 export interface ILoading {
   carga           ?: boolean
   crear           ?: boolean
@@ -155,6 +156,7 @@ export interface ILoading {
   commentsLoad    ?: boolean
   eventosLoad     ?: boolean
   entregas        ?: boolean
+  facturar        ?: boolean
 }
 
 export const LoadingDefault = {
@@ -199,9 +201,10 @@ export const LoadingDefault = {
   commentsLoad    : false,
   eventosLoad     : false,
   entregas        : false,
+  facturar        : false,
 }
 
-
+// #region Modales
 export interface IModales {
   formulario      ?: boolean
   editarEnLote    ?: boolean
@@ -238,7 +241,7 @@ export const ModalesDefault = {
 
 
 
-
+// #region Orden CSS
 export interface IOrdenCSS {
   productos       : number
   entregas        : number

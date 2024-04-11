@@ -21,8 +21,8 @@
           <td>Es</td>
           <td>{{ tercero.esProveedor ? "Proveedor" : ""}} {{ tercero.esCliente ? "Cliente" : "" }} {{tercero.areaNombre}}</td>
         </tr>
-        <tr v-if="!!tercero.documento.numero">
-          <td>{{tercero.documento.tipo.nombre}}</td>
+        <tr v-if="verDatosContacto && !!tercero.documento.numero">
+          <td>{{tercero.documento.tipo.sigla}}</td>
           <td>{{tercero.documento.numero}} {{tercero.documento.digito}}</td>
         </tr>
         <tr v-if="verDatosContacto && !!tercero.telefono">

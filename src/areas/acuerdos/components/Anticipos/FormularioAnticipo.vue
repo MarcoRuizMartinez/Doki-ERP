@@ -221,17 +221,15 @@
     const { data, ok  }       = await miFetch( endPoint, objetoToFetch.value, { mensaje: "guardar anticipo" } )
     console.log("objetoToFetch.value: ", objetoToFetch.value);
     const id                  = ToolType.anyToNum(data)
-    if(ok && id > 3500)
+    if(ok && modelo.value.esNuevo && id > 3500)
     {
       aviso( "positive", "Anticipo guardaro exitosamente con ID: " + id, "file", 6000 )
-
-      if(modelo.value.esNuevo){
-        modelo.value.id       = id
-        emit("creado", modelo.value)
-      }
-      else{
-        emit("update:modelValue", modelo.value)
-      }
+      modelo.value.id       = id
+      emit("creado", modelo.value)
+    }
+    else if(ok && !modelo.value.esNuevo){
+      aviso( "positive", "Anticipo guardado")
+      emit( "update:modelValue", modelo.value )
     }
     else {
       // Por favor vuelve a intentarlo

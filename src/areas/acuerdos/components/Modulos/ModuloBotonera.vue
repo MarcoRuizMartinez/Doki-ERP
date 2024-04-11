@@ -303,6 +303,22 @@
         >
         <Tooltip label        ="Editar"/>
       </q-btn>
+      <!-- //* ////////////////////////////////////////////////////////// Boton clasificar facturado -->
+      <q-btn
+        v-if                  ="    ( usuario.esContable      || usuario.esGerencia)
+                                &&  ( acuerdo.esEstadoAbierto || acuerdo.esEstadoEntregado)
+                                &&  !acuerdo.facturado
+                              "
+        v-bind                ="style.btnBaseMd"
+        color                 ="orange"
+        icon                  ="mdi-shield-check"
+        :label                ="esMobil ? '' : 'Facturado'"
+        :disable              ="cargandoAlgo"
+        :loading              ="loading.facturar"
+        >
+        <confirmar  @ok       ="emit('clickFacturado')" :con-label="!esMobil"/>
+        <Tooltip label        ="Clasificar facturado"/>
+      </q-btn>      
       <!-- //* ////////////////////////////////////////////////////////// Boton Reabrir -->
       <q-btn
         v-if                  ="acuerdo.esPedido && ( acuerdo.esEstadoAnulado || acuerdo.esEstadoEntregado || acuerdo.esEstadoEntregando )"
@@ -319,6 +335,7 @@
       <!-- //* ////////////////////////////////////////////////////////// Boton borrar -->
       <div>
         <q-btn
+          v-if                ="!acuerdo.facturado && !acuerdo.esEstadoEntregado"
           v-bind              ="style.btnBaseMd"
           color               ="negative"
           class               ="fit"
@@ -353,6 +370,7 @@
 </template>
 
 <script lang="ts" setup>
+  //#region Cosa
   // * /////////////////////////////////////////////////////////////////////// Core
   import {  computed        } from "vue"
   // * /////////////////////////////////////////////////////////////////////// Store
@@ -378,7 +396,7 @@
   const { usuario     } = storeToRefs( useStoreUser() )
   const { esMobil     } = useTools()
   
-
+// MARK:. Esto le perm
   const emit = defineEmits<{
     (e: 'clickPdf',           value: TTipoPDF ): void
     (e: 'clickAprobar',       ): void
@@ -389,6 +407,7 @@
     (e: 'clickRemision',      ): void
     (e: 'clickRotulos',       ): void
     (e: 'clickReabrir',       ): void
+    (e: 'clickFacturado',     ): void
     (e: 'clickRecargar',      ): void  
     (e: 'clickEntregado',     ): void
     (e: 'clickComisiones',    ): void
@@ -408,7 +427,7 @@
                                             )
                                             ||
                                             (     acuerdo.value.esPedido
-                                              //&&  !acuerdo.value.facturado
+                                              &&  !acuerdo.value.facturado
                                               &&  !acuerdo.value.esEstadoNoValidado
                                               &&  !acuerdo.value.esEstadoAnulado
                                               &&  !acuerdo.value.esEstadoEntregado

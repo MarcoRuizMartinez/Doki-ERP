@@ -13,7 +13,7 @@
     @click-validar          ="validarAcuerdo"
     @click-editar           ="pasarABorradorAcuerdo"
     @click-borrar           ="eliminarAcuerdo"
-    
+    @click-facturado        ="clasificarFacturado"
     @click-reabrir          ="reabrirPedido"
     @click-recargar         ="recargar"
     @click-entregado        ="cerrarAcuerdo"
@@ -238,6 +238,7 @@
           reabrirPedido,
           buscarAcuerdo,
           buscarAcuerdoEnlazados,
+          clasificarFacturado,
           eliminarAcuerdo,
           validarAcuerdo,
           cerrarAcuerdo,

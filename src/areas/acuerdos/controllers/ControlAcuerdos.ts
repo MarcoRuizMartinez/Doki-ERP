@@ -457,6 +457,23 @@ export function useControlAcuerdo()
     loading.value.editar      = false
   }
 
+  //* ////////////////////////////////////////////////////////////////////// Clasificar Facturado
+  async function clasificarFacturado()
+  {
+    loading.value.facturar    = true
+    const { ok, data }        = await apiDolibarr("setinvoiced", acuerdo.value.tipo, {}, acuerdo.value.id)
+
+    if(ok){
+      aviso("positive", `Marcado como facturado`)
+      acuerdo.value.facturado = true
+    }
+    else
+      aviso("negative", `Error al marcar facturado`)
+
+    loading.value.facturar    = false
+  }
+
+
   //* ////////////////////////////////////////////////////////////////////// Editar acuerdo
   async function reabrirPedido()
   {
@@ -910,6 +927,7 @@ export function useControlAcuerdo()
     editarComentario,
     editarComercial,
     pasarABorradorAcuerdo,
+    clasificarFacturado,
     reabrirPedido,
     editarOrigen,
     cerrarAcuerdo,

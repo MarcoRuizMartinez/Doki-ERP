@@ -24,6 +24,7 @@ type ModuloDolibarr           = "" | "tercero"  | "contacto"      | "documento" 
                                 
 type Metodo                   = "post" | "put" | "get" | "delete"
 
+//#region useApiDolibarr
 export function useApiDolibarr()
 {
   const { notify, loadingBar} = useQuasar()
