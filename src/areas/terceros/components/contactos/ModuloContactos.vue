@@ -30,6 +30,7 @@
           :tercero-id           ="tercero.id"
           :es-tercero-ctz       ="tercero.esTerceroCtz"
           :municipio            ="tercero.municipio"
+          :direccion            ="tercero.direccion"
           @update:model-value   ="modifiadoOk"
           @borrar               ="borrardoOk"
           @crear                ="crearOk"

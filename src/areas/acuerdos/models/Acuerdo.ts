@@ -668,13 +668,16 @@ https://dolibarr.mublex.com/fichinter/card.php?
                                             .reduce ( ( v1:number, v2:number) : number => v1 + v2 )
     return sumaProductos
   }
-
-  // * /////////////////////////////////////////////////////////////////////////////// Descuento valor
+  // 
+  // * /////////////////////////////////////////////////////////////////////////////// MARK: Descuento valor
   get descuentoValor() :number {
     return this.totalSinDescu - this.totalConDescu
   }
 
-  // * /////////////////////////////////////////////////////////////////////////////// Descuento valor
+
+  
+
+  // * ///////////////////////////////////////////////////////////////////////////////  MARK: Hay descuento
   get hayDescuento() :boolean {
     return this.descuentoValor > 0
   }
@@ -1113,7 +1116,8 @@ https://dolibarr.mublex.com/fichinter/card.php?
   get alertasEntrega() : string[]
   {
     const alertas     = []
-    
+    this.productos
+    console.log("this", this);
     if(!this.metodoEntrega.value)
       alertas.push("Método de entrega no definido")
     else
@@ -1122,8 +1126,22 @@ https://dolibarr.mublex.com/fichinter/card.php?
     else
     if(this.metodoEntrega.seguimiento.includes("Transportadora")  && !this.transportadora.value )
       alertas.push("El método de entrega exige una transportadora")
-    if(this.metodoEntrega.seguimiento == "1" && !this.contactoEntrega.nota )
+    if( !this.contactoEntrega.nota
+        &&
+        ( this.metodoEntrega.seguimiento    == "1"
+          ||
+          (
+            this.metodoEntrega.seguimiento  == "2"
+            &&
+            this.totalConIva                >= 200_000 // TODO
+          )
+        )
+    )
+    {
+      
+      console.log("this.totalConIva: ", this.totalConIva);
       alertas.push("Contacto requiere indicaciones")
+    }
     if(this.contactoEntrega.alerta)
       alertas.push("El contacto tiene la información incompleta")
 /*

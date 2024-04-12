@@ -165,7 +165,7 @@
   import {  IAcuerdo, Acuerdo     } from "src/areas/acuerdos/models/Acuerdo"
   import {  ILineaAcuerdo         } from "src/areas/acuerdos/models/LineaAcuerdo"
   import {  TIPO_ACUERDO          } from "src/areas/acuerdos/models/ConstantesAcuerdos"
-  import {  IContacto, Contacto   } from "src/areas/terceros/models/Contacto"
+  import {  Contacto              } from "src/areas/terceros/models/Contacto"
   import {  IColumna,
             Columna               } from "src/models/Tabla"
 
@@ -215,6 +215,7 @@
   onMounted( () => {
     acuerdo.value.calcularEntregado()
     lineas.value                    = acuerdo.value.productos.filter( p => p.esProducto )
+    entrega.value.productos         = lineas.value
     entrega.value.metodoEntrega     = Object.assign( acuerdo.value.metodoEntrega,   {} )
     entrega.value.contactoEntrega   = Object.assign( acuerdo.value.contactoEntrega, {} )
     entrega.value.tercero           = Object.assign( acuerdo.value.tercero,         {} )

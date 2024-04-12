@@ -144,15 +144,26 @@
         :requerido              ="tipoEntrega"
         :readonly               ="readonly"
       />
+      <div class                ="col-12 row items-center">
       <!-- //* //////////////   Dirección  -->
-      <input-text               alerta
-        v-if                    ="tipoEntrega"
-        v-model                 ="contacto.direccion"
-        label                   ="Dirección"
-        class                   ="col-12"
-        icon                    ="mdi-map-marker-radius"
-        :readonly               ="readonly"
-      />
+        <input-text             alerta
+          v-if                  ="tipoEntrega"
+          v-model               ="contacto.direccion"
+          label                 ="Dirección"         
+          icon                  ="mdi-map-marker-radius"
+          :class                ="readonly ? 'col-12' : 'col-11'"
+          :readonly             ="readonly"
+        />
+        <div v-if               ="!readonly">
+          <q-btn
+            v-bind              ="style.btnRedondoFlat2Sm"
+            class               ="col-1"
+            icon                ="mdi-content-duplicate"
+            @click              ="contacto.direccion = direccion"
+          />
+          <Tooltip label        ="Copiar dirección de tercero"/>
+        </div>
+      </div>
       <!-- //* //////////////   Notas  -->
       <q-input                  filled autogrow 
         v-model                 ="contacto.nota"
@@ -335,7 +346,7 @@
   const ventanaClienteExiste  = ref< boolean >(false)
   const ventanaCopiarContacto = ref< boolean >(false)
   const formulario            = ref< any >()
-  const clientesExistentes    = ref< any[] >()
+  const clientesExistentes    = ref< any[] >([])
   const urlDolibarr           = process.env.URL_DOLIBARR
   const consentimientoAsesor  = ref< boolean >(false)
   let   copiaContacto         = ""
@@ -346,6 +357,7 @@
     modelValue:   { default:  new Contacto(),   type: Object as PropType< IContacto >   },
     puedeEditar:  { default:  false,            type: Boolean                           },
     municipio:    { required: true,             type: Object as PropType< IMunicipio >  },
+    direccion:    { required: true,             type: String                            },
     esTerceroCtz: { default:  false,            type: Boolean                           },
     borrable:     { default:  false,            type: Boolean                           },
     editando:     { default:  false,            type: Boolean                           },

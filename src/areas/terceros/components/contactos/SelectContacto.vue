@@ -75,6 +75,7 @@
       :tipo-entrega           ="tipoEntrega"
       :es-tercero-ctz         ="tercero.esTerceroCtz"
       :municipio              ="tercero.municipio"
+      :direccion              ="tercero.direccion"
       :editando               ="editar"
       @crear                  ="contactoCreado"
       @update:model-value     ="contactoEditado"
