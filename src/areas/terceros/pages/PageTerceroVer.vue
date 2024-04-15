@@ -133,7 +133,7 @@
                                   (
                                     permisos.value.terceros_crear
                                     &&
-                                    ( usuarioEsDueño.value || ( permisos.value.acceso_total && usuario.value.esGerencia ) )
+                                    ( usuarioEsDueño.value || ( permisos.value.acceso_total && ( usuario.value.esGerencia || usuario.value.esProduccion )) )
                                   )
                                     return true
                                   else

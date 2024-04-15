@@ -1117,7 +1117,6 @@ https://dolibarr.mublex.com/fichinter/card.php?
   {
     const alertas     = []
     this.productos
-    console.log("this", this);
     if(!this.metodoEntrega.value)
       alertas.push("Método de entrega no definido")
     else
@@ -1126,6 +1125,8 @@ https://dolibarr.mublex.com/fichinter/card.php?
     else
     if(this.metodoEntrega.seguimiento.includes("Transportadora")  && !this.transportadora.value )
       alertas.push("El método de entrega exige una transportadora")
+
+
     if( !this.contactoEntrega.nota
         &&
         ( this.metodoEntrega.seguimiento    == "1"
@@ -1138,19 +1139,14 @@ https://dolibarr.mublex.com/fichinter/card.php?
         )
     )
     {
-      
-      console.log("this.totalConIva: ", this.totalConIva);
       alertas.push("Contacto requiere indicaciones")
     }
+
     if(this.contactoEntrega.alerta)
       alertas.push("El contacto tiene la información incompleta")
-/*
-      
-      
-      Recoge en oficina
-      Entrega Escom
-      Desde Proveedor
-*/
+
+    if(this.productos.some( l => !!l.alertasLinea.length ))
+      alertas.push("Falta información en los productos")    
 
     return alertas
   }
@@ -1169,7 +1165,13 @@ https://dolibarr.mublex.com/fichinter/card.php?
 
   get productosCompuestosTotal() : number { return this.productos.filter( p => p.naturaleza.esCompuesto_o_Kit ).length }
   get productosNoSiigo        () : number { return this.productos.filter( p => !p.siigo.enSiigo ).length }
-  get productosAlertaSiigo    () : number { return this.productosCompuestosTotal + this.productosNoSiigo }
+  get productosAlertaSiigo    () : number { 
+
+    
+    console.log("this.productosNoSiigo: ", this.productosNoSiigo);
+    console.log("this.productosCompuestosTotal: ", this.productosCompuestosTotal);
+    return this.productosCompuestosTotal + this.productosNoSiigo
+  }
 
   get soloServicios           () : boolean { return this.productos.every( p => p.esTituloOsubTotal || p.esServicio ) }
 

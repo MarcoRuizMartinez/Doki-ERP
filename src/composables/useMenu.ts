@@ -266,6 +266,13 @@ export function useMenu()
                           } ),
         },
         { ...new ItemMenu({
+                              label:    "Propiedades",
+                              icon:     "mdi-format-list-bulleted-type",
+                              to:       "/productos/propiedades",
+                              visible:  usuario.value.esProduccion || usuario.value.esGerencia || usuario.value.esProducto
+                          } ),
+        },        
+        { ...new ItemMenu({
                               label:    "Categorías",
                               icon:     "mdi-group",
                               to:       "/productos/categorias",

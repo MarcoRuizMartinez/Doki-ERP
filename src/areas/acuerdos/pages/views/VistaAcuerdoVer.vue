@@ -194,7 +194,7 @@
   //import {  useControlProductos   } from "src/areas/acuerdos/controllers/ControlLineasProductos"
   import {  TTipoAcuerdo          } from "src/areas/acuerdos/models/ConstantesAcuerdos"
   import {  style                 } from "src/composables/useEstilos"  
-  //import {  dexieBodegas          } from "src/composables/useDexie"  
+  import {  dexieNaturaleza       } from "src/composables/useDexie"  
   //import {  Tool                  } from "src/composables/useTools"
   //* ///////////////////////////////////////////////////////////////////////////////// Componentes
   import    visorPdf                from "components/utilidades/VisorPDF.vue"
@@ -254,9 +254,9 @@
   const orden                 = ref< IOrdenCSS  >(OrdenCSS)
   //dexieBodegas()
   //const { bodegas           } = storeToRefs( useStoreDexie() )
+  const { usuario           } = storeToRefs( useStoreUser() ) 
 
-
-  const { usuario         } = storeToRefs( useStoreUser() ) 
+  dexieNaturaleza()
 
   onUnmounted(()=>{
     acuerdo.value             = new Acuerdo()

@@ -327,7 +327,12 @@ const routes: RouteRecordRaw[] = [
         path:       '/productos/crear',
         name:       'crearProducto',
         component:  () => import('src/areas/productos/pages/PageProductosCrear.vue'),
-      },      
+      },
+      {
+        path:       '/productos/propiedades',
+        name:       'propiedadesProducto',
+        component:  () => import('src/areas/productos/pages/PagePropiedadesProductos.vue'),
+      },         
       {
         path:       '/categorias',
         name:       'categorias',

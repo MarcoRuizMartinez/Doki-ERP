@@ -163,6 +163,16 @@ export function servicesProductos()
   }
 
   
+
+  async function editarRequerimientos( ids : string, jsonEditar : string ) : Promise< boolean >
+  {
+    const { ok }              = await miFetch(  getURL("servicios", "productos"),
+                                                { method: "POST", body: getFormData( "editarRequerimientos", { ids, jsonEditar } ) },
+                                                { mensaje: "editando productos" }
+                                              )
+    return ok
+  }
+
 /*
   async function cambiarQtyHijo( relacion_id : number, qty : number ) : Promise< boolean >
   {
@@ -181,7 +191,8 @@ export function servicesProductos()
     buscarProductosHijosSiigo,
     marcarEnSiigo,
     ordenarProductosHijos,
-    cambiarQtyHijo
+    cambiarQtyHijo,
+    editarRequerimientos,
   }
 }
 

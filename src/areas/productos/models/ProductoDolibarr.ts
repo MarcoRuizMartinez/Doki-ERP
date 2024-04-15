@@ -8,6 +8,8 @@ import {  ICategoriaProducto,
           CategoriaProducto   } from "src/areas/productos/models/CategoriaProducto"
 import {  INaturalezaProducto,
           NaturalezaProducto  } from "src/models/Diccionarios/NaturalezaProducto"
+import {  ILabelValue,
+          labelValueNulo      } from "src/models/TiposVarios"
 import {  IAccion             } from "src/areas/comunicacion/models/Accion"
 import {  TCodigosSiigo,
           CodigosSiigo        } from 'src/areas/productos/models/Siigo';          
@@ -35,6 +37,7 @@ export interface IProductoDoli {
   unidadId                  : number
   unidad                    : IUnidad
   tipo                      : 0 | 1 | 9     // 0 producto 1 servicio 9 subtotal
+  tipoLabelValue            : ILabelValue
   tipoProducto              : string
   naturaleza                : INaturalezaProducto
   img                       : IImagenProducto
@@ -82,6 +85,9 @@ export interface IProductoDoli {
   productoForApiPrecios     : any
   getComoProductoHijo       : IProductoHijo
   siigo                     : TCodigosSiigo  // Codigo siigo que se utiliza en los productos
+  requiereAcabado           : boolean
+  requiereMedida            : boolean
+  requiereEntregado         : boolean
 }
 
 export class ProductoDoli implements IProductoDoli
@@ -97,6 +103,7 @@ export class ProductoDoli implements IProductoDoli
   unidadId                  : number              = 0
   unidad                    : IUnidad             = new Unidad()
   tipo                      : 0 | 1 | 9           = 0
+  tipoLabelValue            : ILabelValue         = labelValueNulo
   naturaleza                : INaturalezaProducto = new NaturalezaProducto()
   img                       : IImagenProducto     = new ImagenProducto()
   activo_proveedor          : boolean             = true
@@ -126,6 +133,9 @@ export class ProductoDoli implements IProductoDoli
   competencia               : number              = 0
   elegido                   : boolean             = false
   comentarios               : IAccion[]           = []
+  requiereAcabado           : boolean             = false
+  requiereMedida            : boolean             = false
+  requiereEntregado         : boolean             = false
 
   get precio_aumento()          :number { return this.calcularPrecioConAumento( this.aumento            ) }
   get precio_aumento_escom()    :number { return this.calcularPrecioConAumento( this.aumento_escom      ) }
@@ -261,7 +271,6 @@ export class ProductoDoli implements IProductoDoli
             )
   }
 
-
   get productoForApi() : any
   {
     const proForApi : any = {
@@ -275,22 +284,25 @@ export class ProductoDoli implements IProductoDoli
       status_buy:             +this.activoEnCompra,
       fk_unit:                this.unidad.id ?? 28,
       finished:               this.naturaleza.codigo,
+      type:                  +this.tipo,
       array_options:
       {
-        options_aumento_escom:        this.aumento_escom,
-        options_aumento:              this.aumento,
-        options_aumento_precio_desc:  this.aumento_descuento,
-        options_aumento_precio_loco:  this.aumento_loco,
-        options_costo_adicional:      this.costo_adicional,
-        options_precio_publico:       this.precio_aumento,
-        options_precio_promocion:     this.precio_promocion,
-        options_sin_proveedor:        +this.sin_proveedor,
+        options_aumento_escom         : this.aumento_escom,
+        options_aumento               : this.aumento,
+        options_aumento_precio_desc   : this.aumento_descuento,
+        options_aumento_precio_loco   : this.aumento_loco,
+        options_costo_adicional       : this.costo_adicional,
+        options_precio_publico        : this.precio_aumento,
+        options_precio_promocion      : this.precio_promocion,
+        options_sin_proveedor         : +this.sin_proveedor,
+        options_requierecolormaterial : +this.requiereAcabado,
+        options_requieremedida        : +this.requiereMedida,
+        options_requiereentregado     : +this.requiereEntregado,
       },
     }
 
     return proForApi
   }
-
 
   get productoForApiPrecios() : any
   {
@@ -349,13 +361,19 @@ export class ProductoDoli implements IProductoDoli
     producto.tipo                   =   productoApi.tipo == 1 ? 1
                                       : productoApi.tipo == 9 ? 9
                                       : 0
+    producto.tipoLabelValue         =   producto.tipo == 0 ? { value : 0, label:'Producto'}
+                                      : producto.tipo == 1 ? { value : 1, label:'Servicio'}
+                                      : labelValueNulo
 
-    producto.activo_proveedor       = Boolean( +productoApi.activo_proveedor      )
-    producto.disponible             = Boolean( +productoApi.disponible            )
-    producto.activoEnCompra         = Boolean( +productoApi.en_compra             )
-    producto.activoEnVenta          = Boolean( +productoApi.en_venta              )
-    producto.sin_proveedor          = Boolean( +productoApi.sin_proveedor         )
-    producto.siigo.enSiigo          = Boolean( +productoApi.enSiigo               )
+    producto.activo_proveedor       = ToolType.keyBoolean ( productoApi, 'activo_proveedor' )
+    producto.disponible             = ToolType.keyBoolean ( productoApi, 'disponible'       )
+    producto.activoEnCompra         = ToolType.keyBoolean ( productoApi, 'en_compra'        )
+    producto.activoEnVenta          = ToolType.keyBoolean ( productoApi, 'en_venta'         )
+    producto.sin_proveedor          = ToolType.keyBoolean ( productoApi, 'sin_proveedor'    )
+    producto.siigo.enSiigo          = ToolType.keyBoolean ( productoApi, 'enSiigo'          )
+    producto.requiereAcabado        = ToolType.keyBoolean ( productoApi, 'requiereAcabado'  )
+    producto.requiereMedida         = ToolType.keyBoolean ( productoApi, 'requiereMedida'   )
+    producto.requiereEntregado      = ToolType.keyBoolean ( productoApi, 'requiereEntregado')
 
     producto.aumento                = parseFloat( productoApi.aumento             )
     producto.aumento_escom          = parseFloat( productoApi.aumento_escom       )
@@ -368,6 +386,7 @@ export class ProductoDoli implements IProductoDoli
     producto.precio_proveedor       = parseFloat( productoApi.precio_proveedor    )
     producto.precio_publico         = parseFloat( productoApi.precio_publico      )
     producto.competencia            = parseFloat( productoApi.competencia         )
+
     producto.img.url                = productoApi?.imagen ?? IMAGEN_DEFAULT
 
     if(!producto.precio             && !!producto.aumento_escom ){

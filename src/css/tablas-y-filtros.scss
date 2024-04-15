@@ -114,9 +114,11 @@ legend{
     font-weight: bold;
     min-width: 70px;
 }
-.tabla-info td:nth-child(odd)::after 
+.tabla-info td:nth-child(odd)::after,
 .tabla-tooltip td:nth-child(odd)::after {
     content: ":";
+    background: unset;
+    position: unset;
 }
 .tabla-tooltip{
     max-width: 320px;

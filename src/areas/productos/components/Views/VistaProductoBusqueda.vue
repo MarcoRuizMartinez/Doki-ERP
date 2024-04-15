@@ -50,7 +50,20 @@
       @creado                 ="productoCreado"
       @editado                ="productoEditado"
     />
-  </q-dialog>  
+  </q-dialog>
+  <!-- //* ///////////////////////////////////////////////////////////// Modal formulario producto  -->
+  <q-dialog
+    v-model                   ="ventanaRequerimientos"
+    v-bind                    ="style.dialogo"      
+    :persistent               ="loading.crear || loading.editar"
+    >
+    <requerimientos
+      @edicion                ="ventanaRequerimientos = false"
+    />
+  </q-dialog>
+  <botones-seleccion
+    @click-requerimientos     ="ventanaRequerimientos =  true"
+  />
 </template>
   
 <script setup lang="ts">  
@@ -83,6 +96,8 @@
   import    barraBusqueda         from "src/areas/productos/components/Busqueda/BarraBusquedaProductos.vue"
   import    tabla                 from "src/areas/productos/components/TablaProductos/TablaProductos.vue"  
   import    formulario            from "src/areas/productos/components/FormularioProducto.vue"  
+  import    botonesSeleccion      from "src/areas/productos/components/BotonesSeleccion.vue"
+  import    requerimientos        from "src/areas/productos/components/Modales/FormularioRequerimientos.vue"
 
   // * ////////////////////////// Columnas
   const { buscarProductos       } = servicesProductos()
@@ -92,12 +107,14 @@
           productosFil,
           busqueda,
           loading,
+          seleccion,
                                 } = storeToRefs( useStoreProducto() )  
   const { esMobil, aviso        } = useTools()
   
   const modo                      = ref< TModosVentana >("esperando-busqueda")  
   const indexSelect               = ref< number >(-1)
   const ventanaProducto           = ref< boolean >(false)
+  const ventanaRequerimientos     = ref< boolean >(false)
   const tipoFormulario            = ref< "crear" | "ver" >("ver")
   const titulo                    = computed(()=>
   {
@@ -123,7 +140,8 @@
 
   async function buscar( query : IQueryProducto )
   {
-    productos.value               = []            
+    productos.value               = []
+    seleccion.value               = []
     modo.value                    = "buscando"
     productos.value               = await buscarProductos( query )
     productosFil.value            = productos.value
@@ -134,6 +152,7 @@
   {
     modo.value                    = "esperando-busqueda"
     productos.value               = []
+    seleccion.value               = []
   }
 
   function mostrarCrear()
@@ -194,10 +213,14 @@
 
   function crearColumnas(){
     columnas.value                = [
-      new Columna           ({ name: "sigla",   sortable: false, label: "Producto", visible: false }),
-      new Columna           ({ name: "ref",     sortable: false,                  clase: "text-bold" }),
-      new Columna           ({ name: "nombre"                                     }),
-      new Columna           ({ name: "precio",  sortable: false                   }),
+      new Columna           ({ name: "sigla",             label: "Producto", visible: false }),
+      new Columna           ({ name: "ref",               clase: "text-bold"        }),
+      new Columna           ({ name: "nombre"                                       }),
+      new Columna           ({ name: "precio",            sortable: false           }),
+      new Columna           ({ name: "tipoProducto",      label: "Tipo",  clase: "text-capitalize" }),
+      Columna.ColumnaSiNo   ({ name: "requiereAcabado",   label: "Indicar acabado"  }),
+      Columna.ColumnaSiNo   ({ name: "requiereEntregado", label: "Indicar entrega"  }),
+      Columna.ColumnaSiNo   ({ name: "requiereMedida",    label: "Indicar medida"   }),
       /*       
       new Columna({ name: "refCliente",               label: "Ref cliente"        }),
       new Columna({ name: "estado"                                                }),

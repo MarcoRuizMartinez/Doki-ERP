@@ -119,6 +119,13 @@ export interface ILineaAcuerdo extends IProductoDoli {
   entregaProgramadoTodo     : boolean
 
   numTemporal               : number              // Se utiliza para guardar informarcion temporal
+
+  // */ /////////////////// Propiedades de linea
+  acabado                   : string
+  medida                    : string
+  seEntrega                 : string              // En Caja, Armado, Instalado
+
+  alertasLinea              : string[]
 }
 
 
@@ -154,6 +161,10 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
   comision_c2               : IComisionLinea      = new ComisionLinea( "comercial 2" )
 
   numTemporal               : number              = 0
+
+  acabado                   : string              = ""
+  medida                    : string              = ""
+  seEntrega                 : string              = "" // En Caja, Armado, Instalado
 
   /*constructor()
   {
@@ -374,6 +385,15 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
   get entregaTotalOk()        : boolean { return !!this.qty && this.qty === this.qtyEntregado }
   get entregaProgramadoTodo() : boolean { return !!this.qty && this.qty === this.qtyProgramado }  
 
+  get alertasLinea() : string[]
+  {
+    const alertas : string[] = []
+    if(this.requiereAcabado   && !this.acabado)   alertas.push("El producto requiere un acabado")
+    if(this.requiereEntregado && !this.seEntrega) alertas.push("El producto no indica como se entrega")
+    if(this.requiereMedida    && !this.medida)    alertas.push("El producto requiere medidas")
+    return alertas
+  }  
+
   // * /////////////////////////////////////////////////////////////////////////////// Destacar con clase
   destacar( accion  : TAccionDestacar = "seleccionar",
             mostrar : "mostrar" | "ocultar"             = "mostrar"
@@ -450,6 +470,15 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
         
         if(!!linea.naturaleza_id)
           lineaFinal.naturaleza         = await getNaturalezaDB( linea.naturaleza_id.toString() )     
+
+        lineaFinal.requiereAcabado      = ToolType.keyBoolean     ( linea, 'requiereAcabado'  )
+        lineaFinal.acabado              = ToolType.keyStringValido( linea, 'acabado'          )
+
+        lineaFinal.requiereMedida       = ToolType.keyBoolean     ( linea, 'requiereMedida'   )
+        lineaFinal.medida               = ToolType.keyStringValido( linea, 'medida'           )        
+
+        lineaFinal.requiereEntregado    = ToolType.keyBoolean     ( linea, 'requiereEntregado')
+        lineaFinal.seEntrega            = ToolType.keyStringValido( linea, 'seEntrega'        )
 
         if(!!lineaFinal.bodegaId)
         {
@@ -546,6 +575,9 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
       array_options:
       {
         options_division_comision_x100: linea.comsionX100Division,
+        options_colormaterial:          linea.acabado,
+        options_medida:                 linea.medida,
+        options_entregado:              linea.seEntrega,
       },
     }
     return lineaApi

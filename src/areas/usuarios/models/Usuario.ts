@@ -36,6 +36,7 @@ export interface IUsuario {
   grupos            : string[]
   esComercial       : boolean
   esProduccion      : boolean
+  esProducto        : boolean
   esGerencia        : boolean
   esContable        : boolean
   esDev             : boolean

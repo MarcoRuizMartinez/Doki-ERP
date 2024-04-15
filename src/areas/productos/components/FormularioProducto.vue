@@ -54,8 +54,19 @@
         v-model                 ="proModel.ref"
         icon                    ="mdi-identifier"
         label                   ="Ref"
-        :class                  ="tipo === 'crear' ? 'col-12 col-md-6' : 'col-12'"
+        :class                  ="tipo === 'crear' ? 'col-12' : 'col-12 col-md-6'"
         :readonly               ="readonly"
+      />
+      <!-- //* //////////////   Tipo Servicio y Producto -->
+      <select-label-value       use-input flat bordered
+        v-model                 ="proModel.tipoLabelValue"
+        label                   ="Tipo"
+        icon                    ="mdi-format-list-checks"
+        class                   ="col-12 col-md-6"
+        defecto                 ="Producto"
+        :readonly               ="readonly"
+        :options                ="[{value : 0, label:'Producto'}, {value: 1, label:'Servicio'}]"
+        @select                 ="( i : ILabelValue )=> proModel.tipo = i.value"
       />
       <!-- //* //////////////   Campo Categoría -->
       <select-label-value       use-input flat bordered
@@ -182,6 +193,30 @@
         class                   ="col-4"
         :disable                ="readonly"
       />
+      <q-toggle
+        v-model                 ="proModel.requiereAcabado"
+        label                   ="Indicar acabado"
+        class                   ="col-4"
+        :disable                ="readonly"
+        >
+        <Tooltip label          ="Asesor debe indicar color o material"/>
+      </q-toggle>
+      <q-toggle
+        v-model                 ="proModel.requiereEntregado"
+        label                   ="Indicar empaque"
+        class                   ="col-4"
+        :disable                ="readonly"
+        >
+        <Tooltip label          ="Asesor debe indicar si se entrega en caja, embalado, armado o instalado"/>
+      </q-toggle>
+      <q-toggle
+        v-model                 ="proModel.requiereMedida"
+        label                   ="Indicar medida"
+        class                   ="col-4"
+        :disable                ="readonly"
+        >
+        <Tooltip label          ="  "/>
+      </q-toggle>  
       <!-- //* ///////////////////////////////////////////////////////////// Unidad -->
       <select-label-value       no-inmediato use-input
         v-model                 ="proModel.unidad"
@@ -240,6 +275,7 @@
 
   //* ///////////////////////////////////////////////////////////////////////////////// Modelos
   import {  ICategoriaProducto    } from "src/areas/productos/models/CategoriaProducto"
+  import {  ILabelValue           } from "src/models/TiposVarios"
   import {  IProductoDoli,
             ProductoDoli          } from "src/areas/productos/models/ProductoDolibarr"
 
@@ -325,6 +361,10 @@
   //* ////////////////////////////////////////////////////////////////////////////////////// Inicio
   function iniciar()
   {
+
+    if(usuario.value.esProducto)
+      readonly.value          = false
+
     if(tipo.value             == "ver"){
       return
     }

@@ -29,6 +29,7 @@ interface IAcuerdoState {
   busqueda            : IBusqueda,
   anticipo            : IAnticipo,
   nivelesComision     : INivelesComision,
+  mostrarDescripcion  : boolean
 }
 
 export const useStoreAcuerdo = defineStore('acuerdo', {
@@ -43,6 +44,7 @@ export const useStoreAcuerdo = defineStore('acuerdo', {
     busqueda          : new Busqueda(),
     anticipo          : new Anticipo(),
     nivelesComision   : new NivelesComision(),
+    mostrarDescripcion: true,
   }),
   actions: {
     async cargarNivelesComision()

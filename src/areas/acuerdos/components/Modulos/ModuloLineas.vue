@@ -5,6 +5,20 @@
     padding-contenido           ="0"
     :cargando                   ="loading.carga || loading.borrarLote || loading.editarLote"
     >
+    <template                   #titulo>      
+      {{ acuerdo.esEstadoNoValidado ? 'Editando productos' : 'Productos' }}
+      <!-- //* ///////////////////////////////////////////////////////////// Boton producto visible en PDF -->
+      <btn-toggle
+        v-model                 ="mostrarDescripcion"
+        icon-true               ="mdi-table-eye"
+        icon-false              ="mdi-table-eye-off"
+        msj-true                ="Ocultar descripción"
+        msj-false               ="Mostrar descripción"
+        color-true              ="white"
+        color-false             ="white"
+        size                    ="md"
+      />      
+    </template>    
     <template                   #barra
       v-if                      ="acuerdo.esEstadoNoValidado"
       >
@@ -146,6 +160,7 @@
   import    ordenar                 from "../Lineas/OrdenarLineas.vue"
   import    buscarProductos         from "../Lineas/BuscarAgregarProductos.vue"
   import    confirmar               from "components/utilidades/MenuConfirmar.vue"
+  import    btnToggle               from "components/utilidades/BtnToggle.vue"
   
   const { destacarLineaElegida,
           mostrarBuscarProductos    } = useControlProductos()
@@ -153,6 +168,7 @@
                               
   const { acuerdo,
           grupoElegido,
+          mostrarDescripcion,
           loading,
           modales             } = storeToRefs( useStoreAcuerdo() )
   const { crearNuevoGrupo     } = useControlProductos()

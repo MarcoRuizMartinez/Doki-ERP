@@ -23,7 +23,7 @@
         <select-usuario         hundido clearable
           v-model               ="b.f.usuario"
           class                 ="width200"
-          label                 ="Asesor"
+          label                 ="Responsable"
           :area                 ="usuario.area"
           :grupos               =[GRUPO_USUARIO.COMERCIALES]
           :readonly             ="!b.puedeCambiarUser"

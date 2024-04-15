@@ -206,8 +206,13 @@ export function useCotizacionPDF()
 
         // * //////////////////////////////////////////////// Descripcion
         doc.setFont             ( 9, 40 )
+        let descripcion         = ""
+        descripcion            += !!producto.acabado    ? "Color o material: "  + producto.acabado    + ". " : ""
+        descripcion            += !!producto.medida     ? "Medida: "            + producto.medida     + ". " : ""
+        descripcion            += !!producto.seEntrega  ? "Se entrega: "        + producto.seEntrega  + ". " : ""
+        descripcion            += producto.descripcion
         const posYDes           = nombreSplit.length === 1 ? doc.y + 19 : doc.y + 28
-        const descSlit          = pdf.splitTextToSize( ToolStr.limpiarHTML(producto.descripcion), anchoIzq - 4 ) as Array<string>
+        const descSlit          = pdf.splitTextToSize( ToolStr.limpiarHTML(descripcion), anchoIzq - 4 ) as Array<string>
         pdf.text                ( descSlit, margenIzq, posYDes, { align: "left" })
 
         // * /////////////////////////////////////////////////////////////////
