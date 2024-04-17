@@ -194,6 +194,7 @@ export function useRemisionPDF()
     pdf.setFontSize     (10)
     pdf.text            ("DIRECCIÓN:", doc.margen1, doc.y, { align: "left", renderingMode: 'fillThenStroke' })
 
+    //pdf.html("<b>hola</b>sdsd", {x:20, y:75, jsPDF: pdf});
     
     const direccion     = entrega.contactoEntrega.municipio.label + " " + datos.direccion
     const dirSplit      = pdf.splitTextToSize(direccion, 360 )

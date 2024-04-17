@@ -96,6 +96,17 @@
                                                           .replaceAll("&nbsp; ", " ")                                                          
                                                           .trim()
   }
+
+  /*
+:definitions          ="{
+          save: {
+            tip:              'Guardar descripción',
+            icon:             'mdi-content-save',
+            label:            'Guardar descripción en base de datos',
+            handler:          guardarDescripcion
+          }
+        }"  
+  */
 </script>
 
 <template>
@@ -233,15 +244,7 @@
       <q-editor
         v-model               ="linea.descripcion"
         v-bind                ="WYSIWYG_Limpio"
-        :readonly             ="acuerdo.esEstadoValido"
-        :definitions          ="{
-          save: {
-            tip:              'Guardar descripción',
-            icon:             'mdi-content-save',
-            label:            'Guardar descripción en base de datos',
-            handler:          guardarDescripcion
-          }
-        }"
+        :readonly             ="acuerdo.esEstadoValido"        
         @update:model-value   ="limpiarDescripcion"        
       />
     </div>

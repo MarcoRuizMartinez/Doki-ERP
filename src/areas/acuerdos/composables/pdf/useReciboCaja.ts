@@ -38,7 +38,7 @@ export function useReciboCajaPDF()
     for(let copia = 1; copia <= 2; copia++)
     {
       doc.y = copia === 1 ? 0 : doc.altoMitad
-      generarCabezote()
+      generarCabezote() 
       generarCuerpo()
       generarPie()
       //this.generarCuerpo()
@@ -154,7 +154,7 @@ export function useReciboCajaPDF()
     const valor         = Format.precio( anticipo.value.valor, 'decimales-no')
     // * //////////////////////////////////////////////// Tabla
     autoTable(pdf, {
-      head: [['Cuenta', 'Descripción', 'Tercero', 'Debito', 'Crédito' ]],
+      head: [['Descripción', 'Tercero', 'Valor' ]],
       startY: doc.y,
       theme: "grid",
       margin: { left: doc.margenIzq, right: doc.margenDer, bottom: 0 },
@@ -168,22 +168,13 @@ export function useReciboCajaPDF()
           5: { halign:    'center'  },
       },
       body: [
-        [ '11050501',
-          anticipo.value.cuenta.label,
+        [ anticipo.value.cuenta.label,
           acuerdo.value.tercero.numeroDocumento,
           valor,
           '$ 0'
         ],
-        [ '13050501',
-          'Pago total a documento Factura ' + acuerdo.value.ref,
-          acuerdo.value.tercero.numeroDocumento,
-          '$ 0',
-          valor,
-        ],
-        [ '',
-          '',
-          'TOTAL:',
-          valor,
+        [ acuerdo.value.ref,
+          'TOTAL  :',
           valor,
         ],
       ],
