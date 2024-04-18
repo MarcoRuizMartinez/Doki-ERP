@@ -28,7 +28,28 @@
             <Tooltip>{{ 'Bodega: ' + props.row.bodega.label }}</Tooltip>
           </div>
         </div>
-        <div>{{props.row.nombre}}</div>
+        <div>
+          <span>{{props.row.nombre}}</span>
+          <template v-if  ="props.row.acabado || !!props.row.seEntrega  || !!props.row.medida">
+            <table  class ="tabla-info q-ml-xl">
+              <!-- //* ////////////////////////////////////////////////// Acabado -->
+              <tr v-if    ="!!props.row.acabado">
+                <td>Acabado</td>
+                <td>{{ props.row.acabado }}</td>                          
+              </tr>
+              <!-- //* ////////////////////////////////////////////////// Acabado -->
+              <tr v-if    ="!!props.row.seEntrega">
+                <td>Se entrega</td>
+                <td>{{ props.row.seEntrega }}</td>                          
+              </tr>
+              <!-- //* ////////////////////////////////////////////////// Medida -->
+              <tr v-if    ="!!props.row.medida">
+                <td>Medida</td>
+                <td>{{ props.row.medida }}</td>                          
+              </tr>
+            </table>
+          </template>
+        </div>
       </q-td>
     </template>
   </q-table>

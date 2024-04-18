@@ -5,7 +5,7 @@
     >
     <div class                  ="text-1_1em lh_1_3 q-mb-xs">
       <span class               ="text-bold q-mr-sm">{{linea.ref}}</span> 
-      <span class               ="">{{linea.nombre}}</span>      
+      <span class               ="">{{linea.nombre}}</span>{{ !!linea.nombreExtra ? ' ' + linea.nombreExtra : '' }}   
     </div>
     <!--
     <br/> <span class         ="text-subtitle1">Modificador: {{linea.categoria.modificadorComision}}</span>
@@ -20,13 +20,13 @@
       {{linea.refProv}}
     </div>
     <table
-      v-if                      ="linea.requiereAcabado || linea.requiereEntregado || linea.requiereMedida"
+      v-if                      ="linea.requiereAcabado || linea.requiereEntregado || linea.requiereMedida || !!linea.acabado || !!linea.seEntrega  || !!linea.medida"
       class                     ="tabla-info"
       @click.stop
       >
       <!-- //* ////////////////////////////////////////////////// Editar acabado -->
       <tr
-        v-if                    ="linea.requiereAcabado">
+        v-if                    ="linea.requiereAcabado || !!linea.acabado ">
         <td>Acabado</td>
         <td>        
           <span v-if            ="!!linea.acabado">
@@ -51,7 +51,7 @@
         </q-popup-edit>              
       </tr>
       <!-- //* ////////////////////////////////////////////////// Editar entregado -->
-      <tr v-if                  ="linea.requiereEntregado">
+      <tr v-if                  ="linea.requiereEntregado || !!linea.seEntrega">
         <td>Se entrega</td>
         <td>
           <span v-if            ="!!linea.seEntrega">
@@ -71,13 +71,13 @@
             v-model             ="scope.value"
             label               ="Se entrega"
             class               ="width360"
-            :options            ="['En caja', 'Embalado', 'Armado', 'Instalado']"
+            :options            ="['En caja', 'Embalado', 'Armado', 'Instalado', 'Según entrega']"
             @update:model-value ="scope.set"
           />
         </q-popup-edit>           
       </tr>
       <!-- //* ////////////////////////////////////////////////// Editar Medida -->
-      <tr v-if                  ="linea.requiereMedida">
+      <tr v-if                  ="linea.requiereMedida || !!linea.medida">
         <td>Medida</td>
         <td>
           <span v-if            ="!!linea.medida">

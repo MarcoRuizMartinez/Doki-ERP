@@ -143,6 +143,17 @@ export class ToolType
   }
 
   static convertirTuplaAObjeto = ([key, value]: [string, string]) => ({ [key]: value });
+
+
+  static esURLValida = ( url : string ) => {
+    try {
+      return Boolean(new URL(url));
+    }
+    catch(e){
+      return false;
+    }
+  }
+
 }
 
 

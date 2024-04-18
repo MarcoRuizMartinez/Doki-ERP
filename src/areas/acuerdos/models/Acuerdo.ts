@@ -1042,7 +1042,21 @@ https://dolibarr.mublex.com/fichinter/card.php?
 
   getEntregaForApi( usuarioId : number, pedidoId : number, lineas : ILineaAcuerdo[], refPedido : string ) : any
   {
-    const lines                   = lineas.map(( l )=>{ return { origin_line_id: l.lineaId, qty: l.qtyAEntregar }})
+    const lines                   = lineas.map(( l )=>{
+      const linea = {
+        origin_line_id: l.lineaId,
+        qty: l.qtyAEntregar,
+        array_options: {
+          options_colormaterial   : l.acabado,
+          options_medida          : l.medida,
+          options_entregado       : l.seEntrega,
+          options_nombreextra     : l.nombreExtra,
+          options_urlimagen       : l.urlImagen,
+          
+        },        
+      }
+      return linea
+    })
 
     const acuForApi : any = {
       socid                       : this.tercero.id,
@@ -1165,13 +1179,7 @@ https://dolibarr.mublex.com/fichinter/card.php?
 
   get productosCompuestosTotal() : number { return this.productos.filter( p => p.naturaleza.esCompuesto_o_Kit ).length }
   get productosNoSiigo        () : number { return this.productos.filter( p => !p.siigo.enSiigo ).length }
-  get productosAlertaSiigo    () : number { 
-
-    
-    console.log("this.productosNoSiigo: ", this.productosNoSiigo);
-    console.log("this.productosCompuestosTotal: ", this.productosCompuestosTotal);
-    return this.productosCompuestosTotal + this.productosNoSiigo
-  }
+  get productosAlertaSiigo    () : number { return this.productosCompuestosTotal + this.productosNoSiigo }
 
   get soloServicios           () : boolean { return this.productos.every( p => p.esTituloOsubTotal || p.esServicio ) }
 

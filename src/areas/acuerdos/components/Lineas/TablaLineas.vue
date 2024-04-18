@@ -52,8 +52,15 @@
         <div class              ="w-600px row">
           <!-- //* //////////////////////////////////////////////////////// Imagen -->
           <imagen-producto
+            v-if                ="!props.row.urlImagen"
             class               ="col-shrink q-mr-sm"
             :imagen             ="props.row.img"
+            :nombre             ="props.row.nombre"
+          />
+          <imagen
+            v-else
+            class               ="col-shrink q-mr-sm"
+            :src                ="props.row.urlImagen"
             :nombre             ="props.row.nombre"
           />
           <!-- //* //////////////////////////////////////////////////////// Nombre-->
@@ -151,6 +158,7 @@
   import    btnEditarLote         from "./Tools/BotonesEditarEnLote.vue"
   import    subtotalToggle        from "./Tools/SubtotalToggle.vue"
   import    imagenProducto        from "src/areas/productos/components/Tools/ImagenProducto.vue"
+  import    imagen                from "components/utilidades/Imagen.vue"
   import    nombreDescripcion     from "./Columnas/NombreDescripcion.vue"
   import    cantidad              from "./Columnas/Cantidad.vue"
   import    descuento             from "./Columnas/Descuento.vue"
@@ -194,8 +202,6 @@
       columnas.value.push( new Columna({ name: "qtyDeTotal",  label: "Cantidad",  sortable: false } ) )
       columnas.value.push( new Columna({ name: "bodegaLabel", label: "Bodega",  sortable: false } ) )
     }
-
-
   }
 
 

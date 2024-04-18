@@ -53,6 +53,8 @@ export interface ILineaLite
 export interface ILineaAcuerdo extends IProductoDoli {
   padreId                   : number      // Id de cotizacion, orden o factura
   lineaId                   : number
+  nombreExtra               : string
+  urlImagen                 : string
   qty                       : number
   x100Maximo                : number
   orden                     : number
@@ -133,6 +135,8 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
 {
   padreId                   : number              = 0
   lineaId                   : number              = 0
+  nombreExtra               : string              = ""
+  urlImagen                 : string              = ""
   qty                       : number              = 0
   descuentoX100             : number              = 0
   orden                     : number              = 0
@@ -480,6 +484,9 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
         lineaFinal.requiereEntregado    = ToolType.keyBoolean     ( linea, 'requiereEntregado')
         lineaFinal.seEntrega            = ToolType.keyStringValido( linea, 'seEntrega'        )
 
+        lineaFinal.nombreExtra          = ToolType.keyStringValido( linea, 'nombreExtra'      )
+        lineaFinal.urlImagen            = ToolType.keyStringValido( linea, 'urlImagen'      )
+
         if(!!lineaFinal.bodegaId)
         {
           lineaFinal.bodega = await getBodegaDB( lineaFinal.bodegaId )
@@ -574,10 +581,12 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
       label:          linea.nombre.length > 2 ? linea.nombre : undefined,
       array_options:
       {
-        options_division_comision_x100: linea.comsionX100Division,
-        options_colormaterial:          linea.acabado,
-        options_medida:                 linea.medida,
-        options_entregado:              linea.seEntrega,
+        options_division_comision_x100  : linea.comsionX100Division,
+        options_colormaterial           : linea.acabado,
+        options_medida                  : linea.medida,
+        options_entregado               : linea.seEntrega,
+        options_nombreextra             : linea.nombreExtra,
+        options_urlimagen               : linea.urlImagen,
       },
     }
     return lineaApi

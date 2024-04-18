@@ -196,7 +196,9 @@ export function useCotizacionPDF()
         // * //////////////////////////////////////////////// Ref y nombre
         //const anchoRef          = Math.round( pdf.keyStringValidoUnitWidth(producto.ref) ) 
         //const espacios          = " ".repeat( anchoRef * 6 ) + " "
-        const nombre            = `${producto.ref} - ${producto.nombre}`//espacios + producto.nombre
+        let nombre              = `${producto.ref} - ${producto.nombre}`
+        if(!!producto.nombreExtra) 
+          nombre                += " " + producto.nombreExtra
         const margenIzq         = doc.margenIzq + 4
         doc.setFont             ( 11, 30)
         //pdf.text                ( producto.ref, margenIzq,  doc.y + 10, { align: "left", renderingMode: 'fillThenStroke' })
@@ -258,16 +260,34 @@ export function useCotizacionPDF()
         
         // * //////////////////////////////////////////////// Imagen
 
-        if(!!producto.img.img_300px)
+        if(!!producto.img.img_300px && !producto.urlImagen)
         {
           let imagen            = await crearImageHTML( producto.img.img_300px )
           const margen          = { left: 6, top: 2 }
           const anchoImg        = doc.margenIzq - margen.left
-          pdf.addImage(imagen, 'JPEG', margen.left, doc.y + margen.top, anchoImg, anchoImg)
-
-          if(doc.areaNombre     === "Escom")
-            pdf.addImage(doc.path + 'escom.png', 'PNG', margen.left + 3,  doc.y + 68, 68,      7)
-            //pdf.addImage(doc.path + 'bandaMarca.png', 'PNG', margen.left,  doc.y + 67, 74,      9)
+          try{
+            pdf.addImage(imagen, 'JPEG', margen.left, doc.y + margen.top, anchoImg, anchoImg)
+            if(doc.areaNombre     === "Escom")
+              pdf.addImage(doc.path + 'escom.png', 'PNG', margen.left + 3,  doc.y + 68, 68,      7)
+              //pdf.addImage(doc.path + 'bandaMarca.png', 'PNG', margen.left,  doc.y + 67, 74,      9)
+          }
+          catch (error : any) {
+            ocultarAviso()
+            console.error( error )
+          }
+        }
+        else if(!!producto.urlImagen)
+        {
+          let imagen            = await crearImageHTML( producto.urlImagen )
+          const margen          = { left: 6, top: 2 }
+          const anchoImg        = doc.margenIzq - margen.left
+          try{
+           pdf.addImage(imagen, 'JPEG', margen.left, doc.y + margen.top, anchoImg, anchoImg)
+          }
+          catch (error : any) {
+            ocultarAviso()
+            console.error( error )
+          }
         }
 
 
