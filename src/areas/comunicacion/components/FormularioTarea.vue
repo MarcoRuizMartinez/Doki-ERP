@@ -241,6 +241,9 @@
   
   //* ////////////////////////////////////////////////////////////////////////////////////// onMounted
   onMounted( async ()=>{
+    if(usuario.value.id === tarea.value.asignado.id || usuario.value.id === tarea.value.creador.id)
+      modoEdicion.value = true
+
     if(tarea.value.esNuevo){
       asignarValoresATarea()
     }

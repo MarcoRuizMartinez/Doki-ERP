@@ -1,3 +1,13 @@
+<template>
+  <busqueda-productos 
+    :loading          ="loading.añadir || loading.borrarLote"
+    @productos-add    ="agregarProductosAControl"
+    @busqueda-ok      ="buscarSiProductosEstanEnGrupo"
+    @borrar           ="eliminarLineaDesdeBusqueda"
+    @cerrar           ="cerrar"
+  />
+</template>
+
 <script setup lang="ts">
   // * /////////////////////////////////////////////////////////////////////////////////// Core
 
@@ -49,13 +59,3 @@
     modales.value.añadirProductos  = false
   }
 </script>
-
-<template>
-  <busqueda-productos 
-    :loading          ="loading.añadir || loading.borrarLote"
-    @productos-add    ="agregarProductosAControl"
-    @busqueda-ok      ="buscarSiProductosEstanEnGrupo"
-    @borrar           ="eliminarLineaDesdeBusqueda"
-    @cerrar           ="cerrar"
-  />
-</template>

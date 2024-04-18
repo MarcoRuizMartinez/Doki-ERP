@@ -71,6 +71,7 @@
             :es-validado        ="acuerdo.esEstadoValido"
             @click              ="mostrarFormulario( props.row as LineaAcuerdo )"
             @borrar-linea       ="borrarLineaMenu"
+            @duplicar           ="duplicarLinea"
           />
         </div>
       </q-td>
@@ -165,9 +166,10 @@
 
   const { borrarLinea,
           borrarLineas,
+          clonarLinea,
           seleccionarLineas,
           destacarLineaElegida,
-          mostrarFormularioLinea
+          mostrarFormularioLinea,
                               } = useControlProductos()
   const { acuerdo,
           grupoElegido,
@@ -227,8 +229,16 @@
   {
     grupoElegido.value              = grupo.value
     lineaElegida.value              = linea
-    const ok  = await borrarLinea( linea )    
+    const ok                        = await borrarLinea( linea )    
     if(ok) destacarLineaElegida(false)
+  }
+
+  async function duplicarLinea( linea : ILineaAcuerdo )
+  {
+    grupoElegido.value              = grupo.value
+    const index                     = grupo.value.productos.findIndex( ( l )=> linea.ref === l.ref && linea.orden === l.orden )
+    if(index == -1) return
+    await clonarLinea( linea, index )
   }
 </script>
 <style>

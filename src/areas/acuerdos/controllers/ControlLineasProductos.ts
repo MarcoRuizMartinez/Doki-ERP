@@ -127,6 +127,32 @@ export function useControlProductos()
     return true
   }
 
+  async function clonarLinea( linea : ILineaAcuerdo, index : number ) : Promise<boolean>
+  {
+    const newLinea    = Object.assign( new LineaAcuerdo(), linea )
+    newLinea.lineaId  = 0
+    
+    loading.value.añadir      = true
+
+    if(!acuerdo.value.esEstadoBoceto)
+      {
+        newLinea.lineaId           = await crearLineaEnApi( linea )
+
+      if(!newLinea.lineaId){
+        console.warn("Error al crear linea")
+        return false
+      }
+    }
+
+    newLinea.destacar( "guardar" )
+    grupoElegido.value.productos.splice( index + 1, 0, newLinea )
+
+    loading.value.añadir      = false
+    deGruposAProductos()
+    grupoElegido.value.noDestacarProductos()
+    return true
+  }
+
   async function copiarProductos( lineasAdd : ILineaAcuerdo[] ) : Promise<boolean>
   {
     if(acuerdo.value.esEstadoBoceto || !lineasAdd.length) return false
@@ -487,6 +513,7 @@ export function useControlProductos()
     moverGrupo,
     seleccionarLineas,
     copiarProductos,
+    clonarLinea,
     deGruposAProductos,
     editarCostoLinea,
   }

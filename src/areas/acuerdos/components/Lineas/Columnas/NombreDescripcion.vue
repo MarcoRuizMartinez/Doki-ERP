@@ -144,6 +144,14 @@
   <q-menu                       touch-position context-menu>
     <div  class                 ="column items-start">
       <q-btn                    v-close-popup flat dense no-caps
+        icon                    ="mdi-content-duplicate"
+        class                   ="full-width"
+        type                    ="a"
+        label                   ="Duplicar"
+        align                   ="left"    
+        @click                  ="emit('duplicar', linea)"
+      />      
+      <q-btn                    v-close-popup flat dense no-caps
         icon                    ="mdi-open-in-new"
         class                   ="full-width"
         type                    ="a"
@@ -210,6 +218,7 @@
   const emit = defineEmits<{
     (e: 'click',        value: void           ): void
     (e: 'borrarLinea',  value: ILineaAcuerdo  ): void
+    (e: 'duplicar',     value: ILineaAcuerdo  ): void
   }>()  
 </script>
 <style scoped>
