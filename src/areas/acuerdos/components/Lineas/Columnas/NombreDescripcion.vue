@@ -19,6 +19,14 @@
       >
       {{linea.refProv}}
     </div>
+    <div v-if="linea.naturaleza.esCompuesto_o_Kit">
+      <q-icon
+        name                    ="mdi-focus-field"
+        size                    ="1.6em"
+        class                   ="op40 op100-hover q-mr-xs"
+      />
+      <span class               ="text-bold text-uppercase text-grey-6 text-0_8em">{{ linea.naturaleza.label }}</span>      
+    </div>
     <table
       v-if                      ="linea.requiereAcabado || linea.requiereEntregado || linea.requiereMedida || !!linea.acabado || !!linea.seEntrega  || !!linea.medida"
       class                     ="tabla-info"

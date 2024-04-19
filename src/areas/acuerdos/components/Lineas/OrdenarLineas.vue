@@ -39,7 +39,11 @@
           <!-- //* ////////////////////////////////////////////////////////////////// Icono Drag -->
           <div class              ="col-shrink text-bold text-1_2em text-grey-9 q-mb-md">
             <!-- //* ///////////////////////////////////////////////////// Nombre Grupo -->
-            {{ grupo.titulo }}
+            <span>
+              {{ grupo.titulo }}
+              <Tooltip :label     ="!!grupo.lineaIdTitulo ? 'Editar nombre de grupo' : 'Para editar nombre, mover primero un producto'"
+              />
+            </span>
             <q-popup-edit         auto-save fit
               v-if                ="!!grupo.lineaIdTitulo"
               v-model             ="grupo.titulo"

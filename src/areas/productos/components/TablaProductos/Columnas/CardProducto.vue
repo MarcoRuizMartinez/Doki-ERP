@@ -1,39 +1,3 @@
-<script setup lang="ts">
-  // * /////////////////////////////////////////////////////////////////////////////////// Core
-  import {  PropType            } from "vue"
-  // * /////////////////////////////////////////////////////////////////////////////////// Modelos
-  import {  IColumna, Columna   } from "src/models/Tabla"
-  import {  IProductoDoli       } from "src/areas/productos/models/ProductoDolibarr"  
-  // * /////////////////////////////////////////////////////////////////////////////////// Componibles
-  import {  Tool, Format        } from "src/composables/useTools"  
-  // * /////////////////////////////////////////////////////////////////////////////////// Componentes
-  import    efecto                from "components/utilidades/Efecto.vue"
-  import    tooltipPrecios        from "src/areas/acuerdos/components/Tools/Tooltips/TooltipPreciosProducto.vue"
-
-  const props                 = defineProps({      
-    producto:         { required: true,  type: Object as PropType< IProductoDoli >  },  
-    selected:         { required: true,  type: Boolean                              },
-    selectedAll:      { required: false, type: Boolean                              },
-  })
-
-  const emit                  = defineEmits<{
-    (e: "mouseLargo",       value: IProductoDoli  ): void
-    (e: "update:selected",  value: boolean        ): void
-  }>()
-
-  const columnas: IColumna[]  = [
-    new Columna           ({ name: "sigla",   sortable: false, label: "Imagen",  visible: false }),
-    new Columna           ({ name: "ref",     sortable: false, label: "Filtrar", clase: "text-bold" }),
-    new Columna           ({ name: "nombre"                                     }),
-    new Columna           ({ name: "precio",  sortable: false                   }),
-  ]
-
-  function mouseLargo( producto : IProductoDoli )
-  {
-    emit("mouseLargo", producto)      
-  }  
-</script>
-
 <template>
   <div
     class                 ="q-pa-xs col-xs-6 col-sm-3 col-md-12-5 col-lg-12-5 grid-style-transition "
@@ -87,6 +51,17 @@
           <span>{{producto.descuentoCalculado}}%</span>
           <Tooltip>Descuento del {{producto.descuentoCalculado}}%</Tooltip>
         </q-badge>
+        <q-badge
+          v-if            ="producto.naturaleza.esCompuesto_o_Kit"
+          class           ="absolute-right h-20px"
+          color           ="deep-purple-10"
+          >
+          <q-icon
+            name          ="mdi-focus-field"
+            size          ="1.6em"
+          />
+          <Tooltip label  ="Producto compuesto"/>
+        </q-badge>        
       </q-card-section>
       <q-separator />
       <div
@@ -110,6 +85,41 @@
     </q-card>
   </div>    
 </template>
+<script setup lang="ts">
+  // * /////////////////////////////////////////////////////////////////////////////////// Core
+  import {  PropType            } from "vue"
+  // * /////////////////////////////////////////////////////////////////////////////////// Modelos
+  import {  IColumna, Columna   } from "src/models/Tabla"
+  import {  IProductoDoli       } from "src/areas/productos/models/ProductoDolibarr"  
+  // * /////////////////////////////////////////////////////////////////////////////////// Componibles
+  import {  Tool, Format        } from "src/composables/useTools"  
+  // * /////////////////////////////////////////////////////////////////////////////////// Componentes
+  import    efecto                from "components/utilidades/Efecto.vue"
+  import    tooltipPrecios        from "src/areas/acuerdos/components/Tools/Tooltips/TooltipPreciosProducto.vue"
+
+  const props                 = defineProps({      
+    producto:         { required: true,  type: Object as PropType< IProductoDoli >  },  
+    selected:         { required: true,  type: Boolean                              },
+    selectedAll:      { required: false, type: Boolean                              },
+  })
+
+  const emit                  = defineEmits<{
+    (e: "mouseLargo",       value: IProductoDoli  ): void
+    (e: "update:selected",  value: boolean        ): void
+  }>()
+
+  const columnas: IColumna[]  = [
+    new Columna           ({ name: "sigla",   sortable: false, label: "Imagen",  visible: false }),
+    new Columna           ({ name: "ref",     sortable: false, label: "Filtrar", clase: "text-bold" }),
+    new Columna           ({ name: "nombre"                                     }),
+    new Columna           ({ name: "precio",  sortable: false                   }),
+  ]
+
+  function mouseLargo( producto : IProductoDoli )
+  {
+    emit("mouseLargo", producto)      
+  }  
+</script>
 
 <style>
   .card-producto{

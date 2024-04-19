@@ -35,7 +35,17 @@
     <template #body-cell-sigla="props">
       <q-td :props            ="props">
         <!-- //* ///////////////////////////////////////////////// Imagen  -->
-        <imagen :producto     ="props.row"/>        
+        <imagen :producto     ="props.row"/>
+        <q-icon
+          :name               ="props.row.naturaleza.esCompuesto_o_Kit ? 'mdi-focus-field' : 'mdi-blank'"
+          size                ="1.6em"
+          class               ="op40 op100-hover q-mr-sm"
+          >
+          <Tooltip
+            v-if              ="props.row.naturaleza.esCompuesto_o_Kit"
+            :label            ="props.row.naturaleza.label"
+          />
+        </q-icon>
         <template v-if        ="modoBusqueda">
           <q-btn              
             v-bind            ="style.btnRedondoFlatMd"

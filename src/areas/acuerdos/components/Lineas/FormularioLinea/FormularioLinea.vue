@@ -26,6 +26,7 @@
             @keyup.enter        ="scope.set"
           />
         </q-popup-edit>          
+        <Tooltip label          ="Agregar un texto adicional al nombre"/>
       </div>
       <!-- //* ///////////////////////////////////////////////////////////// Cantidad -->
       <numero-paso
