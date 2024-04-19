@@ -1,79 +1,102 @@
 <template>
-  <ventana                      cerrar
-    titulo                      ="Ordenar grupos y productos"
-    icono                       ="mdi-sort-alphabetical-ascending"
-    :cargando                   ="loading.ordenando"
-    class-contenido             ="column gap-sm"
-    min-width                   ="400px"
+  <ventana                        cerrar
+    titulo                        ="Ordenar grupos y productos"
+    icono                         ="mdi-sort-alphabetical-ascending"
+    :cargando                     ="loading.ordenando"
+    class-contenido               ="column gap-sm"
+    min-width                     ="400px"
     >
-    <div style                  ="height: 80vh; overflow-y: auto;" class="">
+    <template                     #barra>
+      <!-- //* ///////////////////////////////////////////////////////////// Boton nuevo grupo   -->
+      <q-btn
+        v-bind                    ="style.btnBaseSm"
+        label                     ="Nuevo grupo"
+        color                     ="positive"
+        icon                      ="mdi-tab-plus"
+        :disable                  ="!acuerdo.puedeCrearNuevoGrupo"
+        @click                    ="crearNuevoGrupo"
+      />
+    </template>    
+    <q-scroll-area
+      class                       ="full-width column"
+      style                       ="height: 80vh;" 
+      >
       <vue-draggable
-        v-model                 ="acuerdo.proGrupos"
-        :animation              ="300"
-        handle                  =".handle"
-        chosen-class            ="item-select"
-        class                   ="row gap-sm no-wrap full-height justify-center"
-        style                   ="width: 94vw;"
-        @end                    ="ordenarProductos"
+        v-model                   ="acuerdo.proGrupos"
+        :animation                ="300"
+        handle                    =".handle"
+        chosen-class              ="item-select"
+        class                     ="row gap-sm no-wrap justify-center items-stretch"        
+        @end                      ="ordenarProductos"
         >
         <!-- //* //////////////////////////////////////////////////////////////////// Iterable Contenedor de productos-->
+        
         <div
-          v-for                 ="grupo of acuerdo.proGrupos"
-          :key                  ="grupo.index"
-          class                 ="grupo row justify-between q-pa-sm"
+          v-for                   ="grupo of acuerdo.proGrupos"
+          :key                    ="grupo.index"
+          class                   ="grupo row justify-between content-start q-pa-sm"
           >
           <!-- //* ////////////////////////////////////////////////////////////////// Icono Drag -->
-          <div class            ="col-shrink text-bold text-1_2em text-grey-9 q-mb-md">
+          <div class              ="col-shrink text-bold text-1_2em text-grey-9 q-mb-md">
+            <!-- //* ///////////////////////////////////////////////////// Nombre Grupo -->
             {{ grupo.titulo }}
+            <q-popup-edit         auto-save fit
+              v-if                ="!!grupo.lineaIdTitulo"
+              v-model             ="grupo.titulo"
+              v-slot              ="scope"
+              class               ="row panel-blur-70 q-col-gutter-xs"
+              max-width           ="400px"
+              anchor              ="center left"
+              :persistent         ="loading.editarGrupo"
+              @update:model-value ="( titulo : string )=> editarTituloGrupo(titulo, grupo)"
+              >
+              <q-input            dense filled
+                v-model           ="scope.value"
+                label             ="Nombre de grupo"
+                class             ="width300"
+                :disable          ="!grupo.conTitulo"
+                @keyup.enter      ="scope.set"
+              />
+            </q-popup-edit>            
           </div>
           <q-icon
-            name                ="mdi-drag-variant"
-            size                ="sm"
-            class               ="col-shrink handle cursor-move op30 op100-hover"
+            name                  ="mdi-drag-variant"
+            size                  ="sm"
+            class                 ="col-shrink handle cursor-move op30 op100-hover"
           />
           <vue-draggable
-            v-model             ="grupo.productos"
-            :animation          ="200"              
-            group               ="productos"
-            class               ="col-12 column justify-start full-height gap-xs"
-            chosen-class        ="item-select"            
-            @end                ="finDragLinea"
+            v-model               ="grupo.productos"
+            :animation            ="200"              
+            group                 ="productos"
+            class                 ="col-12 column justify-start full-height gap-xs no-wrap"
+            chosen-class          ="item-select"            
+            @end                  ="finDragLinea"
+            @unchoose             ="seleccionarGrupoElegido"
             >
             <div
-              v-for             ="linea of grupo.productos"
-              :key              ="linea.ref"
-              class             ="row fila q-px-sm degradado-gris width200 cursor-move "
+              v-for               ="linea of grupo.productos"
+              :key                ="linea.lineaId"
+              class               ="row fila q-px-sm degradado-gris width200 cursor-move"
               >
               <q-img
-                :src            ="linea.img.img_100px" 
-                class           ="imagen-woo-sm q-mr-sm"
-                spinner-color   ="white"
+                :src              ="!!linea.urlImagen ? linea.urlImagen : linea.img.img_100px" 
+                class             ="imagen-woo-sm q-mr-sm"
+                spinner-color     ="white"
               />
-              <div class        ="col ellipsis-3-lines lh_1_2">
-                <span class     ="text-bold">{{ linea.ref }}</span>
+              <div class          ="col ellipsis-3-lines lh_1_2">
+                <span class       ="text-bold">{{ linea.ref }}</span>
                 {{ linea.nombre }}
               </div>
             </div>
           </vue-draggable>
-        </div>
+        </div>      
       </vue-draggable>
-    </div>
+    </q-scroll-area>
   </ventana>
 </template>
 <script setup lang="ts">
-/*
-class             =""
-            @update             ="onUpdate"
-            @add                ="onAdd"
-            @remove             ="remove"  
-            @start              ="console.log('start')"      
-            @sort               ="console.log('sort')"
-            @change             ="console.log('change')"
-            @clone              ="clone"
-        
-*/
+  //style                     ="width: 94vw;"
   ////////////////////////////////////////////////////////////////////////// Core
-  import {  ref, onMounted      } from "vue"
   import {  VueDraggable        } from 'vue-draggable-plus'
   
   ////////////////////////////////////////////////////////////////////////// Store
@@ -89,36 +112,62 @@ class             =""
   import {  CodigosSiigo        } from "src/areas/productos/models/Siigo"
   import {  Bodega              } from "src/models/Diccionarios/Bodega"
   import {  ComisionLinea       } from "../../models/Comisiones/ComisionLinea"
+  import {  GrupoLineas         } from "src/areas/acuerdos/models/GrupoLineasAcuerdo"  
 
   ////////////////////////////////////////////////////////////////////////// Controles
   import {  useControlProductos } from "src/areas/acuerdos/controllers/ControlLineasProductos"  
-
+  ////////////////////////////////////////////////////////////////////////// Componibles
+  import {  style               } from "src/composables/useEstilos"  
   ////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana               from "components/utilidades/Ventana.vue"
-  
 
-  const { deGruposAProductos  } = useControlProductos()
+  const { crearLineaEnApi,
+          crearNuevoGrupo,
+          editarTituloGrupo,
+          deGruposAProductos  } = useControlProductos()
 
-  const { acuerdo,  loading   } = storeToRefs( useStoreAcuerdo() )
+  const { acuerdo,
+          loading,
+          grupoElegido        } = storeToRefs( useStoreAcuerdo() )
   
+  let hayQueCrearGrupo          = false
 
   async function finDragLinea()
   {
-    arreglarLineaClonada()
-    ordenarProductos()    
-  }  
+    const ordenLineaMovida      = arreglarLineaClonada()
+    if( hayQueCrearGrupo )
+      await crearTituloGrupo( ordenLineaMovida )   
 
+    ordenarProductos()    
+  }
+
+  async function seleccionarGrupoElegido()
+  {
+    loading.value.ordenando     = true
+    grupoElegido.value          = new GrupoLineas()
+    hayQueCrearGrupo            = false
+
+    for (const grupo of acuerdo.value.proGrupos)
+    {      
+      if(!grupo.productos.length) // Si el grupo no tiene productos, es por que es recien creado y toca crearlo en la API
+      {
+        hayQueCrearGrupo        = true
+        grupoElegido.value      = grupo
+      }
+    }    
+  }
 
   async function ordenarProductos()
   {
-    loading.value.ordenando = true
+    loading.value.ordenando     = true
     await deGruposAProductos()
-    loading.value.ordenando = false
+    loading.value.ordenando     = false
   }    
 
 
-  function arreglarLineaClonada()
+  function arreglarLineaClonada() : number
   {
+    let ordenLineaMovida            = 0
     for (const grupo of acuerdo.value.proGrupos)
     {
       let i = 0;
@@ -136,12 +185,29 @@ class             =""
                 lineaFix.comision_c1= Object.assign( new ComisionLinea("comercial 1"),  lineaFix.comision_c1 )
                 lineaFix.comision_c2= Object.assign( new ComisionLinea("comercial 2"),  lineaFix.comision_c2 )
 
+          ordenLineaMovida          = lineaFix.orden
           grupo.productos.splice( i, 1, lineaFix )
         }
         i++
       }      
-    }    
+    }
+
+    return ordenLineaMovida
   }  
+
+
+  async function crearTituloGrupo( orden : number )
+  {
+    const lineaTitulo           = LineaAcuerdo.getTitulo( grupoElegido.value.titulo ) 
+    lineaTitulo.orden           = orden - 1
+    lineaTitulo.lineaId         = await crearLineaEnApi( lineaTitulo )  
+
+    if(lineaTitulo.esTitulo)
+    {
+      grupoElegido.value.lineaIdTitulo  = lineaTitulo.lineaId
+      grupoElegido.value.tituloCreado   = true
+    }
+  }
 </script>
 <style scoped>
 

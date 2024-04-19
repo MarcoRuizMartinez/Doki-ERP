@@ -106,7 +106,6 @@ export function useControlProductos()
         linea.lineaId         = await crearLineaEnApi( linea )
 
         if(!linea.lineaId){
-          console.warn("Error al crear linea")
           return false
         }
       }
@@ -129,17 +128,16 @@ export function useControlProductos()
 
   async function clonarLinea( linea : ILineaAcuerdo, index : number ) : Promise<boolean>
   {
-    const newLinea    = Object.assign( new LineaAcuerdo(), linea )
-    newLinea.lineaId  = 0
+    const newLinea            = Object.assign( new LineaAcuerdo(), linea )
+    newLinea.lineaId          = 0
     
     loading.value.añadir      = true
 
     if(!acuerdo.value.esEstadoBoceto)
-      {
-        newLinea.lineaId           = await crearLineaEnApi( linea )
+    {
+      newLinea.lineaId        = await crearLineaEnApi( linea )
 
       if(!newLinea.lineaId){
-        console.warn("Error al crear linea")
         return false
       }
     }
@@ -225,7 +223,6 @@ export function useControlProductos()
       aviso("positive", "Nuevo grupo creado")
     if(!acuerdo.value.id) return
     await Tool.pausa(200) // Para darle tiempo que el virtual DOM genere el nuevo espacio y calcule el nuevo alto del documento
-    //console.log(Maco"window.scrollTo")
     //window.scrollTo({ top: document.body.scrollHeight,  behavior: 'smooth'})
   }
 
@@ -269,7 +266,6 @@ export function useControlProductos()
       info                      = data
 
       if(!ok){
-        console.error('Error al eliminar linea: ', info)
         modalYLoadingOff()
         return false
       }
@@ -496,6 +492,7 @@ export function useControlProductos()
 
   //* /////////////////////////////////////////////////////////////// Return
   return {
+    crearLineaEnApi,
     agregarProductos,
     crearNuevoGrupo,
     borrarLinea,

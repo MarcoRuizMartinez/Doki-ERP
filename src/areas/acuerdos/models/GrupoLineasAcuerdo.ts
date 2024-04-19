@@ -113,11 +113,11 @@ export class GrupoLineas implements IGrupoLineas
   }
 
   get hayQueCrearTitulo() : boolean{
-    return  !this.productos.length   // Grupo sin productos
+    return  !this.productos.length  // Grupo sin productos
             &&
             !this.tituloCreado      // Grupo sin titulo creado
             &&
-            !!this.index            // No es el grupo 0              
+            !!this.index            // No es el grupo 0
   }
 
   static getGruposDesdeProductos( productos : ILineaAcuerdo[] ) :IGrupoLineas[] 
@@ -200,7 +200,8 @@ export class GrupoLineas implements IGrupoLineas
       cuentaGrupos++
       const sinProductos  = !grupo.productos.length
 
-      if(grupo.tituloCreado){
+      if(grupo.tituloCreado)
+      {
         orden++
         const titulo        = grupo.conTitulo && !!grupo.titulo ? grupo.titulo : "Grupo " + cuentaGrupos
         const lineaTitulo   = LineaAcuerdo.getLineaEspecial( "titulo", grupo.lineaIdTitulo, orden, titulo)
