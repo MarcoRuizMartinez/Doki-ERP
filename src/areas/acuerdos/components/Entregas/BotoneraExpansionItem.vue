@@ -111,25 +111,25 @@
 </template>
 
 <script setup lang="ts">
-  // * /////////////////////////////////////////////////////////////////////// Core
+  // * /////////////////////////////////////////////////////////////////////////////////// Core
   import {  ref,
             inject,
             onMounted             } from "vue"
-  //* ///////////////////////////////////////////////////////////////////////////// Store
+  //* /////////////////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs           } from 'pinia'
   import {  useStoreUser          } from 'stores/user'
-
+  
   //* /////////////////////////////////////////////////////////////////////////////////// Modelos
   import {  Accion                } from "src/areas/comunicacion/models/Accion"
   import {  IAcuerdo              } from "../../models/Acuerdo"
   import {  ESTADO_ENT            } from "./../../models/ConstantesAcuerdos"
   
-  //* ///////////////////////////////////////////////////////////////////////////// Componibles  
+  //* /////////////////////////////////////////////////////////////////////////////////// Componibles  
   import {  useApiDolibarr        } from "src/composables/useApiDolibarr"
   import {  style                 } from "src/composables/useEstilos"
   import {  useTools, confetiClick} from "src/composables/useTools"
 
-  //* ///////////////////////////////////////////////////////////////////////////// Componentes
+  //* /////////////////////////////////////////////////////////////////////////////////// Componentes
   import    calendario              from "src/areas/acuerdos/components/Modales/CalendarioAcuerdos.vue"
   import    refAcuerdo              from "src/areas/acuerdos/components/Tools/RefAcuerdo.vue"
   import    estado                  from "src/areas/acuerdos/components/Tools/Estado.vue"
@@ -140,7 +140,7 @@
   const { entrega }                 = defineProps<TProps>()  
   const calendarioOn                = ref<boolean>(false)
 
-  const { apiDolibarr             } = useApiDolibarr()
+  const { apiDolibarr             } = useApiDolibarr()  
   const { usuario                 } = storeToRefs( useStoreUser() )
   const { aviso                   } = useTools()
 
@@ -205,6 +205,8 @@
     cargandoOff()
   }
 
+
+
   async function borrarEntrega()
   {
     cargandoOn()
@@ -212,6 +214,7 @@
     if(ok){
       aviso("positive", `Entrega eliminada`)
       emit("solicitarRecarga")
+      
     }
     else
       aviso("negative", `Error al eliminar entrega`)

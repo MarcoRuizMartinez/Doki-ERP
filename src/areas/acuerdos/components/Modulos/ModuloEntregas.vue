@@ -53,7 +53,7 @@
         <template                   #header>
           <botonera
             :entrega                ="entrega"
-            @solicitar-recarga      ="buscarAcuerdoEnlazados()"
+            @solicitar-recarga      ="recargarInfo"
             @entrega-cerrada        ="emit('entregaCerrada')"
             @click-remision         ="emit('clickRemision', entrega)"
             @click-rotulo           ="emit('clickRotulo',   [entrega])"
@@ -113,10 +113,10 @@
   </ventana>
 </template>
 <script setup lang="ts">
-  // * /////////////////////////////////////////////////////////////////////// Core
+  // * /////////////////////////////////////////////////////////////////////////////////// Core
   import {  ref, computed, provide} from "vue"  
 
-  //* ///////////////////////////////////////////////////////////////////////////// Store
+  //* /////////////////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs           } from 'pinia'         
   import {  useStoreUser          } from 'stores/user'                   
   import {  useStoreAcuerdo       } from 'stores/acuerdo'
@@ -125,13 +125,14 @@
   import {  IAcuerdo              } from "../../models/Acuerdo"
   import {  IAccion, Accion       } from "src/areas/comunicacion/models/Accion"  
 
-  //* ///////////////////////////////////////////////////////////////////////////// Componibles  
+  //* /////////////////////////////////////////////////////////////////////////////////// Componibles  
   import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"
+  import {  servicesAcuerdos      } from "src/areas/acuerdos/controllers/servicesAcuerdos"
   import {  style                 } from "src/composables/useEstilos"
   import {  dexieTransportadoras,
             dexieMetodosEntrega   } from "src/composables/useDexie"
 
-  //* ///////////////////////////////////////////////////////////////////////////// Componentes
+  //* /////////////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana                 from "components/utilidades/Ventana.vue"  
   import    btnToggle               from "components/utilidades/BtnToggle.vue"
   import    tablaEnvio              from "src/areas/acuerdos/components/Tools/TablaEnvio.vue"   
@@ -152,6 +153,7 @@
   const { acuerdo, loading        } = storeToRefs( useStoreAcuerdo() )
   const { usuario                 } = storeToRefs( useStoreUser() )
   const { buscarAcuerdoEnlazados  } = useControlAcuerdo()
+  const { getEstadoAcuerdo        } = servicesAcuerdos()
 
   const expandido                   = ref<boolean>(true)    
 
@@ -175,6 +177,16 @@
 
     return "sin-resultados"
   })
+
+  async function recargarInfo()
+  {
+    await buscarAcuerdoEnlazados()
+    await buscarEstadoPedido()
+  }
+
+  async function buscarEstadoPedido(){
+    acuerdo.value.estado = await getEstadoAcuerdo( acuerdo.value.id, acuerdo.value.tipo )
+  }    
 </script>
 
 <style scoped>

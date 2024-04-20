@@ -32,14 +32,23 @@
   const { acuerdo     } = storeToRefs( useStoreAcuerdo() )
   const { toggle      } = storeToRefs( useStoreApp() )
 
-  watch(()=>acuerdo.value.tipo, (newTipo)=>
+  const key             = computed(()=>   acuerdo.value.esPedido      ? ALMACEN_LOCAL.VISTA_PEDIDO
+                                        : acuerdo.value.esEntrega     ? ALMACEN_LOCAL.VISTA_ENTREGA
+                                        : acuerdo.value.esCotizacion  ? ALMACEN_LOCAL.VISTA_COTIZA
+                                        : acuerdo.value.esOCProveedor ? ALMACEN_LOCAL.VISTA_OC
+                                        : ""
+  )   
+ 
+  watch([()=>acuerdo.value.id, ()=>acuerdo.value.tipo], ()=>
   {
-    if(!key.value || !newTipo) return
+    if(!key.value || !acuerdo.value.tipo) return
 
     const toggleLocal   = LocalStorage.getItem( process.env.PREFIJO + key.value ) as string
     toggle.value        = !!toggleLocal ? toggleLocal : "general"
     cambiarOpcion()
   })
+
+
 
   const opciones        = computed(()=>
   {
@@ -52,13 +61,6 @@
 
     return lista
   })
-
-  const key             = computed(()=>   acuerdo.value.esPedido      ? ALMACEN_LOCAL.VISTA_PEDIDO
-                                        : acuerdo.value.esEntrega     ? ALMACEN_LOCAL.VISTA_ENTREGA
-                                        : acuerdo.value.esCotizacion  ? ALMACEN_LOCAL.VISTA_COTIZA
-                                        : acuerdo.value.esOCProveedor ? ALMACEN_LOCAL.VISTA_OC
-                                        : ""
-  ) 
 
   function cambiarOpcion()
   {

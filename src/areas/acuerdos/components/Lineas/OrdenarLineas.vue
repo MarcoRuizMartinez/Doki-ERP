@@ -89,7 +89,7 @@
               />
               <div class          ="col ellipsis-3-lines lh_1_2">
                 <span class       ="text-bold">{{ linea.ref }}</span>
-                {{ linea.nombre }}
+                {{ linea.nombre }}{{ !!linea.nombreExtra ? ' ' + linea.nombreExtra : '' }}   
               </div>
             </div>
           </vue-draggable>

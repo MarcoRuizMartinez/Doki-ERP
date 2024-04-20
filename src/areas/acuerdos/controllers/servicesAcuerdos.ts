@@ -466,6 +466,21 @@ export function servicesAcuerdos()
     })
   }
 
+  async function getEstadoAcuerdo( acuerdo_id : number, acuerdo : TTipoAcuerdo  ) : Promise< number >
+  {
+    return new Promise( async (resolver, rechazar ) =>
+    {
+      const url           = getURL("listas", "varios")
+      const { ok, data  } = await miFetch(url,  { method: "POST", body: getFormData(  "estadoAcuerdo", { acuerdo_id, acuerdo } ) },
+                                                { mensaje: "Buscar estado de " + acuerdo }
+                                        )
+      if(!ok) rechazar()
+        
+      const id            = ToolType.anyToNum( data )
+      resolver( id )
+    })
+  }
+
 
 
 
@@ -473,6 +488,8 @@ export function servicesAcuerdos()
     getAcuerdo,
     getAcuerdos,
     getCountAcuerdos,
+    getEstadoAcuerdo,
+    getIdEnlaceContacto,
     setFechaFinValidez,
     setFechaEntrega,
     setFechaADespachar,
@@ -483,14 +500,13 @@ export function servicesAcuerdos()
     setOrigenContacto,
     setRefCliente,
     setTerceroId,
-    postLinea,
-    ordenarLineas,
     setTitulo,
     setAiu,
     setTotal,
     setConIVA,
-    getIdEnlaceContacto,
     setComercial,
     setCostoLinea,
+    postLinea,
+    ordenarLineas,
   }
 }

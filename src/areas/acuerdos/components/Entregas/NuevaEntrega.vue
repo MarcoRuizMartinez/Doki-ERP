@@ -1,4 +1,4 @@
-<template>
+  <template>
   <ventana                      cerrar scroll
     titulo                      ="Nueva entrega"
     icono                       ="mdi-truck-delivery"      
@@ -158,8 +158,8 @@
   //* ///////////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs           } from 'pinia'      
   import {  useStoreUser          } from 'stores/user'
-  import {  useStoreAcuerdo       } from 'stores/acuerdo'
   import {  useStoreDexie         } from 'stores/dexieStore'
+  import {  useStoreAcuerdo       } from 'stores/acuerdo'
 
   //* /////////////////////////////////////////////////////////////////////////////////// Modelos
   import {  IAcuerdo, Acuerdo     } from "src/areas/acuerdos/models/Acuerdo"
@@ -190,6 +190,7 @@
   const { usuario                 } = storeToRefs( useStoreUser() )
   const { acuerdo, loading        } = storeToRefs( useStoreAcuerdo() )
   const { buscarAcuerdoEnlazados  } = useControlAcuerdo()
+  
   const entrega                     = ref<IAcuerdo>( new Acuerdo( TIPO_ACUERDO.ENTREGA_CLI ) )
   const lineas                      = ref<ILineaAcuerdo[]>([])
 
