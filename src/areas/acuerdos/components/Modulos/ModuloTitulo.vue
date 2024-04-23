@@ -126,8 +126,13 @@
               </Tooltip>
             </q-chip>
             <chip-usuario
-              :usuario        ="acuerdo.creador"
+              v-if            ="!acuerdo.esEstadoBoceto && !acuerdo.esOCProveedor && acuerdo.comercial.id > 0"
+              :usuario        ="acuerdo.comercial"
             />
+            <chip-usuario
+              v-else-if       ="!acuerdo.esEstadoBoceto && acuerdo.esOCProveedor  && acuerdo.creador.id > 0"
+              :usuario        ="acuerdo.creador"
+            />            
           </div>
         </div>
       </div>

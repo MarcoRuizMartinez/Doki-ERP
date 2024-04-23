@@ -145,6 +145,7 @@
     const origenOk            = !!acuerdo.value.origenContacto.id
     const pagoOk              = !!acuerdo.value.condicionPago.id
     const vencimientoOk       = !!acuerdo.value.fechaFinValidezCorta || !acuerdo.value.esCotizacion
+
     const ok                  = terceroOk
                                 && 
                                 ( contactoOk
@@ -155,6 +156,7 @@
                                 && origenOk
                                 && vencimientoOk
                                 && pagoOk;
+
     return ok
   })
 

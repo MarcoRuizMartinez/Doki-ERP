@@ -1067,6 +1067,8 @@ https://dolibarr.mublex.com/fichinter/card.php?
       origin                      : "commande",
       origin_id                   : pedidoId,
       shipping_method_id          : this.metodoEntrega.id,
+      date_delivery               : ToolDate.getMilisecShortForApiDolibarr( this.fechaEntrega ),
+      date_expedition             :	"",
       lines                       : lines,
       array_options               : 
       {

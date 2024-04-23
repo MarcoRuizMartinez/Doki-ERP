@@ -128,6 +128,7 @@
             watch,
             computed,
             PropType,
+            onMounted,
                                 } from "vue"
   // * ///////////////////////////////////////////////////////////////////////////////// Modelos
   import {  IAnticipo, Anticipo,
@@ -179,6 +180,11 @@
     (e: "borrado",            value: IAnticipo ): void
   }>()
 
+  /* onMounted(()=>{
+    modelo.value              = new Anticipo()
+    console.log("onMounted modelo.value: ", modelo.value);
+  }) */
+
   const modificado            = computed( ()=>  copiaAnticipo !== JSON.stringify( modelo.value ) ) 
   const btnDisable            = computed( ()=> !modelo.value.esNuevo && !modificado.value)
   const esAutorizacion        = computed( ()=> modelo.value.tipoSelect.value === TIPO_ANTICIPO.AUTORIZACION  )
@@ -223,7 +229,7 @@
     const id                  = ToolType.anyToNum(data)
     if(ok && modelo.value.esNuevo && id > 3500)
     {
-      aviso( "positive", "Anticipo guardaro exitosamente con ID: " + id, "file", 6000 )
+      aviso( "positive", "Anticipo creado exitosamente con ID: " + id, "file", 6000 )
       modelo.value.id       = id
       emit("creado", modelo.value)
     }

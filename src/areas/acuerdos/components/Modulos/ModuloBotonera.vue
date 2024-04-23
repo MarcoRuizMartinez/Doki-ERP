@@ -89,12 +89,15 @@
           v-if                ="acuerdo.esEstadoAbierto && acuerdo.esPedido"
           v-bind              ="style.btnBaseMd"
           color               ="primary"
-          icon                ="mdi-tools"  
-          target              ="_blank"
-          :href               ="acuerdo.urlDolibarrOC"
+          icon                ="mdi-tools"
           :disable            ="cargandoAlgo"
+          @click              ="clickCrearOCProveedor"
           >
-          <Tooltip label      ="Generar pedidos a proveedor"/>
+          <Tooltip
+            class             ="text-center"
+            ancho-max         ="240px"
+            :label            ="hayAlertaOC  ? '⚠️ Falta información en los productos. No se puede generar ordenes.' : 'Generar pedidos a proveedor'"
+          />
         </q-btn>
       </efecto>
       <!-- //* //////////////////////////////////////////////////////////  Boton Listo entregar -->
@@ -145,9 +148,19 @@
             <q-btn
               v-if            ="acuerdo.esPedido"
               v-bind          ="style.btnSimple"
+              label           ="Acta de entrega"
+              icon            ="mdi-book-check"
+              align           ="left"
+              :disable        ="true"
+              @click          ="emit('clickActaEntrega' )"
+            />            
+            <q-btn
+              v-if            ="acuerdo.esPedido"
+              v-bind          ="style.btnSimple"
               label           ="Remisión"
               icon            ="mdi-signature-freehand"
               align           ="left"
+              :disable        ="!acuerdo.entregas.length"
               @click          ="emit('clickRemision')"
             />
             <q-btn
@@ -156,6 +169,7 @@
               label           ="Rótulos"
               icon            ="mdi-barcode-scan"
               align           ="left"
+              :disable        ="!acuerdo.entregas.length"
               @click          ="emit('clickRotulos')"
             />
           </q-menu>          
@@ -413,6 +427,7 @@
     (e: 'clickComisiones',    ): void
     (e: 'clickNuevaEntrega',  ): void  
     (e: 'clickListoEntregar', ): void
+    (e: 'clickActaEntrega',   ): void
     (e: 'clickCuentaCobro',   value: TTipoPDF ): void 
   }>()
 
@@ -427,11 +442,19 @@
                                             )
                                             ||
                                             (     acuerdo.value.esPedido
-                                              &&  !acuerdo.value.facturado
                                               &&  !acuerdo.value.esEstadoNoValidado
                                               &&  !acuerdo.value.esEstadoAnulado
                                               &&  !acuerdo.value.esEstadoEntregado
                                               &&  !acuerdo.value.esEstadoEntregando
+                                              &&  (
+                                                    !acuerdo.value.facturado
+                                                    ||
+                                                    (
+                                                      acuerdo.value.facturado
+                                                      &&
+                                                      !acuerdo.value.entregas.length
+                                                    )
+                                                  )
                                             )
                                           )
                                   )
@@ -485,5 +508,15 @@
   {
     if(usuario.value.esProduccion)
       emit('clickListoEntregar')    
+  }
+
+  const hayAlertaOC     = computed(()=> acuerdo.value.productos.some( l => !!l.alertasLinea.length ) )
+    
+
+  function clickCrearOCProveedor()
+  {
+    if(!hayAlertaOC.value)
+      window.open( acuerdo.value.urlDolibarrOC, '_blank')
+  
   }
 </script>

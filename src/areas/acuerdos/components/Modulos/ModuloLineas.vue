@@ -24,7 +24,7 @@
       >
       <!-- //* ///////////////////////////////////////////////////////////// Boton nuevo grupo   -->
       <q-btn
-        v-if                    ="(acuerdo.esCotizacion || acuerdo.esPedido) && acuerdo.esEstadoEdicion"
+        v-if                    ="(acuerdo.esCotizacion || acuerdo.esPedido) && acuerdo.esEstadoEdicion && !acuerdo.facturado"
         v-bind                  ="style.btnBaseSm"
         label                   ="Actualizar precios"
         color                   ="positive"
@@ -58,6 +58,7 @@
       />      
       <!-- //* ///////////////////////////////////////////////////////////// Boton nuevo grupo   -->
       <q-btn
+        v-if                    ="!acuerdo.facturado"
         v-bind                  ="style.btnBaseSm"
         label                   ="Nuevo grupo"
         color                   ="positive"
@@ -85,7 +86,10 @@
           <q-item-section       side
             v-if                ="acuerdo.esEstadoNoValidado"
             >
-            <div class          ="row items-center">           
+            <div
+              v-if              ="!acuerdo.facturado"
+              class             ="row items-center"
+              >
               <!-- //* /////////////////////////////////////////////////////// Boton agregar producto  -->
               <q-btn
                 v-bind          ="style.btnBaseSm"

@@ -136,6 +136,7 @@
   import {  getURL,
             getFormData           } from "src/composables/APIMaco"
   import {  useTools, 
+            Tool,
             Format                } from "src/composables/useTools"
   import {  style                 } from "src/composables/useEstilos"
   import {  useApiDolibarr        } from "src/composables/useApiDolibarr"
@@ -207,7 +208,8 @@
   watch(  ()=> acuerdo.value.id,
           async ( newId ) =>
           {
-              if(!!newId) {                
+              if(!!newId){                
+                await Tool.pausa(1500) // Para darle tiempo a que se vuelva a cargar el pedido completamente y no lo vuelva a borrar
                 await buscarAnticipos( newId )
               }
           },
@@ -247,7 +249,10 @@
     {
       modo.value              = "normal"
       if(!Array.isArray(data) || !data.length) return
-      for (const item of data){ 
+
+      for (const item of data)
+      {
+
         const acu             = await Anticipo.anticipoApiToAnticipo( item )
         acuerdo.value.anticipos.push( acu )
       }

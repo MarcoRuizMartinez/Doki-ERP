@@ -1,6 +1,6 @@
 <template>
   <div
-    @click                      ="emit('click')"
+    @click                      ="()=> {if(!acuerdo.facturado) emit('click')}"
     v-bind                      ="$attrs"    
     >
     <div class                  ="text-1_1em lh_1_3 q-mb-xs">
@@ -149,7 +149,9 @@
       </table>
     </Tooltip> -->
   </div>
-  <q-menu                       touch-position context-menu>
+  <q-menu                       touch-position context-menu
+    v-if                        ="!acuerdo.facturado"
+    >
     <div  class                 ="column items-start">
       <q-btn                    v-close-popup flat dense no-caps
         icon                    ="mdi-content-duplicate"
@@ -195,7 +197,7 @@
 
 <script lang="ts" setup>
   // * /////////////////////////////////////////////////////////////////////////////////// Core
-  import {  ref, watch          } from "vue"  
+  import {  ref, watch, computed} from "vue"  
   // * /////////////////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs         } from 'pinia'
   import {  useStoreUser        } from 'stores/user'
@@ -228,7 +230,10 @@
     (e: 'borrarLinea',  value: ILineaAcuerdo  ): void
     (e: 'duplicar',     value: ILineaAcuerdo  ): void
   }>()  
+
 </script>
+
+
 <style scoped>
   .tabla-info td, th {
     border: none;

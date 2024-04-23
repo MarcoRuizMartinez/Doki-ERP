@@ -75,6 +75,7 @@
     @click-nueva-entrega    ="modales.entrega = true"
     @click-remision         ="abrirModalRemision"
     @click-rotulo           ="abrirModalRotulos"
+    @click-acta-entrega     ="abrirModalActa"
     @entrega-cerrada        ="recargar"
   />
   <!-- :class                  ="{ 'order-1' : acuerdo.esPedido || acuerdo.esEntrega }"
@@ -156,6 +157,15 @@
       @entrega-creada       ="modales.entrega = false"
     />
   </q-dialog>
+  <!-- //* ///////////////////////////////////////////////////////////// Modal Rotulo -->
+  <q-dialog                 maximized
+    v-model                 ="modales.acta"
+    v-bind                  ="style.dialogo"
+    >
+    <acta-entrega
+      :acuerdo              ="acuerdo"
+    />
+  </q-dialog>  
     <!-- <remision v-model:visible ="modales.pdfRemision"/> -->
     <!--   <div id="capture" style="padding: 10px; background: #f5da55">
     <h4 style="color: #000; ">Hello world!</h4>
@@ -220,6 +230,7 @@
   //import    nuevaEntrega          from ".././Modals/NuevaEntregaSelectBodega.vue"
   import    remision                from "src/areas/acuerdos/components/PDF/RemisionPDF.vue"
   import    rotulos                 from "src/areas/acuerdos/components/PDF/RotulosPDF.vue"
+  import    actaEntrega             from "src/areas/acuerdos/components/PDF/ActaEntregaPDF.vue"  
   import    documentos              from "components/archivos/ModuloArchivos.vue"
   import    comisiones              from "src/areas/nomina/components/Modales/CalculoComisiones.vue" 
   import    modoVista               from "./../../components/Modulos/ModuloModoVista.vue"
@@ -343,6 +354,11 @@
     modales.value.rotulos       = true
     entregasRotulos.value       = entregas_
   }
+
+  function abrirModalActa(){
+    modales.value.acta          = true
+  }
+
 
   function clickRemisionPDF()
   {

@@ -444,7 +444,8 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
 
     if( Array.isArray( lineaApi ) )
     {
-      for (const linea of lineaApi) {
+      for (const linea of lineaApi)
+      {
         linea.id            = +linea.id
         linea.padreId       = padreId
         linea.precioBase    = parseFloat( linea?.precioBase     ?? 0 )
@@ -485,7 +486,7 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
         lineaFinal.seEntrega            = ToolType.keyStringValido( linea, 'seEntrega'        )
 
         lineaFinal.nombreExtra          = ToolType.keyStringValido( linea, 'nombreExtra'      )
-        lineaFinal.urlImagen            = ToolType.keyStringValido( linea, 'urlImagen'      )
+        lineaFinal.urlImagen            = ToolType.keyStringValido( linea, 'urlImagen'        )
 
         if(!!lineaFinal.bodegaId)
         {

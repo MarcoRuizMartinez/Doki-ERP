@@ -6,7 +6,7 @@
     {{ linea.qtyUnd }}
   </div>
   <q-popup-edit             buttons
-    v-if                    ="!readonly"
+    v-if                    ="!readonly && !acuerdo.facturado"
     v-model                 ="linea.qty"
     v-slot                  ="scope"
     class                   ="alto-min-100"

@@ -7,7 +7,7 @@
     <q-icon :name="linea.iconoNivel" color="grey-6" size="sm" class="q-mr-xs"/>
   </div>
   <q-popup-edit           buttons cover separate-close-popup
-    v-if                  ="!readonly"
+    v-if                  ="!readonly && !acuerdo.facturado"
     v-model               ="linea.descuentoX100"
     class                 ="alto-min-100"
     v-slot                ="scope"
@@ -33,7 +33,11 @@
   import {  ILineaAcuerdo         } from "src/areas/acuerdos/models/LineaAcuerdo"
   import {  useControlProductos   } from "src/areas/acuerdos/controllers/ControlLineasProductos"            
   import    numeroPaso              from "components/utilidades/input/InputNumeroPaso.vue"
+  // * /////////////////////////////////////////////////////////////////////////////////// Store
+  import {  storeToRefs         } from 'pinia'
+  import {  useStoreAcuerdo     } from 'stores/acuerdo'  
 
+  const { acuerdo         } = storeToRefs( useStoreAcuerdo() )
   const { editarLinea }     = useControlProductos()
 
   const props               = defineProps({
