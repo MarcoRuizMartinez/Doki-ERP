@@ -111,11 +111,22 @@
       </tr>      
     </table>
     <efecto>
-      <div 
-        v-if                    ="!!linea.descripcion && mostrarDescripcion"
-        v-html                  ="linea.descripcion"
-        class                   ="text-0_8em"
-        >
+      <div  v-if                ="!!linea.descripcion && mostrarDescripcion">
+        <div 
+          v-html                ="linea.descripcion"
+          class                 ="text-0_8em"
+          >
+        </div>
+        <div v-if               ="(acuerdo.esPedido || acuerdo.esCotizacion) && !!linea.productosProveedor.length">
+          <q-badge              rounded
+            v-for               ="(pro, index) of linea.productosProveedor.filter( p => p.disponible )"
+            :key                ="index"
+            class               ="q-mr-xs text-0_7em"
+            color               ="grey-5"
+            >
+            {{pro.proveedor}}
+          </q-badge>
+        </div>
       </div>
     </efecto>
     <!-- <Tooltip v-if       ="false">

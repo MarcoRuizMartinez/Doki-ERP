@@ -187,14 +187,14 @@ export function useControlProductos()
     loading.value.editarLinea   = true
     const lineaForAPI           = LineaAcuerdo.lineaToLineaApi( linea )
     let seguir                  = true
-    //if(!acuerdo.value.esEstadoBoceto){
+    if(!acuerdo.value.esEstadoBoceto){
       const {ok}                = await apiDolibarr("editar-linea", acuerdo.value.tipo, lineaForAPI, acuerdo.value.id )
       seguir                    = ok
       if(!ok){
         modalYLoadingOff()
         return false
       }
-    //}
+    }
 
     if(seguir || acuerdo.value.esEstadoBoceto)
     {

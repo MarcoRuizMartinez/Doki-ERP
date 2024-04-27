@@ -102,7 +102,11 @@ export class Anticipo implements IAnticipo
   }
 
   get esNuevo   () : boolean  { return !this.id }
-  get valorSumar() : number   { return this.tipo === TIPO_ANTICIPO.PAGO ? this.valor : -this.valor }
+  get valorSumar() : number   { return    this.tipo === TIPO_ANTICIPO.PAGO          ? this.valor
+                                        : this.tipo === TIPO_ANTICIPO.AUTORIZACION  ? 0
+                                        : this.tipo === TIPO_ANTICIPO.DEVOLUCION    ? -this.valor
+                                        :                                             this.valor
+                              }
   get valorLabel() : string   { 
     return  ( this.tipoSelect.value === TIPO_ANTICIPO.DEVOLUCION ? '-' : '' ) + Format.precio( this.valor, "decimales-no" ) 
   }

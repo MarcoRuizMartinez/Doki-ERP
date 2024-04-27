@@ -23,6 +23,7 @@
     @click-listo-entregar   ="setListoDespacho"
     @click-remision         ="clickRemisionPDF"
     @click-rotulos          ="clickRotuloPDF"
+    @click-acta-entrega     ="abrirModalActa"
   />
   <barra-tercero
     v-if                    ="!(acuerdo.esCotizacion && usuario.esProduccion)"
@@ -75,7 +76,6 @@
     @click-nueva-entrega    ="modales.entrega = true"
     @click-remision         ="abrirModalRemision"
     @click-rotulo           ="abrirModalRotulos"
-    @click-acta-entrega     ="abrirModalActa"
     @entrega-cerrada        ="recargar"
   />
   <!-- :class                  ="{ 'order-1' : acuerdo.esPedido || acuerdo.esEntrega }"

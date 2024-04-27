@@ -197,6 +197,8 @@
     usuarios.value    = usuariosDB.value.filter ( ( u : IUsuario ) =>
                                                     ( u.activo      || inactivos.value  )
                                                     &&
+                                                    !!u.nombre
+                                                    &&
                                                     (
                                                       !grupos.value.length
                                                       ||

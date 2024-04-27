@@ -26,7 +26,7 @@ export interface IParams  {
   sinDatosNuestros        : boolean
 }
 
-export function useRemisionPDF()
+export function useActaPDF()
 {
   const { usuario           } = storeToRefs( useStoreUser() )  
   const pdf         : jsPDF       = new jsPDF('p','px')
@@ -39,7 +39,7 @@ export function useRemisionPDF()
                                       pdf         : pdf,
                                     }
   const doc         : IUtilPDF    = new UtilPDF( setup )
-  let entrega       : IAcuerdo    = new Acuerdo()
+  let pedido        : IAcuerdo    = new Acuerdo()
   let datos         : IParams     = {
     lineas                  : [],
     direccion               : "",
@@ -54,25 +54,23 @@ export function useRemisionPDF()
     sinDatosNuestros        : false,
   }  
   
-  async function getRemisionesPDF( entregas : IAcuerdo[], parametros : IParams ) : Promise<string>
-  {
-    return ""
-  }
 
-  async function getRemisionPDF( acuerdoEntrega : IAcuerdo, parametros : IParams ) : Promise<string>
+
+  async function getActaPDF( acuerdoEntrega : IAcuerdo, parametros : IParams ) : Promise<string>
   {
-    entrega                   = acuerdoEntrega
+    pedido                    = acuerdoEntrega
     datos                     = Object.assign( {}, parametros )
 
-    if(!!entrega.contactoEntrega.id)
-      datos.indicaciones      = `${entrega.contactoEntrega.nombreCompleto} ${entrega.contactoEntrega.telefono}` 
+    if(!!pedido.contactoEntrega.id)
+      datos.indicaciones      = `${pedido.contactoEntrega.nombreCompleto} ${pedido.contactoEntrega.telefono}` 
 
     if(!!parametros.indicaciones)
       datos.indicaciones      += ` - ${parametros.indicaciones}`
 
     doc.limpiarPDF()
     await configurarPDF()
-    for(let copia = 1; copia <= 2; copia++)
+    const copias              = 1
+    for(let copia = 1; copia <= copias; copia++)
     {
       if(datos.dosHojas && copia == 2){
         doc.setNewPage()
@@ -91,40 +89,10 @@ export function useRemisionPDF()
     return pdf_final
   }
   
-
-/*   async function buildRemisionInPDF()
-  {
-    datos                     = Object.assign( {}, parametros )
-
-    if(!!entrega.contactoEntrega.id)
-      datos.indicaciones      = `${entrega.contactoEntrega.nombreCompleto} ${entrega.contactoEntrega.telefono}` 
-
-    if(!!parametros.indicaciones)
-      datos.indicaciones      += ` - ${parametros.indicaciones}`
-
-    doc.limpiarPDF()
-    await configurarPDF()
-    for(let copia = 1; copia <= 2; copia++)
-    {
-      if(datos.dosHojas && copia == 2){
-        doc.setNewPage()
-        doc.y = 0
-      }
-      else
-        doc.y                   = copia === 1 ? 0 : doc.altoMitad
-
-      generarCabezote()
-      generarCuerpo()
-      generarPie()
-    }
-  } */
-
-
-
-
-  function saveRemisionPDF()
+  
+  function saveActaPDF()
   {    
-    const nombre  = `Remisión ${entrega.ref}.pdf`
+    const nombre  = `Acta de entrega ${pedido.ref}.pdf`
     pdf.save( nombre );
   }
 
@@ -134,7 +102,7 @@ export function useRemisionPDF()
 
       const { Candara }     = await import("src/assets/fonts/Candara.js")
 
-      doc.area              = entrega.tercero.area 
+      doc.area              = pedido.tercero.area 
       doc.fontBase          = "Candara"
       pdf.addFileToVFS      ("Candara.ttf",      Candara) // "Identity-H"
       pdf.addFont           ("Candara.ttf",      doc.fontBase,  "normal" )
@@ -160,7 +128,7 @@ export function useRemisionPDF()
 
     }
 
-    pdf.text            ("REMISIÓN #",      doc.margenDerX - 12,   doc.y-4,  doc.negrita("right"))
+    pdf.text            ("Acta de entrega",      doc.margenDerX - 12,   doc.y + 4,  doc.negrita("right"))
     doc.y               += 10
     if(!datos.sinDatosNuestros){
       doc.setFont       ( 10, 30 )
@@ -168,12 +136,12 @@ export function useRemisionPDF()
 
     }
     
-    const refSplit      = pdf.splitTextToSize(`${entrega.refPedido}\n${entrega.ref}` , 360)
+    const refSplit      = pdf.splitTextToSize(`${pedido.refPedido}\n${pedido.ref}` , 360)
     pdf.text            (refSplit,       doc.margenDerX - 40,   doc.y-6,  { align: "center"})    
 
     //*                 ////////////////////////////////////////////////////////////////////// Rectangulo 
     doc.y               += 8
-    const altoRect      = 86
+    const altoRect      = 34
     pdf.roundedRect     (doc.margenIzq, doc.y, doc.posXMargenDerecha, altoRect, 2, 2 )
 
     //*                 ////////////////////////////////////////////////////////////////////// Cliente
@@ -181,10 +149,10 @@ export function useRemisionPDF()
     doc.margen2         = doc.margenIzq + 60
     doc.y               += 12
     doc.setFont         ( 10, 0 )
-    const titulo        = datos.paraTransportadora ? "RECIBE:" : "CLIENTE:"
+    const titulo        = "CONTRATANTE:"
     pdf.text            (titulo, doc.margen1, doc.y, { align: "left", renderingMode: 'fillThenStroke' } )
 
-    const recibe       = datos.paraTransportadora ? datos.transportadora : entrega.tercero.nombre
+    const recibe       = datos.paraTransportadora ? datos.transportadora : pedido.tercero.nombre
     const recibeSplit  = pdf.splitTextToSize(recibe, 360)
     pdf.setFontSize    ( SIZE_FONT(recibe) ) 
     pdf.text           ( recibeSplit, doc.margen2, doc.y, { align: "left", renderingMode: 'fillThenStroke' } )
@@ -196,40 +164,23 @@ export function useRemisionPDF()
 
     //pdf.html("<b>hola</b>sdsd", {x:20, y:75, jsPDF: pdf});
     
-    const direccion     = entrega.contactoEntrega.municipio.label + " " + datos.direccion
+    const direccion     = pedido.contactoEntrega.municipio.label + " " + datos.direccion
     const dirSplit      = pdf.splitTextToSize(direccion, 360 )
     pdf.setFontSize     ( SIZE_FONT(direccion) ) 
     pdf.text            ( dirSplit, doc.margen2, doc.y )
-
-    //*                 ////////////////////////////////////////////////////////////////////// INDICACIONES
-    doc.y               += getEspaciado( dirSplit )
-    
-    pdf.setFontSize     (10)
-    pdf.text            ("INDICACIONES:", doc.margen1, doc.y, { align: "left", renderingMode: 'fillThenStroke' })
-      
-    
-    const indicaSplit   = pdf.splitTextToSize( datos.indicaciones, WIDTH_BOX_FONT( datos.indicaciones ) )
-    pdf.setFontSize     ( SIZE_FONT( datos.indicaciones ) ) 
-    pdf.text            ( indicaSplit, doc.margen2, doc.y )
-
-    doc.y               += getEspaciado( indicaSplit ) 
-
+   
     //*                 ////////////////////////////////////////////////////////////////////// Tabla datos
     //['TELÉFONO', acuerdo.tercero.documento.tipo.label, 'ASESOR', "ELABORO", 'ORDEN', 'MÉTODO', 'FECHA' ] 
     // o, 
-    const head          = ['TELÉFONO', 'ORDEN', 'MÉTODO', 'FECHA' ] 
-    const body          = [ entrega.tercero.telefono, entrega.refCliente, datos.metodo, ToolDate.fechaCorta( datos.fechaEntrega ) ]
-    if(!datos.sinDatosNuestros)
-    {
-      head.splice(1, 0, 'ASESOR', "ELABORO")
-      body.splice(1, 0, entrega.comercial.nombreCompleto, usuario.value.nombreCompleto)
-    }
+    doc.y               += 12
+    const head          = ['TELÉFONO', 'ORDEN', 'FECHA' ] 
+    const body          = [ pedido.tercero.telefono, pedido.refCliente, ToolDate.fechaCorta( datos.fechaEntrega ) ]
+    
+    head.splice(1, 0, 'ASESOR', "ELABORO")
+    body.splice(1, 0, pedido.comercial.nombreCompleto, usuario.value.nombreCompleto)
+    head.splice(1, 0, pedido.tercero.documento.tipo.sigla)
+    body.splice(1, 0, pedido.tercero.numeroDocumento )
 
-    if(!datos.paraTransportadora)
-    {
-      head.splice(1, 0, entrega.tercero.documento.tipo.sigla)
-      body.splice(1, 0, entrega.tercero.numeroDocumento )
-    }
 
     autoTable(pdf, {      
       startY:     doc.y, tableLineColor:  50, tableLineWidth: 0.5,
@@ -245,21 +196,34 @@ export function useRemisionPDF()
   function generarCuerpo()
   {
     doc.y         += 20
-    autoTable(pdf, {      
+      autoTable(pdf, {      
+
       startY:     doc.y, tableLineColor:  50, tableLineWidth: 0.5,
-      theme:      "plain",
-      styles:     { halign: 'center',  cellPadding: { left: 0, top: 0, bottom: 3, right: 0 }, lineWidth: 0,  lineColor: 255, fillColor: 255, textColor: 20, fontSize: 9 },
+      theme:      "plain",      
+      styles:     { halign: 'center', 
+                    cellPadding: { left: 0, top: 0, bottom: 6, right: 0 }, lineWidth: 0,  lineColor: 255, fillColor: false, textColor: 20, fontSize: 9 },
       margin:     { left: doc.margenIzq, right: doc.margenDer, bottom: 0 },
-      headStyles: { fontStyle: 'bold', cellPadding: { top: 4, bottom: 3 } },
-      head:       [ ["PRODUCTO", 'CANT', 'ESTADO' ]],
+      headStyles: { fontStyle: 'bold', cellPadding: { top: 4, bottom: 8 } },
+      head:       [ ["PRODUCTO", 'CANTIDAD', 'RECIBIDO' ]],
       body:       [ ...datos.lineas.map( l => [
-                                          `${l.ref} - ${l.nombre}` + ( l.descripcionOn && datos.conDescripcion && !!l.descripcion ? " ~ " + l.descripcion : '' ),
-                                          `${l.qty} de ${l.qtyTotal}`,
-                                          l.estado
+                                          `${l.ref} - ${l.nombre}` + ( l.descripcionOn && datos.conDescripcion && !!l.descripcion ? " ~ " + l.descripcion : '' ),                                          
+                                          `${l.qty} ${l.unidad}`,
+                                          ''
                                         ]
                                   )
                   ],
-      columnStyles: { 0: { halign: 'left', cellPadding: { left: 4 } }, 1: { cellWidth: 38 }, 2: { cellWidth: 38 } },
+      columnStyles: {
+        0: { halign: 'left', cellPadding: { left: 4 } },
+        1: { cellWidth: 50 },
+        2: { cellWidth: 38 }
+      },
+      didDrawCell: (data) => {
+        if (data.section === 'body' && data.column.index === 2) {
+          doc.setFont       ( 10, 30 )
+          const box = 8
+          pdf.roundedRect     (doc.margenDerX - 26, data.cell.y, box, box, 2, 2 )
+        }
+      },      
     })        
   }
 
@@ -269,21 +233,40 @@ export function useRemisionPDF()
     if( datos.dosHojas )    
       doc.y             = doc.alto - 60
     else
-      doc.y             += 140
+      doc.y             += ((pedido.productos.filter( p => !p.esTituloOsubTotal).length * 0.7) * 19) + 70  
+
+      
     doc.setFont         ( 11, 0 )    
-    pdf.line            ( doc.margenIzq + 10, doc.y, doc.anchoMitad - 16, doc.y)
-    pdf.line            ( doc.anchoMitad, doc.y, doc.posXMargenDerecha - 20, doc.y)    
+    pdf.line            ( doc.margenIzq + 10, doc.y, doc.anchoMitad - 16, doc.y)    
     doc.y               += 10
     let firmaNuestra    = "FIRMA AUTORIZADA"
         firmaNuestra    += datos.sinDatosNuestros ? "" : "\nGrupo Escom SAS"
     pdf.text            ( firmaNuestra,  doc.anchoMitad - 110, doc.y, { align: "center" })
-    pdf.text            ( "NOMBRE Y FIRMA DE QUIEN RECIBE\nCC Y CARGO",     doc.anchoMitad + 90, doc.y, { align: "center" })
+
+
+    doc.y               -= 30
+    const espacio       = 18
+    doc.y               += espacio
+    const xLinea        = doc.anchoMitad + 60
+    pdf.line            ( xLinea, doc.y, doc.posXMargenDerecha - 20, doc.y)
+    pdf.text            ( "Sello: ", xLinea, doc.y, { align: "right" })
+    doc.y               += espacio
+    pdf.line            ( xLinea, doc.y, doc.posXMargenDerecha - 20, doc.y)
+    pdf.text            ( "Recibida por: ", xLinea, doc.y, { align: "right" })
+    doc.y               += espacio
+    pdf.line            ( xLinea, doc.y, doc.posXMargenDerecha - 20, doc.y)
+    pdf.text            ( "Documento: ", xLinea, doc.y, { align: "right" })
+    doc.y               += espacio
+    pdf.line            ( xLinea, doc.y, doc.posXMargenDerecha - 20, doc.y)
+    pdf.text            ( "Fecha: ", xLinea, doc.y, { align: "right" })
+    //pdf.text            ( "NOMBRE Y FIRMA DE QUIEN RECIBE\nCC Y CARGO",     doc.anchoMitad + 90, doc.y, { align: "center" })
     doc.y               += 22
-    let obser           = "NOTA: DECLARO QUE HE RECIBIDO LA MERCANCÍA AQUÍ DESCRITA EN PERFECTAS CONDICIONES"
+
+    let obser           = "ENCUESTA DE INSTALACIÓN/ENTREGA"
     if(!!datos.paquetes)
       obser             += ` EN ${datos.paquetes} PAQUETES`
     doc.setFont         ( 11, 80 )
-    pdf.text            ( obser, doc.anchoMitad, doc.y, doc.negrita('center'))    
+    //pdf.text            ( obser, doc.anchoMitad, doc.y, doc.negrita('center'))    
   }
 
   function getEspaciado( arreglo : any[] ) : number {
@@ -329,7 +312,7 @@ export function useRemisionPDF()
   }
     
   return {
-    getRemisionPDF,
-    saveRemisionPDF
+    getActaPDF,
+    saveActaPDF
   }
 }

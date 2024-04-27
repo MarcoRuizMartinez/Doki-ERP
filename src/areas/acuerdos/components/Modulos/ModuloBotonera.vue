@@ -145,15 +145,15 @@
               align           ="left"
               @click          ="emit('clickCuentaCobro', 'cuentaCobro')"
             />
-            <q-btn
-              v-if            ="acuerdo.esPedido"
+            <!-- <q-btn
+              v-if            ="acuerdo.esPedido && acuerdo.esEstadoValido"
               v-bind          ="style.btnSimple"
               label           ="Acta de entrega"
               icon            ="mdi-book-check"
               align           ="left"
-              :disable        ="true"
               @click          ="emit('clickActaEntrega' )"
-            />            
+            />
+            -->        
             <q-btn
               v-if            ="acuerdo.esPedido"
               v-bind          ="style.btnSimple"

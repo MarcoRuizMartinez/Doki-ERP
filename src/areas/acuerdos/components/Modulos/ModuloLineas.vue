@@ -73,7 +73,7 @@
       <!-- //* ///////////////////////////////////////////////////////////////  For expansion item -->
       <q-expansion-item         expand-separator default-opened dense expand-icon-toggle dense-toggle
         v-for                   ="(grupo, index) of acuerdo.proGrupos"
-        :index                  ="grupo.index"
+        :key                    ="grupo.index"
         header-class            ="bg-gris-dark text-white"
         expand-icon-class       ="text-white q-pr-none"
         >

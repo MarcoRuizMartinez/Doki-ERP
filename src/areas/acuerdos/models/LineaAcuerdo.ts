@@ -48,6 +48,7 @@ export interface ILineaLite
   descripcionOn             : boolean
   qty                       : number
   qtyTotal                  : number
+  unidad                    : string
 }
 
 export interface ILineaAcuerdo extends IProductoDoli {

@@ -68,7 +68,7 @@ import {  ITiempoEntrega,   TiempoEntrega   } from "src/models/Diccionarios/Tiem
 import {  ITransportadora,  Transportadora  } from "src/models/Diccionarios/Transportadoras"
 import {  IAccion,                          } from "src/areas/comunicacion/models/Accion"
 import {  IArchivo                          } from "src/models/Archivo"
-import {  ToolNum, ToolDate,
+import {  ToolNum, ToolDate, ToolArray,
           ToolType, Format                  } from "src/composables/useTools"
 import {  TModulosDolibarr                  } from "src/composables/UtilFiles"
 import {  storeToRefs                       } from 'pinia'
@@ -973,8 +973,8 @@ https://dolibarr.mublex.com/fichinter/card.php?
     if(!this.anticipos.length) return 0
     const anticipos           = this.anticipos.filter ( a => a.estado === 1 || a.estado === 2 )
     if(!anticipos.length)     return 0
-    const sumaPagos           = anticipos     .map    ( ( a : IAnticipo )       : number  => a.valorSumar )
-                                              .reduce ( ( v1:number, v2:number) : number  => v1 + v2 )
+
+    const sumaPagos           = ToolArray.sumar( anticipos, "valorSumar")
     return sumaPagos
   }
 

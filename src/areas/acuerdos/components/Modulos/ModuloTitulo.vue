@@ -50,7 +50,7 @@
         </q-btn>
         <!-- //* ///////////////////////////////////////////////// Boton listo para despacho -->
         <div
-          v-if                ="acuerdo.esPedido && acuerdo.esEstadoValidado"
+          v-if                ="acuerdo.esPedido && ( acuerdo.esEstadoValidado || acuerdo.esEstadoEntregando )"
           class               ="row justify-center items-center gap-sm dense">
           <q-icon
             size              ="lg"            

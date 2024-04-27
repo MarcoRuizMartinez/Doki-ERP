@@ -13,6 +13,8 @@ import {  ILabelValue,
 import {  IAccion             } from "src/areas/comunicacion/models/Accion"
 import {  TCodigosSiigo,
           CodigosSiigo        } from 'src/areas/productos/models/Siigo';          
+import {  IProductoProveedor,
+          ProductoProveedor   } from './ProductoProveedor';          
 import {  IImagenProducto,
           IMAGEN_DEFAULT,
           ImagenProducto      } from "./ImagenProducto"
@@ -41,6 +43,7 @@ export interface IProductoDoli {
   tipoProducto              : string
   naturaleza                : INaturalezaProducto
   img                       : IImagenProducto
+  productosProveedor        : IProductoProveedor[]
   activo_proveedor          : boolean       // Activo proveedor
   aumento                   : number
   aumento_escom             : number
@@ -106,7 +109,7 @@ export class ProductoDoli implements IProductoDoli
   tipoLabelValue            : ILabelValue         = labelValueNulo
   naturaleza                : INaturalezaProducto = new NaturalezaProducto()
   img                       : IImagenProducto     = new ImagenProducto()
-  activo_proveedor          : boolean             = true
+  productosProveedor        : IProductoProveedor[]=[]
   aumento                   : number              = 0
   aumento_escom             : number              = 0
   aumento_descuento         : number              = 0
@@ -114,7 +117,6 @@ export class ProductoDoli implements IProductoDoli
   costo                     : number              = 0
   costo_adicional           : number              = 0
   creador_id                : number              = 0
-  disponible                : boolean             = true
   activoEnCompra            : boolean             = true
   activoEnVenta             : boolean             = true
   sin_proveedor             : boolean             = false
@@ -271,6 +273,16 @@ export class ProductoDoli implements IProductoDoli
             )
   }
 
+  get activo_proveedor() : boolean {
+    if( !this.productosProveedor.length ) return true
+    return this.productosProveedor.some( p => p.activo )
+  }
+
+  get disponible() : boolean {
+    if( !this.productosProveedor.length ) return true
+    return this.productosProveedor.some( p => p.activo && p.disponible )
+  }
+
   get productoForApi() : any
   {
     const proForApi : any = {
@@ -364,9 +376,6 @@ export class ProductoDoli implements IProductoDoli
     producto.tipoLabelValue         =   producto.tipo == 0 ? { value : 0, label:'Producto'}
                                       : producto.tipo == 1 ? { value : 1, label:'Servicio'}
                                       : labelValueNulo
-
-    producto.activo_proveedor       = ToolType.keyBoolean ( productoApi, 'activo_proveedor' )
-    producto.disponible             = ToolType.keyBoolean ( productoApi, 'disponible'       )
     producto.activoEnCompra         = ToolType.keyBoolean ( productoApi, 'en_compra'        )
     producto.activoEnVenta          = ToolType.keyBoolean ( productoApi, 'en_venta'         )
     producto.sin_proveedor          = ToolType.keyBoolean ( productoApi, 'sin_proveedor'    )
@@ -400,7 +409,8 @@ export class ProductoDoli implements IProductoDoli
     producto.unidad                 = await getUnidadDB( producto.unidadId )
     producto.categoria              = await getCategoriaDB( producto.sigla )
     producto.naturaleza             = await getNaturalezaDB( productoApi?.naturaleza_id ?? "0" )
-        
+    producto.productosProveedor     = ProductoProveedor.getProductosFromAPI( productoApi?.productosPro ?? {} )
+            
     return producto
   }
 }

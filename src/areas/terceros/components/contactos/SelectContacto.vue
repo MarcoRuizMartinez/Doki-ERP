@@ -146,7 +146,7 @@
     }
     else
     // Contacto Old esta vacio y se esta agregando un contacto desde cero
-    if(!!newContacto && !!oldContacto && !oldContacto.id) {
+    if(!!newContacto && !!oldContacto && !oldContacto.id && !!newContacto.id) {
       emit('contactoNuevo', newContacto )
     }
     else

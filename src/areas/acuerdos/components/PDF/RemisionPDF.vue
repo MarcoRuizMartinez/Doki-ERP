@@ -242,6 +242,7 @@
         descripcionOn : true,
         qty           : linea.qty,
         qtyTotal      : linea.qtyTotal,
+        unidad        : linea.unidad.label,
       } )
     }
 

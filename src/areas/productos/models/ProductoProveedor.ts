@@ -21,31 +21,43 @@ export class ProductoProveedor implements IProductoProveedor
   precio              : number   = 0
   activo              : boolean  = true
   disponible          : boolean  = true
+  hechoEn             : string   = ""
+  garantia            : string   = ""  
 
  // * ////////////////////////////////////////////////////////////////////////// Get new LineaAcuerdo data de API
  static getProductosFromAPI( dataAPI : any ) : IProductoProveedor[]
  {
-    const item                          = JSON.parse( dataAPI )
+    const itemsApi                      = JSON.parse( dataAPI )
     const items : IProductoProveedor[]  = []
 
-    if( !Array.isArray( item ) ) return []
+    if( !Array.isArray( itemsApi ) ) return []
     
-    for (const pp of item)
+    for (const pp of itemsApi)
     {
-      const pro               = new ProductoProveedor()
-            pro.ref           = ToolType.keyStringValido( pp, "ref"       )
-            pro.nombre        = ToolType.keyStringValido( pp, "nombre"    )
-            pro.proveedor     = ToolType.keyStringValido( pp, "proveedor" )
-
-            pro.activo        = ToolType.keyBoolean( pp, "activo"     ) 
-            pro.disponible    = ToolType.keyBoolean( pp, "disponible" ) 
-
-            pro.id            = ToolType.keyNumberValido( pp, "id"            ) 
-            pro.precio        = ToolType.keyNumberValido( pp, "precio"        ) 
-            pro.proveedor_id  = ToolType.keyNumberValido( pp, "proveedor_id"  )
-
+      const pro               = ProductoProveedor.getProductoFromAPI( pp )
       items.push( pro )
     }
     return items
  }
+
+ // * ////////////////////////////////////////////////////////////////////////// Get new LineaAcuerdo data de API
+ static getProductoFromAPI( item : any ) : IProductoProveedor
+ {
+    const pro                 = new ProductoProveedor()
+          pro.ref             = ToolType.keyStringValido( item, "ref"       )
+          pro.nombre          = ToolType.keyStringValido( item, "nombre"    )
+          pro.proveedor       = ToolType.keyStringValido( item, "proveedor" )
+          pro.hechoEn         = ToolType.keyStringValido( item, "hecho_en"  )
+          pro.garantia        = ToolType.keyStringValido( item, "garantia"  )
+
+          pro.activo          = ToolType.keyBoolean( item, "activo"     ) 
+          pro.disponible      = ToolType.keyBoolean( item, "disponible" ) 
+
+          pro.id              = ToolType.keyNumberValido( item, "id"            ) 
+          pro.precio          = ToolType.keyNumberValido( item, "precio"        ) 
+          pro.proveedor_id    = ToolType.keyNumberValido( item, "proveedor_id"  )
+    return pro
+ }
+
+ 
 }

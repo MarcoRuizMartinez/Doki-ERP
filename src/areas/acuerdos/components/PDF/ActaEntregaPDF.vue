@@ -11,7 +11,7 @@
         v-bind                      ="style.btnBaseSm"
         icon                        ="mdi-download"
         label                       ="Descargar"
-        @click                      ="saveRemisionPDF"
+        @click                      ="saveActaPDF"
       />
     </template>
     <!-- //?* //////////////////////////////////////////////////////////// Lado izquierdo -->
@@ -163,7 +163,7 @@
   import {  ITercero, Tercero   } from "src/areas/terceros/models/Tercero";
   // * /////////////////////////////////////////////////////////////////////////////////// Componibles
   import {  IParams,
-            useRemisionPDF      } from "src/areas/acuerdos/composables/pdf/useRemision"
+            useActaPDF          } from "src/areas/acuerdos/composables/pdf/useActaEntrega"
   import {  style               } from "src/composables/useEstilos"
   import {  useTools            } from "src/composables/useTools"
   import {  servicesTerceros    } from "src/areas/terceros/services/servicesTerceros"
@@ -173,9 +173,9 @@
   import    inputText             from "components/utilidades/input/InputFormText.vue"
   import    inputNumber           from "components/utilidades/input/InputFormNumber.vue"
 
-  const { getRemisionPDF,
-          saveRemisionPDF   } = useRemisionPDF()
-  const {  esMobil          } = useTools()
+  const { getActaPDF,
+          saveActaPDF       } = useActaPDF()
+  const { esMobil           } = useTools()
   const { buscarTercero     } = servicesTerceros()
   const props                 = defineProps({
     acuerdo:  { required: true, type: Object as PropType< IAcuerdo >  },
@@ -217,7 +217,7 @@
 
   async function generarPDF() {
     datos.value.metodo        = acuerdo.value.metodoEntrega.label
-    srcPDF.value              = await getRemisionPDF( acuerdo.value, datos.value  )
+    srcPDF.value              = await getActaPDF( acuerdo.value, datos.value  )
   }
 
   function toggleMostrarDescripciones( on : boolean ) {
@@ -242,6 +242,7 @@
         descripcionOn : true,
         qty           : linea.qty,
         qtyTotal      : linea.qtyTotal,
+        unidad        : linea.unidad.sigla,
       } )
     }
 

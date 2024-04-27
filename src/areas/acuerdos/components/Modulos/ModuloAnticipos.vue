@@ -205,16 +205,21 @@
     }
   }
 
-  watch(  ()=> acuerdo.value.id,
-          async ( newId ) =>
-          {
-              if(!!newId){                
-                await Tool.pausa(1500) // Para darle tiempo a que se vuelva a cargar el pedido completamente y no lo vuelva a borrar
+  watch( [()=> acuerdo.value.id, ()=> acuerdo.value.anticipos.length], async ([ newId, newLargo ], [ oldId, oldLargo ]) => {
+              if
+              (
+                ( !!newId && newId != oldId ) // Cuando se recarga el pedido
+                ||
+                ( !!newId && newId == oldId && !newLargo && modo.value != "buscando") // Se recarga el mismo pedido pero no esta buscando
+              )
+              {
+                await Tool.pausa(1500) // Para darle tiempo a que se vuelva a carg  ar el pedido completamente y no lo vuelva a borrar
                 await buscarAnticipos( newId )
               }
           },
           { immediate: true }
   )
+
 
   watch(  ()          => acuerdo.value.archivos,
           ( newFiles, oldFiles )=>
