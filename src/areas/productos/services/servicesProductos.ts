@@ -35,7 +35,7 @@ export function servicesProductos()
   {
     return new Promise( async (resolver, rechazar ) =>
     {
-      let { data, ok            } = await miFetch( getURL("listas", "productos-dolibarr"),
+      let { data, ok            } = await miFetch( getURL("listas", "productos-dolibarr-new"),
                                                     {
                                                       body: getFormData( "", query ),
                                                       method: "POST" 

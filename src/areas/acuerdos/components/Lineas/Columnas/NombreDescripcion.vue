@@ -111,13 +111,13 @@
       </tr>      
     </table>
     <efecto>
-      <div  v-if                ="!!linea.descripcion && mostrarDescripcion">
+      <div  v-if                ="!!linea.descripcion && mostrarDescripcion"> 
         <div 
           v-html                ="linea.descripcion"
           class                 ="text-0_8em"
           >
         </div>
-        <div v-if               ="(acuerdo.esPedido || acuerdo.esCotizacion) && !!linea.productosProveedor.length">
+        <div v-if               ="(acuerdo.esPedido || acuerdo.esCotizacion) && !!linea.productosProveedor.length && !usuario.areaEsEscom">
           <q-badge              rounded
             v-for               ="(pro, index) of linea.productosProveedor.filter( p => p.disponible )"
             :key                ="index"

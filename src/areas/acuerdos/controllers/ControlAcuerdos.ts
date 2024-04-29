@@ -34,6 +34,7 @@ import {  IUsuario              } from "src/areas/usuarios/models/Usuario"
 import {  ITercero              } from "src/areas/terceros/models/Tercero"
 import {  IAccion, Accion       } from "src/areas/comunicacion/models/Accion"
 import {  ICondicionPago        } from "src/models/Diccionarios/CondicionPago"
+import {  ProductoProveedor     } from 'src/areas/productos/models/ProductoProveedor'
 import {  IFormaPago            } from "src/models/Diccionarios/FormaPago"
 import {  LineaAcuerdo          } from "src/areas/acuerdos/models/LineaAcuerdo"
 import {  IMetodoEntrega        } from "src/models/Diccionarios/MetodoEntrega"
@@ -142,7 +143,8 @@ export function useControlAcuerdo()
       await buscarTerceroDolibarr ( acuerdo.value.terceroId   )
       await buscarProyecto        ( acuerdo.value.proyectoId  )
       await buscarAcuerdoEnlazados()
-      await buscarComentarios( acuerdo.value )
+      await buscarComentarios     ( acuerdo.value )
+      await buscarProductosProveedor()
 
       if( acuerdo.value.esCotizacion || acuerdo.value.esPedido )
         buscarCalificacion()
@@ -156,6 +158,25 @@ export function useControlAcuerdo()
     }
 
     loading.value.carga           = false
+  }
+
+  //* ////////////////////////////////////////////////////////////////////// Buscar productos Proveedor
+  async function buscarProductosProveedor()
+  {
+    const objeto                  = { ids: acuerdo.value.productos.map( l => l.id ).join(",") }    
+    const { ok, data }            = await miFetch( getURL("listas", "varios"), { method: "POST", body: getFormData( "productosProveedor", objeto ) }, { mensaje: "buscar productos proveedores", conLoadingBar: false, dataEsArray: true } )    
+
+    if(!ok || !Array.isArray( data ) ) return
+    
+    for (const linea of acuerdo.value.productos)
+    {
+      for (const pp of data)
+      {
+        const pProveedor          = ProductoProveedor.getProductoFromAPI( pp )
+        if(linea.id               === pProveedor.producto_id)
+          linea.productosProveedor.push( pProveedor )
+      }
+    }
   }
 
   //* ////////////////////////////////////////////////////////////////////// Buscar Calificacion
@@ -952,6 +973,7 @@ export function useControlAcuerdo()
     desvincularContactoAcuerdo,
     editarDatosEntregaSistemaViejo,
     buscarAcuerdoEnlazados,
+    buscarProductosProveedor,
     actualizarPreciosAcuerdo,
     setListoDespacho,
     editarCrearCalificacion,

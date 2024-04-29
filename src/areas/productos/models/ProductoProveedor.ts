@@ -2,6 +2,7 @@ import {  ToolType, ToolNum           } from "src/composables/useTools"
 
 export interface IProductoProveedor {
   id                  : number
+  producto_id         : number
   ref                 : string
   nombre              : string
   proveedor           : string
@@ -14,6 +15,7 @@ export interface IProductoProveedor {
 export class ProductoProveedor implements IProductoProveedor
 {
   id                  : number   = 0
+  producto_id         : number   = 0
   ref                 : string   = ""
   nombre              : string   = ""
   proveedor           : string   = ""
@@ -56,6 +58,7 @@ export class ProductoProveedor implements IProductoProveedor
           pro.id              = ToolType.keyNumberValido( item, "id"            ) 
           pro.precio          = ToolType.keyNumberValido( item, "precio"        ) 
           pro.proveedor_id    = ToolType.keyNumberValido( item, "proveedor_id"  )
+          pro.producto_id     = ToolType.keyNumberValido( item, "producto_id"   )
     return pro
  }
 
