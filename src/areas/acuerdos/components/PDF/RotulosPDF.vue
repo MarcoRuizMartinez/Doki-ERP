@@ -16,9 +16,7 @@
     </template>    
     <!-- //?* //////////////////////////////////////////////////////////// Lado izquierdo -->
     <div  class                       ="col-5 full-height">
-      <q-scroll-area
-        style                         ="height: 91vh; max-width : 100%;"
-        >
+      <q-scroll-area style            ="height: 91vh; max-width : 100%;">
         <div
           :index                      ="index"
           v-for                       ="(entrega, index) of entregas"

@@ -28,6 +28,7 @@ export interface IUsuario {
   activo            : boolean
   label             : string
   value             : number
+  nombreApellido    : string
   nombreCompleto    : string
   permisos          : string // Permisos un array crudo con los permisos
   color             : string
@@ -182,6 +183,11 @@ export class Usuario implements IUsuario
 
 
     get nombreCompleto():string     { return this.nombre + " " + this.apellido }
+    get nombreApellido():string     {
+      const nombres   = this.nombre.split(" ")
+      const apellidos = this.apellido.split(" ")
+      return nombres[0] + " " + apellidos[0]
+    }
 
     get esComercial   ():boolean { return this.grupos.length > 0 ? this.grupos.some( g => g == GRUPO_USUARIO.COMERCIALES  ) : false }
     get esProduccion  ():boolean { return this.grupos.length > 0 ? this.grupos.some( g => g == GRUPO_USUARIO.PRODUCCION   ) : false }

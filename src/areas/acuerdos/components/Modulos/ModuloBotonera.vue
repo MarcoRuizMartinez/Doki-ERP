@@ -125,7 +125,7 @@
           :disable            ="cargandoAlgo"
           :loading            ="loading.pdf"          
           >
-          <q-menu
+          <q-menu             auto-close
             v-bind            ="menuDefault"
             class             ="column transparent panel-blur-70 content-start" 
             >
@@ -145,15 +145,14 @@
               align           ="left"
               @click          ="emit('clickCuentaCobro', 'cuentaCobro')"
             />
-            <!-- <q-btn
+            <q-btn
               v-if            ="acuerdo.esPedido && acuerdo.esEstadoValido"
               v-bind          ="style.btnSimple"
               label           ="Acta de entrega"
               icon            ="mdi-book-check"
               align           ="left"
               @click          ="emit('clickActaEntrega' )"
-            />
-            -->        
+            />           
             <q-btn
               v-if            ="acuerdo.esPedido"
               v-bind          ="style.btnSimple"

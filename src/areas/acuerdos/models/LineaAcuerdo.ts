@@ -55,6 +55,7 @@ export interface ILineaAcuerdo extends IProductoDoli {
   padreId                   : number      // Id de cotizacion, orden o factura
   lineaId                   : number
   nombreExtra               : string
+  nombreConExtra            : string
   urlImagen                 : string
   qty                       : number
   x100Maximo                : number
@@ -171,10 +172,7 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
   medida                    : string              = ""
   seEntrega                 : string              = "" // En Caja, Armado, Instalado
 
-  /*constructor()
-  {
-    super()   
-  }*/
+  get nombreConExtra()      : string { return this.nombre + ( !!this.nombreExtra ? " " + this.nombreExtra : "" ) }
 
   // * /////////////////////////////////////////////////////////////////////////////// Tipo de linea
   get tipoLinea() : TipoLinea {
