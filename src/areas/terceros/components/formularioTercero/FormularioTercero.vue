@@ -120,39 +120,62 @@
         v-model                 ="tercero.direccion"
         class                   ="col-12"
         :readonly               ="readonly"
-      />
-      <!-- //* //////////////   Correo  -->
+      />        
+      <!-- //* //////////////   Correo contacto -->
       <input-text               clearable copy alerta sin-espacios
         v-model                 ="tercero.correo"
         type                    ="email"
-        label                   ="Correo"
+        label                   ="Correo contacto"
         icon                    ="mdi-at"
-        class                   ="col-md-7 col-12"
+        class                   ="col-md-6 col-12"
+        :bg-color               ="correosIguales ? 'green-1' : ''"
         :readonly               ="readonly"
       />
+      <!-- //* //////////////   Correo facturacion  -->
+      <div class                ="col-md-6 col-12 row items-center">
+        <input-text             clearable copy alerta sin-espacios
+          v-model               ="tercero.correoFacturas"
+          type                  ="email"
+          label                 ="Correo facturación"
+          icon                  ="mdi-at"          
+          :bg-color             ="correosIguales ? 'green-1' : ( !!tercero.correoFacturas ? 'blue-1' : '' )"
+          :class                ="readonly ? 'col-12' : 'col'"
+          :readonly             ="readonly"
+        />
+        <div v-if               ="!readonly">
+          <q-btn
+            v-bind              ="style.btnRedondoFlat2Sm"
+            class               ="col"
+            icon                ="mdi-content-duplicate"
+            :disable            ="!tercero.correo"
+            @click              ="tercero.correoFacturas = tercero.correo"
+          />
+          <Tooltip label        ="Copiar mismo correo de contacto "/>
+        </div>        
+      </div>
       <!-- //* //////////////   Telefono  -->
       <input-text               clearable copy alerta
         v-model                 ="tercero.telefono"
         type                    ="tel"
         label                   ="Teléfono"
         icon                    ="mdi-phone"
-        class                   ="col-md-5 col-12"
+        class                   ="col-md-6 col-12"
         :readonly               ="readonly"
       />
-      <!-- //* //////////////   Responsable o comercial  -->
-      <comerciales              autoselect use-input
-        v-model                 ="tercero.responsables"
-        class                   ="col-md-7 col-12"
-        :readonly               ="readonly || !storeUser.permisos.acceso_total"
-      />
       <!-- //* //////////////   Area o Departamento  -->
-      <div class                ="col-md-5 col-12">
+      <div class                ="col-md-6 col-12">
         <q-btn-toggle           push unelevated spread glossy dense
           v-model               ="tercero.area"
           :readonly             ="readonly"
           :options              ="Areas"
         />
       </div>
+      <!-- //* //////////////   Responsable o comercial  -->
+      <comerciales              autoselect use-input
+        v-model                 ="tercero.responsables"
+        class                   ="col-12"
+        :readonly               ="readonly || !storeUser.permisos.acceso_total"
+      />      
       <!-- //* //////////////   Código proveedor  -->
       <!-- <TransitionGroup          enter-active-class="animated fadeIn" leave-active-class="animated fadeOut" > -->
         <input-text             clearable alerta uppercase AZ09 sin-espacios
@@ -278,6 +301,7 @@
   import    documento         from "./Documento.vue"
   import    direccion         from "./DireccionDian.vue"
   import {  IMunicipio      } from "src/models/Municipio"
+  import {  style           } from "src/composables/useEstilos"
 
   const { notify }            = useQuasar()
   const { apiDolibarr       } = useApiDolibarr()
@@ -445,6 +469,9 @@
 
     return  title
   })
+
+  const correosIguales        = computed(()=> tercero.value.correo === tercero.value.correoFacturas && !!tercero.value.correo )
+        
                                   
   //* ////////////////////////////////////////////////////////////////////////////////////// Aviso Nofity
   function aviso( tipo : "positive" | "negative", mensaje : string )

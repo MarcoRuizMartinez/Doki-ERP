@@ -325,7 +325,7 @@
   import {  useFetch        } from "src/composables/useFetch"
   import {  getURL,
             getFormData     } from "src/composables/APIMaco"
-  import {  style           } from "src/composables/useEstilos"            
+  import {  style           } from "src/composables/useEstilos"
   // * /////////////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana           from "components/utilidades/Ventana.vue"
   import    municipios        from "components/utilidades/select/SelectMunicipios.vue"

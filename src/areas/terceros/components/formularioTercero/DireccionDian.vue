@@ -1,5 +1,5 @@
 <template>
-  <q-input          filled dense hide-bottom-space clearable
+  <!-- <q-input          filled dense hide-bottom-space clearable
     label           ="Dirección *"
     lazy-rules      ="ondemand"
     type            ="text"
@@ -8,26 +8,28 @@
     :readonly       ="readonly"
     :rules          ="[ regla ]"
     >
-  <template #prepend>
-    <q-icon name    ="mdi-map-marker" />
-  </template>
-<!--   <template #after >
-    <q-btn round dense flat
-      v-if          ="readonly"
-      icon          ="mdi-content-copy"
-      @click        ="copiar"
-      />
-  </template> -->
-  </q-input>
+    <template #prepend>
+      <q-icon name    ="mdi-map-marker" />
+    </template>
+  </q-input> -->
+  <input-text               clearable copy uppercase alerta
+    v-model                 ="modelo"
+    label                   ="Dirección"
+    icon                    ="mdi-map-marker"
+    :rules                  ="[ regla ]"
+    :readonly               ="readonly"
+    @blur                   ="blur"
+  />  
 </template>
 
 <script setup lang="ts">
+  import    inputText           from "components/utilidades/input/InputFormText.vue"
   import {  computed,
             ref,
             toRefs,
             watch,
             PropType
-                                  } from 'vue'
+                                  } from 'vue'  
   import {  Notify,
             copyToClipboard       } from 'quasar'
 

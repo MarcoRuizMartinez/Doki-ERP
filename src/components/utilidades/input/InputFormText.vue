@@ -39,6 +39,7 @@
         v-else-if   ="readonly && copy"
         class       ="transi"
         icon        ="mdi-content-copy"
+        size        ="sm"
         @click      ="copiar"
       />
       <slot></slot>

@@ -55,6 +55,7 @@
           v-else-if       ="readonly && copy"
           icon            ="mdi-content-copy"
           class           ="transi"
+          size            ="sm"
           @click          ="copiar"
         />
         <div

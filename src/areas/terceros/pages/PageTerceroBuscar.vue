@@ -55,18 +55,19 @@
   function crearColumnas()
   {
     columnas.value = [
-      new Columna({name: "nombre",            iterable: false       }),
-      new Columna({name: "responsablesLista", label: "Responsables" }),
-      new Columna({name: "color"                                   }),
-      new Columna({name: "ciudad"                                   }),
-      new Columna({name: "correo",                                  visible: false  }),
-      new Columna({name: "alias",                                   visible: false  }),
-      new Columna({name: "telefono",          label: "Teléfono",    visible: false  }),
-      new Columna({name: "numeroDocumento",   label: "Documento"    }),
-      new Columna({name: "direccion",         label: "dirección"    }),
-      new Columna({name: "areaNombre",        label: "area"         }),
-      new Columna({name: "tiposTerceros",     label: "Tipo"         }),                                      
-      new Columna({name: "fechaCreadoCorta",  label: "Creado",      visible: false  }),
+      new Columna({name: "nombre",            iterable: false                               }),
+      new Columna({name: "responsablesLista", label: "Responsables"                         }),
+      new Columna({name: "color"                                                            }),
+      new Columna({name: "ciudad"                                                           }),
+      new Columna({name: "correo",                                          visible: false  }),
+      new Columna({name: "correoFacturas",    label: "Correo facturación",  visible: false  }),
+      new Columna({name: "alias",                                           visible: false  }),
+      new Columna({name: "telefono",          label: "Teléfono",            visible: false  }),
+      new Columna({name: "numeroDocumento",   label: "Documento"                            }),
+      new Columna({name: "direccion",         label: "dirección"                            }),
+      new Columna({name: "areaNombre",        label: "area"                                 }),
+      new Columna({name: "tiposTerceros",     label: "Tipo"                                 }),                                      
+      new Columna({name: "fechaCreadoCorta",  label: "Creado",              visible: false  }),
     ]
 
     columnasVisibles.value  = columnas.value.filter(c => c.visible ).map( c => c.name )

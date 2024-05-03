@@ -11,7 +11,7 @@
     >
     <template #prepend > <q-icon name="mdi-card-account-details" /> </template>
   </q-select>
-  <input-number             solo-positivo alerta
+  <input-number             solo-positivo alerta copy
     v-if                    ="esNumero"
     v-model                 ="modelo.numero"
     label                   ="Numero"

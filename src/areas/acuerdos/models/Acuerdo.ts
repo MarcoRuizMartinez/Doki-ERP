@@ -464,14 +464,6 @@ export class Acuerdo implements IAcuerdo
 
 
   /* //* Fechas a despachar */
-/* 
-  fechaADespachar             : Date      // Fecha a despachar
-  fechaADespacharCorta        : string  
-  diasADespachar              : number
-  diasADespacharFormato       : string
-  diasADespacharMensaje       : string
- */
-
   get fechaADespacharCorta()  : string { return this._fechaADespacharCorta }
   get diasADespachar()        : number { return this._diasADespachar }
   get diasADespacharFormato() : string { return this._diasADespacharFormato }
@@ -481,13 +473,22 @@ export class Acuerdo implements IAcuerdo
   set fechaADespachar( fecha : Date )
   {
     this._fechaADespachar       = fecha    
+    console.log("fecha: ", fecha);
     this._diasADespachar        = ToolDate.diasEntreFechas( this._fechaADespachar, new Date() )
     this._fechaADespacharCorta  = ToolDate.fechaCorta( this._fechaADespachar     )
 
     const enBlanco              = this.esEstadoAnulado
 
-    this._diasADespacharFormato = Format.formatoDia         ( this._diasADespachar)
-    this._diasADespacharMensaje = Format.formatoDiaMensaje  ( this._diasADespachar, enBlanco )
+    if(ToolDate.fechaValida( this._fechaADespachar ))
+    {
+      this._diasADespacharFormato = Format.formatoDia         ( this._diasADespachar)
+      this._diasADespacharMensaje = Format.formatoDiaMensaje  ( this._diasADespachar, enBlanco )      
+    }
+    else
+    {
+      this._diasADespacharFormato = ""
+      this._diasADespacharMensaje = ""
+    }
   }  
 
   /* //* Fechas y Dias aprobados */
@@ -1031,11 +1032,10 @@ https://dolibarr.mublex.com/fichinter/card.php?
 
 
   getAcuerdoForApi( usuarioId : number ) : any {
-    const acuForApi : any = {
+    const acuForApi : any     = {
       socid:                  this.tercero.id,
       ref_client:             this.refCliente,
-      date:                   ToolDate.getMilisecShortForApiDolibarr( new Date() ),
-      delivery_date:          ToolDate.getMilisecShortForApiDolibarr( this.fechaEntrega ),
+      date:                   ToolDate.getMilisecShortForApiDolibarr( new Date() ),      
       user_author_id:         usuarioId,
       note_private:           this.notaPrivada,
       note_public:            this.notaPublica,
@@ -1069,8 +1069,11 @@ https://dolibarr.mublex.com/fichinter/card.php?
     if(!!this.metodoEntrega.id)
       acuForApi.shipping_method_id  = this.metodoEntrega.id
 
-    if(!!this.fechaEntrega.valueOf())
-      acuForApi.date_livraison      = ToolDate.getMilisecShortForApiDolibarr( this.fechaEntrega )
+    if(!!this.fechaEntrega.valueOf()){
+      const miliCompromiso          = ToolDate.getMilisecShortForApiDolibarr( this.fechaEntrega )
+      acuForApi.date_livraison      = miliCompromiso
+      acuForApi.delivery_date       = miliCompromiso
+    }
 
     if(!!this.fechaFinValidez.valueOf())
       acuForApi.fin_validite        = ToolDate.getMilisecShortForApiDolibarr( this.fechaFinValidez )
@@ -1097,6 +1100,11 @@ https://dolibarr.mublex.com/fichinter/card.php?
       return linea
     })
 
+    const miliCompromiso          = ToolDate.getMilisecShortForApiDolibarr( this.fechaEntrega )
+    console.log("miliCompromiso: ", miliCompromiso);
+    const miliDespachar           = ToolDate.getMilisecShortForApiDolibarr( this.fechaADespachar )
+    console.log("miliDespachar: ", miliDespachar);
+
     const acuForApi : any = {
       socid                       : this.tercero.id,
       user_author_id              : usuarioId,
@@ -1106,7 +1114,7 @@ https://dolibarr.mublex.com/fichinter/card.php?
       origin                      : "commande",
       origin_id                   : pedidoId,
       shipping_method_id          : this.metodoEntrega.id,
-      date_delivery               : ToolDate.getMilisecShortForApiDolibarr( this.fechaEntrega ),
+      date_delivery               : !!miliCompromiso ? miliCompromiso : '',
       date_expedition             :	"",
       lines                       : lines,
       array_options               : 
@@ -1114,7 +1122,7 @@ https://dolibarr.mublex.com/fichinter/card.php?
         options_comercial_id      : this.comercial.id,
         options_contacto_id       : this.contactoEntrega.id,
         options_transportadora_id : this.transportadora.id,
-        options_fecha_entregar    : ToolDate.getMilisecShortForApiDolibarr( this.fechaADespachar ),
+        options_fecha_entregar    : !!miliDespachar ? miliDespachar : '',
       }
     }
 
@@ -1312,7 +1320,7 @@ https://dolibarr.mublex.com/fichinter/card.php?
       acuApi.fechaEnvioOC     = ToolDate.getDateToStr( acuApi.fechaEnvioOC,     "local")
     }
 
-    acuApi.fechaListo         = ToolDate.getDateToStr( acuApi.fechaListo,       "UTC")
+    acuApi.fechaListo         = ToolDate.getDateToStr( acuApi.fechaListo,       "UTC")    
     acuApi.fechaADespachar    = ToolDate.getDateToStr( acuApi.fechaADespachar,  "UTC")
 
     //* ////////////////////////////////////////////////////////////////////////////////////////

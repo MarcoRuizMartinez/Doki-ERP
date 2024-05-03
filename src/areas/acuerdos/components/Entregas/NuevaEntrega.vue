@@ -106,7 +106,7 @@
                 {{ props.row.ref }}
               </span>
               <span>
-                {{ props.row.nombre }} {{props.row.qty}}
+                {{ props.row.nombre }}
               </span>
             </div>
           </div>

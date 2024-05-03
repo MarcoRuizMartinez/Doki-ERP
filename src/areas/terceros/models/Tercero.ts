@@ -6,7 +6,7 @@ import {  IMunicipio,
           Municipio
                             } from "src/models/Municipio"
 import {  IUsuario          } from "src/areas/usuarios/models/Usuario"
-import {  Format            } from "src/composables/useTools"
+import {  Format, ToolType  } from "src/composables/useTools"
 import {  TIPOS_DOCUMENTO   } from "./TiposDocumento"
 import {  AREA              } from "src/models/TiposVarios"
 import {  IAccion           } from "src/areas/comunicacion/models/Accion"
@@ -27,6 +27,7 @@ export interface ITercero
   numeroDocumento           : string
   direccion                 : string                  // address
   correo                    : string                  // email
+  correoFacturas            : string                  // email para facturas electronicas
   telefono                  : string                  // phone
   url                       : string                  // url
   logo                      : string                  // logo
@@ -65,66 +66,35 @@ export interface ITercero
 
 export class Tercero implements ITercero
 {
-  id                        : number      
-  nombre                    : string                  
-  contactos                 : IContacto[]
-  area                      : AREA  
-  alias                     : string
-  documento                 : IDocumento
-  direccion                 : string
-  correo                    : string                  
-  telefono                  : string      
-  url                       : string
-  logo                      : string                  
-  activo                    : boolean                 
-  esCliente                 : boolean                 
-  esProveedor               : boolean                 
-  aplicaIVA                 : boolean                 
-  codigoProveedor           : string                  
-  municipio                 : IMunicipio
-  pais                      : string
-  responsables              : IUsuario[]
-  color                     : string
-  favorito                  : boolean
-  fechaCreado               : string
-  idTipoDocumento           : number
-  municipioId               : number
-  notaPublica               : string
-  notaPrivada               : string
-  esFamoso                  : boolean
+  id                        : number      = 0
+  nombre                    : string      = ""
+  contactos                 : IContacto[] = []
+  area                      : AREA        = AREA.NULO
+  alias                     : string      = ""
+  documento                 : IDocumento  = new Documento()
+  direccion                 : string      = ""
+  correo                    : string      = ""
+  correoFacturas            : string      = "" // email para facturas electronicas
+  telefono                  : string      = ""  
+  url                       : string      = ""
+  logo                      : string      = ""   
+  activo                    : boolean     = true
+  esCliente                 : boolean     = false
+  esProveedor               : boolean     = false
+  aplicaIVA                 : boolean     = true
+  codigoProveedor           : string      = ""
+  municipio                 : IMunicipio  = new Municipio()
+  pais                      : string      = "70" // Colombia // llx_c_regions 7001 // llx_c_departements.fk_region 
+  responsables              : IUsuario[]  = []
+  color                     : string      = "#FFF"
+  favorito                  : boolean     = false
+  fechaCreado               : string      = ""
+  idTipoDocumento           : number      = 0
+  municipioId               : number      = 0
+  notaPublica               : string      = ""
+  notaPrivada               : string      = ""
+  esFamoso                  : boolean     = false
   comentarios               : IAccion[]   = []
-
-  constructor()
-  {
-    this.id                 = 0
-    this.nombre             = ""
-    this.contactos          = []
-    this.area               = AREA.NULO
-    this.alias              = ""
-    this.documento          = new Documento()
-    this.direccion          = ""
-    this.correo             = ""
-    this.telefono           = ""       
-    this.url                = ""
-    this.logo               = ""       
-    this.activo             = true
-    this.esCliente          = false
-    this.esProveedor        = false
-    this.aplicaIVA          = true
-    this.codigoProveedor    = ""
-    this.municipio          = new Municipio()
-    this.pais               = "70" // Colombia // llx_c_regions 7001 // llx_c_departements.fk_region 
-    this.responsables       = []
-    this.color              = "#FFF"
-    this.favorito           = false
-    this.fechaCreado        = ""
-    this.idTipoDocumento    = 0
-    this.municipioId        = 0
-    this.notaPublica        = ""
-    this.notaPrivada        = ""
-    this.esFamoso           = false
-  }
-  
 
   get esEmpresa():boolean  {
     return this.documento.tipo.value === TIPOS_DOCUMENTO.NIT
@@ -228,13 +198,14 @@ export class Tercero implements ITercero
                       country_code:           "CO",               
                       array_options:
                       {
-                        "options_depart":       this.area.toString(),
-                        "options_favorito":     (this.favorito ? 1 : 0).toString(),
-                        "options_es_famoso":    (this.esFamoso ? 1 : 0).toString(),
-                        "options_color":        this.color,
-                        "options_provmin":      "0",
-                        "options_datosok":      "1",
-                        "options_municipio_id": this.municipio.id,
+                        options_correofacturacion : this.correoFacturas,
+                        options_depart            : this.area.toString(),
+                        options_favorito          : (this.favorito ? 1 : 0).toString(),
+                        options_es_famoso         : (this.esFamoso ? 1 : 0).toString(),
+                        options_color             : this.color,
+                        options_provmin           : "0",
+                        options_datosok           : "1",
+                        options_municipio_id      : this.municipio.id,
                       },
                       entity:                 "1",
                       status:                 "1",//this.activo ? 1 : 0,                      
@@ -261,6 +232,7 @@ export class Tercero implements ITercero
     terceroApi.aplicaIVA      = Boolean( +terceroApi.aplicaIVA )
     terceroApi.favorito       = Boolean( +terceroApi.favorito )
     terceroApi.esFamoso       = Boolean( +terceroApi.esFamoso )
+    terceroApi.correoFacturas = ToolType.keyStringValido( terceroApi, "correoFacturas" )
     terceroApi.color          = terceroApi.color.includes("#FFF") ? "" : terceroApi.color
     
     if(terceroApi.municipioId > 0)
