@@ -314,6 +314,7 @@
   {
     modo.value                    = "esperando-busqueda"
     acuerdos.value                = []
+    seleccion.value               = []
   }
 
   function vistaRapida(index : number)
@@ -360,6 +361,7 @@
       new Columna(            { name: "fechaEntregaCorta",    label: "Fecha compromiso"                       }),
       new Columna(            { name: "estadoAnimoEmoji",     label: "Animo",           clase:"text-1_4em"    }),
       new Columna(            { name: "diasEntregarFormato",  label: "Días compromiso"                        }),
+      new Columna(            { name: "diasADespacharFormato",label: "Días a despachar"                       }),      
       new Columna(            { name: "diasAprobadoFormato",  label: "Días aprobado"                          }),
       new Columna(            { name: "diasEnviadoFormato",   label: "Días enviado"                           }),
       new Columna(            { name: "fechaEnvioOCCorta",    label: "Fecha envió OC"                         }),
@@ -381,9 +383,9 @@
       Columna.ColumnaPrecio ( { name: "totalConIva",          label: "Total",             clase: "text-bold"  }),
     ]
 
-    const colsEli = busqueda.value.esCotizacion   ? ["fechaEnvioOCCorta", "diasEnviadoFormato", "diasAprobadoFormato", "diasEntregarFormato", "estadoAnimoEmoji", "facturado", "pedidoId", "refPedido", "fechaListoCorta", "fechaADespacharCorta", "fechaEntregaCorta"]
+    const colsEli = busqueda.value.esCotizacion   ? ["fechaEnvioOCCorta", "diasEnviadoFormato", "diasAprobadoFormato", "diasEntregarFormato", "diasADespacharFormato", "estadoAnimoEmoji", "facturado", "pedidoId", "refPedido", "fechaListoCorta", "fechaADespacharCorta", "fechaEntregaCorta"]
                   : busqueda.value.esPedido       ? ["fechaEnvioOCCorta", "diasEnviadoFormato", "diasAprobadoFormato", "pedidoId", "refPedido"]
-                  : busqueda.value.esEntrega      ? ["fechaEnvioOCCorta", "diasEnviadoFormato", "diasAprobadoFormato", "diasEntregarFormato", "estadoAnimoEmoji", "facturado", "condicionPagoLabel", "formaPagoLabel", "origenContactoLabel", "subTotalLimpio", "totalConDescu", "ivaValor", "totalConIva", "fechaListoCorta"]
+                  : busqueda.value.esEntrega      ? ["fechaEnvioOCCorta", "diasEnviadoFormato", "diasAprobadoFormato", "facturado", "condicionPagoLabel", "formaPagoLabel", "origenContactoLabel", "subTotalLimpio", "totalConDescu", "ivaValor", "totalConIva", "fechaListoCorta"]
                   : busqueda.value.esOCProveedor  ? ["refCliente", "comercial", "metodoEntregaLabel", "facturado", "origenContactoLabel", "subTotalLimpio", "pedidoId", "refPedido", "fechaListoCorta"]
                   : []
 

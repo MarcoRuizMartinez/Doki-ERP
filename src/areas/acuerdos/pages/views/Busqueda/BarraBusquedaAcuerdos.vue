@@ -261,9 +261,9 @@
           :desde                ="b.f.desde"
         />
       </fieldset-filtro>
-      <!-- //* /////////////////////////////////////////////////// Dias de entrega-->
+      <!-- //* /////////////////////////////////////////////////// Dias de compromiso -->
       <fieldset-filtro
-        v-if                    ="b.esPedido || b.esOCProveedor"
+        v-if                    ="b.esPedido || b.esOCProveedor || b.esEntrega"
         titulo                  ="Días de compromiso"
         class-contenido         ="column q-gutter-xs"
         >
@@ -284,6 +284,29 @@
           :minimo               ="b.f.diasDesde"
         />
       </fieldset-filtro>
+      <!-- //* /////////////////////////////////////////////////// Dias a despachar -->
+      <fieldset-filtro
+        v-if                    ="b.esPedido || b.esOCProveedor || b.esEntrega"
+        titulo                  ="Días a despachar"
+        class-contenido         ="column q-gutter-xs"
+        >
+        <!-- //* ///////////////////////////////////////////////// Dias desde -->
+        <input-number           hundido  
+          v-model               ="b.f.diasDDesde"
+          label                 ="Desde x días"
+          :paso                 ="1"
+          class                 ="width160"          
+          :maximo               ="b.f.diasDHasta"
+        />
+        <!-- //* ///////////////////////////////////////////////// Dias hasta -->
+        <input-number           hundido  
+          v-model               ="b.f.diasDHasta"
+          label                 ="Hasta x días"
+          :paso                 ="1"
+          class                 ="width160"
+          :minimo               ="b.f.diasDDesde"
+        />
+      </fieldset-filtro>      
       <!-- //* /////////////////////////////////////////////////// Fechas Validacion -->
       <fieldset-filtro
         v-if                    ="b.esOCProveedor"

@@ -41,6 +41,20 @@
             {{ acuerdo.contactoEntrega.municipio.label }}
           </td>
         </tr>
+        <template v-if="conFechas">
+        <tr>
+          <td>Fecha de compromiso:</td>
+          <td>
+            <span class="q-mr-md">{{ acuerdo.fechaEntregaCorta }}</span> {{ acuerdo.diasEntregarFormato }} {{ acuerdo.estadoAnimoEmoji }} 
+          </td>
+        </tr>
+        <tr>
+          <td>Fecha de despacho:</td>
+          <td>
+            <span class="q-mr-md">{{ acuerdo.fechaADespacharCorta }}</span> {{ acuerdo.diasADespacharFormato }}
+          </td>
+        </tr>
+        </template>
       </tbody>
     </table>
     <div class="q-ml-xs">
@@ -58,8 +72,9 @@
   import {  IAcuerdo        } from "src/areas/acuerdos/models/Acuerdo"
 
   const props               = defineProps({
-    acuerdo:  { required: true,   type: Object as PropType< IAcuerdo > },
-    dark:     { default:  false,  type: Boolean },
+    acuerdo     : { required: true,   type: Object as PropType< IAcuerdo > },
+    dark        : { default:  false,  type: Boolean },
+    conFechas   : { default:  false,  type: Boolean },
   })
 
 </script>

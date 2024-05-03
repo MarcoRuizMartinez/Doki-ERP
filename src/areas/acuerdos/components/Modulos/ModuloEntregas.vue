@@ -69,9 +69,9 @@
           <div  class               ="col-md-7 col-12 row lado-gris-oscuro order-2">
             <div class              ="col-md-7 col-12 column">
               <!-- //* ////////////////////////////////////////////////////////// Info de envio -->
-              <tabla-envio          dark
+              <tabla-envio          dark con-fechas
                 :acuerdo            ="entrega"
-              />
+              />              
             </div>
             <!-- //* /////////////////////////////////////////////////////////// Lado Inputs   -->
             <div  class             ="col-md-5 col-12 lado-gris-claro">

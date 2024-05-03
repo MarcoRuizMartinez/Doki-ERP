@@ -83,6 +83,11 @@
             <Tooltip label  ="Generar rótulos"/>
           </q-btn>        
         </div>
+        <!-- //* ////////////////////////////////////////////////////////// Boton rótulos -->
+        <div>
+          <span class       ="text-1_3em">{{ entrega.estadoAnimoEmoji }}</span>
+          <Tooltip  :label  ="'Entregar en ' + entrega.diasEntregarFormato"/>
+        </div>        
         <div class          ="width100 q-ml-md">
           <!-- //* ////////////////////////////////////////////////////////// Estado entrega-->
           <estado           con-icono            

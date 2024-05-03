@@ -223,6 +223,7 @@
     entrega.value.comercial         = Object.assign( acuerdo.value.comercial,       {} )
     entrega.value.refCliente        = acuerdo.value.refCliente
     entrega.value.fechaEntrega      = acuerdo.value.fechaEntrega
+    entrega.value.fechaADespachar   = acuerdo.value.fechaADespachar
   })
 
   async function crearEntrega()

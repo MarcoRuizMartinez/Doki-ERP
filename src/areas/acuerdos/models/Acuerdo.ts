@@ -127,6 +127,13 @@ export interface IAcuerdo
   estadoAnimoEmoji            : string
   estadoAnimoColor            : string
 
+  /* // Fechas a despachar */
+  fechaADespachar             : Date      // Fecha a despachar
+  fechaADespacharCorta        : string  
+  diasADespachar              : number
+  diasADespacharFormato       : string
+  diasADespacharMensaje       : string
+  
   /* // Fechas aprobacion pedidos a proveedores */  
   fechaAprobado               : Date
   fechaAprobadoCorta          : string
@@ -251,8 +258,6 @@ export interface IAcuerdo
   incentivo                   : IIncentivo
   fechaListo                  : Date      // Productos listos para entregar
   fechaListoCorta             : string
-  fechaADespachar             : Date      // Fecha a despachar
-  fechaADespacharCorta        : string
   listoEntregar               : boolean
   OC_a_Proveedor              : IAcuerdo[]
   OC_a_ProveedorTotal         : number
@@ -304,6 +309,13 @@ export class Acuerdo implements IAcuerdo
   private _estadoAnimoEmoji   : string              = ""
   private _estadoAnimoColor   : string              = ""
   private _diasEntregarMensaje: string              = ""
+
+   /* // Fechas compromiso entrega */
+   private _fechaADespachar       : Date            = new Date(0)
+   private _fechaADespacharCorta  : string          = ""
+   private _diasADespachar        : number          = 0
+   private _diasADespacharFormato : string          = ""   
+   private _diasADespacharMensaje : string          = "" 
 
   /* // Fechas aprobado */
   private _fechaAprobado      : Date                = new Date(0)
@@ -369,8 +381,7 @@ export class Acuerdo implements IAcuerdo
   /* Solo para pedidos */
   facturado                   : boolean             = false
   incentivo                   : IIncentivo          = new Incentivo()
-  fechaListo                  : Date                = new Date(0)
-  fechaADespachar             : Date                = new Date(0)  
+  fechaListo                  : Date                = new Date(0)  
 
   /* Solo para entregas */
   transportadoraId            : number              = 0
@@ -427,6 +438,8 @@ export class Acuerdo implements IAcuerdo
     }
   }
 
+
+  /* //* Fechas compromiso */
   get fechaEntregaCorta()     : string { return this._fechaEntregaCorta }
   get diasEntregar()          : number { return this._diasEntregar }
   get diasEntregarFormato()   : string { return this._diasEntregarFormato }
@@ -441,13 +454,41 @@ export class Acuerdo implements IAcuerdo
     this._diasEntregar        = ToolDate.diasEntreFechas( this.fechaEntrega, new Date() )
     this._fechaEntregaCorta   = ToolDate.fechaCorta( this.fechaEntrega     )
 
-    const ok                  = this.esEstadoEntregado || this.esEstadoAnulado
+    const enBlanco            = this.esEstadoEntregado || this.esEstadoAnulado
 
     this._diasEntregarFormato = Format.formatoDia         ( this._diasEntregar)
-    this._diasEntregarMensaje = Format.formatoDiaMensaje  ( this._diasEntregar, ok )
-    this._estadoAnimoEmoji    = getEmojiByDia             ( this._diasEntregar, ok )
-    this._estadoAnimoColor    = getColorByDia             ( this._diasEntregar, ok )
-  }
+    this._diasEntregarMensaje = Format.formatoDiaMensaje  ( this._diasEntregar, enBlanco )
+    this._estadoAnimoEmoji    = getEmojiByDia             ( this._diasEntregar, enBlanco )
+    this._estadoAnimoColor    = getColorByDia             ( this._diasEntregar, enBlanco )
+  }  
+
+
+  /* //* Fechas a despachar */
+/* 
+  fechaADespachar             : Date      // Fecha a despachar
+  fechaADespacharCorta        : string  
+  diasADespachar              : number
+  diasADespacharFormato       : string
+  diasADespacharMensaje       : string
+ */
+
+  get fechaADespacharCorta()  : string { return this._fechaADespacharCorta }
+  get diasADespachar()        : number { return this._diasADespachar }
+  get diasADespacharFormato() : string { return this._diasADespacharFormato }
+  get diasADespacharMensaje() : string { return this._diasADespacharMensaje }
+
+  get fechaADespachar() : Date { return this._fechaADespachar }
+  set fechaADespachar( fecha : Date )
+  {
+    this._fechaADespachar       = fecha    
+    this._diasADespachar        = ToolDate.diasEntreFechas( this._fechaADespachar, new Date() )
+    this._fechaADespacharCorta  = ToolDate.fechaCorta( this._fechaADespachar     )
+
+    const enBlanco              = this.esEstadoAnulado
+
+    this._diasADespacharFormato = Format.formatoDia         ( this._diasADespachar)
+    this._diasADespacharMensaje = Format.formatoDiaMensaje  ( this._diasADespachar, enBlanco )
+  }  
 
   /* //* Fechas y Dias aprobados */
   get diasAprobado()            : number { return this._diasAprobado }
@@ -965,8 +1006,6 @@ https://dolibarr.mublex.com/fichinter/card.php?
   get fechaValidacionCorta()  : string { return ToolDate.fechaCorta( this.fechaValidacion  ) }
   get fechaCierreCorta()      : string { return ToolDate.fechaCorta( this.fechaCierre      ) }  
   get fechaListoCorta()       : string { return ToolDate.fechaCorta( this.fechaListo       ) }
-  get fechaADespacharCorta()  : string { return ToolDate.fechaCorta( this.fechaADespachar  ) }
-
 
 
   get totalAnticipos()        : number {
@@ -1072,9 +1111,10 @@ https://dolibarr.mublex.com/fichinter/card.php?
       lines                       : lines,
       array_options               : 
       {
-        comercial_id              : this.comercial.id,
-        contacto_id               : this.contactoEntrega.id,
-        transportadora_id         : this.transportadora.id,
+        options_comercial_id      : this.comercial.id,
+        options_contacto_id       : this.contactoEntrega.id,
+        options_transportadora_id : this.transportadora.id,
+        options_fecha_entregar    : ToolDate.getMilisecShortForApiDolibarr( this.fechaADespachar ),
       }
     }
 
@@ -1272,8 +1312,8 @@ https://dolibarr.mublex.com/fichinter/card.php?
       acuApi.fechaEnvioOC     = ToolDate.getDateToStr( acuApi.fechaEnvioOC,     "local")
     }
 
-    acuApi.fechaListo         = ToolDate.getDateToStr( acuApi.fechaListo,       "local")
-    acuApi.fechaADespachar    = ToolDate.getDateToStr( acuApi.fechaADespachar,  "local")
+    acuApi.fechaListo         = ToolDate.getDateToStr( acuApi.fechaListo,       "UTC")
+    acuApi.fechaADespachar    = ToolDate.getDateToStr( acuApi.fechaADespachar,  "UTC")
 
     //* ////////////////////////////////////////////////////////////////////////////////////////
 

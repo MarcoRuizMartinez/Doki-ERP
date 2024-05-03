@@ -53,6 +53,8 @@ export interface      IQuery {
   fechaHasta           ?: string
   diasDesde            ?: number
   diasHasta            ?: number
+  diasDDesde           ?: number
+  diasDHasta           ?: number
 
   //valiDesde            ?: string
   //valiHasta            ?: string
@@ -141,6 +143,8 @@ interface               ICampos {
   hasta                 : Date | string
   diasDesde             : number | undefined
   diasHasta             : number | undefined
+  diasDDesde            : number | undefined
+  diasDHasta            : number | undefined  
 
   //valiDesde             : Date | string
   //valiHasta             : Date | string
@@ -310,6 +314,8 @@ export class Busqueda implements IBusqueda
 
     this.f.diasDesde          = ToolQuery.getQueryRouterNumber    ( this.rourterQ .diasDesde      )
     this.f.diasHasta          = ToolQuery.getQueryRouterNumber    ( this.rourterQ .diasHasta      )
+    this.f.diasDDesde         = ToolQuery.getQueryRouterNumber    ( this.rourterQ .diasDDesde     )
+    this.f.diasDHasta         = ToolQuery.getQueryRouterNumber    ( this.rourterQ .diasDHasta     )    
     this.f.aproDesdeDia       = ToolQuery.getQueryRouterNumber    ( this.rourterQ .aproDesdeDia   )
     this.f.aproHastaDia       = ToolQuery.getQueryRouterNumber    ( this.rourterQ .aproHastaDia   )
     this.f.enviaDesdeDia      = ToolQuery.getQueryRouterNumber    ( this.rourterQ .enviaDesdeDia  )
@@ -551,6 +557,8 @@ export class Busqueda implements IBusqueda
 
     if(ToolType.valorValido(this.f.diasDesde))    q.diasDesde     = this.f.diasDesde
     if(ToolType.valorValido(this.f.diasHasta))    q.diasHasta     = this.f.diasHasta
+    if(ToolType.valorValido(this.f.diasDDesde))   q.diasDDesde    = this.f.diasDDesde
+    if(ToolType.valorValido(this.f.diasDHasta))   q.diasDHasta    = this.f.diasDHasta    
     if(ToolType.valorValido(this.f.aproDesdeDia))  q.aproDesdeDia   = this.f.aproDesdeDia
     if(ToolType.valorValido(this.f.aproHastaDia))  q.aproHastaDia   = this.f.aproHastaDia
     if(ToolType.valorValido(this.f.enviaDesdeDia)) q.enviaDesdeDia  = this.f.enviaDesdeDia
@@ -666,6 +674,8 @@ export class Busqueda implements IBusqueda
       hasta               : "",
       diasDesde           : undefined,
       diasHasta           : undefined,
+      diasDDesde          : undefined,
+      diasDHasta          : undefined,      
 
       //valiDesde           : "",
       //valiHasta           : "",

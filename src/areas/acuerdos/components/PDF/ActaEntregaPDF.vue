@@ -1,7 +1,7 @@
 <template>
   <ventana                          cerrar full-screen scroll
-    titulo                          ="Remisión"
-    icono                           ="mdi-signature-freehand"
+    titulo                          ="Acta de entrega"
+    icono                           ="mdi-book-check"
     class-contenido                 ="row justify-start"
     padding-contenido               ="0"        
     >

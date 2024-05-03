@@ -62,8 +62,12 @@
         </q-popup-proxy>
       </q-icon>
     </template>
-    <Tooltip v-if               ="!!modelValue.valueOf()">
-      {{label}}: 
+    <Tooltip
+      v-if                      ="!!modelValue.valueOf()"
+      ancho-max                 ="240px"
+      class                     ="text-center"
+      >
+      {{label}}<br/>
       {{new Date(modelValue).toLocaleDateString('es-CO', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}}
     </Tooltip> 
   </q-input>  
@@ -97,6 +101,7 @@
     loading:    { default: false,     type: Boolean },
     titulo:     { default: "",        type: String  },
     diasValidos:{ default: 0,         type: Number  },
+    noNulo:     { default: false,     type: Boolean },
     alerta:     { default:  false,    type: [Boolean, String  ] },
     rules:      { default:  [],       type: Array  as PropType< ValidationRule[] > },
     noPasado:   { default: false,     type: Boolean },
@@ -110,6 +115,7 @@
           alerta,
           label,
           noPasado,
+          noNulo,
           noFuturo,
           desde,
           hasta,
@@ -123,7 +129,7 @@
   const avisoRangoOut   = debounce (()=>aviso("negative", "Fecha fuera de rango","clock"), 300)
   function emitir()
   {
-    if(ToolDate.fechaValidaStrODate(fechaTem))
+    if( ToolDate.fechaValidaStrODate(fechaTem) || noNulo.value )
       emit("update:model-value", fechaTem)
     else 
       emit("update:model-value", "")
@@ -162,14 +168,20 @@
       fechaTem          = new Date(details.year, details.month-1, details.day)
   }
 
-  function asignarModelValueAModelo() {
-    let fecha : string | Date
+  function asignarModelValueAModelo()
+  {
+    let fecha : string | Date    
+
     if(typeof modelValue.value === "string")
       fecha = new Date( Date.parse( modelValue.value ).valueOf() + 19_000_000 )// 19_000_000 5 horas de diferencia horaria
     else 
       fecha = modelValue.value
 
-    modelo.value        = !!modelValue.value.valueOf() ? date.formatDate(fecha, 'YYYY/MM/DD') : undefined
+    modelo.value        =   !!modelValue.value.valueOf()
+                          ? date.formatDate(fecha, 'YYYY/MM/DD')
+                          : noNulo.value
+                            ? date.formatDate(fecha, 'YYYY/MM/DD')
+                            : undefined
   }
 
   function fechaCumpleCriterios ( fechaI : string ) : boolean
@@ -209,19 +221,34 @@
 
   function cambioInputText()
   {
-    if( actualizandoMV) {
-        actualizandoMV  = false
-        return
-    }
-    
-    const dateTxt     = getFechaLimpia()
-
-    if(!dateTxt) {
-      fechaTem        = new Date('')
-      emitir()
+    if( actualizandoMV )
+    {
+      actualizandoMV    = false
+      if( !modelo.value && noNulo.value ){
+        modelo.value    = typeof modelValue.value === "string" ? modelValue.value : modelValue.value.toString()
+      }
       return
     }
-    if(dateTxt.length != 10 ) return // Solo acepta el formato YYYY/MM/DD
+
+    const dateTxt       = getFechaLimpia()
+
+    if(!dateTxt)
+    {
+      fechaTem        = new Date('')
+      if( noNulo.value )
+      {
+        modelo.value  = typeof modelValue.value === "string" ? modelValue.value : date.formatDate(modelValue.value, 'YYYY/MM/DD') 
+        fechaTem      = typeof modelValue.value === "string" ? new Date( modelValue.value ) : modelValue.value
+      }
+      else
+        emitir()
+
+      return
+    }
+    if( dateTxt.length != 10 ){
+      return // Solo acepta el formato YYYY/MM/DD
+    }
+      
     
     if( fechaCumpleCriterios(dateTxt) )
     {

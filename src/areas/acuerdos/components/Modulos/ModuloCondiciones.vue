@@ -51,7 +51,6 @@
       titulo                  ="Fecha compromiso entrega"
       class                   ="col-md-6 col-12"
       error-message           ="Es necesaria una fecha de entrega"
-      :dias                   ="20"
       :error                  ="errorFecha"
       :loading                ="loading.fechaEntrega"
       @update:model-value     ="editarFechaEntrega"
@@ -65,7 +64,7 @@
     </input-fecha>
     <!-- //* ///////////////////////////////////////////////// Fecha a despachar -->
     <input-fecha              no-pasado
-      v-if                    ="acuerdo.esPedido"
+      v-if                    ="acuerdo.esPedido || acuerdo.esEntrega"
       v-model                 ="acuerdo.fechaADespachar"
       label                   ="Fecha a despachar"
       titulo                  ="Fecha tentativa de despacho"
@@ -73,7 +72,14 @@
       error-message           ="Es necesaria una fecha tentativa de despacho"
       :loading                ="loading.fechaADespachar"
       @update:model-value     ="editarFechaADespachar"
-    />
+      >
+      <span
+        v-if                  ="!acuerdo.esEstadoEntregado"
+        :class                ="'text-'+acuerdo.estadoAnimoColor"
+        >
+        {{ acuerdo.diasADespacharFormato }}
+      </span>
+    </input-fecha>
 
     <!-- //* ///////////////////////////////////////////////// Condiciones pago -->
     <select-label-value

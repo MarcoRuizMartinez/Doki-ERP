@@ -1,35 +1,57 @@
 <template>
-  <select-contacto    tipo-entrega hundido quitar-contacto
-    v-model:contacto  ="entrega.contactoEntrega"
-    label             ="Contacto entregas"
-    icon              ="mdi-account"
-    :tercero          ="entrega.tercero"
-    :disable          ="!entrega.tercero.id"
-    :readonly         ="entrega.esEstadoEntregado"
-    @quitar-contacto  ="( c : IContacto ) => cambiarContacto( entrega, c, 'borrar' )"
-    @contacto-nuevo   ="( c : IContacto ) => cambiarContacto( entrega, c )"
-    @contacto-cambio  ="( c : IContacto ) => cambiarContacto( entrega, c )"
+  <select-contacto          tipo-entrega hundido quitar-contacto
+    v-model:contacto        ="entrega.contactoEntrega"
+    label                   ="Contacto entregas"
+    icon                    ="mdi-account"
+    :tercero                ="entrega.tercero"
+    :disable                ="!entrega.tercero.id"
+    :readonly               ="entrega.esEstadoEntregado"
+    @quitar-contacto        ="( c : IContacto ) => cambiarContacto( entrega, c, 'borrar' )"
+    @contacto-nuevo         ="( c : IContacto ) => cambiarContacto( entrega, c )"
+    @contacto-cambio        ="( c : IContacto ) => cambiarContacto( entrega, c )"
   />
-  <select-label-value hundido
-    v-model           ="entrega.metodoEntrega"
-    label             ="Método de entrega"
-    icon              ="mdi-truck-delivery"
-    error-message     ="Indique un método de entrega"
-    :options          ="metodosEntrega"
-    :loading          ="!metodosEntrega.length"
-    :readonly         ="entrega.esEstadoEntregado"
-    @select           ="( metodo )=> cambiarMetodo( entrega, metodo )"
+  <select-label-value       hundido
+    v-model                 ="entrega.metodoEntrega"
+    label                   ="Método de entrega"
+    icon                    ="mdi-truck-delivery"
+    error-message           ="Indique un método de entrega"
+    :options                ="metodosEntrega"
+    :loading                ="!metodosEntrega.length"
+    :readonly               ="entrega.esEstadoEntregado"
+    @select                 ="( metodo )=> cambiarMetodo( entrega, metodo )"
   />                
-  <select-label-value alerta hundido clearable
-    v-model           ="entrega.transportadora"
-    label             ="Transportadora"
-    icon              ="mdi-truck"
-    class             ="col-md-6 col-12"
-    :options          ="transportadoras"
-    :loading          ="!transportadoras.length"
-    :readonly         ="entrega.esEstadoEntregado"
-    @select           ="( trans )=> cambiarEmpresaTransportadora( entrega, trans )"
+  <select-label-value       alerta hundido clearable
+    v-model                 ="entrega.transportadora"
+    label                   ="Transportadora"
+    icon                    ="mdi-truck"
+    class                   ="col-md-6 col-12"
+    :options                ="transportadoras"
+    :loading                ="!transportadoras.length"
+    :readonly               ="entrega.esEstadoEntregado"
+    @select                 ="( trans )=> cambiarEmpresaTransportadora( entrega, trans )"
   />
+  <div class                ="col-12 row q-col-gutter-sm">
+    <!-- //* ///////////////////////////////////////////////// Fecha compromiso -->
+    <div  class             ="col-md-6 col-12">
+      <input-fecha          alerta hundido    
+        v-model             ="entrega.fechaEntrega"
+        label               ="Fecha compromiso"
+        titulo              ="Fecha compromiso entrega"       
+        error-message       ="Es necesaria una fecha de entrega"
+        @update:model-value ="editarFechaCompromiso"
+      />
+    </div>
+    <!-- //* ///////////////////////////////////////////////// Fecha a despachar -->
+    <div  class             ="col-md-6 col-12">
+      <input-fecha          alerta hundido no-pasado
+        v-model             ="entrega.fechaADespachar"
+        label               ="Fecha a despachar"
+        titulo              ="Fecha tentativa de despacho"
+        error-message       ="Es necesaria una fecha tentativa de despacho"
+        @update:model-value ="editarFechaADespachar"
+      />  
+    </div>
+  </div>
 </template> 
 
 <script setup lang="ts">
@@ -49,12 +71,14 @@
 
   //* ///////////////////////////////////////////////////////////////////////////// Componibles  
   import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"
+  import {  servicesAcuerdos      } from "src/areas/acuerdos/controllers/servicesAcuerdos"
   import {  useApiDolibarr        } from "src/composables/useApiDolibarr"
-  import {  useTools              } from "src/composables/useTools"
+  import {  ToolDate, useTools    } from "src/composables/useTools"
 
   //* ///////////////////////////////////////////////////////////////////////////// Componentes
   import    selectContacto          from "./../../../terceros/components/contactos/SelectContacto.vue"
   import    selectLabelValue        from "components/utilidades/select/SelectLabelValue.vue"
+  import    inputFecha              from "components/utilidades/input/InputFecha.vue"
 
   type TProps                       = { entrega : IAcuerdo}
   const { entrega }                 = defineProps<TProps>()
@@ -62,7 +86,26 @@
   const { apiDolibarr             } = useApiDolibarr()
   const { cambiarTransportadora, 
           cambiarContactoEntrega
-                                  } = useControlAcuerdo()  
+                                  } = useControlAcuerdo()
+  const {
+          setFechaFinValidez,
+          setFechaEntrega,
+          setFechaADespachar,
+          setCondicionPago,
+          setFormaPago,
+          setMetodoEntrega,
+          setTiempoEntrega,
+          getAcuerdo,
+          getAcuerdos,
+          setOrigenContacto,
+          setRefCliente,
+          setComercial,
+          setTerceroId,
+          setAiu,
+          setTotal,
+          setConIVA,
+                                  } = servicesAcuerdos()
+
   const { aviso                   } = useTools()
   const { transportadoras,
           metodosEntrega          } = storeToRefs( useStoreDexie() )  
@@ -115,4 +158,31 @@
     if(ok)
       aviso( "positive", "Transportadora modificada" )
   } 
+
+  //* /////////////////////////////////////////////////////////////// Editar fecha a despachar
+  async function editarFechaADespachar()
+  { 
+    if( !ToolDate.fechaValida( entrega.fechaADespachar ) ) {
+      aviso("negative", "Fecha de despacho invalida", "clock" )
+      return
+    }
+    const ok            = await setFechaADespachar( entrega.id, entrega.fechaADespachar, entrega.tipo )
+    if (ok) aviso("positive", "Fecha de despacho cambiada", "clock" )
+    
+  }    
+
+  async function editarFechaCompromiso()
+  { 
+    if( !ToolDate.fechaValida( entrega.fechaEntrega ) ) {
+      aviso("negative", "Fecha de compromiso invalida", "clock" )
+      return
+    }
+    const ok            = await setFechaEntrega( entrega.id, entrega.fechaEntrega, entrega.tipo )
+    if (ok) aviso("positive", "Fecha de compromiso cambiada", "clock" )
+    
+  }    
+
+
+
+  
 </script>

@@ -77,6 +77,7 @@ export function servicesAcuerdos()
                                                       tiempoEspera: 10_000
                                                     }
                                                     )
+      //console.log("getAcuerdo: ", data);
       if(ok && typeof data == "object" )
       {
         const acuerdo    = await Acuerdo.convertirDataApiToAcuerdo( data, tipo )
@@ -106,6 +107,7 @@ export function servicesAcuerdos()
                                                   )
       const acuerdos : IAcuerdo[]   = []
 
+      //console.log("getAcuerdos: ", data);
       if(ok && Array.isArray( data ))
       {
         for (const item of data)
