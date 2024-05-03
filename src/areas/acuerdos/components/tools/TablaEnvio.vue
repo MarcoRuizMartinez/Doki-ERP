@@ -33,6 +33,10 @@
           <td>Dirección:</td>
           <td>
             {{ acuerdo.contactoEntrega.direccion.length > 3 ? acuerdo.contactoEntrega.direccion : '⚠️' }}
+            <link-maps
+              :municipio  ="acuerdo.contactoEntrega.municipio"
+              :direccion  ="acuerdo.contactoEntrega.direccion"
+            />
           </td>
         </tr>        
         <tr>
@@ -70,6 +74,8 @@
   import {  PropType        } from "vue"    
   // * ///////////////////////////////////////////////////////////////////////////////// Modelos
   import {  IAcuerdo        } from "src/areas/acuerdos/models/Acuerdo"
+  import    linkMaps          from "src/components/utilidades/LinkGoogleMaps.vue"
+
 
   const props               = defineProps({
     acuerdo     : { required: true,   type: Object as PropType< IAcuerdo > },

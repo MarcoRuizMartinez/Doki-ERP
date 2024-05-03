@@ -1,26 +1,27 @@
 export interface IMunicipio
 {
-  id:                       number  // zip
-  municipio:                string  // town
-  departamento:             string
-  departamentoSigla:        string
-  departamentoId:           string  // fk_departement
-  label:                    string
-  value:                    number
-  indicativo:               string
-  codigoDian:               string
-  codigoDianLargo:          string
+  id                        : number  // zip
+  municipio                 : string  // town
+  departamento              : string
+  departamentoSigla         : string
+  departamentoId            : string  // fk_departement
+  label                     : string
+  nombreCompleto            : string
+  value                     : number
+  indicativo                : string
+  codigoDian                : string
+  codigoDianLargo           : string
 }
 
 export class Municipio implements IMunicipio
 {
-  id:                       number
-  municipio:                string
-  departamento:             string
-  departamentoSigla:        string
-  departamentoId:           string
-  indicativo:               string
-  codigoDian:               string
+  id                        : number
+  municipio                 : string
+  departamento              : string
+  departamentoSigla         : string
+  departamentoId            : string
+  indicativo                : string
+  codigoDian                : string
 
   constructor()
   {
@@ -33,8 +34,9 @@ export class Municipio implements IMunicipio
     this.codigoDian         = ""
   }
 
-  get departamentoIdInt():number { return parseInt( this.departamentoId ) }
-  get codigoDianLargo() : string { return this.codigoDian + "000" }
+  get departamentoIdInt() : number { return parseInt( this.departamentoId ) }
+  get codigoDianLargo()   : string { return this.codigoDian + "000" }
+  get nombreCompleto()    : string { return this.municipio + " " + this.departamento }
 
   
   get label():string {

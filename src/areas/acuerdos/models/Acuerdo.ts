@@ -473,7 +473,6 @@ export class Acuerdo implements IAcuerdo
   set fechaADespachar( fecha : Date )
   {
     this._fechaADespachar       = fecha    
-    console.log("fecha: ", fecha);
     this._diasADespachar        = ToolDate.diasEntreFechas( this._fechaADespachar, new Date() )
     this._fechaADespacharCorta  = ToolDate.fechaCorta( this._fechaADespachar     )
 
@@ -1101,9 +1100,7 @@ https://dolibarr.mublex.com/fichinter/card.php?
     })
 
     const miliCompromiso          = ToolDate.getMilisecShortForApiDolibarr( this.fechaEntrega )
-    console.log("miliCompromiso: ", miliCompromiso);
     const miliDespachar           = ToolDate.getMilisecShortForApiDolibarr( this.fechaADespachar )
-    console.log("miliDespachar: ", miliDespachar);
 
     const acuForApi : any = {
       socid                       : this.tercero.id,

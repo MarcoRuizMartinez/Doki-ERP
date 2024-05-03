@@ -19,24 +19,30 @@
     :rules                  ="[ regla ]"
     :readonly               ="readonly"
     @blur                   ="blur"
-  />  
+    >
+    <link-maps
+      :municipio            ="municipio"
+      :direccion            ="modelo"
+    />    
+  </input-text>
 </template>
 
 <script setup lang="ts">
-  import    inputText           from "components/utilidades/input/InputFormText.vue"
+  import    inputText         from "components/utilidades/input/InputFormText.vue"
+  import    linkMaps          from "src/components/utilidades/LinkGoogleMaps.vue"
+  import {  IMunicipio      } from "src/models/Municipio"  
+
   import {  computed,
-            ref,
             toRefs,
-            watch,
             PropType
                                   } from 'vue'  
-  import {  Notify,
-            copyToClipboard       } from 'quasar'
 
+            
   const props           = defineProps(
     {
       modelValue: { required: true ,  type: String              },
-      readonly:   { default:  false,  type: Boolean             },
+      municipio : { required: true,   type: Object as PropType< IMunicipio > },
+      readonly  : { default:  false,  type: Boolean             },
     }
   )
   const emit            = defineEmits(["update:modelValue"])

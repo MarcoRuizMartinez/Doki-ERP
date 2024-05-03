@@ -115,11 +115,20 @@
         :readonly               ="readonly"
         @update:modelValue      ="cambiarMunicipio"
       />
+      <div
+        v-if                    ="storeUser.usuario.esContable"
+        class                   ="col-12 row justify-center"
+        >
+        <campo-copiar :label    ="tercero.municipio.codigoDian">
+          <span class           ="fuente-delicada">Codigo Dian:</span> {{ tercero.municipio.codigoDian }}
+        </campo-copiar>
+      </div>
       <!-- //* //////////////   Direccion  -->
       <direccion
         v-model                 ="tercero.direccion"
         class                   ="col-12"
         :readonly               ="readonly"
+        :municipio              ="tercero.municipio"
       />        
       <!-- //* //////////////   Correo contacto -->
       <input-text               clearable copy alerta sin-espacios
@@ -302,6 +311,7 @@
   import    direccion         from "./DireccionDian.vue"
   import {  IMunicipio      } from "src/models/Municipio"
   import {  style           } from "src/composables/useEstilos"
+  import    campoCopiar       from "components/utilidades/CampoCopiar.vue" 
 
   const { notify }            = useQuasar()
   const { apiDolibarr       } = useApiDolibarr()
