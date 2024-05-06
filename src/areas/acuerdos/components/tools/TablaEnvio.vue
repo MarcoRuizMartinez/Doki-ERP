@@ -34,7 +34,7 @@
           <td>
             {{ acuerdo.contactoEntrega.direccion.length > 3 ? acuerdo.contactoEntrega.direccion : '⚠️' }}
             <link-maps
-              :municipio  ="acuerdo.contactoEntrega.municipio"
+              :ciudad     ="acuerdo.contactoEntrega.municipio.nombreCompleto"
               :direccion  ="acuerdo.contactoEntrega.direccion"
             />
           </td>

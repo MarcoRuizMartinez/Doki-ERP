@@ -158,13 +158,14 @@
           </tr>
         </tbody>
       </table>
-    </Tooltip> -->
-  </div>
-  <q-menu                       touch-position context-menu
+    </Tooltip>
     v-if                        ="!acuerdo.facturado"
-    >
+  -->
+  </div>
+  <q-menu                       touch-position context-menu>
     <div  class                 ="column items-start">
       <q-btn                    v-close-popup flat dense no-caps
+        v-if                    ="acuerdo.esEstadoNoValidado && !acuerdo.facturado"
         icon                    ="mdi-content-duplicate"
         class                   ="full-width"
         type                    ="a"
@@ -182,7 +183,7 @@
         :to                     ="`/productos/${linea.id}`"
       />
       <q-btn                    flat dense no-caps
-        v-if                    ="!esValidado"
+        v-if                    ="!esValidado && acuerdo.esEstadoNoValidado && !acuerdo.facturado"
         icon                    ="mdi-trash-can"
         label                   ="Borrar línea"
         class                   ="full-width"

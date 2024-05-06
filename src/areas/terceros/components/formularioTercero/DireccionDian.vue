@@ -21,7 +21,8 @@
     @blur                   ="blur"
     >
     <link-maps
-      :municipio            ="municipio"
+      v-if                  ="readonly && !!modelo"
+      :ciudad               ="municipio.nombreCompleto"
       :direccion            ="modelo"
     />    
   </input-text>

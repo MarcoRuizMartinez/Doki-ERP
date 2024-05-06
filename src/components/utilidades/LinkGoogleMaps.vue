@@ -12,16 +12,11 @@
 <script setup lang="ts">
   // * /////////////////////////////////////////////////////////////////////////////////// Core
   import {  computed              } from "vue"
-  
-  //* /////////////////////////////////////////////////////////////////////////////////// Modelos
-  import {  IMunicipio            } from "src/models/Municipio"  
-
-  //* /////////////////////////////////////////////////////////////////////////////////// Componibles  
   import {  style                 } from "src/composables/useEstilos"
   
-  type TProps                       = { municipio : IMunicipio, direccion : string }
-  const { municipio, direccion }    = defineProps<TProps>()  
-  const ruta                        = computed(()=> direccion + " " + municipio.nombreCompleto   )
+  type TProps                       = { ciudad : string, direccion : string }
+  const { ciudad, direccion }    = defineProps<TProps>()  
+  const ruta                        = computed(()=> direccion + " " + ciudad   )
   const url                         = computed(()=> "https://www.google.com.co/maps/place/" + ruta.value  )
   const abrirLink                   = ()=> window.open(url.value, '_blank')
 </script>
