@@ -329,9 +329,10 @@ export function useCotizacionPDF()
           4: { halign:    'right' },
           5: { halign:    'right' },
       },
+      bodyStyles : { fontSize: 9 },      
       body: [
-        ...subtotales.map((g)=>[
-          g.titulo,
+        ...subtotales.map(( g )=>[
+          ( g.titulo.length <= 30 ? g.titulo : g.titulo.slice(0, 30 ) + "..." ) ,   
           Format.precio(g.totalSinDescu,  "decimales-si"),
           Format.precio(g.descuento,      "decimales-si"),
           Format.precio(g.totalConDescu,  "decimales-si"),

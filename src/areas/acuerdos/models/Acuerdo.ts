@@ -266,7 +266,8 @@ export interface IAcuerdo
 
   estadoDespachoLabel         : string
   estadoDespachoColor         : string
-  estadoDespachoIcono         : string  
+  estadoDespachoIcono         : string
+  esPedidoWoo                 : boolean
 
   /* Solo para entregas */
   acuerdosEnlazados           : IAcuerdo[]
@@ -279,7 +280,7 @@ export interface IAcuerdo
   seguroRotuloTotal           : boolean
   numTemporal                 : number              // Se utiliza para guardar informarcion temporal
   pedidoId                    : number
-  refPedido                   : string
+  refPedido                   : string  
   calcularEntregado           : () => void
 }
 
@@ -1079,6 +1080,8 @@ https://dolibarr.mublex.com/fichinter/card.php?
 
     return acuForApi
   }
+
+  get esPedidoWoo() : boolean { return this.origenContacto.label.includes("Tienda Online") && this.refCliente.length > 4 }
 
 
   getEntregaForApi( usuarioId : number, pedidoId : number, lineas : ILineaAcuerdo[], refPedido : string ) : any

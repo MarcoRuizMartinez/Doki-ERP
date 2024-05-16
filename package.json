@@ -11,7 +11,7 @@
     "build": "quasar build"
   },
   "dependencies": {
-    "@quasar/cli": "^2.4.0",
+    "@quasar/cli": "^2.4.1",
     "@quasar/extras": "^1.16.11",
     "@quasar/quasar-ui-qcalendar": "^4.0.0-beta.19",
     "@types/canvas-confetti": "^1.6.0",
@@ -24,16 +24,16 @@
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.5.29",
     "pinia": "^2.0.11",
-    "quasar": "^2.15.2",
+    "quasar": "^2.16.4",
     "to": "^0.2.9",
-    "update": "^0.4.2",
+    "update": "^0.7.4",
     "vue": "^3.0.0",
     "vue-draggable-plus": "^0.3.5",
     "vue-router": "^4.0.0",
     "vue3-apexcharts": "^1.4.1"
   },
   "devDependencies": {
-    "@quasar/app-vite": "^1.8.0",
+    "@quasar/app-vite": "^1.9.3",
     "@quasar/quasar-app-extension-qcalendar": "^4.0.0-beta.16",
     "@quasar/quasar-app-extension-qpdfviewer": "^2.0.0-alpha.6",
     "@types/node": "^20.3.1",

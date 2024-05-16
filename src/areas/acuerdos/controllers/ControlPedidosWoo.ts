@@ -108,10 +108,19 @@ export function useControlPedidosWoo()
     return refIds
   }
 
+
+  async function setStatusPedidoWoo( ref : string, estado : "completed" | "processing" ) :  Promise< boolean  >
+  {
+    const objetoForData       = { body: getFormData("", { ref, estado }), method: "POST"}
+    const { ok  }             = await miFetch( getURL("servicios", "pedidos-woo"), objetoForData, { mensaje: "pedido Woocommerce", conLoadingBar: false } )  
+    return ok
+  }
+
   //* /////////////////////////////////////////////////////////////// Return
   return {
     buscarOrdenesWoo,
     buscarPedidosDolibarr,
-    buscarPagosMercadoPago
+    buscarPagosMercadoPago,
+    setStatusPedidoWoo
   }
 }

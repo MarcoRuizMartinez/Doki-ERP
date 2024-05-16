@@ -76,7 +76,7 @@
     @click-nueva-entrega    ="modales.entrega = true"
     @click-remision         ="abrirModalRemision"
     @click-rotulo           ="abrirModalRotulos"
-    @entrega-cerrada        ="recargar"
+    @entrega-cerrada        ="entregaCerrada"
   />
   <!-- :class                  ="{ 'order-1' : acuerdo.esPedido || acuerdo.esEntrega }"
   :class                  ="{ 'order-1' : acuerdo.esEntrega }"
@@ -196,8 +196,11 @@
   //import {  AREA                  } from "src/models/TiposVarios"
   import {  Accion                } from "src/areas/comunicacion/models/Accion"  
   import {  IOrdenCSS, OrdenCSS   } from "src/models/TiposVarios"
+  import {  ESTADO_PED            } from "src/areas/acuerdos/models/ConstantesAcuerdos"
+
   //* ///////////////////////////////////////////////////////////////////////////////// Componibles
   import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"
+  import {  useControlPedidosWoo  } from "src/areas/acuerdos/controllers/ControlPedidosWoo"
   import {  useCotizacionPDF,
             TTipoPDF              } from "src/areas/acuerdos/composables/pdf/useCotizacion"
   
@@ -256,6 +259,7 @@
           setListoDespacho,
           buscarComentarios
                             } = useControlAcuerdo()
+  const { setStatusPedidoWoo} = useControlPedidosWoo()                            
   const minimizadoTodo        = ref< boolean    >(false)
   const srcPDF                = ref< string     >("")
   const nombrePDF             = ref< string     >("")
@@ -300,6 +304,20 @@
   async function recargar(){
     await buscarAcuerdo( tipo.value, id.value )
   }
+
+  async function entregaCerrada()
+  {
+    const estadoOld           = acuerdo.value.estado
+    await recargar()
+    const estadoNew           = acuerdo.value.estado
+
+    const pedidoEntregado     = estadoOld === ESTADO_PED.ENTREGANDO && estadoNew === ESTADO_PED.ENTREGADO
+
+    if(pedidoEntregado && acuerdo.value.esPedidoWoo)
+    {
+      await setStatusPedidoWoo(  acuerdo.value.refCliente, "completed" )
+    }
+  }  
 
   async function clickAprobarCotizacion(){
     await aprobarCotizacion()
