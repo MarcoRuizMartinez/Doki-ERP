@@ -63,7 +63,7 @@ export function servicesAcuerdos()
     })
   }
 
-  async function getAcuerdo( tipo : TTipoAcuerdo, id : number ) : Promise< IAcuerdo >
+  async function getAcuerdo( tipo : TTipoAcuerdo, id : number, conLoadingBar : boolean = true  ) : Promise< IAcuerdo >
   {
     return new Promise( async (resolver, rechazar ) =>
     {
@@ -73,8 +73,9 @@ export function servicesAcuerdos()
                                                       method:   "POST"
                                                     },
                                                     {
-                                                      mensaje:  "cargar cotización",
-                                                      tiempoEspera: 10_000
+                                                      mensaje:  "cargar " + tipo,
+                                                      tiempoEspera: 30_000,
+                                                      conLoadingBar
                                                     }
                                                     )
       //console.log("getAcuerdo: ", data);
@@ -90,7 +91,7 @@ export function servicesAcuerdos()
     })
   }
 
-  async function getAcuerdos( query : IQuery ) : Promise< IAcuerdo[] >
+  async function getAcuerdos( query : IQuery, conLoadingBar : boolean = true ) : Promise< IAcuerdo[] >
   {
     return new Promise( async (resolver, rechazar ) =>
     {
@@ -101,8 +102,9 @@ export function servicesAcuerdos()
                                                     },
                                                     {
                                                       mensaje:      "buscar " + query.acuerdo,
-                                                      tiempoEspera: 15_000,
-                                                      dataEsArray:  true
+                                                      tiempoEspera: 30_000,
+                                                      dataEsArray:  true,
+                                                      conLoadingBar
                                                     }
                                                   )
       const acuerdos : IAcuerdo[]   = []
@@ -133,9 +135,10 @@ export function servicesAcuerdos()
                                                       method: "POST"
                                                     },
                                                     {
-                                                      mensaje:      "buscar " + query.acuerdo,
-                                                      tiempoEspera: 15_000,
-                                                      dataEsArray:  false
+                                                      mensaje       : "buscar " + query.acuerdo,
+                                                      tiempoEspera  : 25_000,
+                                                      dataEsArray   : false,
+                                                      conLoadingBar : false
                                                     }
                                                   )
       if(ok)

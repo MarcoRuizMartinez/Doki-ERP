@@ -206,7 +206,7 @@
 
   async function subirArchivo( archivoSubir : any, nombre : string) : Promise<boolean>
   {
-    const { data, ok }      = await apiDolibarr( "subir", "documento", archivoSubir, 0, 60_000 )
+    const { data, ok }      = await apiDolibarr( "subir", "documento", archivoSubir, 0, true, 60_000 )
     if(!ok){
       aviso("negative", "Error al subir " + nombre, "file", 2400)
     }

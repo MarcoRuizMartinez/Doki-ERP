@@ -34,7 +34,7 @@ export function useControlComunicacion()
 
     const { ok, data }        = await miFetch(  getURL("listas", "acciones"),
                                                 { method: "POST", body: getFormData( "", consulta ) },
-                                                { dataEsArray: true, mensaje: "buscar " + tipo, conLoadingBar: false }
+                                                { dataEsArray: true, mensaje: "buscar " + tipo, conLoadingBar: false, tiempoEspera: 25_000 }
                                               )    
     
     const acciones :IAccion[] = []

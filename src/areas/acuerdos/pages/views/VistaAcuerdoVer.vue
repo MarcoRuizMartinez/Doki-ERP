@@ -61,6 +61,8 @@
     :modulo-id              ="acuerdo.id ?? 0"
     :modulo-ref             ="acuerdo.ref"
     :puede-editar           ="true"
+    :retraso-inicio         ="3_500"
+    :con-barra-carga        ="false"
     @descarga-ok            ="cargarArchivos"
     @borrado-ok             ="cargarArchivos"
   />

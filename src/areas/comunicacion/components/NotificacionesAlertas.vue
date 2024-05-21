@@ -32,10 +32,8 @@
         </q-btn>
       </div>      
     </div>
-    <div v-else
-      class               ="text-center text-grey-6"
-      >
-      No estas suscrito a ninguna alerta
+    <div v-else class     ="text-center text-grey-6">
+      {{ iniciado ? 'No estas suscrito a ninguna alerta' : 'Esperando cargar alertas...' }}
     </div>
   </div>
   <inner-loading :cargando="loading"/>
@@ -68,9 +66,12 @@
   import {  IQuery                  } from 'src/models/Busqueda'
 
   // * /////////////////////////////////////////////////////////////////////////////////// Componentes
-
   import    innerLoading              from "components/utilidades/InnerLoading.vue"
 
+
+  const TIEMPO_INICIAR          = 30_000
+  const TIEMPO_RECARGAR         = 240_000
+  const iniciado                = ref<boolean>(false)
   const loading                 = ref<boolean>(false)
   const enlaces                 = ref<IItemMenu[]>([])
   const router                  = useRouter()
@@ -90,8 +91,9 @@
 
   async function iniciar()
   {
-    await Tool.pausa( 3_500 )
-    buscar()
+    await Tool.pausa( TIEMPO_INICIAR )
+    await buscar()
+    iniciado.value              = true
   }
 
   async function buscar()
@@ -107,7 +109,8 @@
 
     loading.value             = true
     enlaces.value             = []
-    const { ok, data }        = await apiDolibarr( "buscar", "saber" )
+    const { ok, data }        = await apiDolibarr( "buscar", "saber", "", 0, false)    
+    
     if(ok)
     {
       if(Array.isArray(data))
@@ -164,7 +167,7 @@
       loading.value             = false
     }
 
-    await Tool.pausa( 130_000 )
+    await Tool.pausa( TIEMPO_RECARGAR )
     hacerConsultasDeEnlaces()
   }
 

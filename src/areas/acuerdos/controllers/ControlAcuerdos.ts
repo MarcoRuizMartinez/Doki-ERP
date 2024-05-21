@@ -134,20 +134,28 @@ export function useControlAcuerdo()
     loading.value.carga         = true
     acuerdo.value.productos     = []
     acuerdo.value               = await getAcuerdo( tipo, idOk )
+    loading.value.carga         = false
 
     if(!acuerdo.value.proGrupos.length) crearNuevoGrupo()
 
     if(!!acuerdo.value.id)
     {
       //verificarPermisosLectura()
+      await Promise.all([ buscarTerceroDolibarr ( acuerdo.value.terceroId   ),
+                          buscarAcuerdoEnlazados(),
+                          buscarProyecto        ( acuerdo.value.proyectoId  ),
+                          buscarComentarios     ( acuerdo.value ),
+                          buscarProductosProveedor()
+                        ]);
+/*       
       await buscarTerceroDolibarr ( acuerdo.value.terceroId   )
       await buscarProyecto        ( acuerdo.value.proyectoId  )
       await buscarAcuerdoEnlazados()
       await buscarComentarios     ( acuerdo.value )
       await buscarProductosProveedor()
+       */
 
-      if( acuerdo.value.esCotizacion || acuerdo.value.esPedido )
-        buscarCalificacion()
+      //if( acuerdo.value.esCotizacion || acuerdo.value.esPedido ) buscarCalificacion()
       if( acuerdo.value.comisiona )
         acuerdo.value.incentivo = await buscarIncentivos( { origenId: acuerdo.value.id, incOrigen: INCENTIVO_ORIGEN.PEDIDO_CLI } ) as IIncentivo
     }
@@ -156,15 +164,13 @@ export function useControlAcuerdo()
       aviso("negative", "Error con la URL. Por favor verifique que este bien.", "account", 3000)
       router.push("/error")
     }
-
-    loading.value.carga           = false
   }
 
   //* ////////////////////////////////////////////////////////////////////// Buscar productos Proveedor
   async function buscarProductosProveedor()
   {
     const objeto                  = { ids: acuerdo.value.productos.map( l => l.id ).join(",") }    
-    const { ok, data }            = await miFetch( getURL("listas", "varios"), { method: "POST", body: getFormData( "productosProveedor", objeto ) }, { mensaje: "buscar productos proveedores", conLoadingBar: false, dataEsArray: true } )    
+    const { ok, data }            = await miFetch( getURL("listas", "varios"), { method: "POST", body: getFormData( "productosProveedor", objeto ) }, { mensaje: "buscar productos proveedores", conLoadingBar: false, dataEsArray: true, tiempoEspera: 30_000 } )    
 
     if(!ok || !Array.isArray( data ) ) return
     
@@ -221,7 +227,7 @@ export function useControlAcuerdo()
   //* ////////////////////////////////////////////////////////////////////// Buscar tercero
   async function buscarTerceroDolibarr( id_ : number )
   {
-    acuerdo.value.tercero       = await buscarTercero( id_ )
+    acuerdo.value.tercero       = await buscarTercero( id_, false )
     if(!!acuerdo.value.tercero.id){
     }
     else
@@ -236,7 +242,7 @@ export function useControlAcuerdo()
   {
     if(!id_) return
     loading.value.proyecto      = true
-    const { data, ok }          = await apiDolibarr("ver", "proyecto", {}, id_ )
+    const { data, ok }          = await apiDolibarr("ver", "proyecto", {}, id_, false )
 
     if(ok && typeof data === "object" && !Array.isArray( data )){
       acuerdo.value.proyecto    = Proyecto.convertirDataApiToProyecto( data )
@@ -810,15 +816,15 @@ export function useControlAcuerdo()
     loading.value.enlaces = true
     //if( buscarEnlaces )
     await buscarEnlacesAcuerdo()
+    const en_c            = getIds(   TIPO_ACUERDO.ENTREGA_CLI      )
     const pedi            = getIds(   TIPO_ACUERDO.PEDIDO_CLI       )
     const coti            = getIds(   TIPO_ACUERDO.COTIZACION_CLI   )
     const oc_p            = getIds(   TIPO_ACUERDO.PEDIDO_PRO       )
-    const en_c            = getIds(   TIPO_ACUERDO.ENTREGA_CLI      )
 
-    const paquete         = [ { ids:  pedi, tipo: TIPO_ACUERDO.PEDIDO_CLI       },
-                              { ids:  coti, tipo: TIPO_ACUERDO.COTIZACION_CLI   },
+    const paquete         = [ { ids:  en_c, tipo: TIPO_ACUERDO.ENTREGA_CLI      },
                               { ids:  oc_p, tipo: TIPO_ACUERDO.PEDIDO_PRO       },
-                              { ids:  en_c, tipo: TIPO_ACUERDO.ENTREGA_CLI      },
+                              { ids:  pedi, tipo: TIPO_ACUERDO.PEDIDO_CLI       },
+                              { ids:  coti, tipo: TIPO_ACUERDO.COTIZACION_CLI   },
                             ]
     acuerdo.value.acuerdosEnlazados = []
 
@@ -832,7 +838,9 @@ export function useControlAcuerdo()
                                     limite:     50,
                                     offset:     0
                                   }
-      const acuerdosI           = await getAcuerdos( query )
+      if(query.acuerdo === TIPO_ACUERDO.ENTREGA_CLI) loading.value.entregas   = true
+      const acuerdosI           = await getAcuerdos( query, false )
+      if(query.acuerdo === TIPO_ACUERDO.ENTREGA_CLI) loading.value.entregas   = false
       acuerdo.value.acuerdosEnlazados.push( ...acuerdosI )
     }
 
@@ -855,7 +863,7 @@ export function useControlAcuerdo()
   async function buscarEnlacesAcuerdo()
   {
     const objeto            = { ref: acuerdo.value.ref, id: acuerdo.value.id }
-    const { ok, data }      = await miFetch( getURL("listas", "varios"), { method: "POST", body: getFormData( "buscarEnlacesAcuerdo", objeto ) }, { mensaje: "buscar enlaces" } )
+    const { ok, data }      = await miFetch( getURL("listas", "varios"), { method: "POST", body: getFormData( "buscarEnlacesAcuerdo", objeto ) }, { mensaje: "buscar enlaces", conLoadingBar: false } )
     if(ok)
       acuerdo.value.enlaces = EnlaceAcuerdo.enlacesApiToEnlaces( data, acuerdo.value.tipo )
   }

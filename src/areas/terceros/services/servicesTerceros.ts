@@ -31,7 +31,7 @@ export function servicesTerceros()
   //const { usuario           } = useUsuario()
 
 
-  async function buscarTercero( id : number ) : Promise< ITercero >
+  async function buscarTercero( id : number, conLoadingBar = true ) : Promise< ITercero >
   {
     return new Promise( async (resolver, rechazar ) =>
     {
@@ -42,7 +42,8 @@ export function servicesTerceros()
                                                     },
                                                     {
                                                       mensaje:      "cargar terceros",
-                                                      tiempoEspera: 10000
+                                                      tiempoEspera: 25_000,
+                                                      conLoadingBar,
                                                     }
                                                   )
       if(ok && typeof data        == "object" )

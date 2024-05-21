@@ -78,7 +78,8 @@ export function useApiDolibarr()
     tipo    : ModuloDolibarr,
     objeto  : any             = "",
     id      : number          = 0,
-    timeout : number          = 20_000
+    conBarra: boolean         = true,
+    timeout : number          = 30_000,
   ) : Promise <IResultado>
   {
     if(!tipo) return { ok: false, codigo: 20 }
@@ -87,7 +88,8 @@ export function useApiDolibarr()
     let endPoint  : string    = getEndPoint( tipo )
     let esLinea               = accion.includes("linea")
     let metodo    : Metodo    = "post"
-    loadingBar.start()
+    if(conBarra)
+      loadingBar.start()
 
     
     if(accion.includes("crear"))

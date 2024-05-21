@@ -1,22 +1,22 @@
-import {  defineStore       } from 'pinia';
-import {  Acuerdo, IAcuerdo } from "src/areas/acuerdos/models/Acuerdo"
-import {  TIPO_ACUERDO      } from "src/areas/acuerdos/models/ConstantesAcuerdos"
+import {  defineStore         } from 'pinia';
+import {  Acuerdo, IAcuerdo   } from "src/areas/acuerdos/models/Acuerdo"
+import {  TIPO_ACUERDO        } from "src/areas/acuerdos/models/ConstantesAcuerdos"
 import {  ILoading,
           LoadingDefault,
           IModales,
-          ModalesDefault    } from "src/models/TiposVarios"
+          ModalesDefault      } from "src/models/TiposVarios"
 import {  GrupoLineas,
-          IGrupoLineas      } from "src/areas/acuerdos/models/GrupoLineasAcuerdo"
+          IGrupoLineas        } from "src/areas/acuerdos/models/GrupoLineasAcuerdo"
 import {  ILineaAcuerdo,
-          LineaAcuerdo      } from "src/areas/acuerdos/models/LineaAcuerdo"
+          LineaAcuerdo        } from "src/areas/acuerdos/models/LineaAcuerdo"
 import {  Busqueda,
-          IBusqueda         } from "src/models/Busqueda"
+          IBusqueda           } from "src/models/Busqueda"
 import {  Anticipo,
-          IAnticipo         } from "src/areas/acuerdos/models/Anticipo"
+          IAnticipo           } from "src/areas/acuerdos/models/Anticipo"
 import {  NivelesComision,
-          INivelesComision  } from "src/areas/acuerdos/models/Comisiones/NivelesComision"
-import {  CONSTANTES        } from "src/models/Diccionarios/Constante"
-import {  getConstanteDB    } from "src/composables/useDexie"
+          INivelesComision    } from "src/areas/acuerdos/models/Comisiones/NivelesComision"
+import {  CONSTANTES          } from "src/models/Diccionarios/Constante"
+import {  getConstanteDBLocal } from "src/composables/useDexie"
 
 interface IAcuerdoState {
   acuerdo             : IAcuerdo,
@@ -49,7 +49,7 @@ export const useStoreAcuerdo = defineStore('acuerdo', {
   actions: {
     async cargarNivelesComision()
     {
-      const nivelesGrudo  = await getConstanteDB( CONSTANTES.NIVELES_COMISIONES )
+      const nivelesGrudo  = await getConstanteDBLocal( CONSTANTES.NIVELES_COMISIONES )
       let niveles         = nivelesGrudo.value.split(",").map( i => +i).sort()
       if(niveles.length   === 6) // Debe 6 niveles, si no hay un error
       {

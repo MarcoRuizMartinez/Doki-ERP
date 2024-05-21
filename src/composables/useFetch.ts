@@ -25,7 +25,7 @@ export function useFetch()
                           solicitud       : RequestInit,
                           {
                             mensaje       = "",
-                            tiempoEspera  = 15000,
+                            tiempoEspera  = 20_000,
                             dataEsArray   = false,
                             conLoadingBar = true,
                           }               : ParamExtraFetch

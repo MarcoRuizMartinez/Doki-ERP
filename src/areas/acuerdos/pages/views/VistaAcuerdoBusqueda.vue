@@ -11,6 +11,7 @@
     :titulo                     ="titulo"
     :padding-contenido          ="modo === 'normal' ? '0' : '12px' "
     :mensaje-sin-resultados     ="`No se encontraron ${Acuerdo.getTipoAcuerdoPlural( tipo)}`"
+    :mensaje-esperando          ="`Indica que tipo de ${Acuerdo.getTipoAcuerdoPlural( tipo)} quieres buscar`"
     >
     <template                   #barra-centro>      
       <tabs-busqueda/>      

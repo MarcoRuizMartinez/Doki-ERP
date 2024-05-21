@@ -48,7 +48,7 @@ export function useControlIncentivos()
     const comoArray             = tipo === "varios"
     const { ok, data }          = await miFetch(  getURL("listas", "incentivos"),
                                                   { method: "POST", body: getFormData( "busqueda", query ) },
-                                                  { mensaje: "buscar incentivo", dataEsArray: comoArray }
+                                                  { mensaje: "buscar incentivo", dataEsArray: comoArray, conLoadingBar: false }
                                                 )
     loadAcu.value.incentivo     = false
     loading.value.carga         = false

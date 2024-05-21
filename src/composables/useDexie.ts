@@ -710,7 +710,7 @@ export async function getTiempoEntregaDB( id : number ) : Promise < ITiempoEntre
   )
 }
 
-export async function getConstanteDB( label : string ) : Promise < IConstante >
+export async function getConstanteDBLocal( label : string ) : Promise < IConstante >
 {
   // const{ db }               = storeToRefs( useStoreApp() )
   return db.transaction('r', db[ TABLAS.CONSTANTE ], async () =>

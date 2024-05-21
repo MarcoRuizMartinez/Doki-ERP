@@ -7,9 +7,9 @@
     class-contenido                 ="row"
     padding-contenido               ="0"
     mensaje-sin-resultados          ="Sin entregas"
-    :height-card-min                ="expandido ? '240px' : ''"
+    mensaje-esperando               ="Esperando busqueda de entregas"
+    :height-card-min                ="expandido ? '300px' : ''"
     :modo                           ="modo"
-    :cargando                       ="loading.entregas"
     >
     <!-- //* /////////////////  Botones barra -->
     <template                       #barra>
@@ -114,7 +114,10 @@
 </template>
 <script setup lang="ts">
   // * /////////////////////////////////////////////////////////////////////////////////// Core
-  import {  ref, computed, provide} from "vue"  
+  import {  ref,
+            watchEffect,
+            onMounted,
+            provide               } from "vue"  
 
   //* /////////////////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs           } from 'pinia'         
@@ -124,6 +127,7 @@
   //* /////////////////////////////////////////////////////////////////////////////////// Modelos
   import {  IAcuerdo              } from "../../models/Acuerdo"
   import {  IAccion, Accion       } from "src/areas/comunicacion/models/Accion"  
+  import {  TModosVentana         } from "src/models/TiposVarios"
 
   //* /////////////////////////////////////////////////////////////////////////////////// Componibles  
   import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"
@@ -131,6 +135,7 @@
   import {  style                 } from "src/composables/useEstilos"
   import {  dexieTransportadoras,
             dexieMetodosEntrega   } from "src/composables/useDexie"
+  import {  Tool                  } from "src/composables/useTools" 
 
   //* /////////////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana                 from "components/utilidades/Ventana.vue"  
@@ -154,8 +159,14 @@
   const { usuario                 } = storeToRefs( useStoreUser() )
   const { buscarAcuerdoEnlazados  } = useControlAcuerdo()
   const { getEstadoAcuerdo        } = servicesAcuerdos()
+  const modo                        = ref< TModosVentana >("esperando-busqueda")
 
-  const expandido                   = ref<boolean>(true)    
+  const expandido                   = ref<boolean>(true)
+  let iniciado                      = false
+  onMounted( async () => {
+    await Tool.pausa(1500)
+    iniciado          = true
+  })
 
   dexieTransportadoras()
   dexieMetodosEntrega()
@@ -168,15 +179,21 @@
 
   provide("accion", accion)
 
-  const modo = computed(()=> {
-    if(loading.value.enlaces)
-      return "buscando"
 
+
+  watchEffect(()=>{
+    if(loading.value.entregas)
+      modo.value = "buscando"
+    else
     if(!!acuerdo.value.entregas.length)
-      return "normal"
-
-    return "sin-resultados"
+      modo.value = "normal"
+    else
+    if(!loading.value.carga)   
+      modo.value = iniciado ? "sin-resultados" : "esperando-busqueda"
   })
+
+
+  loading.value.carga
 
   async function recargarInfo()
   {

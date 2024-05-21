@@ -131,10 +131,10 @@
             :name             ="modo == 'esperando-busqueda' ? 'mdi-cloud-search' : iconoSinResultados"
           />
           <div
-            v-if              ="modo == 'sin-resultados'"
+            v-if              ="modo === 'sin-resultados' || ( modo === 'esperando-busqueda' && !!mensajeEsperando)"
             class             ="text-weight-bold text-grey-14 size-text-icon text-center"
-            >
-            {{mensajeSinResultados}}
+            >            
+            {{modo === 'sin-resultados' ? mensajeSinResultados : mensajeEsperando}}
           </div>
         </div>
       </q-card-section>
@@ -193,6 +193,7 @@
       sizeIconCarga:        { type: String,   default: "66vh"                     },
       sizeTextCarga:        { type: String,   default: "1.4em"                    },
       mensajeSinResultados: { type: String,   default: "Sin resultados"           },
+      mensajeEsperando:     { type: String,   default: ""                         },
       mensajeCargando:      { type: String,   default: ""                         },
       iconoSinResultados:   { type: String,   default: "mdi-emoticon-sad-outline" },
       backgroundColor:      { type: String,   default: "rgb(255 255 255 / 100%)"  },

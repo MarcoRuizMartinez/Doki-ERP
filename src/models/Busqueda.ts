@@ -558,10 +558,10 @@ export class Busqueda implements IBusqueda
     if(!!this.f.ancho)                  q.ancho             = this.f.ancho
     if(!!this.f.fondo)                  q.fondo             = this.f.fondo
 
-    if(ToolType.valorValido(this.f.diasDesde))    q.diasDesde     = this.f.diasDesde
-    if(ToolType.valorValido(this.f.diasHasta))    q.diasHasta     = this.f.diasHasta
-    if(ToolType.valorValido(this.f.diasDDesde))   q.diasDDesde    = this.f.diasDDesde
-    if(ToolType.valorValido(this.f.diasDHasta))   q.diasDHasta    = this.f.diasDHasta    
+    if(ToolType.valorValido(this.f.diasDesde))    q.diasDesde       = this.f.diasDesde
+    if(ToolType.valorValido(this.f.diasHasta))    q.diasHasta       = this.f.diasHasta
+    if(ToolType.valorValido(this.f.diasDDesde))   q.diasDDesde      = this.f.diasDDesde
+    if(ToolType.valorValido(this.f.diasDHasta))   q.diasDHasta      = this.f.diasDHasta    
     if(ToolType.valorValido(this.f.aproDesdeDia))  q.aproDesdeDia   = this.f.aproDesdeDia
     if(ToolType.valorValido(this.f.aproHastaDia))  q.aproHastaDia   = this.f.aproHastaDia
     if(ToolType.valorValido(this.f.enviaDesdeDia)) q.enviaDesdeDia  = this.f.enviaDesdeDia

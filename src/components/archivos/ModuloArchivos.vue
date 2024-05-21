@@ -4,6 +4,7 @@
     :titulo                     ="`Documentos (${archivos.length})`"
     icono                       ="mdi-attachment"
     mensaje-sin-resultados      ="Sin documentos"
+    mensaje-esperando           ="En unos segundos encontrarás los documentos"  
     icono-sin-resultados        ="mdi-file-document-multiple"
     :size-icon-carga            ="sizeIcon"
     :sin-titulo                 ="sinTitulo"
@@ -147,8 +148,9 @@
 
   const { apiDolibarr       } = useApiDolibarr()
   const { aviso             } = useTools()
-  const modo                  = ref< TModosVentana >("buscando")
+  const modo                  = ref< TModosVentana >("esperando-busqueda")
   const archivos              = ref< IArchivo[] >([])
+  let iniciando               = false
 
   const props                 = defineProps({
     modulo:       { required: true,   type: String as PropType < TModulosDolibarr > },
@@ -156,6 +158,7 @@
     retrasoInicio:{ default:  0,      type: Number                                  },
     moduloRef:    { required: true,   type: String                                  },
     puedeEditar:  { default:  false,  type: Boolean                                 },
+    conBarraCarga:{ default:  true,   type: Boolean                                 },
     sinSubida:    { default:  false,  type: Boolean                                 },
     sinTitulo:    { default:  false,  type: Boolean                                 },
     sizeIcon:     { default:  "6em",  type: String                                  },    
@@ -170,7 +173,8 @@
           moduloId,
           moduloRef,
           puedeEditar,
-          retrasoInicio
+          retrasoInicio,
+          conBarraCarga,
                             } = toRefs( props )
   //let puedeSubir              = true//modulo.value === "thirdparty" || !puedeEditar.value ? false : true //computed(()=>{ modulo.value === "thirdparty" })
   
@@ -181,19 +185,27 @@
 
   onMounted( async ()=> { 
     await Tool.pausa( retrasoInicio.value )
-    buscarArchivos() 
+    iniciando                 = true
+    await buscarArchivos("inicio") 
+    iniciando                 = false
   })
 
-  watch(moduloId,  (newId) => {    
+  watch(moduloId, async (newId) => {
+    await Tool.pausa( retrasoInicio.value )
     buscarArchivos("watch", newId)
   })
 
   async function buscarArchivos( origen : string = "desconocido", id : number = moduloId.value )
   {
-    if(id                     <= 0) return 
-    modo.value                = "buscando"
-    let { data, ok }          = await apiDolibarr( "buscar", "documento", "modulepart=" + modulo.value + "&id=" + id )
+    if( iniciando && origen === "watch" ) // Si se invocando desde onMounted y watch al mismo tiempo
+      return    
     
+    if(id                     <= 0)
+      return 
+
+    modo.value                = "buscando"
+    let { data, ok }          = await apiDolibarr( "buscar", "documento", "modulepart=" + modulo.value + "&id=" + id, 0, conBarraCarga.value )
+
     if(ok && Array.isArray( data ) && !!data.length)
     {
       archivos.value          = []

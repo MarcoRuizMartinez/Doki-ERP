@@ -247,7 +247,7 @@
     acuerdo.value.anticipos   = []
     const { ok, data }        = await miFetch(  endPoint,
                                                 { method: "POST", body: getFormData( "anticipos", { id } ) },
-                                                { dataEsArray: true, mensaje: "buscar anticipos" }
+                                                { dataEsArray: true, mensaje: "buscar anticipos", conLoadingBar: false }
                                               )
 
     if(ok)
