@@ -111,6 +111,20 @@
             Facturado
           </div>
           <div  class         ="text-right">
+            <!-- //* //////////// Aceptacion de Proveedor -->
+            <q-chip           dense
+              v-if            ="acuerdo.esOCProveedor && acuerdo.esEstadoValido"
+              :color          ="acuerdo.aceptadaProveedor ? 'positive' : 'warning'"
+              :icon           ="acuerdo.aceptadaProveedor ? 'mdi-run' : 'mdi-alert'"  
+              text-color      ="white"
+              class           ="q-px-sm"
+              >
+              {{ acuerdo.aceptadaProveedor ? 'En progreso' : 'Sin confirmación' }}
+              <Tooltip v-if   ="acuerdo.aceptadaProveedor">
+                {{ acuerdo.aceptadaProveedor ? 'Proveedor confirmo pedido y esta en progreso' : 'Proveedor no ha confirmado el pedido' }}
+              </Tooltip>
+            </q-chip>
+            <!-- //* //////////// Correo enviado -->
             <q-chip           dense
               v-if            ="acuerdo.esOCProveedor && acuerdo.esEstadoValido"
               :color          ="acuerdo.fechaEnvioOCExiste ? 'positive' : 'warning'"
@@ -119,9 +133,7 @@
               class           ="q-px-sm"
               >
               {{ acuerdo.fechaEnvioOCExiste ? 'Correo enviado' : 'Correo no enviado' }}
-              <Tooltip
-                v-if          ="acuerdo.fechaEnvioOCExiste"
-                >
+              <Tooltip v-if   ="acuerdo.fechaEnvioOCExiste">
                 Enviado el {{ acuerdo.fechaEnvioOCCorta }}
               </Tooltip>
             </q-chip>

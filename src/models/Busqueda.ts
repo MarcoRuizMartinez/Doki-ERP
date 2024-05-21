@@ -120,6 +120,7 @@ export interface      IQuery {
 
   // * //////////////   
   envioOC              ?: number
+  aceptado             ?: number
 }
 
 interface               IOpciones {
@@ -176,6 +177,7 @@ interface               ICampos {
   totalizado            : ILabelValue
   tipoTercero           : ILabelValue
   envioOC               : ILabelValue
+  aceptado              : ILabelValue
   terceroInterno        : ILabelValue
   conOrdenes            : ILabelValue
   listoDespacho         : ILabelValue
@@ -351,6 +353,7 @@ export class Busqueda implements IBusqueda
     this.f.listoDespacho      = ToolQuery.getQueryRouterLabelValue( this.rourterQ .listoDespacho,         Busqueda.listaListoDespachar  )
     this.f.tipoTercero        = ToolQuery.getQueryRouterLabelValue( this.rourterQ .tipoTercero,           Busqueda.listaTipoTercero     )
     this.f.envioOC            = ToolQuery.getQueryRouterLabelValue( this.rourterQ .envioOC,               Busqueda.listaEnvioOC         )
+    this.f.aceptado           = ToolQuery.getQueryRouterLabelValue( this.rourterQ .aceptado,              Busqueda.listaAceptado        )
     this.f.activo             = ToolQuery.getQueryRouterLabelValue( this.rourterQ .activo,                Busqueda.listaActivo          )
     this.f.dimension          = ToolQuery.getQueryRouterLabelValue( this.rourterQ .dimension,             Busqueda.listaDimensiones,  "string")    
     this.f.periodo            = ToolQuery.getQueryRouterLabelValue( this.rourterQ .periodo,               Busqueda.listaPeriodos,     "string")
@@ -591,6 +594,7 @@ export class Busqueda implements IBusqueda
     if(!!this.f.listoDespacho.label)    q.listoDespacho     = this.f.listoDespacho.value
     if(!!this.f.tipoTercero.label)      q.tipoTercero       = this.f.tipoTercero.value
     if(!!this.f.envioOC.label)          q.envioOC           = this.f.envioOC.value
+    if(!!this.f.aceptado.label)         q.aceptado          = this.f.aceptado.value
     if(!!this.f.activo.label)           q.activo            = this.f.activo.value
     if(!!this.f.dimension.label)        q.dimension         = this.f.dimension.value
     if(!!this.f.periodo.label)          q.periodo           = this.f.periodo.value
@@ -613,14 +617,15 @@ export class Busqueda implements IBusqueda
   }
 
   // * /////////////////////////////////////////////////////////////////////// Lista de opciones
-  static listaFacturado           = [{value:0, label:'No facturado'},         {value:1, label:'Facturado'         }]
-  static listaTotales             = [{value:0, label:'Sin totalizar'},        {value:1, label:'Totalizado'        }]
-  static listaIVA                 = [{value:0, label:'Sin IVA'},              {value:1, label:'Con IVA'           }]
-  static listaTerceroInterno      = [{value:0, label:'Externo'},              {value:1, label:'Interno'           }]
-  static listaOrdenesProv         = [{value:0, label:'Sin ordenes'},          {value:1, label:'Con ordenes'       }]
-  static listaListoDespachar      = [{value:1, label:'Listo para despacho'},  {value:0, label:'No esta listo'     }]
-  static listaActivo              = [{value:1, label:'Activo'},               {value:0, label:'Inactivo'          }]  
-  static listaEnvioOC             = [{value:1, label:'Con correo enviado'},   {value:0, label:'Sin correo enviado'}]
+  static listaFacturado           = [{value:0, label:'No facturado'},         {value:1, label:'Facturado'           }]
+  static listaTotales             = [{value:0, label:'Sin totalizar'},        {value:1, label:'Totalizado'          }]
+  static listaIVA                 = [{value:0, label:'Sin IVA'},              {value:1, label:'Con IVA'             }]
+  static listaTerceroInterno      = [{value:0, label:'Externo'},              {value:1, label:'Interno'             }]
+  static listaOrdenesProv         = [{value:0, label:'Sin ordenes'},          {value:1, label:'Con ordenes'         }]
+  static listaListoDespachar      = [{value:1, label:'Listo para despacho'},  {value:0, label:'No esta listo'       }]
+  static listaActivo              = [{value:1, label:'Activo'},               {value:0, label:'Inactivo'            }]  
+  static listaEnvioOC             = [{value:1, label:'Con correo enviado'},   {value:0, label:'Sin correo enviado'  }]
+  static listaAceptado            = [{value:1, label:'Pedido en progreso'},   {value:0, label:'Pedido sin confirmar'}]
   static listaAreas               = Areas  
   static listaEstadosPago         = Incentivo.estadosPago
   static listaAnticipoEstados     = Anticipo.estados
@@ -707,6 +712,7 @@ export class Busqueda implements IBusqueda
       terceroInterno      : labelValueNulo,
       tipoTercero         : labelValueNulo,
       envioOC             : labelValueNulo,
+      aceptado            : labelValueNulo,
       totalizado          : labelValueNulo,
       conOrdenes          : labelValueNulo,
       listoDespacho       : labelValueNulo,

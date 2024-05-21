@@ -931,7 +931,20 @@ export function useControlAcuerdo()
       aviso("negative", `Error al camabiar listo para despacho`)
   }
 
+  async function setAceptarProveedor( on : boolean )
+  {
+    loading.value.aceptarProveedor  = true
+    const objeto                    = { on: +on, id: acuerdo.value.id, acuerdo: acuerdo.value.tipo }
+    const objetoForData             = { body: getFormData("aceptarProveedor", objeto), method: "POST"}
+    const { ok  }                   = await miFetch( endPoint("servicios"), objetoForData, { mensaje: "aceptar proveedor" } )
+    if(ok){      
+      aviso("positive", on ? "Marcado en progreso" : 'Marcado pendiente')
+    }
+    else
+      aviso("negative", `Error al camabiar listo para despacho`)
 
+    loading.value.aceptarProveedor  = false
+  }
 
   //* /////////////////////////////////////////////////////////////// Return
   return {
@@ -978,6 +991,7 @@ export function useControlAcuerdo()
     setListoDespacho,
     editarCrearCalificacion,
     cambiarContactoEntrega,
-    cambiarTransportadora
+    cambiarTransportadora,
+    setAceptarProveedor,
   }
 }

@@ -53,6 +53,13 @@ export function useMenu()
                               visible:  true
                           } ),
         },
+        { ...new ItemMenu({
+                              label:    "Documentos Grupo Escom",
+                              icon:     "mdi-file-document-multiple",
+                              click:    () => window.open("https://drive.google.com/drive/folders/1v6tU4L5DBGZJAaqdEcu-w5-X0Hu4mofx?usp=sharing", "_blank"),
+                              visible:  true
+                          } ),
+        },
       ]
     },    
     {
@@ -269,14 +276,14 @@ export function useMenu()
                               label:    "Propiedades",
                               icon:     "mdi-format-list-bulleted-type",
                               to:       "/productos/propiedades",
-                              visible:  usuario.value.esProduccion || usuario.value.esGerencia || usuario.value.esProducto
+                              visible:  usuario.value.esDev
                           } ),
         },        
         { ...new ItemMenu({
-                              label:    "Categorías",
-                              icon:     "mdi-group",
-                              to:       "/productos/categorias",
-                              visible:  false//usuario.value.esProduccion || usuario.value.esGerencia
+                              label:    "Productos de proveedores",
+                              icon:     "mdi-layers-triple-outline",
+                              to:       "/productos/proveedor",
+                              visible:  usuario.value.esDev
                           } ),
         },        
       ]

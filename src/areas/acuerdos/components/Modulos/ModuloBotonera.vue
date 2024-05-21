@@ -203,12 +203,26 @@
         @click                ="emit('clickNuevaEntrega')"
         > 
         <Tooltip label        ="Generar nueva entrega"/>
-      </q-btn>        
+      </q-btn>      
+      <btn-toggle
+        v-if                  ="acuerdo.esOCProveedor && acuerdo.esEstadoValido && usuario.esProduccion"
+        v-model               ="acuerdo.aceptadaProveedor"
+        label-true            ="Marcar sin confirmar"
+        label-false           ="Marcar en progreso"
+        icon-true             ="mdi-alert"
+        icon-false            ="mdi-run"
+        msj-true              ="Marcar como no confirmando por proveedor"
+        msj-false             ="Marcar como aceptado y en progreso por proveedor"
+        color-true            ="warning"
+        color-false           ="positive"
+        size                  ="md"
+        :loading              ="loading.aceptarProveedor"
+        @click                ="emit('clickAceptarProveedor', acuerdo.aceptadaProveedor)"
+      />    
         <!-- //* ////////////////////////////////////////////////////////// Botones Instalacion y entrega
           v-if              ="acuerdo.hayServicios"
         -->
-        <q-btn-group  v-if    ="acuerdo.esEstadoAbierto && acuerdo.esPedido && !acuerdo.esTerceroCtz && false">
-          <!-- //* //////////////////////////////////////////////////////// Botones Instalacion -->
+        <!-- <q-btn-group  v-if    ="acuerdo.esEstadoAbierto && acuerdo.esPedido && !acuerdo.esTerceroCtz && false">          
           <q-btn
             v-bind            ="style.btnBaseMd"
             color             ="positive"
@@ -220,8 +234,7 @@
             :href             ="acuerdo.urlDolibarrNuevaInsta"
             >
             <Tooltip label    ="Generar nueva instalación"/>
-          </q-btn>
-          <!-- //* ////////////////////////////////////////////////////////// Boton Entrega  -->
+          </q-btn>          
           <q-btn 
             v-bind            ="style.btnBaseMd"
             color             ="positive"
@@ -232,7 +245,7 @@
             > 
             <Tooltip label    ="Generar nueva entrega"/>
           </q-btn>
-        </q-btn-group>    
+        </q-btn-group> -->
       <!-- //* //////////////////////////////////////////////////////////  Boton Remision -->
   <!--     <efecto efecto          ="Down">      
         <q-btn
@@ -262,7 +275,7 @@
             @click            ="emit('clickAprobar')"
             >
             <Tooltip :label   ="`Aprobar ${acuerdo.label}`"/>
-          </q-btn>
+          </q-btn>          
           <!-- //* //////////////////////////////////////////////////////////  Boton Anular -->
           <q-btn 
             v-bind            ="style.btnBaseMd"
@@ -402,6 +415,7 @@
   import    efecto            from "components/utilidades/Efecto.vue"
   import    confirmar         from "components/utilidades/MenuConfirmar.vue"
   import    tooltipAcuerdo    from "src/areas/acuerdos/components/Tools/Tooltips/TooltipAcuerdo.vue"
+  import    btnToggle         from "components/utilidades/BtnToggle.vue"
 
   const { acuerdo,
           modales,
@@ -411,23 +425,24 @@
   
 // MARK:. Esto le perm
   const emit = defineEmits<{
-    (e: 'clickPdf',           value: TTipoPDF ): void
-    (e: 'clickAprobar',       ): void
-    (e: 'clickAnular',        ): void  
-    (e: 'clickValidar',       ): void
-    (e: 'clickEditar',        ): void
-    (e: 'clickBorrar',        ): void  
-    (e: 'clickRemision',      ): void
-    (e: 'clickRotulos',       ): void
-    (e: 'clickReabrir',       ): void
-    (e: 'clickFacturado',     ): void
-    (e: 'clickRecargar',      ): void  
-    (e: 'clickEntregado',     ): void
-    (e: 'clickComisiones',    ): void
-    (e: 'clickNuevaEntrega',  ): void  
-    (e: 'clickListoEntregar', ): void
-    (e: 'clickActaEntrega',   ): void
-    (e: 'clickCuentaCobro',   value: TTipoPDF ): void 
+    (e: 'clickPdf',               value: TTipoPDF ): void
+    (e: 'clickCuentaCobro',       value: TTipoPDF ): void 
+    (e: 'clickAceptarProveedor',  value: boolean  ): void
+    (e: 'clickAprobar',           ): void
+    (e: 'clickAnular',            ): void  
+    (e: 'clickValidar',           ): void
+    (e: 'clickEditar',            ): void
+    (e: 'clickBorrar',            ): void  
+    (e: 'clickRemision',          ): void
+    (e: 'clickRotulos',           ): void
+    (e: 'clickReabrir',           ): void
+    (e: 'clickFacturado',         ): void
+    (e: 'clickRecargar',          ): void  
+    (e: 'clickEntregado',         ): void
+    (e: 'clickComisiones',        ): void
+    (e: 'clickNuevaEntrega',      ): void    
+    (e: 'clickListoEntregar',     ): void
+    (e: 'clickActaEntrega',       ): void    
   }>()
 
   const cargandoAlgo    = computed(()=> Object.values(loading.value).some( ( estado : boolean )=> !!estado ) )

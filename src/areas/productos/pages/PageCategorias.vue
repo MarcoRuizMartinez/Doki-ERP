@@ -1,6 +1,15 @@
+<template>
+  <q-page padding     class  ="row items-stretch content-start justify-start q-col-gutter-md">
+    
+
+  </q-page>
+</template>
+
+
 <script setup lang="ts">
   // * /////////////////////////////////////////////////////////////////////// Core
-  import {  toRefs,
+  import {  ref,
+            toRefs,
             onMounted,
                                   } from "vue"
   import {  useTitle              } from "@vueuse/core"      
@@ -12,40 +21,31 @@
   import {  servicesProductos     } from "src/areas/productos/services/servicesProductos"
   import {  useTools              } from "src/composables/useTools"
   //* ///////////////////////////////////////////////////////////////////////////////// Componentes
-  import    vistaProducto           from "src/areas/productos/components/Views/VistaProductoVer.vue"
+  import "ag-grid-community/styles/ag-grid.css"; // Mandatory CSS required by the grid
+import "ag-grid-community/styles/ag-theme-quartz.css"; // Optional Theme applied to the grid
+import { AgGridVue } from "ag-grid-vue3"; // Vue Data Grid Component
 
   const router                = useRouter()
   const { aviso             } = useTools()  
-  const { buscarProducto    } = servicesProductos()  
-  const props                 = defineProps({
-    id:   { required: true, type: String }      
-  })
+  const rowData = ref([
+   { make: "Tesla", model: "Model Y", price: 64950, electric: true },
+   { make: "Ford", model: "F-Series", price: 33850, electric: false },
+   { make: "Toyota", model: "Corolla", price: 29600, electric: false },
+ ]);
 
-  const { id }                = toRefs( props )
-  const { producto,
-          loading
-                            } = storeToRefs( useStoreProducto() )  
+ // Column Definitions: Defines the columns to be displayed.
+ const colDefs = ref([
+   { field: "make" },
+   { field: "model" },
+   { field: "price" },
+   { field: "electric" }
+ ]);
+
+
   onMounted   ( iniciar )  
 
   async function iniciar()
   {
-    loading.value.carga       = true
-    const pro                 = await buscarProducto( id.value )
-    if(!!pro){
-      producto.value          = pro
-      useTitle(`📦 ${producto.value.ref} - ${producto.value.nombre}`)
-    }
-    else{
-      aviso("negative", "Error con la URL. Por favor verifique que este bien.", "account", 3000)
-      router.push("/error") 
-    }
-
-    loading.value.carga       = false
   }
 </script>
 
-<template>
-  <q-page padding     class  ="row items-stretch content-start justify-start q-col-gutter-md">
-    <vista-producto  v-bind  ="props" />
-  </q-page>
-</template>

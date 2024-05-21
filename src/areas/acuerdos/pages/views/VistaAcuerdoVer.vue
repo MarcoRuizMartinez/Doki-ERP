@@ -19,6 +19,7 @@
     @click-entregado        ="cerrarAcuerdo"
     @click-comisiones       ="modales.comisiones = true"
     @click-nueva-entrega    ="modales.entrega = true"
+    @click-aceptar-proveedor="setAceptarProveedor"
     @click-cuenta-cobro     ="generarPDF"
     @click-listo-entregar   ="setListoDespacho"
     @click-remision         ="clickRemisionPDF"
@@ -257,7 +258,8 @@
           validarAcuerdo,
           cerrarAcuerdo,
           setListoDespacho,
-          buscarComentarios
+          buscarComentarios,
+          setAceptarProveedor,
                             } = useControlAcuerdo()
   const { setStatusPedidoWoo} = useControlPedidosWoo()                            
   const minimizadoTodo        = ref< boolean    >(false)

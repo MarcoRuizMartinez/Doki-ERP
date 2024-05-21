@@ -129,7 +129,7 @@ export class PedidoWoo implements IPedidoWoo
                                           : this.status == "cancelled"  ? "Cancelado"
                                           : this.status == "refunded"   ? "Reintegrado"
                                           : this.status == "failed"     ? "Fallido"
-                                          : this.status == "completed"  ? "Completado"
+                                          : this.status == "completed"  ? "Enviado"   
                                           : this.status == "on-hold"    ? "En espera"
                                           : this.status == "pending"    ? "Pendiente"
                                           : "WTF"

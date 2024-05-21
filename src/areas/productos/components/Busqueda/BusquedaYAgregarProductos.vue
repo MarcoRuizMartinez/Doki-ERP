@@ -78,6 +78,7 @@
           label               ="Solo con imagen"
           @update:model-value ="buscar"
         />
+        
         <!--
         <input-number         con-decimales hundido clearable
           v-model             ="descuento"
@@ -313,11 +314,13 @@
       buscar()
   })
 
+
   async function eliminarDesdeBusqueda( producto : IProductoDoli  )
   {
     producto.elegido              = false
     emit("borrar", producto.id)
   }
+  
 
 
   function getQuery() : IQueryProducto
@@ -337,5 +340,7 @@
     q.activo                  = 1
     return q
   }
+  // escribe aqui el componente de busqueda
+
 
 </script>

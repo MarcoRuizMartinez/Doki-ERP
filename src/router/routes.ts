@@ -334,10 +334,15 @@ const routes: RouteRecordRaw[] = [
         component:  () => import('src/areas/productos/pages/PagePropiedadesProductos.vue'),
       },         
       {
-        path:       '/categorias',
+        path:       '/productos/proveedor',
+        name:       'productosProveedor',
+        component:  () => import('src/areas/productos/pages/PageProductosProveedor.vue'),
+      },
+      /* {
+        path:       '/productos/categorias',
         name:       'categorias',
         component:  () => import('src/areas/productos/pages/PageCategorias.vue'),
-      },
+      }, */
     ],
   },
   //* //////////////////////////////////////////////////////////////////////

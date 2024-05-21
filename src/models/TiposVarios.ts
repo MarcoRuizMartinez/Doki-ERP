@@ -157,6 +157,7 @@ export interface ILoading {
   eventosLoad     ?: boolean
   entregas        ?: boolean
   facturar        ?: boolean
+  aceptarProveedor?: boolean
 }
 
 export const LoadingDefault = {
@@ -202,6 +203,7 @@ export const LoadingDefault = {
   eventosLoad     : false,
   entregas        : false,
   facturar        : false,
+  aceptarProveedor: false,
 }
 
 // #region Modales

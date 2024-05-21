@@ -104,6 +104,14 @@
           class                 ="width190"
           :options              ="Busqueda.listaEnvioOC"
         />
+        <select-label-value     use-input hundido clearable flat bordered
+          v-if                  ="b.esOCProveedor"
+          v-model               ="b.f.aceptado"
+          label                 ="Pedido en progreso"
+          icon                  ="mdi-run"
+          class                 ="width190"
+          :options              ="Busqueda.listaAceptado"
+        />
         <!-- //* ///////////////////////////////////////////////// Municipio contacto -->
         <municipios             hundido
           v-if                  ="b.esEntrega"

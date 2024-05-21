@@ -282,6 +282,9 @@ export interface IAcuerdo
   pedidoId                    : number
   refPedido                   : string  
   calcularEntregado           : () => void
+
+  /*  Solo para pedidos a proveedor */
+  aceptadaProveedor           : boolean     // Para espesificaar que el proveedor acepta el pedido
 }
 
 export class Acuerdo implements IAcuerdo
@@ -392,6 +395,9 @@ export class Acuerdo implements IAcuerdo
   numTemporal                 : number              = 0
   pedidoId                    : number              = 0
   refPedido                   : string              = ""
+
+  /* Solo para pedidos a proveedor */
+  aceptadaProveedor           : boolean             = false
 
   constructor( tipo : TTipoAcuerdo = TIPO_ACUERDO.NULO )
   {
@@ -1306,6 +1312,9 @@ https://dolibarr.mublex.com/fichinter/card.php?
     acuApi.metodoEntregaId    = +acuApi.metodoEntregaId
     acuApi.origenContactoId   = +acuApi.origenContactoId
     acuApi.tiempoEntregaId    = +acuApi.tiempoEntregaId
+
+    // * ///////////////////////////////////////////////////////////////////////////////////// Para ordenes de proveedor
+    acuApi.aceptadaProveedor  = ToolType.keyBoolean( acuApi, "aceptadaProveedor" ) 
 
     acuApi.fechaCreacion      = ToolDate.getDateToStr( acuApi.fechaCreacion    )
     acuApi.fechaValidacion    = ToolDate.getDateToStr( acuApi.fechaValidacion  )
