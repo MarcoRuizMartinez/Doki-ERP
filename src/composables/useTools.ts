@@ -191,9 +191,15 @@ export class ToolDate
 {
   static getDateToStr( fechaStr : string, tipo : "UTC" | "local" = "local" ) : Date
   {
+    if( !fechaStr || ( typeof fechaStr === "string" && fechaStr.length < 4 ) ){
+      return new Date(0)
+    }
+
     const miliExtras    = tipo == "UTC" ? new Date().getTimezoneOffset() * 60 * 1000 : 0
-    const milisegundos  = !!fechaStr ? Date.parse( fechaStr ) + miliExtras : 0
-    return new Date ( milisegundos )
+    const miliRaw       = !!fechaStr ? Date.parse( fechaStr ) + miliExtras : 0
+    const milisegundos  = ToolType.anyToNum( miliRaw ) 
+    const fecha         = new Date ( milisegundos )
+    return fecha
   }
 
   static getDateToApiDolibarr( fechaDoli : any ) : Date
@@ -665,6 +671,11 @@ export class Format
                             ? Format.formatoDecimal  .format( precioNum )
                             : Format.formato         .format( precioNum )
     return formatoFinal
+  }
+
+  static precioAG( param : ILabelValue ) : string
+  {
+    return Format.precio( param.value, "decimales-no" )
   }
 
   static formatoNumeroCorto( valor : string | number, formato : TFormatosNumero = "normal" ) : string

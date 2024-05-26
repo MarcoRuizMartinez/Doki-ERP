@@ -17,6 +17,7 @@
     "@types/canvas-confetti": "^1.6.0",
     "@vueuse/core": "^10.2.0",
     "@vueuse/math": "^10.2.0",
+    "ag-grid-enterprise": "^31.3.2",
     "ag-grid-vue3": "^31.3.2",
     "apexcharts": "^3.41.0",
     "axios": "^1.2.1",
@@ -39,7 +40,6 @@
     "@quasar/quasar-app-extension-qcalendar": "^4.0.0-beta.16",
     "@quasar/quasar-app-extension-qpdfviewer": "^2.0.0-alpha.6",
     "@types/node": "^20.3.1",
-    "@vue-macros/volar": "^0.18.8",
     "autoprefixer": "^10.4.2",
     "typescript": "^5.1.3"
   },

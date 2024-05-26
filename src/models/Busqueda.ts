@@ -18,6 +18,7 @@ import {  estadosCtz, estadosPed,
 import {  getUsuarioDB,
           getMunicipioDB,
           getFormasPagoDB,
+          getCategoriasDB,
           getProveedoresDB,
           getMetodosEntregaDB,
           getUsuariosByGrupoDB,
@@ -67,6 +68,7 @@ export interface      IQuery {
   enviaHastaDia         ?: number
 
   proveedorId          ?: number
+  categoriaId          ?: number
   facturado            ?: number
   conIva               ?: number
   conTotal             ?: number
@@ -97,6 +99,7 @@ export interface      IQuery {
   esProveedor          ?: number
   color                ?: number
   activo               ?: string
+  disponible           ?: string
 
   // * //////////////   Producto
   nombre               ?: string
@@ -131,6 +134,7 @@ interface               IOpciones {
   formasPago            : ILabelValue[]
   metodosEntrega        : ILabelValue[]
   proveedores           : ILabelValue[]
+  categorias            : ILabelValue[]
   origenes              : ILabelValue[]
   estados               : ILabelValue[]
 }
@@ -182,11 +186,13 @@ interface               ICampos {
   conOrdenes            : ILabelValue
   listoDespacho         : ILabelValue
   proveedores           : ILabelValue  
+  categorias            : ILabelValue  
   incPago               : ILabelValue
   incEstado             : ILabelValue
   incRazon              : ILabelValue
   incOrigen             : ILabelValue  
   activo                : ILabelValue
+  disponible            : ILabelValue
   dimension             : ILabelValue
   periodo               : ILabelValue  
   municipio             : IMunicipio
@@ -301,8 +307,11 @@ export class Busqueda implements IBusqueda
                                               : this.esOCProveedor? estadosOC .filter(e => e.value >= -1)
                                               : this.esEntrega    ? estadosEnt.filter(e => e.value >= -1)
                                               : []
-    if(this.esOCProveedor)
+    if(this.esOCProveedor || this.esProducto)
       this.o.proveedores                    = await getProveedoresDB()
+
+    if(this.esProducto)
+      this.o.categorias                     = await getCategoriasDB()
 
     this.o.opcionesOk                       = true
   }
@@ -355,8 +364,12 @@ export class Busqueda implements IBusqueda
     this.f.envioOC            = ToolQuery.getQueryRouterLabelValue( this.rourterQ .envioOC,               Busqueda.listaEnvioOC         )
     this.f.aceptado           = ToolQuery.getQueryRouterLabelValue( this.rourterQ .aceptado,              Busqueda.listaAceptado        )
     this.f.activo             = ToolQuery.getQueryRouterLabelValue( this.rourterQ .activo,                Busqueda.listaActivo          )
+    this.f.disponible         = ToolQuery.getQueryRouterLabelValue( this.rourterQ .disponible,            Busqueda.listaActivo          )
+    this.f.proveedores        = ToolQuery.getQueryRouterLabelValue( this.rourterQ .proveedorId,           this.o.proveedores            )
+    this.f.categorias         = ToolQuery.getQueryRouterLabelValue( this.rourterQ .categoriaId,           this.o.categorias             )
     this.f.dimension          = ToolQuery.getQueryRouterLabelValue( this.rourterQ .dimension,             Busqueda.listaDimensiones,  "string")    
     this.f.periodo            = ToolQuery.getQueryRouterLabelValue( this.rourterQ .periodo,               Busqueda.listaPeriodos,     "string")
+
     this.f.estadoAnticipo     = ToolQuery.getQueryRouterLabelValueArray ( this.rourterQ .estadoAnticipo,  Anticipo.estados              )
     this.f.tipoAnticipo       = ToolQuery.getQueryRouterLabelValueArray ( this.rourterQ .tipoAnticipo,    Anticipo.tipos                )
     this.f.estados            = ToolQuery.getQueryRouterLabelValueArray ( this.rourterQ .estados,         this.o.estados                )    
@@ -527,6 +540,8 @@ export class Busqueda implements IBusqueda
   }
 
   get queryVacia          () : boolean { return !Object.keys(this.query).length               }
+
+  get esProducto          () : boolean { return this.acuerdo === TIPO_ACUERDO.NULO            }
   get esCotizacion        () : boolean { return this.acuerdo === TIPO_ACUERDO.COTIZACION_CLI  }
   get esPedido            () : boolean { return this.acuerdo === TIPO_ACUERDO.PEDIDO_CLI      }
   get esOCProveedor       () : boolean { return this.acuerdo === TIPO_ACUERDO.PEDIDO_PRO      }
@@ -596,14 +611,18 @@ export class Busqueda implements IBusqueda
     if(!!this.f.envioOC.label)          q.envioOC           = this.f.envioOC.value
     if(!!this.f.aceptado.label)         q.aceptado          = this.f.aceptado.value
     if(!!this.f.activo.label)           q.activo            = this.f.activo.value
+    if(!!this.f.disponible.label)       q.disponible        = this.f.disponible.value
     if(!!this.f.dimension.label)        q.dimension         = this.f.dimension.value
     if(!!this.f.periodo.label)          q.periodo           = this.f.periodo.value
     if(!!this.f.usuario && this.f.usuario.id  > 0 && !this.esOCProveedor )
       q.usuario                                             = this.f.usuario.id     
     if(!!this.f.creador   && this.f.creador.id    > 0)
       q.creador                                           = this.f.creador.id
-    if(this.esOCProveedor && !!this.f.proveedores.label)
+    if((this.esOCProveedor || this.esProducto ) && !!this.f.proveedores.label)
       q.proveedorId                                       = this.f.proveedores.value
+
+    if(this.esProducto && !!this.f.categorias.label)
+      q.categoriaId                                       = this.f.categorias.value    
     
     if(this.f.desde       instanceof Date && !isNaN(this.f.desde.valueOf()))      q.fechaDesde  = this.f.desde.toLocaleDateString('sv-SE')
     if(this.f.hasta       instanceof Date && !isNaN(this.f.hasta.valueOf()))      q.fechaHasta  = this.f.hasta.toLocaleDateString('sv-SE')
@@ -624,6 +643,8 @@ export class Busqueda implements IBusqueda
   static listaOrdenesProv         = [{value:0, label:'Sin ordenes'},          {value:1, label:'Con ordenes'         }]
   static listaListoDespachar      = [{value:1, label:'Listo para despacho'},  {value:0, label:'No esta listo'       }]
   static listaActivo              = [{value:1, label:'Activo'},               {value:0, label:'Inactivo'            }]  
+  static listaActivoProducto      = [{value:1, label:'En catalogo'},          {value:0, label:'Descontinuado'       }]  
+  static listaDisponible          = [{value:1, label:'Disponible'},           {value:0, label:'Agotado'             }]  
   static listaEnvioOC             = [{value:1, label:'Con correo enviado'},   {value:0, label:'Sin correo enviado'  }]
   static listaAceptado            = [{value:1, label:'Pedido en progreso'},   {value:0, label:'Pedido sin confirmar'}]
   static listaAreas               = Areas  
@@ -663,6 +684,7 @@ export class Busqueda implements IBusqueda
       formasPago          : [],
       metodosEntrega      : [],
       proveedores         : [],
+      categorias          : [],
       origenes            : [],
       estados             : [],
     }
@@ -717,11 +739,13 @@ export class Busqueda implements IBusqueda
       conOrdenes          : labelValueNulo,
       listoDespacho       : labelValueNulo,
       proveedores         : labelValueNulo,
+      categorias          : labelValueNulo,
       incPago             : labelValueNulo,
       incEstado           : labelValueNulo,
       incRazon            : labelValueNulo,
       incOrigen           : labelValueNulo,
       activo              : labelValueNulo,
+      disponible          : labelValueNulo,
       dimension           : labelValueNulo,
       periodo             : labelValueNulo,
       municipio           : new Municipio(),

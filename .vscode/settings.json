@@ -1,5 +1,11 @@
 {
   "editor.bracketPairColorization.enabled": true,
   "editor.guides.bracketPairs": true,
-  "typescript.tsdk": "node_modules/typescript/lib"
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "workbench.editor.customLabels.enabled": true,
+  "workbench.editor.customLabels.patterns": {
+    "src/areas/productos/components/Busqueda/TabsBusquedaProductosProveedor.vue": "Servicio",
+    "src/areas/acuerdos/pages/views/Busqueda/BarraBusquedaAcuerdos.vue": "dfdf",
+    "c:/Users/muble/Documents/GitHub/webservices/listas/productos-proveedores-new.php": "Servicio.php"
+  }
 }

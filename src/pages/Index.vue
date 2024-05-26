@@ -42,6 +42,7 @@
       <modulo-cuentas-dinero      class="col-md-4 col-12" height-card="260px"/>
       <modulo-naturaleza          class="col-md-4 col-12" height-card="260px"/>
       <modulo-transportadoras     class="col-md-4 col-12" height-card="260px"/>
+      <modulo-dias-despacho       class="col-md-4 col-12" height-card="260px"/>
     </template>
   </q-page>
 </template>
@@ -75,6 +76,7 @@
   import    moduloBodegas             from "src/areas/sistemas/components/ModuloBodegas.vue"
   import    moduloNaturaleza          from "src/areas/sistemas/components/ModuloNaturalezaProductos.vue"
   import    moduloTransportadoras     from "src/areas/sistemas/components/ModuloTransportadoras.vue"
+  import    moduloDiasDespacho        from "src/areas/sistemas/components/ModuloDiasDespacho.vue"
 
   import {  cargarListasIndex       } from "src/composables/useDexie"
 

@@ -48,8 +48,8 @@ export function useRotulosPDF()
           doc.addY(14)
           //* /////////////////////////////////////////////////////////////////////////////////// Envia Grupo Escom
           pdf.setFontSize     (16)
-          pdf.text            (`Envía:  ${doc.empresa}`, doc.margen1, doc.y, { renderingMode: 'fillThenStroke' }) 
-          pdf.text            (`${doc.nit} ${doc.direccion} ${doc.telefono}`, doc.margen1 + 100, doc.y)
+          pdf.text            (`Envía:  ${doc.empresa}`, doc.margen1, doc.y, { renderingMode: 'fillThenStroke' })
+          pdf.text            (`${doc.nit} ${doc.direccionCorta} ${doc.telefono} - REF: ${entrega.refPedido}`, doc.margen1 + 100, doc.y)
           doc.addY            (15)
           //* /////////////////////////////////////////////////////////////////////////////////// Nombre cliente
           pdf.setFontSize(19)

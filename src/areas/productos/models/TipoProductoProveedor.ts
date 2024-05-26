@@ -22,7 +22,13 @@ export interface ITipoProductoProveedor
 
 export class TipoProductoProveedor implements ITipoProductoProveedor
 {
-  value               : TIPO_PRO_PROVIDEDOR  = 0
+  value               : TIPO_PRO_PROVIDEDOR
+  
+  constructor( value  : TIPO_PRO_PROVIDEDOR  = 0 )
+  {
+    this.value        = value
+  }
+
   get label() : string {
     const label       =   this.value == 0 ? "" 
                         : this.value == 1 ? "Simple" 

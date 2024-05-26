@@ -231,17 +231,18 @@
     formularioOn.value        = true
   }
 
-  const { alt_s, alt_m, alt_a, alt_o } = useMagicKeys()
+  //const { alt_s, alt_m, alt_a, alt_o } = useMagicKeys()
 
   watchEffect(() => 
   {
     if(formularioOn.value) return 
 
+    /*
     if ( alt_s.value || alt_m.value )
       tareaPersonal()
     if ( alt_a.value || alt_o.value )
       tareaAsignada()
-      
+    */
   })  
 
 </script>

@@ -165,7 +165,7 @@ export class Contacto implements IContacto
   get alerta (): boolean
   {
     const alerta =      !this.id
-                    ||  this.direccion.length < 10
+                    ||  this.direccion.length <= 8
                     || !this.municipio.id
                     || ( !this.telefono && !this.telefono_2 )
     return alerta

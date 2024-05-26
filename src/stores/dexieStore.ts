@@ -1,5 +1,4 @@
 import {  defineStore       } from 'pinia';
-import {  TABLAS            } from "src/boot/dexie"
 
 import {  IMunicipio          } from "src/models/Municipio"
 import {  Usuario             } from "src/areas/usuarios/models/Usuario"
@@ -20,6 +19,7 @@ import {  IReglaComision      } from "src/models/Diccionarios/ReglasComision"
 import {  IBodega             } from "src/models/Diccionarios/Bodega"
 import {  INaturalezaProducto } from "src/models/Diccionarios/NaturalezaProducto"
 import {  ITransportadora     } from "src/models/Diccionarios/Transportadoras"
+import {  IDiasDespacho       } from "src/models/Diccionarios/DiasDespacho"
 
 export interface IDexieStore {
   municipios              : IMunicipio[]
@@ -41,6 +41,7 @@ export interface IDexieStore {
   bodegas                 : IBodega[]
   naturalezaProductos     : INaturalezaProducto[]
   transportadoras         : ITransportadora[]
+  diasDespacho            : IDiasDespacho[]
 
   municipiosC             : number // C es igual cuenta o count para saber el numero de cargas que se han hecho  
   usuariosC               : number
@@ -61,6 +62,7 @@ export interface IDexieStore {
   bodegasC                : number
   naturalezaProductosC    : number
   transportadorasC        : number
+  diasDespachoC           : number
 }
 
 
@@ -86,6 +88,7 @@ export const useStoreDexie = defineStore('dexie', {
     bodegas               : [],
     naturalezaProductos   : [],
     transportadoras       : [],
+    diasDespacho          : [],
 
     municipiosC           : 0,  // C es igual cuenta o count para saber el numero de cargas que se han hecho
     usuariosC             : 0,
@@ -106,6 +109,7 @@ export const useStoreDexie = defineStore('dexie', {
     bodegasC              : 0,
     naturalezaProductosC  : 0,
     transportadorasC      : 0,
+    diasDespachoC         : 0,
     
   })
 });

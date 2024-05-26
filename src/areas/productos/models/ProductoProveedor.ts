@@ -9,189 +9,197 @@ import {  ICategoriaProducto,
           CategoriaProducto         } from "src/areas/productos/models/CategoriaProducto"
 import {  ITipoProductoProveedor,
           TipoProductoProveedor,    } from "src/areas/productos/models/TipoProductoProveedor"    
-
-/*
-
-
-buscar
-nombre
-valorMin         
-valorMax       
-estados
-creadores
-activo
-dimension
-periodo
-creador
-proveedorId
-fechaDesde
-fechaHasta
-limite
-offset
-
-disponible
-tipoProducto
-
-modified_by
-owner
-
- */
-
-
+import {  IDiasDespacho,
+          DiasDespacho              } from "src/models/Diccionarios/DiasDespacho"
+import {  IImagenProducto,
+          IMAGEN_DEFAULT,
+          ImagenProducto            } from "src/areas/productos/models/ImagenProducto"
+import {  getDiasDespachoDB,
+          getCategoriaDB,
+          getProveedorDB,
+          getUsuarioDB              } from "src/composables/useDexie"
+          
 export interface IProductoProveedor {
-  id                  : number
-  estado              : string  //  published, draft, deleted
-  producto_id         : number  //  id_producto 
+  id                  : number  
+  idNuestro           : number
   ref                 : string
+  refNuestra          : string
   nombre              : string
+  nombreNuestro       : string
+  estado              : string  //  published, draft, deleted
   tipo                : ITipoProductoProveedor
-  categoria           : ICategoriaProducto
-  familiaNuestra      : string
-  familiaProveedor    : string
-  descripcion         : string  
-  proveedor           : IProveedor
-  url                 : string
-  hechoEn             : string
-  garantia            : string
-  garantiaMesas       : number
-  precio              : number  
-  precioCredito       : number
-  precioDolar         : number
-  descuento           : number
-  costoExtra          : number
-  diasEntrega         : number
-  precioPromocion     : number  
-  calcularDescuento   : boolean
-  precioActualizado   : boolean
-  stock               : number
-  activo              : boolean
-  disponible          : boolean  
-  creador             : IUsuario
-  modifico            : IUsuario
-  fechaCreacion       : Date
-  fechaCreacionCorta  : string
-  fechaEdicion        : Date
-  fechaEdicionCorta   : string
-  fechaLlegada        : Date
-  fechaLlegadaCorta   : string
   orden               : number
-
-  /*
-  id                  : number
-  estado              : string  //  published, draft, deleted
-  producto_id         : number  //  id_producto 
-  ref                 : string
-  nombre              : string
-  tipo                : ITipoProductoProveedor
-  categoria           : ICategoriaProducto
-  familiaNuestra      : string
-  familiaProveedor    : string
-  descripcion         : string  
   proveedor           : IProveedor
-  url                 : string
+  categoria           : ICategoriaProducto
+  img                 : IImagenProducto
+
+  activo              : boolean
+  disponible          : boolean    
+  gestionStock        : boolean
+  stock               : number    
+
+  descripcion         : string  
+  url                 : string  
+  familiaNuestra      : string
+  familiaProveedor    : string  
   hechoEn             : string
   garantia            : string
-  garantiaMesas       : number
+  garantiaMeses       : number
+  diasDespacho        : IDiasDespacho
+
   precio              : number  
   precioCredito       : number
   precioDolar         : number
-  descuento           : number
-  costoExtra          : number
-  diasEntrega         : number
   precioPromocion     : number  
+  costoExtra          : number
+  descuento           : number
   calcularDescuento   : boolean
   precioActualizado   : boolean
-  stock               : number
-  activo              : boolean
-  disponible          : boolean  
+
   creador             : IUsuario
-  modifico            : IUsuario
+  edito               : IUsuario
   fechaCreacion       : Date
   fechaCreacionCorta  : string
   fechaEdicion        : Date
   fechaEdicionCorta   : string
   fechaLlegada        : Date
   fechaLlegadaCorta   : string
-  orden               : number  
-  */
 }
 
 export class ProductoProveedor implements IProductoProveedor
 {
   id                  : number                  = 0
-  estado              : string                  = ""
-  producto_id         : number                  = 0
+  idNuestro           : number                  = 0
   ref                 : string                  = ""
+  refNuestra          : string                  = ""
   nombre              : string                  = ""
+  nombreNuestro       : string                  = ""
+  estado              : string                  = ""
   tipo                : ITipoProductoProveedor  = new TipoProductoProveedor()
+  orden               : number                  = 0
+  proveedor           : IProveedor              = new Proveedor()  
   categoria           : ICategoriaProducto      = new CategoriaProducto()
+  img                 : IImagenProducto         = new ImagenProducto()
+  activo              : boolean                 = true
+  disponible          : boolean                 = true  
+  gestionStock        : boolean                 = false
+  stock               : number                  = 0
+  descripcion         : string                  = ""
+  url                 : string                  = ""
   familiaNuestra      : string                  = ""
   familiaProveedor    : string                  = ""
-  descripcion         : string                  = ""
-  proveedor           : IProveedor              = new Proveedor()  
-  url                 : string                  = ""
   hechoEn             : string                  = ""
   garantia            : string                  = ""
-  garantiaMesas       : number                  = 0
+  garantiaMeses       : number                  = 0
+  diasDespacho        : IDiasDespacho           = new DiasDespacho()
+
   precio              : number                  = 0
   precioCredito       : number                  = 0
   precioDolar         : number                  = 0
-  descuento           : number                  = 0  
-  costoExtra          : number                  = 0
-  diasEntrega         : number                  = 0
   precioPromocion     : number                  = 0  
+  costoExtra          : number                  = 0
+  descuento           : number                  = 0  
   calcularDescuento   : boolean                 = false
-  precioActualizado   : boolean                 = true
-  stock               : number                  = 0
-  activo              : boolean                 = true
-  disponible          : boolean                 = true  
-  creador             : IUsuario                = new Usuario()
-  modifico            : IUsuario                = new Usuario()
-  fechaCreacion       : Date                    = new Date()
-  fechaEdicion        : Date                    = new Date()
-  fechaLlegada        : Date                    = new Date()  
-  orden               : number                  = 0
+  precioActualizado   : boolean                 = true  
 
+  creador             : IUsuario                = new Usuario()
+  edito               : IUsuario                = new Usuario()
+  fechaCreacion       : Date                    = new Date(0)
+  fechaEdicion        : Date                    = new Date(0)
+  fechaLlegada        : Date                    = new Date(0)
 
   get fechaCreacionCorta()    : string { return ToolDate.fechaCorta( this.fechaCreacion    ) }
   get fechaEdicionCorta()     : string { return ToolDate.fechaCorta( this.fechaEdicion     ) }
   get fechaLlegadaCorta()     : string { return ToolDate.fechaCorta( this.fechaLlegada     ) } 
 
  // * ////////////////////////////////////////////////////////////////////////// Get new LineaAcuerdo data de API
- static getProductosFromAPI( dataAPI : any ) : IProductoProveedor[]
+ static async getProductosFromAPI( dataAPI : any ) : Promise< IProductoProveedor[] >
  {
-    const itemsApi                      = JSON.parse( dataAPI )
-    const items : IProductoProveedor[]  = []
+    const productos : IProductoProveedor[]  = []
 
-    if( !Array.isArray( itemsApi ) ) return []
+    if( !Array.isArray( dataAPI ) ) return []
     
-    for (const pp of itemsApi)
+    for (const pp of dataAPI)
     {
-      const pro               = ProductoProveedor.getProductoFromAPI( pp )
-      items.push( pro )
+      const pro               = await ProductoProveedor.getProductoFromAPI( pp )
+      productos.push( pro )
     }
-    return items
+    return productos
  }
 
  // * ////////////////////////////////////////////////////////////////////////// Get new LineaAcuerdo data de API
- static getProductoFromAPI( item : any ) : IProductoProveedor
+ static async getProductoFromAPI( productoApi : any ) : Promise< IProductoProveedor >
  {
-    const pro                 = new ProductoProveedor()
-          pro.ref             = ToolType.keyStringValido( item, "ref"       )
-          pro.nombre          = ToolType.keyStringValido( item, "nombre"    )
-          //pro.proveedor       = ToolType.keyStringValido( item, "proveedor" )
-          pro.hechoEn         = ToolType.keyStringValido( item, "hecho_en"  )
-          pro.garantia        = ToolType.keyStringValido( item, "garantia"  )
+    if(!productoApi)          return new ProductoProveedor()
 
-          pro.activo          = ToolType.keyBoolean( item, "activo"     ) 
-          pro.disponible      = ToolType.keyBoolean( item, "disponible" ) 
+    const pApi                = productoApi
 
-          pro.id              = ToolType.keyNumberValido( item, "id"            ) 
-          pro.precio          = ToolType.keyNumberValido( item, "precio"        ) 
-          //pro.proveedor_id    = ToolType.keyNumberValido( item, "proveedor_id"  )
-          pro.producto_id     = ToolType.keyNumberValido( item, "producto_id"   )
+    pApi.activo               = ToolType.keyBoolean       ( pApi, "activo" )
+    pApi.disponible           = ToolType.keyBoolean       ( pApi, "disponible" )
+    pApi.gestionStock         = ToolType.keyBoolean       ( pApi, "gestionStock" )
+    pApi.calcularDescuento    = ToolType.keyBoolean       ( pApi, "calcularDescuento" )
+    pApi.precioActualizado    = ToolType.keyBoolean       ( pApi, "precioActualizado" )
+    pApi.id                   = ToolType.keyNumberValido  ( pApi, "id" )
+    pApi.idNuestro            = ToolType.keyNumberValido  ( pApi, "idNuestro" )
+    pApi.orden                = ToolType.keyNumberValido  ( pApi, "orden" )
+    pApi.stock                = ToolType.keyNumberValido  ( pApi, "stock" )
+    pApi.garantiaMeses        = ToolType.keyNumberValido  ( pApi, "garantiaMeses" )
+    pApi.precio               = ToolType.keyNumberValido  ( pApi, "precio" )
+    pApi.precioCredito        = ToolType.keyNumberValido  ( pApi, "precioCredito" )
+    pApi.precioDolar          = ToolType.keyNumberValido  ( pApi, "precioDolar" )
+    pApi.precioPromocion      = ToolType.keyNumberValido  ( pApi, "precioPromocion" )
+    pApi.costoExtra           = ToolType.keyNumberValido  ( pApi, "costoExtra" )
+    pApi.descuento            = ToolType.keyNumberValido  ( pApi, "descuento" )
+    pApi.fechaCreacion        = ToolDate.getDateToStr( ToolType.keyStringValido( pApi, "fechaCreacion"  ) )  
+    pApi.fechaEdicion         = ToolDate.getDateToStr( ToolType.keyStringValido( pApi, "fechaEdicion"   ) ) 
+    pApi.fechaLlegada         = ToolDate.getDateToStr( ToolType.keyStringValido( pApi, "fechaLlegada"   ) )    
+
+    const pro                 = Object.assign( new ProductoProveedor(), pApi ) as IProductoProveedor
+
+    pro.img.url               = pApi?.urlImagen ?? IMAGEN_DEFAULT
+    pro.tipo                  = new TipoProductoProveedor( ToolType.keyNumberValido( pApi, "tipo_id" ) )
+
+    pro.proveedor             = await getProveedorDB    ( ToolType.keyNumberValido( pApi, "proveedor_id" ) )
+    pro.categoria             = await getCategoriaDB    ( ToolType.keyNumberValido( pApi, "categoria_id" ) )
+    pro.diasDespacho          = await getDiasDespachoDB ( ToolType.keyNumberValido( pApi, "diasDespacho_id" ) )
+    pro.creador               = await getUsuarioDB      ( ToolType.keyNumberValido( pApi, "creador_id" ) )
+    pro.edito                 = await getUsuarioDB      ( ToolType.keyNumberValido( pApi, "edito_id" ) )
+    
     return pro
- }
+ } 
+}
 
- 
+
+
+interface      camposQuePuedeServirDeQuery {
+  
+  diasDesde            ?: number
+  diasHasta            ?: number
+  diasDDesde           ?: number
+  diasDHasta           ?: number
+  aproDesdeDia         ?: number
+  aproHastaDia         ?: number
+  enviaDesdeDia        ?: number
+  enviaHastaDia        ?: number
+
+  
+  origenId             ?: number  
+  elementoTipo         ?: string
+  
+}
+interface CamposPendientesDeBuscar {  
+  idNuestro           : number  // Asignado o no asignadoen la base de datos
+  tipo                : ITipoProductoProveedor
+  categoria           : ICategoriaProducto  
+  
+  gestionStock        : boolean  
+  hechoEn             : string
+  garantia            : string
+  diasEntrega         : number
+  precioPromocion     : number  
+  costoExtra          : number
+  descuento           : number
+  calcularDescuento   : boolean
+  precioActualizado   : boolean
+  imagen              : IImagenProducto 
 }

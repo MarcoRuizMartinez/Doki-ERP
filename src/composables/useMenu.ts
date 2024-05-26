@@ -283,7 +283,7 @@ export function useMenu()
                               label:    "Productos de proveedores",
                               icon:     "mdi-layers-triple-outline",
                               to:       "/productos/proveedor",
-                              visible:  usuario.value.esDev
+                              visible:  usuario.value.esGerencia || usuario.value.esProducto
                           } ),
         },        
       ]

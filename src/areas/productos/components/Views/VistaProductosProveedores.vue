@@ -7,10 +7,15 @@
     size-icon-carga           ="22em"
     icono                     ="mdi-package-variant-closed"
     mensaje-sin-resultados    ="No se encontraron productos"
+    mensaje-esperando         ="Busca los productos que necesites..."
     :modo                     ="modo"
     :titulo                   ="titulo"
-    :padding-contenido        ="modo === 'normal' ? '0' : '12px'"
+    padding-contenido         ="0"
+    :cargando                 ="loading.carga"
     >
+    <template                 #barra-centro>      
+      <tabs-busqueda/>
+    </template>
     <template                 #menu>
       <barra-busqueda
         @buscar               ="buscar"
@@ -18,107 +23,98 @@
       />
     </template>
     <!-- //* //////////////////////////////////////////////////////// Tabla resultados-->
-    <div  class               ="bg-grey-3 fit">
-      <ag-grid-vue
-        style                 ="height: 500px"
-        class                 ="ag-theme-quartz"
-        :rowData              ="rowData"    
-        :columnDefs           ="colDefs"
-      >
-      </ag-grid-vue>
+    <div class                   ="bg-grey-3 fit">
+      <tabla-productos  />
     </div>
-  </ventana>
+  </ventana>  
 </template>
   
 <script setup lang="ts">  
   // * /////////////////////////////////////////////////////////////////////// Core
   import {  ref,
+            watchEffect,
             computed,
             onMounted,
             onUnmounted         } from "vue"
+  import {  useRouter           } from "vue-router"
+
   // * /////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs         } from 'pinia'                                            
   import {  useStoreUser        } from 'stores/user'
   import {  useStoreProducto    } from 'stores/producto'
-  //* ///////////////////////////////////////////////////////////////////////////////// Ag Grid
-  import    "ag-grid-community/styles/ag-grid.css"          // Mandatory CSS required by the grid
-  import    "ag-grid-community/styles/ag-theme-quartz.css"  // Optional Theme applied to the grid
-  import {  AgGridVue           } from "ag-grid-vue3"       // Vue Data Grid Component
+  import {  useStoreApp         } from 'stores/app'
+  
+//////////////////////////////////////////////////// Componibles
+  import {  useTitle            } from "@vueuse/core"
+  import {  servicesProductosPro} from "src/areas/productos/services/servicesProductosProveedor"
 
-
-  // * /////////////////////////////////////////////////////////////////////// Componibles
-  import {  servicesProductos   } from "src/areas/productos/services/servicesProductos"
-  import {  useTools            } from "src/composables/useTools"
-  import {  style               } from "src/composables/useEstilos"            
   // * /////////////////////////////////////////////////////////////////////// Modelos
-  import {  BusquedaProducto,
-            IQueryProducto      } from "src/areas/productos/models/BusquedaProductos"
+  import {  IQuery              } from "src/models/Busqueda"
   import {  TModosVentana       } from "src/models/TiposVarios"  
-  // * /////////////////////////////////////////////////////////////////////// Componentes
-  import    ventana               from "components/utilidades/Ventana.vue"  
-  import    barraBusqueda         from "src/areas/productos/components/Busqueda/BarraBusquedaProductosProveedor.vue"
 
+  // * /////////////////////////////////////////////////////////////////////// Componentes
+  import    ventana               from "components/utilidades/Ventana.vue"    
+  import    barraBusqueda         from "./../ProductosProveedor/BarraBusquedaProductosProveedor.vue"
+  import    tabsBusqueda          from "./../ProductosProveedor/TabsBusquedaProductosProveedor.vue"
+  import    tablaProductos        from "./../ProductosProveedor/TablaProductos.vue"
 
   // * ////////////////////////// Columnas
-  const { buscarProductos       } = servicesProductos()
-  const { usuario, permisos     } = storeToRefs( useStoreUser() )  
-  const { producto,
-          productos,
-          productosFil,
-          busqueda,
+  const { buscarProductos       } = servicesProductosPro()
+  const { usuario               } = storeToRefs( useStoreUser() )  
+  const { productosPro,
+          busquedaPro : b,
           loading,
-          seleccion,
-                                } = storeToRefs( useStoreProducto() )  
-  const { esMobil, aviso        } = useTools()
-  
-  const modo                      = ref< TModosVentana >("normal")  
-  const titulo                    = computed(()=>
+                                } = storeToRefs( useStoreProducto() )    
+  const { tabs                  } = storeToRefs( useStoreApp() )
+  const router                    = useRouter()
+  const modo                      = ref< TModosVentana >("esperando-busqueda")
+
+  onMounted(  async ()=>
   {
-    return productos.value.length > 0 ? `Resultado: ${productos.value.length} ` +
-                                      ( productos.value.length === 1 ? "producto" : "productos" )
-                                    : modo.value === "esperando-busqueda" ?  "Buscar productos" : `Buscando productos...`
+    productosPro.value            = []    
+    tabs.value.activa             = "tab_1"
+    await b.value.montarBusqueda( usuario.value.id, router, false, true, 50 )
   })
 
-
-  //const comColumnas               = ref< InstanceType<typeof selectColumnas> | null>(null)
-  const rowData = ref([
-   { make: "Tesla", model: "Model Y", price: 64950, electric: true },
-   { make: "Ford", model: "F-Series", price: 33850, electric: false },
-   { make: "Toyota", model: "Corolla", price: 29600, electric: false },
- ]);
-
- // Column Definitions: Defines the columns to be displayed.
- const colDefs = ref([
-   { field: "make" },
-   { field: "model" },
-   { field: "price" },
-   { field: "electric" }
- ]);
-
-  onMounted(()=>{
-    productos.value               = []
+  onUnmounted(()=>
+  {
+    productosPro.value            = []
+    b.value.desmontarBusqueda()
   })
 
-  onUnmounted(()=>{
-    productos.value               = []
-    busqueda.value                = new BusquedaProducto()
-  })  
-
-  async function buscar( query : IQueryProducto )
+  async function buscar( query : IQuery )
   {
-    productos.value               = []
-    seleccion.value               = []
-    modo.value                    = "buscando"
-    productos.value               = await buscarProductos( query )
-    productosFil.value            = productos.value
-    modo.value                    = !!productos.value.length ? "normal" : "sin-resultados"
-  }
+    modo.value                    = "normal"
+    productosPro.value            = []        
+    loading.value.carga           = true
+    productosPro.value            = await buscarProductos( query )
+    loading.value.carga           = false
+  } 
 
   function limpiarBusqueda()
   {
-    modo.value                    = "esperando-busqueda"
-    productos.value               = []
-    seleccion.value               = []
+    productosPro.value            = []
   }
 
+  const titulo                    = computed(()=>
+  {
+    let title                     = ""
+    const total                   = productosPro.value.length
+    const labelP                  = total >= 2 ? "productos" : "producto"
+    if(!!total)
+      title                       = `Resultado: ${total} ${labelP} de proveedor`
+    /* else
+      title                       =   modo.value === "esperando-busqueda"
+                                    ? "Buscar productos proveedor"
+                                    : "Buscando productos proveedor..." */
+    return title
+  })  
+
+
+  //* Titulo Pestaña navegador 
+  watchEffect(()=>{
+    const largo                   = productosPro.value.length
+    const extra                   = !!largo ? ` (${largo}) ` : " "
+    useTitle(`🔍${extra}Productos proveedor`)
+  })    
 </script>

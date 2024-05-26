@@ -31,11 +31,12 @@ import {  IReglaComision,     ReglaComision     } from "src/models/Diccionarios/
 import {  IBodega,            Bodega            } from "src/models/Diccionarios/Bodega"
 import {  INaturalezaProducto,NaturalezaProducto} from "src/models/Diccionarios/NaturalezaProducto"
 import {  ITransportadora,    Transportadora    } from "src/models/Diccionarios/Transportadoras"
+import {  IDiasDespacho,      DiasDespacho      } from "src/models/Diccionarios/DiasDespacho"
 
 export type ITabla            = IMunicipio      | IUsuario        | ITipoDocumento      | ICondicionPago | IReglaComision | IProveedor          |
                                 IFormaPago      | IMetodoEntrega  | IOrigenContacto     | IUnidad        | ICuentaDinero  | IBodega             |
                                 ITiempoEntrega  | ITipoContacto   | ICategoriaProducto  | ICategoriaGrupo| IConstante     | INaturalezaProducto |
-                                ITransportadora
+                                ITransportadora | IDiasDespacho
 
 const pre                     = process.env.PREFIJO
 
@@ -66,6 +67,7 @@ export function cargarListasIndex() {
                                           dexieCategoriasProducto (param)
                                           dexieCategoriasGrupo    (param)
                                           dexieTransportadoras    (param)
+                                          dexieDiasDespacho       (param)
   }
 }
 
@@ -187,6 +189,12 @@ export function dexieTransportadoras    ( { cargarSiempre = false, demora = 0 } 
   return lista as Ref< ITransportadora[] >
 }
 
+//* ///////////////////////////////////////////////////////////// Categorias de productos
+export function dexieDiasDespacho    ( { cargarSiempre = false, demora = 0 } = paramDefault ) :Ref< IDiasDespacho[] > {
+  const { lista } = useDexie( TABLAS.DIAS_DESPACHO, { cargarSiempre, demora } )
+  return lista as Ref< IDiasDespacho[] >
+}
+
 function useDexie( tabla : TABLAS, { cargarSiempre = false, demora = 0 } = paramDefault )
 {
   const{ online }                 = storeToRefs( useStoreApp() )
@@ -294,6 +302,9 @@ function useDexie( tabla : TABLAS, { cargarSiempre = false, demora = 0 } = param
     else if(tabla               == TABLAS.TRANSPORTADORAS){
       store.transportadoras     = lista.value;  store.transportadorasC++;
     }
+    else if(tabla               == TABLAS.DIAS_DESPACHO){
+      store.diasDespacho        = lista.value;  store.diasDespachoC++;
+    }    
   }
 
   function puedeHacerCount() : boolean
@@ -317,6 +328,7 @@ function useDexie( tabla : TABLAS, { cargarSiempre = false, demora = 0 } = param
                               : tabla == TABLAS.BODEGA              ? store.bodegasC             <= 1 
                               : tabla == TABLAS.NATURALEZA_PRODUCTO ? store.naturalezaProductosC <= 1 
                               : tabla == TABLAS.TRANSPORTADORAS     ? store.transportadorasC     <= 1 
+                              : tabla == TABLAS.DIAS_DESPACHO       ? store.diasDespachoC        <= 1
                               : true
     return puede
   }
@@ -436,8 +448,11 @@ function useDexie( tabla : TABLAS, { cargarSiempre = false, demora = 0 } = param
                     await db[ TABLAS.NATURALEZA_PRODUCTO].bulkAdd( listaCarga )
                     break;
                   case TABLAS.TRANSPORTADORAS :
-                    await db[ TABLAS.TRANSPORTADORAS].bulkAdd( listaCarga )
+                    await db[ TABLAS.TRANSPORTADORAS    ].bulkAdd( listaCarga )
                     break;
+                  case TABLAS.DIAS_DESPACHO :
+                    await db[ TABLAS.DIAS_DESPACHO      ].bulkAdd( listaCarga )
+                    break;                    
                   default:
                     break;
                 }
@@ -498,12 +513,13 @@ export async function getMunicipioDB( id : number ) : Promise < IMunicipio >
   )
 }
 
-export async function getCategoriaDB( sigla : string ) : Promise < ICategoriaProducto >
+export async function getCategoriaDB( key : string | number ) : Promise < ICategoriaProducto >
 {
   // const{ db }               = storeToRefs( useStoreApp() )
   return db.transaction('r', db[ TABLAS.CATEGORIA_PRODUCTO ], async () =>
     {
-      const catego          = await db[ TABLAS.CATEGORIA_PRODUCTO ].where("sigla").equals( sigla ).toArray()
+      const columna         = typeof key === "string" ? "sigla" : "id"
+      const catego          = await db[ TABLAS.CATEGORIA_PRODUCTO ].where( columna ).equals( key ).toArray()
       if(catego.length      == 1)
       {
         // TODO
@@ -518,6 +534,13 @@ export async function getCategoriaDB( sigla : string ) : Promise < ICategoriaPro
     }
   )
 }
+
+export async function getCategoriasDB() : Promise < ICategoriaProducto[] >
+{
+  // const{ db }               = storeToRefs( useStoreApp() )
+  return db.transaction('r', db[ TABLAS.CATEGORIA_PRODUCTO ], async () => await db[ TABLAS.CATEGORIA_PRODUCTO ].toArray() )
+}
+
 
 /* export async function getCategoriaGrupoDB( sigla : string ) : Promise < ICategoriaGrupo >
 {
@@ -829,6 +852,28 @@ export async function getTransportadoraDB( id : number ) : Promise < ITransporta
       }
       else
         return new Transportadora()
+    }
+  )
+}
+
+export async function getDiasDespachoDB( id : number ) : Promise < IDiasDespacho >
+{
+  return db.transaction('r', db[ TABLAS.DIAS_DESPACHO ], async () =>
+    {
+      const listaDB         = await db[ TABLAS.DIAS_DESPACHO ].where("id").equals(id).toArray()
+      if(listaDB.length     == 1)
+      {
+        listaDB[0].id          = +listaDB[0].id
+        listaDB[0].value       = +listaDB[0].value
+        listaDB[0].diasMin     = +listaDB[0].diasMin
+        listaDB[0].diasMax     = +listaDB[0].diasMax
+        listaDB[0].diasHabiles = Boolean( +listaDB[0].diasHabiles )
+        listaDB[0].orden       = +listaDB[0].orden
+
+        return listaDB[0]
+      }
+      else
+        return new DiasDespacho()
     }
   )
 }

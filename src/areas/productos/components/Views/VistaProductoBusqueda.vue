@@ -91,8 +91,8 @@
             ALMACEN_LOCAL       } from "src/models/TiposVarios"  
   // * /////////////////////////////////////////////////////////////////////// Componentes
   import    ventana               from "components/utilidades/Ventana.vue"  
-  import    selectColumnas        from "components/utilidades/select/SelectColumnas.vue"  
-  import    tabsBusqueda          from "src/areas/productos/components/Busqueda/TabsBusquedaProductos.vue"
+  //import    selectColumnas        from "components/utilidades/select/SelectColumnas.vue"  
+  //import    tabsBusqueda          from "src/areas/productos/components/Busqueda/TabsBusquedaProductos.vue"
   import    barraBusqueda         from "src/areas/productos/components/Busqueda/BarraBusquedaProductos.vue"
   import    tabla                 from "src/areas/productos/components/TablaProductos/TablaProductos.vue"  
   import    formulario            from "src/areas/productos/components/FormularioProducto.vue"  

@@ -1,7 +1,8 @@
 import {  defineStore       } from 'pinia';
 import {  iItemMenu         } from "components/navegacion/menus/iItemMenu"
-//import { IUsuario     } from "src/areas/usuarios/models/Usuario"
-
+import {  IVistaAG,
+          VistaAG               } from "components/utilidades/AgGrid/VistaAG"
+          
 export interface ITab {
   activa      : string
   alerts      : boolean[]
@@ -13,6 +14,7 @@ export interface iApp {
   tabs        : ITab                    // Se usa para compartir el estado de algunos componentes que necesitan comunicar el estado de sus tabs
   alertas     : number
   toggle      : string    // Para guardar en los toggle generales
+  vista       : IVistaAG,
 }
 
 export const useStoreApp = defineStore('app', {
@@ -22,5 +24,6 @@ export const useStoreApp = defineStore('app', {
     tabs          : { activa : '', alerts : [] },
     alertas       : 0,
     toggle        : "",
+    vista         : new VistaAG(),
   }),
 });

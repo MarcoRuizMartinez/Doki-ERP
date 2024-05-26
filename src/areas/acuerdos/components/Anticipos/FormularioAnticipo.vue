@@ -180,11 +180,6 @@
     (e: "borrado",            value: IAnticipo ): void
   }>()
 
-  /* onMounted(()=>{
-    modelo.value              = new Anticipo()
-    console.log("onMounted modelo.value: ", modelo.value);
-  }) */
-
   const modificado            = computed( ()=>  copiaAnticipo !== JSON.stringify( modelo.value ) ) 
   const btnDisable            = computed( ()=> !modelo.value.esNuevo && !modificado.value)
   const esAutorizacion        = computed( ()=> modelo.value.tipoSelect.value === TIPO_ANTICIPO.AUTORIZACION  )

@@ -126,7 +126,6 @@
             computed            } from "vue"
   // * /////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs         } from "pinia"
-  import {  useStoreUser        } from "stores/user"
   import {  useStoreAcuerdo     } from "stores/acuerdo"
 
   // * /////////////////////////////////////////////////////////////////////// Modelos

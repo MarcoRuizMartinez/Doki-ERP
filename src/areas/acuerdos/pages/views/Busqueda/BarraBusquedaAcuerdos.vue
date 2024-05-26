@@ -1,6 +1,7 @@
 <template>
   <q-tab-panels                 animated keep-alive vertical
     v-model                     ="tabs.activa"
+    v-bind                      ="$attrs"
     class                       ="transparent fit"
     >
     <!-- //* /////////////////////////////////////////////////////// Tab 1 -->
@@ -239,10 +240,9 @@
               </td>
             </tr>
           </tbody>
-        </table>
-        <inner-loading :cargando="loading?.carga ?? false"/>
+        </table>        
       </fieldset-filtro>      
-      <inner-loading :cargando    ="loading.carga || b.f.copiando"/>
+      <inne  :cargando    ="loading.carga || b.f.copiando"/>
     </q-tab-panel>
     <!-- //* /////////////////////////////////////////////////////// Tab 2 -->
     <q-tab-panel
@@ -524,7 +524,8 @@
       </fieldset-filtro>
     </q-tab-panel>
   </q-tab-panels>
-</template>
+  <inner-loading :cargando      ="loading?.carga ?? false"/>
+</template> 
 
 <script lang="ts" setup>
   // * /////////////////////////////////////////////////////////////////////// Core

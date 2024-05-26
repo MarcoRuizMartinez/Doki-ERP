@@ -45,6 +45,7 @@ export interface IUtilPDF extends IInicioPDF {
   nit                 : string
   empresaNit          : string
   direccion           : string
+  direccionCorta      : string
   telefono            : string
   urlPoliticas        : string
   addY                : ( aumento : number ) => void
@@ -73,6 +74,7 @@ export const enum GRISES {
 const EMPRESA       = "Grupo Escom SAS"
 const NIT           = "NIT: 900.419.912-7"
 const DIR           = "Crr 49 A # 85-05 Bogotá Colombia"
+const DIR_CORTA     = "Kr 49A 85-05 Btg"
 const TEL_ESCOM     = "PBX 601 813 7505"
 const TEL_MUBLEX    = "PBX 601 722 7881"
 
@@ -106,21 +108,22 @@ export class UtilPDF implements IUtilPDF {
     this.pdf        = inicio.pdf
   }
 
-  get anchoMitad  (){ return this.ancho / 2 }
-  get altoMitad   (){ return this.alto  / 2 }
-  get color       (){ return this.area === AREA.MUBLEX ? "red"    : "orange" } //
-  get areaNombre  (){ return this.area === AREA.MUBLEX ? "Mublex" : "Escom" }
-  get imgLogo     (){ return this.path + "logo" + this.areaNombre + ".png" }
-  get imgFondo    (){ return this.path + "fondoGris.png" }
-  get imgBar      (){ return this.path + "bar_" + this.color + ".png" }
-  get margenDerX  (){ return this.ancho - this.margenDer }
+  get anchoMitad        (){ return this.ancho / 2 }
+  get altoMitad         (){ return this.alto  / 2 }
+  get color             (){ return this.area === AREA.MUBLEX ? "red"    : "orange" } //
+  get areaNombre        (){ return this.area === AREA.MUBLEX ? "Mublex" : "Escom" }
+  get imgLogo           (){ return this.path + "logo" + this.areaNombre + ".png" }
+  get imgFondo          (){ return this.path + "fondoGris.png" }
+  get imgBar            (){ return this.path + "bar_" + this.color + ".png" }
+  get margenDerX        (){ return this.ancho - this.margenDer }
   get posXMargenDerecha (){ return this.ancho - this.margenDer - this.margenIzq }
-  get empresa     (){ return EMPRESA }
-  get nit         (){ return NIT }
-  get direccion   (){ return DIR }
-  get empresaNit  (){ return EMPRESA + " " + NIT}
-  get telefono    (){ return this.area === AREA.MUBLEX ? TEL_MUBLEX : TEL_ESCOM }
-  get headText    (){
+  get empresa           (){ return EMPRESA }
+  get nit               (){ return NIT }
+  get direccion         (){ return DIR }
+  get direccionCorta    (){ return DIR_CORTA }
+  get empresaNit        (){ return EMPRESA + " " + NIT}
+  get telefono          (){ return this.area === AREA.MUBLEX ? TEL_MUBLEX : TEL_ESCOM }
+  get headText          (){
     return EMPRESA + " " + NIT + "\n" + DIR + "\n" + (this.area === AREA.MUBLEX ? TEL_MUBLEX : TEL_ESCOM) 
   }
   get pieText     (){

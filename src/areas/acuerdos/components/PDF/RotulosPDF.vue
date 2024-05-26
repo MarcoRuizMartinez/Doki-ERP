@@ -208,11 +208,16 @@
   import {  ref,
             onMounted           } from "vue"
 
+  //* ///////////////////////////////////////////////////////////////////////////////// Store
+  import {  storeToRefs           } from 'pinia'
+  import {  useStoreAcuerdo       } from 'stores/acuerdo'
+
   // * /////////////////////////////////////////////////////////////////////////////////// Modelos
   import {  IAcuerdo, Acuerdo   } from "../../models/Acuerdo";
   import {  ILineaAcuerdo,
             LineaAcuerdo        } from "src/areas/acuerdos/models/LineaAcuerdo"  
-  import {  Contacto            } from "src/areas/terceros/models/Contacto"  
+  import {  Contacto            } from "src/areas/terceros/models/Contacto"
+
   // * /////////////////////////////////////////////////////////////////////////////////// Componibles
   import {  useRotulosPDF       } from "src/areas/acuerdos/composables/pdf/useRotulos"
   import {  style               } from "src/composables/useEstilos"
@@ -231,6 +236,8 @@
           saveRotulosPDF    } = useRotulosPDF()
   const {  esMobil          } = useTools()
   
+  const { acuerdo           } = storeToRefs( useStoreAcuerdo() )
+
   type TProps                 = {
     acuerdos                  : IAcuerdo[]
   }
@@ -288,7 +295,8 @@
   const srcPDF                = ref< string >( "" )
 
   async function generarPDF() {
-    srcPDF.value              = await getRotulosPDF( entregas.value  )
+    entregas.value.forEach( e => e.refPedido =  acuerdo.value.refCorta )
+    srcPDF.value              = await getRotulosPDF( entregas.value )
   }
 
   function calcularRotulo( accion : "restar" | "sumar", linea : ILineaAcuerdo )
