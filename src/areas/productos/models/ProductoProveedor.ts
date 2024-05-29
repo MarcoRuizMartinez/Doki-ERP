@@ -1,5 +1,6 @@
 
 import {  ToolDate,
+          ToolNum,
           ToolType,                 } from "src/composables/useTools"  
 import {  IUsuario,
           Usuario                   } from "src/areas/usuarios/models/Usuario"
@@ -14,7 +15,7 @@ import {  IDiasDespacho,
 import {  IImagenProducto,
           IMAGEN_DEFAULT,
           ImagenProducto            } from "src/areas/productos/models/ImagenProducto"
-import {  getDiasDespachoDB,
+import {  getDiaDespachoDB,
           getCategoriaDB,
           getProveedorDB,
           getUsuarioDB              } from "src/composables/useDexie"
@@ -23,10 +24,12 @@ export interface IProductoProveedor {
   id                  : number  
   idNuestro           : number
   ref                 : string
-  refNuestra          : string
+  ref_n               : string                //* ///////////////////////////////// _n
+  refNuestra          : string  
   nombre              : string
+  nombre_n            : string                //* ///////////////////////////////// _n
   nombreNuestro       : string
-  estado              : string  //  published, draft, deleted
+  estado              : string                //  published, draft, deleted
   tipo                : ITipoProductoProveedor
   orden               : number
   proveedor           : IProveedor
@@ -34,21 +37,26 @@ export interface IProductoProveedor {
   img                 : IImagenProducto
 
   activo              : boolean
-  disponible          : boolean    
+  disponible          : boolean
   gestionStock        : boolean
   stock               : number    
 
   descripcion         : string  
   url                 : string  
   familiaNuestra      : string
-  familiaProveedor    : string  
+  familiaProveedor    : string
+  documento           : string
   hechoEn             : string
   garantia            : string
   garantiaMeses       : number
   diasDespacho        : IDiasDespacho
 
-  precio              : number  
+  precio              : number
+  precio_n            : number                //* ///////////////////////////////// _n
+  diferencia          : number
+  diferenciaX100      : number
   precioCredito       : number
+  precioCredito_n     : number                //* ///////////////////////////////// _n
   precioDolar         : number
   precioPromocion     : number  
   costoExtra          : number
@@ -64,6 +72,11 @@ export interface IProductoProveedor {
   fechaEdicionCorta   : string
   fechaLlegada        : Date
   fechaLlegadaCorta   : string
+
+  editable            : boolean
+
+  copiarDatos         : ()=> void
+  copiarPrecios       : ( key : "precio" | "precioCredito" )=> void
 }
 
 export class ProductoProveedor implements IProductoProveedor
@@ -71,8 +84,10 @@ export class ProductoProveedor implements IProductoProveedor
   id                  : number                  = 0
   idNuestro           : number                  = 0
   ref                 : string                  = ""
+  ref_n               : string                  = ""
   refNuestra          : string                  = ""
   nombre              : string                  = ""
+  nombre_n            : string                  = ""
   nombreNuestro       : string                  = ""
   estado              : string                  = ""
   tipo                : ITipoProductoProveedor  = new TipoProductoProveedor()
@@ -81,20 +96,23 @@ export class ProductoProveedor implements IProductoProveedor
   categoria           : ICategoriaProducto      = new CategoriaProducto()
   img                 : IImagenProducto         = new ImagenProducto()
   activo              : boolean                 = true
-  disponible          : boolean                 = true  
+  disponible          : boolean                 = true
   gestionStock        : boolean                 = false
   stock               : number                  = 0
   descripcion         : string                  = ""
   url                 : string                  = ""
   familiaNuestra      : string                  = ""
   familiaProveedor    : string                  = ""
+  documento           : string                  = ""
   hechoEn             : string                  = ""
   garantia            : string                  = ""
   garantiaMeses       : number                  = 0
   diasDespacho        : IDiasDespacho           = new DiasDespacho()
 
   precio              : number                  = 0
+  precio_n            : number                  = 0
   precioCredito       : number                  = 0
+  precioCredito_n     : number                  = 0
   precioDolar         : number                  = 0
   precioPromocion     : number                  = 0  
   costoExtra          : number                  = 0
@@ -106,14 +124,33 @@ export class ProductoProveedor implements IProductoProveedor
   edito               : IUsuario                = new Usuario()
   fechaCreacion       : Date                    = new Date(0)
   fechaEdicion        : Date                    = new Date(0)
-  fechaLlegada        : Date                    = new Date(0)
+  fechaLlegada        : Date                    = new Date(0)  
+  editable            : boolean                 = false
 
   get fechaCreacionCorta()    : string { return ToolDate.fechaCorta( this.fechaCreacion    ) }
   get fechaEdicionCorta()     : string { return ToolDate.fechaCorta( this.fechaEdicion     ) }
   get fechaLlegadaCorta()     : string { return ToolDate.fechaCorta( this.fechaLlegada     ) } 
+  get diferencia()            : number { return this.precio_n - this.precio } 
+  get diferenciaX100()        : number {
+    const x100      = ToolNum.X100_Calcular( this.precio, this.diferencia )
+    const redondeo  = Math.round(x100 * 2) / 2
+    return redondeo
+  }
+
+  copiarDatos()
+  {
+    this.precio_n         = this.precio
+    this.precioCredito_n  = this.precioCredito
+  }
+
+  copiarPrecios( key : "precio" | "precioCredito" )
+  {
+    if(key === "precio"         && !!this.precio_n)         this.precio         = this.precio_n
+    if(key === "precioCredito"  && !!this.precioCredito_n)  this.precioCredito  = this.precioCredito_n
+  }
 
  // * ////////////////////////////////////////////////////////////////////////// Get new LineaAcuerdo data de API
- static async getProductosFromAPI( dataAPI : any ) : Promise< IProductoProveedor[] >
+ static async getProductosFromAPI( dataAPI : any, editable : boolean = false ) : Promise< IProductoProveedor[] >
  {
     const productos : IProductoProveedor[]  = []
 
@@ -121,14 +158,14 @@ export class ProductoProveedor implements IProductoProveedor
     
     for (const pp of dataAPI)
     {
-      const pro               = await ProductoProveedor.getProductoFromAPI( pp )
+      const pro               = await ProductoProveedor.getProductoFromAPI( pp, editable )
       productos.push( pro )
     }
     return productos
  }
 
  // * ////////////////////////////////////////////////////////////////////////// Get new LineaAcuerdo data de API
- static async getProductoFromAPI( productoApi : any ) : Promise< IProductoProveedor >
+ static async getProductoFromAPI( productoApi : any, editable : boolean = false ) : Promise< IProductoProveedor >
  {
     if(!productoApi)          return new ProductoProveedor()
 
@@ -161,9 +198,10 @@ export class ProductoProveedor implements IProductoProveedor
 
     pro.proveedor             = await getProveedorDB    ( ToolType.keyNumberValido( pApi, "proveedor_id" ) )
     pro.categoria             = await getCategoriaDB    ( ToolType.keyNumberValido( pApi, "categoria_id" ) )
-    pro.diasDespacho          = await getDiasDespachoDB ( ToolType.keyNumberValido( pApi, "diasDespacho_id" ) )
+    pro.diasDespacho          = await getDiaDespachoDB  ( ToolType.keyNumberValido( pApi, "diasDespacho_id" ) )
     pro.creador               = await getUsuarioDB      ( ToolType.keyNumberValido( pApi, "creador_id" ) )
     pro.edito                 = await getUsuarioDB      ( ToolType.keyNumberValido( pApi, "edito_id" ) )
+    pro.editable              = editable
     
     return pro
  } 

@@ -856,7 +856,7 @@ export async function getTransportadoraDB( id : number ) : Promise < ITransporta
   )
 }
 
-export async function getDiasDespachoDB( id : number ) : Promise < IDiasDespacho >
+export async function getDiaDespachoDB( id : number ) : Promise < IDiasDespacho >
 {
   return db.transaction('r', db[ TABLAS.DIAS_DESPACHO ], async () =>
     {
@@ -877,6 +877,12 @@ export async function getDiasDespachoDB( id : number ) : Promise < IDiasDespacho
     }
   )
 }
+
+export async function getDiasDespachoDB() : Promise < IDiasDespacho[] >
+{
+  return db.transaction('r', db[ TABLAS.DIAS_DESPACHO ], async () => await db[ TABLAS.DIAS_DESPACHO ].toArray() )
+}
+
 
 
 function checkListasVencidas() : boolean

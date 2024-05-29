@@ -132,7 +132,7 @@
           />
           <div
             v-if              ="modo === 'sin-resultados' || ( modo === 'esperando-busqueda' && !!mensajeEsperando)"
-            class             ="text-weight-bold text-grey-14 size-text-icon text-center"
+            class             ="text-weight-bold text-grey-14 size-text-icon text-center q-mb-lg"
             >            
             {{modo === 'sin-resultados' ? mensajeSinResultados : mensajeEsperando}}
           </div>

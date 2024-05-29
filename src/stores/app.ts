@@ -3,18 +3,32 @@ import {  iItemMenu         } from "components/navegacion/menus/iItemMenu"
 import {  IVistaAG,
           VistaAG               } from "components/utilidades/AgGrid/VistaAG"
           
-export interface ITab {
+export interface ITab
+{
   activa      : string
   alerts      : boolean[]
 }
 
-export interface iApp {
+export enum EVENTOS
+{
+  NULO,
+  LIMPIAR_FILTROS,
+  COPIAR_DATOS,
+  ACTUALIZAR_PRECIOS,
+}
+
+
+export interface iApp
+{
   online      : boolean
   menu        : Array < iItemMenu >
   tabs        : ITab                    // Se usa para compartir el estado de algunos componentes que necesitan comunicar el estado de sus tabs
   alertas     : number
   toggle      : string    // Para guardar en los toggle generales
   vista       : IVistaAG,
+  filtro      : string,
+  evento      : EVENTOS,
+  campo_1     : string | number,
 }
 
 export const useStoreApp = defineStore('app', {
@@ -25,5 +39,8 @@ export const useStoreApp = defineStore('app', {
     alertas       : 0,
     toggle        : "",
     vista         : new VistaAG(),
+    filtro        : "",
+    evento        : EVENTOS.NULO,
+    campo_1       : "",
   }),
 });

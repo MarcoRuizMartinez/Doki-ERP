@@ -20,7 +20,16 @@
           label                 ="Búsqueda"
           class                 ="width190"
           icon                  ="mdi-account-search"
+          debounce              ="800"
         />
+        <!-- //* ///////////////////////////////////////////////// Filtro texto -->
+        <input-buscar           clearable hundido
+          v-model               ="filtro"
+          label                 ="Filtro"
+          class                 ="width190"
+          icon                  ="mdi-filter"
+          :disable              ="!productosPro.length"
+        />        
       </fieldset-filtro>
       <!-- //* /////////////////////////////////////////////////// Paginación -->
       <fieldset-filtro
@@ -134,14 +143,13 @@
       </fieldset-filtro>
       <fieldset-filtro
         titulo                  ="Opciones"
-        class-contenido         ="grilla-ribom"
         >
         <!-- //* ///////////////////////////////////////////////// Slot Columnas -->
         <slot></slot>
         <!-- //* ///////////////////////////////////////////////// Botones -->
-        <div class                ="row justify-around q-mt-sm">
+        <div class                ="row width80 q-col-gutter-sm">
           <!-- //* /////////////////////////////////////////////// Boton recargar -->
-          <div>
+          <div class              ="col-6 row justify-center">
             <q-btn                round push glossy
               icon                ="mdi-refresh"
               padding             ="xs"
@@ -153,7 +161,7 @@
             </q-btn>
           </div>
           <!-- //* /////////////////////////////////////////////// Boton limpiar 'btnRecargar -->
-          <div>
+          <div class              ="col-6 row justify-center">
             <q-btn                round push glossy
               icon                ="mdi-close"
               padding             ="xs"
@@ -164,8 +172,19 @@
               <Tooltip label      ="Limpiar búsqueda"/>
             </q-btn>
           </div>
+          <!-- //* /////////////////////////////////////////////// Boton limpiar 'btnRecargar -->
+          <div class              ="col-6 row justify-center">
+            <q-btn                round push glossy
+              icon                ="mdi-filter-off"
+              padding             ="xs"
+              color               ="primary"
+              @click              ="evento = EVENTOS.LIMPIAR_FILTROS"
+              >
+              <Tooltip label      ="Limpiar filtros"/>
+            </q-btn>
+          </div>          
           <!-- //* /////////////////////////////////////////////// Boton exportar -->
-          <div>
+          <div class              ="col-6 row justify-center">
             <q-btn                round push glossy
               icon                ="mdi-microsoft-excel"
               color               ="primary"
@@ -231,6 +250,59 @@
       >
       <vistas :ref-vista        ="VISTAS_AG.PRODUCTOS_PROVEEDORES"/>
     </q-tab-panel>
+    <!-- //* ///////////////////////////////////////////////////// Tab 3 -->
+    <q-tab-panel
+      name                      ="tab_4"
+      class                     ="row q-pa-none no-wrap scroll"
+      >
+      <!-- //* /////////////////////////////////////////////////// Modo Edicion -->
+      <fieldset-filtro
+        titulo                  ="Acciones"
+        class-contenido         ="column q-gutter-sm width160"
+        style                   ="height: 120px;"
+        >
+        <div >
+          <q-btn
+            v-bind              ="style.btnBaseMd"
+            label               ="Copiar valores"
+            icon                ="mdi-content-duplicate"
+            color               ="blue-8"
+            class               ="full-width"
+            @click              ="evento = EVENTOS.COPIAR_DATOS"
+            >
+            <Tooltip label      ="Copiar valores a campos temporales"/>
+          </q-btn>
+        </div>
+        <div>
+          <q-btn
+            v-bind              ="style.btnBaseMd"
+            label               ="Cambiar precios"
+            icon                ="mdi-cash-usd"
+            color               ="positive"
+            class               ="full-width"            
+            @click              ="evento = EVENTOS.ACTUALIZAR_PRECIOS"
+            >
+            <Tooltip label      ="Copiar precios de temporales precios de proveedor"/>
+          </q-btn>
+        </div>        
+      </fieldset-filtro>      
+      <!-- //* /////////////////////////////////////////////////// Modo Edicion -->
+      <fieldset-filtro
+        titulo                  ="Modo de edición"
+        class-contenido         ="column q-gutter-xs"
+        style                   ="height: 120px;"  
+        >
+        <div>
+          <q-btn-toggle         no-caps push glossy
+            v-model             ="campo_1"
+            color               ="white"
+            text-color          ="grey-10"          
+            toggle-color        ="primary"
+            :options            ="TiposDeEdicion"
+          />
+        </div>
+      </fieldset-filtro>
+    </q-tab-panel>
   </q-tab-panels>
   <inner-loading :cargando      ="loading.carga || b.f.copiando"/>
 </template>
@@ -242,16 +314,24 @@
   // * /////////////////////////////////////////////////////////////////////// Core
   import {  watch,
             computed,
+            onMounted,
                                 } from "vue"
   // * /////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs         } from 'pinia'
-  import {  useStoreApp         } from 'stores/app'
+  import {  useStoreApp, 
+            EVENTOS             } from 'stores/app'
   import {  useStoreProducto    } from 'stores/producto'
 
   // * /////////////////////////////////////////////////////////////////////// Modelos
   import {  IQuery, Busqueda    } from "src/models/Busqueda"
   import {  GRUPO_USUARIO       } from "src/models/TiposVarios"
   import {  VISTAS_AG           } from "components/utilidades/AgGrid/VistaAG"
+
+  // * /////////////////////////////////////////////////////////////////////// Componibles
+  import {  style               } from "src/composables/useEstilos"
+  import {  TiposDeEdicion,
+            TIPO_EDICION
+                                } from "components/utilidades/AgGrid/AGTools"
   
   // * /////////////////////////////////////////////////////////////////////// Componentes
   import    fieldsetFiltro        from "components/utilidades/Fieldset.vue"
@@ -264,13 +344,16 @@
   import    innerLoading          from "components/utilidades/InnerLoading.vue"
   import    vistas                from "components/utilidades/AgGrid/VistasTablasAG.vue"
   //import    busquedasRapidas      from "./BusquedasRapidas.vue"
-
-  // * /////////////////////////////////////////////////////////////////////// Importaciones
+ 
 
   const { busquedaPro : b,
           productosPro,
-          loading               } = storeToRefs( useStoreProducto() )
-  const { tabs                  } = storeToRefs( useStoreApp() )
+          loading           } = storeToRefs( useStoreProducto() )
+  const { tabs,
+          filtro,
+          evento,
+          campo_1,
+                            } = storeToRefs( useStoreApp() )
 
   type TEmit                  = {
     buscar          : [ value : IQuery  ]
@@ -278,6 +361,10 @@
     exportar        : [ value : void    ]
   }  
   const emit                  = defineEmits<TEmit>()
+
+  onMounted(()=>{
+    campo_1.value             = TIPO_EDICION.BLOQUEDA
+  })
 
   watch(()=>b.value.f, ()=>
   {

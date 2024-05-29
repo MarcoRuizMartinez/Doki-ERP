@@ -1,9 +1,11 @@
 //* ////////////////////////////////////////////////////////////////// Core
 import {  useRouter             } from 'vue-router'
+
 //* ////////////////////////////////////////////////////////////////// Store
 import {  storeToRefs           } from 'pinia'
 import {  useStoreAcuerdo       } from 'stores/acuerdo'
 import {  useStoreDexie         } from 'stores/dexieStore'
+
 //* ////////////////////////////////////////////////////////////////// Componibles
 import {  useControlProductos   } from "src/areas/acuerdos/controllers/ControlLineasProductos"
 import {  servicesAcuerdos      } from "src/areas/acuerdos/controllers/servicesAcuerdos"
@@ -178,8 +180,8 @@ export function useControlAcuerdo()
     {
       for (const pp of data)
       {
-        const pProveedor          = ProductoProveedor.getProductoFromAPI( pp )
-        if(linea.id               === pProveedor.producto_id)
+        const pProveedor          = await ProductoProveedor.getProductoFromAPI( pp )
+        if(linea.id               === pProveedor.idNuestro)
           linea.productosProveedor.push( pProveedor )
       }
     }

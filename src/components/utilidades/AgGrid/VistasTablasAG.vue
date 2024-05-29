@@ -77,7 +77,6 @@
     v-bind                  ="style.dialogo"
     >
     <formulario
-      :ref-vista
       @vista-creada         ="vistaCreada"
     />    
   </q-dialog>  
@@ -85,7 +84,6 @@
 <script setup lang="ts">
   // * /////////////////////////////////////////////////////////////////////// Core
   import {  ref,
-            watch,
             onMounted             } from "vue";
 
   // * /////////////////////////////////////////////////////////////////////// Store
@@ -129,9 +127,7 @@
   function guardarVista()
   {
     if(!!vista.value.id)  // Edita
-    {
       vista.value.accion      = "editar"
-    }
     else                  // Guardar
     {
       nuevaInstanciaVista( "crear" )
@@ -149,6 +145,8 @@
   {
     cargando.value            = true
     vistas.value              = []
+    vista.value               = new VistaAG()
+    vistaIdSelect.value       = 0
     const { ok, data }        = await miFetch(  getURL("listas", "varios"),
                                                 { method: "POST", body: getFormData( "vistasTablas", { ref: refVista } ) },
                                                 { dataEsArray: true, mensaje: "buscar vistas", conLoadingBar: false }
@@ -158,7 +156,6 @@
     {
       if(!Array.isArray(data) || !data.length) return
       vistas.value            = await VistaAG.getVistasFromAPI( data )
-      console.log("vistas.value: ", vistas.value);
     }
     cargando.value            = false
   }
@@ -175,8 +172,7 @@
   {
     cargando.value                = true
     const objeto                  = { body:   getFormData( "editarVista", vista.value.vistaApi ), method: "POST" }
-    const { ok, data }            = await miFetch( getURL("servicios", "varios"), objeto, { mensaje: "editar vista" } )
-    console.log("data: ", data, ok);
+    const { ok }                  = await miFetch( getURL("servicios", "varios"), objeto, { mensaje: "editar vista" } )
     if(ok)
     {
       aviso( "positive", "Vista editada")
@@ -193,8 +189,7 @@
   {
     cargando.value                = true
     const objeto                  = { body:   getFormData( "borrarVista", vista.value.vistaApi ), method: "POST" }
-    const { ok, data }            = await miFetch( getURL("servicios", "varios"), objeto, { mensaje: "borrar vista" } )
-    console.log("data: ", data, ok);
+    const { ok }                  = await miFetch( getURL("servicios", "varios"), objeto, { mensaje: "borrar vista" } )
     if(ok)
     {
       nuevaInstanciaVista("restaurar")
@@ -209,7 +204,6 @@
     buscarVistas()
   }
 
-
   function nuevaInstanciaVista( accion : TAccion = "") 
   {
     vista.value             = new VistaAG( accion )
@@ -223,9 +217,5 @@
     vistas.value.push( vista.value )
     vistaIdSelect.value     = id
     formularioOn.value      = false
-    console.log("vista.value: ", vista.value);
   }
-
-
-
 </script>

@@ -11,15 +11,18 @@ export interface IImagenProducto {
   img_300px   : string
   img_Xpx     : ( px ?: number ) => string
   tipo        : TTipo
+  hayImagen   : string
 }
 
 export class ImagenProducto implements IImagenProducto
 {
   url             : string = IMAGEN_DEFAULT
-  get img_full()  : string { return this.tipo === "doli" ? this.img_Xpx( 800 ) : this.url }
-  get img_100px() : string { return this.img_Xpx( 100 ) }
-  get img_300px() : string { return this.img_Xpx( 300 ) }
-  get tipo()      : TTipo  { return this.url.includes( urlDolibarr ) ? "doli" : "woo" }
+  get img_full()  : string  { return this.tipo === "doli" ? this.img_Xpx( 800 ) : this.url }
+  get img_100px() : string  { return this.img_Xpx( 100 ) }
+  get img_300px() : string  { return this.img_Xpx( 300 ) }
+  get tipo()      : TTipo   { return this.url.includes( urlDolibarr ) ? "doli" : "woo" }
+  get hayImagen() : string  { return !!this.url ? "Con imagen" : "Sin imagen" }
+
 
   constructor( url : string = "" ){
     this.url            = !!url ? url : IMAGEN_DEFAULT

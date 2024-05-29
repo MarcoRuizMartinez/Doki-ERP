@@ -101,6 +101,7 @@
         :label                  ="'Comprobante ' + (esAutorizacion ? 'autorización' : 'pago')"
         icon                    ="mdi-bank"
         class                   ="col-12"
+        :readonly               ="!(usuario.esContable)"
         :alerta                 ="modelo.estadoSelect.label === ESTADO_ANTICIPO_LABEL.VERIFICADO"
         :options                ="acuerdo.archivos"
         @update:model-value     ="modelo.estadoSelect = {label: ESTADO_ANTICIPO_LABEL.VERIFICADO, value: ESTADO_ANTICIPO.VERIFICADO } "
@@ -130,6 +131,7 @@
             PropType,
             onMounted,
                                 } from "vue"
+                                
   // * ///////////////////////////////////////////////////////////////////////////////// Modelos
   import {  IAnticipo, Anticipo,
             TIPO_ANTICIPO,
@@ -141,6 +143,7 @@
   import {  storeToRefs         } from 'pinia'                            
   import {  useStoreAcuerdo     } from 'stores/acuerdo'
   import {  useStoreDexie       } from 'stores/dexieStore'
+  import {  useStoreUser        } from 'stores/user'
   
   // * ///////////////////////////////////////////////////////////////////////////////// Componibles
   import {  useTools, ToolType  } from "src/composables/useTools"
@@ -163,6 +166,7 @@
   const { miFetch           } = useFetch()
   dexieCuentasDinero()
   const { cuentasDinero     } = storeToRefs( useStoreDexie() )
+  const { usuario           } = storeToRefs( useStoreUser() )
   const modelo                = ref< IAnticipo  >( new Anticipo() )
   const cargando              = ref< boolean    >( false )
   const formulario            = ref< any >()

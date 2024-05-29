@@ -11,20 +11,37 @@
       >
     </q-tab>
     <q-tab
+      label           ="Mas"
+      name            ="tab_2"
+      icon            ="mdi-magnify"
+      :alert          ="alertTab2 ? 'red' : false"
+      >
+      <Tooltip label  ="Mas opciones"/>
+    </q-tab>    
+    <q-tab
+      label           ="Vistas"
+      name            ="tab_3"
+      icon            ="mdi-table-column-width"
+      >
+      <Tooltip label  ="Vistas de columnas"/>
+    </q-tab>
+    <q-tab
+      label           ="Edición"
+      name            ="tab_4"
+      icon            ="mdi-clipboard-edit"
+      >
+      <Tooltip label  ="Opciones de edición"/>
+    </q-tab>
+<!--
+    <q-tab
       label           ="Fechas"
       name            ="tab_2"
       icon            ="mdi-calendar-month"
       :alert          ="alertTab2 ? 'red' : false"      
       >
-    </q-tab>  
-    <q-tab
-      label           ="Vistas"
-      name            ="tab_3"
-      icon            ="mdi-table-column-width"
-      :alert          ="alertTab3 ? 'red' : false"      
-      >
-      <Tooltip label  ="Mas opciones"/>
     </q-tab>
+ -->
+<!--
     <q-tab
       label           ="Busquedas"
       name            ="tab_4"
@@ -32,6 +49,7 @@
       >
       <Tooltip label  ="Búsquedas rápidas"/>
     </q-tab>
+-->
   </q-tabs>
 </template>
 
@@ -42,13 +60,14 @@
   import  { storeToRefs         } from 'pinia'                                            
   import  { useStoreApp         } from 'stores/app'
   import {  useStoreProducto    } from 'stores/producto'  
-  import  { ToolDate, ToolType  } from "src/composables/useTools"  
+  //import  { ToolDate, ToolType  } from "src/composables/useTools"  
   const   { tabs                } = storeToRefs( useStoreApp() )
-  const   { busquedaPro : b     } = storeToRefs( useStoreProducto() )
+  //const   { busquedaPro : b     } = storeToRefs( useStoreProducto() )
 
-  onMounted(()=> tabs.value = { activa : "tab_1", alerts: [ false, false, true, false ]} )
+  onMounted(()=> tabs.value = { activa : "tab_1", alerts: [ false, false, false, false ]} )
 
-  const alertTab1 = computed(()=>       !!b.value.f.buscar
+  const alertTab1 = computed(()=>   false 
+                                    /* !!b.value.f.buscar
                                     ||  !!b.value.f.contacto
                                     ||  !!b.value.f.facturado.label
                                     ||  !!b.value.f.municipioContacto.id
@@ -56,20 +75,22 @@
                                     ||  !!b.value.f.condiciones.length
                                     ||  !!b.value.f.usuario?.nombre
                                     ||  !!b.value.f.creador?.nombre
-                                    ||  ( !!b.value.f.entrega.length && b.value.esEntrega )
+                                    ||  ( !!b.value.f.entrega.length && b.value.esEntrega )*/
                             )
 
-  const alertTab2 = computed(()=>       ToolDate.fechaValidaStrODate( b.value.f.desde )
+  const alertTab2 = computed(()=>   false
+                                    /*    ToolDate.fechaValidaStrODate( b.value.f.desde )
                                     ||  ToolDate.fechaValidaStrODate( b.value.f.hasta )
                                     ||  ToolType.valorValido( b.value.f.diasDesde     )
                                     ||  ToolType.valorValido( b.value.f.diasHasta     )
                                     ||  ToolType.valorValido( b.value.f.aproHastaDia  )
                                     ||  ToolType.valorValido( b.value.f.aproDesdeDia  )
                                     ||  ToolType.valorValido( b.value.f.enviaDesdeDia )
-                                    ||  ToolType.valorValido( b.value.f.enviaHastaDia )
+                                    ||  ToolType.valorValido( b.value.f.enviaHastaDia )*/
                             )
                             
-  const alertTab3 = computed(()=>       !!b.value.f.formaPago.length
+  const alertTab3 = computed(()=>   false
+                                    /*    !!b.value.f.formaPago.length
                                     ||  !!b.value.f.origenes.length
                                     ||  !!b.value.f.conIva.label
                                     ||  !!b.value.f.area.label
@@ -83,6 +104,6 @@
                                     ||  !!b.value.f.valorMin
                                     ||  !!b.value.f.valorMax
                                     ||  !!b.value.f.incPago.label
-                                    ||  ( !!b.value.f.entrega.length  && !b.value.esEntrega )
+                                    ||  ( !!b.value.f.entrega.length  && !b.value.esEntrega )*/
                             )
 </script>

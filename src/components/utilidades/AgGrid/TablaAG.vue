@@ -1,42 +1,61 @@
-<template>
-  <ag-grid-vue            
-    style                         ="height: 1500px;"
+<template>                        
+  <ag-grid-vue                    suppress-multi-range-selection suppress-clear-on-fill-reduction 
+    :style                        ="estilo"
+    style                         ="min-height: 800px;"
     class                         ="ag-theme-quartz"
-    :autoSizeStrategy
-    :getRowId
-    :columnTypes
-    :rowData                      ="datos"
-    :defaultColDef                ="columnasDefecto"
-    :columnDefs                   ="columnas"
+    fill-handle-direction         ="y"
+    :auto-size-strategy
+    :get-row-id
+    :column-types
+    :data-type-definitions
+    :row-class-rules
+    row-group-panel-show          ="onlyWhenGrouping"
+    pivot-panel-show              ="onlyWhenPivoting" 
+    :side-bar                     ="{ toolPanels: ['filters', 'columns'] } "
+    :locale-text                  ="Spanish"
+    :tooltip-show-delay           ="500"
+    :row-data                     ="datos"
+    :default-col-def              ="columnasDefecto"
+    :column-defs                  ="columnas"
     :undo-redo-cell-editing       ="true"
     :undo-redo-cell-editing-limit ="10"
-    :enable-range-selection       ="true"
-    :enable-fill-handle           ="true"
-    @cell-edit-request            ="console.log('cellEditRequest')"
+    :enable-range-selection       ="rangoActivo"
+    :enable-fill-handle           ="rangoActivo"
     @cell-value-changed           ="eventoCambio"
     @grid-ready                   ="tablaLista"
     @displayed-columns-changed    ="cambioEnColumna"
+    @sort-changed                 ="cambioEnColumna"
     >
   </ag-grid-vue>
 </template>
 <script setup lang="ts">
-//@grid-ready                   ="tablaLista"
+/*
+single-click-edit
+    row-group-panel-show          ="onlyWhenGrouping" // 'always' | 'onlyWhenGrouping' | 'never'
+    pivot-panel-show              ="onlyWhenPivoting" // 'always' | 'onlyWhenPivoting' | 'never'
+*/
   import    "ag-grid-community/styles/ag-grid.css"          // Mandatory CSS required by the grid
   import    "ag-grid-community/styles/ag-theme-quartz.css"  // Optional Theme applied to the grid
 
   // * ///////////////////////////////////////////////////////////////////////////////// Core
-  import {  ref, watch            } from "vue"
+  import {  ref,
+            watch,
+            computed,
+            watchEffect           } from "vue"
 
   // * ///////////////////////////////////////////////////////////////////////////////// Store
-  import {  storeToRefs         } from 'pinia'
-  import {  useStoreApp         } from 'stores/app'
+  import {  storeToRefs           } from 'pinia'
+  import {  useStoreApp,
+            EVENTOS               } from 'stores/app'
 
   // * ///////////////////////////////////////////////////////////////////////////////// Componibles  
-  import {  Format                } from "src/composables/useTools" 
+  import {  Format, ToolType      } from "src/composables/useTools" 
 
   //* ///////////////////////////////////////////////////////////////////////////////// Ag Grid
   import {  AgGridVue             } from "ag-grid-vue3"       // Vue Data Grid Component
-  import {  IniciarAG             } from "./InicioAG"
+  import {  IniciarAG,
+            Spanish,
+            TDatosEvento          } from "./AGTools"
             IniciarAG()
 
   import {  GridReadyEvent,
@@ -45,21 +64,70 @@
             CellValueChangedEvent,
             GetRowIdParams        } from "ag-grid-community";
 
-  type TProps                     = { columnasDefecto : any, columnas : any[], autoSizeStrategy ?: any }
-  const datos                     = defineModel<any[]>( { required: true })
+  type TProps                     = {
+    columnasDefecto               : any
+    columnas                      : any[]
+    keyId                         : string
+    autoSizeStrategy             ?: any
+    rangoActivo                   : boolean
+    rowClassRules                ?: any
+  }
+  const { keyId,
+          rangoActivo = false  }  = defineProps<TProps>()
+
+  type TEmit                      = { edicionCelda : [ value : TDatosEvento ] }
+  const emit                      = defineEmits<TEmit>()          
+  const datos                     = defineModel< any[] >( { required: true })
   const getRowId                  = ref< any >( null )
   const gridApi                   = ref< GridApi >()
-  const { vista                 } = storeToRefs( useStoreApp() )  
+  const { vista, filtro, evento } = storeToRefs( useStoreApp() )  
 
-  defineProps<TProps>()
+
+  watch(filtro, aplicarFiltroRapido)
+  watch(evento, gestionarEventos)
+  watch(vista,  gestionarCambiosEnVista, { deep: false })
+
+  const estilo                    = computed(()=>
+  {
+    const alturaHeader            = 210
+    const alturaEnBlanco          = 300
+    const alturaFila              = 41
+    let altura                    = alturaHeader
+
+    if(!datos.value.length)
+      altura                      += alturaEnBlanco
+    else
+      altura                      += alturaFila * datos.value.length
+    
+    const style                   = `height: ${altura}px;`
+    return style
+  })
+
+  const dataTypeDefinitions       = {
+    object: {
+      baseDataType    : "object",
+      extendsDataType : "object",
+      valueParser     : ( params : any ) => ({ name: params.newValue }),
+      valueFormatter  : ( params : any ) => params.value == null ? "" : params.value.name,
+    }
+  }
 
   function tablaLista( params : GridReadyEvent ){
     gridApi.value                 = params.api
   }
 
 
-  function eventoCambio( event : CellValueChangedEvent ){
-    //console.log("event: ", event.column.getColId());
+  function eventoCambio( e : CellValueChangedEvent )
+  {
+    const datosEvento  : TDatosEvento = {
+      campo     : ToolType.anyToStr( e.colDef.field ),
+      data      : e.data,
+      value     : e.value,
+      index     : ToolType.anyToNum( e.rowIndex ),
+      oldValue  : e.oldValue,
+    }
+
+    emit("edicionCelda", datosEvento)
   }
 
   const columnTypes = ref(
@@ -69,49 +137,86 @@
         valueFormatter  : Format.precioAG,
         cellClass       : "text-right",
       },
+      numero:
+      {
+        cellClass       : "text-right",
+      },
+      editable:
+      {
+        editable: ( p : any) => {
+          const editar = !!p.data?.editable ?? false
+          return editar
+        }
+      }      
     }
   )
 
-  function setId( key : string ){
-    if(!key) return    
-    getRowId.value                = ( params : GetRowIdParams ) => params.data[key];    
+  function setId(){
+    getRowId.value                = ( params : GetRowIdParams ) => params.data[ keyId ]
   }
 
-  function setColumnas( cols : any[] ){    
+  async function setColumnas( cols : any[] ){
     if(!cols.length) return
-    gridApi.value?.setGridOption('columnDefs', cols);
+
+    gridApi.value?.setGridOption('columnDefs', cols)
   }
 
+
+  async function refreshCells( force : boolean = true ){    
+    gridApi.value?.refreshCells( { force } )
+  }
 
   function reiniciarVista(){
     gridApi.value?.resetColumnState();
   }  
 
-  
-
-  function aplicarVista( vista : any ){
-    gridApi.value?.applyColumnState({ state: vista });
+  function aplicarVista(){
+    gridApi.value?.applyColumnState({ state: vista.value.vista,  applyOrder: true })
   }
 
   function cambioEnColumna(){
-    console.log("cambioEnColumna: ");
     vista.value.vista         = getVista()
   }
 
-
-  watch(vista, ()=>
-    {
-      const accion            = vista.value.accion
-        
-      if(accion               == "restaurar")
-        reiniciarVista()
-      else
-        aplicarVista( vista.value.vista )
-    },
-    { deep: false }
-  )
+  function cargando( modo : "show" | "hide" )
+  {
+    if(modo === "show" )
+      gridApi.value?.showLoadingOverlay();
+    else
+      gridApi.value?.hideOverlay();
+  }
 
   
+
+  function gestionarCambiosEnVista()
+  {
+    const accion            = vista.value.accion
+      
+    if(accion               == "restaurar")
+      reiniciarVista()
+    else
+      aplicarVista()
+  }
+
+
+  function gestionarEventos()
+  {
+    if(evento.value === EVENTOS.LIMPIAR_FILTROS) limpiarFiltros()
+
+    evento.value = EVENTOS.NULO    
+  }
+
+  function limpiarFiltros() {
+    gridApi.value?.setFilterModel(null)
+    filtro.value  = ""
+  }
+
+  function aplicarFiltroRapido() {
+    gridApi.value?.setGridOption("quickFilterText", filtro.value)
+  }
+
+
+
   function getVista() : ColumnState[] | void
   {
     const vista = gridApi.value?.getColumnState();
@@ -120,35 +225,14 @@
     return vista
   }
 
+  watchEffect(()=>{
+    if(!!datos.value.length)
+      setId()
+  })
 
   defineExpose({
-    setId,
     setColumnas,
+    refreshCells,
+    cargando,
   })
-/* 
-
-    @columnEverythingChanged      ="console.log('columnEverythingChanged')"      
-    @columnVisible                ="console.log('columnVisible')"
-    @columnValueChanged           ="console.log('columnValueChanged')"
-    @columnPivotChanged           ="console.log('columnPivotChanged')"
-    @columnRowGroupChanged        ="console.log('columnRowGroupChanged')"
-    @menuVisibleChanged           ="console.log('menuVisibleChanged')"
-    @visibleChanged               ="console.log('visibleChanged')"
-    @widthChanged                 ="console.log('widthChanged')"
-    @movingChanged                ="console.log('movingChanged')"
-    @leftChanged                  ="console.log('leftChanged')"
-    @sortChanged                  ="console.log('sortChanged')"
-    @filterActiveChanged          ="console.log('filterActiveChanged')"
-    @columnPinned                 ="console.log('columnPinned')"                 
-    @columnResized                ="console.log('columnResized')"                
-    @columnMoved                  ="console.log('columnMoved')"                  
-    @columnPivotModeChanged       ="console.log('columnPivotModeChanged')"
-    @columnGroupOpened            ="console.log('columnGroupOpened')"            
-    @newColumnsLoaded             ="console.log('newColumnsLoaded')"             
-    @gridColumnsChanged           ="console.log('gridColumnsChanged')"           
-    @virtualColumnsChanged        ="console.log('virtualColumnsChanged')"        
-    @columnHeaderClicked          ="console.log('columnHeaderClicked')"          
-    @columnHeaderContextMenu      ="console.log('columnHeaderContextMenu')"      
-    @pivotMaxColumnsExceeded      ="console.log('pivotMaxColumnsExceeded')"       
-     */
 </script>

@@ -23,7 +23,7 @@
       />
     </template>
     <!-- //* //////////////////////////////////////////////////////// Tabla resultados-->
-    <div class                   ="bg-grey-3 fit">
+    <div class                ="bg-grey-3 fit">
       <tabla-productos  />
     </div>
   </ventana>  
@@ -44,13 +44,14 @@
   import {  useStoreProducto    } from 'stores/producto'
   import {  useStoreApp         } from 'stores/app'
   
-//////////////////////////////////////////////////// Componibles
+  //////////////////////////////////////////////////// Componibles
   import {  useTitle            } from "@vueuse/core"
   import {  servicesProductosPro} from "src/areas/productos/services/servicesProductosProveedor"
 
   // * /////////////////////////////////////////////////////////////////////// Modelos
   import {  IQuery              } from "src/models/Busqueda"
   import {  TModosVentana       } from "src/models/TiposVarios"  
+  import {  TIPO_EDICION        } from "components/utilidades/AgGrid/AGTools"
 
   // * /////////////////////////////////////////////////////////////////////// Componentes
   import    ventana               from "components/utilidades/Ventana.vue"    
@@ -63,9 +64,8 @@
   const { usuario               } = storeToRefs( useStoreUser() )  
   const { productosPro,
           busquedaPro : b,
-          loading,
-                                } = storeToRefs( useStoreProducto() )    
-  const { tabs                  } = storeToRefs( useStoreApp() )
+          loading               } = storeToRefs( useStoreProducto() )    
+  const { tabs, campo_1         } = storeToRefs( useStoreApp() )
   const router                    = useRouter()
   const modo                      = ref< TModosVentana >("esperando-busqueda")
 
@@ -85,9 +85,8 @@
   async function buscar( query : IQuery )
   {
     modo.value                    = "normal"
-    productosPro.value            = []        
     loading.value.carga           = true
-    productosPro.value            = await buscarProductos( query )
+    productosPro.value            = await buscarProductos( query, editable.value )
     loading.value.carga           = false
   } 
 
@@ -109,6 +108,8 @@
                                     : "Buscando productos proveedor..." */
     return title
   })  
+
+  const editable                  = computed(()=> campo_1.value === TIPO_EDICION.RANGO || campo_1.value === TIPO_EDICION.CELDA)
 
 
   //* Titulo Pestaña navegador 

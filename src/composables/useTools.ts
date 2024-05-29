@@ -88,6 +88,8 @@ export class ToolType
       return v
     else if(typeof v === "string")
       return ToolType.strOrNumToNum( v, 0 )
+    else if(typeof v === "boolean")
+      return +v
 
     if(isNaN(v)) return 0
     

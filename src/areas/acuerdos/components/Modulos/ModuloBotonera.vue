@@ -297,11 +297,19 @@
         color                 ="positive"
         icon                  ="mdi-check-circle-outline"
         :label                ="esMobil ? '' : 'Validar'"
-        :disable              ="disableBtnValidar"
+        :disable              ="!!alertasValidar.length"
         :loading              ="loading.validar"
         @click                ="emit('clickValidar')"
         >
-        <Tooltip label        ="Clasificar validado"/>
+        <Tooltip
+          v-if                ="!!alertasValidar.length"
+          class               ="width220"
+          >
+          <ul>
+            <li v-for         ="alerta of alertasValidar">{{ alerta }}</li>  
+          </ul>          
+        </Tooltip>
+        <Tooltip v-else label ="Clasificar validado"/>
       </q-btn>
       <!-- //* ////////////////////////////////////////////////////////// Boton Cerrar pedido -->
       <q-btn
@@ -398,7 +406,7 @@
 <script lang="ts" setup>
   //#region Cosa
   // * /////////////////////////////////////////////////////////////////////// Core
-  import {  computed        } from "vue"
+  import {  ref, computed   } from "vue"
   // * /////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs     } from 'pinia'
   import {  useStoreUser    } from 'stores/user'
@@ -472,8 +480,27 @@
                                             )
                                           )
                                   )
+  const alertasValidar    = computed(()=> {
+    const a : string[]    = []
 
-  const disableBtnValidar = computed(()=>
+    const sinProductos    = !acuerdo.value.proGrupos.length || !acuerdo.value.proGrupos[0].productos.length
+    const sinContacto     =     ( acuerdo.value.esPedido || acuerdo.value.esCotizacion )
+                            &&  !acuerdo.value.contactoComercial.id
+                            &&  ( acuerdo.value.tercero.esEmpresa || acuerdo.value.esTerceroCtz )
+    const sinFecha        =     !acuerdo.value.fechaEntrega.getTime()
+                            &&  ( acuerdo.value.esPedido || acuerdo.value.esOCProveedor )
+    const asesorCorrecto  = acuerdo.value.tercero.responsables.some( r => r.id === acuerdo.value.comercial.id )
+
+    if(cargandoAlgo.value)  a.push("Cargando...")
+    if(sinProductos)        a.push("Se deben agregar productos")
+    if(sinContacto)         a.push("Contacto invalido")
+    if(sinFecha)            a.push("Sin fecha compromiso")
+    if(!asesorCorrecto)     a.push(`El asesor debe ser ${acuerdo.value.tercero.responsables.map( r => r.nombre ).join(",")}`)
+    
+    return a
+  })
+
+/*   const disableBtnValidar = computed(()=> {
                                     cargandoAlgo.value
                                 || !acuerdo.value.proGrupos.length
                                 || !acuerdo.value.proGrupos[0].productos.length
@@ -489,7 +516,8 @@
                                       )
                                     )
                                 || ( !acuerdo.value.fechaEntrega.getTime() && ( acuerdo.value.esPedido || acuerdo.value.esOCProveedor ))
-                              )
+  }) */
+
   const mostrarComisiones   = computed(()=> 
     !acuerdo.value.condicionPago.esGarantia
     &&

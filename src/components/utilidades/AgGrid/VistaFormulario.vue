@@ -54,21 +54,20 @@
 
 <script setup lang="ts">
   //* ///////////////////////////////////////////////////////////////////////////////// Core
-  import {  ref, onMounted        } from "vue"
+  import {  ref                   } from "vue"
   import {  QForm                 } from 'quasar'
 
   //* ///////////////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs           } from 'pinia'
   import {  useStoreApp           } from 'stores/app'
 
-  //* ///////////////////////////////////////////////////////////////////////////////// Modelos
-  
   //* ///////////////////////////////////////////////////////////////////////////////// Componibles  
   import {  useTools, ToolType    } from "src/composables/useTools"
   import {  style                 } from "src/composables/useEstilos"
   import {  useFetch              } from "src/composables/useFetch"
   import {  getURL,  
             getFormData           } from "src/composables/APIMaco"
+
   //* ///////////////////////////////////////////////////////////////////////////////// Componentes
   import    ventana                 from "components/utilidades/Ventana.vue"
   import    inputText               from "components/utilidades/input/InputFormText.vue"
@@ -76,9 +75,6 @@
   const { vista                 } = storeToRefs( useStoreApp() )  
   const { aviso                 } = useTools()
   const { miFetch               } = useFetch()
-
-  type TProps                     = { refVista : string }
-  const { refVista }              = defineProps<TProps>()  
 
   type TEmit                      = { vistaCreada : [ id : number ] }
   const emits                     = defineEmits<TEmit>()
@@ -106,7 +102,8 @@
   }
 
   //* ////////////////////////////////////////////////////////////////////////////////////// Validar
-  async function validar() {
+  async function validar()
+  {
     if(!formulario.value) return
     const validacionOk          = await formulario.value.validate()
     if(validacionOk)
