@@ -25,6 +25,7 @@
     @grid-ready                   ="tablaLista"
     @displayed-columns-changed    ="cambioEnColumna"
     @sort-changed                 ="cambioEnColumna"
+    @cell-double-clicked          ="console.log('Doble click')"
     >
   </ag-grid-vue>
 </template>
@@ -132,7 +133,7 @@ single-click-edit
 
   const columnTypes = ref(
     {
-      currency:
+      moneda:
       { 
         valueFormatter  : Format.precioAG,
         cellClass       : "text-right",
@@ -144,10 +145,28 @@ single-click-edit
       editable:
       {
         editable: ( p : any) => {
-          const editar = !!p.data?.editable ?? false
-          return editar
+          const hayData     = ToolType.existeYEsValido( p,      "data" )
+          const hayEditable = ToolType.existeYEsValido( p.data, "editable" )
+          return hayData && hayEditable ? p.data.editable : false
         }
-      }      
+      },
+      creacion:
+      {
+        editable: ( p : any) => {
+          const hayData     = ToolType.existeYEsValido( p,      "data" )
+          const hayEsNuevo  = ToolType.existeYEsValido( p.data, "esNuevo" )          
+          return hayData && hayEsNuevo ? p.data.esNuevo : false
+        }
+      },
+      editarYCrear:
+      {
+        editable: ( p : any) => {
+          const hayData     = ToolType.existeYEsValido( p,      "data" )
+          const hayEsNuevo  = ToolType.existeYEsValido( p.data, "esNuevo" )
+          const hayEditable = ToolType.existeYEsValido( p.data, "editable" )
+          return hayData && hayEsNuevo && hayEditable ? p.data.esNuevo || p.data.editable : false
+        }
+      }     
     }
   )
 

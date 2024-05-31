@@ -257,6 +257,37 @@
       >
       <!-- //* /////////////////////////////////////////////////// Modo Edicion -->
       <fieldset-filtro
+        titulo                  ="Crear productos"
+        class-contenido         ="column q-gutter-sm"
+        style                   ="height: 120px;"
+        >
+        <div class              ="row items-center">
+          <!-- //* ///////////////////////////////////////////////////////////// Cantidad -->
+          <numero-paso          hundido
+            v-model             ="totalACrear"
+            label               ="Nuevas filas"
+            modo                ="right"
+            :minimo             ="1"
+            class               ="width110"
+          />
+          <div>
+          <q-btn
+            v-bind              ="style.btnBaseMd"
+            icon                ="mdi-table-row-plus-after"
+            color               ="positive"
+            class               ="q-ml-sm"
+            @click              ="evento = EVENTOS.NUEVAS_FILAS"
+            >
+            <Tooltip label      ="Crear nuevas filas"/>
+          </q-btn>          
+          </div>
+          <div >
+
+        </div>          
+        </div>   
+      </fieldset-filtro>
+      <!-- //* /////////////////////////////////////////////////// Acciones -->
+      <fieldset-filtro
         titulo                  ="Acciones"
         class-contenido         ="column q-gutter-sm width160"
         style                   ="height: 120px;"
@@ -294,7 +325,7 @@
         >
         <div>
           <q-btn-toggle         no-caps push glossy
-            v-model             ="campo_1"
+            v-model             ="modoEdicion"
             color               ="white"
             text-color          ="grey-10"          
             toggle-color        ="primary"
@@ -330,8 +361,7 @@
   // * /////////////////////////////////////////////////////////////////////// Componibles
   import {  style               } from "src/composables/useEstilos"
   import {  TiposDeEdicion,
-            TIPO_EDICION
-                                } from "components/utilidades/AgGrid/AGTools"
+            TIPO_EDICION        } from "components/utilidades/AgGrid/AGTools"
   
   // * /////////////////////////////////////////////////////////////////////// Componentes
   import    fieldsetFiltro        from "components/utilidades/Fieldset.vue"
@@ -343,16 +373,18 @@
   import    inputBuscar           from "components/utilidades/input/InputSimple.vue"
   import    innerLoading          from "components/utilidades/InnerLoading.vue"
   import    vistas                from "components/utilidades/AgGrid/VistasTablasAG.vue"
+  import    numeroPaso            from "components/utilidades/input/InputNumeroPaso.vue"
   //import    busquedasRapidas      from "./BusquedasRapidas.vue"
  
 
   const { busquedaPro : b,
           productosPro,
           loading           } = storeToRefs( useStoreProducto() )
-  const { tabs,
+  const { campo_1   : modoEdicion,
+          numero_1  : totalACrear,
+          tabs,
           filtro,
           evento,
-          campo_1,
                             } = storeToRefs( useStoreApp() )
 
   type TEmit                  = {
@@ -363,7 +395,8 @@
   const emit                  = defineEmits<TEmit>()
 
   onMounted(()=>{
-    campo_1.value             = TIPO_EDICION.BLOQUEDA
+    modoEdicion.value         = TIPO_EDICION.BLOQUEDA
+    totalACrear.value         = 1
   })
 
   watch(()=>b.value.f, ()=>

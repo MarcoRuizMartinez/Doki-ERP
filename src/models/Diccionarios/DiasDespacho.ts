@@ -9,6 +9,7 @@ export interface IDiasDespacho
   diasMax	        : number    
   diasHabiles	    : boolean
   orden           : number
+  tipoDia         : string
 }
 
 export class DiasDespacho implements IDiasDespacho
@@ -21,6 +22,10 @@ export class DiasDespacho implements IDiasDespacho
   diasHabiles	    : boolean = true
   orden           : number  = 0
 
-  get value() : number  { return this.id }
-  get label() : string  { return this.nombre }
+  get tipoDia()   : string  { return this.diasHabiles ? "hábiles" : "calendario" }
+  get value()     : number  { return this.id }
+  get label()     : string  { 
+    if(!this.id) return ""
+    return `De ${this.diasMin} a ${this.diasMax} días ${this.diasMax} ${this.tipoDia}`
+  }
 }

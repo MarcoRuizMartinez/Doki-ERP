@@ -21,6 +21,11 @@ export const labelValueNulo : ILabelValue = { label: "", value: null }
 export type  EstadoVerificar  = "off" | "verificando"  | "check" | "alert"
 export type  TModosVentana    = "normal" | "buscando" | "esperando-busqueda" | "sin-resultados"
 
+export function BuscarLabelValue( opciones : ILabelValue[], value : number | string ) : ILabelValue
+{
+  return opciones.find( lv => lv.value === value ) ?? labelValueNulo
+}
+
 export const enum ALMACEN_LOCAL {
   COLOR           = "v3-color",
   FONDO           = "v3-fondo",

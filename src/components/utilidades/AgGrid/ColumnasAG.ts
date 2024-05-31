@@ -15,6 +15,7 @@ export interface IColAg {
   filter              ?: boolean | string
   filterParams        ?: any
   filterValueGetter   ?: any
+  keyCreator          ?: any
   valueParser         ?: any
   type                ?: string | string[]
   editable            ?: boolean
@@ -47,6 +48,8 @@ type param = {
   editorParam         ?: any
   filter              ?: boolean | string
   filterValueGetter   ?: any
+  keyCreator          ?: any
+  valueGetter         ?: any
   valueParser         ?: any
   type                ?: string | string[]
   editar              ?: boolean
@@ -84,6 +87,8 @@ export class ColAg implements IColAg
   cellRenderer        ?: any
   filter              ?: boolean | string
   filterValueGetter   ?: any
+  valueGetter         ?: any
+  keyCreator          ?: any
   valueParser         ?: any
   type                ?: string | string[]
   editable            ?: boolean
@@ -113,6 +118,8 @@ export class ColAg implements IColAg
     editorParam             = undefined,    
     filter                  = undefined,
     filterValueGetter       = undefined,
+    keyCreator              = undefined,
+    valueGetter             = undefined,
     valueParser             = undefined,
     type                    = undefined,
     editar                  = undefined,
@@ -159,8 +166,12 @@ export class ColAg implements IColAg
     this.suppressFillHandle = suppressFillHandle
     this.hide               = hide
     this.valueParser        = valueParser
+    this.keyCreator         = keyCreator
+    this.valueGetter        = valueGetter
+
     if(!!esBoolean){
       this.filter           = "agSetColumnFilter"
+      this.enableRowGroup   = true
       this.filterParams     = { valueFormatter: formatoBoolean, defaultToNothingSelected: true, buttons: ['reset'], comparator: (a: string, b: string) => -a.localeCompare(b, 'es', { sensitivity: 'base' }) }
     }
   }
@@ -173,6 +184,7 @@ export class ColAg implements IColAg
     if(!!this.field               ) a.field               = this.field
     if(!!this.filterParams        ) a.filterParams        = this.filterParams
     if(!!this.filterValueGetter   ) a.filterValueGetter   = this.filterValueGetter
+    if(!!this.keyCreator          ) a.keyCreator          = this.keyCreator
     if(!!this.tooltipField        ) a.tooltipField        = this.tooltipField
     if(!!this.cellClass           ) a.cellClass           = this.cellClass
     if(!!this.cellStyle           ) a.cellStyle           = this.cellStyle
@@ -188,6 +200,9 @@ export class ColAg implements IColAg
     if(!!this.children            ) a.children            = this.children
     if(!!this.valueFormatter      ) a.valueFormatter      = this.valueFormatter
     if(!!this.valueParser         ) a.valueParser         = this.valueParser
+    if(!!this.keyCreator          ) a.keyCreator          = this.keyCreator
+    if(!!this.valueGetter         ) a.valueGetter         = this.valueGetter
+     
 
     if(typeof this.marryChildren      == "boolean" )  a.marryChildren       = this.marryChildren  
     if(typeof this.enableRowGroup     == "boolean" )  a.enableRowGroup      = this.enableRowGroup
@@ -213,9 +228,9 @@ export class ColAg implements IColAg
     col.valueParser       = ( params : any ) => ToolNum.roundInt( ToolType.anyToNum( params.newValue ), 0)
 
     if(!!type && typeof type === "string")
-      col.type            = ["currency", type]
+      col.type            = ["moneda", type]
     else
-      col.type            = 'currency'
+      col.type            = "moneda"
     
     return col
   }
@@ -232,9 +247,8 @@ export class ColAg implements IColAg
                   render        = undefined
                 }               : param
   )                             : IColAg
-  {  
-    // render     : any                  = ,
-    const renderUsado     = !!render ? render : ( params : any ) => params?.value[key]
+  {
+    const renderAUsar     = getRender()
     const col             = new ColAg     ({ 
                               field             : field,
                               filter            : 'agSetColumnFilter',
@@ -242,25 +256,69 @@ export class ColAg implements IColAg
                               editar,
                               hide,
                               type,
-                              render            : renderUsado,
+                              render            : renderAUsar,
                               agrupar           : true,
                               editor            : "agRichSelectCellEditor",
-                              valueParser       : ( params : any ) => params.newValue,
-                              filterValueGetter : ( params : any ) => params?.data?.[field][key],
+                              valueParser       : ( p : any ) => p.newValue
+                              /*{
+                                const valor = p.newValue
+                                return valor
+                              }*/,
+                              filterValueGetter : ( p : any ) => p.data[field][key]
+                                /*{
+                                const valor = p.data[field][key]
+                                return valor
+                              }*/,
+                              //keyCreator        : ( params : any ) => params.value[key],
+                              keyCreator        : ( p : any ) => p.value[key]
+                                /*{
+                                //console.log("keyCreator: ", params);
+                                const valor = p.value[key]
+                                return valor
+                              }*/,
                               editorParam       : { 
                                                     values          : opciones,
                                                     allowTyping     : true,
                                                     filterList      : true,
                                                     highlightMatch  : true,     
-                                                    cellRenderer    : render,
+                                                    cellRenderer    : renderAUsar,
                                                     formatValue     : ( value : any ) => value?.[key],
-                                                    //useFormatter    : true,
+                                                    useFormatter    : true,
                                                   },
-                              //valueFormatter  : ( p : any ) => p?.value[key] ?? "",
+                              /* valueGetter       : ( p : any ) => {
+                                console.log("valueGetter: ", p);
+                                return p  
+                              }, */
+                              /* valueFormatter    : ( p : any ) => { 
+                                const hayValue  = ToolType.existeYEsValido( p,        "value" )
+                                //const hayKey    = ToolType.existeYEsValido( p.value,  key )                                
+                                return hayValue ? p.value[key] : ""
+                              }, */
+                              /* valueFormatter    : ( p : any ) =>{
+                                if (!p.value) {
+                                  return "";
+                                }
+                                return `[${p.value.alias}]`;
+                              } */
+                                //p?.value[key] ?? "",
                           })    
 
     return col
-  }  
+
+
+    function getRender()
+    {
+      if(!!render) return render
+
+      const fnRender    = ( p : any ) => {
+        const hayValue  = ToolType.existeYEsValido( p,        "value" )
+        //const hayKey    = ToolType.existeYEsValido( p.value,  key )
+        return hayValue ? p.value[key] : ""
+      }
+
+      return fnRender
+    }
+  }
 }
 
 const formatoBoolean = ( params : any ) => {

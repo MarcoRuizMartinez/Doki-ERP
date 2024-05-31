@@ -1,5 +1,5 @@
 <template>
-  <div class    ="row items-center justify-center full-height">
+  <div class    ="row items-center justify-center full-height alto-40">
     <div
       v-text    ="proveedor.alias"
       class     ="text-white text-center radius-10 op90 width90 badge-pro"
@@ -40,5 +40,8 @@
   line-height: 1.6;
   font-size: 12px;
   font-weight: bold;
+}
+.alto-40{ 
+  min-height: 40px !important;
 }
 </style>

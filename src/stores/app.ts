@@ -15,6 +15,7 @@ export enum EVENTOS
   LIMPIAR_FILTROS,
   COPIAR_DATOS,
   ACTUALIZAR_PRECIOS,
+  NUEVAS_FILAS,
 }
 
 
@@ -29,6 +30,7 @@ export interface iApp
   filtro      : string,
   evento      : EVENTOS,
   campo_1     : string | number,
+  numero_1    : number,
 }
 
 export const useStoreApp = defineStore('app', {
@@ -42,5 +44,6 @@ export const useStoreApp = defineStore('app', {
     filtro        : "",
     evento        : EVENTOS.NULO,
     campo_1       : "",
+    numero_1      : 0,
   }),
 });

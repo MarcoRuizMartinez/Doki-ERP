@@ -864,7 +864,6 @@ export async function getDiaDespachoDB( id : number ) : Promise < IDiasDespacho 
       if(listaDB.length     == 1)
       {
         listaDB[0].id          = +listaDB[0].id
-        listaDB[0].value       = +listaDB[0].value
         listaDB[0].diasMin     = +listaDB[0].diasMin
         listaDB[0].diasMax     = +listaDB[0].diasMax
         listaDB[0].diasHabiles = Boolean( +listaDB[0].diasHabiles )

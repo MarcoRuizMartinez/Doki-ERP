@@ -1,0 +1,36 @@
+export enum MESES_GARANTIA
+{
+  //MES_1   = 1,
+  //MES_2   = 2,
+  //MES_3   = 3,
+  MES_6   = 6,
+  AÑO_1   = 12,
+  MES_18  = 18,
+  AÑO_2	  = 24,
+  AÑO_3	  = 36,
+  AÑO_4	  = 48,
+  AÑO_5	  = 60,
+  AÑO_6	  = 72,
+  AÑO_7	  = 84,
+  //AÑO_8	  = 96,
+  //AÑO_9	  = 108,
+  //AÑO_10	= 120,
+}
+
+export const MesesGarantia  = [
+  //{ value:  MESES_GARANTIA.MES_1,   label: "1 mes" },
+  //{ value:  MESES_GARANTIA.MES_2,   label: "2 meses" },
+  //{ value:  MESES_GARANTIA.MES_3,   label: "3 meses" },
+  { value:  MESES_GARANTIA.MES_6,   label: "6 meses" },
+  { value:  MESES_GARANTIA.AÑO_1,   label: "1 año" },
+  { value:  MESES_GARANTIA.MES_18,  label: "18 meses" },
+  { value:  MESES_GARANTIA.AÑO_2,   label: "2 años" },
+  { value:  MESES_GARANTIA.AÑO_3,   label: "3 años" },
+  { value:  MESES_GARANTIA.AÑO_4,   label: "4 años" },
+  { value:  MESES_GARANTIA.AÑO_5,   label: "5 años" },
+  { value:  MESES_GARANTIA.AÑO_6,   label: "6 años" },
+  { value:  MESES_GARANTIA.AÑO_7,   label: "7 años" },
+  //{ value:  MESES_GARANTIA.AÑO_8,   label: "8 años" },
+  //{ value:  MESES_GARANTIA.AÑO_9,   label: "9 años" },
+  //{ value:  MESES_GARANTIA.AÑO_10,  label: "10 años" },  
+]

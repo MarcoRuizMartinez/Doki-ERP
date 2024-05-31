@@ -60,7 +60,10 @@ export class ToolType
   }
 
   static existeYEsValido( objeto : any, key : string ) : boolean {
-    return key in objeto && !!objeto[key]
+    return      ToolType.valorValido(objeto)
+            &&  objeto.hasOwnProperty(key)
+            //&&  key in objeto
+            &&  ( typeof objeto[key] === "boolean" || !!objeto[key] ) 
   }
 
   static anyToNumOStr( v : any ) : number | string

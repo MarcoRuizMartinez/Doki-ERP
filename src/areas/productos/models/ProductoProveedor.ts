@@ -12,6 +12,11 @@ import {  ITipoProductoProveedor,
           TipoProductoProveedor,    } from "src/areas/productos/models/TipoProductoProveedor"    
 import {  IDiasDespacho,
           DiasDespacho              } from "src/models/Diccionarios/DiasDespacho"
+import {  MesesGarantia             } from "src/models/Diccionarios/MesesGarantia"
+import {  OriginesMadeIn            } from "src/models/Diccionarios/Madein"
+import {  ILabelValue,  
+          labelValueNulo,
+          BuscarLabelValue          } from "src/models/TiposVarios"
 import {  IImagenProducto,
           IMAGEN_DEFAULT,
           ImagenProducto            } from "src/areas/productos/models/ImagenProducto"
@@ -21,7 +26,7 @@ import {  getDiaDespachoDB,
           getUsuarioDB              } from "src/composables/useDexie"
           
 export interface IProductoProveedor {
-  id                  : number  
+  id                  : number
   idNuestro           : number
   ref                 : string
   ref_n               : string                //* ///////////////////////////////// _n
@@ -46,9 +51,9 @@ export interface IProductoProveedor {
   familiaNuestra      : string
   familiaProveedor    : string
   documento           : string
-  hechoEn             : string
+  hechoEn             : ILabelValue
   garantia            : string
-  garantiaMeses       : number
+  garantiaMeses       : ILabelValue
   diasDespacho        : IDiasDespacho
 
   precio              : number
@@ -73,6 +78,7 @@ export interface IProductoProveedor {
   fechaLlegada        : Date
   fechaLlegadaCorta   : string
 
+  esNuevo             : boolean
   editable            : boolean
 
   copiarDatos         : ()=> void
@@ -104,9 +110,9 @@ export class ProductoProveedor implements IProductoProveedor
   familiaNuestra      : string                  = ""
   familiaProveedor    : string                  = ""
   documento           : string                  = ""
-  hechoEn             : string                  = ""
+  hechoEn             : ILabelValue             = labelValueNulo
   garantia            : string                  = ""
-  garantiaMeses       : number                  = 0
+  garantiaMeses       : ILabelValue             = labelValueNulo
   diasDespacho        : IDiasDespacho           = new DiasDespacho()
 
   precio              : number                  = 0
@@ -126,6 +132,13 @@ export class ProductoProveedor implements IProductoProveedor
   fechaEdicion        : Date                    = new Date(0)
   fechaLlegada        : Date                    = new Date(0)  
   editable            : boolean                 = false
+  esNuevo             : boolean                 = false
+
+  constructor( modo : "nuevo" | "" = "" )
+  {
+    this.esNuevo      = modo === "nuevo" 
+  }
+
 
   get fechaCreacionCorta()    : string { return ToolDate.fechaCorta( this.fechaCreacion    ) }
   get fechaEdicionCorta()     : string { return ToolDate.fechaCorta( this.fechaEdicion     ) }
@@ -180,7 +193,6 @@ export class ProductoProveedor implements IProductoProveedor
     pApi.idNuestro            = ToolType.keyNumberValido  ( pApi, "idNuestro" )
     pApi.orden                = ToolType.keyNumberValido  ( pApi, "orden" )
     pApi.stock                = ToolType.keyNumberValido  ( pApi, "stock" )
-    pApi.garantiaMeses        = ToolType.keyNumberValido  ( pApi, "garantiaMeses" )
     pApi.precio               = ToolType.keyNumberValido  ( pApi, "precio" )
     pApi.precioCredito        = ToolType.keyNumberValido  ( pApi, "precioCredito" )
     pApi.precioDolar          = ToolType.keyNumberValido  ( pApi, "precioDolar" )
@@ -189,13 +201,14 @@ export class ProductoProveedor implements IProductoProveedor
     pApi.descuento            = ToolType.keyNumberValido  ( pApi, "descuento" )
     pApi.fechaCreacion        = ToolDate.getDateToStr( ToolType.keyStringValido( pApi, "fechaCreacion"  ) )  
     pApi.fechaEdicion         = ToolDate.getDateToStr( ToolType.keyStringValido( pApi, "fechaEdicion"   ) ) 
-    pApi.fechaLlegada         = ToolDate.getDateToStr( ToolType.keyStringValido( pApi, "fechaLlegada"   ) )    
+    pApi.fechaLlegada         = ToolDate.getDateToStr( ToolType.keyStringValido( pApi, "fechaLlegada"   ) )
 
     const pro                 = Object.assign( new ProductoProveedor(), pApi ) as IProductoProveedor
 
     pro.img.url               = pApi?.urlImagen ?? IMAGEN_DEFAULT
     pro.tipo                  = new TipoProductoProveedor( ToolType.keyNumberValido( pApi, "tipo_id" ) )
-
+    pro.garantiaMeses         = BuscarLabelValue( MesesGarantia,  ToolType.keyNumberValido( pApi, "garantiaMeses" ) )
+    pro.hechoEn               = BuscarLabelValue( OriginesMadeIn, ToolType.keyStringValido( pApi, "hechoEn" ) )
     pro.proveedor             = await getProveedorDB    ( ToolType.keyNumberValido( pApi, "proveedor_id" ) )
     pro.categoria             = await getCategoriaDB    ( ToolType.keyNumberValido( pApi, "categoria_id" ) )
     pro.diasDespacho          = await getDiaDespachoDB  ( ToolType.keyNumberValido( pApi, "diasDespacho_id" ) )
