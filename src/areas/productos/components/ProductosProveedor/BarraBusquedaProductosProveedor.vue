@@ -178,7 +178,7 @@
               icon                ="mdi-filter-off"
               padding             ="xs"
               color               ="primary"
-              @click              ="evento = EVENTOS.LIMPIAR_FILTROS"
+              @click              ="Eventos.emit('limpiarFiltros')"
               >
               <Tooltip label      ="Limpiar filtros"/>
             </q-btn>
@@ -271,52 +271,29 @@
             class               ="width110"
           />
           <div>
-          <q-btn
-            v-bind              ="style.btnBaseMd"
-            icon                ="mdi-table-row-plus-after"
-            color               ="positive"
-            class               ="q-ml-sm"
-            @click              ="evento = EVENTOS.NUEVAS_FILAS"
-            >
-            <Tooltip label      ="Crear nuevas filas"/>
-          </q-btn>          
-          </div>
-          <div >
-
-        </div>          
-        </div>   
-      </fieldset-filtro>
-      <!-- //* /////////////////////////////////////////////////// Acciones -->
-      <fieldset-filtro
-        titulo                  ="Acciones"
-        class-contenido         ="column q-gutter-sm width160"
-        style                   ="height: 120px;"
-        >
-        <div >
-          <q-btn
-            v-bind              ="style.btnBaseMd"
-            label               ="Copiar valores"
-            icon                ="mdi-content-duplicate"
-            color               ="blue-8"
-            class               ="full-width"
-            @click              ="evento = EVENTOS.COPIAR_DATOS"
-            >
-            <Tooltip label      ="Copiar valores a campos temporales"/>
-          </q-btn>
+            <q-btn
+              v-bind            ="style.btnBaseMd"
+              icon              ="mdi-table-row-plus-after"
+              color             ="positive"
+              class             ="q-ml-sm"
+              @click            ="emit('crearFilas', totalACrear)"
+              >
+              <Tooltip label    ="Crear nuevas filas"/>
+            </q-btn>          
+          </div>       
         </div>
-        <div>
-          <q-btn
-            v-bind              ="style.btnBaseMd"
-            label               ="Cambiar precios"
-            icon                ="mdi-cash-usd"
-            color               ="positive"
-            class               ="full-width"            
-            @click              ="evento = EVENTOS.ACTUALIZAR_PRECIOS"
-            >
-            <Tooltip label      ="Copiar precios de temporales precios de proveedor"/>
-          </q-btn>
-        </div>        
-      </fieldset-filtro>      
+        <q-btn
+          v-bind                ="style.btnBaseMd"
+          label                 ="Crear productos"
+          icon                  ="mdi-plus"
+          color                 ="positive"
+          class                 ="q-ml-sm"
+          :disable              ="!hayProductosNuevos"
+          @click                ="emit('crearFilas', totalACrear)"
+          >
+          <Tooltip label        ="Crear productos que esten listos"/>
+        </q-btn>
+      </fieldset-filtro>    
       <!-- //* /////////////////////////////////////////////////// Modo Edicion -->
       <fieldset-filtro
         titulo                  ="Modo de edición"
@@ -333,6 +310,37 @@
           />
         </div>
       </fieldset-filtro>
+      <!-- //* /////////////////////////////////////////////////// Acciones -->
+      <fieldset-filtro  
+        titulo                  ="Acciones"
+        class-contenido         ="column q-gutter-sm width160"
+        style                   ="height: 120px;"
+        >
+        <div >
+          <q-btn
+            v-bind              ="style.btnBaseMd"
+            label               ="Copiar valores"
+            icon                ="mdi-content-duplicate"
+            color               ="blue-8"
+            class               ="full-width"
+            @click              ="Eventos.emit('copiarDatos')"
+            >
+            <Tooltip label      ="Copiar valores a campos temporales"/>
+          </q-btn>
+        </div>
+        <div>
+          <q-btn
+            v-bind              ="style.btnBaseMd"
+            label               ="Cambiar precios"
+            icon                ="mdi-cash-usd"
+            color               ="positive"
+            class               ="full-width"            
+            @click              ="Eventos.emit('actualizarPrecios')"
+            >
+            <Tooltip label      ="Copiar precios de temporales precios de proveedor"/>
+          </q-btn>
+        </div>        
+      </fieldset-filtro>        
     </q-tab-panel>
   </q-tab-panels>
   <inner-loading :cargando      ="loading.carga || b.f.copiando"/>
@@ -343,14 +351,14 @@
 
 */
   // * /////////////////////////////////////////////////////////////////////// Core
-  import {  watch,
+  import {  ref,
+            watch,
             computed,
             onMounted,
                                 } from "vue"
   // * /////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs         } from 'pinia'
-  import {  useStoreApp, 
-            EVENTOS             } from 'stores/app'
+  import {  useStoreApp         } from 'stores/app'
   import {  useStoreProducto    } from 'stores/producto'
 
   // * /////////////////////////////////////////////////////////////////////// Modelos
@@ -360,6 +368,7 @@
 
   // * /////////////////////////////////////////////////////////////////////// Componibles
   import {  style               } from "src/composables/useEstilos"
+  import {  Eventos             } from "src/composables/useTools"
   import {  TiposDeEdicion,
             TIPO_EDICION        } from "components/utilidades/AgGrid/AGTools"
   
@@ -380,23 +389,24 @@
   const { busquedaPro : b,
           productosPro,
           loading           } = storeToRefs( useStoreProducto() )
-  const { campo_1   : modoEdicion,
-          numero_1  : totalACrear,
-          tabs,
+  const { tabs,
           filtro,
-          evento,
+          campo_1 : modoEdicion,
                             } = storeToRefs( useStoreApp() )
 
   type TEmit                  = {
     buscar          : [ value : IQuery  ]
     limpiar         : [ value : void    ]
     exportar        : [ value : void    ]
+    crearFilas      : [ value : number  ]
   }  
   const emit                  = defineEmits<TEmit>()
 
+  const totalACrear           = ref<number>(1)
+  const hayProductosNuevos    = computed(()=> !!(productosPro.value.filter( p => p.esNuevo ).length) )  
+  
   onMounted(()=>{
-    modoEdicion.value         = TIPO_EDICION.BLOQUEDA
-    totalACrear.value         = 1
+    modoEdicion.value         = TIPO_EDICION.BLOQUEDA    
   })
 
   watch(()=>b.value.f, ()=>

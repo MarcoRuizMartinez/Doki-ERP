@@ -9,11 +9,12 @@ import {  IProveedor,
 import {  ICategoriaProducto,
           CategoriaProducto         } from "src/areas/productos/models/CategoriaProducto"
 import {  ITipoProductoProveedor,
-          TipoProductoProveedor,    } from "src/areas/productos/models/TipoProductoProveedor"    
+          TipoProductoProveedor,
+          TIPO_PRO_PROVIDEDOR       } from "src/areas/productos/models/TipoProductoProveedor"    
 import {  IDiasDespacho,
           DiasDespacho              } from "src/models/Diccionarios/DiasDespacho"
 import {  MesesGarantia             } from "src/models/Diccionarios/MesesGarantia"
-import {  OriginesMadeIn            } from "src/models/Diccionarios/Madein"
+import {  OriginesMadeIn            } from "src/models/Diccionarios/MadeIn"
 import {  ILabelValue,  
           labelValueNulo,
           BuscarLabelValue          } from "src/models/TiposVarios"
@@ -30,7 +31,9 @@ export interface IProductoProveedor {
   idNuestro           : number
   ref                 : string
   ref_n               : string                //* ///////////////////////////////// _n
-  refNuestra          : string  
+  refComparacion      : string                //* Ref que se utiliza para comprar si el precio esta bien
+  refNuestra          : string
+  refPadre            : string
   nombre              : string
   nombre_n            : string                //* ///////////////////////////////// _n
   nombreNuestro       : string
@@ -40,6 +43,7 @@ export interface IProductoProveedor {
   proveedor           : IProveedor
   categoria           : ICategoriaProducto
   img                 : IImagenProducto
+  urlImagen           : string
 
   activo              : boolean
   disponible          : boolean
@@ -81,6 +85,17 @@ export interface IProductoProveedor {
   esNuevo             : boolean
   editable            : boolean
 
+  okRef               : boolean     // Para validar que la referencia no exista
+  okNombre            : boolean
+  okTipo              : boolean
+  okProveedor         : boolean
+  okCategoria         : boolean
+  okHechoEn           : boolean
+  //okGarantiaMeses     : boolean
+  okPrecio            : boolean
+  sePuedeCrear        : boolean
+  okRefPadre          : boolean
+
   copiarDatos         : ()=> void
   copiarPrecios       : ( key : "precio" | "precioCredito" )=> void
 }
@@ -91,16 +106,19 @@ export class ProductoProveedor implements IProductoProveedor
   idNuestro           : number                  = 0
   ref                 : string                  = ""
   ref_n               : string                  = ""
+  refComparacion      : string                  = ""
   refNuestra          : string                  = ""
+  refPadre            : string                  = ""
   nombre              : string                  = ""
   nombre_n            : string                  = ""
   nombreNuestro       : string                  = ""
   estado              : string                  = ""
-  tipo                : ITipoProductoProveedor  = new TipoProductoProveedor()
+  tipo                : ITipoProductoProveedor  = new TipoProductoProveedor( TIPO_PRO_PROVIDEDOR.SIMPLE )
   orden               : number                  = 0
   proveedor           : IProveedor              = new Proveedor()  
   categoria           : ICategoriaProducto      = new CategoriaProducto()
   img                 : IImagenProducto         = new ImagenProducto()
+  urlImagen           : string                  = ""
   activo              : boolean                 = true
   disponible          : boolean                 = true
   gestionStock        : boolean                 = false
@@ -134,12 +152,22 @@ export class ProductoProveedor implements IProductoProveedor
   editable            : boolean                 = false
   esNuevo             : boolean                 = false
 
+  okRef               : boolean                 = false
+  okNombre            : boolean                 = false
+  okTipo              : boolean                 = true
+  okProveedor         : boolean                 = false
+  okCategoria         : boolean                 = false
+  okHechoEn           : boolean                 = false
+  //okGarantiaMeses     : boolean                 = false
+  okPrecio            : boolean                 = false
+  okRefPadre          : boolean                 = true
+
   constructor( modo : "nuevo" | "" = "" )
   {
     this.esNuevo      = modo === "nuevo" 
   }
 
-
+  get sePuedeCrear()          : boolean{ return this.esNuevo  && this.okRef && this.okNombre && this.okTipo && this.okProveedor && this.okCategoria && this.okHechoEn && this.okPrecio && this.okRefPadre }
   get fechaCreacionCorta()    : string { return ToolDate.fechaCorta( this.fechaCreacion    ) }
   get fechaEdicionCorta()     : string { return ToolDate.fechaCorta( this.fechaEdicion     ) }
   get fechaLlegadaCorta()     : string { return ToolDate.fechaCorta( this.fechaLlegada     ) } 
@@ -205,7 +233,7 @@ export class ProductoProveedor implements IProductoProveedor
 
     const pro                 = Object.assign( new ProductoProveedor(), pApi ) as IProductoProveedor
 
-    pro.img.url               = pApi?.urlImagen ?? IMAGEN_DEFAULT
+    pro.img.url               = pApi?.urlImagenNuestra ?? IMAGEN_DEFAULT
     pro.tipo                  = new TipoProductoProveedor( ToolType.keyNumberValido( pApi, "tipo_id" ) )
     pro.garantiaMeses         = BuscarLabelValue( MesesGarantia,  ToolType.keyNumberValido( pApi, "garantiaMeses" ) )
     pro.hechoEn               = BuscarLabelValue( OriginesMadeIn, ToolType.keyStringValido( pApi, "hechoEn" ) )
@@ -217,7 +245,40 @@ export class ProductoProveedor implements IProductoProveedor
     pro.editable              = editable
     
     return pro
- } 
+ }
+ 
+ static getCopiaProducto( origen : IProductoProveedor, destino : IProductoProveedor ) : IProductoProveedor
+ {
+    destino.ref                = !!destino.ref    ? destino.ref    : origen.ref
+    destino.nombre             = !!destino.nombre ? destino.nombre : origen.nombre
+    destino.estado             = origen.estado
+    destino.orden              = ++origen.orden
+    destino.proveedor          = origen.proveedor
+    destino.categoria          = origen.categoria
+    destino.activo             = origen.activo
+    destino.disponible         = origen.disponible
+    destino.gestionStock       = origen.gestionStock
+    destino.descripcion        = origen.descripcion
+    destino.url                = origen.url
+    destino.familiaNuestra     = origen.familiaNuestra
+    destino.familiaProveedor   = origen.familiaProveedor
+    destino.documento          = origen.documento
+    destino.hechoEn            = origen.hechoEn
+    destino.garantia           = origen.garantia
+    destino.garantiaMeses      = origen.garantiaMeses
+    destino.diasDespacho       = origen.diasDespacho
+    destino.precio             = origen.precio
+    destino.precioCredito      = origen.precioCredito
+    destino.precioDolar        = origen.precioDolar
+    destino.precioPromocion    = origen.precioPromocion
+    destino.costoExtra         = origen.costoExtra
+    destino.descuento          = origen.descuento
+    destino.calcularDescuento  = origen.calcularDescuento
+    destino.precioActualizado  = origen.precioActualizado
+    destino.fechaLlegada       = origen.fechaLlegada
+
+    return destino
+ }
 }
 
 
@@ -254,3 +315,26 @@ interface CamposPendientesDeBuscar {
   precioActualizado   : boolean
   imagen              : IImagenProducto 
 }
+
+
+
+
+
+
+
+
+
+
+
+/*
+
+ref                 : string                  = ""
+nombre              : string                  = ""
+tipo                : ITipoProductoProveedor  = new TipoProductoProveedor()
+proveedor           : IProveedor              = new Proveedor()  
+categoria           : ICategoriaProducto      = new CategoriaProducto()
+hechoEn             : ILabelValue             = labelValueNulo
+garantiaMeses       : ILabelValue             = labelValueNulo
+precio              : number                  = 0
+
+*/

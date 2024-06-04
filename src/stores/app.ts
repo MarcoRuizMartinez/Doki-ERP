@@ -9,16 +9,6 @@ export interface ITab
   alerts      : boolean[]
 }
 
-export enum EVENTOS
-{
-  NULO,
-  LIMPIAR_FILTROS,
-  COPIAR_DATOS,
-  ACTUALIZAR_PRECIOS,
-  NUEVAS_FILAS,
-}
-
-
 export interface iApp
 {
   online      : boolean
@@ -28,9 +18,7 @@ export interface iApp
   toggle      : string    // Para guardar en los toggle generales
   vista       : IVistaAG,
   filtro      : string,
-  evento      : EVENTOS,
   campo_1     : string | number,
-  numero_1    : number,
 }
 
 export const useStoreApp = defineStore('app', {
@@ -42,8 +30,6 @@ export const useStoreApp = defineStore('app', {
     toggle        : "",
     vista         : new VistaAG(),
     filtro        : "",
-    evento        : EVENTOS.NULO,
     campo_1       : "",
-    numero_1      : 0,
   }),
 });

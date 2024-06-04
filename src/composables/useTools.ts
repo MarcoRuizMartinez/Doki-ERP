@@ -5,8 +5,19 @@ import {  date,
 import {  LocationQueryValue      } from "vue-router"
 import {  ILabelValue,
           labelValueNulo,         } from "src/models/TiposVarios"
- 
-type TIconos = "" | "water" | "account" | "shield" | "clipboard" | "clock" | "cloud" | "sticker" | "comment" | "table" | "head" | "phone" | "timeline" | "bell" | "printer" | "email" | "lock" | "file" | "lock-open" | "map-marker"
+import    mitt                      from "mitt";
+
+//* ///////////////////////////////////////////////////////////////////// Eventos
+
+type TEventos = {
+  limpiarFiltros        : void
+  copiarDatos           : void
+  actualizarPrecios     : void
+}
+
+export const Eventos = mitt<TEventos>()
+
+//* ///////////////////////////////////////////////////////////////////// useTools
 
 export function useTools()
 {
@@ -597,6 +608,7 @@ export class ToolColor
 
 
 import confetti from 'canvas-confetti';
+import { onUnmounted } from "vue";
 export function confeti( total : number = 1 )
 {
   const mili    = 500
@@ -678,9 +690,10 @@ export class Format
     return formatoFinal
   }
 
-  static precioAG( param : ILabelValue ) : string
+  static precioAG( param : any ) : string
   {
-    return Format.precio( param.value, "decimales-no" )
+    const valor = ToolType.keyStringValido( param, "value" )
+    return Format.precio( valor, "decimales-no" )
   }
 
   static formatoNumeroCorto( valor : string | number, formato : TFormatosNumero = "normal" ) : string
@@ -840,3 +853,4 @@ function nuevoJS()
 
 
 
+type TIconos = "" | "water" | "account" | "shield" | "clipboard" | "clock" | "cloud" | "sticker" | "comment" | "table" | "head" | "phone" | "timeline" | "bell" | "printer" | "email" | "lock" | "file" | "lock-open" | "map-marker"

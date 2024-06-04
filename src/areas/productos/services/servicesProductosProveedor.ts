@@ -5,6 +5,7 @@ import {  IProductoProveedor,
           ProductoProveedor   } from "../models/ProductoProveedor";
 import {  IQuery              } from "src/models/Busqueda"
 import {  TDatosEvento        } from "components/utilidades/AgGrid/AGTools"
+import {  ToolType            } from "src/composables/useTools"
 
 export function servicesProductosPro() 
 {
@@ -39,6 +40,32 @@ export function servicesProductosPro()
     })
   }
 
+  async function buscarProductoByRef( ref : string, editable : boolean = false ) : Promise< IProductoProveedor >
+  {
+    return new Promise( async (resolver, rechazar ) =>
+    {
+      const { data, ok      } = await miFetch( getURL("listas", "productos-proveedores-new"),
+                                                    {
+                                                      body: getFormData( "", { ref } ),
+                                                      method: "POST" 
+                                                    },
+                                                    {
+                                                      mensaje:      "buscar productos por ref",
+                                                      tiempoEspera: 15_000
+                                                    }
+                                                  )
+      if(ok)
+      {        
+        const producto        = await ProductoProveedor.getProductoFromAPI( data, editable )         
+        //console.log("//* //////////// Productos: ", productos);
+        resolver( producto )
+      }
+      else
+      {
+        resolver( new ProductoProveedor() )
+      }
+    })
+  }
 
   async function editarCampoEnLote( campo : string, datos : TDatosEvento[], usuarioId : number ) : Promise< boolean >
   {
@@ -70,9 +97,9 @@ export function servicesProductosPro()
     })
   }
 
-
   return {
     buscarProductos,
-    editarCampoEnLote
+    buscarProductoByRef,
+    editarCampoEnLote,
   }
 }

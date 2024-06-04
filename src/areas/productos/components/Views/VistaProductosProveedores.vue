@@ -20,6 +20,7 @@
       <barra-busqueda
         @buscar               ="buscar"
         @limpiar              ="limpiarBusqueda"
+        @crear-filas          ="crearNuevasFilas"
       />
     </template>
     <!-- //* //////////////////////////////////////////////////////// Tabla resultados-->
@@ -44,20 +45,24 @@
   import {  useStoreProducto    } from 'stores/producto'
   import {  useStoreApp         } from 'stores/app'
   
-  //////////////////////////////////////////////////// Componibles
+  /////////////////////////////////////////////////////////////////////// Componibles
   import {  useTitle            } from "@vueuse/core"
   import {  servicesProductosPro} from "src/areas/productos/services/servicesProductosProveedor"
+  import {  Eventos             } from "src/composables/useTools"
 
   // * /////////////////////////////////////////////////////////////////////// Modelos
   import {  IQuery              } from "src/models/Busqueda"
   import {  TModosVentana       } from "src/models/TiposVarios"  
   import {  TIPO_EDICION        } from "components/utilidades/AgGrid/AGTools"
+  import {  ProductoProveedor   } from "../../models/ProductoProveedor"  
+
 
   // * /////////////////////////////////////////////////////////////////////// Componentes
   import    ventana               from "components/utilidades/Ventana.vue"    
   import    barraBusqueda         from "./../ProductosProveedor/BarraBusquedaProductosProveedor.vue"
   import    tabsBusqueda          from "./../ProductosProveedor/TabsBusquedaProductosProveedor.vue"
-  import    tablaProductos        from "./../ProductosProveedor/TablaProductos.vue"
+  import    tablaProductos        from "../ProductosProveedor/TablaProductosPro.vue"
+
 
   // * ////////////////////////// Columnas
   const { buscarProductos       } = servicesProductosPro()
@@ -65,7 +70,9 @@
   const { productosPro,
           busquedaPro : b,
           loading               } = storeToRefs( useStoreProducto() )    
-  const { tabs, campo_1         } = storeToRefs( useStoreApp() )
+  const { tabs,
+          campo_1 : modoEdicion,
+                                } = storeToRefs( useStoreApp() )
   const router                    = useRouter()
   const modo                      = ref< TModosVentana >("esperando-busqueda")
 
@@ -109,8 +116,7 @@
     return title
   })  
 
-  const editable                  = computed(()=> campo_1.value === TIPO_EDICION.RANGO || campo_1.value === TIPO_EDICION.CELDA)
-
+  const editable                  = computed(()=> modoEdicion.value === TIPO_EDICION.RANGO || modoEdicion.value === TIPO_EDICION.CELDA)
 
   //* Titulo Pestaña navegador 
   watchEffect(()=>{
@@ -118,4 +124,18 @@
     const extra                   = !!largo ? ` (${largo}) ` : " "
     useTitle(`🔍${extra}Productos proveedor`)
   })    
+
+
+  function crearNuevasFilas( filas : number )
+  {
+    modo.value        = "normal"
+    const largo       = productosPro.value.length
+    for (let i = 0; i < filas; i++) {
+      const newProducto = new ProductoProveedor( "nuevo" )
+      newProducto.id    = ( largo + i + 1 ) + 1_000_000
+      productosPro.value.unshift( newProducto  )
+
+    }
+  }
+
 </script>

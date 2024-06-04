@@ -3,12 +3,13 @@
     :style                        ="estilo"
     style                         ="min-height: 800px;"
     class                         ="ag-theme-quartz"
-    fill-handle-direction         ="y"
+    fill-handle-direction         ="xy"
     :auto-size-strategy
     :get-row-id
-    :column-types
+    :column-types                 ="tiposColumnas"
     :data-type-definitions
     :row-class-rules
+    :get-context-menu-items
     row-group-panel-show          ="onlyWhenGrouping"
     pivot-panel-show              ="onlyWhenPivoting" 
     :side-bar                     ="{ toolPanels: ['filters', 'columns'] } "
@@ -25,7 +26,6 @@
     @grid-ready                   ="tablaLista"
     @displayed-columns-changed    ="cambioEnColumna"
     @sort-changed                 ="cambioEnColumna"
-    @cell-double-clicked          ="console.log('Doble click')"
     >
   </ag-grid-vue>
 </template>
@@ -46,11 +46,12 @@ single-click-edit
 
   // * ///////////////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs           } from 'pinia'
-  import {  useStoreApp,
-            EVENTOS               } from 'stores/app'
+  import {  useStoreApp           } from 'stores/app'
 
   // * ///////////////////////////////////////////////////////////////////////////////// Componibles  
-  import {  Format, ToolType      } from "src/composables/useTools" 
+  import {  Format,
+            ToolType,
+            Eventos               } from "src/composables/useTools" 
 
   //* ///////////////////////////////////////////////////////////////////////////////// Ag Grid
   import {  AgGridVue             } from "ag-grid-vue3"       // Vue Data Grid Component
@@ -59,19 +60,24 @@ single-click-edit
             TDatosEvento          } from "./AGTools"
             IniciarAG()
 
-  import {  GridReadyEvent,
+  import {  ColDef,
+            GridReadyEvent,
             GridApi,
+            ColTypeDef,
             ColumnState,
+            MenuItemDef,            
             CellValueChangedEvent,
+            GetContextMenuItems,  
             GetRowIdParams        } from "ag-grid-community";
 
   type TProps                     = {
-    columnasDefecto               : any
     columnas                      : any[]
     keyId                         : string
     autoSizeStrategy             ?: any
     rangoActivo                   : boolean
     rowClassRules                ?: any
+    tiposColumnas                ?: ColTypeDef
+    getContextMenuItems          ?: (string | MenuItemDef)[] | GetContextMenuItems
   }
   const { keyId,
           rangoActivo = false  }  = defineProps<TProps>()
@@ -81,11 +87,10 @@ single-click-edit
   const datos                     = defineModel< any[] >( { required: true })
   const getRowId                  = ref< any >( null )
   const gridApi                   = ref< GridApi >()
-  const { vista, filtro, evento } = storeToRefs( useStoreApp() )  
+  const { vista, filtro         } = storeToRefs( useStoreApp() )  
 
 
-  watch(filtro, aplicarFiltroRapido)
-  watch(evento, gestionarEventos)
+  watch(filtro, aplicarFiltroRapido)  
   watch(vista,  gestionarCambiosEnVista, { deep: false })
 
   const estilo                    = computed(()=>
@@ -130,45 +135,6 @@ single-click-edit
 
     emit("edicionCelda", datosEvento)
   }
-
-  const columnTypes = ref(
-    {
-      moneda:
-      { 
-        valueFormatter  : Format.precioAG,
-        cellClass       : "text-right",
-      },
-      numero:
-      {
-        cellClass       : "text-right",
-      },
-      editable:
-      {
-        editable: ( p : any) => {
-          const hayData     = ToolType.existeYEsValido( p,      "data" )
-          const hayEditable = ToolType.existeYEsValido( p.data, "editable" )
-          return hayData && hayEditable ? p.data.editable : false
-        }
-      },
-      creacion:
-      {
-        editable: ( p : any) => {
-          const hayData     = ToolType.existeYEsValido( p,      "data" )
-          const hayEsNuevo  = ToolType.existeYEsValido( p.data, "esNuevo" )          
-          return hayData && hayEsNuevo ? p.data.esNuevo : false
-        }
-      },
-      editarYCrear:
-      {
-        editable: ( p : any) => {
-          const hayData     = ToolType.existeYEsValido( p,      "data" )
-          const hayEsNuevo  = ToolType.existeYEsValido( p.data, "esNuevo" )
-          const hayEditable = ToolType.existeYEsValido( p.data, "editable" )
-          return hayData && hayEsNuevo && hayEditable ? p.data.esNuevo || p.data.editable : false
-        }
-      }     
-    }
-  )
 
   function setId(){
     getRowId.value                = ( params : GetRowIdParams ) => params.data[ keyId ]
@@ -218,12 +184,7 @@ single-click-edit
   }
 
 
-  function gestionarEventos()
-  {
-    if(evento.value === EVENTOS.LIMPIAR_FILTROS) limpiarFiltros()
-
-    evento.value = EVENTOS.NULO    
-  }
+  Eventos.on("limpiarFiltros", limpiarFiltros)
 
   function limpiarFiltros() {
     gridApi.value?.setFilterModel(null)
@@ -233,8 +194,6 @@ single-click-edit
   function aplicarFiltroRapido() {
     gridApi.value?.setGridOption("quickFilterText", filtro.value)
   }
-
-
 
   function getVista() : ColumnState[] | void
   {
@@ -248,6 +207,17 @@ single-click-edit
     if(!!datos.value.length)
       setId()
   })
+
+  const columnasDefecto : ColDef = {
+    filter                        : "agTextColumnFilter",
+    enableCellChangeFlash         : true,  
+    floatingFilter                : true,
+    filterParams                  : { buttons: ['reset'], defaultToNothingSelected: true,},
+    //enableRowGroup                : true,
+    //enablePivot                   : true,
+    //enableValue                   : true,    
+  }
+
 
   defineExpose({
     setColumnas,

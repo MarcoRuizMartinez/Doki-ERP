@@ -1,67 +1,75 @@
 <template>
   <tablaAg
-    v-model             ="productosPro"
-    key-id              ="id"
-    :ref                ="VISTAS_AG.PRODUCTOS_PROVEEDORES"
-    :row-class-rules    ="reglasCSS"
-    :columnas           ="ColumnasProductos"
+    v-model                 ="productosPro"
+    key-id                  ="id"
+    :ref                    ="VISTAS_AG.PRODUCTOS_PROVEEDORES"
+    :row-class-rules        ="reglasCSS"
+    :columnas               ="columnasProductos"
     :rango-activo
-    :columnas-defecto
     :auto-size-strategy
-    @edicion-celda      ="procesarEdicionEnLote"
+    :tipos-columnas         ="columnTypes"
+    :get-context-menu-items ="getMenuContextual"
+    @edicion-celda          ="procesarEdicionEnLote"
   />
 </template>
 
 <script setup lang="ts">
   // * ///////////////////////////////////////////////////////////////////////////////// Core
-  import {  ref, watch          } from "vue"
+  import {  ref,
+            watch,
+            onUnmounted         } from "vue"
 
   // * ///////////////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs         } from 'pinia'
-  import {  useStoreApp,
-            EVENTOS             } from 'stores/app'  
+  import {  useStoreApp         } from 'stores/app'  
   import {  useStoreUser        } from 'stores/user'
   import {  useStoreProducto    } from 'stores/producto'
 
   // * ///////////////////////////////////////////////////////////////////////////////// Modelos
   import {  VISTAS_AG           } from "components/utilidades/AgGrid/VistaAG"
-  import {  ColumnasProductos,
+  import {  columnasProductos,
             autoSizeStrategy,
             reglasCSS,
-            columnasDefecto,
+            columnTypes,
                                 } from "./ColumnasProductos"
   import {  TIPO_EDICION,
             TDatosEvento        } from "components/utilidades/AgGrid/AGTools"
-  import {  ProductoProveedor   } from "../../models/ProductoProveedor"            
-
+  import {  IProductoProveedor, ProductoProveedor  } from "../../models/ProductoProveedor"
+  import {  MenuItemDef,
+            GetContextMenuItems,
+            GetContextMenuItemsParams
+                                  } from "ag-grid-community";
   // * ///////////////////////////////////////////////////////////////////////////////// Componibles
   import {  servicesProductosPro} from "src/areas/productos/services/servicesProductosProveedor"
-  import {  ToolType            } from "src/composables/useTools"
+  import {  ToolType, Eventos   } from "src/composables/useTools"
 
   // * ///////////////////////////////////////////////////////////////////////////////// Componentes
   import tablaAg                  from "components/utilidades/AgGrid/TablaAG.vue"
+  import { TIPO_PRO_PROVIDEDOR  } from "../../models/TipoProductoProveedor"
   
   const { productosPro,
           loading               } = storeToRefs( useStoreProducto() )               
 
-  const { campo_1   : modoEdicion,
-          numero_1  : nuevasFilas,
-          evento                } = storeToRefs( useStoreApp() )
+  const { campo_1 : modoEdicion } = storeToRefs( useStoreApp() )
   const { usuario               } = storeToRefs( useStoreUser() )
-  const { editarCampoEnLote     } = servicesProductosPro()
+  const { editarCampoEnLote,
+          buscarProductoByRef,
+                                } = servicesProductosPro()
   const AGProProvee               = ref< InstanceType<typeof tablaAg> | null>(null)
   const cambios   : TDatosEvento[]= []
   let   timeoutId : ReturnType<typeof setTimeout> | null = null;
 
   function procesarEdicionEnLote( d : TDatosEvento )
   {
-    /* const hayEsNuevo        = ToolType.existeYEsValido(d.data, "esNuevo")
-    if(hayEsNuevo && !!d.data.esNuevo) return
+    if(!!d.data.esNuevo) {
+      gestionarCambiosEnNuevo(d)
+      return
+    }
 
     cambios.push( d )
 
     if (timeoutId)  clearTimeout(timeoutId)    
-    timeoutId               = setTimeout(subirCambios, 200); */
+    timeoutId               = setTimeout(subirCambios, 200);
   }
 
   async function subirCambios()
@@ -100,6 +108,8 @@
   // * ////////////////////////////////////////////////////////////////////////////////////////////////////
   // * ////////////////////////////////////////////////////////////////////////////// Gestion de precios
 
+  Eventos.on("actualizarPrecios", actualizarPrecios)
+
   async function actualizarPrecios()
   {
     await copiarYSubirPreciosDeTemporales( "precio" )
@@ -132,6 +142,55 @@
 
     await subirCambios()
   }
+  // * /////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // * ////////////////////////////////////////////////////////////////////////////// Gestion cambios en nuevo
+
+  async function gestionarCambiosEnNuevo( d : TDatosEvento )
+  {
+    let revisarCampos         = false
+    if(d.campo === "refPadre" || d.campo === "tipo")
+    {
+      if(d.data.tipo.value    === TIPO_PRO_PROVIDEDOR.HIJO && d.data.refPadre.length > 3)
+      {
+        const producto        = await buscarProductoByRef( d.data.refPadre )
+        if(!!producto.id)
+        {
+          d.data              = ProductoProveedor.getCopiaProducto( producto, d.data ) 
+          revisarCampos       = true
+        }
+
+        d.data.okRefPadre     = !!producto.id
+      }
+    }
+
+    if(d.campo                === "ref"       || revisarCampos){
+      const producto          = await buscarProductoByRef( d.data.ref )
+      const repetido          = productosPro.value.some( p => p.ref === d.data.ref && p.id != d.data.id ) 
+      const muyCorto          = d.data.ref.length <= 4
+      d.data.okRef            = !(!!producto.id || repetido || muyCorto )
+    }
+
+    if(d.campo                === "nombre"    || revisarCampos)
+      d.data.okNombre         = d.data.nombre.length > 10
+    
+    if(d.campo                === "tipo"      || revisarCampos)
+      d.data.okTipo           = !!d.data.tipo.value
+
+    if(d.campo                === "proveedor" || revisarCampos)
+      d.data.okProveedor      = !!d.data.proveedor.id
+
+    if(d.campo                === "categoria" || revisarCampos)
+      d.data.okCategoria      = !!d.data.categoria.id
+
+    if(d.campo                === "hechoEn"   || revisarCampos)
+      d.data.okHechoEn        = !!d.data.hechoEn.value
+    
+    if(d.campo                === "precio"    || revisarCampos)
+      d.data.okPrecio         = ToolType.anyToNum( d.data.precio ) != 0
+
+    const refrescarTodo       = !!d.data.sePuedeCrear
+    AGProProvee.value?.refreshCells( refrescarTodo )
+  }
 
   // * ////////////////////////////////////////////////////////////////////////////////////////////////////
   // * ////////////////////////////////////////////////////////////////////////////// Gestion modo edicion 
@@ -150,36 +209,51 @@
   }
 
   // * ////////////////////////////////////////////////////////////////////////////////////////////// 
-  // * ////////////////////////////////////////////////////////////////////////////// Gestion eventos
-  watch(evento,       gestionarEventos)
-  async function gestionarEventos()
-  {
-    if(evento.value === EVENTOS.COPIAR_DATOS)       copiarADatosTemporales()
-    else
-    if(evento.value === EVENTOS.ACTUALIZAR_PRECIOS) actualizarPrecios()
-    else
-    if(evento.value === EVENTOS.NUEVAS_FILAS)       crearNuevasFilas()
-
-    evento.value = EVENTOS.NULO    
-  }
-
-  // * ////////////////////////////////////////////////////////////////////////////////////////////// 
   // * ////////////////////////////////////////////////////////////////////////////// Otros  
+
+  Eventos.on("copiarDatos", copiarADatosTemporales)
+
   function copiarADatosTemporales()
   {
     productosPro.value.forEach( p => p.copiarDatos() )
     AGProProvee.value?.refreshCells( false )
   }
 
-  function crearNuevasFilas()
-  {
-    const largo       = productosPro.value.length
-    for (let i = 0; i < nuevasFilas.value; i++) {
-      const newProducto = new ProductoProveedor( "nuevo" )
-      newProducto.id    = ( largo + i + 1 ) + 1_000_000
-      productosPro.value.unshift( newProducto  )
+  onUnmounted(()=>{
+    Eventos.off("actualizarPrecios")
+    Eventos.off("copiarDatos")
+  })
 
-    }
+
+  function getMenuContextual( params : GetContextMenuItemsParams<IProductoProveedor> ) : (string | MenuItemDef)[] | GetContextMenuItems
+  {
+    return [
+      "autoSizeAll",
+      "expandAll",
+      "contractAll",
+      "separator",
+      "copy",
+      "cut",
+      "paste",
+      {
+        name      : "Eliminar fila de resultados",
+        tooltip   : "Eliminar de resultado, mas no elimina el producto",
+        action    : () => eliminarFila( params.node?.data?.id ),
+        icon      :"❌"
+      },    
+      "separator",  
+      "resetColumns", 
+      "excelExport",
+    ]
+  }
+
+  function eliminarFila( id : number = 0 )
+  {
+    if(!id) return
+    const index = productosPro.value.findIndex( p => p.id === id )
+    if(index < 0 ) return 
+    
+    productosPro.value.splice( index, 1 )
   }
 
 /* 

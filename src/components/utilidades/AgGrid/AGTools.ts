@@ -1,3 +1,4 @@
+import {  IProductoProveedor        } from './../../../areas/productos/models/ProductoProveedor';
 import {  ClientSideRowModelModule,
           ModuleRegistry,
                                     } from "ag-grid-community";
@@ -37,11 +38,10 @@ export const TiposDeEdicion  = [
   { label: 'Edición por rango',   value: TIPO_EDICION.RANGO,    icon: "mdi-table-arrow-down"  },
 ]
 
-
 export type TDatosEvento = {
   campo     : string
   index     : number
-  data      : any
+  data      : IProductoProveedor
   value     : any
   oldValue  : any
 }

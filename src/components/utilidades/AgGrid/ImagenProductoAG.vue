@@ -3,7 +3,7 @@
     size    ="xs"
     :imagen
     :nombre
-  />  
+  />
 </template>
   
 <script setup lang="ts">
