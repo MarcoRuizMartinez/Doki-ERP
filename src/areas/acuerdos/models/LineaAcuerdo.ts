@@ -556,7 +556,11 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
     for (const producto of productos)
     {
       const linea               = LineaAcuerdo.lineaDeProducto(producto)
-      linea.qty                 = !qty || (typeof qty === "number" && qty < 0 ) ? 1 : qty
+      if(qty != -1)
+        linea.qty               = !qty || (typeof qty === "number" && qty < 0 ) ? 1 : qty
+      else
+        linea.qty               = ToolType.keyNumberValido(producto, "qty", 1)
+
       linea.iva                 = !!producto.iva ? iva : 0
           //linea.descuentoX100 = descu ?? 0
       lineas.push( linea )

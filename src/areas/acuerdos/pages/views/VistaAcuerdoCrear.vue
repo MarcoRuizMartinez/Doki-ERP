@@ -158,7 +158,7 @@
       const origenOk            = !!acuerdo.value.origenContacto.id
       const vencimientoOk       = !!acuerdo.value.fechaFinValidezCorta || !acuerdo.value.esCotizacion
       const pagoOk              = !!acuerdo.value.condicionPago.id
-      const asesorCorrecto      = acuerdo.value.tercero.responsables.some( r => r.id === acuerdo.value.comercial.id )
+      const asesorCorrecto      = acuerdo.value.tercero.responsables.some( r => r.id === acuerdo.value.comercial?.id ?? 0 )
 
       alertas.value             = []
       if(!terceroOk)            alertas.value.push("Tercero invalido")

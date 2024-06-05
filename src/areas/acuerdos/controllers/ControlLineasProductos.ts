@@ -5,7 +5,8 @@ import {  useStoreAcuerdo       } from 'stores/acuerdo'
 import {  useApiDolibarr        } from "src/composables/useApiDolibarr"
 import {  servicesAcuerdos      } from "src/areas/acuerdos/controllers/servicesAcuerdos"
 // * //////////////////////////////////////////////////////////////////////////////// Modelos
-import {  IProductoDoli         } from "src/areas/productos/models/ProductoDolibarr"
+import {  IProductoDoli,
+          ProductoDoli          } from "src/areas/productos/models/ProductoDolibarr"
 import {  IGrupoLineas,
           GrupoLineas           } from "src/areas/acuerdos/models/GrupoLineasAcuerdo"
 import {  LineaAcuerdo,
@@ -77,6 +78,24 @@ export function useControlProductos()
     let ok  = await ordenarLineas(ids, acuerdo.value.id, acuerdo.value.tipo)
     if(!ok && acuerdo.value.productos.length >= 1)
       aviso("negative", "Error al ordenar")
+  }
+
+  
+  async function duplicarGrupo( grupo : IGrupoLineas )
+  {
+    if(!grupo.productos.length) return
+
+    await crearNuevoGrupo()
+    grupoElegido.value        = acuerdo.value.proGrupos.at(-1) ?? new GrupoLineas()
+
+    const productosDuplicar   : IProductoDoli[] = []
+    grupo.productos.forEach( p =>
+    {
+      const duplicado       = Object.assign( new ProductoDoli(), p)
+      productosDuplicar.push( duplicado )
+    })
+
+    await agregarProductos( productosDuplicar, -1 )
   }
 
 
@@ -513,5 +532,6 @@ export function useControlProductos()
     clonarLinea,
     deGruposAProductos,
     editarCostoLinea,
+    duplicarGrupo,
   }
 }

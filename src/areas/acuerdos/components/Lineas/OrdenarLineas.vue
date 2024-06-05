@@ -63,11 +63,22 @@
               />
             </q-popup-edit>            
           </div>
-          <q-icon
-            name                  ="mdi-drag-variant"
-            size                  ="sm"
-            class                 ="col-shrink handle cursor-move op30 op100-hover"
-          />
+          <div>
+            <q-btn
+              v-bind              ="style.btnRedondoFlatMd"
+              icon                ="mdi-content-duplicate"
+              class               ="q-mr-sm"
+              :disable            ="!grupo.productos.length" 
+              @click              ="duplicarGrupo( grupo )"
+              >
+              <Tooltip label      ="Duplicar grupo"/>
+            </q-btn>
+            <q-icon
+              name                ="mdi-drag-variant"
+              size                ="sm"
+              class               ="col-shrink handle cursor-move op30 op100-hover"
+            />            
+          </div>
           <vue-draggable
             v-model               ="grupo.productos"
             :animation            ="200"              
@@ -127,6 +138,7 @@
 
   const { crearLineaEnApi,
           crearNuevoGrupo,
+          duplicarGrupo,
           editarTituloGrupo,
           deGruposAProductos  } = useControlProductos()
 

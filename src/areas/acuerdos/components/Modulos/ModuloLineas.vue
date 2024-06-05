@@ -138,8 +138,10 @@
       v-model                   ="modales.ordenar"
       v-bind                    ="style.dialogo"
       :persistent               ="loading.ordenando"
+      @hide                     ="grupoElegido.noDestacarProductos()"
       >
-      <ordenar />
+      <ordenar
+      />
     </q-dialog>
   </ventana>
 </template>
