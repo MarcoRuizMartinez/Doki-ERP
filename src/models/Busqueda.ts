@@ -30,6 +30,7 @@ import {  ToolQuery, ToolType, Tool     } from "src/composables/useTools"
 export interface      IQuery {
   //tipo                 ?: string
   id                   ?: number
+  refs                 ?: string // Array de referencias
   acuerdo              ?: TTipoAcuerdo
   user                 ?: number
   usuario              ?: string | number

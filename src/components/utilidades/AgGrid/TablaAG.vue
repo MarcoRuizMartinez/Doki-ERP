@@ -49,9 +49,7 @@ single-click-edit
   import {  useStoreApp           } from 'stores/app'
 
   // * ///////////////////////////////////////////////////////////////////////////////// Componibles  
-  import {  Format,
-            ToolType,
-            Eventos               } from "src/composables/useTools" 
+  import {  ToolType              } from "src/composables/useTools" 
 
   //* ///////////////////////////////////////////////////////////////////////////////// Ag Grid
   import {  AgGridVue             } from "ag-grid-vue3"       // Vue Data Grid Component
@@ -140,11 +138,11 @@ single-click-edit
     getRowId.value                = ( params : GetRowIdParams ) => params.data[ keyId ]
   }
 
-  async function setColumnas( cols : any[] ){
+  /* async function setColumnas( cols : any[] ){
     if(!cols.length) return
 
     gridApi.value?.setGridOption('columnDefs', cols)
-  }
+  } */
 
 
   async function refreshCells( force : boolean = true ){    
@@ -160,35 +158,33 @@ single-click-edit
   }
 
   function cambioEnColumna(){
-    vista.value.vista         = getVista()
+    vista.value.vista             = getVista()
   }
 
-  function cargando( modo : "show" | "hide" )
+  /* function cargando( modo : "show" | "hide" )
   {
     if(modo === "show" )
       gridApi.value?.showLoadingOverlay();
     else
       gridApi.value?.hideOverlay();
-  }
+  } */
 
   
 
   function gestionarCambiosEnVista()
   {
-    const accion            = vista.value.accion
+    const accion                  = vista.value.accion
       
-    if(accion               == "restaurar")
+    if(accion                     == "restaurar")
       reiniciarVista()
     else
       aplicarVista()
   }
 
 
-  Eventos.on("limpiarFiltros", limpiarFiltros)
-
   function limpiarFiltros() {
     gridApi.value?.setFilterModel(null)
-    filtro.value  = ""
+    filtro.value            = ""
   }
 
   function aplicarFiltroRapido() {
@@ -204,8 +200,9 @@ single-click-edit
   }
 
   watchEffect(()=>{
-    if(!!datos.value.length)
-      setId()
+    if(!!datos.value.length){
+      setId()  
+    }
   })
 
   const columnasDefecto : ColDef = {
@@ -220,8 +217,8 @@ single-click-edit
 
 
   defineExpose({
-    setColumnas,
     refreshCells,
-    cargando,
+    limpiarFiltros,
+    gridApi,
   })
 </script>

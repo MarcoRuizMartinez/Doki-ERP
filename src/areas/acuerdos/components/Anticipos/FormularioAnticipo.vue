@@ -192,8 +192,6 @@
       modelo.value.index      =   modelo.value.esNuevo
                                 ? acuerdo.value.anticipos.length + 1
                                 : acuerdo.value.anticipos.findIndex( a => a.id == modelo.value.id ) + 1
-      console.log("modelo.value.index: objetoToFetch ", modelo.value.index);
-      console.log("modelo.value.anticipoToApi: ", modelo.value.anticipoToApi);
       return {
         body:   getFormData( modelo.value.esNuevo ? "nuevoAnticipo" : "editarAnticipo", modelo.value.anticipoToApi ),
         method: "POST"
@@ -224,7 +222,6 @@
     cargando.value            = true    
     
     const { data, ok  }       = await miFetch( endPoint, objetoToFetch.value, { mensaje: "guardar anticipo" } )
-    console.log("objetoToFetch.value: ", objetoToFetch.value);
     const id                  = ToolType.anyToNum(data)
     if(ok && modelo.value.esNuevo && id > 3500)
     {

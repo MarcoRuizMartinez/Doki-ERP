@@ -2,16 +2,18 @@ import {  getURL,
           getFormData         } from "src/composables/APIMaco"
 import {  useFetch            } from "src/composables/useFetch"
 import {  IProductoProveedor,
-          ProductoProveedor   } from "../models/ProductoProveedor";
+          ProductoProveedor,
+          THijoPadre          } from "../models/ProductoProveedor";
 import {  IQuery              } from "src/models/Busqueda"
 import {  TDatosEvento        } from "components/utilidades/AgGrid/AGTools"
-import {  ToolType            } from "src/composables/useTools"
+import {  useTools            } from "src/composables/useTools"
 
 export function servicesProductosPro() 
 {
   const { miFetch           } = useFetch()
+  const { aviso             } = useTools()
 
-  async function buscarProductos( query : IQuery, editable : boolean = false ) : Promise< IProductoProveedor[] >
+  async function BuscarProductos( query : IQuery, editable : boolean = false ) : Promise< IProductoProveedor[] >
   {
     return new Promise( async (resolver, rechazar ) =>
     {
@@ -40,7 +42,7 @@ export function servicesProductosPro()
     })
   }
 
-  async function buscarProductoByRef( ref : string, editable : boolean = false ) : Promise< IProductoProveedor >
+  async function BuscarProductoByRef( ref : string, editable : boolean = false ) : Promise< IProductoProveedor >
   {
     return new Promise( async (resolver, rechazar ) =>
     {
@@ -67,7 +69,7 @@ export function servicesProductosPro()
     })
   }
 
-  async function editarCampoEnLote( campo : string, datos : TDatosEvento[], usuarioId : number ) : Promise< boolean >
+  async function EditarCampoEnLote( campo : string, datos : TDatosEvento[], usuarioId : number ) : Promise< boolean >
   {
     const datosEnviar         = datos.map( d => { return { id: d.data?.id, value: d.value }})
     return new Promise( async (resolver, rechazar ) =>
@@ -78,28 +80,56 @@ export function servicesProductosPro()
                                                       body: getFormData( "editarCampoLote", objeto ),
                                                       method: "POST" 
                                                     },
-                                                    {
-                                                      mensaje:      "editar productos proveedores",
-                                                      tiempoEspera: 15_000,
-                                                      dataEsArray:  true
-                                                    }
+                                                    { mensaje:      "editar productos proveedores" }
                                                   )
-      if(ok)
-      {        
-        
-        
-        resolver( ok )
-      }
-      else
-      {
-        resolver( false )
-      }
+                                                  
+      if(!ok) aviso("negative", "Error al editar productos")
+      resolver( ok )
     })
   }
 
+
+
+
+  async function CrearProductos( productos : any[], usuarioId : number ) : Promise< boolean >
+  {
+    return new Promise( async (resolver ) =>
+    {
+      const objeto            = { productos: JSON.stringify( productos ), usuario: usuarioId, }  
+      const { ok            } = await miFetch( getURL("servicios", "productos-proveedores-new"),
+                                                    {
+                                                      body: getFormData( "crearProductos", objeto ),
+                                                      method: "POST" 
+                                                    },
+                                                    { mensaje: "crear productos proveedores" }
+                                                  )
+      if(!ok) aviso("negative", "Error al crear productos")      
+      resolver( ok )      
+    })
+  }
+
+  async function RelacionarHijosYPadres( relaciones : THijoPadre[] ) : Promise< boolean >
+  {
+    return new Promise( async (resolver ) =>
+    {
+      const objeto            = { relaciones: JSON.stringify( relaciones ) }  
+      const { ok, data      } = await miFetch( getURL("servicios", "productos-proveedores-new"),
+                                                    {
+                                                      body: getFormData( "setProductosHijosProveedor", objeto ),
+                                                      method: "POST" 
+                                                    },
+                                                    { mensaje: "relacionando productos y hijos" }
+                                                  )
+      if(!ok) aviso("negative", "Error al relacionar productos")      
+      resolver( ok )
+    })
+  }  
+
   return {
-    buscarProductos,
-    buscarProductoByRef,
-    editarCampoEnLote,
+    BuscarProductos,
+    BuscarProductoByRef,
+    EditarCampoEnLote,
+    CrearProductos,
+    RelacionarHijosYPadres
   }
 }

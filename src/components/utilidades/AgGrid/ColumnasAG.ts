@@ -152,24 +152,3 @@ export const Col =
     }
   }
 }
-
-/*
-
-
-                              valueGetter       : ( p : any ) => {
-                                return p  
-                              },
-                              valueFormatter    : ( p : any ) => { 
-                                const hayValue  = ToolType.existeYEsValido( p,        "value" )
-                                //const hayKey    = ToolType.existeYEsValido( p.value,  key )                                
-                                return hayValue ? p.value[key] : ""
-                              },
-                              valueFormatter    : ( p : any ) =>{
-                                if (!p.value) {
-                                  return "";
-                                }
-                                return `[${p.value.alias}]`;
-                              } 
-
-
-*/

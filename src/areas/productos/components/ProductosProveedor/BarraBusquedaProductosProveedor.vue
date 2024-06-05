@@ -166,7 +166,7 @@
               icon                ="mdi-close"
               padding             ="xs"
               color               ="primary"
-              :disable            ="b.queryVacia"
+              :disable            ="b.queryVacia && !productosPro.length"
               @click              ="limpiarBusqueda"
               >
               <Tooltip label      ="Limpiar búsqueda"/>
@@ -178,7 +178,7 @@
               icon                ="mdi-filter-off"
               padding             ="xs"
               color               ="primary"
-              @click              ="Eventos.emit('limpiarFiltros')"
+              @click              ="limpiarFiltros"
               >
               <Tooltip label      ="Limpiar filtros"/>
             </q-btn>
@@ -289,7 +289,7 @@
           color                 ="positive"
           class                 ="q-ml-sm"
           :disable              ="!hayProductosNuevos"
-          @click                ="emit('crearFilas', totalACrear)"
+          @click                ="crearProductos"
           >
           <Tooltip label        ="Crear productos que esten listos"/>
         </q-btn>
@@ -307,6 +307,7 @@
             text-color          ="grey-10"          
             toggle-color        ="primary"
             :options            ="TiposDeEdicion"
+            @update:model-value ="setEdicionEnProductos"
           />
         </div>
       </fieldset-filtro>
@@ -323,7 +324,7 @@
             icon                ="mdi-content-duplicate"
             color               ="blue-8"
             class               ="full-width"
-            @click              ="Eventos.emit('copiarDatos')"
+            @click              ="copiarADatosTemporales"
             >
             <Tooltip label      ="Copiar valores a campos temporales"/>
           </q-btn>
@@ -335,7 +336,7 @@
             icon                ="mdi-cash-usd"
             color               ="positive"
             class               ="full-width"            
-            @click              ="Eventos.emit('actualizarPrecios')"
+            @click              ="actualizarPrecios"
             >
             <Tooltip label      ="Copiar precios de temporales precios de proveedor"/>
           </q-btn>
@@ -353,9 +354,7 @@
   // * /////////////////////////////////////////////////////////////////////// Core
   import {  ref,
             watch,
-            computed,
-            onMounted,
-                                } from "vue"
+            computed            } from "vue"
   // * /////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs         } from 'pinia'
   import {  useStoreApp         } from 'stores/app'
@@ -368,10 +367,9 @@
 
   // * /////////////////////////////////////////////////////////////////////// Componibles
   import {  style               } from "src/composables/useEstilos"
-  import {  Eventos             } from "src/composables/useTools"
-  import {  TiposDeEdicion,
-            TIPO_EDICION        } from "components/utilidades/AgGrid/AGTools"
-  
+  import {  TiposDeEdicion      } from "components/utilidades/AgGrid/AGTools"
+  import {  useControlProductosProveedor
+                                } from "src/areas/productos/controllers/ControlProductosProveedor"
   // * /////////////////////////////////////////////////////////////////////// Componentes
   import    fieldsetFiltro        from "components/utilidades/Fieldset.vue"
   import    inputNumber           from "components/utilidades/input/InputFormNumber.vue"
@@ -385,18 +383,23 @@
   import    numeroPaso            from "components/utilidades/input/InputNumeroPaso.vue"
   //import    busquedasRapidas      from "./BusquedasRapidas.vue"
  
-
   const { busquedaPro : b,
           productosPro,
           loading           } = storeToRefs( useStoreProducto() )
   const { tabs,
           filtro,
-          campo_1 : modoEdicion,
                             } = storeToRefs( useStoreApp() )
+  const { modoEdicion, 
+          crearProductos,
+          limpiarFiltros,
+          limpiarBusqueda,
+          actualizarPrecios,
+          setEdicionEnProductos,
+          copiarADatosTemporales,
+                            } = useControlProductosProveedor()
 
   type TEmit                  = {
     buscar          : [ value : IQuery  ]
-    limpiar         : [ value : void    ]
     exportar        : [ value : void    ]
     crearFilas      : [ value : number  ]
   }  
@@ -404,10 +407,6 @@
 
   const totalACrear           = ref<number>(1)
   const hayProductosNuevos    = computed(()=> !!(productosPro.value.filter( p => p.esNuevo ).length) )  
-  
-  onMounted(()=>{
-    modoEdicion.value         = TIPO_EDICION.BLOQUEDA    
-  })
 
   watch(()=>b.value.f, ()=>
   {
@@ -424,11 +423,6 @@
     const query       = b.value.query
     query.acuerdo     = b.value.acuerdo
     emit("buscar", query)
-  }
-
-  async function limpiarBusqueda(){
-    const todoLimpio  = await b.value.limpiarQueryDeRouter()
-    if(todoLimpio) emit("limpiar")
   }
 
   // * /////////////////////////////////////////////////////////////////////// Computed

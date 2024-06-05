@@ -5,7 +5,7 @@ import {  date,
 import {  LocationQueryValue      } from "vue-router"
 import {  ILabelValue,
           labelValueNulo,         } from "src/models/TiposVarios"
-import    mitt                      from "mitt";
+/* import    mitt                      from "mitt";
 
 //* ///////////////////////////////////////////////////////////////////// Eventos
 
@@ -16,7 +16,7 @@ type TEventos = {
 }
 
 export const Eventos = mitt<TEventos>()
-
+ */
 //* ///////////////////////////////////////////////////////////////////// useTools
 
 export function useTools()
@@ -842,13 +842,13 @@ export class ToolQuery
 
 function nuevoJS()
 {
-  let cosa = 0
-  cosa  ||= 1 // Si x es falsy, se le asigna y
-  cosa  &&= 2 // Si x es truthy, se le asigna y
-  cosa  ??= 3 // Si x es null o undefined, se le asigna y
-
-  // Equivale
-  var importe : number = 1_283_792_189;
+  let y     = 20
+  let cosa  = 0
+  cosa      ||= y // Se asigna y si cosa es false, 0, "", null o undefined, se le asigna y
+  cosa      &&= y // Se asigna y si cosa es true
+  cosa      ??= y // Se asigna y si cosa es null o undefined
+  cosa      = 0 || 2 // Si es falsy entonces asigna el de la derecha
+  // structuredClone // Clona profundamente
 }
 
 

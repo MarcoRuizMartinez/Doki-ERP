@@ -1,5 +1,6 @@
 import {  Col                     } from "components/utilidades/AgGrid/ColumnasAG"
 import {  ColDef,
+          ColTypeDef,
           ColGroupDef             } from "ag-grid-community";
 import {  getProveedoresDB,
           getCategoriasDB,
@@ -12,16 +13,13 @@ import {  ToolType, Format        } from "src/composables/useTools";
 import {  IProductoProveedor      } from "../../models/ProductoProveedor";
 import imagen                       from "./ImagenProductoAG.vue"
 import proveedor                    from "components/utilidades/AgGrid/ProveedorBadge.vue"
-import { ColTypeDef } from "ag-grid-enterprise";
-import { truncate } from "fs/promises";
 
 
 
 export const reglasCSS = {
   'bg-grey-4 text-grey-1'     : ( params : any ) => { return !params.data?.activo     && !params.data?.esNuevo },
   'bg-indigo-3 text-indigo-1' : ( params : any ) => { return !params.data?.disponible && !!params.data?.activo && !params.data?.esNuevo },
-  'bg-green-2'                : ( params : any ) => { return params.data?.esNuevo },  
-
+  'bg-green-2'                : ( params : any ) => { return params.data?.esNuevo },
 }
 
 export const autoSizeStrategy = {
@@ -95,6 +93,7 @@ function esFieldDeEditarHijo( field : string )
           ||  field == "stock"
           ||  field == "fechaLlegada"
           ||  field == "refPadre"
+          ||  field == "descripcion"
 }
 
 // * ////////////////////////////////////////////////////////////////////////////////////////////////// COLUMNAS
@@ -246,7 +245,7 @@ export const columnasProductos : (ColDef<IProductoProveedor>  | ColGroupDef)[] =
       }),
       { field           : "urlImagen",      hide: true,   headerName: "URL Imagen",     type: "editable"},
       { field           : "url",            hide: true,   headerName: "URL"             },
-      { field           : "descripcion",    hide: true,   headerName: "Descripción"     },
+      { field           : "descripcion",    hide: true,   headerName: "Descripción",    type: "editarYCrear"},
     ]
   },
   { // * //////////////////////////////////////////////////////////////////////////////// Registro de cambios
@@ -258,6 +257,7 @@ export const columnasProductos : (ColDef<IProductoProveedor>  | ColGroupDef)[] =
       { field           : "fechaCreacion",  hide: true,   headerName: "Fecha Creación"  },
       { field           : "edito.label",    hide: true,   headerName: "Edito"           },
       { field           : "fechaEdicion",   hide: true,   headerName: "Fecha Edición"   },
+      { field           : "esNuevo",        hide: true                                  },
     ]
   }
 ]

@@ -1,4 +1,4 @@
-export enum TIPO_PRO_PROVIDEDOR
+export enum TIPO_PRO_PROVEEDOR 
 {
   NULO                = 0,
   SIMPLE              = 1,
@@ -12,7 +12,7 @@ export enum TIPO_PRO_PROVIDEDOR
 export interface ITipoProductoProveedor
 {
   label               : string 
-  value               : TIPO_PRO_PROVIDEDOR
+  value               : TIPO_PRO_PROVEEDOR
   //icono               : string
   //color               : string  
   esSimple            : boolean
@@ -26,9 +26,9 @@ export interface ITipoProductoProveedor
 
 export class TipoProductoProveedor implements ITipoProductoProveedor
 {
-  value               : TIPO_PRO_PROVIDEDOR
+  value               : TIPO_PRO_PROVEEDOR
   
-  constructor( value  : TIPO_PRO_PROVIDEDOR  = 0 )
+  constructor( value  : TIPO_PRO_PROVEEDOR  = 0 )
   {
     this.value        = value
   }
@@ -63,20 +63,20 @@ export class TipoProductoProveedor implements ITipoProductoProveedor
     return color
   } */
 
-  get esNulo()        : boolean { return this.value === TIPO_PRO_PROVIDEDOR.NULO        } 
-  get esSimple()      : boolean { return this.value === TIPO_PRO_PROVIDEDOR.SIMPLE      }
-  get esParte()       : boolean { return this.value === TIPO_PRO_PROVIDEDOR.PARTE       }
-  get esCompuesto()   : boolean { return this.value === TIPO_PRO_PROVIDEDOR.COMPUESTO   }
-  get esKit()         : boolean { return this.value === TIPO_PRO_PROVIDEDOR.KIT         }
-  get esHijo()        : boolean { return this.value === TIPO_PRO_PROVIDEDOR.HIJO        }
-  get esMarketPlace() : boolean { return this.value === TIPO_PRO_PROVIDEDOR.MARKETPLACE }
+  get esNulo()        : boolean { return this.value === TIPO_PRO_PROVEEDOR.NULO        } 
+  get esSimple()      : boolean { return this.value === TIPO_PRO_PROVEEDOR.SIMPLE      }
+  get esParte()       : boolean { return this.value === TIPO_PRO_PROVEEDOR.PARTE       }
+  get esCompuesto()   : boolean { return this.value === TIPO_PRO_PROVEEDOR.COMPUESTO   }
+  get esKit()         : boolean { return this.value === TIPO_PRO_PROVEEDOR.KIT         }
+  get esHijo()        : boolean { return this.value === TIPO_PRO_PROVEEDOR.HIJO        }
+  get esMarketPlace() : boolean { return this.value === TIPO_PRO_PROVEEDOR.MARKETPLACE }
 }
 
 export const TiposProductosProveedor       = [
-  new TipoProductoProveedor ( TIPO_PRO_PROVIDEDOR.SIMPLE      ),
-  new TipoProductoProveedor ( TIPO_PRO_PROVIDEDOR.HIJO        ),
-  new TipoProductoProveedor ( TIPO_PRO_PROVIDEDOR.PARTE       ),
-  new TipoProductoProveedor ( TIPO_PRO_PROVIDEDOR.COMPUESTO   ),
-  new TipoProductoProveedor ( TIPO_PRO_PROVIDEDOR.KIT         ),
-  new TipoProductoProveedor ( TIPO_PRO_PROVIDEDOR.MARKETPLACE ),
+  new TipoProductoProveedor ( TIPO_PRO_PROVEEDOR.SIMPLE      ),
+  new TipoProductoProveedor ( TIPO_PRO_PROVEEDOR.HIJO        ),
+  new TipoProductoProveedor ( TIPO_PRO_PROVEEDOR.PARTE       ),
+  new TipoProductoProveedor ( TIPO_PRO_PROVEEDOR.COMPUESTO   ),
+  new TipoProductoProveedor ( TIPO_PRO_PROVEEDOR.KIT         ),
+  new TipoProductoProveedor ( TIPO_PRO_PROVEEDOR.MARKETPLACE ),
 ]

@@ -10,7 +10,7 @@ import {  ICategoriaProducto,
           CategoriaProducto         } from "src/areas/productos/models/CategoriaProducto"
 import {  ITipoProductoProveedor,
           TipoProductoProveedor,
-          TIPO_PRO_PROVIDEDOR       } from "src/areas/productos/models/TipoProductoProveedor"    
+          TIPO_PRO_PROVEEDOR       } from "src/areas/productos/models/TipoProductoProveedor"    
 import {  IDiasDespacho,
           DiasDespacho              } from "src/models/Diccionarios/DiasDespacho"
 import {  MesesGarantia             } from "src/models/Diccionarios/MesesGarantia"
@@ -25,7 +25,14 @@ import {  getDiaDespachoDB,
           getCategoriaDB,
           getProveedorDB,
           getUsuarioDB              } from "src/composables/useDexie"
-          
+
+
+export type THijoPadre = {
+  id_componente       : number
+  id_compuesto        : number
+  cantidad            : number
+}
+
 export interface IProductoProveedor {
   id                  : number
   idNuestro           : number
@@ -34,6 +41,7 @@ export interface IProductoProveedor {
   refComparacion      : string                //* Ref que se utiliza para comprar si el precio esta bien
   refNuestra          : string
   refPadre            : string
+  idPadre             : number
   nombre              : string
   nombre_n            : string                //* ///////////////////////////////// _n
   nombreNuestro       : string
@@ -96,6 +104,10 @@ export interface IProductoProveedor {
   sePuedeCrear        : boolean
   okRefPadre          : boolean
 
+  cantidad            : number    // Para cuando es modo hijo
+  datosCrearApi       : any 
+  productoPadreApi    : THijoPadre
+
   copiarDatos         : ()=> void
   copiarPrecios       : ( key : "precio" | "precioCredito" )=> void
 }
@@ -109,11 +121,12 @@ export class ProductoProveedor implements IProductoProveedor
   refComparacion      : string                  = ""
   refNuestra          : string                  = ""
   refPadre            : string                  = ""
+  idPadre             : number                  = 0
   nombre              : string                  = ""
   nombre_n            : string                  = ""
   nombreNuestro       : string                  = ""
   estado              : string                  = ""
-  tipo                : ITipoProductoProveedor  = new TipoProductoProveedor( TIPO_PRO_PROVIDEDOR.SIMPLE )
+  tipo                : ITipoProductoProveedor  = new TipoProductoProveedor( TIPO_PRO_PROVEEDOR.SIMPLE )
   orden               : number                  = 0
   proveedor           : IProveedor              = new Proveedor()  
   categoria           : ICategoriaProducto      = new CategoriaProducto()
@@ -162,6 +175,8 @@ export class ProductoProveedor implements IProductoProveedor
   okPrecio            : boolean                 = false
   okRefPadre          : boolean                 = true
 
+  cantidad            : number                  = 1
+
   constructor( modo : "nuevo" | "" = "" )
   {
     this.esNuevo      = modo === "nuevo" 
@@ -176,6 +191,54 @@ export class ProductoProveedor implements IProductoProveedor
     const x100      = ToolNum.X100_Calcular( this.precio, this.diferencia )
     const redondeo  = Math.round(x100 * 2) / 2
     return redondeo
+  }
+
+  get datosCrearApi() : any 
+  {
+    const objeto = {
+      ref                 : this.ref,
+      nombre              : this.nombre,
+      tipo                : this.tipo.value,
+      orden               : this.orden,
+      proveedor           : this.proveedor.id,
+      categoria           : this.categoria.id,
+      activo              : +this.activo,
+      disponible          : +this.disponible,
+      fechaLlegada        : this.fechaLlegadaCorta,
+      gestionStock        : +this.gestionStock,
+      stock               : this.stock,    
+      descripcion         : this.descripcion, 
+      url                 : this.url, 
+      urlImagen           : this.urlImagen,
+      familiaNuestra      : this.familiaNuestra,
+      familiaProveedor    : this.familiaProveedor,
+      documento           : this.documento,
+      hechoEn             : this.hechoEn.value,
+      garantiaMeses       : this.garantiaMeses.value,
+      diasDespacho        : this.diasDespacho.id,
+      precio              : this.precio,
+      precioCredito       : this.precioCredito,   
+      precioDolar         : this.precioDolar,
+      precioPromocion     : this.precioPromocion,  
+      costoExtra          : this.costoExtra,
+      descuento           : this.descuento,
+      calcularDescuento   : +this.calcularDescuento,
+      precioActualizado   : +this.precioActualizado,
+    }
+
+    return objeto 
+  }
+
+  
+  get productoPadreApi() : THijoPadre
+  {
+    const o : THijoPadre = {
+      id_compuesto        : this.id,
+      id_componente       : this.idPadre,
+      cantidad            : this.cantidad,
+    }
+
+    return o
   }
 
   copiarDatos()
