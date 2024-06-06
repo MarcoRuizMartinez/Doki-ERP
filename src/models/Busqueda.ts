@@ -76,6 +76,8 @@ export interface      IQuery {
   interno              ?: number
   conOrdenes           ?: number
   listoDespacho        ?: number
+  aprobado             ?: number
+  extra                ?: number
   limite               ?: number
   offset               ?: number
   count                ?: number
@@ -186,6 +188,8 @@ interface               ICampos {
   terceroInterno        : ILabelValue
   conOrdenes            : ILabelValue
   listoDespacho         : ILabelValue
+  aprobado              : ILabelValue
+  extra                 : ILabelValue
   proveedores           : ILabelValue  
   categorias            : ILabelValue  
   incPago               : ILabelValue
@@ -361,6 +365,8 @@ export class Busqueda implements IBusqueda
     this.f.terceroInterno     = ToolQuery.getQueryRouterLabelValue( this.rourterQ .interno,               Busqueda.listaTerceroInterno  )
     this.f.conOrdenes         = ToolQuery.getQueryRouterLabelValue( this.rourterQ .conOrdenes,            Busqueda.listaOrdenesProv     )
     this.f.listoDespacho      = ToolQuery.getQueryRouterLabelValue( this.rourterQ .listoDespacho,         Busqueda.listaListoDespachar  )
+    this.f.aprobado           = ToolQuery.getQueryRouterLabelValue( this.rourterQ .aprobado,              Busqueda.listaAprobado        )
+    this.f.extra              = ToolQuery.getQueryRouterLabelValue( this.rourterQ .extra,                 Busqueda.listaExtra           )
     this.f.tipoTercero        = ToolQuery.getQueryRouterLabelValue( this.rourterQ .tipoTercero,           Busqueda.listaTipoTercero     )
     this.f.envioOC            = ToolQuery.getQueryRouterLabelValue( this.rourterQ .envioOC,               Busqueda.listaEnvioOC         )
     this.f.aceptado           = ToolQuery.getQueryRouterLabelValue( this.rourterQ .aceptado,              Busqueda.listaAceptado        )
@@ -608,6 +614,8 @@ export class Busqueda implements IBusqueda
     if(!!this.f.municipioContacto.id)   q.municipioContacto = this.f.municipioContacto.id
     if(!!this.f.conOrdenes.label)       q.conOrdenes        = this.f.conOrdenes.value
     if(!!this.f.listoDespacho.label)    q.listoDespacho     = this.f.listoDespacho.value
+    if(!!this.f.aprobado.label)         q.aprobado          = this.f.aprobado.value
+    if(!!this.f.extra.label)            q.extra             = this.f.extra.value
     if(!!this.f.tipoTercero.label)      q.tipoTercero       = this.f.tipoTercero.value
     if(!!this.f.envioOC.label)          q.envioOC           = this.f.envioOC.value
     if(!!this.f.aceptado.label)         q.aceptado          = this.f.aceptado.value
@@ -643,6 +651,8 @@ export class Busqueda implements IBusqueda
   static listaTerceroInterno      = [{value:0, label:'Externo'},              {value:1, label:'Interno'             }]
   static listaOrdenesProv         = [{value:0, label:'Sin ordenes'},          {value:1, label:'Con ordenes'         }]
   static listaListoDespachar      = [{value:1, label:'Listo para despacho'},  {value:0, label:'No esta listo'       }]
+  static listaAprobado            = [{value:1, label:'✅Aprobado'},          {value:0, label:'✖️No aprobado'       }]
+  static listaExtra               = [{value:1, label:'✅Extra'},             {value:0, label:'✖️No extra'          }]
   static listaActivo              = [{value:1, label:'Activo'},               {value:0, label:'Inactivo'            }]  
   static listaActivoProducto      = [{value:1, label:'En catalogo'},          {value:0, label:'Descontinuado'       }]  
   static listaDisponible          = [{value:1, label:'Disponible'},           {value:0, label:'Agotado'             }]  
@@ -739,6 +749,8 @@ export class Busqueda implements IBusqueda
       totalizado          : labelValueNulo,
       conOrdenes          : labelValueNulo,
       listoDespacho       : labelValueNulo,
+      aprobado            : labelValueNulo,
+      extra               : labelValueNulo,
       proveedores         : labelValueNulo,
       categorias          : labelValueNulo,
       incPago             : labelValueNulo,

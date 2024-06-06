@@ -21,7 +21,10 @@ export interface IBusquedaCotizacion {
 import {  date              } from "quasar"
 
 //* ///////////////////////////////////////////////////////////////////////////////// Componibles
-import {  Tool, ToolType    } from "src/composables/useTools"
+import {  Tool,
+          ToolType,
+          useTools,
+                            } from "src/composables/useTools"
 import {  useApiDolibarr    } from "src/composables/useApiDolibarr"
 import {  getURL,
           getFormData       } from "src/composables/APIMaco"
@@ -38,6 +41,7 @@ export function servicesAcuerdos()
 {
   const { miFetch           } = useFetch()
   const { apiDolibarr       } = useApiDolibarr()
+  const { aviso             } = useTools()
 
 
   async function postLinea( linea : ILineaApi ) : Promise< number >
@@ -184,6 +188,65 @@ export function servicesAcuerdos()
       resolver( ok )
     })
   }
+
+  async function setCostoEnvio( acu_id : number, costo : number, acuerdo : TTipoAcuerdo ) : Promise< boolean >
+  {
+    
+    const obj         = { id: acu_id, costo, acuerdo  }
+
+    return new Promise( async (resolver ) =>
+    {
+      const { ok }    = await miFetch( getURL("servicios", "acuerdos"),
+                                                    {
+                                                      body: getFormData(  "editarCostoEnvio", obj ),
+                                                      method: "POST"
+                                                    },
+                                                    { mensaje: "editar costo envio" }
+                                                  )
+      resolver( ok )
+
+      if(!ok) aviso("negative", "Error al editar costo envió")
+
+    })
+  }
+
+  async function setCostoEnvioAprovado( acu_id : number, aprobado : boolean, acuerdo : TTipoAcuerdo ) : Promise< boolean >
+  {
+    
+    const obj         = { id: acu_id, aprobado: +aprobado, acuerdo  }
+
+    return new Promise( async (resolver ) =>
+    {
+      const { ok }    = await miFetch( getURL("servicios", "acuerdos"),
+                                                    {
+                                                      body: getFormData(  "editarCostoEnvioAprobado", obj ),
+                                                      method: "POST"
+                                                    },
+                                                    { mensaje: "editar costo envio aprobado" }
+                                                  )
+      resolver( ok )
+
+      if(!ok) aviso("negative", "Error al editar costo envió aprobado")
+    })
+  }
+
+  async function setExtraTiempo( acu_id : number, extra : boolean, acuerdo : TTipoAcuerdo, tipoExtra : "aprobacion" | "solicitud" ) : Promise< boolean >
+  {    
+    const tipo        = tipoExtra == "aprobacion" ? "editarExtraTiempoOk" : "editarExtraTiempo"
+    const body        = getFormData( tipo, { id: acu_id, extra: +extra, acuerdo } )
+    const method      = "POST"
+    const mensaje     = "editar costo extra tiempo"
+
+    return new Promise( async (resolver ) =>
+    {
+      const { ok }    = await miFetch( getURL("servicios", "acuerdos"), { body, method }, { mensaje })
+      resolver( ok )
+
+      if(!ok) aviso("negative", "Error al editar extra tiempo")
+    })
+  }
+
+
 
 
   async function setFechaADespachar( acu_id : number, fecha : Date, acuerdo : TTipoAcuerdo ) : Promise< boolean >
@@ -513,5 +576,8 @@ export function servicesAcuerdos()
     setCostoLinea,
     postLinea,
     ordenarLineas,
+    setCostoEnvio,
+    setCostoEnvioAprovado,
+    setExtraTiempo,
   }
 }

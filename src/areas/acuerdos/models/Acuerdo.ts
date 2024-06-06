@@ -118,6 +118,11 @@ export interface IAcuerdo
   fechaCierre                 : Date
   fechaCierreCorta            : string  
 
+  costoEnvio                  : number
+  costoEnvioAprobado          : boolean
+  extraTiempo                 : boolean
+  extraTiempoOk               : boolean
+
   /* // Fechas compromiso de entrega */
   fechaEntrega                : Date
   fechaEntregaCorta           : string
@@ -271,7 +276,8 @@ export interface IAcuerdo
 
   /* Solo para entregas */
   acuerdosEnlazados           : IAcuerdo[]
-  entregas                    : IAcuerdo[]  
+  entregas                    : IAcuerdo[]
+  costoEnvios                 : number
   transportadoraId            : number
   numeroGuia                  : string
   transportadora              : ITransportadora
@@ -376,6 +382,11 @@ export class Acuerdo implements IAcuerdo
   acuerdosEnlazados           : IAcuerdo[]          = []
   comentarios                 : IAccion[]           = []
   eventos                     : IAccion[]           = []
+
+  costoEnvio                  : number              = 0
+  costoEnvioAprobado          : boolean             = false
+  extraTiempo                 : boolean             = false
+  extraTiempoOk               : boolean             = false
 
   /* Solo para cotizaciones */
   titulo                      : string              = ""
@@ -1102,7 +1113,6 @@ https://dolibarr.mublex.com/fichinter/card.php?
           options_entregado       : l.seEntrega,
           options_nombreextra     : l.nombreExtra,
           options_urlimagen       : l.urlImagen,
-          
         },        
       }
       return linea
@@ -1181,6 +1191,10 @@ https://dolibarr.mublex.com/fichinter/card.php?
       acuerdo.value.entregas.push( ...acuerdosI )
     }
  */
+  }
+
+  get costoEnvios() : number {
+    return ToolArray.sumar( this.entregas, "costoEnvio")
   }
 
   get alertasEntrega() : string[]
@@ -1307,6 +1321,11 @@ https://dolibarr.mublex.com/fichinter/card.php?
     acuApi.comercialId        = ToolType.keyNumberValido( acuApi, "comercialId" )
     acuApi.comercial2Id       = ToolType.keyNumberValido( acuApi, "comercial2Id" )
 
+    acuApi.costoEnvio         = ToolType.keyNumberValido( acuApi, "costoEnvio" )
+    acuApi.costoEnvioAprobado = ToolType.keyBoolean     ( acuApi, "costoEnvioAprobado" )
+    acuApi.extraTiempo        = ToolType.keyBoolean     ( acuApi, "extraTiempo" )
+    acuApi.extraTiempoOk      = ToolType.keyBoolean     ( acuApi, "extraTiempoOk" )
+
     acuApi.condicionPagoId    = +acuApi.condicionPagoId
     acuApi.formaPagoId        = +acuApi.formaPagoId
     acuApi.metodoEntregaId    = +acuApi.metodoEntregaId
@@ -1417,6 +1436,10 @@ https://dolibarr.mublex.com/fichinter/card.php?
     e.terceroId           = +ee?.socid              ?? 0
     e.estado              = +ee?.statut             ?? 0
     e.numeroGuia          = ee?.tracking_number     ?? ""
+    e.costoEnvio          = ToolType.keyNumberValido( ee, "costoEnvio" )
+    e.costoEnvioAprobado  = ToolType.keyBoolean     ( ee, "costoEnvioAprobado" )
+    e.extraTiempo         = ToolType.keyBoolean     ( ee, "extraTiempo" )
+    e.extraTiempoOk       = ToolType.keyBoolean     ( ee, "extraTiempoOk" )
     e.metodoEntregaId     = +ee?.shipping_method_id ?? 0
 
     const entre           = Object.assign( new Acuerdo( TIPO_ACUERDO.ENTREGA_CLI ), e ) as IAcuerdo

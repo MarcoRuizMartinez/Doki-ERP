@@ -19,7 +19,7 @@
       <Tooltip label  ="Mas opciones"/>
     </q-tab>    
     <q-tab
-      label           ="Edición"
+      label           ="Crear y Editar"
       name            ="tab_3"
       icon            ="mdi-clipboard-edit"
       >

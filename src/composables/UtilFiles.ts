@@ -1,6 +1,6 @@
 import {  exportFile              } from "quasar"
 import {  IColumna                } from "src/models/Tabla"
-import {  Tool                    } from "src/composables/useTools"
+import {  Format                  } from "src/composables/useTools"
 
 export type TModulosDolibarr  =   "thirdparty" | "project"  | "proposal"  | "order" | "shipment"  | "invoice" | "supplier_proposal" | "supplier_order"  | "supplier_invoice" | "product" | "action"
 
@@ -40,7 +40,7 @@ export function generarCSVDesdeTabla( nombre :string = "", columnsTabla : IColum
       else if(tipo === "string") 
         celda               = fila[columna.name]
       else  if(tipo === "boolean") 
-        celda               = Tool.siNo( fila[columna.name], "texto" )
+        celda               = Format.siNo( fila[columna.name], "texto" )
       else  if(tipo === "number") 
         celda               = fila[columna.name].toString().replace(".", ",")
       else  if(tipo === "object" && !!fila[columna.name])

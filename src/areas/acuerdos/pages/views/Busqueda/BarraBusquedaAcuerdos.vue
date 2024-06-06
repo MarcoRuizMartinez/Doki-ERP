@@ -484,7 +484,25 @@
           icon                  ="mdi-truck-check"
           class                 ="width160"
           :options              ="Busqueda.listaListoDespachar"
-        />        
+        />
+        <!-- //* ///////////////////////////////////////////////// Envio aprobado -->
+        <select-label-value     use-input hundido clearable flat bordered
+          v-if                  ="b.esPedido || b.esEntrega"
+          v-model               ="b.f.aprobado"
+          label                 ="Envió aprobado"
+          icon                  ="mdi-account-cash"
+          class                 ="width160"
+          :options              ="[{value:1, label:'✅Costo aprobado'},          {value:0, label:'✖️Costo no aprobado'       }]"
+        />
+        <!-- //* ///////////////////////////////////////////////// Extra tiempo -->
+        <select-label-value     use-input hundido clearable flat bordered
+          v-if                  ="b.esPedido || b.esEntrega"
+          v-model               ="b.f.extra"
+          label                 ="Extra tiempo"
+          icon                  ="mdi-flash"
+          class                 ="width160"
+          :options              ="[{ value:1, label:'Extra tiempo'}, { value:0, label:'Entrega normal' }]"
+        />             
       </fieldset-filtro>
       <fieldset-filtro
         v-if                    ="!b.esEntrega && !(usuario.esProduccion && b.esCotizacion)"

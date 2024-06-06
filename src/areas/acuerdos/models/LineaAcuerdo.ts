@@ -558,8 +558,17 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
       const linea               = LineaAcuerdo.lineaDeProducto(producto)
       if(qty != -1)
         linea.qty               = !qty || (typeof qty === "number" && qty < 0 ) ? 1 : qty
-      else
+      else{ // Cuando se esta duplicando el grupo
         linea.qty               = ToolType.keyNumberValido(producto, "qty", 1)
+        linea.precioBase        = ToolType.keyNumberValido(producto, "precioBase")
+        linea.costo             = ToolType.keyNumberValido(producto, "costo")
+        linea.iva               = ToolType.keyNumberValido(producto, "iva")
+        linea.descuentoX100     = ToolType.keyNumberValido(producto, "descuentoX100")
+        linea.tipo              = ToolType.keyNumberValido(producto, "tipo") as 0 | 1
+        linea.lineaId           = ToolType.keyNumberValido(producto, "lineaId")
+        linea.unidadId          = ToolType.keyNumberValido(producto, "unidadId")
+        linea.img.url           = ToolType.keyStringValido(producto, "imagen", IMAGEN_DEFAULT)    
+      }
 
       linea.iva                 = !!producto.iva ? iva : 0
           //linea.descuentoX100 = descu ?? 0

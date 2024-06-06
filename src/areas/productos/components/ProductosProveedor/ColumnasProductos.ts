@@ -102,6 +102,7 @@ export const columnasProductos : (ColDef<IProductoProveedor>  | ColGroupDef)[] =
   { // * //////////////////////////////////////////////////////////////////////////////// Imagen
     headerName          : "🖼️",
     field               : "img",
+    headerClass         : "bg-grey-10 text-white",
     width               : 80, 
     cellRenderer        : imagen,
     filter              : "agSetColumnFilter",
@@ -109,7 +110,8 @@ export const columnasProductos : (ColDef<IProductoProveedor>  | ColGroupDef)[] =
     cellClassRules      : { 'bg-deep-orange-2': ( p : any ) => p.data.esNuevo && !p.data.sePuedeCrear }
   },
   { // * //////////////////////////////////////////////////////////////////////////////// REF y nombre proveedor     
-    headerName          : "🏪Datos de proveedor",                      
+    headerName          : "🏪Datos de proveedor",
+    headerClass         : "bg-teal-9 text-white",
     marryChildren       : false,
     children            :
     [
@@ -117,6 +119,7 @@ export const columnasProductos : (ColDef<IProductoProveedor>  | ColGroupDef)[] =
       {
         headerName      : "🏪Proveedor",
         field           : "proveedor",
+        headerClass     : "bg-teal-6 text-white",
         width           : 140,
         cellRenderer    : proveedor,
         opciones        : getProveedoresDB,
@@ -127,6 +130,7 @@ export const columnasProductos : (ColDef<IProductoProveedor>  | ColGroupDef)[] =
       {
         headerName      : "🏪Ref proveedor",
         field           : "ref",
+        headerClass     : "bg-teal-6 text-white",
         tooltipField    : "proveedor.label",
         type            : "creacion",
         cellClassRules  : { 'bg-deep-orange-2': p => p.data.esNuevo && !p.data.okRef },
@@ -135,6 +139,7 @@ export const columnasProductos : (ColDef<IProductoProveedor>  | ColGroupDef)[] =
       {
         headerName      : "🏪Nombre proveedor",
         field           : "nombre",
+        headerClass     : "bg-teal-6 text-white",
         minWidth        : 340,
         type            : "creacion",
         cellClassRules  : { 'bg-deep-orange-2': p => p.data.esNuevo && !p.data.okNombre },
@@ -144,52 +149,65 @@ export const columnasProductos : (ColDef<IProductoProveedor>  | ColGroupDef)[] =
   },
   { // * //////////////////////////////////////////////////////////////////////////////// REF y nombre nuestros  
     headerName          : "🏠Datos de nuestros",                      
+    headerClass         : "bg-light-blue-10 text-white",
     marryChildren       : false,
     children            :
     [
-      { headerName      : "🏠Ref nuestra", field          : "refNuestra",   tooltipField: "proveedor.label" },
-      { headerName      : "🏠Nombre nuestro", field          : "nombreNuestro",minWidth        : 340, },
+      { headerName      : "🏠Ref nuestra",
+        field           : "refNuestra",
+        headerClass     : "bg-light-blue-6 text-white",
+        tooltipField    : "proveedor.label"
+      },
+      { headerName      : "🏠Nombre nuestro",
+        field           : "nombreNuestro",
+        headerClass     : "bg-light-blue-6 text-white",
+        minWidth        : 340
+      },
     ]
   }, 
   { // * //////////////////////////////////////////////////////////////////////////////// Disponibilidad
     headerName          : "📦Disponibilidad de producto",                      
+    headerClass         : "bg-purple-10 text-white",
     marryChildren       : false,
     children            :
     [
       Col.Boolean({
         headerName      : "🚨Activo",
         field           : "activo",
-        headerClass     : "bg-green-2",
+        headerClass     : "bg-purple-6 text-white",
         type            : "editarYCrear"
       }),
       Col.Boolean({
         headerName      : "💁🏻‍♂️Disponible",
         field           : "disponible",
-        headerClass     : "bg-green-2",
+        headerClass     : "bg-purple-6 text-white",
         type            : "editarYCrear"
       }),
       Col.Boolean({
         headerName      : "📦Gestión de stock",
         field           : "gestionStock",
-        headerClass     : "bg-green-2",
+        headerClass     : "bg-purple-6 text-white",
         type            : "editarYCrear",
         hide            : true,
       }),
       {
         headerName      : "🧮Stock",
         field           : "stock",
+        headerClass     : "bg-purple-6 text-white",
         type            : ["editarYCrear", "numero"],
         hide            : true
       },
       {
         headerName      : "📅Fecha llegada",
         field           : "fechaLlegada",
+        headerClass     : "bg-purple-6 text-white",
         hide            : true
       },
       Col.Objeto(
       {
         headerName      : "⏱️Días Despacho",
         field           : "diasDespacho",
+        headerClass     : "bg-purple-6 text-white",
         opciones        : getDiasDespachoDB,
         key             : "label",
         type            : "editarYCrear"
@@ -198,6 +216,7 @@ export const columnasProductos : (ColDef<IProductoProveedor>  | ColGroupDef)[] =
   },
   { // * //////////////////////////////////////////////////////////////////////////////// Categorización
     headerName          : "🗃️Categorización de producto",                      
+    headerClass         : "bg-deep-purple-10 text-white",
     marryChildren       : false,
     children            :
     [
@@ -205,6 +224,7 @@ export const columnasProductos : (ColDef<IProductoProveedor>  | ColGroupDef)[] =
       {
         headerName      : "🆎Categoría",
         field           : "categoria",
+        headerClass     : "bg-deep-purple-6 text-white",
         opciones        : getCategoriasDB,
         key             : "label",
         type            : "creacion",
@@ -214,6 +234,7 @@ export const columnasProductos : (ColDef<IProductoProveedor>  | ColGroupDef)[] =
       {
         headerName      : "🔢Tipo",
         field           : "tipo",
+        headerClass     : "bg-deep-purple-6 text-white",
         opciones        : TiposProductosProveedor,
         key             : "label",
         type            : "creacion",
@@ -222,6 +243,7 @@ export const columnasProductos : (ColDef<IProductoProveedor>  | ColGroupDef)[] =
       {
         headerName      : "👩‍👧‍👦Padre",
         field           : "refPadre",
+        headerClass     : "bg-deep-purple-6 text-white",
         hide            : false,
         type            : "editarYCrear",
         cellClassRules  : { 'bg-deep-orange-2': p => p.data.esNuevo && !p.data.okRefPadre }
@@ -230,23 +252,27 @@ export const columnasProductos : (ColDef<IProductoProveedor>  | ColGroupDef)[] =
       {
         headerName      : "⬇️Orden",
         field           : "orden",
-        type            : ["editable", "numero" ],
+        headerClass     : "bg-deep-purple-6 text-white",
+        type            : ["editarYCrear", "numero" ],
         width           : 110
       },
       {
         headerName      : "👨‍👩‍👧‍👦🏠Familia nuestra", 
         field           : "familiaNuestra", 
+        headerClass     : "bg-deep-purple-6 text-white",
         hide            : true,
         type            : "editable"
       },
       {
         headerName      : "👨‍👩‍👧‍👦🏪Familia proveedor", 
         field           : "familiaProveedor",
+        headerClass     : "bg-deep-purple-6 text-white",
         hide            : true,
         type            : "editable"
       },
       {
         headerName      : "📑Documento", 
+        headerClass     : "bg-deep-purple-6 text-white",
         field           : "documento",
         hide            : true,
         type            : "editable"
@@ -255,73 +281,86 @@ export const columnasProductos : (ColDef<IProductoProveedor>  | ColGroupDef)[] =
   },
   { // * //////////////////////////////////////////////////////////////////////////////// Precios
     headerName          : "🪙Precios proveedor",                      
+    headerClass         : "bg-deep-orange-14 text-white",
     marryChildren       : false,
     children            :
     [
       {
         headerName      : "🔎Ref Guía",
         field           : "refComparacion",
+        headerClass     : "bg-deep-orange-6 text-white",
         hide            : true,
         type            : "editable"
       },
       Col.Precio({
         headerName      : "🪙Precio",
         field           : "precio",
+        headerClass     : "bg-deep-orange-6 text-white",
         type            : "creacion",
         cellClassRules  : { 'bg-deep-orange-2': p => p.data.esNuevo && !p.data.okPrecio }
       }),
       Col.Precio({
         headerName      : "🪙Credito",
+        headerClass     : "bg-deep-orange-6 text-white",
         field           : "precioCredito",
         type            : "creacion"
       }),
       Col.Precio({
         headerName      : "🔜Precio",
+        headerClass     : "bg-deep-orange-6 text-white",
         field           : "precio_n",
         hide            : true,
         type            : "editable"
       }),
       Col.Precio({
         headerName      : "🔜Credito",
-        field           : "precioCredito_n",    
+        headerClass     : "bg-deep-orange-6 text-white",
+        field           : "precioCredito_n",
         hide            : true,
         type            : "editable"
       }),
       Col.Precio({
         headerName      : "📊Diferencia",
+        headerClass     : "bg-deep-orange-6 text-white",
         field           : "diferencia",
         hide            : true
       }),
       {
         headerName      : "📊Variación %",
+        headerClass     : "bg-deep-orange-6 text-white",
         field           : "diferenciaX100",
         hide            : true,
       },
       Col.Precio({
-        headerName      : "🏷️Precio Promoción", 
+        headerName      : "🏷️Precio Promoción",
+        headerClass     : "bg-deep-orange-6 text-white",
         field           : "precioPromocion",
         hide            : true,
       }),
       Col.Precio({
         headerName      : "💰Costo extra", 
+        headerClass     : "bg-deep-orange-6 text-white",
         field           : "costoExtra",
         hide            : true,
         type            : "editable"
       }),
       {
         headerName      : "🔖Descuento", 
+        headerClass     : "bg-deep-orange-6 text-white",
         field           : "descuento",
         hide            : true,
         type            : "editable"
       },
       {
         headerName      : "🔖Calcular descuento", 
+        headerClass     : "bg-deep-orange-6 text-white",
         field           : "calcularDescuento",
         hide            : true,
         type            : "editable"
       },
       { 
         headerName      : "🤝Precio vigente", 
+        headerClass     : "bg-deep-orange-6 text-white",
         field           : "precioActualizado",
         hide            : true,
         type            : "editable"
@@ -330,6 +369,7 @@ export const columnasProductos : (ColDef<IProductoProveedor>  | ColGroupDef)[] =
   },
   { // * //////////////////////////////////////////////////////////////////////////////// Propiedades productos
     headerName          : "✨Características de producto",                      
+    headerClass         : "bg-cyan-10 text-white",
     marryChildren       : false,
     children            :
     [
@@ -337,6 +377,7 @@ export const columnasProductos : (ColDef<IProductoProveedor>  | ColGroupDef)[] =
       { 
         headerName      : "🌏Hecho en",
         field           : "hechoEn",
+        headerClass     : "bg-cyan-6 text-white",
         opciones        : OriginesMadeIn,
         key             : "label",
         type            : "editarYCrear",
@@ -346,6 +387,7 @@ export const columnasProductos : (ColDef<IProductoProveedor>  | ColGroupDef)[] =
       { 
         headerName      : "🛟Garantía",
         field           : "garantiaMeses",
+        headerClass     : "bg-cyan-6 text-white",
         opciones        : MesesGarantia,
         key             : "label",
         type            : "editarYCrear",
@@ -354,32 +396,56 @@ export const columnasProductos : (ColDef<IProductoProveedor>  | ColGroupDef)[] =
       { 
         headerName      : "🖼️URL Imagen",
         field           : "urlImagen",      
+        headerClass     : "bg-cyan-6 text-white",
         hide            : true,   
         type            : "editable"
       },
       { 
         headerName      : "🔗URL",
         field           : "url",
+        headerClass     : "bg-cyan-6 text-white",
         hide            : true,   
       },
       {
         headerName      : "📝Descripción",
         field           : "descripcion",
-        hide            : true,   
+        headerClass     : "bg-cyan-6 text-white",
+        hide            : true,
         type            : "editarYCrear"
       },
     ]
   },
   { // * //////////////////////////////////////////////////////////////////////////////// Registro de cambios
-    headerName          : "📋Registro de cambios",                      
+    headerName          : "📋Registro de cambios",
+    headerClass         : "bg-pink-10 text-white",
     marryChildren       : false,
     children            :
     [
-      { field           : "creador.label",  hide: true,   headerName: "Creador"         },
-      { field           : "fechaCreacion",  hide: true,   headerName: "Fecha Creación"  },
-      { field           : "edito.label",    hide: true,   headerName: "Edito"           },
-      { field           : "fechaEdicion",   hide: true,   headerName: "Fecha Edición"   },
-      { field           : "esNuevo",        hide: true                                  },
+      { field           : "creador.label",  
+        hide            : true,
+        headerName      : "Creador",
+        headerClass     : "bg-pink-6 text-white",
+      },
+      { field           : "fechaCreacion",  
+        hide            : true,
+        headerName      : "Fecha Creación",
+        headerClass     : "bg-pink-6 text-white",
+      },
+      { field           : "edito.label",    
+        hide            : true,
+        headerName      : "Edito",
+        headerClass     : "bg-pink-6 text-white",   
+      },
+      { field           : "fechaEdicion",   
+        hide            : true,   
+        headerName      : "Fecha Edición",
+        headerClass     : "bg-pink-6 text-white",
+      },
+      { field           : "esNuevo",        
+        hide            : true,
+        headerName      : "A crear",
+        headerClass     : "bg-pink-6 text-white",
+      },
     ]
   }
 ]

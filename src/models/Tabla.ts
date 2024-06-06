@@ -123,7 +123,7 @@ export class Columna implements IColumna
   static ColumnaSiNo({ name = "", label = "",  sortable = true, clase = "" }) : IColumna
   {
     let col               = new Columna({ name : name, label : label, sortable : sortable, clase: clase })
-        col.format        = ( val : boolean ) => Tool.siNo(val)
+        col.format        = ( val : boolean ) => Format.siNo(val)
         col.align         = "center"
         col.classes       = clase + " fuente-mono"
 

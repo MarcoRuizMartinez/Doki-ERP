@@ -27,9 +27,9 @@
         <Tooltip v-if     ="!producto.activo">
           <div class      ="text-h6 text-center width200">Producto inactivo</div>
           <table    class ="text-1_1em">
-            <tr><td>Activo en Dolibarr:     </td><td>{{ Tool.siNo(producto.activoEnVenta)}}     </td></tr>
-            <tr><td>Activo en proveedor:    </td><td>{{ Tool.siNo(producto.activo_proveedor)}}  </td></tr>
-            <tr><td>Disponible en proveedor:</td><td>{{ Tool.siNo(producto.disponible)}}        </td></tr>
+            <tr><td>Activo en Dolibarr:     </td><td>{{ Format.siNo(producto.activoEnVenta)}}     </td></tr>
+            <tr><td>Activo en proveedor:    </td><td>{{ Format.siNo(producto.activo_proveedor)}}  </td></tr>
+            <tr><td>Disponible en proveedor:</td><td>{{ Format.siNo(producto.disponible)}}        </td></tr>
           </table>
         </Tooltip>
         <efecto efecto="UpDown">
@@ -92,7 +92,7 @@
   import {  IColumna, Columna   } from "src/models/Tabla"
   import {  IProductoDoli       } from "src/areas/productos/models/ProductoDolibarr"  
   // * /////////////////////////////////////////////////////////////////////////////////// Componibles
-  import {  Tool, Format        } from "src/composables/useTools"  
+  import {  Format              } from "src/composables/useTools"  
   // * /////////////////////////////////////////////////////////////////////////////////// Componentes
   import    efecto                from "components/utilidades/Efecto.vue"
   import    tooltipPrecios        from "src/areas/acuerdos/components/Tools/Tooltips/TooltipPreciosProducto.vue"

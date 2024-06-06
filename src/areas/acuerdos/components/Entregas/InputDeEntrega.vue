@@ -51,6 +51,45 @@
         @update:model-value ="editarFechaADespachar"
       />  
     </div>
+    <!-- //* ///////////////////////////////////////////////// Costo Envio -->
+    <div  class             ="col-md-6 col-12">
+      <input-number         hundido
+        v-model             ="entrega.costoEnvio"
+        label               ="Costo cotizado"
+        icon                ="mdi-cash-usd"
+        tipo                ="precio"
+        @update:model-value ="editarCosto"
+      />
+    </div>
+    <!-- //* ///////////////////////////////////////////////// Costo Envio Aprobado -->
+    <div  class             ="col-md-6 col-12">
+      <q-checkbox
+        v-model             ="entrega.costoEnvioAprobado" 
+        label               ="Costo aprobado"
+        class               ="text-black"
+        @update:model-value ="editarCostoAprobado"
+      />
+    </div>
+    <!-- //* ///////////////////////////////////////////////// Extra tiempo -->
+    <div  class             ="col-md-6 col-12">
+      <q-checkbox
+        v-model             ="entrega.extraTiempo" 
+        label               ="Extra tiempo"
+        class               ="text-black"
+        :disable            ="!usuario.esComercial"
+        @update:model-value ="editarExtra('solicitud')"
+      />
+    </div>   
+    <!-- //* ///////////////////////////////////////////////// Extra tiempo Aprobado -->
+    <div  class             ="col-md-6 col-12">
+      <q-checkbox
+        v-model             ="entrega.extraTiempoOk" 
+        label               ="Extra tiempo ok"
+        class               ="text-black"
+        :disable            ="!usuario.esProduccion"
+        @update:model-value ="editarExtra('aprobacion')"
+      />
+    </div>           
   </div>
 </template> 
 
@@ -68,6 +107,7 @@
   import {  IContacto, Contacto   } from "src/areas/terceros/models/Contacto"
   import {  ILabelValue           } from "src/models/TiposVarios"
   import {  Accion                } from "src/areas/comunicacion/models/Accion"
+  import {  TIPO_ACUERDO          } from "../../models/ConstantesAcuerdos"
 
   //* ///////////////////////////////////////////////////////////////////////////// Componibles  
   import {  useControlAcuerdo     } from "src/areas/acuerdos/controllers/ControlAcuerdos"
@@ -79,6 +119,8 @@
   import    selectContacto          from "./../../../terceros/components/contactos/SelectContacto.vue"
   import    selectLabelValue        from "components/utilidades/select/SelectLabelValue.vue"
   import    inputFecha              from "components/utilidades/input/InputFecha.vue"
+  import    inputNumber             from "components/utilidades/input/InputFormNumber.vue"
+
 
   type TProps                       = { entrega : IAcuerdo}
   const { entrega }                 = defineProps<TProps>()
@@ -87,23 +129,11 @@
   const { cambiarTransportadora, 
           cambiarContactoEntrega
                                   } = useControlAcuerdo()
-  const {
-          setFechaFinValidez,
-          setFechaEntrega,
+  const { setFechaEntrega,
           setFechaADespachar,
-          setCondicionPago,
-          setFormaPago,
-          setMetodoEntrega,
-          setTiempoEntrega,
-          getAcuerdo,
-          getAcuerdos,
-          setOrigenContacto,
-          setRefCliente,
-          setComercial,
-          setTerceroId,
-          setAiu,
-          setTotal,
-          setConIVA,
+          setCostoEnvio,
+          setCostoEnvioAprovado,
+          setExtraTiempo,
                                   } = servicesAcuerdos()
 
   const { aviso                   } = useTools()
@@ -182,7 +212,22 @@
     
   }    
 
+  async function editarCosto(){ 
+    await setCostoEnvio( entrega.id, entrega.costoEnvio, entrega.tipo )
+  }    
+
+  async function editarCostoAprobado()
+  {
+    await setCostoEnvioAprovado( entrega.id, entrega.costoEnvioAprobado, entrega.tipo )
+    await setCostoEnvioAprovado( entrega.pedidoId, entrega.costoEnvioAprobado, TIPO_ACUERDO.PEDIDO_CLI )
+  }    
+
+  async function editarExtra( tipoExtra : "aprobacion" | "solicitud" ){
+    await setExtraTiempo( entrega.id,       entrega.extraTiempo, entrega.tipo,            tipoExtra )
+    await setExtraTiempo( entrega.pedidoId, entrega.extraTiempo, TIPO_ACUERDO.PEDIDO_CLI, tipoExtra )
+  }    
+   
 
 
-  
+
 </script>

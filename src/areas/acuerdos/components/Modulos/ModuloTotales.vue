@@ -141,6 +141,12 @@
           </template>
         </table>
       </div>
+      <div
+        v-if                ="!!acuerdo.costoEnvios"
+        class               ="fit text-center bg-grey-4 text-grey-9 q-py-sm"
+        >
+        Costo Envio : {{ Format.precio( acuerdo.costoEnvios, 'decimales-no' ) }}
+      </div>
     </div>
     <!-- style   ="width: 700px;" -->
     <!-- //* ///////////////////////////////////////////////////////////// Modal Buscar Formulario anticipo -->

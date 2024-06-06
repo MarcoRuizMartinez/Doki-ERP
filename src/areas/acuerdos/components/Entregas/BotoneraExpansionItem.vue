@@ -85,12 +85,16 @@
         </div>
         <!-- //* ////////////////////////////////////////////////////////// Boton rótulos -->
         <div>
-          <span class       ="text-1_3em">{{ entrega.estadoAnimoEmoji }}</span>
-          <Tooltip  :label  ="'Entregar en ' + entrega.diasEntregarFormato"/>
-        </div>        
+          <span class       ="text-1_3em">{{ entrega.estadoAnimoEmoji }}
+            <Tooltip :label ="'Entregar en ' + entrega.diasEntregarFormato"/>
+          </span>
+          <span class       ="text-1_3em">{{ !entrega.costoEnvio ?  '❓' : entrega.costoEnvioAprobado ? '✅' : '⛔' }}
+            <Tooltip :label ="'Costo envió : ' + Format.precio( entrega.costoEnvio, 'decimales-no' ) + Format.siNo( entrega.costoEnvioAprobado, 'iconos' )"/>
+          </span>
+        </div>
         <div class          ="width100 q-ml-md">
           <!-- //* ////////////////////////////////////////////////////////// Estado entrega-->
-          <estado           con-icono            
+          <estado           con-icono
             :acuerdo        ="entrega"
           />
         </div>
@@ -132,7 +136,9 @@
   //* /////////////////////////////////////////////////////////////////////////////////// Componibles  
   import {  useApiDolibarr        } from "src/composables/useApiDolibarr"
   import {  style                 } from "src/composables/useEstilos"
-  import {  useTools, confetiClick} from "src/composables/useTools"
+  import {  useTools,
+            Format,
+            confetiClick          } from "src/composables/useTools"
 
   //* /////////////////////////////////////////////////////////////////////////////////// Componentes
   import    calendario              from "src/areas/acuerdos/components/Modales/CalendarioAcuerdos.vue"

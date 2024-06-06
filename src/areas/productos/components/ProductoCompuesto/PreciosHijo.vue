@@ -10,7 +10,7 @@
         v-for           ="pp of producto.productosPro"
         :key            ="pp.id"
         >
-        <td>{{ Tool.siNo( pp.disponible, "iconos" ) }} {{ pp.proveedor }}</td>
+        <td>{{ Format.siNo( pp.disponible, "iconos" ) }} {{ pp.proveedor }}</td>
         <td class="q-px-md">{{ pp.ref }}      </td>
         <td class="fuente-mono text-right"> {{ Format.precio( pp.precio,  "decimales-no" )  }}</td>
       </tr>
@@ -71,7 +71,7 @@
 <script setup lang="ts">
   import {  ref                     } from 'vue'
   import {  createReusableTemplate  } from '@vueuse/core'
-  import {  Format, Tool            } from "src/composables/useTools"
+  import {  Format                  } from "src/composables/useTools"
   import {  IProductoHijo           } from '../../models/ProductoHijo'
   import {  style                   } from "src/composables/useEstilos"
   ////////////////////////////////////////////////////////////////////////// Componentes

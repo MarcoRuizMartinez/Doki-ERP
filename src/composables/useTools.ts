@@ -517,26 +517,6 @@ export class Tool
     })
   }  
 
-  static siNo( boleano : boolean, modo : "texto" | "iconos" | "textoConIconos" = "textoConIconos" ) : string {
-    let retorno           = ""
-
-          if(modo         === "textoConIconos")
-      retorno             = boleano ? "✅ Si" : "❌ No"
-    else  if(modo         === "iconos")
-      retorno             = boleano ? "✅"    : "❌"    
-    else
-      retorno             = boleano ? "Si"    : "No"
-
-    return retorno
-  }  
-
-  static siNoLargo( verdaderoFalso : boolean ) : string {
-    if(verdaderoFalso === true)
-      return "Si"
-    else
-      return "No"
-  }
-
   static esCorreoFamoso( correo : string ) : boolean {
     let esFamoso        = false
     const emailFamosos  = ["@gmail","@gmx","@hotmail","@icloud","@live","@me", "@outlook","@protonmail","@yahoo","@sena","@unal.edu.co", "@fac.mil.co", "@policia.gov.co"]
@@ -695,6 +675,26 @@ export class Format
     const valor = ToolType.keyStringValido( param, "value" )
     return Format.precio( valor, "decimales-no" )
   }
+
+  static siNo( boleano : boolean, modo : "texto" | "iconos" | "textoConIconos" = "textoConIconos" ) : string {
+    let retorno           = ""
+
+          if(modo         === "textoConIconos")
+      retorno             = boleano ? "✅ Si" : "❌ No"
+    else  if(modo         === "iconos")
+      retorno             = boleano ? "✅"    : "❌"    
+    else
+      retorno             = boleano ? "Si"    : "No"
+
+    return retorno
+  }  
+
+  static siNoLargo( verdaderoFalso : boolean ) : string {
+    if(verdaderoFalso === true)
+      return "Si"
+    else
+      return "No"
+  }  
 
   static formatoNumeroCorto( valor : string | number, formato : TFormatosNumero = "normal" ) : string
   {

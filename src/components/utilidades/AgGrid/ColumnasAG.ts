@@ -16,11 +16,12 @@ export const Col =
     editable              = undefined,
     columnGroupShow       = undefined,
     hide                  = undefined,
-    type                  = undefined
+    type                  = undefined,
+    headerClass           = undefined,
   }                       : TParam
   )                       : ColDef
   {
-    const col : ColDef    = { headerName, field, editable, columnGroupShow, hide, type, width : 120 }
+    const col : ColDef    = { headerName, field, editable, columnGroupShow, hide, type, headerClass, width : 120 }
     col.filter            = "agSetColumnFilter"
     col.enableRowGroup    = true
     col.filterParams      = { defaultToNothingSelected: true, 
@@ -61,10 +62,11 @@ export const Col =
     width                 = undefined,
     type                  = undefined,
     cellClassRules        = undefined,
+    headerClass           = undefined,
   }                       : TParam
   )                       : ColDef
   {
-    const col : ColDef    = { headerName, field, width, editable, columnGroupShow, hide, cellClassRules }
+    const col : ColDef    = { headerName, field, width, editable, columnGroupShow, hide, cellClassRules, headerClass }
     col.filter            = "agNumberColumnFilter"
 
     col.valueParser       = ( p : any ) => {
@@ -107,12 +109,14 @@ export const Col =
     cellRenderer          = undefined,
     width                 = undefined,
     cellClassRules        = undefined,
+    headerClass           = undefined,
   }                       : TParam
   )                       : ColDef
   {
     const renderAUsar     = getRender()
     const col : ColDef    = { 
       headerName,
+      headerClass,
       editable,
       hide,
       type,

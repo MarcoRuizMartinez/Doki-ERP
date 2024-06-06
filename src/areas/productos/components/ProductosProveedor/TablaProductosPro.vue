@@ -85,7 +85,7 @@
   eventos.on("solicitarEliminarFilas", quitarTodosLosResultados)
   function quitarTodosLosResultados(){
     const rowData : IRowNode<IProductoProveedor>[] = [];
-    AGProProvee.value?.gridApi?.forEachNode     ( node => rowData.push( node.data ) )    
+    AGProProvee.value?.gridApi?.forEachNode     ( node => rowData.push( node.data ) )
     AGProProvee.value?.gridApi?.applyTransaction( { remove: rowData } )
   }
 
