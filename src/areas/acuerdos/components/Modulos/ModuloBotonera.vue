@@ -490,12 +490,14 @@
     const sinFecha        =     !acuerdo.value.fechaEntrega.getTime()
                             &&  ( acuerdo.value.esPedido || acuerdo.value.esOCProveedor )
     const asesorCorrecto  = acuerdo.value.tercero.responsables.some( r => r.id === acuerdo.value.comercial.id )
+    const noHayResponsable= acuerdo.value.tercero.responsables.every( r => !r.activo ) || !acuerdo.value.tercero.responsables.length
+    const asesoresOk      = asesorCorrecto || noHayResponsable
 
     if(cargandoAlgo.value)  a.push("Cargando...")
     if(sinProductos)        a.push("Se deben agregar productos")
     if(sinContacto)         a.push("Contacto invalido")
     if(sinFecha)            a.push("Sin fecha compromiso")
-    if(!asesorCorrecto)     a.push(`El asesor debe ser ${acuerdo.value.tercero.responsables.map( r => r.nombre ).join(",")}`)
+    if(!asesoresOk)         a.push(`El asesor debe ser ${acuerdo.value.tercero.responsables.map( r => r.nombre ).join(",")}`)
     
     return a
   })

@@ -47,7 +47,7 @@ export interface IProductoProveedor {
   nombreNuestro       : string
   estado              : string                //  published, draft, deleted
   tipo                : ITipoProductoProveedor
-  orden               : number
+  orden               : number | null
   proveedor           : IProveedor
   categoria           : ICategoriaProducto
   img                 : IImagenProducto
@@ -282,7 +282,7 @@ export class ProductoProveedor implements IProductoProveedor
     pApi.precioActualizado    = ToolType.keyBoolean       ( pApi, "precioActualizado" )
     pApi.id                   = ToolType.keyNumberValido  ( pApi, "id" )
     pApi.idNuestro            = ToolType.keyNumberValido  ( pApi, "idNuestro" )
-    pApi.orden                = ToolType.keyNumberValido  ( pApi, "orden" )
+    pApi.orden                = ToolType.keyNumberValido  ( pApi, "orden" ) || undefined
     pApi.stock                = ToolType.keyNumberValido  ( pApi, "stock" )
     pApi.precio               = ToolType.keyNumberValido  ( pApi, "precio" )
     pApi.precioCredito        = ToolType.keyNumberValido  ( pApi, "precioCredito" )
@@ -315,7 +315,7 @@ export class ProductoProveedor implements IProductoProveedor
     destino.ref                = !!destino.ref    ? destino.ref    : origen.ref
     destino.nombre             = !!destino.nombre ? destino.nombre : origen.nombre
     destino.estado             = origen.estado
-    destino.orden              = ++origen.orden
+    destino.orden              = +(origen.orden ?? 0)
     destino.proveedor          = origen.proveedor
     destino.categoria          = origen.categoria
     destino.activo             = origen.activo

@@ -158,8 +158,14 @@
       const origenOk            = !!acuerdo.value.origenContacto.id
       const vencimientoOk       = !!acuerdo.value.fechaFinValidezCorta || !acuerdo.value.esCotizacion
       const pagoOk              = !!acuerdo.value.condicionPago.id
-      const asesorCorrecto      = acuerdo.value.tercero.responsables.some( r => r.id === acuerdo.value.comercial?.id ?? 0 )
+      const asesorCorrecto      = acuerdo.value.tercero.responsables.some ( r => r.id === acuerdo.value.comercial?.id ?? 0 )
+      const noHayResponsable    = acuerdo.value.tercero.responsables.every( r => !r.activo ) || !acuerdo.value.tercero.responsables.length
+      const asesoresOk          = asesorCorrecto || noHayResponsable
 
+      /*
+      Ximena
+      Johana
+      */
       alertas.value             = []
       if(!terceroOk)            alertas.value.push("Tercero invalido")
       if(!contactoOkoEspecial)  alertas.value.push("Contacto invalido")
@@ -167,7 +173,7 @@
       if(!origenOk)             alertas.value.push("Indicar origen")
       if(!vencimientoOk)        alertas.value.push("Fecha valides invalida")
       if(!pagoOk)               alertas.value.push("Indicar condiciones de pago")
-      if(!asesorCorrecto)       alertas.value.push(`El asesor debe ser ${acuerdo.value.tercero.responsables.map( r => r.nombre ).join(",")}`)
+      if(!asesoresOk)           alertas.value.push(`El asesor debe ser ${acuerdo.value.tercero.responsables.map( r => r.nombre ).join(",")}`)
       
       const ok                  = !alertas.value.length
       return ok

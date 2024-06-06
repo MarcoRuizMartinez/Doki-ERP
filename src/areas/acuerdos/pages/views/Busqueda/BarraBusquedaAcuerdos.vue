@@ -78,13 +78,13 @@
           :readonly             ="!b.puedeCambiarUser"
         />
         <!-- //* ///////////////////////////////////////////////// Creador -->
-        <select-usuario         hundido clearable
+        <select-usuario         hundido clearable inactivos
           v-if                  ="b.esPedido || b.esCotizacion"
           v-model               ="b.f.creador"
           class                 ="width190"
           label                 ="Creador"
           :area                 ="usuario.area"
-          :grupos               ="b.esOCProveedor ? [GRUPO_USUARIO.PRODUCCION] : []"
+          :grupos               ="b.esOCProveedor ? [GRUPO_USUARIO.PRODUCCION] : [GRUPO_USUARIO.COMERCIALES]"
           :readonly             ="!permisos.acceso_total"
         />
         <!-- //* ///////////////////////////////////////////////// Pedido facturado -->

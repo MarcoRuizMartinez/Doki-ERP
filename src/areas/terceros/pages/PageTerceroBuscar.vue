@@ -1,9 +1,59 @@
-<script setup lang="ts">
+<template>
+  <q-page padding class           ="row item-stretch content-start justify-start">
+    <ventana
+      class                       ="col-12"
+      class-contenido             ="column items-center"
+      :titulo                     ="terceros.length > 0 ? terceros.length + ' terceros encontrados ' : 'Buscar terceros'"
+      icono                       ="mdi-account-search"
+      height                      ="100%"
+      size-icon-carga             ="22em"
+      mensaje-sin-resultados      ="No se encontraron terceros" 
+      :padding-contenido          ="modo == 'normal' ? '0' : '12px' "
+      :modo                       ="modo"
+      >
+      <template                   #menu>
+        <barra-busqueda
+          @buscar                 ="buscar"
+          @limpiar                ="limpiarBusqueda"
+          @exportar               ="descargarTerceros"
+          >
+          <select-columnas
+            v-model               ="columnasVisibles"
+            ref                   ="comColumnas"
+            label                 ="Columnas"
+            :almacen              ="ALMACEN_LOCAL.COL_TERCEROS"
+            :options              ="columnas"
+          />
+        </barra-busqueda>
+      </template>
+      <!-- //* //////////////////////////////////////////////////////// Tabla resultados-->
+      <q-table                    bordered dense flat
+        class                     ="fit tabla-maco tabla-alto-min"
+        row-key                   ="id"
+        :filter                   ="filtro"
+        :rows                     ="terceros"
+        :columns                  ="columnas"
+        :visible-columns          ="columnasVisibles"
+        :rows-per-page-options    ="[100]"
+        >
+      <!-- //* ///////////////////////////////////////////////////// Ref con link -->
+      <template #body-cell-nombre ="props">
+        <q-td :props              ="props">
+          <linkTercero            :tercero="( props.row as Tercero ) "/>
+        </q-td>
+      </template>
+      </q-table>
+    </ventana>
+  </q-page>
+</template>
 
+
+<script setup lang="ts">
   // * /////////////////////////////////////////////////////////////////////// Core
   import {  ref, onMounted      } from "vue"
   import {  useTitle            } from "@vueuse/core"
-  import {  useRouter           } from "vue-router"            
+  import {  useRouter           } from "vue-router"
+  
   // * /////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs         } from 'pinia'
   import {  useStoreUser        } from 'stores/user'
@@ -21,10 +71,10 @@
             ALMACEN_LOCAL       } from "src/models/TiposVarios"
   import {  IQuery              } from "src/models/Busqueda"            
   // * /////////////////////////////////////////////////////////////////////// Componentes
-  import    linkTercero       from "src/areas/terceros/components/LinkTercero.vue"
-  import    barraBusqueda     from "src/areas/terceros/components/busqueda/BarraBusquedaTerceros.vue"
-  import    ventana           from "components/utilidades/Ventana.vue"
-  import    selectColumnas    from "components/utilidades/select/SelectColumnas.vue"
+  import    linkTercero           from "src/areas/terceros/components/LinkTercero.vue"
+  import    barraBusqueda         from "src/areas/terceros/components/busqueda/BarraBusquedaTerceros.vue"
+  import    ventana               from "components/utilidades/Ventana.vue"
+  import    selectColumnas        from "components/utilidades/select/SelectColumnas.vue"
 
   const { terceros,
           busqueda,
@@ -36,7 +86,6 @@
   const modo                      = ref< TModosVentana >("esperando-busqueda")
   const router                    = useRouter()
   const filtro                    = ref< string   >("")
-  const title                     = useTitle("🔍 Buscar tercero")
   const columnas                  = ref< IColumna[] >([])
   const columnasVisibles          = ref< string[]   >([])
   const comColumnas               = ref< InstanceType<typeof selectColumnas> | null>(null)
@@ -45,6 +94,7 @@
 
   async function iniciar()
   {    
+    useTitle("🔍 Buscar tercero")
     terceros.value                = []
     modo.value                    = "esperando-busqueda"
     await busqueda.value.montarBusqueda( usuario.value.id, router, usuario.value.esComercial, permisos.value.acceso_total, 50 )
@@ -99,52 +149,3 @@
   }
 
 </script>
-
-<template>
-  <q-page padding class           ="row item-stretch content-start justify-start">
-    <ventana
-      class                       ="col-12"
-      class-contenido             ="column items-center"
-      :titulo                     ="terceros.length > 0 ? terceros.length + ' terceros encontrados ' : 'Buscar terceros'"
-      icono                       ="mdi-account-search"
-      height                      ="100%"
-      size-icon-carga             ="22em"
-      mensaje-sin-resultados      ="No se encontraron terceros" 
-      :padding-contenido          ="modo == 'normal' ? '0' : '12px' "
-      :modo                       ="modo"
-      >
-      <template                   #menu>
-        <barra-busqueda
-          @buscar                 ="buscar"
-          @limpiar                ="limpiarBusqueda"
-          @exportar               ="descargarTerceros"
-          >
-          <select-columnas
-            v-model               ="columnasVisibles"
-            ref                   ="comColumnas"
-            label                 ="Columnas"
-            :almacen              ="ALMACEN_LOCAL.COL_TERCEROS"
-            :options              ="columnas"
-          />
-        </barra-busqueda>
-      </template>
-      <!-- //* //////////////////////////////////////////////////////// Tabla resultados-->
-      <q-table                    bordered dense flat
-        class                     ="fit tabla-maco tabla-alto-min"
-        row-key                   ="id"
-        :filter                   ="filtro"
-        :rows                     ="terceros"
-        :columns                  ="columnas"
-        :visible-columns          ="columnasVisibles"
-        :rows-per-page-options    ="[100]"
-        >
-      <!-- //* ///////////////////////////////////////////////////// Ref con link -->
-      <template #body-cell-nombre ="props">
-        <q-td :props              ="props">
-          <linkTercero            :tercero="( props.row as Tercero ) "/>
-        </q-td>
-      </template>
-      </q-table>
-    </ventana>
-  </q-page>
-</template>

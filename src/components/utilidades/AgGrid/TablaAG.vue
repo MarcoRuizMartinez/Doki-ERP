@@ -1,4 +1,4 @@
-<template>                        
+<template>
   <ag-grid-vue                    suppress-multi-range-selection suppress-clear-on-fill-reduction 
     :style                        ="estilo"
     style                         ="min-height: 800px;"
@@ -20,7 +20,7 @@
     :column-defs                  ="columnas"
     :undo-redo-cell-editing       ="true"
     :undo-redo-cell-editing-limit ="10"
-    :enable-range-selection       ="rangoActivo"
+    :enable-range-selection       ="true"
     :enable-fill-handle           ="rangoActivo"
     @cell-value-changed           ="eventoCambio"
     @grid-ready                   ="tablaLista"
@@ -209,6 +209,7 @@ single-click-edit
     filter                        : "agTextColumnFilter",
     enableCellChangeFlash         : true,  
     floatingFilter                : true,
+    width                         : 150, 
     filterParams                  : { buttons: ['reset'], defaultToNothingSelected: true,},
     //enableRowGroup                : true,
     //enablePivot                   : true,

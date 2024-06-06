@@ -24,7 +24,8 @@ export const reglasCSS = {
 
 export const autoSizeStrategy = {
   type                  : 'fitCellContents', // fitProvidedWidth fitGridWidth
-  defaultMinWidth       : 200,
+  defaultMinWidth       : 100,
+  
   columnLimits          : [{ colId: 'ref', minWidth: 900}]
 }
 
@@ -99,8 +100,8 @@ function esFieldDeEditarHijo( field : string )
 // * ////////////////////////////////////////////////////////////////////////////////////////////////// COLUMNAS
 export const columnasProductos : (ColDef<IProductoProveedor>  | ColGroupDef)[] = [
   { // * //////////////////////////////////////////////////////////////////////////////// Imagen
+    headerName          : "🖼️",
     field               : "img",
-    headerName          : "Imagen",
     width               : 80, 
     cellRenderer        : imagen,
     filter              : "agSetColumnFilter",
@@ -108,13 +109,15 @@ export const columnasProductos : (ColDef<IProductoProveedor>  | ColGroupDef)[] =
     cellClassRules      : { 'bg-deep-orange-2': ( p : any ) => p.data.esNuevo && !p.data.sePuedeCrear }
   },
   { // * //////////////////////////////////////////////////////////////////////////////// REF y nombre proveedor     
-    headerName          : "Datos de proveedor",                      
-    marryChildren       : true,
+    headerName          : "🏪Datos de proveedor",                      
+    marryChildren       : false,
     children            :
     [
       Col.Objeto(
       {
+        headerName      : "🏪Proveedor",
         field           : "proveedor",
+        width           : 140,
         cellRenderer    : proveedor,
         opciones        : getProveedoresDB,
         key             : "alias",
@@ -122,16 +125,17 @@ export const columnasProductos : (ColDef<IProductoProveedor>  | ColGroupDef)[] =
         cellClassRules  : { 'bg-deep-orange-2': p => p.data.esNuevo && !p.data.okProveedor }
       }),
       {
+        headerName      : "🏪Ref proveedor",
         field           : "ref",
-        headerName      : "Ref proveedor",
         tooltipField    : "proveedor.label",
         type            : "creacion",
         cellClassRules  : { 'bg-deep-orange-2': p => p.data.esNuevo && !p.data.okRef },
         valueParser     : p => ToolType.keyStringValido(p, "newValue").replaceAll(" ", "").trim()
       },
       {
+        headerName      : "🏪Nombre proveedor",
         field           : "nombre",
-        headerName      : "Nombre proveedor",
+        minWidth        : 340,
         type            : "creacion",
         cellClassRules  : { 'bg-deep-orange-2': p => p.data.esNuevo && !p.data.okNombre },
         valueParser     : p => ToolType.keyStringValido(p, "newValue").trim()
@@ -139,28 +143,53 @@ export const columnasProductos : (ColDef<IProductoProveedor>  | ColGroupDef)[] =
     ]
   },
   { // * //////////////////////////////////////////////////////////////////////////////// REF y nombre nuestros  
-    headerName          : "Datos de nuestros",                      
-    marryChildren       : true,
+    headerName          : "🏠Datos de nuestros",                      
+    marryChildren       : false,
     children            :
     [
-      {  field          : "refNuestra",   tooltipField: "proveedor.label" },
-      {  field          : "nombreNuestro" },
+      { headerName      : "🏠Ref nuestra", field          : "refNuestra",   tooltipField: "proveedor.label" },
+      { headerName      : "🏠Nombre nuestro", field          : "nombreNuestro",minWidth        : 340, },
     ]
   }, 
   { // * //////////////////////////////////////////////////////////////////////////////// Disponibilidad
-    headerName          : "Disponibilidad de producto",                      
-    marryChildren       : true,
+    headerName          : "📦Disponibilidad de producto",                      
+    marryChildren       : false,
     children            :
     [
-      Col.Boolean({field: "activo",       headerClass:"bg-green-2", type :"editarYCrear" }),
-      Col.Boolean({field: "disponible",   headerClass:"bg-green-2", type :"editarYCrear" }),
-      Col.Boolean({field: "gestionStock", headerClass:"bg-green-2", type :"editarYCrear", hide : true, headerName: "Gestión de stock" }),
-      {  field          : "stock",                                  type: "numero",       hide : true },
-      {  field          : "fechaLlegada",                                                 hide : true },
+      Col.Boolean({
+        headerName      : "🚨Activo",
+        field           : "activo",
+        headerClass     : "bg-green-2",
+        type            : "editarYCrear"
+      }),
+      Col.Boolean({
+        headerName      : "💁🏻‍♂️Disponible",
+        field           : "disponible",
+        headerClass     : "bg-green-2",
+        type            : "editarYCrear"
+      }),
+      Col.Boolean({
+        headerName      : "📦Gestión de stock",
+        field           : "gestionStock",
+        headerClass     : "bg-green-2",
+        type            : "editarYCrear",
+        hide            : true,
+      }),
+      {
+        headerName      : "🧮Stock",
+        field           : "stock",
+        type            : ["editarYCrear", "numero"],
+        hide            : true
+      },
+      {
+        headerName      : "📅Fecha llegada",
+        field           : "fechaLlegada",
+        hide            : true
+      },
       Col.Objeto(
       {
+        headerName      : "⏱️Días Despacho",
         field           : "diasDespacho",
-        headerName      : "Días Despacho",
         opciones        : getDiasDespachoDB,
         key             : "label",
         type            : "editarYCrear"
@@ -168,12 +197,13 @@ export const columnasProductos : (ColDef<IProductoProveedor>  | ColGroupDef)[] =
     ]
   },
   { // * //////////////////////////////////////////////////////////////////////////////// Categorización
-    headerName          : "Categorización de producto",                      
-    marryChildren       : true,
+    headerName          : "🗃️Categorización de producto",                      
+    marryChildren       : false,
     children            :
     [
       Col.Objeto(
       {
+        headerName      : "🆎Categoría",
         field           : "categoria",
         opciones        : getCategoriasDB,
         key             : "label",
@@ -182,6 +212,7 @@ export const columnasProductos : (ColDef<IProductoProveedor>  | ColGroupDef)[] =
       }),
       Col.Objeto(
       {
+        headerName      : "🔢Tipo",
         field           : "tipo",
         opciones        : TiposProductosProveedor,
         key             : "label",
@@ -189,46 +220,123 @@ export const columnasProductos : (ColDef<IProductoProveedor>  | ColGroupDef)[] =
         cellClassRules  : { 'bg-deep-orange-2': p => p.data.esNuevo && !p.data.okTipo }
       }),
       {
+        headerName      : "👩‍👧‍👦Padre",
         field           : "refPadre",
         hide            : false,
         type            : "editarYCrear",
         cellClassRules  : { 'bg-deep-orange-2': p => p.data.esNuevo && !p.data.okRefPadre }
         
       },
-      { field           : "orden",             hide : true,   type: ["editable", "numero" ] },
-      { field           : "familiaNuestra",    hide : true,   type: "editable", },
-      { field           : "familiaProveedor",  hide : true,   type: "editable", },
-      { field           : "documento",         hide : true,   type: "editable", },
+      {
+        headerName      : "⬇️Orden",
+        field           : "orden",
+        type            : ["editable", "numero" ],
+        width           : 110
+      },
+      {
+        headerName      : "👨‍👩‍👧‍👦🏠Familia nuestra", 
+        field           : "familiaNuestra", 
+        hide            : true,
+        type            : "editable"
+      },
+      {
+        headerName      : "👨‍👩‍👧‍👦🏪Familia proveedor", 
+        field           : "familiaProveedor",
+        hide            : true,
+        type            : "editable"
+      },
+      {
+        headerName      : "📑Documento", 
+        field           : "documento",
+        hide            : true,
+        type            : "editable"
+      },
     ]
   },
   { // * //////////////////////////////////////////////////////////////////////////////// Precios
-    headerName          : "Precios proveedor",                      
-    marryChildren       : true,
+    headerName          : "🪙Precios proveedor",                      
+    marryChildren       : false,
     children            :
     [
-      {            field: "refComparacion",     hide: true,   headerName: "Ref Guía",   type: "editable"  },
-      Col.Precio({ field: "precio",                           headerName: "✅Precio",   type: "creacion",   cellClassRules: { 'bg-deep-orange-2': p => p.data.esNuevo && !p.data.okPrecio }}),
-      Col.Precio({ field: "precioCredito",                    headerName: "✅Credito",  type: "creacion"  }),
-      Col.Precio({ field: "precio_n",           hide: true,   headerName: "🔜Precio",   type: "editable"  }),
-      Col.Precio({ field: "precioCredito_n",    hide: true,   headerName: "🔜Credito",  type: "editable"  }),
-      Col.Precio({ field: "diferencia",         hide: true    }),
-      {            field: "diferenciaX100",     hide: true,   headerName: "Variación %" },
-      Col.Precio({ field: "precioPromocion",    hide: true,   headerName: "Precio Promoción"}),
-      Col.Precio({ field: "costoExtra",         hide: true,                             type: "editable" }),
-      {            field: "descuento",          hide: true,                             type: "editable" },
-      {            field: "calcularDescuento",  hide: true,                             type: "editable" },
-      {            field: "precioActualizado",  hide: true,                             type: "editable" },
+      {
+        headerName      : "🔎Ref Guía",
+        field           : "refComparacion",
+        hide            : true,
+        type            : "editable"
+      },
+      Col.Precio({
+        headerName      : "🪙Precio",
+        field           : "precio",
+        type            : "creacion",
+        cellClassRules  : { 'bg-deep-orange-2': p => p.data.esNuevo && !p.data.okPrecio }
+      }),
+      Col.Precio({
+        headerName      : "🪙Credito",
+        field           : "precioCredito",
+        type            : "creacion"
+      }),
+      Col.Precio({
+        headerName      : "🔜Precio",
+        field           : "precio_n",
+        hide            : true,
+        type            : "editable"
+      }),
+      Col.Precio({
+        headerName      : "🔜Credito",
+        field           : "precioCredito_n",    
+        hide            : true,
+        type            : "editable"
+      }),
+      Col.Precio({
+        headerName      : "📊Diferencia",
+        field           : "diferencia",
+        hide            : true
+      }),
+      {
+        headerName      : "📊Variación %",
+        field           : "diferenciaX100",
+        hide            : true,
+      },
+      Col.Precio({
+        headerName      : "🏷️Precio Promoción", 
+        field           : "precioPromocion",
+        hide            : true,
+      }),
+      Col.Precio({
+        headerName      : "💰Costo extra", 
+        field           : "costoExtra",
+        hide            : true,
+        type            : "editable"
+      }),
+      {
+        headerName      : "🔖Descuento", 
+        field           : "descuento",
+        hide            : true,
+        type            : "editable"
+      },
+      {
+        headerName      : "🔖Calcular descuento", 
+        field           : "calcularDescuento",
+        hide            : true,
+        type            : "editable"
+      },
+      { 
+        headerName      : "🤝Precio vigente", 
+        field           : "precioActualizado",
+        hide            : true,
+        type            : "editable"
+      },
     ]
   },
   { // * //////////////////////////////////////////////////////////////////////////////// Propiedades productos
-    headerName          : "Características de producto",                      
-    marryChildren       : true,
+    headerName          : "✨Características de producto",                      
+    marryChildren       : false,
     children            :
     [
       Col.Objeto(
       { 
+        headerName      : "🌏Hecho en",
         field           : "hechoEn",
-        headerName      : "Hecho en",
         opciones        : OriginesMadeIn,
         key             : "label",
         type            : "editarYCrear",
@@ -236,21 +344,35 @@ export const columnasProductos : (ColDef<IProductoProveedor>  | ColGroupDef)[] =
       }),
       Col.Objeto(
       { 
+        headerName      : "🛟Garantía",
         field           : "garantiaMeses",
-        headerName      : "Garantía",
         opciones        : MesesGarantia,
         key             : "label",
         type            : "editarYCrear",
         //cellClassRules  : { 'bg-deep-orange-2': p => p.data.esNuevo && !p.data.okGarantiaMeses }
       }),
-      { field           : "urlImagen",      hide: true,   headerName: "URL Imagen",     type: "editable"},
-      { field           : "url",            hide: true,   headerName: "URL"             },
-      { field           : "descripcion",    hide: true,   headerName: "Descripción",    type: "editarYCrear"},
+      { 
+        headerName      : "🖼️URL Imagen",
+        field           : "urlImagen",      
+        hide            : true,   
+        type            : "editable"
+      },
+      { 
+        headerName      : "🔗URL",
+        field           : "url",
+        hide            : true,   
+      },
+      {
+        headerName      : "📝Descripción",
+        field           : "descripcion",
+        hide            : true,   
+        type            : "editarYCrear"
+      },
     ]
   },
   { // * //////////////////////////////////////////////////////////////////////////////// Registro de cambios
-    headerName          : "Registro de cambios",                      
-    marryChildren       : true,
+    headerName          : "📋Registro de cambios",                      
+    marryChildren       : false,
     children            :
     [
       { field           : "creador.label",  hide: true,   headerName: "Creador"         },

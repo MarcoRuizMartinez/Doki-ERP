@@ -19,18 +19,18 @@
       <Tooltip label  ="Mas opciones"/>
     </q-tab>    
     <q-tab
-      label           ="Vistas"
-      name            ="tab_3"
-      icon            ="mdi-table-column-width"
-      >
-      <Tooltip label  ="Vistas de columnas"/>
-    </q-tab>
-    <q-tab
       label           ="Edición"
-      name            ="tab_4"
+      name            ="tab_3"
       icon            ="mdi-clipboard-edit"
       >
       <Tooltip label  ="Opciones de edición"/>
+    </q-tab>    
+    <q-tab
+      label           ="Vistas"
+      name            ="tab_4"
+      icon            ="mdi-table-column-width"
+      >
+      <Tooltip label  ="Vistas de columnas"/>
     </q-tab>
 <!--
     <q-tab

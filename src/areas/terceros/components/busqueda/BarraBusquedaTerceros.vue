@@ -20,7 +20,7 @@
           icon                  ="mdi-account-search"
         />
         <!-- //* ///////////////////////////////////////////////// Comercial Tercero -->
-        <select-usuario         hundido clearable
+        <select-usuario         hundido clearable inactivos
           v-model               ="b.f.usuario"
           class                 ="width200"
           label                 ="Responsable"

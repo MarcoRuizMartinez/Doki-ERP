@@ -31,7 +31,7 @@
           :disable              ="!productosPro.length"
         />        
       </fieldset-filtro>
-      <!-- //* /////////////////////////////////////////////////// Paginación -->
+      <!-- //* /////////////////////////////////////////////////// Opciones -->
       <fieldset-filtro
         titulo                  ="Opciones"
         class-contenido         ="grilla-ribom fit"
@@ -118,7 +118,11 @@
             color               ="white"
             text-color          ="grey-8"
             toggle-color        ="primary"
-            :options            ="Busqueda.listaResultadosXPag"
+            :options            ="[ { value: 50,  label: '50',  },
+                                    { value: 100, label: '100', },
+                                    { value: 200, label: '200', },
+                                    { value: 500, label: '500', },
+                                  ]"
             @update:model-value ="b.f.pagina = 1"
           />
           <Tooltip label        ="Resultados por pagina"/>
@@ -248,13 +252,6 @@
       name                      ="tab_3"
       class                     ="row q-pa-none no-wrap scroll"
       >
-      <vistas :ref-vista        ="VISTAS_AG.PRODUCTOS_PROVEEDORES"/>
-    </q-tab-panel>
-    <!-- //* ///////////////////////////////////////////////////// Tab 3 -->
-    <q-tab-panel
-      name                      ="tab_4"
-      class                     ="row q-pa-none no-wrap scroll"
-      >
       <!-- //* /////////////////////////////////////////////////// Modo Edicion -->
       <fieldset-filtro
         titulo                  ="Crear productos"
@@ -280,7 +277,7 @@
               >
               <Tooltip label    ="Crear nuevas filas"/>
             </q-btn>          
-          </div>       
+          </div>
         </div>
         <q-btn
           v-bind                ="style.btnBaseMd"
@@ -340,17 +337,22 @@
             >
             <Tooltip label      ="Copiar precios de temporales precios de proveedor"/>
           </q-btn>
-        </div>        
+        </div>
       </fieldset-filtro>        
+    </q-tab-panel>    
+    <!-- //* ///////////////////////////////////////////////////// Tab 3 -->
+    <q-tab-panel
+      name                      ="tab_4"
+      class                     ="row q-pa-none no-wrap scroll"
+      >
+      <vistas :ref-vista        ="VISTAS_AG.PRODUCTOS_PROVEEDORES"/>
     </q-tab-panel>
+
   </q-tab-panels>
   <inner-loading :cargando      ="loading.carga || b.f.copiando"/>
 </template>
 
 <script lang="ts" setup>
-/*
-
-*/
   // * /////////////////////////////////////////////////////////////////////// Core
   import {  ref,
             watch,
@@ -388,9 +390,9 @@
           loading           } = storeToRefs( useStoreProducto() )
   const { tabs,
           filtro,
+          campo_1 : modoEdicion
                             } = storeToRefs( useStoreApp() )
-  const { modoEdicion, 
-          crearProductos,
+  const { crearProductos,
           limpiarFiltros,
           limpiarBusqueda,
           actualizarPrecios,

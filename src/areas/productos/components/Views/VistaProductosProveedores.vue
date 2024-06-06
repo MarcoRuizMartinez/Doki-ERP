@@ -54,6 +54,7 @@
   import    barraBusqueda         from "./../ProductosProveedor/BarraBusquedaProductosProveedor.vue"
   import    tabsBusqueda          from "./../ProductosProveedor/TabsBusquedaProductosProveedor.vue"
   import    tablaProductos        from "../ProductosProveedor/TablaProductosPro.vue"
+
   
   const { productosPro,
           loading               } = storeToRefs( useStoreProducto() )

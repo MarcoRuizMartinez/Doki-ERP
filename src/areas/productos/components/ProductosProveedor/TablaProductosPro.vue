@@ -2,7 +2,7 @@
   <tablaAg
     v-model                 ="productosPro"
     key-id                  ="id"
-    :rango-activo
+    :rango-activo           ="rangoActivo"
     :auto-size-strategy
     :ref                    ="VISTAS_AG.PRODUCTOS_PROVEEDORES"
     :row-class-rules        ="reglasCSS"
@@ -15,13 +15,15 @@
 
 <script setup lang="ts">
   // * ///////////////////////////////////////////////////////////////////////////////// Core
-  import {  ref                 } from "vue"
+  import {  computed, ref       } from "vue"
 
   // * ///////////////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs         } from 'pinia'
+  import {  useStoreApp         } from 'stores/app'
   import {  useStoreProducto    } from 'stores/producto'
 
   // * ///////////////////////////////////////////////////////////////////////////////// Modelos
+  import {  TIPO_EDICION        } from "components/utilidades/AgGrid/AGTools"
   import {  VISTAS_AG           } from "components/utilidades/AgGrid/VistaAG"
   import {  columnasProductos,
             autoSizeStrategy,
@@ -31,7 +33,8 @@
   import {  IProductoProveedor  } from "../../models/ProductoProveedor"
   import {  MenuItemDef,
             GetContextMenuItems,
-            GetContextMenuItemsParams
+            GetContextMenuItemsParams,
+            IRowNode
                                   } from "ag-grid-community";
   // * ///////////////////////////////////////////////////////////////////////////////// Componibles
   import {  useControlProductosProveedor
@@ -39,14 +42,16 @@
   // * ///////////////////////////////////////////////////////////////////////////////// Componentes
   import tablaAg                  from "components/utilidades/AgGrid/TablaAG.vue"
   
-  const { productosPro          } = storeToRefs( useStoreProducto() )               
+  const { productosPro          } = storeToRefs( useStoreProducto() )
+  const { campo_1 : modoEdicion } = storeToRefs( useStoreApp() )
 
   const { eventos,
-          rangoActivo,
           eliminarFila,
           procesarEdicionEnLote } = useControlProductosProveedor()
 
   const AGProProvee               = ref< InstanceType<typeof tablaAg> | null>(null)
+  const rangoActivo               = computed(()=> modoEdicion.value === TIPO_EDICION.RANGO ) 
+
 
   eventos.on("solicitarRefrescarTabla", ( forzado : boolean = false )=>{
     AGProProvee.value?.refreshCells( forzado )
@@ -56,8 +61,7 @@
     AGProProvee.value?.limpiarFiltros()
   })
 
-  eventos.on("solicitarCambiarNuevos", cambiarNuevosANoNuevos)  
-
+  eventos.on("solicitarCambiarNuevos", cambiarNuevosANoNuevos)
   function cambiarNuevosANoNuevos()
   {
     AGProProvee.value?.gridApi?.forEachNode((rowNode, index) =>
@@ -67,6 +71,22 @@
         rowNode.setDataValue("esNuevo", false)
       }
     })
+  }
+
+  eventos.on("solicitarCrearFilas", crearNuevaFilas)
+  function crearNuevaFilas( nuevosProductos : IProductoProveedor[] )
+  {
+    AGProProvee.value?.gridApi?.applyTransaction({
+        add: nuevosProductos,
+        addIndex: 0,
+    })
+  }
+
+  eventos.on("solicitarEliminarFilas", quitarTodosLosResultados)
+  function quitarTodosLosResultados(){
+    const rowData : IRowNode<IProductoProveedor>[] = [];
+    AGProProvee.value?.gridApi?.forEachNode     ( node => rowData.push( node.data ) )    
+    AGProProvee.value?.gridApi?.applyTransaction( { remove: rowData } )
   }
 
   function getMenuContextual( params : GetContextMenuItemsParams<IProductoProveedor> ) : (string | MenuItemDef)[] | GetContextMenuItems
