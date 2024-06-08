@@ -38,7 +38,7 @@ export interface IProductoProveedor {
   idNuestro           : number
   ref                 : string
   ref_n               : string                //* ///////////////////////////////// _n
-  refComparacion      : string                //* Ref que se utiliza para comprar si el precio esta bien
+  refComparacion_n    : string                //* Ref que se utiliza para comprar si el precio esta bien
   refNuestra          : string
   refPadre            : string
   idPadre             : number
@@ -118,7 +118,7 @@ export class ProductoProveedor implements IProductoProveedor
   idNuestro           : number                  = 0
   ref                 : string                  = ""
   ref_n               : string                  = ""
-  refComparacion      : string                  = ""
+  refComparacion_n    : string                  = ""
   refNuestra          : string                  = ""
   refPadre            : string                  = ""
   idPadre             : number                  = 0

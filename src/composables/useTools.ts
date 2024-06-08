@@ -121,7 +121,7 @@ export class ToolType
   static keyNumberValido ( objeto : any, key : string, defecto : number = 0 ) : number
   {
     let  numero : number = defecto
-    if(key in objeto && ToolType.valorValido( objeto[key] ))
+    if(!!objeto && (key in objeto) && ToolType.valorValido( objeto[key] ))
     {
       if( typeof objeto[key] === "number" )
         numero = objeto[key]
@@ -135,7 +135,13 @@ export class ToolType
 
   static keyBoolean( objeto : any, key : string ) : boolean
   {
-    return Boolean( ToolType.keyNumberValido( objeto, key, 0 ) )
+    let boleano = false
+    if(!!objeto && (key in objeto) && ToolType.valorValido( objeto[key] ))
+    {
+      boleano   = Boolean( ToolType.keyNumberValido( objeto, key, 0 ) )
+    }
+
+    return boleano
   }
   
 
@@ -143,7 +149,7 @@ export class ToolType
   static keyStringValido( objeto : any, key : string, defecto : string = "" ) : string
   {
     let str = defecto
-    if(key in objeto && ToolType.valorValido( objeto[key] ))
+    if(!!objeto && (key in objeto) && ToolType.valorValido( objeto[key] ))
     {
       if( typeof objeto[key] === "number" )
         str = objeto[key].toString()

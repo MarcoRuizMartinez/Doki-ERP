@@ -445,7 +445,7 @@ export class Acuerdo implements IAcuerdo
       lineaP.qtyAEntregar         = lineaP.qty - lineaP.qtyEnEntregas
       lineaP.qtyPendiente         = lineaP.qtyAEntregar
 
-      /* console.table({
+      /*console.table({
         qtyProgramado : lineaP.qtyProgramado,
         qtyEntregado  : lineaP.qtyEntregado,
         qtyBorrador   : lineaP.qtyBorrador,

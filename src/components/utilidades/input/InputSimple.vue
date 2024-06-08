@@ -18,7 +18,11 @@
       @keydown.ctrl.enter.prevent ="emit('ctrl-enter')"
       >
       <template #prepend>
-        <q-icon :name ="icon" :class="loading ? 'mdi-spin' : ''"/>
+        <q-icon
+          :name       ="icon"
+          :class      ="loading ? 'mdi-spin' : ''"
+          :color      ="!!modelo ? 'primary' : 'grey-6'"
+        />
       </template>
       <template v-slot:append>
         <slot></slot>

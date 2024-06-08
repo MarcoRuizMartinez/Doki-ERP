@@ -28,7 +28,7 @@
     <q-tab
       label           ="Vistas"
       name            ="tab_4"
-      icon            ="mdi-table-column-width"
+      icon            ="mdi-table-headers-eye"
       >
       <Tooltip label  ="Vistas de columnas"/>
     </q-tab>

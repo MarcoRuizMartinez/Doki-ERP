@@ -20,19 +20,23 @@ import {  TIPO_EDICION,
 //* ///////////////////////////////////////////////////////////////////////////////// Componibles
 //import {  useFetch              } from "src/composables/useFetch"
 //import {  getURL, getFormData   } from "src/composables/APIMaco"
-import {  useTools, ToolType    } from "src/composables/useTools"
+import {  useTools, 
+          ToolType,
+          ToolNum               } from "src/composables/useTools"
 import {  servicesProductosPro  } from "src/areas/productos/services/servicesProductosProveedor"
 import    mitt                    from "mitt";
 
 
 //* //////////////////////////////////////////////////////////////////////////////// 📡📡📡📡📡📡📡📡📡📡📡📡📡📡📡📡 Eventos
+type TSubirBajar = "subir" | "bajar"
 
 type TEventos = {
   solicitarRefrescarTabla       : boolean
   solicitarLimpiarFiltros       : void
-  solicitarCambiarNuevos        : void
   solicitarCrearFilas           : IProductoProveedor[]
   solicitarEliminarFilas        : void
+  solicitarEliminarFilasPorId   : number[]
+  solicitarCambiarIVAPrecios    : TSubirBajar
 }
 
 const eventos                   = mitt<TEventos>()
@@ -59,6 +63,7 @@ export function useControlProductosProveedor()
           loading             } = storeToRefs( useStoreProducto() )
 
   const { tabs,
+          filtro,
           campo_1: modoEdicion} = storeToRefs( useStoreApp() )
 
 
@@ -114,25 +119,26 @@ export function useControlProductosProveedor()
     }
   
     function limpiarFiltros(){
+      filtro.value                = ""
       eventos.emit("solicitarLimpiarFiltros")
     }
 
     function limpiarTabla()
     {
+      limpiarFiltros()
       productosPro.value          = []
       eventos.emit("solicitarEliminarFilas")
     }
 
     return {
-      crearNuevasFilas,
       eliminarFila,
+      limpiarTabla,
+      limpiarFiltros,
+      crearNuevasFilas,
       copiarADatosTemporales,
       setEdicionEnProductos,
-      limpiarFiltros,
-      limpiarTabla,
     }
   }
-
 
   //* //////////////////////////////////////////////////////////////////////////////// 👼🏻👼🏻👼🏻👼🏻👼🏻👼🏻👼🏻👼🏻👼🏻👼🏻👼🏻👼🏻👼🏻👼🏻👼🏻👼🏻 Crear productos
   function useCRUD()
@@ -155,15 +161,16 @@ export function useControlProductosProveedor()
       const productosCreados      = await BuscarProductos( query )
       loading.value.carga         = false
       if(!productosCreados.length) return
-  
+
+      eventos.emit("solicitarEliminarFilasPorId", productosCrear.map( p => p.id ))
+
       productosCrear.forEach( p =>{
-        p.id                      = productosCreados.find( pc => p.ref === pc.ref )?.id ?? 0       
+        p.id                      = productosCreados.find( pc => p.ref === pc.ref )?.id ?? 0
+        p.esNuevo                 = false
       })
-  
-      eventos.emit("solicitarCambiarNuevos")
-  
-      const relaciones            = productosCrear.filter( p => !!p.idPadre ).map( p => p.productoPadreApi )
-  
+
+      eventos.emit("solicitarCrearFilas", productosCrear)
+      const relaciones            = productosCrear.filter( p => !!p.idPadre ).map( p => p.productoPadreApi )  
       relacionarHijosConPadres( relaciones )
     }
   
@@ -254,9 +261,13 @@ export function useControlProductosProveedor()
     async function subirCambiosEnLote()
     {
       if(!cambios.length) return
+      const nuevosCambios : TDatosEvento[]= []
   
       const campo                 = cambios[0].campo
-      if(campo.includes("_n")) return
+      if(campo.includes("_n")) {
+        cambios.length            = 0
+        return
+      }
   
       loading.value.carga         = true
   
@@ -264,10 +275,9 @@ export function useControlProductosProveedor()
       {
         if(typeof c.value         ==  "boolean")
           c.value = ToolType.anyToNum( c.value )
-        else if(c.value           === null && typeof c.oldValue == "boolean")
-          c.value                 = 0
-        else if(c.value           === null && typeof c.oldValue == "string")
-          c.value                 = ""
+        else if(c.value           === null && typeof c.oldValue == "boolean") c.value  = 0
+        else if(c.value           === null && typeof c.oldValue == "number")  c.value  = 0
+        else if(c.value           === null && typeof c.oldValue == "string")  c.value  = ""
         else if(                  // Objetos
               campo               === "diasDespacho"
           ||  campo               === "categoria"
@@ -277,21 +287,37 @@ export function useControlProductosProveedor()
         {
           c.value                 = ToolType.anyToNumOStr( c.value?.value )
         }
+
+        if(campo                  === "stock" && c.data.gestionStock)
+        {
+          const hayStock          = !!c.value
+          c.data.disponible       = hayStock
+          nuevosCambios.push({
+            campo     : "disponible",
+            index     : c.index,
+            data      : c.data,
+            value     : hayStock,
+            oldValue  : c.oldValue,
+          })
+        }
       }
       
       const ok                    = await EditarCampoEnLote( campo, cambios, usuario.value.id )    
       cambios.length              = 0
       loading.value.carga         = false
+      if(!!nuevosCambios.length)
+      {
+        cambios.push( ...nuevosCambios )
+        eventos.emit("solicitarRefrescarTabla", false)
+        subirCambiosEnLote()
+      }
     }
     
     return {
       cambios,
       crearProductos,
       procesarEdicionEnLote,
-      //gestionarCambiosEnNuevo,
-
       subirCambiosEnLote,
-
     }
   }
 
@@ -330,7 +356,11 @@ export function useControlProductosProveedor()
       await subirCambiosEnLote()
     }
 
-    return { actualizarPrecios }
+    function cambiarPreciosPorIVA( accion : TSubirBajar ){
+      eventos.emit("solicitarCambiarIVAPrecios", accion)      
+    }
+
+    return { actualizarPrecios, cambiarPreciosPorIVA }
   }
 
   //* //////////////////////////////////////////////////////////////////////////////// 🏁🏁🏁🏁🏁🏁🏁 Funciones de Page: iniciar y desmontar
@@ -356,10 +386,11 @@ export function useControlProductosProveedor()
     function apagarEventos()
     {
       eventos.off("solicitarRefrescarTabla")
-      eventos.off("solicitarLimpiarFiltros")
-      eventos.off("solicitarCambiarNuevos")
+      eventos.off("solicitarLimpiarFiltros")      
       eventos.off("solicitarCrearFilas")
       eventos.off("solicitarEliminarFilas")
+      eventos.off("solicitarCambiarIVAPrecios")
+      eventos.off("solicitarEliminarFilasPorId")
     }
 
     return {
@@ -405,7 +436,8 @@ export function useControlProductosProveedor()
           procesarEdicionEnLote,          
           subirCambiosEnLote,      
                                   } = useCRUD()         
-  const { actualizarPrecios       } = usePrecios()
+  const { actualizarPrecios,
+          cambiarPreciosPorIVA    } = usePrecios()
   const { buscar, limpiarBusqueda } = useBuscar()
   const { iniciar, desmontar      } = useCicloDeVida()
 
@@ -421,6 +453,7 @@ export function useControlProductosProveedor()
     limpiarBusqueda,
     // * ///////////////////////////////// ☁️ Actualizar datos
     actualizarPrecios,
+    cambiarPreciosPorIVA,
     procesarEdicionEnLote,
     // * ///////////////////////////////// 📋 Gestion de datos
     crearNuevasFilas,

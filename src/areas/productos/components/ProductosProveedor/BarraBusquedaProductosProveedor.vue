@@ -18,7 +18,7 @@
         <input-buscar           clearable hundido
           v-model               ="b.f.buscar"
           label                 ="Búsqueda"
-          class                 ="width190"
+          class                 ="width170"
           icon                  ="mdi-account-search"
           debounce              ="800"
         />
@@ -26,7 +26,7 @@
         <input-buscar           clearable hundido
           v-model               ="filtro"
           label                 ="Filtro"
-          class                 ="width190"
+          class                 ="width170"
           icon                  ="mdi-filter"
           :disable              ="!productosPro.length"
         />        
@@ -41,7 +41,7 @@
           v-model               ="b.f.proveedores"
           label                 ="Proveedor"
           icon                  ="mdi-storefront"
-          class                 ="width190"
+          class                 ="width170"
           :options              ="b.o.proveedores"
         />
         <!-- //* ///////////////////////////////////////////////////////////// Campo Categoría -->
@@ -50,29 +50,53 @@
           label                 ="Categoría"
           icon                  ="mdi-file-tree-outline"
           options-sort          ="nombre"
-          class                 ="width190"
+          class                 ="width170"
           :options              ="b.o.categorias"          
         />        
       </fieldset-filtro>      
       <fieldset-filtro
         titulo                  ="Búsqueda" 
-        class-contenido         ="column q-gutter-xs"
+        class-contenido         ="grilla-ribom fit"
         >
         <!-- //* ///////////////////////////////////////////////// Activo -->        
         <select-label-value     use-input hundido clearable flat bordered
           v-model               ="b.f.activo"
-          label                 ="Activo proveedor"
+          label                 ="Activo"
           icon                  ="mdi-book-check"
-          class                 ="width180"
+          class                 ="width150"
           :options              ="Busqueda.listaActivoProducto"
         />
         <!-- //* ///////////////////////////////////////////////// Busqueda general -->        
         <select-label-value     use-input hundido clearable flat bordered
           v-model               ="b.f.disponible"
-          label                 ="Disponibilidad"
+          label                 ="Disponible"
           icon                  ="mdi-clipboard-check"
-          class                 ="width180"
+          class                 ="width150"
           :options              ="Busqueda.listaDisponible"
+        />
+        <!-- //* ///////////////////////////////////////////////// Familia proveedor -->
+        <input-buscar           clearable hundido
+          v-model               ="b.f.buscar1"
+          label                 ="Familia proveedor"
+          class                 ="width150"
+          icon                  ="mdi-account-group"
+          debounce              ="800"
+        />
+        <!-- //* ///////////////////////////////////////////////// Familia Nuestra -->
+        <input-buscar           clearable hundido
+          v-model               ="b.f.buscar2"
+          label                 ="Familia nuestra"
+          class                 ="width150"
+          icon                  ="mdi-account-group-outline"
+          debounce              ="800"
+        />
+        <!-- //* ///////////////////////////////////////////////// Documento -->
+        <input-buscar           clearable hundido
+          v-model               ="b.f.buscar3"
+          label                 ="Documento"
+          class                 ="width150"
+          icon                  ="mdi-file-document"
+          debounce              ="800"
         />        
         <!-- //* ///////////////////////////////////////////////// Proveedores -->
         <!-- <select-label-value     use-input hundido clearable flat bordered
@@ -294,27 +318,32 @@
       <!-- //* /////////////////////////////////////////////////// Modo Edicion -->
       <fieldset-filtro
         titulo                  ="Modo de edición"
-        class-contenido         ="column q-gutter-xs"
-        style                   ="height: 120px;"  
+        class-contenido         ="column q-gutter-xs"        
         >
         <div>
-          <q-btn-toggle         no-caps push glossy
+          <q-btn-toggle         no-caps push glossy stack
             v-model             ="modoEdicion"
             color               ="white"
             text-color          ="grey-10"          
             toggle-color        ="primary"
-            :options            ="TiposDeEdicion"
             @update:model-value ="setEdicionEnProductos"
-          />
+            :options            ="[ { value: TIPO_EDICION.BLOQUEDA, icon: 'mdi-lock',             slot:'bloqueada'  },
+                                    { value: TIPO_EDICION.CELDA,    icon: 'mdi-form-textbox',     slot:'celda'      },
+                                    { value: TIPO_EDICION.RANGO,    icon: 'mdi-table-arrow-down', slot:'rango'      },
+                                  ]"
+            >
+            <template v-slot:bloqueada> <Tooltip label="Edición bloqueada"    /></template>
+            <template v-slot:celda>     <Tooltip label="Edición por celda"    /></template>
+            <template v-slot:rango>     <Tooltip label="saEdición por rango"  /></template>
+          </q-btn-toggle>
         </div>
       </fieldset-filtro>
       <!-- //* /////////////////////////////////////////////////// Acciones -->
       <fieldset-filtro  
         titulo                  ="Acciones"
-        class-contenido         ="column q-gutter-sm width160"
-        style                   ="height: 120px;"
+        class-contenido         ="grilla-ribom fit"
         >
-        <div >
+        <div class              ="centerh">
           <q-btn
             v-bind              ="style.btnBaseMd"
             label               ="Copiar valores"
@@ -326,18 +355,42 @@
             <Tooltip label      ="Copiar valores a campos temporales"/>
           </q-btn>
         </div>
-        <div>
+        <div class              ="centerh">
           <q-btn
             v-bind              ="style.btnBaseMd"
             label               ="Cambiar precios"
             icon                ="mdi-cash-usd"
-            color               ="positive"
-            class               ="full-width"            
-            @click              ="actualizarPrecios"
+            color               ="positive"           
+            class               ="full-width"
             >
+            <confirmar @ok      ="actualizarPrecios"/>
             <Tooltip label      ="Copiar precios de temporales precios de proveedor"/>
           </q-btn>
         </div>
+        <div class              ="centerh">
+          <q-btn
+            v-bind              ="style.btnBaseMd"
+            label               ="Subir IVA"
+            icon                ="mdi-arrow-up-bold-box"
+            color               ="indigo"
+            class               ="full-width"            
+            >
+            <confirmar  @ok     ="cambiarPreciosPorIVA('subir')"/>
+            <Tooltip :label     ="`Aumenta un ${IVA}% de IVA a los precios temporales`"/>
+          </q-btn>
+        </div>
+        <div class              ="centerh">
+          <q-btn
+            v-bind              ="style.btnBaseMd"
+            label               ="Bajar IVA"
+            icon                ="mdi-arrow-down-bold-box"
+            color               ="indigo"
+            class               ="full-width"            
+            >
+            <confirmar  @ok     ="cambiarPreciosPorIVA('bajar')"/>
+            <Tooltip :label     ="`Disminuye un ${IVA}% de IVA a los precios temporales`"/>
+          </q-btn>
+        </div>              
       </fieldset-filtro>        
     </q-tab-panel>    
     <!-- //* ///////////////////////////////////////////////////// Tab 3 -->
@@ -366,10 +419,10 @@
   import {  IQuery, Busqueda    } from "src/models/Busqueda"
   import {  GRUPO_USUARIO       } from "src/models/TiposVarios"
   import {  VISTAS_AG           } from "components/utilidades/AgGrid/VistaAG"
+  import {  TIPO_EDICION        } from "components/utilidades/AgGrid/AGTools"
 
   // * /////////////////////////////////////////////////////////////////////// Componibles
-  import {  style               } from "src/composables/useEstilos"
-  import {  TiposDeEdicion      } from "components/utilidades/AgGrid/AGTools"
+  import {  style               } from "src/composables/useEstilos"  
   import {  useControlProductosProveedor
                                 } from "src/areas/productos/controllers/ControlProductosProveedor"
   // * /////////////////////////////////////////////////////////////////////// Componentes
@@ -383,6 +436,7 @@
   import    innerLoading          from "components/utilidades/InnerLoading.vue"
   import    vistas                from "components/utilidades/AgGrid/VistasTablasAG.vue"
   import    numeroPaso            from "components/utilidades/input/InputNumeroPaso.vue"
+  import    confirmar             from "components/utilidades/MenuConfirmar.vue"
   //import    busquedasRapidas      from "./BusquedasRapidas.vue"
  
   const { busquedaPro : b,
@@ -396,6 +450,7 @@
           limpiarFiltros,
           limpiarBusqueda,
           actualizarPrecios,
+          cambiarPreciosPorIVA,
           setEdicionEnProductos,
           copiarADatosTemporales,
                             } = useControlProductosProveedor()
@@ -406,6 +461,7 @@
     crearFilas      : [ value : number  ]
   }  
   const emit                  = defineEmits<TEmit>()
+  const IVA                   = parseInt( process.env.IVA ?? "0" )
 
   const totalACrear           = ref<number>(1)
   const hayProductosNuevos    = computed(()=> !!(productosPro.value.filter( p => p.esNuevo ).length) )  

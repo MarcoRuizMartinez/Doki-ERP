@@ -38,6 +38,9 @@ export interface      IQuery {
   creadores            ?: string  // Array de IDs de usuarios 1_2_4
   creador              ?: string | number
   buscar               ?: string
+  buscar1              ?: string
+  buscar2              ?: string
+  buscar3              ?: string
   idTercero            ?: number
   contacto             ?: string
   estados              ?: string
@@ -145,6 +148,9 @@ interface               IOpciones {
 interface               ICampos {
   copiando              : boolean
   buscar                : string
+  buscar1               : string
+  buscar2               : string
+  buscar3               : string  
   contacto              : string
 
   desde                 : Date | string
@@ -338,6 +344,9 @@ export class Busqueda implements IBusqueda
     this.f.enviaHastaDia      = ToolQuery.getQueryRouterNumber    ( this.rourterQ .enviaHastaDia  )
 
     this.f.buscar             = ToolQuery.getQueryRouterString    ( this.rourterQ .buscar       )
+    this.f.buscar1            = ToolQuery.getQueryRouterString    ( this.rourterQ .buscar1      )
+    this.f.buscar2            = ToolQuery.getQueryRouterString    ( this.rourterQ .buscar2      )
+    this.f.buscar3            = ToolQuery.getQueryRouterString    ( this.rourterQ .buscar3      )
     this.f.contacto           = ToolQuery.getQueryRouterString    ( this.rourterQ .contacto     )
     this.f.nombre             = ToolQuery.getQueryRouterString    ( this.rourterQ .nombre       )
     this.f.valorMin           = ToolQuery.getQueryRouterNumber    ( this.rourterQ .valorMin     )
@@ -566,7 +575,10 @@ export class Busqueda implements IBusqueda
 
     if( this.camposVacios ) return q
 
-    if(this.f.buscar.length  > 3)       q.buscar            = this.f.buscar
+    if(this.f.buscar.length   > 3)      q.buscar            = this.f.buscar
+    if(this.f.buscar1.length  > 3)      q.buscar1           = this.f.buscar1
+    if(this.f.buscar2.length  > 3)      q.buscar2           = this.f.buscar2
+    if(this.f.buscar3.length  > 3)      q.buscar3           = this.f.buscar3
     if(this.f.contacto.length > 3)      q.contacto          = this.f.contacto
     if(this.f.nombre.length > 3)        q.nombre            = this.f.nombre
     if(this.f.destacado)                q.destacado         = 1
@@ -706,6 +718,9 @@ export class Busqueda implements IBusqueda
     return {
       copiando            : false,
       buscar              : "",
+      buscar1             : "",
+      buscar2             : "",
+      buscar3             : "",
       contacto            : "",
 
       desde               : "",

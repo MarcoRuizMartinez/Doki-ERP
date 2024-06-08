@@ -14,11 +14,11 @@ export enum TIPO_EDICION
   RANGO,
 }
 
-export const TiposDeEdicion  = [
+/* export const TiposDeEdicion  = [
   { label: 'Edición bloqueada',   value: TIPO_EDICION.BLOQUEDA, icon: "mdi-lock"              },
   { label: 'Edición por celda',   value: TIPO_EDICION.CELDA,    icon: "mdi-form-textbox"      },
   { label: 'Edición por rango',   value: TIPO_EDICION.RANGO,    icon: "mdi-table-arrow-down"  },
-]
+] */
 
 export type TDatosEvento = {
   campo     : string

@@ -29,10 +29,7 @@ export const Col =
       valueFormatter      : ( p : any ) => Boolean( p.value ) ? "✅ Si" : "❌ No",
       comparator          : (a: string, b: string) => -a.localeCompare(b, 'es', { sensitivity: 'base' }),
     }
-    /* col.valueParser       = ( p : any ) => {
-      const valor = Boolean( p.newValue) ? "✅ Si" : "❌ No"
-      return valor
-    } */
+    //col.valueParser       = ( p : any ) => ToolType.keyBoolean(p, "newValue")
     /* col.valueGetter       = ( p : any ) => {
       return p.value
     } */

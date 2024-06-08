@@ -17,15 +17,15 @@ import proveedor                    from "components/utilidades/AgGrid/Proveedor
 
 
 export const reglasCSS = {
-  'bg-grey-4 text-grey-1'     : ( params : any ) => { return !params.data?.activo     && !params.data?.esNuevo },
-  'bg-indigo-3 text-indigo-1' : ( params : any ) => { return !params.data?.disponible && !!params.data?.activo && !params.data?.esNuevo },
-  'bg-green-2'                : ( params : any ) => { return params.data?.esNuevo },
+  'bg-grey-10 text-grey-2 text-bold'  : ( params : any ) =>  !params.data,
+  'bg-grey-3 text-grey-7'             : ( params : any ) =>  !!params.data && !params.data?.activo     && !params.data?.esNuevo,
+  'bg-indigo-3 text-indigo-1'         : ( params : any ) => { return !params.data?.disponible && !!params.data?.activo && !params.data?.esNuevo },
+  'bg-green-2'                        : ( params : any ) => { return params.data?.esNuevo },
 }
 
 export const autoSizeStrategy = {
   type                  : 'fitCellContents', // fitProvidedWidth fitGridWidth
-  defaultMinWidth       : 100,
-  
+  defaultMinWidth       : 100,  
   columnLimits          : [{ colId: 'ref', minWidth: 900}]
 }
 
@@ -64,7 +64,7 @@ export const columnTypes : { [key: string]: ColTypeDef<IProductoProveedor>; } = 
       if(hijoNoEspecial)
         return false
 
-      return p.data.esNuevo
+      return ( p.data?.esNuevo ?? false )
     }
   },
   editarYCrear:
@@ -79,7 +79,7 @@ export const columnTypes : { [key: string]: ColTypeDef<IProductoProveedor>; } = 
       if(hijoNoEspecial)
         return false
 
-      return  p.data.esNuevo  ||  p.data.editable
+      return  ( p.data?.esNuevo ?? false )  ||  p.data.editable
     }
   }     
 }
@@ -97,6 +97,8 @@ function esFieldDeEditarHijo( field : string )
           ||  field == "descripcion"
 }
 
+const limpiarRef = ( p : any ) => ToolType.keyStringValido(p, "newValue").replaceAll(" ", "").trim()
+
 // * ////////////////////////////////////////////////////////////////////////////////////////////////// COLUMNAS
 export const columnasProductos : (ColDef<IProductoProveedor>  | ColGroupDef)[] = [
   { // * //////////////////////////////////////////////////////////////////////////////// Imagen
@@ -107,7 +109,7 @@ export const columnasProductos : (ColDef<IProductoProveedor>  | ColGroupDef)[] =
     cellRenderer        : imagen,
     filter              : "agSetColumnFilter",
     valueFormatter      : ( p : any ) => p.value?.hayImagen ?? "",
-    cellClassRules      : { 'bg-deep-orange-2': ( p : any ) => p.data.esNuevo && !p.data.sePuedeCrear }
+    cellClassRules      : { 'bg-deep-orange-2': ( p : any ) => ( p.data?.esNuevo ?? false ) && !p.data.sePuedeCrear }
   },
   { // * //////////////////////////////////////////////////////////////////////////////// REF y nombre proveedor     
     headerName          : "🏪Datos de proveedor",
@@ -125,7 +127,7 @@ export const columnasProductos : (ColDef<IProductoProveedor>  | ColGroupDef)[] =
         opciones        : getProveedoresDB,
         key             : "alias",
         type            : "editarYCrear",
-        cellClassRules  : { 'bg-deep-orange-2': p => p.data.esNuevo && !p.data.okProveedor }
+        cellClassRules  : { 'bg-deep-orange-2': p => ( p.data?.esNuevo ?? false ) && !p.data.okProveedor }
       }),
       {
         headerName      : "🏪Ref proveedor",
@@ -133,8 +135,8 @@ export const columnasProductos : (ColDef<IProductoProveedor>  | ColGroupDef)[] =
         headerClass     : "bg-teal-6 text-white",
         tooltipField    : "proveedor.label",
         type            : "creacion",
-        cellClassRules  : { 'bg-deep-orange-2': p => p.data.esNuevo && !p.data.okRef },
-        valueParser     : p => ToolType.keyStringValido(p, "newValue").replaceAll(" ", "").trim()
+        cellClassRules  : { 'bg-deep-orange-2': p => ( p.data?.esNuevo ?? false ) && !p.data.okRef },
+        valueParser     : limpiarRef
       },
       {
         headerName      : "🏪Nombre proveedor",
@@ -142,7 +144,7 @@ export const columnasProductos : (ColDef<IProductoProveedor>  | ColGroupDef)[] =
         headerClass     : "bg-teal-6 text-white",
         minWidth        : 340,
         type            : "creacion",
-        cellClassRules  : { 'bg-deep-orange-2': p => p.data.esNuevo && !p.data.okNombre },
+        cellClassRules  : { 'bg-deep-orange-2': p => ( p.data?.esNuevo ?? false ) && !p.data.okNombre },
         valueParser     : p => ToolType.keyStringValido(p, "newValue").trim()
       },
     ]
@@ -195,7 +197,8 @@ export const columnasProductos : (ColDef<IProductoProveedor>  | ColGroupDef)[] =
         field           : "stock",
         headerClass     : "bg-purple-6 text-white",
         type            : ["editarYCrear", "numero"],
-        hide            : true
+        hide            : true,
+        valueParser     : p => ToolType.keyNumberValido(p, "newValue")
       },
       {
         headerName      : "📅Fecha llegada",
@@ -227,8 +230,8 @@ export const columnasProductos : (ColDef<IProductoProveedor>  | ColGroupDef)[] =
         headerClass     : "bg-deep-purple-6 text-white",
         opciones        : getCategoriasDB,
         key             : "label",
-        type            : "creacion",
-        cellClassRules  : { 'bg-deep-orange-2': p => p.data.esNuevo && !p.data.okCategoria }
+        type            : "editarYCrear",
+        cellClassRules  : { 'bg-deep-orange-2': p => ( p.data?.esNuevo ?? false ) && !p.data.okCategoria }
       }),
       Col.Objeto(
       {
@@ -238,7 +241,7 @@ export const columnasProductos : (ColDef<IProductoProveedor>  | ColGroupDef)[] =
         opciones        : TiposProductosProveedor,
         key             : "label",
         type            : "creacion",
-        cellClassRules  : { 'bg-deep-orange-2': p => p.data.esNuevo && !p.data.okTipo }
+        cellClassRules  : { 'bg-deep-orange-2': p => ( p.data?.esNuevo ?? false ) && !p.data.okTipo }
       }),
       {
         headerName      : "👩‍👧‍👦Padre",
@@ -246,7 +249,7 @@ export const columnasProductos : (ColDef<IProductoProveedor>  | ColGroupDef)[] =
         headerClass     : "bg-deep-purple-6 text-white",
         hide            : false,
         type            : "editarYCrear",
-        cellClassRules  : { 'bg-deep-orange-2': p => p.data.esNuevo && !p.data.okRefPadre }
+        cellClassRules  : { 'bg-deep-orange-2': p => ( p.data?.esNuevo ?? false ) && !p.data.okRefPadre }
         
       },
       {
@@ -261,21 +264,27 @@ export const columnasProductos : (ColDef<IProductoProveedor>  | ColGroupDef)[] =
         field           : "familiaNuestra", 
         headerClass     : "bg-deep-purple-6 text-white",
         hide            : true,
-        type            : "editable"
+        type            : "editarYCrear",
+        enableRowGroup  : true,
+        valueParser     : p => ToolType.keyStringValido(p, "newValue").trim()
       },
       {
         headerName      : "👨‍👩‍👧‍👦🏪Familia proveedor", 
         field           : "familiaProveedor",
         headerClass     : "bg-deep-purple-6 text-white",
         hide            : true,
-        type            : "editable"
+        type            : "editarYCrear",
+        enableRowGroup  : true,
+        valueParser     : p => ToolType.keyStringValido(p, "newValue").trim()
       },
       {
         headerName      : "📑Documento", 
         headerClass     : "bg-deep-purple-6 text-white",
         field           : "documento",
         hide            : true,
-        type            : "editable"
+        type            : "editarYCrear",
+        enableRowGroup  : true,
+        valueParser     : p => ToolType.keyStringValido(p, "newValue").trim()
       },
     ]
   },
@@ -287,37 +296,51 @@ export const columnasProductos : (ColDef<IProductoProveedor>  | ColGroupDef)[] =
     [
       {
         headerName      : "🔎Ref Guía",
-        field           : "refComparacion",
+        field           : "refComparacion_n",
         headerClass     : "bg-deep-orange-6 text-white",
         hide            : true,
-        type            : "editable"
+        editable        : true,
+        valueParser     : limpiarRef,
+        cellClassRules  : { 'bg-light-blue-3'   : p => {
+                                const esNuevo = ToolType.keyBoolean(p.data, "esNuevo")
+                                if(esNuevo || !p.value) return false
+                                const ref     = ToolType.keyStringValido(p.data, "ref")                                
+                                return p.value === ref
+                              },
+                            'bg-deep-orange-3'   : p => {
+                                const esNuevo = ToolType.keyBoolean(p.data, "esNuevo")
+                                if(esNuevo || !p.value) return false
+                                const ref     = ToolType.keyStringValido(p.data, "ref")                                
+                                return p.value != ref
+                              },
+                          }
       },
       Col.Precio({
         headerName      : "🪙Precio",
         field           : "precio",
         headerClass     : "bg-deep-orange-6 text-white",
-        type            : "creacion",
-        cellClassRules  : { 'bg-deep-orange-2': p => p.data.esNuevo && !p.data.okPrecio }
+        type            : "editarYCrear",
+        cellClassRules  : { 'bg-deep-orange-2': p => ( p.data?.esNuevo ?? false ) && !p.data.okPrecio }
       }),
       Col.Precio({
         headerName      : "🪙Credito",
         headerClass     : "bg-deep-orange-6 text-white",
         field           : "precioCredito",
-        type            : "creacion"
+        type            : "editarYCrear"
       }),
       Col.Precio({
         headerName      : "🔜Precio",
         headerClass     : "bg-deep-orange-6 text-white",
         field           : "precio_n",
         hide            : true,
-        type            : "editable"
+        type            : "editarYCrear"
       }),
       Col.Precio({
         headerName      : "🔜Credito",
         headerClass     : "bg-deep-orange-6 text-white",
         field           : "precioCredito_n",
         hide            : true,
-        type            : "editable"
+        type            : "editarYCrear"
       }),
       Col.Precio({
         headerName      : "📊Diferencia",
@@ -342,28 +365,28 @@ export const columnasProductos : (ColDef<IProductoProveedor>  | ColGroupDef)[] =
         headerClass     : "bg-deep-orange-6 text-white",
         field           : "costoExtra",
         hide            : true,
-        type            : "editable"
+        type            : "editarYCrear"
       }),
       {
         headerName      : "🔖Descuento", 
         headerClass     : "bg-deep-orange-6 text-white",
         field           : "descuento",
         hide            : true,
-        type            : "editable"
+        type            : "editarYCrear"
       },
       {
         headerName      : "🔖Calcular descuento", 
         headerClass     : "bg-deep-orange-6 text-white",
         field           : "calcularDescuento",
         hide            : true,
-        type            : "editable"
+        type            : "editarYCrear"
       },
       { 
         headerName      : "🤝Precio vigente", 
         headerClass     : "bg-deep-orange-6 text-white",
         field           : "precioActualizado",
         hide            : true,
-        type            : "editable"
+        type            : "editarYCrear"
       },
     ]
   },
@@ -381,7 +404,7 @@ export const columnasProductos : (ColDef<IProductoProveedor>  | ColGroupDef)[] =
         opciones        : OriginesMadeIn,
         key             : "label",
         type            : "editarYCrear",
-        cellClassRules  : { 'bg-deep-orange-2': p => p.data.esNuevo && !p.data.okHechoEn }
+        cellClassRules  : { 'bg-deep-orange-2': p => ( p.data?.esNuevo ?? false ) && !p.data.okHechoEn }
       }),
       Col.Objeto(
       { 
@@ -391,14 +414,14 @@ export const columnasProductos : (ColDef<IProductoProveedor>  | ColGroupDef)[] =
         opciones        : MesesGarantia,
         key             : "label",
         type            : "editarYCrear",
-        //cellClassRules  : { 'bg-deep-orange-2': p => p.data.esNuevo && !p.data.okGarantiaMeses }
+        //cellClassRules  : { 'bg-deep-orange-2': p => ( p.data?.esNuevo ?? false ) && !p.data.okGarantiaMeses }
       }),
       { 
         headerName      : "🖼️URL Imagen",
         field           : "urlImagen",      
         headerClass     : "bg-cyan-6 text-white",
         hide            : true,   
-        type            : "editable"
+        type            : "editarYCrear"
       },
       { 
         headerName      : "🔗URL",

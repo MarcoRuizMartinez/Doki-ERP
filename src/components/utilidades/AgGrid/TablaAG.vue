@@ -10,7 +10,9 @@
     :data-type-definitions
     :row-class-rules
     :get-context-menu-items
-    row-group-panel-show          ="onlyWhenGrouping"
+    :group-default-expanded       ="-1"
+    group-display-type            ="groupRows"
+    row-group-panel-show          ="always"
     pivot-panel-show              ="onlyWhenPivoting" 
     :side-bar                     ="{ toolPanels: ['filters', 'columns'] } "
     :locale-text                  ="Spanish"
@@ -95,7 +97,7 @@ single-click-edit
   {
     const alturaHeader            = 210
     const alturaEnBlanco          = 300
-    const alturaFila              = 41
+    const alturaFila              = 64
     let altura                    = alturaHeader
 
     if(!datos.value.length)
@@ -103,6 +105,7 @@ single-click-edit
     else
       altura                      += alturaFila * datos.value.length
     
+    //altura  = 800;
     const style                   = `height: ${altura}px;`
     return style
   })
@@ -135,7 +138,14 @@ single-click-edit
   }
 
   function setId(){
-    getRowId.value                = ( params : GetRowIdParams ) => params.data[ keyId ]
+    getRowId.value                = ( params : GetRowIdParams ) => {
+      if(     "data" in params
+          &&  typeof params.data === "object"
+          &&  params.data       !== "null"
+          &&  keyId in params.data 
+        ) 
+        return params.data[ keyId ] 
+    }
   }
 
   /* async function setColumnas( cols : any[] ){
@@ -223,3 +233,9 @@ single-click-edit
     gridApi,
   })
 </script>
+
+<style>
+.ag-group-expanded > .ag-icon-tree-open, .ag-group-contracted > .ag-icon-tree-closed{
+  color: white !important;
+}
+</style>

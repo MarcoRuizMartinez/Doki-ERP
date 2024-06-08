@@ -35,8 +35,9 @@
             GetContextMenuItems,
             GetContextMenuItemsParams,
             IRowNode
-                                  } from "ag-grid-community";
+                                } from "ag-grid-community";
   // * ///////////////////////////////////////////////////////////////////////////////// Componibles
+  import {  ToolNum, ToolType   } from "src/composables/useTools"
   import {  useControlProductosProveedor
                                 } from "src/areas/productos/controllers/ControlProductosProveedor"
   // * ///////////////////////////////////////////////////////////////////////////////// Componentes
@@ -52,7 +53,6 @@
   const AGProProvee               = ref< InstanceType<typeof tablaAg> | null>(null)
   const rangoActivo               = computed(()=> modoEdicion.value === TIPO_EDICION.RANGO ) 
 
-
   eventos.on("solicitarRefrescarTabla", ( forzado : boolean = false )=>{
     AGProProvee.value?.refreshCells( forzado )
   })
@@ -61,21 +61,16 @@
     AGProProvee.value?.limpiarFiltros()
   })
 
-  eventos.on("solicitarCambiarNuevos", cambiarNuevosANoNuevos)
-  function cambiarNuevosANoNuevos()
-  {
-    AGProProvee.value?.gridApi?.forEachNode((rowNode, index) =>
-    {
-      const esNuevoConId          = !!rowNode.data.esNuevo && !!rowNode.data.id && rowNode.data.id < 1_000_000
-      if( esNuevoConId ){
-        rowNode.setDataValue("esNuevo", false)
-      }
-    })
+
+  eventos.on("solicitarEliminarFilasPorId", eliminarFilasPorId)
+
+  function eliminarFilasPorId( ids : number[] ){
+    const myTransaction = { remove: ids.map( n => { return { id: n }}) }
+    AGProProvee.value?.gridApi?.applyTransaction( myTransaction )
   }
 
   eventos.on("solicitarCrearFilas", crearNuevaFilas)
-  function crearNuevaFilas( nuevosProductos : IProductoProveedor[] )
-  {
+  function crearNuevaFilas( nuevosProductos : IProductoProveedor[] ){
     AGProProvee.value?.gridApi?.applyTransaction({
         add: nuevosProductos,
         addIndex: 0,
@@ -83,10 +78,38 @@
   }
 
   eventos.on("solicitarEliminarFilas", quitarTodosLosResultados)
-  function quitarTodosLosResultados(){
+  function quitarTodosLosResultados()
+  {
+    //AGProProvee.value?.gridApi?.setGridOption("rowData", []);
     const rowData : IRowNode<IProductoProveedor>[] = [];
     AGProProvee.value?.gridApi?.forEachNode     ( node => rowData.push( node.data ) )
     AGProProvee.value?.gridApi?.applyTransaction( { remove: rowData } )
+  }
+
+  eventos.on("solicitarCambiarIVAPrecios", cambiarPreciosPorIVA)
+
+  function cambiarPreciosPorIVA( tipo : string )
+  {
+    const IVA                     = parseInt( process.env.IVA ?? "0" )
+    AGProProvee.value?.gridApi?.forEachNode((fila : IRowNode<IProductoProveedor>) =>
+    {
+      if(!fila.data) return 
+
+      const precioCon             = ToolType.keyNumberValido( fila.data, "precio" )
+      const precioCre             = ToolType.keyNumberValido( fila.data, "precioCredito" )
+
+      if(tipo == "subir"){
+        if(!!precioCon)   fila.data.precio_n          = ToolNum.roundInt( ToolNum.X100_Aumento( precioCon, IVA ), 0 )
+        if(!!precioCre)   fila.data.precioCredito_n   = ToolNum.roundInt( ToolNum.X100_Aumento( precioCre, IVA ), 0 )
+      }
+      else{
+        if(!!precioCon)   fila.data.precio_n          = ToolNum.roundInt( ToolNum.X100_Reduccion( precioCon, IVA ), 0 )
+        if(!!precioCre)   fila.data.precioCredito_n   = ToolNum.roundInt( ToolNum.X100_Reduccion( precioCre, IVA ), 0 )
+      }
+
+      if(!!precioCon)     fila.setDataValue("precio_n",         fila.data.precio_n)
+      if(!!precioCre)     fila.setDataValue("precioCredito_n",  fila.data.precioCredito_n)
+    })
   }
 
   function getMenuContextual( params : GetContextMenuItemsParams<IProductoProveedor> ) : (string | MenuItemDef)[] | GetContextMenuItems

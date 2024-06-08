@@ -1,7 +1,7 @@
 <template>
   <fieldset-filtro
     titulo                  ="Acciones en vistas" 
-    class-contenido         ="column full-height q-gutter-xs"
+    class-contenido         ="column full-height q-gutter-xs no-wrap"
     style                   ="min-height: 120px;"
     >
     <q-btn
