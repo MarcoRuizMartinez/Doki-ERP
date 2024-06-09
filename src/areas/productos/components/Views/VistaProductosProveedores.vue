@@ -19,7 +19,6 @@
     <template                 #menu>
       <barra-busqueda
         @buscar               ="buscar"
-        @crear-filas          ="crearNuevasFilas"
       />
     </template>
     <!-- //* //////////////////////////////////////////////////////// Tabla resultados-->
@@ -60,7 +59,6 @@
           loading               } = storeToRefs( useStoreProducto() )
 
   const { buscar,
-          crearNuevasFilas,
           iniciar,
           desmontar
                                 } = useControlProductosProveedor()

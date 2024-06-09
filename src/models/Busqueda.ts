@@ -106,6 +106,7 @@ export interface      IQuery {
   color                ?: number
   activo               ?: string
   disponible           ?: string
+  actualizado          ?: string
 
   // * //////////////   Producto
   nombre               ?: string
@@ -204,6 +205,7 @@ interface               ICampos {
   incOrigen             : ILabelValue  
   activo                : ILabelValue
   disponible            : ILabelValue
+  actualizado           : ILabelValue
   dimension             : ILabelValue
   periodo               : ILabelValue  
   municipio             : IMunicipio
@@ -381,6 +383,7 @@ export class Busqueda implements IBusqueda
     this.f.aceptado           = ToolQuery.getQueryRouterLabelValue( this.rourterQ .aceptado,              Busqueda.listaAceptado        )
     this.f.activo             = ToolQuery.getQueryRouterLabelValue( this.rourterQ .activo,                Busqueda.listaActivo          )
     this.f.disponible         = ToolQuery.getQueryRouterLabelValue( this.rourterQ .disponible,            Busqueda.listaActivo          )
+    this.f.actualizado        = ToolQuery.getQueryRouterLabelValue( this.rourterQ .actualizado,           Busqueda.listaActualizado     )
     this.f.proveedores        = ToolQuery.getQueryRouterLabelValue( this.rourterQ .proveedorId,           this.o.proveedores            )
     this.f.categorias         = ToolQuery.getQueryRouterLabelValue( this.rourterQ .categoriaId,           this.o.categorias             )
     this.f.dimension          = ToolQuery.getQueryRouterLabelValue( this.rourterQ .dimension,             Busqueda.listaDimensiones,  "string")    
@@ -633,6 +636,7 @@ export class Busqueda implements IBusqueda
     if(!!this.f.aceptado.label)         q.aceptado          = this.f.aceptado.value
     if(!!this.f.activo.label)           q.activo            = this.f.activo.value
     if(!!this.f.disponible.label)       q.disponible        = this.f.disponible.value
+    if(!!this.f.actualizado.label)      q.actualizado       = this.f.actualizado.value
     if(!!this.f.dimension.label)        q.dimension         = this.f.dimension.value
     if(!!this.f.periodo.label)          q.periodo           = this.f.periodo.value
     if(!!this.f.usuario && this.f.usuario.id  > 0 && !this.esOCProveedor )
@@ -666,6 +670,7 @@ export class Busqueda implements IBusqueda
   static listaAprobado            = [{value:1, label:'✅Aprobado'},          {value:0, label:'✖️No aprobado'       }]
   static listaExtra               = [{value:1, label:'✅Extra'},             {value:0, label:'✖️No extra'          }]
   static listaActivo              = [{value:1, label:'Activo'},               {value:0, label:'Inactivo'            }]  
+  static listaActualizado         = [{value:1, label:'Actualizado'},          {value:0, label:'Desactualizado'      }]
   static listaActivoProducto      = [{value:1, label:'En catalogo'},          {value:0, label:'Descontinuado'       }]  
   static listaDisponible          = [{value:1, label:'Disponible'},           {value:0, label:'Agotado'             }]  
   static listaEnvioOC             = [{value:1, label:'Con correo enviado'},   {value:0, label:'Sin correo enviado'  }]
@@ -774,6 +779,7 @@ export class Busqueda implements IBusqueda
       incOrigen           : labelValueNulo,
       activo              : labelValueNulo,
       disponible          : labelValueNulo,
+      actualizado         : labelValueNulo,
       dimension           : labelValueNulo,
       periodo             : labelValueNulo,
       municipio           : new Municipio(),

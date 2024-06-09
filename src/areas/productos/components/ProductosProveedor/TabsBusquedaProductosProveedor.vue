@@ -19,6 +19,7 @@
       <Tooltip label  ="Mas opciones"/>
     </q-tab>    
     <q-tab
+      v-if            ="!usuario.esComercial"
       label           ="Crear y Editar"
       name            ="tab_3"
       icon            ="mdi-clipboard-edit"
@@ -59,9 +60,11 @@
             onMounted           } from "vue"
   import  { storeToRefs         } from 'pinia'                                            
   import  { useStoreApp         } from 'stores/app'
+  import  { useStoreUser        } from 'stores/user'
   import {  useStoreProducto    } from 'stores/producto'  
   //import  { ToolDate, ToolType  } from "src/composables/useTools"  
-  const   { tabs                } = storeToRefs( useStoreApp() )
+  const { tabs                  } = storeToRefs( useStoreApp() )
+  const { usuario               } = storeToRefs( useStoreUser() )
   //const   { busquedaPro : b     } = storeToRefs( useStoreProducto() )
 
   onMounted(()=> tabs.value = { activa : "tab_1", alerts: [ false, false, false, false ]} )

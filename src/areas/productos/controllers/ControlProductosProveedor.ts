@@ -20,26 +20,13 @@ import {  TIPO_EDICION,
 //* ///////////////////////////////////////////////////////////////////////////////// Componibles
 //import {  useFetch              } from "src/composables/useFetch"
 //import {  getURL, getFormData   } from "src/composables/APIMaco"
+
 import {  useTools, 
           ToolType,
           ToolNum               } from "src/composables/useTools"
 import {  servicesProductosPro  } from "src/areas/productos/services/servicesProductosProveedor"
-import    mitt                    from "mitt";
+import {  IRowNode              } from "ag-grid-community"
 
-
-//* //////////////////////////////////////////////////////////////////////////////// 📡📡📡📡📡📡📡📡📡📡📡📡📡📡📡📡 Eventos
-type TSubirBajar = "subir" | "bajar"
-
-type TEventos = {
-  solicitarRefrescarTabla       : boolean
-  solicitarLimpiarFiltros       : void
-  solicitarCrearFilas           : IProductoProveedor[]
-  solicitarEliminarFilas        : void
-  solicitarEliminarFilasPorId   : number[]
-  solicitarCambiarIVAPrecios    : TSubirBajar
-}
-
-const eventos                   = mitt<TEventos>()
 
 export function useControlProductosProveedor() 
 {
@@ -63,6 +50,7 @@ export function useControlProductosProveedor()
           loading             } = storeToRefs( useStoreProducto() )
 
   const { tabs,
+          tablaAG,
           filtro,
           campo_1: modoEdicion} = storeToRefs( useStoreApp() )
 
@@ -70,7 +58,7 @@ export function useControlProductosProveedor()
   //* //////////////////////////////////////////////////////////////////////////////// 📋📋📋📋📋📋📋📋📋📋📋📋 Gestion datos y tabla
   function useGestionTabla()
   {
-    function crearNuevasFilas( filas : number )
+    function crearFilasNuevosProductos( filas : number )
     {
       const nuevosProductos :IProductoProveedor[] = []
   
@@ -80,21 +68,14 @@ export function useControlProductosProveedor()
         nuevosProductos.push( newProducto )
         productosPro.value.unshift( newProducto )
       }
-  
-  
-      eventos.emit("solicitarCrearFilas", nuevosProductos)
-     /*  const largo                 = productosPro.value.length
-      for (let i = 0; i < filas; i++)
-      {
-        const newProducto         = new ProductoProveedor( "nuevo" )
-        newProducto.id            = ( largo + i + 1 ) + 1_000_000
-        productosPro.value.push( newProducto  )
-        //productosPro.value        = [newProducto].concat(productosPro.value );
-        //productosPro.value        = [ newProducto, ...productosPro.value ]
-        //productosPro.value.unshift( newProducto  )
-        //productosPro.value.splice( 0, 0, newProducto)
-  
-      } */
+    }
+
+    function crearNuevasFilas( nuevosProductos : IProductoProveedor[] )
+    {
+      tablaAG.value?.gridApi?.applyTransaction({
+          add: nuevosProductos,
+          addIndex: 0,
+      })
     }
   
     function eliminarFila( id : number = 0 )
@@ -105,36 +86,49 @@ export function useControlProductosProveedor()
       
       productosPro.value.splice( index, 1 )
     }
+
+
+    function eliminarFilasPorId( ids : number[] )
+    {
+      const idsEliminar     = ids.map( n => { return { id: n }})
+      tablaAG.value?.gridApi?.applyTransaction( { remove: idsEliminar } )
+    }
+
   
     function copiarADatosTemporales()
     {
       productosPro.value.forEach( p => p.copiarDatos() )
-      eventos.emit("solicitarRefrescarTabla", false)
+      tablaAG.value?.refreshCells( false )
     }
   
     function setEdicionEnProductos(){
       const editar                = modoEdicion.value === TIPO_EDICION.RANGO || modoEdicion.value === TIPO_EDICION.CELDA
       productosPro.value.forEach( p => p.editable = editar )
-      eventos.emit("solicitarRefrescarTabla", true)
+      tablaAG.value?.refreshCells( true )
     }
   
     function limpiarFiltros(){
       filtro.value                = ""
-      eventos.emit("solicitarLimpiarFiltros")
+      tablaAG.value?.limpiarFiltros()
     }
 
     function limpiarTabla()
     {
       limpiarFiltros()
       productosPro.value          = []
-      eventos.emit("solicitarEliminarFilas")
+
+      const rowData : IRowNode<IProductoProveedor>[] = [];
+      tablaAG.value?.gridApi?.forEachNode     ( node => rowData.push( node.data ) )
+      tablaAG.value?.gridApi?.applyTransaction( { remove: rowData } )
     }
 
     return {
       eliminarFila,
       limpiarTabla,
       limpiarFiltros,
+      eliminarFilasPorId,
       crearNuevasFilas,
+      crearFilasNuevosProductos,
       copiarADatosTemporales,
       setEdicionEnProductos,
     }
@@ -162,14 +156,14 @@ export function useControlProductosProveedor()
       loading.value.carga         = false
       if(!productosCreados.length) return
 
-      eventos.emit("solicitarEliminarFilasPorId", productosCrear.map( p => p.id ))
+      eliminarFilasPorId( productosCrear.map( p => p.id ) )
 
       productosCrear.forEach( p =>{
         p.id                      = productosCreados.find( pc => p.ref === pc.ref )?.id ?? 0
         p.esNuevo                 = false
       })
 
-      eventos.emit("solicitarCrearFilas", productosCrear)
+      crearNuevasFilas( productosCrear )
       const relaciones            = productosCrear.filter( p => !!p.idPadre ).map( p => p.productoPadreApi )  
       relacionarHijosConPadres( relaciones )
     }
@@ -253,7 +247,7 @@ export function useControlProductosProveedor()
         d.data.okPrecio         = ToolType.anyToNum( d.data.precio ) != 0
   
       const refrescarTodo       = !!d.data.sePuedeCrear
-      eventos.emit("solicitarRefrescarTabla", refrescarTodo)
+      tablaAG.value?.refreshCells( refrescarTodo )
     }
   
     // * //////////////////////////////////////////////////////////////////////////////////////////////////////// subir Cambios En Lote
@@ -308,7 +302,7 @@ export function useControlProductosProveedor()
       if(!!nuevosCambios.length)
       {
         cambios.push( ...nuevosCambios )
-        eventos.emit("solicitarRefrescarTabla", false)
+        tablaAG.value?.refreshCells( false )
         subirCambiosEnLote()
       }
     }
@@ -328,7 +322,7 @@ export function useControlProductosProveedor()
     {
       await copiarYSubirPreciosDeTemporales( "precio" )
       await copiarYSubirPreciosDeTemporales( "precioCredito" )
-      eventos.emit("solicitarRefrescarTabla", false)
+      tablaAG.value?.refreshCells( false )
     }
   
     async function copiarYSubirPreciosDeTemporales( key : "precio" | "precioCredito" )
@@ -356,11 +350,43 @@ export function useControlProductosProveedor()
       await subirCambiosEnLote()
     }
 
-    function cambiarPreciosPorIVA( accion : TSubirBajar ){
-      eventos.emit("solicitarCambiarIVAPrecios", accion)      
+    function cambiarPreciosPorIVA( accion : "subir" | "bajar" )
+    {
+      const IVA                     = parseInt( process.env.IVA ?? "0" )
+      tablaAG.value?.gridApi?.forEachNode((fila : IRowNode<IProductoProveedor>) =>
+      {
+        if(!fila.data) return 
+  
+        const precioCon             = ToolType.keyNumberValido( fila.data, "precio" )
+        const precioCre             = ToolType.keyNumberValido( fila.data, "precioCredito" )
+  
+        if(accion                   == "subir"){
+          if(!!precioCon)   fila.data.precio_n          = ToolNum.roundInt( ToolNum.X100_Aumento( precioCon, IVA ), 0 )
+          if(!!precioCre)   fila.data.precioCredito_n   = ToolNum.roundInt( ToolNum.X100_Aumento( precioCre, IVA ), 0 )
+        }
+        else{
+          if(!!precioCon)   fila.data.precio_n          = ToolNum.roundInt( ToolNum.X100_Reduccion( precioCon, IVA ), 0 )
+          if(!!precioCre)   fila.data.precioCredito_n   = ToolNum.roundInt( ToolNum.X100_Reduccion( precioCre, IVA ), 0 )
+        }
+  
+        if(!!precioCon)     fila.setDataValue("precio_n",         fila.data.precio_n)
+        if(!!precioCre)     fila.setDataValue("precioCredito_n",  fila.data.precioCredito_n)
+      })
     }
 
-    return { actualizarPrecios, cambiarPreciosPorIVA }
+    function marcarPreciosActualizados( actualizado : boolean )
+    {
+      tablaAG.value?.gridApi?.forEachNode((fila : IRowNode<IProductoProveedor>) => {
+          fila.setDataValue("precioActualizado", actualizado)
+        }
+      )
+    }
+
+    return { 
+      actualizarPrecios, 
+      cambiarPreciosPorIVA,
+      marcarPreciosActualizados
+    }
   }
 
   //* //////////////////////////////////////////////////////////////////////////////// 🏁🏁🏁🏁🏁🏁🏁 Funciones de Page: iniciar y desmontar
@@ -380,17 +406,6 @@ export function useControlProductosProveedor()
     {
       productosPro.value          = []
       b.value.desmontarBusqueda()
-      apagarEventos()
-    }
-  
-    function apagarEventos()
-    {
-      eventos.off("solicitarRefrescarTabla")
-      eventos.off("solicitarLimpiarFiltros")      
-      eventos.off("solicitarCrearFilas")
-      eventos.off("solicitarEliminarFilas")
-      eventos.off("solicitarCambiarIVAPrecios")
-      eventos.off("solicitarEliminarFilasPorId")
     }
 
     return {
@@ -424,8 +439,10 @@ export function useControlProductosProveedor()
     }
   }
 
-  const { crearNuevasFilas,
+  const { crearFilasNuevosProductos,
+          crearNuevasFilas,
           eliminarFila,
+          eliminarFilasPorId,
           copiarADatosTemporales,
           setEdicionEnProductos,
           limpiarFiltros,
@@ -437,6 +454,7 @@ export function useControlProductosProveedor()
           subirCambiosEnLote,      
                                   } = useCRUD()         
   const { actualizarPrecios,
+          marcarPreciosActualizados,
           cambiarPreciosPorIVA    } = usePrecios()
   const { buscar, limpiarBusqueda } = useBuscar()
   const { iniciar, desmontar      } = useCicloDeVida()
@@ -446,17 +464,16 @@ export function useControlProductosProveedor()
   return {
     // * ///////////////////////////////// 🗃️ Estado
     modoEdicion,
-    // * ///////////////////////////////// 📡 Eventos
-    eventos,
     // * ///////////////////////////////// 🔎 Funciones de busqueda
     buscar,
     limpiarBusqueda,
     // * ///////////////////////////////// ☁️ Actualizar datos
     actualizarPrecios,
     cambiarPreciosPorIVA,
+    marcarPreciosActualizados,
     procesarEdicionEnLote,
     // * ///////////////////////////////// 📋 Gestion de datos
-    crearNuevasFilas,
+    crearFilasNuevosProductos,
     eliminarFila,
     copiarADatosTemporales,
     setEdicionEnProductos,

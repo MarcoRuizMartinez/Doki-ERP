@@ -18,10 +18,11 @@ export const Col =
     hide                  = undefined,
     type                  = undefined,
     headerClass           = undefined,
+    cellClassRules        = undefined,
   }                       : TParam
   )                       : ColDef
   {
-    const col : ColDef    = { headerName, field, editable, columnGroupShow, hide, type, headerClass, width : 120 }
+    const col : ColDef    = { headerName, field, editable, columnGroupShow, hide, type, headerClass, cellClassRules, width : 120 }
     col.filter            = "agSetColumnFilter"
     col.enableRowGroup    = true
     col.filterParams      = { defaultToNothingSelected: true, 
@@ -61,6 +62,7 @@ export const Col =
     cellClassRules        = undefined,
     headerClass           = undefined,
   }                       : TParam
+  , mostrar : boolean     = true
   )                       : ColDef
   {
     const col : ColDef    = { headerName, field, width, editable, columnGroupShow, hide, cellClassRules, headerClass }
@@ -92,7 +94,7 @@ export const Col =
     else
       col.type            = "moneda"
     
-    return col
+    return mostrar ? col : col
   },
   
   Objeto({

@@ -66,7 +66,7 @@
           class                 ="width150"
           :options              ="Busqueda.listaActivoProducto"
         />
-        <!-- //* ///////////////////////////////////////////////// Busqueda general -->        
+        <!-- //* ///////////////////////////////////////////////// Disponible -->        
         <select-label-value     use-input hundido clearable flat bordered
           v-model               ="b.f.disponible"
           label                 ="Disponible"
@@ -97,7 +97,15 @@
           class                 ="width150"
           icon                  ="mdi-file-document"
           debounce              ="800"
-        />        
+        />
+        <!-- //* ///////////////////////////////////////////////// Activo -->        
+        <select-label-value     use-input hundido clearable flat bordered
+          v-model               ="b.f.actualizado"
+          label                 ="Precio actualizado"
+          icon                  ="mdi-cash-check"
+          class                 ="width150"
+          :options              ="Busqueda.listaActualizado"
+        />
         <!-- //* ///////////////////////////////////////////////// Proveedores -->
         <!-- <select-label-value     use-input hundido clearable flat bordered
           v-model               ="b.f.proveedores"
@@ -283,7 +291,7 @@
         style                   ="height: 120px;"
         >
         <div class              ="row items-center">
-          <!-- //* ///////////////////////////////////////////////////////////// Cantidad -->
+          <!-- //* ///////////////////////////////////////////////////////////// Nuevas Filas -->
           <numero-paso          hundido
             v-model             ="totalACrear"
             label               ="Nuevas filas"
@@ -297,7 +305,7 @@
               icon              ="mdi-table-row-plus-after"
               color             ="positive"
               class             ="q-ml-sm"
-              @click            ="emit('crearFilas', totalACrear)"
+              @click            ="crearFilasNuevosProductos( totalACrear )"
               >
               <Tooltip label    ="Crear nuevas filas"/>
             </q-btn>          
@@ -370,6 +378,30 @@
         <div class              ="centerh">
           <q-btn
             v-bind              ="style.btnBaseMd"
+            label               ="Precios actualizados"
+            icon                ="mdi-cash-check"
+            color               ="teal-9"
+            class               ="full-width"            
+            >
+            <confirmar @ok      ="marcarPreciosActualizados( true )"/>
+            <Tooltip label      ="Marcar precios como actualizados"/>
+          </q-btn>
+        </div>
+        <div class              ="centerh">
+          <q-btn
+            v-bind              ="style.btnBaseMd"
+            label               ="Precios desactualizados"
+            icon                ="mdi-cash-remove"
+            color               ="deep-orange-9"
+            class               ="full-width"            
+            >
+            <confirmar @ok      ="marcarPreciosActualizados( false )"/>
+            <Tooltip label      ="Marcar precios como desactualizados"/>
+          </q-btn>
+        </div>
+        <!-- <div class              ="centerh">
+          <q-btn
+            v-bind              ="style.btnBaseMd"
             label               ="Subir IVA"
             icon                ="mdi-arrow-up-bold-box"
             color               ="indigo"
@@ -378,7 +410,7 @@
             <confirmar  @ok     ="cambiarPreciosPorIVA('subir')"/>
             <Tooltip :label     ="`Aumenta un ${IVA}% de IVA a los precios temporales`"/>
           </q-btn>
-        </div>
+        </div> -->
         <div class              ="centerh">
           <q-btn
             v-bind              ="style.btnBaseMd"
@@ -453,13 +485,14 @@
           cambiarPreciosPorIVA,
           setEdicionEnProductos,
           copiarADatosTemporales,
+          crearFilasNuevosProductos,
+          marcarPreciosActualizados,
                             } = useControlProductosProveedor()
 
   type TEmit                  = {
     buscar          : [ value : IQuery  ]
     exportar        : [ value : void    ]
-    crearFilas      : [ value : number  ]
-  }  
+  }
   const emit                  = defineEmits<TEmit>()
   const IVA                   = parseInt( process.env.IVA ?? "0" )
 

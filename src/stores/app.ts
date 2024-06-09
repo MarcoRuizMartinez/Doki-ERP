@@ -1,7 +1,8 @@
 import {  defineStore       } from 'pinia';
 import {  iItemMenu         } from "components/navegacion/menus/iItemMenu"
+import    tablaAg             from "components/utilidades/AgGrid/TablaAG.vue"
 import {  IVistaAG,
-          VistaAG               } from "components/utilidades/AgGrid/VistaAG"
+          VistaAG           } from "components/utilidades/AgGrid/VistaAG"
           
 export interface ITab
 {
@@ -19,6 +20,7 @@ export interface iApp
   vista       : IVistaAG,
   filtro      : string,
   campo_1     : string | number,
+  tablaAG     : InstanceType<typeof tablaAg> | null
 }
 
 export const useStoreApp = defineStore('app', {
@@ -31,5 +33,6 @@ export const useStoreApp = defineStore('app', {
     vista         : new VistaAG(),
     filtro        : "",
     campo_1       : "",
+    tablaAG       : null,
   }),
 });
