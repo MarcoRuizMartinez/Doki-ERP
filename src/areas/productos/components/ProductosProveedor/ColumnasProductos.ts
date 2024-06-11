@@ -14,8 +14,6 @@ import {  IProductoProveedor      } from "../../models/ProductoProveedor";
 import imagen                       from "./ImagenProductoAG.vue"
 import proveedor                    from "components/utilidades/AgGrid/ProveedorBadge.vue"
 
-
-
 export const reglasCSS = {
   'bg-grey-10 text-grey-2 text-bold'  : ( params : any ) =>  !params.data,
   'bg-grey-3 text-grey-7'             : ( params : any ) =>  !!params.data && !params.data?.activo     && !params.data?.esNuevo,
@@ -29,7 +27,7 @@ export const autoSizeStrategy = {
   columnLimits          : [{ colId: 'ref', minWidth: 900}]
 }
 
-const reglaBoolean      = { 'bg-green-2': ( p : any )=> !!p.value, 'bg-red-2' : ( p : any ) => !p.value }
+const reglaBoolean      = { 'test2': ( p : any )=> !!p.value, 'bg-red-2' : ( p : any ) => !p.value }
 
 export const columnTypes : { [key: string]: ColTypeDef<IProductoProveedor> } = {
   moneda:

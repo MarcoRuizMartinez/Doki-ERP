@@ -33,9 +33,9 @@ export function servicesProductos()
   
   async function buscarProductos( query : IQueryProducto ) : Promise< IProductoDoli[] >
   {
-    return new Promise( async (resolver, rechazar ) =>
+    return new Promise( async ( resolver ) =>
     {
-      let { data, ok            } = await miFetch( getURL("listas", "productos-dolibarr-new"),
+      const { data, ok          } = await miFetch( getURL("listas", "productos-dolibarr-new"),
                                                     {
                                                       body: getFormData( "", query ),
                                                       method: "POST" 
@@ -46,14 +46,14 @@ export function servicesProductos()
                                                       dataEsArray:  true
                                                     }
                                                   )
-      let productos : IProductoDoli[]   = []
+      const productos : IProductoDoli[] = []
 
       if(ok && Array.isArray( data ))
-      {        
+      {
         for (const item of data)
         {
-          let producto : IProductoDoli = await ProductoDoli.productoAPItoProducto( item ) 
-          productos.push( producto )
+          const p : IProductoDoli = await ProductoDoli.productoAPItoProducto( item ) 
+          productos.push( p )
         }
         resolver( productos )
       }
@@ -90,7 +90,7 @@ export function servicesProductos()
               hijo.costo            = ToolType.keyNumberValido( item, "costo"       )
 
               hijo.img              = new ImagenProducto( item?.img  ?? "" )
-              hijo.productosPro     = ProductoProveedor.getProductosFromAPI( item?.proveedores ?? "" )
+              hijo.productosPro     = await ProductoProveedor.getProductosFromAPI( item?.proveedores ?? "" )
               hijo.productosPro     = ToolArray.ordenar( hijo.productosPro, "precio" )
               hijo.naturaleza       = await getNaturalezaDB( item?.naturaleza_id ?? "0" )
               hijo.unidad           = await getUnidadDB( ToolType.keyNumberValido( item, "unidad_id" ) )

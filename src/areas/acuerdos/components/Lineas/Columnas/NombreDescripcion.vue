@@ -117,7 +117,6 @@
           class                 ="text-0_8em"
           >
         </div>
-        <!-- //* // TODO*
         <div v-if               ="(acuerdo.esPedido || acuerdo.esCotizacion) && !!linea.productosProveedor.length && !usuario.areaEsEscom">
           <q-badge              rounded
             v-for               ="(pro, index) of linea.productosProveedor.filter( p => p.disponible )"
@@ -125,9 +124,9 @@
             class               ="q-mr-xs text-0_7em"
             color               ="grey-5"
             >
-            {{pro.proveedor}}
+            {{pro.proveedor.alias}}
           </q-badge>
-        </div> -->
+        </div>
       </div>
     </efecto>
     <!-- <Tooltip v-if       ="false">

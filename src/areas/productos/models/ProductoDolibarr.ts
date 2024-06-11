@@ -409,7 +409,7 @@ export class ProductoDoli implements IProductoDoli
     producto.unidad                 = await getUnidadDB( producto.unidadId )
     producto.categoria              = await getCategoriaDB( producto.sigla )
     producto.naturaleza             = await getNaturalezaDB( productoApi?.naturaleza_id ?? "0" )
-    // producto.productosProveedor     = ProductoProveedor.getProductosFromAPI( productoApi?.productosPro ?? {} ) // TODO *
+    producto.productosProveedor     = await ProductoProveedor.getProductosFromAPI( productoApi?.productosPro ?? {} ) // TODO *
             
     return producto
   }

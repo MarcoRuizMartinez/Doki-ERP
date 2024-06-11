@@ -256,8 +256,12 @@ export class ProductoProveedor implements IProductoProveedor
  // * ////////////////////////////////////////////////////////////////////////// Get new LineaAcuerdo data de API
  static async getProductosFromAPI( dataAPI : any, editable : boolean = false ) : Promise< IProductoProveedor[] >
  {
+   
     const productos : IProductoProveedor[]  = []
 
+    if(typeof dataAPI === "string")
+      dataAPI                 = JSON.parse( dataAPI )
+    
     if( !Array.isArray( dataAPI ) ) return []
     
     for (const pp of dataAPI)
