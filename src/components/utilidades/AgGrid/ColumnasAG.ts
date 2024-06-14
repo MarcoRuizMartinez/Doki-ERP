@@ -80,9 +80,9 @@ export const Col =
                             : valorStr.replaceAll(",", "")
       }
       else if (lugarPunto > -1)
-        valorStr          = valorStr.replace(".", "")
+        valorStr          = valorStr.replaceAll(".", "")
       else if (lugarComa  > -1)
-        valorStr          = valorStr.replace(",", "")
+        valorStr          = valorStr.replaceAll(",", "")
       
       const valor         = ToolNum.roundInt( ToolType.anyToNum( valorStr ), 0)
       return valor

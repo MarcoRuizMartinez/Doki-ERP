@@ -12,6 +12,7 @@ import {  Prioridades, Cuando, Progresos} from "src/areas/comunicacion/models/Ac
 import {  Anticipo                      } from "src/areas/acuerdos/models/Anticipo"
 import {  DIMENSIONES                   } from "src/areas/acuerdos/models/SerieAcuerdo"
 import {  Periodo, PERIODO              } from "src/models/TiposInformes"
+import {  TiposProductosProveedor       } from "src/areas/productos/models/TipoProductoProveedor"
 import {  Incentivo                     } from "src/areas/nomina//models/Incentivo"
 import {  estadosCtz, estadosPed,
           estadosOC,  estadosEnt        } from "src/areas/acuerdos/models/ConstantesAcuerdos"
@@ -41,9 +42,11 @@ export interface      IQuery {
   buscar1              ?: string
   buscar2              ?: string
   buscar3              ?: string
+  buscar4              ?: string
   idTercero            ?: number
   contacto             ?: string
   estados              ?: string
+  tpp                  ?: string  // Tipo Producto Proveedor
   cuando               ?: string
   prioridad            ?: string
   progreso             ?: string
@@ -79,6 +82,7 @@ export interface      IQuery {
   interno              ?: number
   conOrdenes           ?: number
   listoDespacho        ?: number
+  l1                   ?: number
   aprobado             ?: number
   extra                ?: number
   limite               ?: number
@@ -144,6 +148,7 @@ interface               IOpciones {
   categorias            : ILabelValue[]
   origenes              : ILabelValue[]
   estados               : ILabelValue[]
+  tiposProductosProv    : ILabelValue[]
 }
 
 interface               ICampos {
@@ -151,7 +156,8 @@ interface               ICampos {
   buscar                : string
   buscar1               : string
   buscar2               : string
-  buscar3               : string  
+  buscar3               : string
+  buscar4               : string
   contacto              : string
 
   desde                 : Date | string
@@ -174,6 +180,7 @@ interface               ICampos {
   valorMin              : number | undefined
   valorMax              : number | undefined
   estados               : ILabelValue[]
+  tiposProProve         : ILabelValue[]
   cuando                : ILabelValue[]
   prioridad             : ILabelValue[]
   progreso              : ILabelValue[]
@@ -195,6 +202,7 @@ interface               ICampos {
   terceroInterno        : ILabelValue
   conOrdenes            : ILabelValue
   listoDespacho         : ILabelValue
+  l1                    : ILabelValue
   aprobado              : ILabelValue
   extra                 : ILabelValue
   proveedores           : ILabelValue  
@@ -314,7 +322,8 @@ export class Busqueda implements IBusqueda
     this.o.origenes                         = await getOrigenesContactoDB()
     this.o.condicionesPago                  = await getCondicionesPagoDB()
     this.o.formasPago                       = await getFormasPagoDB()
-    this.o.metodosEntrega                   = await getMetodosEntregaDB()    
+    this.o.metodosEntrega                   = await getMetodosEntregaDB()
+    this.o.tiposProductosProv               = TiposProductosProveedor        
     this.o.estados                          =   this.esCotizacion ? estadosCtz.filter(e => e.value >= -1)
                                               : this.esPedido     ? estadosPed.filter(e => e.value >= -1)
                                               : this.esOCProveedor? estadosOC .filter(e => e.value >= -1)
@@ -349,6 +358,7 @@ export class Busqueda implements IBusqueda
     this.f.buscar1            = ToolQuery.getQueryRouterString    ( this.rourterQ .buscar1      )
     this.f.buscar2            = ToolQuery.getQueryRouterString    ( this.rourterQ .buscar2      )
     this.f.buscar3            = ToolQuery.getQueryRouterString    ( this.rourterQ .buscar3      )
+    this.f.buscar4            = ToolQuery.getQueryRouterString    ( this.rourterQ .buscar4      )
     this.f.contacto           = ToolQuery.getQueryRouterString    ( this.rourterQ .contacto     )
     this.f.nombre             = ToolQuery.getQueryRouterString    ( this.rourterQ .nombre       )
     this.f.valorMin           = ToolQuery.getQueryRouterNumber    ( this.rourterQ .valorMin     )
@@ -376,6 +386,7 @@ export class Busqueda implements IBusqueda
     this.f.terceroInterno     = ToolQuery.getQueryRouterLabelValue( this.rourterQ .interno,               Busqueda.listaTerceroInterno  )
     this.f.conOrdenes         = ToolQuery.getQueryRouterLabelValue( this.rourterQ .conOrdenes,            Busqueda.listaOrdenesProv     )
     this.f.listoDespacho      = ToolQuery.getQueryRouterLabelValue( this.rourterQ .listoDespacho,         Busqueda.listaListoDespachar  )
+    this.f.l1                 = ToolQuery.getQueryRouterLabelValue( this.rourterQ .l1,                    Busqueda.listaBase            )
     this.f.aprobado           = ToolQuery.getQueryRouterLabelValue( this.rourterQ .aprobado,              Busqueda.listaAprobado        )
     this.f.extra              = ToolQuery.getQueryRouterLabelValue( this.rourterQ .extra,                 Busqueda.listaExtra           )
     this.f.tipoTercero        = ToolQuery.getQueryRouterLabelValue( this.rourterQ .tipoTercero,           Busqueda.listaTipoTercero     )
@@ -391,7 +402,8 @@ export class Busqueda implements IBusqueda
 
     this.f.estadoAnticipo     = ToolQuery.getQueryRouterLabelValueArray ( this.rourterQ .estadoAnticipo,  Anticipo.estados              )
     this.f.tipoAnticipo       = ToolQuery.getQueryRouterLabelValueArray ( this.rourterQ .tipoAnticipo,    Anticipo.tipos                )
-    this.f.estados            = ToolQuery.getQueryRouterLabelValueArray ( this.rourterQ .estados,         this.o.estados                )    
+    this.f.estados            = ToolQuery.getQueryRouterLabelValueArray ( this.rourterQ .estados,         this.o.estados                )
+    this.f.tiposProProve      = ToolQuery.getQueryRouterLabelValueArray ( this.rourterQ .tiposp,          this.o.tiposProductosProv     )
     this.f.cuando             = ToolQuery.getQueryRouterLabelValueArray ( this.rourterQ .cuando,          Cuando                        )
     this.f.prioridad          = ToolQuery.getQueryRouterLabelValueArray ( this.rourterQ .prioridad,       Prioridades                   )
     this.f.progreso           = ToolQuery.getQueryRouterLabelValueArray ( this.rourterQ .progreso,        Progresos                     )
@@ -578,12 +590,13 @@ export class Busqueda implements IBusqueda
 
     if( this.camposVacios ) return q
 
-    if(this.f.buscar.length   > 3)      q.buscar            = this.f.buscar
-    if(this.f.buscar1.length  > 3)      q.buscar1           = this.f.buscar1
-    if(this.f.buscar2.length  > 3)      q.buscar2           = this.f.buscar2
-    if(this.f.buscar3.length  > 3)      q.buscar3           = this.f.buscar3
-    if(this.f.contacto.length > 3)      q.contacto          = this.f.contacto
-    if(this.f.nombre.length > 3)        q.nombre            = this.f.nombre
+    if(this.f.buscar.length   >= 3)     q.buscar            = this.f.buscar
+    if(this.f.buscar1.length  >= 3)     q.buscar1           = this.f.buscar1
+    if(this.f.buscar2.length  >= 3)     q.buscar2           = this.f.buscar2
+    if(this.f.buscar3.length  >= 3)     q.buscar3           = this.f.buscar3
+    if(this.f.buscar4.length  >= 3)     q.buscar4           = this.f.buscar4
+    if(this.f.contacto.length >= 3)     q.contacto          = this.f.contacto
+    if(this.f.nombre.length   >= 3)     q.nombre            = this.f.nombre
     if(this.f.destacado)                q.destacado         = 1
     if(this.f.favorito)                 q.favorito          = 1
     if(this.f.color)                    q.color             = 1
@@ -605,6 +618,7 @@ export class Busqueda implements IBusqueda
     if(ToolType.valorValido(this.f.enviaHastaDia)) q.enviaHastaDia  = this.f.enviaHastaDia
 
     if(!!this.f.estados.length)         q.estados           = this.f.estados        .map( e => e.value ).join("_")
+    if(!!this.f.tiposProProve.length)   q.tpp               = this.f.tiposProProve  .map( e => e.value ).join("_")
     if(!!this.f.cuando.length)          q.cuando            = this.f.cuando         .map( e => e.value ).join("_")
     if(!!this.f.prioridad.length)       q.prioridad         = this.f.prioridad      .map( e => e.value ).join("_")
     if(!!this.f.progreso.length)        q.progreso          = this.f.progreso       .map( e => e.value ).join("_")
@@ -629,6 +643,7 @@ export class Busqueda implements IBusqueda
     if(!!this.f.municipioContacto.id)   q.municipioContacto = this.f.municipioContacto.id
     if(!!this.f.conOrdenes.label)       q.conOrdenes        = this.f.conOrdenes.value
     if(!!this.f.listoDespacho.label)    q.listoDespacho     = this.f.listoDespacho.value
+    if(!!this.f.l1.label)               q.l1                = this.f.l1.value
     if(!!this.f.aprobado.label)         q.aprobado          = this.f.aprobado.value
     if(!!this.f.extra.label)            q.extra             = this.f.extra.value
     if(!!this.f.tipoTercero.label)      q.tipoTercero       = this.f.tipoTercero.value
@@ -669,6 +684,7 @@ export class Busqueda implements IBusqueda
   static listaListoDespachar      = [{value:1, label:'Listo para despacho'},  {value:0, label:'No esta listo'       }]
   static listaAprobado            = [{value:1, label:'✅Aprobado'},          {value:0, label:'✖️No aprobado'       }]
   static listaExtra               = [{value:1, label:'✅Extra'},             {value:0, label:'✖️No extra'          }]
+  static listaBase                = [{value:1, label:'✅'},                  {value:0, label:'✖️'                  }]
   static listaActivo              = [{value:1, label:'Activo'},               {value:0, label:'Inactivo'            }]  
   static listaActualizado         = [{value:1, label:'Actualizado'},          {value:0, label:'Desactualizado'      }]
   static listaActivoProducto      = [{value:1, label:'En catalogo'},          {value:0, label:'Descontinuado'       }]  
@@ -715,6 +731,7 @@ export class Busqueda implements IBusqueda
       categorias          : [],
       origenes            : [],
       estados             : [],
+      tiposProductosProv  : [],
     }
   }
                                                                   
@@ -726,6 +743,7 @@ export class Busqueda implements IBusqueda
       buscar1             : "",
       buscar2             : "",
       buscar3             : "",
+      buscar4             : "",
       contacto            : "",
 
       desde               : "",
@@ -748,6 +766,7 @@ export class Busqueda implements IBusqueda
       valorMin            : undefined,
       valorMax            : undefined,
       estados             : [],
+      tiposProProve       : [],
       cuando              : [],
       prioridad           : [],
       progreso            : [],
@@ -769,6 +788,7 @@ export class Busqueda implements IBusqueda
       totalizado          : labelValueNulo,
       conOrdenes          : labelValueNulo,
       listoDespacho       : labelValueNulo,
+      l1                  : labelValueNulo,
       aprobado            : labelValueNulo,
       extra               : labelValueNulo,
       proveedores         : labelValueNulo,

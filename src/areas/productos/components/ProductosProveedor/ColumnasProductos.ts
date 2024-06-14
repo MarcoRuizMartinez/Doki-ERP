@@ -1,7 +1,7 @@
 import {  Col                     } from "components/utilidades/AgGrid/ColumnasAG"
 import {  ColDef,
           ColTypeDef,
-          ColGroupDef             } from "ag-grid-community";
+          ColGroupDef             } from "ag-grid-community"
 import {  getProveedoresDB,
           getCategoriasDB,
           getDiasDespachoDB,
@@ -9,16 +9,17 @@ import {  getProveedoresDB,
 import {  TiposProductosProveedor } from "src/areas/productos/models/TipoProductoProveedor"
 import {  MesesGarantia           } from "src/models/Diccionarios/MesesGarantia"
 import {  OriginesMadeIn          } from "src/models/Diccionarios/MadeIn"
-import {  ToolType, Format        } from "src/composables/useTools";
-import {  IProductoProveedor      } from "../../models/ProductoProveedor";
+import {  ToolType, Format        } from "src/composables/useTools"
+import {  IProductoProveedor      } from "../../models/ProductoProveedor"
 import imagen                       from "./ImagenProductoAG.vue"
 import proveedor                    from "components/utilidades/AgGrid/ProveedorBadge.vue"
 
 export const reglasCSS = {
   'bg-grey-10 text-grey-2 text-bold'  : ( params : any ) =>  !params.data,
   'bg-grey-3 text-grey-7'             : ( params : any ) =>  !!params.data && !params.data?.activo     && !params.data?.esNuevo,
-  'bg-indigo-3 text-indigo-1'         : ( params : any ) => { return !params.data?.disponible && !!params.data?.activo && !params.data?.esNuevo },
+  'text-deep-purple-3'                : ( params : any ) => { return !params.data?.disponible && !!params.data?.activo && !params.data?.esNuevo },
   'bg-green-2'                        : ( params : any ) => { return params.data?.esNuevo },
+  'bg-amber-1'                        : ( params : any ) => { return params.data?.tipo?.esCompuesto || params.data?.tipo?.esHijo },
 }
 
 export const autoSizeStrategy = {
@@ -26,8 +27,6 @@ export const autoSizeStrategy = {
   defaultMinWidth       : 100,  
   columnLimits          : [{ colId: 'ref', minWidth: 900}]
 }
-
-const reglaBoolean      = { 'test2': ( p : any )=> !!p.value, 'bg-red-2' : ( p : any ) => !p.value }
 
 export const columnTypes : { [key: string]: ColTypeDef<IProductoProveedor> } = {
   moneda:
@@ -201,14 +200,12 @@ export function columnasProductos( conPrecios : boolean ) : (ColDef<IProductoPro
           field           : "activo",
           headerClass     : "bg-purple-6 text-white",
           type            : "editarYCrear",
-          cellClassRules  : reglaBoolean,
         }),
         Col.Boolean({
           headerName      : "💁🏻‍♂️Disponible",
           field           : "disponible",
           headerClass     : "bg-purple-6 text-white",
-          type            : "editarYCrear",
-          cellClassRules  : reglaBoolean,
+          editable        : true,
         }),
         Col.Boolean({
           headerName      : "📦Gestión de stock",
@@ -216,7 +213,6 @@ export function columnasProductos( conPrecios : boolean ) : (ColDef<IProductoPro
           headerClass     : "bg-purple-6 text-white",
           type            : "editarYCrear",
           hide            : true,
-          cellClassRules  : reglaBoolean,
         }),
         {
           headerName      : "🧮Stock",
@@ -266,7 +262,7 @@ export function columnasProductos( conPrecios : boolean ) : (ColDef<IProductoPro
           headerClass     : "bg-deep-purple-6 text-white",
           opciones        : TiposProductosProveedor,
           key             : "label",
-          type            : "creacion",
+          type            : "editarYCrear",
           cellClassRules  : { 'bg-deep-orange-2': p => ( p.data?.esNuevo ?? false ) && !p.data.okTipo }
         }),
         {
@@ -283,7 +279,16 @@ export function columnasProductos( conPrecios : boolean ) : (ColDef<IProductoPro
           field           : "orden",
           headerClass     : "bg-deep-purple-6 text-white",
           type            : ["editarYCrear", "numero" ],
-          width           : 110
+          width           : 110,
+          comparator      : (valueA, valueB, nodeA, nodeB, isDescending) => {
+            const vA      = ToolType.anyToNum( valueA )
+            const vB      = ToolType.anyToNum( valueB )
+            const orden   =   vA == vB ? 0 
+                            : vA > vB  ? 1
+                            : -1
+            return orden
+          },
+          sortingOrder    : ["asc", "desc"]
         },
         {
           headerName      : "👨‍👩‍👧‍👦🏠Familia nuestra", 
@@ -336,7 +341,17 @@ export function columnasProductos( conPrecios : boolean ) : (ColDef<IProductoPro
             headerName      : "🪙Credito",
             headerClass     : "bg-deep-orange-6 text-white",
             field           : "precioCredito",
-            type            : "editarYCrear"
+            type            : "editarYCrear",
+            cellClassRules  : { 'bg-deep-orange-2': ( p : any ) => 
+              { 
+                const contado = ToolType.keyNumberValido( p.data, "precio" )
+                const credito = ToolType.keyNumberValido( p.data, "precioCredito" )
+  
+                if(contado < 1 || credito < 1) return false
+  
+                return credito <= contado
+              }
+            }
           }),
           Col.Precio({
             headerName      : "🔜Precio",
@@ -397,7 +412,6 @@ export function columnasProductos( conPrecios : boolean ) : (ColDef<IProductoPro
             headerClass     : "bg-deep-orange-6 text-white",
             type            : "editarYCrear",
             hide            : true,
-            cellClassRules  : reglaBoolean,
           }),
         ]
       },
@@ -449,7 +463,10 @@ export function columnasProductos( conPrecios : boolean ) : (ColDef<IProductoPro
           field           : "descripcion",
           headerClass     : "bg-cyan-6 text-white",
           hide            : true,
-          type            : "editarYCrear"
+          type            : "editarYCrear",
+          cellEditor      : "agLargeTextCellEditor",
+          cellEditorPopup : true,
+          cellEditorParams: { maxLength: 2000 }
         },
       ]
     },

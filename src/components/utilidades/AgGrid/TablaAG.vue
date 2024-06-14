@@ -193,6 +193,7 @@ single-click-edit
 
 
   function limpiarFiltros() {
+    console.log("limpiarFiltros: Tabla AG", gridApi);
     gridApi.value?.setFilterModel(null)
     filtro.value            = ""
   }
@@ -201,9 +202,16 @@ single-click-edit
     gridApi.value?.setGridOption("quickFilterText", filtro.value)
   }
 
+  function volverAOrdenar( key : string, sort : "asc" | "desc" = "asc" )
+  {
+    gridApi.value?.applyColumnState({ defaultState: { sort: null } })
+    gridApi.value?.applyColumnState({ state: [{ colId: key, sort }],  defaultState: { sort: null }, })
+  }
+
+
   function getVista() : ColumnState[] | void
   {
-    const vista = gridApi.value?.getColumnState();
+    const vista = gridApi.value?.getColumnState()
     if(!vista) return
     
     return vista
@@ -230,6 +238,7 @@ single-click-edit
   defineExpose({
     refreshCells,
     limpiarFiltros,
+    volverAOrdenar,
     gridApi,
   })
 </script>

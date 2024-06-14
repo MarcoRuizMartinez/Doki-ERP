@@ -17,11 +17,6 @@
   transition: all 0.2s ease;
 }
 
-.test2 {
-  transition: all 0.2s ease;
-}
-
-
 .centerh  { align-content: center; } 
 .width20  { width: 20px;  }
 .width60  { width: 60px;  }
@@ -190,4 +185,11 @@
   padding: 4px;
   min-width: 100%;
   border-radius: 8px;  
+}
+
+.ag-theme-quartz .ag-checkbox-input-wrapper.ag-checked.ag-disabled{
+  --ag-checkbox-checked-color: #2eb822 !important;
+}
+.ag-checkbox-input-wrapper.ag-disabled {
+  opacity: 1;
 }

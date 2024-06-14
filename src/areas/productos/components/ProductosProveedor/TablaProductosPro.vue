@@ -4,9 +4,9 @@
     key-id                  ="id"
     :rango-activo           ="rangoActivo"
     :auto-size-strategy
+    :columnas
     :ref                    ="VISTAS_AG.PRODUCTOS_PROVEEDORES"
     :row-class-rules        ="reglasCSS"
-    :columnas               ="columnasProductos( !usuario.esComercial )"
     :tipos-columnas         ="columnTypes"
     :get-context-menu-items ="getMenuContextual"
     @edicion-celda          ="procesarEdicionEnLote"
@@ -53,10 +53,12 @@
           procesarEdicionEnLote } = useControlProductosProveedor()
 
   const AGProProvee               = ref< InstanceType<typeof tablaAgrid> | null>( null )
+  const columnas                  = ref( columnasProductos( !usuario.value.esComercial ) )
   const rangoActivo               = computed(()=> modoEdicion.value === TIPO_EDICION.RANGO ) 
 
   onMounted(()=>{
     tablaAG.value                 = AGProProvee.value
+    console.log("onMounted tablaAG.value: ", tablaAG.value);
   })
 
   function getMenuContextual( params : GetContextMenuItemsParams<IProductoProveedor> ) : (string | MenuItemDef)[] | GetContextMenuItems

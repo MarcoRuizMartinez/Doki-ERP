@@ -108,6 +108,7 @@ export function useControlProductosProveedor()
     }
   
     function limpiarFiltros(){
+      console.log("limpiarFiltros: ", tablaAG);
       filtro.value                = ""
       tablaAG.value?.limpiarFiltros()
     }
@@ -122,6 +123,10 @@ export function useControlProductosProveedor()
       tablaAG.value?.gridApi?.applyTransaction( { remove: rowData } )
     }
 
+    function ordenarPorOrden(){
+      tablaAG.value?.volverAOrdenar( "orden" )
+    }
+
     return {
       eliminarFila,
       limpiarTabla,
@@ -130,6 +135,7 @@ export function useControlProductosProveedor()
       crearNuevasFilas,
       crearFilasNuevosProductos,
       copiarADatosTemporales,
+      ordenarPorOrden,
       setEdicionEnProductos,
     }
   }
@@ -195,7 +201,7 @@ export function useControlProductosProveedor()
       cambios.push( d )
   
       if (timeoutId)  clearTimeout(timeoutId)    
-      timeoutId               = setTimeout(subirCambiosEnLote, 200);
+      timeoutId               = setTimeout( subirCambiosEnLote , 200);
     }
     
     // * ///////////////////////////////////////////////////////////////////////////////////////////////// gestionar Cambios En Nuevo
@@ -277,6 +283,7 @@ export function useControlProductosProveedor()
           ||  campo               === "categoria"
           ||  campo               === "garantiaMeses"
           ||  campo               === "hechoEn"
+          ||  campo               === "tipo"
         )
         {
           c.value                 = ToolType.anyToNumOStr( c.value?.value )
@@ -294,11 +301,30 @@ export function useControlProductosProveedor()
             oldValue  : c.oldValue,
           })
         }
+        if(campo                  === "activo")
+        {
+          const activo            = !!c.value
+          if(!activo)
+          {
+            c.data.disponible     = false
+            nuevosCambios.push({
+              campo     : "disponible",
+              index     : c.index,
+              data      : c.data,
+              value     : false,
+              oldValue  : c.oldValue,
+            })            
+          }          
+        }        
       }
-      
+
       const ok                    = await EditarCampoEnLote( campo, cambios, usuario.value.id )    
       cambios.length              = 0
       loading.value.carga         = false
+
+      if(campo                    === "orden")
+        ordenarPorOrden()
+
       if(!!nuevosCambios.length)
       {
         cambios.push( ...nuevosCambios )
@@ -445,6 +471,7 @@ export function useControlProductosProveedor()
           eliminarFilasPorId,
           copiarADatosTemporales,
           setEdicionEnProductos,
+          ordenarPorOrden,
           limpiarFiltros,
           limpiarTabla,
                                   } = useGestionTabla()

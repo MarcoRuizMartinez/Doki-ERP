@@ -30,10 +30,9 @@
           icon                  ="mdi-filter"
           :disable              ="!productosPro.length"
         />        
-      </fieldset-filtro>
-      <!-- //* /////////////////////////////////////////////////// Opciones -->
+      </fieldset-filtro> 
       <fieldset-filtro
-        titulo                  ="Opciones"
+        titulo                  ="Búsqueda" 
         class-contenido         ="grilla-ribom fit"
         >
         <!-- //* ///////////////////////////////////////////////// Proveedores -->
@@ -52,12 +51,7 @@
           options-sort          ="nombre"
           class                 ="width170"
           :options              ="b.o.categorias"          
-        />        
-      </fieldset-filtro>      
-      <fieldset-filtro
-        titulo                  ="Búsqueda" 
-        class-contenido         ="grilla-ribom fit"
-        >
+        />     
         <!-- //* ///////////////////////////////////////////////// Activo -->        
         <select-label-value     use-input hundido clearable flat bordered
           v-model               ="b.f.activo"
@@ -74,6 +68,22 @@
           class                 ="width150"
           :options              ="Busqueda.listaDisponible"
         />
+        <!-- //* ///////////////////////////////////////////////// Estado acuerdo -->
+        <multi-label-value
+          v-model               ="b.f.tiposProProve"
+          label                 ="Tipo"
+          class                 ="width150"
+          icon                  ="mdi-shape"
+          :options              ="b.o.tiposProductosProv"
+        />
+        <!-- //* ///////////////////////////////////////////////// Ordenado -->        
+        <select-label-value     use-input hundido clearable flat bordered
+          v-model               ="b.f.l1"
+          label                 ="Ordenado"
+          icon                  ="mdi-sort-ascending"
+          class                 ="width150"
+          :options              ="[{ value : 1, label : 'Ordenado' }, { value : 0, label : 'Sin orden' }]"
+        />        
         <!-- //* ///////////////////////////////////////////////// Familia proveedor -->
         <input-buscar           clearable hundido
           v-model               ="b.f.buscar1"
@@ -98,7 +108,8 @@
           icon                  ="mdi-file-document"
           debounce              ="800"
         />
-        <!-- //* ///////////////////////////////////////////////// Activo -->        
+
+        <!-- //* ///////////////////////////////////////////////// Precio actualizado -->
         <select-label-value     use-input hundido clearable flat bordered
           v-model               ="b.f.actualizado"
           label                 ="Precio actualizado"
@@ -114,30 +125,7 @@
           class                 ="width190"
           :options              ="b.o.proveedores"
         /> -->
-      </fieldset-filtro>      
-      <fieldset-filtro
-        titulo                  ="Precio"
-        class-contenido         ="column q-gutter-xs"
-        >
-        <!-- //* ///////////////////////////////////////////////// Precio Minimo -->
-        <input-number           hundido clearable
-          v-model               ="b.f.valorMin"
-          label                 ="Mínimo"
-          icon                  ="mdi-currency-usd"
-          class                 ="width140"
-          :minimo               ="0"
-          :maximo               ="!!b.f.valorMax ? b.f.valorMax : undefined"
-        />
-        <!-- //* ///////////////////////////////////////////////// Precio Maximo -->
-        <input-number           hundido clearable
-          v-model               ="b.f.valorMax"
-          label                 ="Máximo"
-          icon                  ="mdi-currency-usd"
-          class                 ="width140"
-          :minimo               ="!!b.f.valorMin ? b.f.valorMin : undefined"
-          :maximo               ="999_999_999"
-        />
-      </fieldset-filtro>      
+      </fieldset-filtro>          
       <!-- //* /////////////////////////////////////////////////// Paginación -->
       <fieldset-filtro
         titulo                  ="Paginas"
@@ -180,8 +168,6 @@
       <fieldset-filtro
         titulo                  ="Opciones"
         >
-        <!-- //* ///////////////////////////////////////////////// Slot Columnas -->
-        <slot></slot>
         <!-- //* ///////////////////////////////////////////////// Botones -->
         <div class                ="row width80 q-col-gutter-sm">
           <!-- //* /////////////////////////////////////////////// Boton recargar -->
@@ -239,6 +225,29 @@
       name                      ="tab_2"
       class                     ="row q-pa-none no-wrap scroll"
       >
+      <fieldset-filtro
+        titulo                  ="Precio"
+        class-contenido         ="column q-gutter-xs"
+        >
+        <!-- //* ///////////////////////////////////////////////// Precio Minimo -->
+        <input-number           hundido clearable
+          v-model               ="b.f.valorMin"
+          label                 ="Mínimo"
+          icon                  ="mdi-currency-usd"
+          class                 ="width140"
+          :minimo               ="0"
+          :maximo               ="!!b.f.valorMax ? b.f.valorMax : undefined"
+        />
+        <!-- //* ///////////////////////////////////////////////// Precio Maximo -->
+        <input-number           hundido clearable
+          v-model               ="b.f.valorMax"
+          label                 ="Máximo"
+          icon                  ="mdi-currency-usd"
+          class                 ="width140"
+          :minimo               ="!!b.f.valorMin ? b.f.valorMin : undefined"
+          :maximo               ="999_999_999"
+        />
+      </fieldset-filtro>        
       <!-- //* /////////////////////////////////////////////////// Fecha creacion -->
       <fieldset-filtro
         titulo                  ="Fechas creación"
@@ -323,29 +332,7 @@
           <Tooltip label        ="Crear productos que esten listos"/>
         </q-btn>
       </fieldset-filtro>    
-      <!-- //* /////////////////////////////////////////////////// Modo Edicion -->
-      <fieldset-filtro
-        titulo                  ="Modo de edición"
-        class-contenido         ="column q-gutter-xs"        
-        >
-        <div>
-          <q-btn-toggle         no-caps push glossy stack
-            v-model             ="modoEdicion"
-            color               ="white"
-            text-color          ="grey-10"          
-            toggle-color        ="primary"
-            @update:model-value ="setEdicionEnProductos"
-            :options            ="[ { value: TIPO_EDICION.BLOQUEDA, icon: 'mdi-lock',             slot:'bloqueada'  },
-                                    { value: TIPO_EDICION.CELDA,    icon: 'mdi-form-textbox',     slot:'celda'      },
-                                    { value: TIPO_EDICION.RANGO,    icon: 'mdi-table-arrow-down', slot:'rango'      },
-                                  ]"
-            >
-            <template v-slot:bloqueada> <Tooltip label="Edición bloqueada"    /></template>
-            <template v-slot:celda>     <Tooltip label="Edición por celda"    /></template>
-            <template v-slot:rango>     <Tooltip label="saEdición por rango"  /></template>
-          </q-btn-toggle>
-        </div>
-      </fieldset-filtro>
+
       <!-- //* /////////////////////////////////////////////////// Acciones -->
       <fieldset-filtro  
         titulo                  ="Acciones"
@@ -423,7 +410,30 @@
             <Tooltip :label     ="`Disminuye un ${IVA}% de IVA a los precios temporales`"/>
           </q-btn>
         </div>              
-      </fieldset-filtro>        
+      </fieldset-filtro>
+      <!-- //* /////////////////////////////////////////////////// Modo Edicion -->
+      <fieldset-filtro
+        titulo                  ="Modo de edición"
+        class-contenido         ="column q-gutter-xs"        
+        >
+        <div>
+          <q-btn-toggle         no-caps push glossy stack
+            v-model             ="modoEdicion"
+            color               ="white"
+            text-color          ="grey-10"          
+            toggle-color        ="primary"
+            @update:model-value ="setEdicionEnProductos"
+            :options            ="[ { value: TIPO_EDICION.BLOQUEDA, icon: 'mdi-lock',             slot:'bloqueada'  },
+                                    { value: TIPO_EDICION.CELDA,    icon: 'mdi-form-textbox',     slot:'celda'      },
+                                    { value: TIPO_EDICION.RANGO,    icon: 'mdi-table-arrow-down', slot:'rango'      },
+                                  ]"
+            >
+            <template v-slot:bloqueada> <Tooltip label="Edición bloqueada"    /></template>
+            <template v-slot:celda>     <Tooltip label="Edición por celda"    /></template>
+            <template v-slot:rango>     <Tooltip label="saEdición por rango"  /></template>
+          </q-btn-toggle>
+        </div>
+      </fieldset-filtro>      
     </q-tab-panel>    
     <!-- //* ///////////////////////////////////////////////////// Tab 3 -->
     <q-tab-panel
@@ -461,7 +471,7 @@
   import    fieldsetFiltro        from "components/utilidades/Fieldset.vue"
   import    inputNumber           from "components/utilidades/input/InputFormNumber.vue"
   import    selectLabelValue      from "components/utilidades/select/SelectLabelValue.vue"  
-  //import    multiLabelValue       from "components/utilidades/select/SelectLabelValueMulti.vue"
+  import    multiLabelValue       from "components/utilidades/select/SelectLabelValueMulti.vue"
   import    inputFecha            from "components/utilidades/input/InputFecha.vue"
   import    selectUsuario         from "src/areas/usuarios/components/SelectUsuario.vue"
   import    inputBuscar           from "components/utilidades/input/InputSimple.vue"
