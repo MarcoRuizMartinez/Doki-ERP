@@ -54,6 +54,7 @@ export interface IProductoProveedor {
   urlImagen           : string
 
   activo              : boolean
+  activoNuestro       : boolean
   disponible          : boolean
   gestionStock        : boolean
   stock               : number    
@@ -69,6 +70,7 @@ export interface IProductoProveedor {
   diasDespacho        : IDiasDespacho
 
   precio              : number
+  precioConIVA        : number
   precio_n            : number                //* ///////////////////////////////// _n
   diferencia          : number
   diferenciaX100      : number
@@ -133,6 +135,7 @@ export class ProductoProveedor implements IProductoProveedor
   img                 : IImagenProducto         = new ImagenProducto()
   urlImagen           : string                  = ""
   activo              : boolean                 = true
+  activoNuestro       : boolean                 = false
   disponible          : boolean                 = true
   gestionStock        : boolean                 = false
   stock               : number                  = 0
@@ -187,6 +190,7 @@ export class ProductoProveedor implements IProductoProveedor
   get fechaEdicionCorta()     : string { return ToolDate.fechaCorta( this.fechaEdicion     ) }
   get fechaLlegadaCorta()     : string { return ToolDate.fechaCorta( this.fechaLlegada     ) } 
   get diferencia()            : number { return this.precio_n - this.precio } 
+  get precioConIVA()          : number { return ToolNum.X100_Aumento( this.precio, ToolType.anyToNum( process.env.IVA ) ) }
   get diferenciaX100()        : number {
     const x100      = ToolNum.X100_Calcular( this.precio, this.diferencia )
     const redondeo  = Math.round(x100 * 2) / 2
@@ -280,6 +284,7 @@ export class ProductoProveedor implements IProductoProveedor
     const pApi                = productoApi
 
     pApi.activo               = ToolType.keyBoolean       ( pApi, "activo" )
+    pApi.activoNuestro        = ToolType.keyBoolean       ( pApi, "activoNuestro" )
     pApi.disponible           = ToolType.keyBoolean       ( pApi, "disponible" )
     pApi.gestionStock         = ToolType.keyBoolean       ( pApi, "gestionStock" )
     pApi.calcularDescuento    = ToolType.keyBoolean       ( pApi, "calcularDescuento" )
@@ -319,10 +324,11 @@ export class ProductoProveedor implements IProductoProveedor
     destino.ref                = !!destino.ref    ? destino.ref    : origen.ref
     destino.nombre             = !!destino.nombre ? destino.nombre : origen.nombre
     destino.estado             = origen.estado
-    destino.orden              = +(origen.orden ?? 0)
+    //destino.orden              = +(origen.orden ?? 0)
     destino.proveedor          = origen.proveedor
     destino.categoria          = origen.categoria
     destino.activo             = origen.activo
+    destino.activoNuestro      = origen.activoNuestro
     destino.disponible         = origen.disponible
     destino.gestionStock       = origen.gestionStock
     destino.descripcion        = origen.descripcion

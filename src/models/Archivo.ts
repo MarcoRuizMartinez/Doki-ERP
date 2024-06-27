@@ -177,7 +177,7 @@ export class Archivo implements IArchivo
     return ToolDate.getDateToApiDolibarr( this.date )
   }
   get fechaCorta() : string {
-    return this.fecha.toLocaleDateString('sv-SE') 
+    return this.fecha.toLocaleDateString('es-CO', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: "2-digit", minute: "2-digit" }) 
   }
   get esVisualizable() : boolean { 
     return this.tipo === "PDF" || this.tipo === "Imagen"

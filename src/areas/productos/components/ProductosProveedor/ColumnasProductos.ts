@@ -94,9 +94,17 @@ function esFieldDeEditarHijo( field : string )
           ||  field == "fechaLlegada"
           ||  field == "refPadre"
           ||  field == "descripcion"
+          ||  field == "orden"
+          ||  field == "tipo"
+          ||  field == "categoria"
+          ||  field == "familiaProveedor"
+          ||  field == "costoExtra"
+          ||  field == "garantiaMeses"
 }
 
-const limpiarRef = ( p : any ) => ToolType.keyStringValido(p, "newValue").replaceAll(" ", "").trim()
+const limpiarRef   = ( p : any ) => ToolType.keyStringValido(p, "newValue").replaceAll(" ", "").trim()
+
+
 
 // * ////////////////////////////////////////////////////////////////////////////////////////////////// COLUMNAS
 export function columnasProductos( conPrecios : boolean ) : (ColDef<IProductoProveedor>  | ColGroupDef)[] 
@@ -165,9 +173,18 @@ export function columnasProductos( conPrecios : boolean ) : (ColDef<IProductoPro
           field           : "nombre",
           headerClass     : "bg-teal-6 text-white",
           minWidth        : 340,
-          type            : "creacion",
+          type            : "editarYCrear",
           cellClassRules  : { 'bg-deep-orange-2': p => ( p.data?.esNuevo ?? false ) && !p.data.okNombre },
-          valueParser     : p => ToolType.keyStringValido(p, "newValue").trim()
+          valueParser     : p => {            
+            const newV    = ToolType.keyStringValido(p, "newValue").trim()
+            const old     = ToolType.keyStringValido(p, "oldValue")
+            let valor     = newV
+
+            if((!newV || newV.length < 8) && !!old)
+              valor       = old
+            
+            return valor
+          }
         },
       ]
     },
@@ -187,6 +204,10 @@ export function columnasProductos( conPrecios : boolean ) : (ColDef<IProductoPro
           headerClass     : "bg-light-blue-6 text-white",
           minWidth        : 340
         },
+        { headerName      : "🏠Activo nuestro",
+          field           : "activoNuestro",
+          headerClass     : "bg-light-blue-6 text-white",
+        },        
       ]
     }, 
     { // * //////////////////////////////////////////////////////////////////////////////// Disponibilidad
@@ -220,7 +241,7 @@ export function columnasProductos( conPrecios : boolean ) : (ColDef<IProductoPro
           headerClass     : "bg-purple-6 text-white",
           type            : ["editarYCrear", "numero"],
           hide            : true,
-          valueParser     : p => ToolType.keyNumberValido(p, "newValue")
+          valueParser     : parserNumber,
         },
         {
           headerName      : "📅Fecha llegada",
@@ -271,6 +292,7 @@ export function columnasProductos( conPrecios : boolean ) : (ColDef<IProductoPro
           headerClass     : "bg-deep-purple-6 text-white",
           hide            : false,
           type            : "editarYCrear",
+          valueParser     : p => ToolType.keyStringValido(p, "newValue").trim(),
           cellClassRules  : { 'bg-deep-orange-2': p => ( p.data?.esNuevo ?? false ) && !p.data.okRefPadre }
           
         },
@@ -288,7 +310,7 @@ export function columnasProductos( conPrecios : boolean ) : (ColDef<IProductoPro
                             : -1
             return orden
           },
-          sortingOrder    : ["asc", "desc"]
+          //sortingOrder    : ["asc", "desc"]
         },
         {
           headerName      : "👨‍👩‍👧‍👦🏠Familia nuestra", 
@@ -337,6 +359,11 @@ export function columnasProductos( conPrecios : boolean ) : (ColDef<IProductoPro
             type            : "editarYCrear",
             cellClassRules  : { 'bg-deep-orange-2': p => ( p.data?.esNuevo ?? false ) && !p.data.okPrecio }
           }),
+          Col.Precio({
+            headerName      : "🪙Precio con IVA",
+            field           : "precioConIVA",
+            headerClass     : "bg-deep-orange-6 text-white",
+          }),          
           Col.Precio({
             headerName      : "🪙Credito",
             headerClass     : "bg-deep-orange-6 text-white",
@@ -450,13 +477,14 @@ export function columnasProductos( conPrecios : boolean ) : (ColDef<IProductoPro
           field           : "urlImagen",      
           headerClass     : "bg-cyan-6 text-white",
           hide            : true,   
-          type            : "editarYCrear"
+          type            : "editarYCrear",
         },
         { 
           headerName      : "🔗URL",
           field           : "url",
           headerClass     : "bg-cyan-6 text-white",
           hide            : true,   
+          type            : "editarYCrear",
         },
         {
           headerName      : "📝Descripción",
@@ -507,4 +535,12 @@ export function columnasProductos( conPrecios : boolean ) : (ColDef<IProductoPro
 
 
   return columnas
+}
+
+function parserNumber( p : any )
+{
+  if( ToolType.keyStringValido(p, "newValue" ) === "" )
+    return ToolType.keyNumberValido(p, "oldValue")
+  else
+    return ToolType.keyNumberValido(p, "newValue")
 }

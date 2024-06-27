@@ -69,6 +69,12 @@ export const Col =
     col.filter            = "agNumberColumnFilter"
 
     col.valueParser       = ( p : any ) => {
+      const newValue      = ToolType.keyStringValido(p, "newValue" )
+      const oldValue      = ToolType.keyStringValido(p, "oldValue" )
+
+      if( newValue === "" && oldValue != "")
+        return ToolType.anyToNum( oldValue )
+
       let valorStr        = ToolType.keyStringValido( p, "newValue" ).replaceAll(" ", "").replaceAll("$", "") 
       const lugarComa     = valorStr.indexOf(",")
       const lugarPunto    = valorStr.indexOf(".")

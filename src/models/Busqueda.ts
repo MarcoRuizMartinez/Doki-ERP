@@ -83,6 +83,10 @@ export interface      IQuery {
   conOrdenes           ?: number
   listoDespacho        ?: number
   l1                   ?: number
+  l2                   ?: number
+  l3                   ?: number
+  l4                   ?: number
+  l5                   ?: number
   aprobado             ?: number
   extra                ?: number
   limite               ?: number
@@ -203,6 +207,10 @@ interface               ICampos {
   conOrdenes            : ILabelValue
   listoDespacho         : ILabelValue
   l1                    : ILabelValue
+  l2                    : ILabelValue
+  l3                    : ILabelValue
+  l4                    : ILabelValue
+  l5                    : ILabelValue
   aprobado              : ILabelValue
   extra                 : ILabelValue
   proveedores           : ILabelValue  
@@ -387,6 +395,10 @@ export class Busqueda implements IBusqueda
     this.f.conOrdenes         = ToolQuery.getQueryRouterLabelValue( this.rourterQ .conOrdenes,            Busqueda.listaOrdenesProv     )
     this.f.listoDespacho      = ToolQuery.getQueryRouterLabelValue( this.rourterQ .listoDespacho,         Busqueda.listaListoDespachar  )
     this.f.l1                 = ToolQuery.getQueryRouterLabelValue( this.rourterQ .l1,                    Busqueda.listaBase            )
+    this.f.l2                 = ToolQuery.getQueryRouterLabelValue( this.rourterQ .l2,                    Busqueda.listaBase            )
+    this.f.l3                 = ToolQuery.getQueryRouterLabelValue( this.rourterQ .l3,                    Busqueda.listaBase            )
+    this.f.l4                 = ToolQuery.getQueryRouterLabelValue( this.rourterQ .l4,                    Busqueda.listaBase            )
+    this.f.l5                 = ToolQuery.getQueryRouterLabelValue( this.rourterQ .l5,                    Busqueda.listaBase            )
     this.f.aprobado           = ToolQuery.getQueryRouterLabelValue( this.rourterQ .aprobado,              Busqueda.listaAprobado        )
     this.f.extra              = ToolQuery.getQueryRouterLabelValue( this.rourterQ .extra,                 Busqueda.listaExtra           )
     this.f.tipoTercero        = ToolQuery.getQueryRouterLabelValue( this.rourterQ .tipoTercero,           Busqueda.listaTipoTercero     )
@@ -644,6 +656,10 @@ export class Busqueda implements IBusqueda
     if(!!this.f.conOrdenes.label)       q.conOrdenes        = this.f.conOrdenes.value
     if(!!this.f.listoDespacho.label)    q.listoDespacho     = this.f.listoDespacho.value
     if(!!this.f.l1.label)               q.l1                = this.f.l1.value
+    if(!!this.f.l2.label)               q.l2                = this.f.l2.value
+    if(!!this.f.l3.label)               q.l3                = this.f.l3.value
+    if(!!this.f.l4.label)               q.l4                = this.f.l4.value
+    if(!!this.f.l5.label)               q.l5                = this.f.l5.value
     if(!!this.f.aprobado.label)         q.aprobado          = this.f.aprobado.value
     if(!!this.f.extra.label)            q.extra             = this.f.extra.value
     if(!!this.f.tipoTercero.label)      q.tipoTercero       = this.f.tipoTercero.value
@@ -789,6 +805,10 @@ export class Busqueda implements IBusqueda
       conOrdenes          : labelValueNulo,
       listoDespacho       : labelValueNulo,
       l1                  : labelValueNulo,
+      l2                  : labelValueNulo,
+      l3                  : labelValueNulo,
+      l4                  : labelValueNulo,
+      l5                  : labelValueNulo,
       aprobado            : labelValueNulo,
       extra               : labelValueNulo,
       proveedores         : labelValueNulo,

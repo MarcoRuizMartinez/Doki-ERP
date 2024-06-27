@@ -226,6 +226,27 @@
       class                     ="row q-pa-none no-wrap scroll"
       >
       <fieldset-filtro
+        titulo                  ="Nuestros productos"
+        class-contenido         ="grilla-ribom"
+        >
+        <!-- //* ///////////////////////////////////////////////// Busqueda general -->
+        <input-buscar           clearable hundido
+          v-model               ="b.f.buscar4"
+          label                 ="Búsqueda nuestra"
+          class                 ="width170"
+          icon                  ="mdi-account-search"
+          debounce              ="800"
+        />        
+        <!-- //* ///////////////////////////////////////////////// En venta -->        
+        <select-label-value     use-input hundido clearable flat bordered
+          v-model               ="b.f.l2"
+          label                 ="En venta"
+          icon                  ="mdi-book-check"
+          class                 ="width170"
+          :options              ="Busqueda.listaActivo"
+        />
+      </fieldset-filtro>
+      <fieldset-filtro
         titulo                  ="Precio"
         class-contenido         ="column q-gutter-xs"
         >
@@ -247,7 +268,28 @@
           :minimo               ="!!b.f.valorMin ? b.f.valorMin : undefined"
           :maximo               ="999_999_999"
         />
-      </fieldset-filtro>        
+      </fieldset-filtro>
+      <fieldset-filtro
+        titulo                  ="Nuestros productos"
+        class-contenido         ="grilla-ribom"
+        >
+        <!-- //* ///////////////////////////////////////////////// Con familia -->        
+        <select-label-value     use-input hundido clearable flat bordered
+          v-model               ="b.f.l4"
+          label                 ="Con familia"
+          icon                  ="mdi-account-group"
+          class                 ="width170"
+          :options              ="[ { value: 1, label: 'Con familia' }, { value: 0, label: 'Sin familia' }]"
+        />        
+        <!-- //* ///////////////////////////////////////////////// Con documento -->        
+        <select-label-value     use-input hundido clearable flat bordered
+          v-model               ="b.f.l3"
+          label                 ="Con documento"
+          icon                  ="mdi-file-document"
+          class                 ="width170"
+          :options              ="[ { value: 1, label: 'Con documento' }, { value: 0, label: 'Sin documento' }]"
+        />        
+      </fieldset-filtro>      
       <!-- //* /////////////////////////////////////////////////// Fecha creacion -->
       <fieldset-filtro
         titulo                  ="Fechas creación"

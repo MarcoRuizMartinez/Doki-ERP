@@ -3,7 +3,7 @@
     :style                        ="estilo"
     style                         ="min-height: 800px;"
     class                         ="ag-theme-quartz"
-    fill-handle-direction         ="xy"
+    fill-handle-direction         ="y"
     :auto-size-strategy
     :get-row-id
     :column-types                 ="tiposColumnas"
@@ -126,12 +126,16 @@ single-click-edit
 
   function eventoCambio( e : CellValueChangedEvent )
   {
+    console.log("e: ", e);
+    console.log("eventoCambio source: ", e.source);
+    //"rangeService" | "paste"
     const datosEvento  : TDatosEvento = {
       campo     : ToolType.anyToStr( e.colDef.field ),
       data      : e.data,
       value     : e.value,
       index     : ToolType.anyToNum( e.rowIndex ),
       oldValue  : e.oldValue,
+      source    : ToolType.keyStringValido( e, "source" ),
     }
 
     emit("edicionCelda", datosEvento)
@@ -195,17 +199,22 @@ single-click-edit
   function limpiarFiltros() {
     console.log("limpiarFiltros: Tabla AG", gridApi);
     gridApi.value?.setFilterModel(null)
-    filtro.value            = ""
+    filtro.value                  = ""
   }
 
   function aplicarFiltroRapido() {
     gridApi.value?.setGridOption("quickFilterText", filtro.value)
   }
 
-  function volverAOrdenar( key : string, sort : "asc" | "desc" = "asc" )
+  function volverAOrdenar()
   {
+    const colState                = gridApi.value?.getColumnState()
+    const sortState               = colState?.filter ( s => s.sort != null ).map( s => { return { colId: s.colId, sort: s.sort, sortIndex: s.sortIndex } })
+    if(sortState?.length          != 1) return    
+    console.log("sortState: ", sortState);
     gridApi.value?.applyColumnState({ defaultState: { sort: null } })
-    gridApi.value?.applyColumnState({ state: [{ colId: key, sort }],  defaultState: { sort: null }, })
+    //gridApi.value?.applyColumnState({ state: sortState, defaultState: { sort: null } })
+    gridApi.value?.applyColumnState({ state: [{ colId: sortState[0].colId, sort: sortState[0].sort }],  defaultState: { sort: null }, })
   }
 
 

@@ -124,7 +124,7 @@ export function useControlProductosProveedor()
     }
 
     function ordenarPorOrden(){
-      tablaAG.value?.volverAOrdenar( "orden" )
+      tablaAG.value?.volverAOrdenar()
     }
 
     return {
@@ -193,6 +193,7 @@ export function useControlProductosProveedor()
     let   timeoutId : ReturnType<typeof setTimeout> | null = null;
     function procesarEdicionEnLote( d : TDatosEvento )
     {
+      console.log("procesarEdicionEnLote: ", d);
       if(!!d.data.esNuevo || d.campo === "esNuevo") {
         gestionarCambiosEnNuevo(d)
         return
@@ -228,13 +229,13 @@ export function useControlProductosProveedor()
       if(d.campo                === "ref"       || revisarCampos){
         const producto          = await BuscarProductoByRef( d.data.ref )
         const repetido          = productosPro.value.some( p => p.ref === d.data.ref && p.id != d.data.id ) 
-        const muyCorto          = d.data.ref.length <= 4
+        const muyCorto          = d.data.ref.length <= 2
         d.data.okRef            = !(!!producto.id || repetido || muyCorto )
       }
   
       if(d.campo                === "nombre"    || revisarCampos){
         const repetido          = productosPro.value.some( p => p.nombre === d.data.nombre && p.id != d.data.id ) 
-        d.data.okNombre         = d.data.nombre.length > 10 && !repetido
+        d.data.okNombre         = d.data.nombre.length >= 8 && !repetido
       }
       
       if(d.campo                === "tipo"      || revisarCampos)
@@ -261,6 +262,7 @@ export function useControlProductosProveedor()
     async function subirCambiosEnLote()
     {
       if(!cambios.length) return
+      console.log("cambios: ", cambios.length, cambios);
       const nuevosCambios : TDatosEvento[]= []
   
       const campo                 = cambios[0].campo
@@ -273,6 +275,7 @@ export function useControlProductosProveedor()
   
       for (const c of cambios)
       {
+        console.log("c: ", c);
         if(typeof c.value         ==  "boolean")
           c.value = ToolType.anyToNum( c.value )
         else if(c.value           === null && typeof c.oldValue == "boolean") c.value  = 0
@@ -299,6 +302,7 @@ export function useControlProductosProveedor()
             data      : c.data,
             value     : hayStock,
             oldValue  : c.oldValue,
+            source    : "",
           })
         }
         if(campo                  === "activo")
@@ -313,6 +317,7 @@ export function useControlProductosProveedor()
               data      : c.data,
               value     : false,
               oldValue  : c.oldValue,
+              source    : "",
             })            
           }          
         }        
@@ -370,6 +375,7 @@ export function useControlProductosProveedor()
           value     : valor,
           index     : 0,
           oldValue  : 0,
+          source    : "",
         })
       }
   

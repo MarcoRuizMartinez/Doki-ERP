@@ -26,6 +26,7 @@ export type TDatosEvento = {
   data      : IProductoProveedor
   value     : any
   oldValue  : any
+  source    : string // "rangeService" | "paste"
 }
 
 
