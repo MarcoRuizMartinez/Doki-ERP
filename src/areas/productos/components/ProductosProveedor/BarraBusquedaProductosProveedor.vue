@@ -40,8 +40,9 @@
           v-model               ="b.f.proveedores"
           label                 ="Proveedor"
           icon                  ="mdi-storefront"
-          class                 ="width170"
+          class                 ="width160"
           :options              ="b.o.proveedores"
+          @clear                ="b.f.l6 = labelValueNulo"
         />
         <!-- //* ///////////////////////////////////////////////////////////// Campo Categoría -->
         <select-label-value     use-input hundido clearable flat bordered
@@ -49,7 +50,7 @@
           label                 ="Categoría"
           icon                  ="mdi-file-tree-outline"
           options-sort          ="nombre"
-          class                 ="width170"
+          class                 ="width160"
           :options              ="b.o.categorias"          
         />     
         <!-- //* ///////////////////////////////////////////////// Activo -->        
@@ -57,7 +58,7 @@
           v-model               ="b.f.activo"
           label                 ="Activo"
           icon                  ="mdi-book-check"
-          class                 ="width150"
+          class                 ="width140"
           :options              ="Busqueda.listaActivoProducto"
         />
         <!-- //* ///////////////////////////////////////////////// Disponible -->        
@@ -65,14 +66,14 @@
           v-model               ="b.f.disponible"
           label                 ="Disponible"
           icon                  ="mdi-clipboard-check"
-          class                 ="width150"
+          class                 ="width140"
           :options              ="Busqueda.listaDisponible"
         />
         <!-- //* ///////////////////////////////////////////////// Estado acuerdo -->
         <multi-label-value
           v-model               ="b.f.tiposProProve"
           label                 ="Tipo"
-          class                 ="width150"
+          class                 ="width140"
           icon                  ="mdi-shape"
           :options              ="b.o.tiposProductosProv"
         />
@@ -81,7 +82,7 @@
           v-model               ="b.f.l1"
           label                 ="Ordenado"
           icon                  ="mdi-sort-ascending"
-          class                 ="width150"
+          class                 ="width140"
           :options              ="[{ value : 1, label : 'Ordenado' }, { value : 0, label : 'Sin orden' }]"
         />        
         <!-- //* ///////////////////////////////////////////////// Familia proveedor -->
@@ -237,6 +238,14 @@
           icon                  ="mdi-account-search"
           debounce              ="800"
         />        
+        <!-- //* ///////////////////////////////////////////////// Productos vinculados -->        
+        <select-label-value     use-input hundido clearable flat bordered
+          v-model               ="b.f.l5"
+          label                 ="Vinculados"
+          icon                  ="mdi-link-variant"
+          class                 ="width170"
+          :options              ="[ { value: 1, label: 'Vinculado' }, { value: 0, label: 'Sin vinculo' }]"
+        />
         <!-- //* ///////////////////////////////////////////////// En venta -->        
         <select-label-value     use-input hundido clearable flat bordered
           v-model               ="b.f.l2"
@@ -245,6 +254,15 @@
           class                 ="width170"
           :options              ="Busqueda.listaActivo"
         />
+        <!-- //* ///////////////////////////////////////////////// Otros proveedores -->        
+        <select-label-value     use-input hundido clearable flat bordered
+          v-model               ="b.f.l6"
+          label                 ="Otros proveedores"
+          icon                  ="mdi-account-group"
+          class                 ="width170"
+          :disable              ="!b.f.proveedores.label"
+          :options              ="[ { value: 1, label: 'Varios proveedores' }, { value: 0, label: 'Un proveedor' }]"
+        />           
       </fieldset-filtro>
       <fieldset-filtro
         titulo                  ="Precio"
@@ -330,7 +348,7 @@
         />        
       </fieldset-filtro>      
     </q-tab-panel>
-    <!-- //* ///////////////////////////////////////////////////// Tab 3 -->
+    <!-- //* /////////////////////////////////////////////////////// Tab 3 Crear Editar -->
     <q-tab-panel
       name                      ="tab_3"
       class                     ="row q-pa-none no-wrap scroll"
@@ -477,7 +495,7 @@
         </div>
       </fieldset-filtro>      
     </q-tab-panel>    
-    <!-- //* ///////////////////////////////////////////////////// Tab 3 -->
+    <!-- //* /////////////////////////////////////////////////////// Tab 4 Vistas -->
     <q-tab-panel
       name                      ="tab_4"
       class                     ="row q-pa-none no-wrap scroll"
@@ -501,7 +519,8 @@
 
   // * /////////////////////////////////////////////////////////////////////// Modelos
   import {  IQuery, Busqueda    } from "src/models/Busqueda"
-  import {  GRUPO_USUARIO       } from "src/models/TiposVarios"
+  import {  GRUPO_USUARIO,
+            labelValueNulo      } from "src/models/TiposVarios"
   import {  VISTAS_AG           } from "components/utilidades/AgGrid/VistaAG"
   import {  TIPO_EDICION        } from "components/utilidades/AgGrid/AGTools"
 

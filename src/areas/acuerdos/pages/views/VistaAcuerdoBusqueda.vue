@@ -292,7 +292,7 @@
     acuerdos.value                = []
     modo.value                    = "esperando-busqueda"
     tabs.value.activa             ="tab_1"
-    await busqueda.value.montarBusqueda( usuario.value.id, router, usuario.value.esComercial, permisos.value.acceso_total, 10, tipo.value )
+    await busqueda.value.montarBusqueda( usuario.value.id, router, usuario.value.esComercial, permisos.value.acceso_total, 25, tipo.value )
     crearColumnas()
   }
 

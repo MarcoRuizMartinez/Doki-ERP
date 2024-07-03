@@ -65,31 +65,39 @@
   //import  { ToolDate, ToolType  } from "src/composables/useTools"  
   const { tabs                  } = storeToRefs( useStoreApp() )
   const { usuario               } = storeToRefs( useStoreUser() )
-  //const   { busquedaPro : b     } = storeToRefs( useStoreProducto() )
+  const   { busquedaPro : b     } = storeToRefs( useStoreProducto() )
 
   onMounted(()=> tabs.value = { activa : "tab_1", alerts: [ false, false, false, false ]} )
 
-  const alertTab1 = computed(()=>   false 
-                                    /* !!b.value.f.buscar
-                                    ||  !!b.value.f.contacto
-                                    ||  !!b.value.f.facturado.label
-                                    ||  !!b.value.f.municipioContacto.id
-                                    ||  !!b.value.f.estados.length
-                                    ||  !!b.value.f.condiciones.length
-                                    ||  !!b.value.f.usuario?.nombre
-                                    ||  !!b.value.f.creador?.nombre
-                                    ||  ( !!b.value.f.entrega.length && b.value.esEntrega )*/
+
+
+
+
+  const alertTab1 = computed(()=>       !!b.value.f.buscar
+                                    ||  !!b.value.f.proveedores.label
+                                    ||  !!b.value.f.categorias.label
+                                    ||  !!b.value.f.activo.label
+                                    ||  !!b.value.f.disponible.label
+                                    ||  !!b.value.f.tiposProProve.length
+                                    ||  !!b.value.f.l1.label
+                                    ||  !!b.value.f.buscar1
+                                    ||  !!b.value.f.buscar2
+                                    ||  !!b.value.f.buscar3
+                                    ||  !!b.value.f.actualizado.label
                             )
 
-  const alertTab2 = computed(()=>   false
-                                    /*    ToolDate.fechaValidaStrODate( b.value.f.desde )
-                                    ||  ToolDate.fechaValidaStrODate( b.value.f.hasta )
-                                    ||  ToolType.valorValido( b.value.f.diasDesde     )
-                                    ||  ToolType.valorValido( b.value.f.diasHasta     )
-                                    ||  ToolType.valorValido( b.value.f.aproHastaDia  )
-                                    ||  ToolType.valorValido( b.value.f.aproDesdeDia  )
-                                    ||  ToolType.valorValido( b.value.f.enviaDesdeDia )
-                                    ||  ToolType.valorValido( b.value.f.enviaHastaDia )*/
+  const alertTab2 = computed(()=>       !!b.value.f.buscar4
+                                    ||  !!b.value.f.l5.label
+                                    ||  !!b.value.f.l6.label
+                                    ||  !!b.value.f.l2.label
+                                    ||  b.value.f.valorMin != undefined
+                                    ||  b.value.f.valorMax != undefined
+                                    ||  !!b.value.f.l4.label
+                                    ||  !!b.value.f.l3.label
+                                    ||  !!b.value.f.desde
+                                    ||  !!b.value.f.hasta
+                                    ||  !!b.value.f.creador?.nombre
+                                    ||  !!b.value.f.usuario?.nombre
                             )
                             
   const alertTab3 = computed(()=>   false

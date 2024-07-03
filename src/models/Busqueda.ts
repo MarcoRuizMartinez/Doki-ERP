@@ -87,6 +87,7 @@ export interface      IQuery {
   l3                   ?: number
   l4                   ?: number
   l5                   ?: number
+  l6                   ?: number
   aprobado             ?: number
   extra                ?: number
   limite               ?: number
@@ -211,6 +212,7 @@ interface               ICampos {
   l3                    : ILabelValue
   l4                    : ILabelValue
   l5                    : ILabelValue
+  l6                    : ILabelValue
   aprobado              : ILabelValue
   extra                 : ILabelValue
   proveedores           : ILabelValue  
@@ -399,6 +401,7 @@ export class Busqueda implements IBusqueda
     this.f.l3                 = ToolQuery.getQueryRouterLabelValue( this.rourterQ .l3,                    Busqueda.listaBase            )
     this.f.l4                 = ToolQuery.getQueryRouterLabelValue( this.rourterQ .l4,                    Busqueda.listaBase            )
     this.f.l5                 = ToolQuery.getQueryRouterLabelValue( this.rourterQ .l5,                    Busqueda.listaBase            )
+    this.f.l6                 = ToolQuery.getQueryRouterLabelValue( this.rourterQ .l6,                    Busqueda.listaBase            )
     this.f.aprobado           = ToolQuery.getQueryRouterLabelValue( this.rourterQ .aprobado,              Busqueda.listaAprobado        )
     this.f.extra              = ToolQuery.getQueryRouterLabelValue( this.rourterQ .extra,                 Busqueda.listaExtra           )
     this.f.tipoTercero        = ToolQuery.getQueryRouterLabelValue( this.rourterQ .tipoTercero,           Busqueda.listaTipoTercero     )
@@ -660,6 +663,7 @@ export class Busqueda implements IBusqueda
     if(!!this.f.l3.label)               q.l3                = this.f.l3.value
     if(!!this.f.l4.label)               q.l4                = this.f.l4.value
     if(!!this.f.l5.label)               q.l5                = this.f.l5.value
+    if(!!this.f.l6.label)               q.l6                = this.f.l6.value
     if(!!this.f.aprobado.label)         q.aprobado          = this.f.aprobado.value
     if(!!this.f.extra.label)            q.extra             = this.f.extra.value
     if(!!this.f.tipoTercero.label)      q.tipoTercero       = this.f.tipoTercero.value
@@ -700,7 +704,7 @@ export class Busqueda implements IBusqueda
   static listaListoDespachar      = [{value:1, label:'Listo para despacho'},  {value:0, label:'No esta listo'       }]
   static listaAprobado            = [{value:1, label:'✅Aprobado'},          {value:0, label:'✖️No aprobado'       }]
   static listaExtra               = [{value:1, label:'✅Extra'},             {value:0, label:'✖️No extra'          }]
-  static listaBase                = [{value:1, label:'✅'},                  {value:0, label:'✖️'                  }]
+  static listaBase                = [{value:1, label:'Si'},                   {value:0, label:'No'                  }]
   static listaActivo              = [{value:1, label:'Activo'},               {value:0, label:'Inactivo'            }]  
   static listaActualizado         = [{value:1, label:'Actualizado'},          {value:0, label:'Desactualizado'      }]
   static listaActivoProducto      = [{value:1, label:'En catalogo'},          {value:0, label:'Descontinuado'       }]  
@@ -711,10 +715,10 @@ export class Busqueda implements IBusqueda
   static listaEstadosPago         = Incentivo.estadosPago
   static listaAnticipoEstados     = Anticipo.estados
   static listaAnticipoTipos       = Anticipo.tipos  
-  static listaResultadosXPag      = [ {value: 10,     label: '10',   },
-                                      {value: 25,     label: '25',   },
+  static listaResultadosXPag      = [ {value: 25,     label: '25',   },
                                       {value: 50,     label: '50',   },
                                       {value: 100,    label: '100',  },
+                                      {value: 200,    label: '200',  },
                                     ]
   static listaTipoTercero         = [ {value: 0,      label: 'Es cliente'               },
                                       {value: 1,      label: 'Es proveedor'             },
@@ -809,6 +813,7 @@ export class Busqueda implements IBusqueda
       l3                  : labelValueNulo,
       l4                  : labelValueNulo,
       l5                  : labelValueNulo,
+      l6                  : labelValueNulo,
       aprobado            : labelValueNulo,
       extra               : labelValueNulo,
       proveedores         : labelValueNulo,

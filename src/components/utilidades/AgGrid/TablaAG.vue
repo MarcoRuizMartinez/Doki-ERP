@@ -126,8 +126,6 @@ single-click-edit
 
   function eventoCambio( e : CellValueChangedEvent )
   {
-    console.log("e: ", e);
-    console.log("eventoCambio source: ", e.source);
     //"rangeService" | "paste"
     const datosEvento  : TDatosEvento = {
       campo     : ToolType.anyToStr( e.colDef.field ),
@@ -197,7 +195,6 @@ single-click-edit
 
 
   function limpiarFiltros() {
-    console.log("limpiarFiltros: Tabla AG", gridApi);
     gridApi.value?.setFilterModel(null)
     filtro.value                  = ""
   }
@@ -211,7 +208,6 @@ single-click-edit
     const colState                = gridApi.value?.getColumnState()
     const sortState               = colState?.filter ( s => s.sort != null ).map( s => { return { colId: s.colId, sort: s.sort, sortIndex: s.sortIndex } })
     if(sortState?.length          != 1) return    
-    console.log("sortState: ", sortState);
     gridApi.value?.applyColumnState({ defaultState: { sort: null } })
     //gridApi.value?.applyColumnState({ state: sortState, defaultState: { sort: null } })
     gridApi.value?.applyColumnState({ state: [{ colId: sortState[0].colId, sort: sortState[0].sort }],  defaultState: { sort: null }, })

@@ -20,7 +20,7 @@
         class                 ="lt-md"
         color                 ="primary"
         :disable              ="!productos.length"
-        :loading              ="modo == 'buscando'"
+        :loading              ="buscando"
         @click                ="buscar"
         size                  ="1.1em"
         >
@@ -32,8 +32,9 @@
         <!-- //* ///////////////////////////////////////////////////////////// Campo buscar -->
         <input-buscar         autofocus clearable hundido
           v-model             ="busquedaTxt"
-          label               ="Buscar.."
+          label               ="Buscar..."
           class               ="col-md-2 col-6"
+          :disable            ="buscando"
           @clear              ="buscar"
           @update:model-value ="editarBusqueda"
         />
@@ -98,7 +99,7 @@
         class                 ="gt-sm col-auto"
         color                 ="primary"
         :disable              ="!productos.length"
-        :loading              ="modo == 'buscando'"
+        :loading              ="buscando"
         @click                ="buscar"
         >
         <Tooltip label        ="Recargar"/>
@@ -140,7 +141,9 @@
 
 <script setup lang="ts">
   // * /////////////////////////////////////////////////////////////////////////////////// Core
-  import {  ref, watch          } from "vue"
+  import {  ref,
+            watch,
+            computed            } from "vue"
   // * /////////////////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs         } from 'pinia'
   import {  useStoreUser        } from 'stores/user'
@@ -231,6 +234,7 @@
   const precioMaxQuery        = ref < number >()
   const cantidad              = ref < number >(1)
   const soloConImagen         = ref < boolean>( false )
+  const buscando              = computed(()=> modo.value == "buscando" )
 
   async function buscar()
   {

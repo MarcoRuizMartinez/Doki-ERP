@@ -183,7 +183,10 @@
       Columna.ColumnaPrecio ( { name: "pagado",       clase: "text-bold"  }),
       new Columna(  { name: "usuarioLabel",           label: "Usuario" }),
       new Columna(  { name: "creadorLabel",           label: "Creador" }),
-      new Columna(  { name: "nota" }),
+      new Columna(  { name: "nota" } ),
+      new Columna(  { name: "creadoEl",               label: "Fecha creación" } ),
+      new Columna(  { name: "modificadoEl",           label: "Fecha modificación" } ),
+      
     ]
     columnasVisibles.value  = columnas.value.filter(c => c.visible ).map( c => c.name )
     comColumnas.value?.cargarColumnasLocal()

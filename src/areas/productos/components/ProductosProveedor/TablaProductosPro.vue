@@ -5,7 +5,7 @@
     :rango-activo           ="rangoActivo"
     :auto-size-strategy
     :columnas
-    :ref                    ="VISTAS_AG.PRODUCTOS_PROVEEDORES"
+    ref                     ="AGProProvee"
     :row-class-rules        ="reglasCSS"
     :tipos-columnas         ="columnTypes"
     :get-context-menu-items ="getMenuContextual"
@@ -58,7 +58,6 @@
 
   onMounted(()=>{
     tablaAG.value                 = AGProProvee.value
-    console.log("onMounted tablaAG.value: ", tablaAG.value);
   })
 
   function getMenuContextual( params : GetContextMenuItemsParams<IProductoProveedor> ) : (string | MenuItemDef)[] | GetContextMenuItems

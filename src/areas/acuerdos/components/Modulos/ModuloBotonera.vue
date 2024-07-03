@@ -282,11 +282,18 @@
             color             ="deep-purple-10"
             icon              ="mdi-close-circle"
             :label            ="esMobil ? '' : (acuerdo.esCotizacion ? 'Cerrar' : 'Cancelar')"
-            :disable          ="cargandoAlgo"
+            :disable          ="cargandoAlgo || !!acuerdo.entregas.length"
             :loading          ="loading.anular"
             >
             <confirmar  @ok   ="emit('clickAnular')" :con-label="!esMobil"/>
-            <Tooltip :label   ="`Cerrar ${acuerdo.label}`"/>
+            <Tooltip>
+              <span v-if      ="!acuerdo.entregas.length">
+                {{ `Cerrar ${acuerdo.label}` }}
+              </span>
+              <span v-else>
+                No se puede cancelar por que hay entregas
+              </span>
+            </Tooltip>
           </q-btn>
         </q-btn-group>
       <!-- </efecto> -->

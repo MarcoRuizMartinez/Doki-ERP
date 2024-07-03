@@ -29,6 +29,7 @@ export function servicesProductosPro()
                                                     }
                                                   )
       let productos : IProductoProveedor[]   = []      
+      //console.log("data: ", data);
       if(ok && Array.isArray( data ))
       {        
         productos = await ProductoProveedor.getProductosFromAPI( data, editable )         
