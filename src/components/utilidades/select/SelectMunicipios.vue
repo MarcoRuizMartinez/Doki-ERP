@@ -1,5 +1,5 @@
 <template>
-  <q-select                 dense options-dense use-input
+  <q-select                 dense options-dense use-input lazy-rules
                             hide-selected fill-input hide-bottom-space borderless 
     v-model                 ="model"
     input-debounce          ="0"

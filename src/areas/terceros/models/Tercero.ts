@@ -28,6 +28,7 @@ export interface ITercero
   direccion                 : string                  // address
   correo                    : string                  // email
   correoFacturas            : string                  // email para facturas electronicas
+  correoFacturasOk          : boolean                 // La confirmacion de que es el correo de facturacion
   telefono                  : string                  // phone
   url                       : string                  // url
   logo                      : string                  // logo
@@ -74,7 +75,8 @@ export class Tercero implements ITercero
   documento                 : IDocumento  = new Documento()
   direccion                 : string      = ""
   correo                    : string      = ""
-  correoFacturas            : string      = "" // email para facturas electronicas
+  correoFacturas            : string      = ""      // email para facturas electronicas
+  correoFacturasOk          : boolean     = false   // La confirmacion de que es el correo de facturacion
   telefono                  : string      = ""  
   url                       : string      = ""
   logo                      : string      = ""   
@@ -198,14 +200,15 @@ export class Tercero implements ITercero
                       country_code:           "CO",               
                       array_options:
                       {
-                        options_correofacturacion : this.correoFacturas,
-                        options_depart            : this.area.toString(),
-                        options_favorito          : (this.favorito ? 1 : 0).toString(),
-                        options_es_famoso         : (this.esFamoso ? 1 : 0).toString(),
-                        options_color             : this.color,
-                        options_provmin           : "0",
-                        options_datosok           : "1",
-                        options_municipio_id      : this.municipio.id,
+                        options_correofacturacion     : this.correoFacturas,
+                        options_correo_facturacion_ok : +this.correoFacturasOk,
+                        options_depart                : this.area.toString(),
+                        options_favorito              : (this.favorito ? 1 : 0).toString(),
+                        options_es_famoso             : (this.esFamoso ? 1 : 0).toString(),
+                        options_color                 : this.color,
+                        options_provmin               : "0",
+                        options_datosok               : "1",
+                        options_municipio_id          : this.municipio.id,
                       },
                       entity:                 "1",
                       status:                 "1",//this.activo ? 1 : 0,                      
@@ -217,44 +220,45 @@ export class Tercero implements ITercero
 
   static async convertirDataApiATercero( terceroApi : any ) : Promise< ITercero >
   {
-    if(typeof terceroApi      === "string")
+    if(typeof terceroApi        === "string")
     {
-      terceroApi              = JSON.parse( terceroApi )
+      terceroApi                = JSON.parse( terceroApi )
     }
 
-    terceroApi.id             = +terceroApi.id
-    terceroApi.pais           = +terceroApi.pais
-    terceroApi.idTipoDocumento= +terceroApi.idTipoDocumento
-    terceroApi.municipioId    = +terceroApi.municipioId
-    terceroApi.activo         = Boolean( +terceroApi.activo )
-    terceroApi.esCliente      = Boolean( +terceroApi.esCliente )
-    terceroApi.esProveedor    = Boolean( +terceroApi.esProveedor )
-    terceroApi.aplicaIVA      = Boolean( +terceroApi.aplicaIVA )
-    terceroApi.favorito       = Boolean( +terceroApi.favorito )
-    terceroApi.esFamoso       = Boolean( +terceroApi.esFamoso )
-    terceroApi.correoFacturas = ToolType.keyStringValido( terceroApi, "correoFacturas" )
-    terceroApi.color          = terceroApi.color.includes("#FFF") ? "" : terceroApi.color
+    terceroApi.id               = +terceroApi.id
+    terceroApi.pais             = +terceroApi.pais
+    terceroApi.idTipoDocumento  = +terceroApi.idTipoDocumento
+    terceroApi.municipioId      = +terceroApi.municipioId
+    terceroApi.activo           = Boolean( +terceroApi.activo )
+    terceroApi.esCliente        = Boolean( +terceroApi.esCliente )
+    terceroApi.esProveedor      = Boolean( +terceroApi.esProveedor )
+    terceroApi.aplicaIVA        = Boolean( +terceroApi.aplicaIVA )
+    terceroApi.favorito         = Boolean( +terceroApi.favorito )
+    terceroApi.esFamoso         = Boolean( +terceroApi.esFamoso )
+    terceroApi.correoFacturas   = ToolType.keyStringValido( terceroApi, "correoFacturas" )
+    terceroApi.correoFacturasOk = ToolType.keyBoolean     ( terceroApi, "correoFacturasOk" )
+    terceroApi.color            = terceroApi.color.includes("#FFF") ? "" : terceroApi.color
     
     if(terceroApi.municipioId > 0)
-      terceroApi.municipio    = await getMunicipioDB( terceroApi.municipioId )
+      terceroApi.municipio      = await getMunicipioDB( terceroApi.municipioId )
   
     if(!!terceroApi.documento)
     {
-      let doc                 = Object.assign( new Documento(), JSON.parse( terceroApi.documento ) ) as IDocumento
-          doc.tipo            = await getTipoDocumentoDB( terceroApi.idTipoDocumento )
-      terceroApi.documento    = doc
+      let doc                   = Object.assign( new Documento(), JSON.parse( terceroApi.documento ) ) as IDocumento
+          doc.tipo              = await getTipoDocumentoDB( terceroApi.idTipoDocumento )
+      terceroApi.documento      = doc
     }
   
     if( !!terceroApi.responsables && !terceroApi.responsables.includes("null") )
     {
-      let ids                 = JSON.parse( terceroApi.responsables ).map( ( u:any ) => u.id )
+      let ids                   = JSON.parse( terceroApi.responsables ).map( ( u:any ) => u.id )
       if(Array.isArray(ids) && !!ids[0])
         terceroApi.responsables = await getUsuariosDB( ids )
     }
     else
       terceroApi.responsables   = []  
   
-    let tercero : ITercero    = Object.assign( new Tercero(), terceroApi )    
+    let tercero : ITercero      = Object.assign( new Tercero(), terceroApi )    
     return tercero
   }
 }

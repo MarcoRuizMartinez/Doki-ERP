@@ -27,7 +27,7 @@
           icon              ="mdi-check-circle"
           label             ="Clasificar entregado"
           >          
-          <confirmar  @ok   ="clasificarEntregado"/>        
+          <confirmar  @ok   ="clasificarEntregado"/>
         </q-btn>
         <!-- //* ////////////////////////////////////////////////////////// Boton Clasificar validado -->
         <q-btn

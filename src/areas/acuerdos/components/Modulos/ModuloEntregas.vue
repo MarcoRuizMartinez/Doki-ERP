@@ -19,9 +19,14 @@
         label                       ="Nueva entrega"
         color                       ="positive"
         icon                        ="mdi-truck-fast"
-        :disable                    ="!acuerdo.puedeCrearNuevoGrupo || acuerdo.esEstadoEdicion"
+        :disable                    ="!acuerdo.puedeCrearNuevoGrupo || acuerdo.esEstadoEdicion || !!alertasCrearEntrega.length"
         @click                      ="emit('clickNuevaEntrega')"
-      /> 
+        >
+        <Tooltip v-if               ="!!alertasCrearEntrega.length">
+          <span v-html              ="alertasCrearEntrega.join('<br/>')"></span>
+        </Tooltip>
+        
+      </q-btn>
       <!-- //* ///////////////////////////////////////////////////////////// Boton expandir -->
       <btn-toggle
         v-model                     ="expandido"
@@ -116,6 +121,7 @@
   // * /////////////////////////////////////////////////////////////////////////////////// Core
   import {  ref,
             watchEffect,
+            computed,
             onMounted,
             provide               } from "vue"  
 
@@ -160,6 +166,16 @@
   const { buscarAcuerdoEnlazados  } = useControlAcuerdo()
   const { getEstadoAcuerdo        } = servicesAcuerdos()
   const modo                        = ref< TModosVentana >("esperando-busqueda")
+  const alertasCrearEntrega         = computed(()=>
+  {
+    const alertas :string[]         = []
+    const esEmpresa                 = acuerdo.value.tercero.esEmpresa
+    const correoOk                  = acuerdo.value.tercero.correoFacturasOk
+    if(esEmpresa && !correoOk)
+      alertas.push("Correo de facturación sin confirmar")
+    
+    return alertas
+  })
 
   const expandido                   = ref<boolean>(true)
   let iniciado                      = false

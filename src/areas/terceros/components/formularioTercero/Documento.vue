@@ -1,5 +1,5 @@
 <template>
-  <q-select                 filled dense options-dense hide-bottom-space borderless
+  <q-select                 filled dense options-dense hide-bottom-space borderless lazy-rules
     v-model                 ="modelTipo"
     label                   ="Tipo documento*"
     class                   ="col-md-4 col-12 text-caption"
@@ -323,7 +323,6 @@
                                                   },
                                                   { mensaje: "buscar si existe numero de documento" }
                                                 )
-    //console.log(tipoDoc, "data Verifik: ", data);
 
     if(!ok){
       aviso("negative", `Error al consultar datos en Verifik`)

@@ -142,16 +142,17 @@
       />
       <!-- //* //////////////   Correo facturacion  -->
       <div class                ="col-md-6 col-12 row items-center">
-        <input-text             clearable copy alerta sin-espacios
+        <input-text             clearable copy sin-espacios
           v-model               ="tercero.correoFacturas"
           type                  ="email"
           label                 ="Correo facturación"
-          icon                  ="mdi-at"          
+          icon                  ="mdi-at"
+          :alerta               ="tercero.correoFacturasOk"
           :bg-color             ="correosIguales ? 'green-1' : ( !!tercero.correoFacturas ? 'blue-1' : '' )"
-          :class                ="readonly ? 'col-12' : 'col'"
+          :class                ="readonly ? 'col' : 'col'"
           :readonly             ="readonly"
         />
-        <div v-if               ="!readonly">
+        <!-- <div v-if               ="!readonly">
           <q-btn
             v-bind              ="style.btnRedondoFlat2Sm"
             class               ="col"
@@ -160,7 +161,24 @@
             @click              ="tercero.correoFacturas = tercero.correo"
           />
           <Tooltip label        ="Copiar mismo correo de contacto "/>
-        </div>        
+        </div> -->
+        <div
+          v-if                  ="tercero.esEmpresa && !tercero.esNuevo"
+          class                 ="col-auto"
+          >
+          <!-- //* /////////////////////////////////////////////////////////////////////// Boton Toggle Productos Kits -->
+          <btn-toggle           con-confirmar            
+            v-model             ="tercero.correoFacturasOk"
+            icon-true           ="mdi-shield-check"
+            icon-false          ="mdi-shield-alert"
+            msj-true            ="Correo de facturación confirmado por cliente. Marcar como no verificado."
+            msj-false           ="Correo de facturación NO confirmado por cliente.<br/>¿El cliente ya te confirmo el correo de facturación?<br/>En serio 🙄"
+            color-true          ="positive"
+            color-false         ="warning"
+            size                ="md"
+            :disable            ="readonly"
+          />
+        </div>
       </div>
       <!-- //* //////////////   Telefono  -->
       <input-text               clearable copy alerta
@@ -312,6 +330,7 @@
   import {  IMunicipio      } from "src/models/Municipio"
   import {  style           } from "src/composables/useEstilos"
   import    campoCopiar       from "components/utilidades/CampoCopiar.vue" 
+  import    btnToggle         from "components/utilidades/BtnToggle.vue"
 
   const { notify }            = useQuasar()
   const { apiDolibarr       } = useApiDolibarr()
