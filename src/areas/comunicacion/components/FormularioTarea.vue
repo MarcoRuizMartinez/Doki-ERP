@@ -110,6 +110,9 @@
         :readonly           ="readonly"
         @update:model-value ="cambiarFecha"
       />
+      <!-- <div class           ="col-12 col-md-6">
+
+</div>       -->
       <!-- //* ///////////  Fecha fin -->
       <!-- <input-fecha          alerta
         v-model             ="tarea.fechaFin"
@@ -120,14 +123,22 @@
         :disable            ="!tarea.esFecha"
         :readonly           ="readonly"
       /> -->
-      <!-- //* ///////////  Publico -->
+      <!-- //* ///////////  Publico -->       
       <q-checkbox
         v-model             ="tarea.publico" 
         label               ="Publico"
         color               ="positive"
-        class               ="col-12 col-md-6"
+        class               ="col-12 col-md-3"
         :disable            ="readonly"
-      />              
+      />
+
+      <q-checkbox
+        v-model             ="tarea.conAlerta" 
+        label               ="🚨Alerta"
+        color               ="positive"
+        class               ="col-12 col-md-3"
+        :disable            ="readonly"
+      />           
       <!-- //* ///////////  Link pedido-->
       <div class            ="col-12">
         <q-btn              rounded

@@ -8,6 +8,7 @@ import {  ILoading,
 
 export interface IAccionStore {
   tareas          : IAccion[]
+  alertas         : IAccion[]
   tarea           : IAccion
   yaBusco         : boolean
   menuTareasOn    : boolean  
@@ -19,6 +20,7 @@ export interface IAccionStore {
 export const useStoreAcciones = defineStore('acciones', {
   state: () : IAccionStore  => ({
     tareas        : [],
+    alertas       : [],
     tarea         : new Accion( 0 ),
     yaBusco       : false,
     menuTareasOn  : false,

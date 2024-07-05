@@ -59,7 +59,7 @@
       <q-btn              flat round dense
         icon              ="mdi-refresh"
         class             ="op60 op100-hover "
-        @click            ="buscar"
+        @click            ="buscarTareas"
       />
     </div>
     <div class            ="q-mt-sm">
@@ -117,6 +117,15 @@
       @tarea-editada      ="recibirTareaEditada"
     />
   </q-dialog>
+  <!-- //* ///////////////////////////////////////////////////////////// Modal calendario de enventos de acuerdo -->
+  <q-dialog                 
+    v-model               ="modalAlerta"
+    v-bind                ="style.dialogo"
+    >
+    <alerta-tareas
+      @posponer           ="posponer"
+    />
+  </q-dialog>  
 </template>
 <script setup lang="ts">
   // * /////////////////////////////////////////////////////////////////////////////////// Core
@@ -124,9 +133,9 @@
             watchEffect,
             onMounted,
             onUnmounted             } from 'vue'
-  import {  usePageLeave,
-            useMagicKeys            } from '@vueuse/core'
-  
+  import {  usePageLeave            } from '@vueuse/core'
+  import {  LocalStorage            } from 'quasar'
+
   // * /////////////////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs             } from 'pinia'
   import {  useStoreAcciones        } from 'stores/acciones'
@@ -141,18 +150,24 @@
   import {  IAccion, Accion, TASK   } from "../models/Accion"
   import {  IQuery                  } from "src/models/Busqueda"
   import {  Usuario                 } from "src/areas/usuarios/models/Usuario"
+  import {  ALMACEN_LOCAL           } from "src/models/TiposVarios"
 
   // * /////////////////////////////////////////////////////////////////////////////////// Componentes
   import    chipUsuario               from "src/areas/usuarios/components/ChipUsuario.vue"
   import    innerLoading              from "components/utilidades/InnerLoading.vue"
   import    formularioTarea           from "./FormularioTarea.vue"
-  
+  import    alertaTareas              from "./AlertaTareas.vue"
+
+
   const loading                 = ref<boolean>(false)
   const formularioOn            = ref<boolean>(false)
+  const modalAlerta             = ref<boolean>(false)
 
   const { usuario             } = storeToRefs( useStoreUser() )
-  const { tareas, tarea,
-          yaBusco             } = storeToRefs( useStoreAcciones() )  
+  const { tareas,
+          tarea, 
+          alertas,
+          yaBusco,            } = storeToRefs( useStoreAcciones() )  
   const { buscarAcciones,
           cambiarAceptar      } = useControlComunicacion()
   const usuarioAfuera           = usePageLeave()
@@ -163,10 +178,12 @@
   async function iniciar()
   {
     await Tool.pausa( 3_000 )
-    buscar()
+    buscarTareas()
+    await Tool.pausa( 1_000 )
+    await buscarTareasConAlertas()
   }
 
-  async function buscar()
+  async function buscarTareas()
   {
     if(!usuarioAfuera.value)
     {
@@ -184,12 +201,30 @@
     }
     
     await Tool.pausa( 60_000 )
-    buscar()
+    buscarTareas()
+  }
+
+  async function buscarTareasConAlertas()
+  {
+    if( !checkFechaAlertaVencida() ) return 
+
+    const q : IQuery            = {
+                                    codigo    : "AC_OTH",
+                                    cuando    : "1_2_3_4",
+                                    progreso  : "0",
+                                    l1        : 1,
+                                    usuario   : usuario.value.id,
+                                    user      : usuario.value.id
+                                  }
+    alertas.value               = await buscarAcciones( q, "tareas" )
+    if(!!alertas.value.length)
+      modalAlerta.value         = true
+                                  
   }
 
   function recibirTareaCreada( t : IAccion ){
     formularioOn.value        = false
-    buscar()
+    buscarTareas()
   }
 
   function recibirTareaEditada( t : IAccion, cerrar : boolean = true )
@@ -200,18 +235,14 @@
       formularioOn.value      = !cerrar
     }
 
-    buscar()
+    buscarTareas()
   }  
-
-
-  
 
   function tareaPersonal()
   {
     tarea.value               = new Accion( usuario.value.id )
     tarea.value.asignado      = usuario.value
     tarea.value.publico       = false
-    
 
     formularioOn.value        = true
   }
@@ -244,6 +275,33 @@
       tareaAsignada()
     */
   })  
+
+  const TIEMPO_EXPIRAR                = 7_200_000  // ( 1000*60*60*2 ) Dos horas
+
+  function posponer(){
+    LocalStorage.set( process.env.PREFIJO + ALMACEN_LOCAL.FECHA_ALERTA, Date.now() + TIEMPO_EXPIRAR )
+    modalAlerta.value                 = false
+  }
+
+  function checkFechaAlertaVencida() : boolean
+  {
+    let fechaVencida      = false
+    const lastFecha       = LocalStorage.getItem( process.env.PREFIJO + ALMACEN_LOCAL.FECHA_ALERTA ) as number
+
+    if( !lastFecha )
+      fechaVencida        = true
+    else
+    {
+      const intervalo     = Date.now() - lastFecha // -58_000
+      if( intervalo       > 0 ) // 
+        fechaVencida      = true
+    }
+
+    // if(fechaVencida)
+    //   LocalStorage.set( process.env.PREFIJO + ALMACEN_LOCAL.FECHA_ALERTA, Date.now() )
+
+    return fechaVencida
+  }
 
 </script>
 <style>

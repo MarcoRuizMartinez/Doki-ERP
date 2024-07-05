@@ -57,7 +57,15 @@
         class                 ="width160"
         icon                  ="mdi-account-multiple"
         :options              ="b.o.usuarios"
-      />        
+      />
+      <!-- //* ///////////////////////////////////////////////// Con Alerta -->        
+      <select-label-value     use-input hundido clearable flat bordered
+        v-model               ="b.f.l1"
+        label                 ="Con alerta"
+        icon                  ="mdi-alert-decagram"
+        class                 ="width160"
+        :options              ="[{ value : 1, label : 'Con alerta' }, { value : 0, label : 'Sin alerta' }]"
+      />    
     </fieldset-filtro>    
     <!-- //* ///////////////////////////////////////////////////////////////////// FIELD SET Paginación -->
     <fieldset-filtro
@@ -190,6 +198,7 @@
   import    fieldsetFiltro        from "components/utilidades/Fieldset.vue"
   import    innerLoading          from "components/utilidades/InnerLoading.vue"
   import    multiLabelValue       from "components/utilidades/select/SelectLabelValueMulti.vue"
+  import    selectLabelValue      from "components/utilidades/select/SelectLabelValue.vue"  
   import    selectUsuario         from "src/areas/usuarios/components/SelectUsuario.vue"
 
   const { loading,

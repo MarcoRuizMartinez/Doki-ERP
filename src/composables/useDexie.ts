@@ -896,7 +896,7 @@ function checkListasVencidas() : boolean
   else
   {
     const intervalo     = Date.now() - lastFecha
-    if( intervalo       > TIEMPO_EXPIRAR )
+    if( intervalo       > 0 /* TIEMPO_EXPIRAR */ )
       fechaVencida      = true
   }
 

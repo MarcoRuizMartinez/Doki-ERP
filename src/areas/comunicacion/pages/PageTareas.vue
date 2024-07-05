@@ -40,135 +40,13 @@
         </busqueda>
       </template>
       <!-- //* //////////////////////////////////////////////////////// Tabla resultados-->
-      <q-table                        bordered dense flat
-        class                         ="fit tabla-maco tabla-alto-min"
-        row-key                       ="id"
-        :filter                       ="filtro"
-        :rows                         ="tareas"
-        :columns                      ="columnas"
-        :visible-columns              ="columnasVisibles"
-        :pagination                   ="{ sortBy: 'cuandoValue',  descending: false, }"
-        :rows-per-page-options        ="[100]"
-        @row-dblclick                 ="( e : Event, row : Object, i: number )=> mostrarTarea( row as IAccion )"
-        >
-        <!-- //* ///////////////////  Columna Titulo  -->
-        <template #body-cell-titulo   ="props">
-          <q-td   :props              ="props">
-            <span
-              class                   ="cursor-pointer text-1_2em"
-              @click                  ="mostrarTarea(props.row)"
-              >
-              <span
-                v-if                  ="props.row.prioridad.value >= 1"
-                class                 ="text-1_3em"
-                >
-                {{ props.row.prioridadEmoji }}
-              </span>
-              {{ props.row.titulo }}
-            </span>
-            <Tooltip>
-              Prioridad {{ props.row.prioridadLabel }}<br/>
-              <span
-                style                 ="max-width: 300px;"
-                class                 ="ellipsis-3-lines"
-                >
-                {{ props.row.comentario }}
-              </span>
-            </Tooltip>
-          </q-td>
-        </template>
-        <!-- //* ///////////////////  Columna Tipo y Tercero  -->
-        <template #body-cell-tipoLabel="props">
-          <q-td   :props              ="props">
-            <q-btn                    rounded
-              v-bind                  ="style.btnFlatMd"
-              color                   ="primary"
-              :label                  ="props.row.tipoLabel"
-              type                    ="a"
-              :to                     ="props.row.toTipo"
-            />
-            <q-btn
-              v-if                    ="props.row.tieneTerceroYNoEsTercero"
-              v-bind                  ="style.btnFlatMd"
-              color                   ="primary"
-              label                   ="🏪"
-              type                    ="a"
-              :to                     ="`/tercero/${props.row.terceroId}`"
-              >
-              <Tooltip label          ="Ver tercero"/>
-            </q-btn>
-          </q-td>
-        </template>
-        <!-- //* ///////////////////  Columna Progreso  -->
-        <template #body-cell-progreso ="props">
-          <q-td   :props              ="props">
-            <progreso
-              v-model                 ="props.row"
-              class                   ="justify-around width110"
-              size                    ="sm"
-              @set                    ="( x100 ) => ejecutarCambiarProgreso( props.row.id, x100 )"
-            />            
-          </q-td>
-        </template>  
-        <!-- //* ///////////////////  Columna Cuando  -->
-        <!-- @update:model-value   ="actualizar" -->
-        <template
-          #body-cell-cuandoLabel      ="props">
-          <q-td   :props              ="props">
-            <!-- //* //////////////   Cuando -->
-            <select-label-value       no-filled
-              v-if                    ="!props.row.esFecha"
-              v-model                 ="props.row.cuando"
-              :options                ="Cuando"
-              :readonly               ="!props.row.usuarioPermitido"
-              @update:model-value     ="()=> ejecutarCambiarCuando( props.row.id, props.row.cuando.value ) "
-            />
-            <span v-else>{{ props.row.cuandoLabel }}</span>
-          </q-td>
-        </template>
-        <!-- //* ///////////////////  Columna Asignado  -->
-        <template
-          #body-cell-asignadoLabel    ="props">
-          <q-td   :props              ="props">
-            <chip-usuario             :usuario="props.row.asignado"/>
-            <q-btn
-              v-if                    ="!props.row.creadorEsAsignado"
-              v-bind                  ="style.btnRedondoFlatSple"
-              icon                    ="mdi-check-all"
-              class                   ="q-ml-xs"
-              :color                  ="props.row.aceptado ? 'info' : props.row.usuarioEsAsignado ? 'deep-orange-9' : 'grey-6' "
-              @click                  ="()=> cambiarAceptar( props.row )"
-              >
-              <Tooltip  :label        ="props.row.aceptado ? 'Tarea aceptada' : 'Esperando aceptación'"/>
-            </q-btn>
-          </q-td>
-        </template>
-        <!-- //* ///////////////////  Columna Creador -->
-        <template
-          #body-cell-creadorLabel     ="props">
-          <q-td   :props              ="props">
-            <chip-usuario             :usuario="props.row.creador"/>
-          </q-td>
-        </template>        
-        <!-- //* ///////////////////  Columna Editor  -->
-        <template
-          #body-cell-modificoLabel    ="props">
-          <q-td   :props              ="props">
-            <chip-usuario             :usuario="props.row.modifico"/>
-          </q-td>
-        </template>
-        <!-- //* ///////////////////  Columna Privacidad  -->
-        <template
-          #body-cell-publicoLabel     ="props">
-          <q-td   :props              ="props">
-          <span @click                ="()=> cambiarPrivacidad( props.row )">
-            {{ props.value }}
-          </span>
-          <inner-loading :cargando    ="props.row.editando" size="md"/>
-          </q-td>
-        </template>
-        
-      </q-table>
+      <lista-tareas
+        v-model                       ="tareas"
+        :filtro
+        :columnas              
+        :columnas-visibles
+        @click-tarea                  ="mostrarTarea"
+      />
     </ventana>
     <q-dialog
       v-model                         ="formularioOn"
@@ -202,30 +80,23 @@
   import {  style                   } from "src/composables/useEstilos"
   import {  useControlComunicacion  } from "src/areas/comunicacion/controllers/ControlComunicacion"
   // * /////////////////////////////////////////////////////////////////////// Modelos
-  import {  Columna, IColumna       } from "src/models/Tabla"
+  import {  IColumna, Columna       } from "src/models/Tabla"
   import {  IQuery                  } from "src/models/Busqueda"
   import {  IAccion, Accion,
-            TASK, Cuando            } from "src/areas/comunicacion/models/Accion"
+            TASK,                   } from "src/areas/comunicacion/models/Accion"
   import {  TModosVentana,
             ALMACEN_LOCAL           } from "src/models/TiposVarios"  
 
   // * /////////////////////////////////////////////////////////////////////// Componentes
   import    ventana                   from "components/utilidades/Ventana.vue"
   import    inputBuscar               from "components/utilidades/input/InputSimple.vue"
-  import    selectLabelValue          from "components/utilidades/select/SelectLabelValue.vue"
   import    selectColumnas            from "components/utilidades/select/SelectColumnas.vue"
   import    busqueda                  from "src/areas/comunicacion/components/Busqueda/BarraBusquedaTareas.vue"
-  import    progreso                  from "../components/Progreso.vue"
   import    formularioTarea           from "../components/FormularioTarea.vue"
-  import    chipUsuario               from "src/areas/usuarios/components/ChipUsuario.vue"
-  import    innerLoading              from "components/utilidades/InnerLoading.vue"
+  import    listaTareas               from "../components/ListaTareas.vue"
 
   const { busqueda : b      } = storeToRefs( useStoreAcciones() )
-  const { buscarAcciones,
-          cambiarCuando,
-          cambiarProgreso,
-          cambiarAceptar,
-          cambiarPrivacidad } = useControlComunicacion()
+  const { buscarAcciones    } = useControlComunicacion()
 
   const { usuario           } = storeToRefs( useStoreUser() )
   const { aviso             } = useTools()
@@ -251,7 +122,6 @@
   {
     useTitle("✅ Tareas")
     await b.value.montarBusqueda( usuario.value.id, router, false, true, 50, undefined, "Miembr"  )
-
     crearColumnas()
   }
 
@@ -300,17 +170,16 @@
     }
   }
 
-  async function ejecutarCambiarProgreso( idTarea : number, progreso: number ){
-    const ok              = await cambiarProgreso( idTarea, progreso )
+  //* ///////////////////////////////////////////////////////////// Limpiar busqueda
+  function limpiarBusqueda(){
+    modo.value                = "esperando-busqueda"    
+    filtro.value              = ""
+    tareas.value              = []
   }
-
-  async function ejecutarCambiarCuando( idTarea : number, cuando: number ){
-    const ok              = await cambiarCuando( idTarea, cuando )
-  }
-
 
   //* ///////////////////////////////////////////////////////////// Crear Columnas
-  function crearColumnas(){
+  function crearColumnas()
+  {
     columnas.value            = [
       new Columna({ name: "asignadoLabel",      label: "asignado a" }),
       new Columna({ name: "titulo",             label: "tarea"      }),
@@ -321,6 +190,7 @@
       new Columna({ name: "creadorLabel",       label: "Creado por" }),
       new Columna({ name: "progresoLabel",      label: "estado",    clase: "text-bold" }),
       new Columna({ name: "publicoLabel",       label: "Visible"    }),
+      Columna.ColumnaSiNo({ name: "conAlerta",  label: "Alerta"     }),
       new Columna({ name: "modificoLabel",      label: "editó"      }),      
       new Columna({ name: "fechaCreacionCorta", label: "creación"   }),      
       new Columna({ name: "fechaEdicionCorta",  label: "edición"    }),
@@ -330,15 +200,10 @@
     const colsOcu =[ "modificoLabel", "comentario", "fechaCreacionCorta", "fechaEdicionCorta", "cuandoValue" ]
     Columna.ocultarColums( colsOcu, columnas.value )    
     columnasVisibles.value    = columnas.value.filter(c => c.visible ).map( c => c.name )
+
     comColumnas.value?.cargarColumnasLocal()
   }
 
-  //* ///////////////////////////////////////////////////////////// Limpiar busqueda
-  function limpiarBusqueda(){
-    modo.value                = "esperando-busqueda"    
-    filtro.value              = ""
-    tareas.value              = []
-  }
 
   //* ///////////////////////////////////////////////////////////// Descargar Archivos
   function descargarAcuerdos()

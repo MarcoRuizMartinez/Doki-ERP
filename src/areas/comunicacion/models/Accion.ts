@@ -100,6 +100,7 @@ export interface IAccion
   tipoLabel                 : string
   toTipo                    : string
   tieneTerceroYNoEsTercero  : boolean
+  conAlerta                 : boolean
 }
 
 export class Accion implements IAccion
@@ -129,6 +130,7 @@ export class Accion implements IAccion
   creador                   : IUsuario      = new Usuario()
   modifico                  : IUsuario      = new Usuario()
   asignado                  : IUsuario      = new Usuario()
+  conAlerta                 : boolean       = false
 
   constructor( usuarioNowId : number )
   {
@@ -153,6 +155,10 @@ export class Accion implements IAccion
       fk_element      : !!this.elementoId ? this.elementoId : null,
       elementtype     : !!this.tipo       ? this.tipo       : null,
       fk_project      : !!this.proyectoId ? this.proyectoId : null,
+      array_options:
+      {
+        options_con_alerta  : +this.conAlerta
+      },      
     }
 
     return data
@@ -257,6 +263,7 @@ export class Accion implements IAccion
     c.terceroId     = +cApi?.terceroId    ?? 0
     c.proyectoId    = +cApi?.proyectoId   ?? 0
     c.publico       = Boolean( +cApi?.publico       ?? 0)
+    c.conAlerta     = Boolean( +cApi?.conAlerta     ?? 0)
     c.aceptado      = Boolean( +cApi?.aceptado      ?? 0)
     c.eventoDiaFull = Boolean( +cApi?.eventoDiaFull ?? 0)
     c.comentario    = c.comentario.replaceAll('\n', "<br/>")
