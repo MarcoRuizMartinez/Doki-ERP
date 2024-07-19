@@ -66,7 +66,27 @@
         class                 ="width180"
         :options              ="Incentivo.estadosPago.filter( e => e.visible )"
       />    
-    </fieldset-filtro>  
+    </fieldset-filtro>
+    <!-- //* ///////////////////////////////////////////////////////////////////// Fechas -->
+    <fieldset-filtro
+      titulo                  ="Fechas"
+      class-contenido         ="column q-gutter-xs"
+      >
+      <!-- //* ///////////////////////////////////////////////// Fecha desde -->
+      <input-fecha            hundido no-futuro clearable
+        v-model               ="b.f.desde"
+        label                 ="Desde"
+        class                 ="width160"
+        :hasta                ="b.f.hasta"
+      />
+      <!-- //* ///////////////////////////////////////////////// Fecha hasta -->
+      <input-fecha            hundido no-futuro clearable
+        v-model               ="b.f.hasta"
+        label                 ="Hasta"
+        class                 ="width160"
+        :desde                ="b.f.desde"
+      />
+    </fieldset-filtro>    
     <!-- //* ///////////////////////////////////////////////////////////////////// FIELD SET Paginación -->
     <fieldset-filtro
       titulo                  ="Paginas"
@@ -172,6 +192,7 @@
   import    selectUsuario         from "src/areas/usuarios/components/SelectUsuario.vue"
   import    inputBuscar           from "components/utilidades/input/InputSimple.vue"
   import    innerLoading          from "components/utilidades/InnerLoading.vue"
+  import    inputFecha            from "components/utilidades/input/InputFecha.vue"
 
   const { incentivos,
           loading,

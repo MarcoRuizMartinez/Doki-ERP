@@ -211,7 +211,7 @@
     const q : IQuery            = {
                                     codigo    : "AC_OTH",
                                     cuando    : "1_2_3_4",
-                                    progreso  : "0",
+                                    progreso  : "0_25_50_75",
                                     l1        : 1,
                                     usuario   : usuario.value.id,
                                     user      : usuario.value.id

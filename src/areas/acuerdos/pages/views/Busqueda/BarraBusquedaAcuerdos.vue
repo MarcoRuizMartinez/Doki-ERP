@@ -11,14 +11,23 @@
       >
       <fieldset-filtro
         titulo                  ="Búsqueda" 
-        class-contenido         ="column q-gutter-xs"
+        class-contenido         ="grilla-ribom"
         >
+        <!-- //* ///////////////////////////////////////////////// Busqueda ref -->
+        <input-buscar           clearable hundido
+          v-model               ="b.f.buscar1"
+          label                 ="Buscar Ref"
+          class                 ="width160"
+          icon                  ="mdi-barcode"
+          :disable              ="loading.carga"
+        />        
         <!-- //* ///////////////////////////////////////////////// Busqueda general -->
         <input-buscar           clearable hundido
           v-model               ="b.f.buscar"
-          label                 ="Búsqueda"
-          class                 ="width190"
+          label                 ="Buscar tercero"
+          class                 ="width160"
           icon                  ="mdi-account-search"
+          :disable              ="loading.carga"
         />
         <!-- //* ///////////////////////////////////////////////// Busqueda contacto -->
         <input-buscar           clearable hundido
@@ -26,7 +35,7 @@
           v-model               ="b.f.contacto"
           label                 ="Contactos"
           icon                  ="mdi-target-account"
-          class                 ="width190"
+          class                 ="width150"
         />
         <!-- //* ///////////////////////////////////////////////// Proveedores -->
         <select-label-value     use-input hundido clearable flat bordered
@@ -34,7 +43,7 @@
           v-model               ="b.f.proveedores"
           label                 ="Proveedor"
           icon                  ="mdi-storefront"
-          class                 ="width190"
+          class                 ="width150"
           :options              ="b.o.proveedores"
         />
       </fieldset-filtro>
@@ -46,7 +55,7 @@
         <multi-label-value
           v-model               ="b.f.estados"
           label                 ="Estado"
-          class                 ="width190"
+          class                 ="width150"
           icon                  ="mdi-label"
           :options              ="b.o.estados"
         />
@@ -54,7 +63,7 @@
         <multi-label-value
           v-model               ="b.f.entrega"
           label                 ="Entrega"
-          class                 ="width190"
+          class                 ="width150"
           icon                  ="mdi-truck-delivery"
           :options              ="b.o.metodosEntrega"
         />
@@ -63,40 +72,19 @@
           v-if                  ="!b.esOCProveedor && !b.esEntrega"
           v-model               ="b.f.condiciones"
           label                 ="Condiciones"
-          class                 ="width190"
+          class                 ="width150"
           icon                  ="mdi-account-cash"
           :options              ="b.o.condicionesPago"
         />
-        <!-- //* ///////////////////////////////////////////////// Comercial Acuerdo -->
-        <select-usuario         hundido clearable
-          v-if                  ="!b.esOCProveedor"
-          v-model               ="b.f.usuario"
-          class                 ="width190"
-          label                 ="Asesor"
-          :area                 ="usuario.area"
-          :grupos               =[GRUPO_USUARIO.COMERCIALES]
-          :readonly             ="!b.puedeCambiarUser"
-        />
-        <!-- //* ///////////////////////////////////////////////// Creador -->
-        <select-usuario         hundido clearable inactivos
-          v-if                  ="b.esPedido || b.esCotizacion"
-          v-model               ="b.f.creador"
-          class                 ="width190"
-          label                 ="Creador"
-          :area                 ="usuario.area"
-          :grupos               ="b.esOCProveedor ? [GRUPO_USUARIO.PRODUCCION] : [GRUPO_USUARIO.COMERCIALES]"
-          :readonly             ="!permisos.acceso_total"
-        />
         <!-- //* ///////////////////////////////////////////////// Pedido facturado -->
-        <multi-label-value
-          v-if                  ="b.esOCProveedor"
-          v-model               ="b.f.creadores"
-          label                 ="Creadores"
-          class                 ="width190"
-          icon                  ="mdi-account-multiple"
-          :options              ="b.o.creadores"
-          :readonly             ="!permisos.acceso_total"
-        />
+        <select-label-value     use-input hundido clearable flat bordered
+          v-if                  ="b.esPedido"
+          v-model               ="b.f.facturado"
+          label                 ="Facturado"
+          icon                  ="mdi-file-check"
+          class                 ="width150"
+          :options              ="Busqueda.listaFacturado"
+        />        
         <select-label-value     use-input hundido clearable flat bordered
           v-if                  ="b.esOCProveedor"
           v-model               ="b.f.envioOC"
@@ -121,15 +109,41 @@
           label                 ="Lugar envió"
           tooltip               ="Municipio contacto"
         />
-        <!-- //* ///////////////////////////////////////////////// Pedido facturado -->
-        <select-label-value     use-input hundido clearable flat bordered
-          v-if                  ="b.esPedido"
-          v-model               ="b.f.facturado"
-          label                 ="Facturado"
-          icon                  ="mdi-file-check"
-          class                 ="width190"
-          :options              ="Busqueda.listaFacturado"
+      </fieldset-filtro>
+      <fieldset-filtro
+        titulo                  ="Usuarios" 
+        class-contenido         ="grilla-ribom"
+        >
+        <!-- //* ///////////////////////////////////////////////// Comercial Acuerdo -->
+        <select-usuario         hundido clearable
+          v-if                  ="!b.esOCProveedor"
+          v-model               ="b.f.usuario"
+          class                 ="width160"
+          label                 ="Asesor"
+          :area                 ="usuario.area"
+          :grupos               =[GRUPO_USUARIO.COMERCIALES]
+          :readonly             ="!b.puedeCambiarUser"
+        />        
+        <!-- //* ///////////////////////////////////////////////// Creador -->
+        <select-usuario         hundido clearable inactivos
+          v-if                  ="b.esPedido || b.esCotizacion"
+          v-model               ="b.f.creador"
+          class                 ="width160"
+          label                 ="Creador"
+          :area                 ="usuario.area"
+          :grupos               ="b.esOCProveedor ? [GRUPO_USUARIO.PRODUCCION] : [GRUPO_USUARIO.COMERCIALES]"
+          :readonly             ="!permisos.acceso_total"
         />
+        <!-- //* ///////////////////////////////////////////////// Pedido facturado -->
+        <multi-label-value
+          v-if                  ="b.esOCProveedor"
+          v-model               ="b.f.creadores"
+          label                 ="Creadores"
+          class                 ="width160"
+          icon                  ="mdi-account-multiple"
+          :options              ="b.o.creadores"
+          :readonly             ="!permisos.acceso_total"
+        />        
       </fieldset-filtro>
       <!-- //* /////////////////////////////////////////////////// Paginación -->
       <fieldset-filtro
@@ -242,7 +256,7 @@
           </tbody>
         </table>        
       </fieldset-filtro>      
-      <inne  :cargando    ="loading.carga || b.f.copiando"/>
+      <inner-loading  :cargando ="loading.carga || b.f.copiando"/>
     </q-tab-panel>
     <!-- //* /////////////////////////////////////////////////////// Tab 2 -->
     <q-tab-panel

@@ -21,7 +21,7 @@
         color             ="positive"
         label             ="Ver en tareas"
         icon              ="mdi-alert-decagram"
-        :to               ="`/tareas?usuario=${usuario.id}&cuando=1_2_3_4_5&progreso=0&l1=1&limite=50&offset=0`"
+        :to               ="`/tareas?usuario=${usuario.id}&cuando=1_2_3_4_5&progreso=0_25_50_75&l1=1&limite=50&offset=0`"
       />
     </template>
     <!-- //* //////////////////////////////////////////////////////// Tabla resultados-->

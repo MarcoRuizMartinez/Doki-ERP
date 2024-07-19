@@ -70,7 +70,7 @@
   //* Titulo Ventana busqueda
   const titulo                    = computed(()=>
   {
-    let title                     = ""
+    let title                     = "Productos de proveedor"
     const total                   = productosPro.value.length
     const labelP                  = total >= 2 ? "productos" : "producto"
     if(!!total)
