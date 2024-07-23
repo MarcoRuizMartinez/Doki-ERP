@@ -91,6 +91,10 @@ export interface IProductoDoli {
   requiereAcabado           : boolean
   requiereMedida            : boolean
   requiereEntregado         : boolean
+  urlTienda                 : string
+  stockGestionado           : boolean
+  stockProveedor            : number
+
 }
 
 export class ProductoDoli implements IProductoDoli
@@ -138,6 +142,9 @@ export class ProductoDoli implements IProductoDoli
   requiereAcabado           : boolean             = false
   requiereMedida            : boolean             = false
   requiereEntregado         : boolean             = false
+  urlTienda                 : string              = ""
+  stockGestionado           : boolean             = false
+  stockProveedor            : number              = -1
 
   get precio_aumento()          :number { return this.calcularPrecioConAumento( this.aumento            ) }
   get precio_aumento_escom()    :number { return this.calcularPrecioConAumento( this.aumento_escom      ) }
@@ -383,6 +390,9 @@ export class ProductoDoli implements IProductoDoli
     producto.requiereAcabado        = ToolType.keyBoolean ( productoApi, 'requiereAcabado'  )
     producto.requiereMedida         = ToolType.keyBoolean ( productoApi, 'requiereMedida'   )
     producto.requiereEntregado      = ToolType.keyBoolean ( productoApi, 'requiereEntregado')
+    producto.stockGestionado        = ToolType.keyBoolean ( productoApi, 'stockGestionado' )
+
+    producto.stockProveedor         = ToolType.keyNumberValido ( productoApi, 'stockProveedor')    
 
     producto.aumento                = parseFloat( productoApi.aumento             )
     producto.aumento_escom          = parseFloat( productoApi.aumento_escom       )
@@ -410,7 +420,7 @@ export class ProductoDoli implements IProductoDoli
     producto.categoria              = await getCategoriaDB( producto.sigla )
     producto.naturaleza             = await getNaturalezaDB( productoApi?.naturaleza_id ?? "0" )
     producto.productosProveedor     = await ProductoProveedor.getProductosFromAPI( productoApi?.productosPro ?? {} ) // TODO *
-            
+
     return producto
   }
 }

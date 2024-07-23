@@ -38,7 +38,7 @@ export class EnlaceAcuerdo implements IEnlaceAcuerdo
             :                                           { id: 0,                tipo: TIPO_ACUERDO.NULO }
   }
 
-  static enlacesApiToEnlaces( enlacesApi : any, padre : TTipoAcuerdo ) : IEnlaceAcuerdo[]
+  /* static enlacesApiToEnlaces( enlacesApi : any, padre : TTipoAcuerdo ) : IEnlaceAcuerdo[]
   {
     if(typeof enlacesApi != "string" || !enlacesApi ) return []
     
@@ -48,7 +48,26 @@ export class EnlaceAcuerdo implements IEnlaceAcuerdo
     for (const link of json)
       enlaces.push( EnlaceAcuerdo.enlaceApiToEnlace( link, padre ) )
     return enlaces
-  }
+  } */
+
+  static enlacesApiToEnlaces2( enlacesApi : any[], padre : TTipoAcuerdo, id_origen : number ) : IEnlaceAcuerdo[]
+  {
+    if(!Array.isArray( enlacesApi ) || !enlacesApi ) return []
+    
+    const enlaces  : IEnlaceAcuerdo[] = []    
+    for (const link of enlacesApi)
+    {
+      const enlace    = EnlaceAcuerdo.enlaceApiToEnlace( link, padre )
+
+      if(enlace.origen.tipo == enlace.destino.tipo && enlace.destino.id == id_origen) // Cuando esta invertido el origen y el destino
+      {
+        enlace.destino.id = enlace.origen.id
+        enlace.origen.id  = id_origen
+      }
+      enlaces.push( enlace )
+    }
+    return enlaces
+  }  
 
   static enlaceApiToEnlace( eApi : any, padre : TTipoAcuerdo ) : IEnlaceAcuerdo
   {

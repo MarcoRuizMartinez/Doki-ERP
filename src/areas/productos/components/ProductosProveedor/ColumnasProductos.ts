@@ -100,6 +100,7 @@ function esFieldDeEditarHijo( field : string )
           ||  field == "familiaProveedor"
           ||  field == "costoExtra"
           ||  field == "garantiaMeses"
+          ||  field == "gestionStock"
 }
 
 const limpiarRef   = ( p : any ) => ToolType.keyStringValido(p, "newValue").replaceAll(" ", "").trim()

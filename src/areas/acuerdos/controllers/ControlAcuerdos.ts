@@ -816,7 +816,7 @@ export function useControlAcuerdo()
   async function buscarAcuerdoEnlazados( /* buscarEnlaces : boolean = false  */)
   {
     loading.value.enlaces = true
-    //if( buscarEnlaces )
+    acuerdo.value.enlaces
     await buscarEnlacesAcuerdo()
     const en_c            = getIds(   TIPO_ACUERDO.ENTREGA_CLI      )
     const pedi            = getIds(   TIPO_ACUERDO.PEDIDO_CLI       )
@@ -865,9 +865,9 @@ export function useControlAcuerdo()
   async function buscarEnlacesAcuerdo()
   {
     const objeto            = { ref: acuerdo.value.ref, id: acuerdo.value.id }
-    const { ok, data }      = await miFetch( getURL("listas", "varios"), { method: "POST", body: getFormData( "buscarEnlacesAcuerdo", objeto ) }, { mensaje: "buscar enlaces", conLoadingBar: false } )
-    if(ok)
-      acuerdo.value.enlaces = EnlaceAcuerdo.enlacesApiToEnlaces( data, acuerdo.value.tipo )
+    const { ok, data }      = await miFetch( getURL("listas", "varios"), { method: "POST", body: getFormData( "buscarEnlacesAcuerdo2", objeto ) }, { mensaje: "buscar enlaces", conLoadingBar: false, dataEsArray: true } )
+    if(ok && Array.isArray(data) )
+      acuerdo.value.enlaces = EnlaceAcuerdo.enlacesApiToEnlaces2( data, acuerdo.value.tipo, acuerdo.value.id )
   }
 
 

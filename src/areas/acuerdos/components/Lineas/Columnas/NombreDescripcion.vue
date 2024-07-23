@@ -119,16 +119,29 @@
         </div>
         <div v-if               ="(acuerdo.esPedido || acuerdo.esCotizacion) && !!linea.productosProveedor.length && !usuario.areaEsEscom">
           <q-badge              rounded
-            v-for               ="(pro, index) of linea.productosProveedor.filter( p => p.disponible )"
+            v-for               ="(pro, index) of linea.productosProveedor.filter( ( p : IProductoProveedor ) => p.disponible )"
             :key                ="index"
             class               ="q-mr-xs text-0_7em"
             color               ="grey-5"
             >
             {{pro.proveedor.alias}}
           </q-badge>
-        </div>
+        </div>                   
       </div>
     </efecto>
+    <q-chip                     dense
+      v-if                      ="linea.stockGestionado"
+      text-color                ="grey-7"
+      >
+      <q-avatar
+        color                   ="red"
+        text-color              ="white"
+        font-size               ="12px"
+        >
+        {{ linea.stockProveedor }}
+      </q-avatar>
+      <span class               ="text-0_9em">Stock</span>
+    </q-chip>
     <!-- <Tooltip v-if       ="false">
       <table  class     ="tabla-info text-1em rounded-borders q-px-sm min-w-x100">
         <tbody>
@@ -182,6 +195,16 @@
         target                  ="_blank"
         :to                     ="`/productos/${linea.id}`"
       />
+      <q-btn                    v-close-popup flat dense no-caps
+        v-if                    ="!!linea.urlTienda"
+        icon                    ="mdi-storefront"
+        class                   ="full-width"
+        type                    ="a"
+        label                   ="Ver en tienda"
+        align                   ="left"
+        target                  ="_blank"
+        :href                   ="linea.urlTienda"
+      />      
       <q-btn                    flat dense no-caps
         v-if                    ="!esValidado && acuerdo.esEstadoNoValidado && !acuerdo.facturado"
         icon                    ="mdi-trash-can"
@@ -216,6 +239,7 @@
   import {  useStoreAcuerdo     } from 'stores/acuerdo'  
   // * /////////////////////////////////////////////////////////////////////////////////// Modelos
   import {  ILineaAcuerdo       } from "src/areas/acuerdos/models/LineaAcuerdo"
+  import {  IProductoProveedor  } from "src/areas/productos/models/ProductoProveedor";  
 
   // * /////////////////////////////////////////////////////////////////////////////////// Componibles
   import {  useControlProductos } from "src/areas/acuerdos/controllers/ControlLineasProductos"
@@ -224,6 +248,7 @@
   import    confirmar             from "components/utilidades/MenuConfirmar.vue"
   import    popupCosto            from "./EditarCosto.vue"
   import    efecto                from "components/utilidades/Efecto.vue"
+  
   
   const { editarLinea  }          = useControlProductos()
   const { usuario               } = storeToRefs( useStoreUser() )

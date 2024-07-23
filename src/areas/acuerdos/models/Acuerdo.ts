@@ -1359,7 +1359,7 @@ https://dolibarr.mublex.com/fichinter/card.php?
     acu.tipo                  = tipo
     acu.conTotal              = acu.esCotizacion ? acu.conTotal : true
     acu.creador               = await getUsuarioDB        ( acu.creadorId )
-    acu.enlaces               = EnlaceAcuerdo.enlacesApiToEnlaces( acuApi?.enlaces ?? "", tipo )
+    acu.enlaces               = EnlaceAcuerdo.enlacesApiToEnlaces2( acuApi?.enlaces ?? "", tipo, acu.id )
 
     if(!!acu.comercialId){
       acu.comercial           = await getUsuarioDB        ( acu.comercialId )

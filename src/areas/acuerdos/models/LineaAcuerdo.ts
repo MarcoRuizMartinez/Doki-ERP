@@ -487,12 +487,15 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
         lineaFinal.nombreExtra          = ToolType.keyStringValido( linea, 'nombreExtra'      )
         lineaFinal.urlImagen            = ToolType.keyStringValido( linea, 'urlImagen'        )
 
+        lineaFinal.urlTienda            = ToolType.keyStringValido( linea, 'urlTienda'        )
+        lineaFinal.stockGestionado      = ToolType.keyBoolean     ( linea, 'stockGestionado' )
+        lineaFinal.stockProveedor       = ToolType.keyNumberValido( linea, 'stockProveedor'   )            
+
         if(!!lineaFinal.bodegaId)
         {
-          lineaFinal.bodega = await getBodegaDB( lineaFinal.bodegaId )
+          lineaFinal.bodega             = await getBodegaDB( lineaFinal.bodegaId )
           //console.log("lineaFinal.bodega: ", lineaFinal.bodega);
         }
-
         lineas.push( lineaFinal )
       }
     }
@@ -567,7 +570,8 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
         linea.tipo              = ToolType.keyNumberValido(producto, "tipo") as 0 | 1
         linea.lineaId           = ToolType.keyNumberValido(producto, "lineaId")
         linea.unidadId          = ToolType.keyNumberValido(producto, "unidadId")
-        linea.img.url           = ToolType.keyStringValido(producto, "imagen", IMAGEN_DEFAULT)    
+        linea.img.url           = ToolType.keyStringValido(producto, "imagen", IMAGEN_DEFAULT)
+        linea.urlTienda         = ToolType.keyStringValido(producto, "urlTienda")
       }
 
       linea.iva                 = !!producto.iva ? iva : 0
