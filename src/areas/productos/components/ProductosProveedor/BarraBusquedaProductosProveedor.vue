@@ -11,7 +11,7 @@
       class                     ="row q-pa-none no-wrap scroll"
       >
       <fieldset-filtro
-        titulo                  ="Búsqueda" 
+        titulo                  ="Búsqueda"
         class-contenido         ="column q-gutter-xs"
         >
         <!-- //* ///////////////////////////////////////////////// Busqueda general -->
@@ -37,6 +37,7 @@
         >
         <!-- //* ///////////////////////////////////////////////// Proveedores -->
         <select-label-value     use-input hundido clearable flat bordered
+          v-if                  ="!usuario.externo"
           v-model               ="b.f.proveedores"
           label                 ="Proveedor"
           icon                  ="mdi-storefront"
@@ -58,7 +59,7 @@
           v-model               ="b.f.activo"
           label                 ="Activo"
           icon                  ="mdi-book-check"
-          class                 ="width140"
+          class                 ="width160"
           :options              ="Busqueda.listaActivoProducto"
         />
         <!-- //* ///////////////////////////////////////////////// Disponible -->        
@@ -66,38 +67,40 @@
           v-model               ="b.f.disponible"
           label                 ="Disponible"
           icon                  ="mdi-clipboard-check"
-          class                 ="width140"
+          class                 ="width160"
           :options              ="Busqueda.listaDisponible"
         />
-        <!-- //* ///////////////////////////////////////////////// Estado acuerdo -->
+        <!-- //* ///////////////////////////////////////////////// Tipo -->
         <multi-label-value
           v-model               ="b.f.tiposProProve"
           label                 ="Tipo"
-          class                 ="width140"
+          class                 ="width160"
           icon                  ="mdi-shape"
           :options              ="b.o.tiposProductosProv"
         />
         <!-- //* ///////////////////////////////////////////////// Ordenado -->        
         <select-label-value     use-input hundido clearable flat bordered
+          v-if                  ="!usuario.externo"
           v-model               ="b.f.l1"
           label                 ="Ordenado"
           icon                  ="mdi-sort-ascending"
-          class                 ="width140"
+          class                 ="width160"
           :options              ="[{ value : 1, label : 'Ordenado' }, { value : 0, label : 'Sin orden' }]"
         />        
         <!-- //* ///////////////////////////////////////////////// Familia proveedor -->
         <input-buscar           clearable hundido
           v-model               ="b.f.buscar1"
           label                 ="Familia proveedor"
-          class                 ="width150"
+          class                 ="width160"
           icon                  ="mdi-account-group"
           debounce              ="800"
         />
         <!-- //* ///////////////////////////////////////////////// Familia Nuestra -->
         <input-buscar           clearable hundido
+          v-if                  ="!usuario.externo"
           v-model               ="b.f.buscar2"
           label                 ="Familia nuestra"
-          class                 ="width150"
+          class                 ="width160"
           icon                  ="mdi-account-group-outline"
           debounce              ="800"
         />
@@ -105,7 +108,7 @@
         <input-buscar           clearable hundido
           v-model               ="b.f.buscar3"
           label                 ="Documento"
-          class                 ="width150"
+          class                 ="width160"
           icon                  ="mdi-file-document"
           debounce              ="800"
         />
@@ -115,7 +118,7 @@
           v-model               ="b.f.actualizado"
           label                 ="Precio actualizado"
           icon                  ="mdi-cash-check"
-          class                 ="width150"
+          class                 ="width160"
           :options              ="Busqueda.listaActualizado"
         />
         <!-- //* ///////////////////////////////////////////////// Proveedores -->
@@ -227,6 +230,7 @@
       class                     ="row q-pa-none no-wrap scroll"
       >
       <fieldset-filtro
+        v-if                    ="!usuario.externo"
         titulo                  ="Nuestros productos"
         class-contenido         ="grilla-ribom"
         >
@@ -256,6 +260,7 @@
         />
         <!-- //* ///////////////////////////////////////////////// Otros proveedores -->        
         <select-label-value     use-input hundido clearable flat bordered
+          v-if                  ="!usuario.externo"
           v-model               ="b.f.l6"
           label                 ="Otros proveedores"
           icon                  ="mdi-account-group"
@@ -514,6 +519,7 @@
             computed            } from "vue"
   // * /////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs         } from 'pinia'
+  import {  useStoreUser        } from 'stores/user'
   import {  useStoreApp         } from 'stores/app'
   import {  useStoreProducto    } from 'stores/producto'
 
@@ -549,6 +555,8 @@
           filtro,
           campo_1 : modoEdicion
                             } = storeToRefs( useStoreApp() )
+  const { usuario           } = storeToRefs( useStoreUser() )                            
+  
   const { crearProductos,
           limpiarFiltros,
           limpiarBusqueda,

@@ -231,7 +231,7 @@
     tipo:   { required: true, type: String as PropType< TTipoAcuerdo >  },
   })
   const { tipo }                  = toRefs(props)
-  const { usuario, permisos     } = storeToRefs( useStoreUser() )  
+  const { usuario, permisos     } = storeToRefs( useStoreUser() )
   const { tabs                  } = storeToRefs( useStoreApp() )
   const { acuerdo,
           acuerdos,
@@ -292,7 +292,14 @@
     acuerdos.value                = []
     modo.value                    = "esperando-busqueda"
     tabs.value.activa             ="tab_1"
-    await busqueda.value.montarBusqueda( usuario.value.id, router, usuario.value.esComercial, permisos.value.acceso_total, 25, tipo.value )
+    const autoSelectUser          = ( usuario.value.esComercial
+                                      && (      tipo.value == TIPO_ACUERDO.COTIZACION_CLI
+                                            ||  tipo.value == TIPO_ACUERDO.PEDIDO_CLI
+                                            ||  tipo.value == TIPO_ACUERDO.ENTREGA_CLI
+                                          )
+                                    )
+
+    await busqueda.value.montarBusqueda( usuario.value.id, router, autoSelectUser, permisos.value.acceso_total, 25, tipo.value )
     crearColumnas()
   }
 
@@ -306,9 +313,23 @@
     acuerdos.value                = []
     modo.value                    = "buscando"
     loading.value.carga           = true
+    corregirQueryUsuarioExterno( query )
     acuerdos.value                = await getAcuerdos( query )  
     loading.value.carga           = false
     modo.value                    = !!acuerdos.value.length ? "normal" : "sin-resultados"
+  }
+
+  function corregirQueryUsuarioExterno( query : IQuery )
+  {
+    if(!usuario.value.externo || !usuario.value.tercero_id ) return
+
+    const hayLimite               = "limite" in query
+    if( !hayLimite )query.limite  = 25
+
+    const hayOffset               = "offset" in query
+    if( !hayOffset )  query.offset= 0
+
+    query.proveedorId             = usuario.value.tercero_id
   }
 
   function limpiarBusqueda()
@@ -353,6 +374,8 @@
       new Columna(            { name: "estado"                                                                }),
       new Columna(            { name: "pedidoId",             label: "Pedido"                                 }),
       new Columna(            { name: "tercero"                                                               }),
+      Columna.ColumnaSiNo   ( { name: "aceptadaProveedor",    label: "En progreso"                            }),
+      Columna.ColumnaSiNo   ( { name: "recibidaProveedor",    label: "Recibida"                               }),      
       new Columna(            { name: "refCliente",           label: "Ref cliente"                            }),
       new Columna(            { name: "comercial",            label: "Asesor"                                 }),
       new Columna(            { name: "contactoSmart",        label: "Contacto"                               }),
@@ -372,7 +395,6 @@
       new Columna(            { name: "condicionPagoLabel",   label: "Condiciones"                            }), 
       new Columna(            { name: "formaPagoLabel",       label: "Forma de pago"                          }), 
       Columna.ColumnaSiNo   ( { name: "facturado",            label: "Facturado"                              }),
-      Columna.ColumnaSiNo   ( { name: "aceptadaProveedor",    label: "En progreso"                            }),
       new Columna(            { name: "area",                 label: "Área"                                   }),
       new Columna(            { name: "municipioTercero",     label: "Municipio tercero"                      }),
       new Columna(            { name: "origenContactoLabel",  label: "Origen"                                 }), 
@@ -384,15 +406,19 @@
       Columna.ColumnaPrecio ( { name: "ivaValor",             label: "IVA",               clase: "text-bold"  }),
       Columna.ColumnaPrecio ( { name: "totalConIva",          label: "Total",             clase: "text-bold"  }),
     ]
-
-    const colsEli = busqueda.value.esCotizacion   ? ["aceptadaProveedor", "fechaEnvioOCCorta", "diasEnviadoFormato", "diasAprobadoFormato", "diasEntregarFormato", "diasADespacharFormato", "estadoAnimoEmoji", "facturado", "pedidoId", "refPedido", "fechaListoCorta", "fechaADespacharCorta", "fechaEntregaCorta"]
-                  : busqueda.value.esPedido       ? ["aceptadaProveedor", "fechaEnvioOCCorta", "diasEnviadoFormato", "diasAprobadoFormato", "pedidoId", "refPedido"]
-                  : busqueda.value.esEntrega      ? ["aceptadaProveedor", "fechaEnvioOCCorta", "diasEnviadoFormato", "diasAprobadoFormato", "facturado", "condicionPagoLabel", "formaPagoLabel", "origenContactoLabel", "subTotalLimpio", "totalConDescu", "ivaValor", "totalConIva", "fechaListoCorta"]
-                  : busqueda.value.esOCProveedor  ? ["refCliente", "comercial", "metodoEntregaLabel", "facturado", "origenContactoLabel", "subTotalLimpio", "pedidoId", "refPedido", "fechaListoCorta"]
+    
+    const colsEli = busqueda.value.esCotizacion   ? ["aceptadaProveedor", "recibidaProveedor", "fechaEnvioOCCorta", "diasEnviadoFormato", "diasAprobadoFormato", "diasEntregarFormato", "diasADespacharFormato", "estadoAnimoEmoji", "facturado", "pedidoId", "refPedido", "fechaListoCorta", "fechaADespacharCorta", "fechaEntregaCorta"]
+                  : busqueda.value.esPedido       ? ["aceptadaProveedor", "recibidaProveedor", "fechaEnvioOCCorta", "diasEnviadoFormato", "diasAprobadoFormato", "pedidoId", "refPedido"]
+                  : busqueda.value.esEntrega      ? ["aceptadaProveedor", "recibidaProveedor", "fechaEnvioOCCorta", "diasEnviadoFormato", "diasAprobadoFormato", "facturado", "condicionPagoLabel", "formaPagoLabel", "origenContactoLabel", "subTotalLimpio", "totalConDescu", "ivaValor", "totalConIva", "fechaListoCorta"]
+                  : busqueda.value.esOCProveedor  ? ["refCliente", "comercial", "metodoEntregaLabel", "facturado", "origenContactoLabel", "subTotalLimpio", "pedidoId", "refPedido", "fechaListoCorta", "contactoSmart", "contactoSmartMun", "condicionPagoLabel"]
                   : []
 
     if(usuario.value.esProduccion && busqueda.value.esCotizacion)
       colsEli.push("contactoSmartTel", "contactoSmart", "subTotalLimpio", "totalConDescu", "ivaValor", "totalConIva")
+
+    if(usuario.value.externo)
+      colsEli.push("tercero", "diasADespacharFormato")
+
     Columna.eliminarColums( colsEli, columnas.value )
 
     const colHide = ["refCliente", "contactoSmartDir", "contactoSmartTel", "formaPagoLabel", "area", "municipioTercero", "creador", "fechaCreacionCorta", "fechaValidacionCorta", "subTotalLimpio", "ivaValor", "totalConIva"]

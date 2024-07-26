@@ -19,6 +19,7 @@
     @click-entregado        ="cerrarAcuerdo"
     @click-comisiones       ="modales.comisiones = true"
     @click-nueva-entrega    ="modales.entrega = true"
+    @click-recibir-proveedor="setRecibirProveedor"
     @click-aceptar-proveedor="setAceptarProveedor"
     @click-cuenta-cobro     ="generarPDF"
     @click-listo-entregar   ="setListoDespacho"
@@ -32,6 +33,7 @@
   />
   <modo-vista    class      ="col-12"/>
   <tercero-y-contacto       scroll
+    v-if                    ="!usuario.externo"
     class                   ="col-md-4 col-12 o-10"
     :height-card            ="alturaFila1"
   />
@@ -50,6 +52,7 @@
     class                   ="col-12 o-40"
   />
   <enlaces                  minimizar
+    v-if                    ="!usuario.externo"
     class                   ="col-md-4 col-12 o-50"
     height-card             ="260px"    
   />
@@ -89,6 +92,7 @@
     class                   ="col-md-4 col-12"
   /> -->
   <notas
+    v-if                    ="!usuario.externo"
     class                   ="col-md-4 col-12"
     :class                  ="acuerdo.esOCProveedor ? 'o-60' : 'o-100'"
     height-card             ="220px"
@@ -262,6 +266,7 @@
           setListoDespacho,
           buscarComentarios,
           setAceptarProveedor,
+          setRecibirProveedor,
                             } = useControlAcuerdo()
   const { setStatusPedidoWoo} = useControlPedidosWoo()                            
   const minimizadoTodo        = ref< boolean    >(false)

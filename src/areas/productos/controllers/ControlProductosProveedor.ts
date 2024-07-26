@@ -428,6 +428,8 @@ export function useControlProductosProveedor()
       tabs.value.activa           = "tab_1"
       modoEdicion.value           = TIPO_EDICION.BLOQUEDA
       await b.value.montarBusqueda( usuario.value.id, router, false, true, 50 )
+
+      if(usuario.value.externo) buscar({})
     }
   
     function desmontar()
@@ -450,9 +452,26 @@ export function useControlProductosProveedor()
       loading.value.carga         = true
       const editable              = modoEdicion.value === TIPO_EDICION.RANGO || modoEdicion.value === TIPO_EDICION.CELDA
       limpiarTabla()
+      corregirQueryUsuarioExterno( query )
       productosPro.value          = await BuscarProductos( query, editable )
       loading.value.carga         = false
-    } 
+    }
+
+    function corregirQueryUsuarioExterno( query : IQuery )
+    {
+      if(!usuario.value.externo || !usuario.value.tercero_id ) return
+  
+      const hayLimite               = "limite" in query
+      if( !hayLimite )query.limite  = 25
+  
+      const hayOffset               = "offset" in query
+      if( !hayOffset )  query.offset= 0
+
+      const hayActivo               = "activo" in query
+      if( !hayActivo )  query.activo= "1"
+  
+      query.proveedorId             = usuario.value.tercero_id      
+    }
 
     async function limpiarBusqueda(){
       const urlYQueryLimpia       = await b.value.limpiarQueryDeRouter()

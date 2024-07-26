@@ -291,6 +291,7 @@ export interface IAcuerdo
 
   /*  Solo para pedidos a proveedor */
   aceptadaProveedor           : boolean     // Para espesificaar que el proveedor acepta el pedido
+  recibidaProveedor           : boolean     // Para espesificaar que el proveedor recibio el pedido
 }
 
 export class Acuerdo implements IAcuerdo
@@ -409,6 +410,7 @@ export class Acuerdo implements IAcuerdo
 
   /* Solo para pedidos a proveedor */
   aceptadaProveedor           : boolean             = false
+  recibidaProveedor           : boolean             = false
 
   constructor( tipo : TTipoAcuerdo = TIPO_ACUERDO.NULO )
   {
@@ -1333,7 +1335,8 @@ https://dolibarr.mublex.com/fichinter/card.php?
     acuApi.tiempoEntregaId    = +acuApi.tiempoEntregaId
 
     // * ///////////////////////////////////////////////////////////////////////////////////// Para ordenes de proveedor
-    acuApi.aceptadaProveedor  = ToolType.keyBoolean( acuApi, "aceptadaProveedor" ) 
+    acuApi.aceptadaProveedor  = ToolType.keyBoolean( acuApi, "aceptadaProveedor" )
+    acuApi.recibidaProveedor  = ToolType.keyBoolean( acuApi, "recibidaProveedor" )
 
     acuApi.fechaCreacion      = ToolDate.getDateToStr( acuApi.fechaCreacion    )
     acuApi.fechaValidacion    = ToolDate.getDateToStr( acuApi.fechaValidacion  )
@@ -1424,23 +1427,23 @@ https://dolibarr.mublex.com/fichinter/card.php?
   static async convertirDataApiToEntrega( ee : any ) : Promise < IAcuerdo >
   {
     const e : any         = {}
-    e.id                  = +ee?.id ?? 0
-    e.transportadoraId    = +ee?.array_options?.options_transportadora_id ?? 0
-    e.facturado           = Boolean( +ee?.billed ?? 0 )
+    e.id                  = +(ee?.id ?? 0)
+    e.transportadoraId    = +(ee?.array_options?.options_transportadora_id ?? 0)
+    e.facturado           = Boolean( +(ee?.billed ?? 0) )
     e.fechaCreacion       = ToolDate.getDateToApiDolibarr( ee?.date_creation ?? "" )
     e.fechaEntrega        = ToolDate.getDateToApiDolibarr( ee?.date_delivery ?? "" )
     e.fechaValidacion     = ToolDate.getDateToApiDolibarr( ee?.date_valid    ?? "" )
     e.ref                 = ee?.ref                 ?? ""
     e.notaPublica         = ee?.note_public         ?? ""
     e.refCliente          = ee?.ref_customer        ?? ""
-    e.terceroId           = +ee?.socid              ?? 0
-    e.estado              = +ee?.statut             ?? 0
+    e.terceroId           = +(ee?.socid             ?? 0)
+    e.estado              = +(ee?.statut            ?? 0)
     e.numeroGuia          = ee?.tracking_number     ?? ""
     e.costoEnvio          = ToolType.keyNumberValido( ee, "costoEnvio" )
     e.costoEnvioAprobado  = ToolType.keyBoolean     ( ee, "costoEnvioAprobado" )
     e.extraTiempo         = ToolType.keyBoolean     ( ee, "extraTiempo" )
     e.extraTiempoOk       = ToolType.keyBoolean     ( ee, "extraTiempoOk" )
-    e.metodoEntregaId     = +ee?.shipping_method_id ?? 0
+    e.metodoEntregaId     = +(ee?.shipping_method_id ?? 0)
 
     const entre           = Object.assign( new Acuerdo( TIPO_ACUERDO.ENTREGA_CLI ), e ) as IAcuerdo
 

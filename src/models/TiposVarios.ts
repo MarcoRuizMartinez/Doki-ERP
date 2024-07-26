@@ -108,175 +108,177 @@ export function getArea( area : string ) : string
 }
 
 export const enum GRUPO_USUARIO {
-  ADMINISTRACION  = "Administración",
-  COMERCIALES     = "Comerciales",
-  GERENCIA        = "Gerencia",
-  PRODUCCION      = "Producción",
-  PRODUCTOS       = "Productos",
-  DESARROLLO      = "Desarrollo",
-  CONTABLE        = "Contable",
-  EN_NOMINA       = "Nomina",
-  MIEMBRO         = "Miembro",
+  ADMINISTRACION    = "Administración",
+  COMERCIALES       = "Comerciales",
+  GERENCIA          = "Gerencia",
+  PRODUCCION        = "Producción",
+  PRODUCTOS         = "Productos",
+  DESARROLLO        = "Desarrollo",
+  CONTABLE          = "Contable",
+  EN_NOMINA         = "Nomina",
+  MIEMBRO           = "Miembro",
 }
 
 // #region Loading
 export interface ILoading {
-  carga           ?: boolean
-  crear           ?: boolean
-  borrar          ?: boolean
-  validar         ?: boolean
-  cerrar          ?: boolean
-  editar          ?: boolean
-  anular          ?: boolean
-  aprobar         ?: boolean
-  pdf             ?: boolean
-  origen          ?: boolean
-  ref             ?: boolean
-  comercial       ?: boolean
-  fechaFinValidez ?: boolean
-  fechaEntrega    ?: boolean
-  fechaADespachar ?: boolean
-  condicionPago   ?: boolean
-  formaPago       ?: boolean
-  metodoEntrega   ?: boolean
-  tiempoEntrega   ?: boolean
-  conTotal        ?: boolean
-  conIVA          ?: boolean
-  conAIU          ?: boolean
-  valoresAIU      ?: boolean
-  añadir          ?: boolean
-  borrarLinea     ?: boolean
-  editarLinea     ?: boolean
-  editarLote      ?: boolean
-  ordenando       ?: boolean
-  borrarLote      ?: boolean
-  editarGrupo     ?: boolean
-  subtotal        ?: boolean
-  notaPublica     ?: boolean
-  notaPrivada     ?: boolean
-  url             ?: boolean
-  proyecto        ?: boolean
-  enlaces         ?: boolean
-  incentivo       ?: boolean
-  calificacion    ?: boolean
-  commentsLoad    ?: boolean
-  eventosLoad     ?: boolean
-  entregas        ?: boolean
-  facturar        ?: boolean
-  aceptarProveedor?: boolean
+  carga             ?: boolean
+  crear             ?: boolean
+  borrar            ?: boolean
+  validar           ?: boolean
+  cerrar            ?: boolean
+  editar            ?: boolean
+  anular            ?: boolean
+  aprobar           ?: boolean
+  pdf               ?: boolean
+  origen            ?: boolean
+  ref               ?: boolean
+  comercial         ?: boolean
+  fechaFinValidez   ?: boolean
+  fechaEntrega      ?: boolean
+  fechaADespachar   ?: boolean
+  condicionPago     ?: boolean
+  formaPago         ?: boolean
+  metodoEntrega     ?: boolean
+  tiempoEntrega     ?: boolean
+  conTotal          ?: boolean
+  conIVA            ?: boolean
+  conAIU            ?: boolean
+  valoresAIU        ?: boolean
+  añadir            ?: boolean
+  borrarLinea       ?: boolean
+  editarLinea       ?: boolean
+  editarLote        ?: boolean
+  ordenando         ?: boolean
+  borrarLote        ?: boolean
+  editarGrupo       ?: boolean
+  subtotal          ?: boolean
+  notaPublica       ?: boolean
+  notaPrivada       ?: boolean
+  url               ?: boolean
+  proyecto          ?: boolean
+  enlaces           ?: boolean
+  incentivo         ?: boolean
+  calificacion      ?: boolean
+  commentsLoad      ?: boolean
+  eventosLoad       ?: boolean
+  entregas          ?: boolean
+  facturar          ?: boolean
+  aceptarProveedor  ?: boolean
+  recibidoProveedor ?: boolean
 }
 
 export const LoadingDefault = {
-  carga           : false,
-  crear           : false,
-  borrar          : false,
-  validar         : false,
-  cerrar          : false,
-  editar          : false,
-  anular          : false,
-  aprobar         : false,
-  pdf             : false,
-  origen          : false,
-  ref             : false,
-  comercial       : false,
-  fechaFinValidez : false,
-  fechaEntrega    : false,
-  fechaADespachar : false,
-  condicionPago   : false,
-  formaPago       : false,
-  metodoEntrega   : false,
-  tiempoEntrega   : false,
-  conTotal        : false,
-  conIVA          : false,
-  conAIU          : false,
-  valoresAIU      : false,
-  añadir          : false,
-  borrarLinea     : false,
-  editarLinea     : false,
-  editarLote      : false,
-  ordenando       : false,
-  borrarLote      : false,
-  editarGrupo     : false,
-  subtotal        : false,
-  notaPublica     : false,
-  notaPrivada     : false,
-  url             : false,
-  proyecto        : false,
-  enlaces         : false,
-  incentivo       : false,
-  calificacion    : false,
-  commentsLoad    : false,
-  eventosLoad     : false,
-  entregas        : false,
-  facturar        : false,
-  aceptarProveedor: false,
+  carga             : false,
+  crear             : false,
+  borrar            : false,
+  validar           : false,
+  cerrar            : false,
+  editar            : false,
+  anular            : false,
+  aprobar           : false,
+  pdf               : false,
+  origen            : false,
+  ref               : false,
+  comercial         : false,
+  fechaFinValidez   : false,
+  fechaEntrega      : false,
+  fechaADespachar   : false,
+  condicionPago     : false,
+  formaPago         : false,
+  metodoEntrega     : false,
+  tiempoEntrega     : false,
+  conTotal          : false,
+  conIVA            : false,
+  conAIU            : false,
+  valoresAIU        : false,
+  añadir            : false,
+  borrarLinea       : false,
+  editarLinea       : false,
+  editarLote        : false,
+  ordenando         : false,
+  borrarLote        : false,
+  editarGrupo       : false,
+  subtotal          : false,
+  notaPublica       : false,
+  notaPrivada       : false,
+  url               : false,
+  proyecto          : false,
+  enlaces           : false,
+  incentivo         : false,
+  calificacion      : false,
+  commentsLoad      : false,
+  eventosLoad       : false,
+  entregas          : false,
+  facturar          : false,
+  aceptarProveedor  : false,
+  recibidoProveedor : false,
 }
 
 // #region Modales
 export interface IModales {
-  formulario      ?: boolean
-  editarEnLote    ?: boolean
-  añadirProductos ?: boolean
-  ordenar         ?: boolean
-  pdf             ?: boolean
-  remision        ?: boolean
-  rotulos         ?: boolean
-  comisiones      ?: boolean
-  nuevaEntrega    ?: boolean
-  incentivo       ?: boolean
-  detalles        ?: boolean
-  calendario      ?: boolean
-  siigo           ?: boolean
-  entrega         ?: boolean
-  acta            ?: boolean
+  formulario        ?: boolean
+  editarEnLote      ?: boolean
+  añadirProductos   ?: boolean
+  ordenar           ?: boolean
+  pdf               ?: boolean
+  remision          ?: boolean
+  rotulos           ?: boolean
+  comisiones        ?: boolean
+  nuevaEntrega      ?: boolean
+  incentivo         ?: boolean
+  detalles          ?: boolean
+  calendario        ?: boolean
+  siigo             ?: boolean
+  entrega           ?: boolean
+  acta              ?: boolean
 }
 
 export const ModalesDefault = {
-  formulario      : false,
-  editarEnLote    : false,
-  añadirProductos : false,
-  ordenar         : false,
-  pdf             : false,
-  remision        : false,
-  rotulos         : false,
-  comisiones      : false,
-  nuevaEntrega    : false,
-  incentivo       : false,
-  detalles        : false,
-  calendario      : false,
-  siigo           : false,
-  entrega         : false,
-  acta            : false,
+  formulario        : false,
+  editarEnLote      : false,
+  añadirProductos   : false,
+  ordenar           : false,
+  pdf               : false,
+  remision          : false,
+  rotulos           : false,
+  comisiones        : false,
+  nuevaEntrega      : false,
+  incentivo         : false,
+  detalles          : false,
+  calendario        : false,
+  siigo             : false,
+  entrega           : false,
+  acta              : false,
 }
 
 
 
 // #region Orden CSS
 export interface IOrdenCSS {
-  productos       : number
-  entregas        : number
-  /* tercero         : number
-  condiciones     : number
-  totales         : number
-  contactos       : number
-  enlaces         : number
-  documentos      : number
-  anticipos       : number
-  notas           : number */
+  productos         : number
+  entregas          : number
+  /* tercero           : number
+  condiciones       : number
+  totales           : number
+  contactos         : number
+  enlaces           : number
+  documentos        : number
+  anticipos         : number
+  notas             : number */
 }
 
 
 export const OrdenCSS : IOrdenCSS = {
-  productos       : 80,
-  entregas        : 90,
-  /* tercero         : 10,
-  condiciones     : 20,
-  totales         : 30,
-  contactos       : 40,
-  enlaces         : 50,
-  documentos      : 60,
-  anticipos       : 70,
-  notas           : 100, */
+  productos         : 80,
+  entregas          : 90,
+  /* tercero           : 10,
+  condiciones       : 20,
+  totales           : 30,
+  contactos         : 40,
+  enlaces           : 50,
+  documentos        : 60,
+  anticipos         : 70,
+  notas             : 100, */
 }
 
 

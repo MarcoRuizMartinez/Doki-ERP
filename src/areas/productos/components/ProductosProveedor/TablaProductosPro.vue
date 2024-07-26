@@ -53,7 +53,7 @@
           procesarEdicionEnLote } = useControlProductosProveedor()
 
   const AGProProvee               = ref< InstanceType<typeof tablaAgrid> | null>( null )
-  const columnas                  = ref( columnasProductos( !usuario.value.esComercial ) )
+  const columnas                  = ref( columnasProductos( !usuario.value.esComercial, usuario.value.externo ) )
   const rangoActivo               = computed(()=> modoEdicion.value === TIPO_EDICION.RANGO ) 
 
   onMounted(()=>{

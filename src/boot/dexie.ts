@@ -78,7 +78,7 @@ export class DBSimpleOk extends Dexie
   {
     super(process.env.PREFIJO + "DBSimpleOk")
 
-    const version : number      = 4.7
+    const version : number      = 4.8
     let   vLocal  : number      = LocalStorage.getItem( KEY_LOCAL ) as number    
 
     // Para que vuelva a cargar todo cuando detecte un cambio de version
@@ -92,7 +92,7 @@ export class DBSimpleOk extends Dexie
     this.version(version).stores(
     {
       [TABLAS.MUNICIPIOS]         : "++id, municipio, departamento, departamentoSigla, departamentoId, indicativo, codigoDian",
-      [TABLAS.USUARIOS]           : "++id, nombre, apellido, puesto, foto, tipo, area, estado, gruposString, gruposIds, terceroIdCtz, cel, correo, reglaComisionId, color",
+      [TABLAS.USUARIOS]           : "++id, nombre, apellido, puesto, foto, tipo, area, estado, gruposString, gruposIds, terceroIdCtz, cel, correo, reglaComisionId, color, tercero_id",
       [TABLAS.TIPOS_DOCUMENTOS]   : "++id, codigo, nombre",
       [TABLAS.CONDICION_PAGO]     : "++id, label, descripcion, dias, orden",
       [TABLAS.FORMA_PAGO]         : "++id, label",

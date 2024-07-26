@@ -612,6 +612,7 @@ export async function getUsuarioDB( id : number ) : Promise < IUsuario >
       if(usuario.length     == 1){
         usuario[0].terceroIdCtz     = +usuario[0].terceroIdCtz
         usuario[0].reglaComisionId  = +usuario[0].reglaComisionId
+        usuario[0].tercero_id       = +usuario[0].tercero_id
         return usuario[0]
       }
       else

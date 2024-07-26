@@ -19,14 +19,15 @@
       <Tooltip label  ="Mas opciones"/>
     </q-tab>    
     <q-tab
-      v-if            ="!usuario.esComercial"
+      v-if            ="!usuario.esComercial && !usuario.externo"
       label           ="Crear y Editar"
       name            ="tab_3"
       icon            ="mdi-clipboard-edit"
       >
       <Tooltip label  ="Opciones de edición"/>
-    </q-tab>    
+    </q-tab>
     <q-tab
+      v-if            ="!usuario.externo"
       label           ="Vistas"
       name            ="tab_4"
       icon            ="mdi-table-headers-eye"
@@ -65,13 +66,9 @@
   //import  { ToolDate, ToolType  } from "src/composables/useTools"  
   const { tabs                  } = storeToRefs( useStoreApp() )
   const { usuario               } = storeToRefs( useStoreUser() )
-  const   { busquedaPro : b     } = storeToRefs( useStoreProducto() )
+  const { busquedaPro : b       } = storeToRefs( useStoreProducto() )
 
   onMounted(()=> tabs.value = { activa : "tab_1", alerts: [ false, false, false, false ]} )
-
-
-
-
 
   const alertTab1 = computed(()=>       !!b.value.f.buscar
                                     ||  !!b.value.f.proveedores.label

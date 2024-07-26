@@ -105,7 +105,8 @@ export function useLogin( origen_ : string )
           puede ser un problema, exponer el ID del usuario y esto se debe solucionar con un backen de mejor calidad.
       */
       let usuarioLocal            = JSON.parse( usuario )
-      asignarUsuarioDolibarrLocal( new Usuario( usuarioLocal ) )
+
+      asignarUsuarioDolibarrLocal( Usuario.getUsuarioFromApi( usuarioLocal ) )
       
       if(online.value)
       {
@@ -177,7 +178,7 @@ export function useLogin( origen_ : string )
   //* ///////////////////////////////////////////////////////////////////////// Get Usuario Dolibarr
   async function getUsuarioDolibarr( login : iLogin ) : Promise <IUsuario>
   {
-    let     miBody                      = new FormData()
+    const   miBody                      = new FormData()
             miBody.append("tipo",       "usuario")
             miBody.append("usuario",    login.usuario)
     const   url                         = process.env.URL_WEBSERVICES + "/listas/usuarios.php"
@@ -193,7 +194,7 @@ export function useLogin( origen_ : string )
         else
         {
           storeUser.setPermisos(usuarioJson[0].permisos)
-          const user = new Usuario( usuarioJson[0] )
+          const user = Usuario.getUsuarioFromApi( usuarioJson[0] )
           return user
         }
 

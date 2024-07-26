@@ -22,7 +22,7 @@
           src           ="/images/logos/doki.png"
           >
         </q-toolbar-title>
-        <buscador/>
+        <buscador v-if  ="!usuario.externo"/>
         <menu-top class ="gt-sm desktop-only"/>
         <q-space />
         <!-- <img
@@ -102,7 +102,7 @@
   import    badgeNotificaciones from "src/areas/comunicacion/components/BadgeNotificaciones.vue"
   
   useMenu()  
-  const { patron          } = storeToRefs( useStoreUser() )
+  const { patron, usuario } = storeToRefs( useStoreUser() )
   const { menu            } = storeToRefs( useStoreApp() )
   const { menuTareasOn    } = storeToRefs( useStoreAcciones() )
 

@@ -111,6 +111,21 @@
             Facturado
           </div>
           <div  class         ="text-right">
+            <!-- //* //////////// Recepcion de Proveedor -->
+            <q-chip           dense
+              v-if            ="acuerdo.esOCProveedor && acuerdo.esEstadoValido"
+              :color          ="acuerdo.recibidaProveedor ? 'positive' : 'warning'"
+              :icon           ="acuerdo.recibidaProveedor ? 'mdi-eye-check' : 'mdi-eye-off'"  
+              text-color      ="white"
+              class           ="q-px-sm"
+              >
+              {{ acuerdo.recibidaProveedor ? 'Recibido' : 'No recibido' }}
+              <Tooltip>
+                {{ acuerdo.recibidaProveedor ? 'Proveedor recibio pedido' : 'Proveedor no ha visto el pedido' }}
+              </Tooltip>
+            </q-chip>
+            
+            
             <!-- //* //////////// Aceptacion de Proveedor -->
             <q-chip           dense
               v-if            ="acuerdo.esOCProveedor && acuerdo.esEstadoValido"
@@ -119,9 +134,9 @@
               text-color      ="white"
               class           ="q-px-sm"
               >
-              {{ acuerdo.aceptadaProveedor ? 'En progreso' : 'Sin confirmación' }}
-              <Tooltip v-if   ="acuerdo.aceptadaProveedor">
-                {{ acuerdo.aceptadaProveedor ? 'Proveedor confirmo pedido y esta en progreso' : 'Proveedor no ha confirmado el pedido' }}
+              {{ acuerdo.aceptadaProveedor ? 'En progreso' : 'Sin aceptación' }}
+              <Tooltip>
+                {{ acuerdo.aceptadaProveedor ? 'Proveedor acepto pedido y esta en progreso' : 'Proveedor no ha aceptado el pedido' }}
               </Tooltip>
             </q-chip>
             <!-- //* //////////// Correo enviado -->
@@ -182,7 +197,7 @@
           <!-- //* ///////////////////////////////////////////////////// Label Estado -->
           <span
             class             ="text-sombra-suave"
-            :class            ="esMobil ? 'text-14px' : 'text-20px'"
+            :class            ="esMobil ? 'text-14px' : 'text-18px'"
             >
             {{acuerdo.estadoLabel}}
           </span>

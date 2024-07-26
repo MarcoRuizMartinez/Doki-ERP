@@ -1,14 +1,16 @@
 <template>
   <div class              ="maco-wrapper">
     <ul class             ="maco-menu">
-      <lista
-        v-for             ="(item, index) of menu"
-        :index            ="item.label"
-        :label            ="item.label" 
-        :to               ="item.to"
-        :count            ="item.count"
-        :submenu          ="item.submenu"
-      />
+      <template v-for     ="(item, index) of menu">
+        <lista
+          v-if            ="item.visible"
+          :index          ="item.label"
+          :label          ="item.label" 
+          :to             ="item.to"
+          :count          ="item.count"
+          :submenu        ="item.submenu"
+        />
+      </template>
     </ul>
   </div>
 </template>

@@ -938,7 +938,23 @@ export function useControlAcuerdo()
       aviso("positive", acuerdo.value.listoEntregar ? "Marcado como listo para despacho 👌🏼" : 'Marcado como No listo para despacho')
     }
     else
-      aviso("negative", `Error al camabiar listo para despacho`)
+      aviso("negative", `Error al cambiar listo para despacho`)
+  }
+
+
+  async function setRecibirProveedor( on : boolean )
+  {
+    loading.value.recibidoProveedor = true
+    const objeto                    = { on: +on, id: acuerdo.value.id, acuerdo: acuerdo.value.tipo }
+    const objetoForData             = { body: getFormData("recibirProveedor", objeto), method: "POST"}
+    const { ok  }                   = await miFetch( endPoint("servicios"), objetoForData, { mensaje: "recibir proveedor" } )
+    if(ok){      
+      aviso("positive", on ? "Marcado recibido" : 'Marcado no visto')
+    }
+    else
+      aviso("negative", `Error al cambiar recibido por proveedor`)
+
+    loading.value.recibidoProveedor = false
   }
 
   async function setAceptarProveedor( on : boolean )
@@ -951,7 +967,7 @@ export function useControlAcuerdo()
       aviso("positive", on ? "Marcado en progreso" : 'Marcado pendiente')
     }
     else
-      aviso("negative", `Error al camabiar listo para despacho`)
+      aviso("negative", `Error al cambiar aceptado por proveedor`)
 
     loading.value.aceptarProveedor  = false
   }
@@ -1003,5 +1019,6 @@ export function useControlAcuerdo()
     cambiarContactoEntrega,
     cambiarTransportadora,
     setAceptarProveedor,
+    setRecibirProveedor,
   }
 }

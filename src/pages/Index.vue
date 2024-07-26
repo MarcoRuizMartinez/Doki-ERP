@@ -2,18 +2,19 @@
   <q-page                 padding
     class                 ="row item-stretch content-start justify-start q-col-gutter-lg">
     <buscar-terceros
-      v-if                ="storeUser.permisos.terceros_ver"
+      v-if                ="storeUser.permisos.terceros_ver && !storeUser.usuario.externo"
       class               ="col-md-4 col-12"
       height-card         ="202px"
       size-icon-carga     ="8em"
     />
-
     <terceros-favoritos
+      v-if                ="!storeUser.usuario.externo"
       class               ="col-md-4 col-12"
       height-card         ="260px"
       size-icon-carga     ="12em"
     />
     <mis-terceros
+      v-if                ="!storeUser.usuario.externo"
       class               ="col-md-4 col-12"
       height-card         ="260px"
       size-icon-carga     ="12em"

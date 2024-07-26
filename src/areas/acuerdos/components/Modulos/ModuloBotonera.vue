@@ -118,7 +118,7 @@
       <!-- //* //////////////////////////////////////////////////////////  Boton PDF -->
       <efecto efecto          ="Down">
         <q-btn
-          v-if                ="acuerdo.esEstadoValido && !acuerdo.esEntrega && !(acuerdo.esCotizacion && usuario.esProduccion)"
+          v-if                ="acuerdo.esEstadoValido && !acuerdo.esEntrega && !(acuerdo.esCotizacion && usuario.esProduccion) && !usuario.externo"
           v-bind              ="style.btnBaseMd"
           color               ="primary"
           icon                ="mdi-pdf-box"
@@ -203,9 +203,26 @@
         @click                ="emit('clickNuevaEntrega')"
         > 
         <Tooltip label        ="Generar nueva entrega"/>
-      </q-btn>      
+      </q-btn>
+
       <btn-toggle
-        v-if                  ="acuerdo.esOCProveedor && acuerdo.esEstadoValido && usuario.esProduccion"
+        v-if                  ="acuerdo.esOCProveedor && acuerdo.esEstadoValido && ( usuario.esProduccion || usuario.externo )"
+        v-model               ="acuerdo.recibidaProveedor"
+        label-true            ="Marcar no visto"
+        label-false           ="Marcar recibido"
+        icon-true             ="mdi-eye-off"
+        icon-false            ="mdi-eye-check"
+        msj-true              ="Marcar como no visto por proveedor"
+        msj-false             ="Marcar como recibido por proveedor"
+        color-true            ="accent"
+        color-false           ="positive"
+        size                  ="md"
+        :loading              ="loading.recibidoProveedor"
+        @click                ="emit('clickRecibirProveedor', acuerdo.recibidaProveedor)"
+      /> 
+
+      <btn-toggle
+        v-if                  ="acuerdo.esOCProveedor && acuerdo.esEstadoValido && ( usuario.esProduccion || usuario.externo )"
         v-model               ="acuerdo.aceptadaProveedor"
         label-true            ="Marcar sin confirmar"
         label-false           ="Marcar en progreso"
@@ -213,7 +230,7 @@
         icon-false            ="mdi-run"
         msj-true              ="Marcar como no confirmando por proveedor"
         msj-false             ="Marcar como aceptado y en progreso por proveedor"
-        color-true            ="warning"
+        color-true            ="accent"
         color-false           ="positive"
         size                  ="md"
         :loading              ="loading.aceptarProveedor"
@@ -263,7 +280,7 @@
       </efecto>     -->
       <!-- <efecto efecto          ="Down"> -->
         <!-- //* //////////////////////////////////////////////////////////  Boton Aprobar -->
-        <q-btn-group  v-if    ="acuerdo.esEstadoAbierto">        
+        <q-btn-group  v-if    ="acuerdo.esEstadoAbierto && !usuario.externo">
           <q-btn 
             v-if              ="!acuerdo.esTerceroCtz && acuerdo.esCotizacion"
             v-bind            ="style.btnBaseMd"
@@ -376,7 +393,7 @@
       <!-- //* ////////////////////////////////////////////////////////// Boton borrar -->
       <div>
         <q-btn
-          v-if                ="!acuerdo.facturado && !acuerdo.esEstadoEntregado"
+          v-if                ="!acuerdo.facturado && !acuerdo.esEstadoEntregado && !usuario.externo"
           v-bind              ="style.btnBaseMd"
           color               ="negative"
           class               ="fit"
@@ -443,6 +460,7 @@
     (e: 'clickPdf',               value: TTipoPDF ): void
     (e: 'clickCuentaCobro',       value: TTipoPDF ): void 
     (e: 'clickAceptarProveedor',  value: boolean  ): void
+    (e: 'clickRecibirProveedor',  value: boolean  ): void
     (e: 'clickAprobar',           ): void
     (e: 'clickAnular',            ): void  
     (e: 'clickValidar',           ): void

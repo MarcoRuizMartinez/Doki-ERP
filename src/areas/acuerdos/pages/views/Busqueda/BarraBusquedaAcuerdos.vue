@@ -23,6 +23,7 @@
         />        
         <!-- //* ///////////////////////////////////////////////// Busqueda general -->
         <input-buscar           clearable hundido
+          v-if                  ="!usuario.externo"
           v-model               ="b.f.buscar"
           label                 ="Buscar tercero"
           class                 ="width160"
@@ -39,7 +40,7 @@
         />
         <!-- //* ///////////////////////////////////////////////// Proveedores -->
         <select-label-value     use-input hundido clearable flat bordered
-          v-if                  ="b.esOCProveedor"
+          v-if                  ="b.esOCProveedor && !usuario.externo"
           v-model               ="b.f.proveedores"
           label                 ="Proveedor"
           icon                  ="mdi-storefront"
@@ -136,7 +137,7 @@
         />
         <!-- //* ///////////////////////////////////////////////// Pedido facturado -->
         <multi-label-value
-          v-if                  ="b.esOCProveedor"
+          v-if                  ="b.esOCProveedor && !usuario.externo"
           v-model               ="b.f.creadores"
           label                 ="Creadores"
           class                 ="width160"
@@ -201,7 +202,7 @@
             </q-btn>
           </div>
           <!-- //* /////////////////////////////////////////////// Boton limpiar 'btnRecargar -->
-          <div>
+          <div v-if               ="!usuario.externo">
             <q-btn                round push glossy
               icon                ="mdi-close"
               padding             ="xs"
@@ -574,7 +575,6 @@
   // * /////////////////////////////////////////////////////////////////////// Modelos
   import {  IQuery, Busqueda    } from "src/models/Busqueda"
   import {  GRUPO_USUARIO       } from "src/models/TiposVarios"
-  import {  ESTADO_OC           } from "src/areas/acuerdos/models/ConstantesAcuerdos"
   // * /////////////////////////////////////////////////////////////////////// Componentes
   import    fieldsetFiltro        from "components/utilidades/Fieldset.vue"
   import    inputNumber           from "components/utilidades/input/InputFormNumber.vue"

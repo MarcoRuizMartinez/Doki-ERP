@@ -34,10 +34,10 @@
       <Tooltip label  ="Mas opciones"/>
     </q-tab>
     <q-tab
+      v-if            ="!usuario.externo"
       label           ="Busquedas"
       name            ="tab_4"
       icon            ="mdi-magnify-scan"
-      
       >
       <Tooltip label  ="Búsquedas rápidas"/>
     </q-tab>
@@ -46,14 +46,22 @@
 
 
 <script setup lang="ts">
+  // * /////////////////////////////////////////////////////////////////////// Core
   import  { computed,
             onMounted           } from "vue"
-  import  { storeToRefs         } from 'pinia'                                            
+
+  // * /////////////////////////////////////////////////////////////////////// Store
+  import  { storeToRefs         } from 'pinia'
   import  { useStoreApp         } from 'stores/app'
+  import  { useStoreUser        } from 'stores/user'
   import  { useStoreAcuerdo     } from 'stores/acuerdo'  
+
+  // * /////////////////////////////////////////////////////////////////////// Componibles
+
   import  { ToolDate, ToolType  } from "src/composables/useTools"  
   const   { tabs                } = storeToRefs( useStoreApp() )
   const   { busqueda : b        } = storeToRefs( useStoreAcuerdo() )
+  const   { usuario             } = storeToRefs( useStoreUser() )
 
   onMounted(()=> tabs.value = { activa : "tab_1", alerts: [ false, false, true, false ]} )
 

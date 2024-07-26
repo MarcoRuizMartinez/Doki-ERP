@@ -367,7 +367,7 @@ export class ProductoDoli implements IProductoDoli
   static async productoAPItoProducto( productoApi : any ) : Promise<IProductoDoli>
   {
     if(!productoApi)                return new ProductoDoli()
-    let producto                    = Object.assign( new ProductoDoli(), productoApi ) as IProductoDoli
+    const producto                  = Object.assign( new ProductoDoli(), productoApi ) as IProductoDoli
 
     producto.id                     = +productoApi.id
     producto.id_extra               = +productoApi.id_extra
