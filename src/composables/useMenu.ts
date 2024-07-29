@@ -257,12 +257,19 @@ export function useMenu()
       submenu:
       [
         { ...new ItemMenu({
-                              label:    "Productos",
+                              label:    "Productos Old",
                               icon:     "mdi-layers-triple",
                               to:       "/productos",
                               visible:  permisos.value.terceros_ver && !usuario.value.externo
                           } ),
-        },        
+        },
+        { ...new ItemMenu({
+                              label:    "Productos New",
+                              icon:     "mdi-layers-triple",
+                              to:       "/productos/new",
+                              visible:  permisos.value.terceros_ver && !usuario.value.externo
+                          } ),
+        },
         { ...new ItemMenu({
                               label:    "Crear producto",
                               icon:     "mdi-layers-plus",

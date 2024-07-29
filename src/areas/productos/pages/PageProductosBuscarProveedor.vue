@@ -5,5 +5,5 @@
 </template>
 
 <script setup lang="ts">
-  import    vistaBusqueda       from "src/areas/productos/components/Views/VistaProductosProveedores.vue"  
+  import    vistaBusqueda       from "src/areas/productos/components/Views/VistaProductosBuscarProveedor.vue"  
 </script>

@@ -122,7 +122,7 @@
   import {  style                 } from "src/composables/useEstilos"
   import {  useTools,
             ToolNum               } from "src/composables/useTools"
-  import {  useControlProductos   } from "src/areas/productos/controllers/ControlProductosDolibarr"
+  import {  useControlProductos   } from "src/areas/productos/controllers/ControlProductos"
   import {  servicesProductos     } from "src/areas/productos/services/servicesProductos"
   import {  useApiDolibarr        } from "src/composables/useApiDolibarr"  
   import {  generarCSVDesdeTabla  } from "src/composables/UtilFiles"

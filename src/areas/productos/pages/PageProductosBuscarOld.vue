@@ -6,6 +6,6 @@
 
 <script setup lang="ts">
   import {  useTitle            } from "@vueuse/core"
-  import    vistaBusqueda         from "src/areas/productos/components/Views/VistaProductoBusqueda.vue" 
+  import    vistaBusqueda         from "src/areas/productos/components/Views/VistaProductosBuscarOld.vue" 
   useTitle("📦 Buscar productos")
 </script>

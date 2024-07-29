@@ -43,7 +43,7 @@
             IProductoDoli         } from "src/areas/productos/models/ProductoDolibarr"
 
   //* ///////////////////////////////////////////////////////////////////////////////// Componibles
-  import {  useControlProductos   } from "src/areas/productos/controllers/ControlProductosDolibarr"
+  import {  useControlProductos   } from "src/areas/productos/controllers/ControlProductos"
 
   //* ///////////////////////////////////////////////////////////////////////////////// Componentes
   import    titulo                  from "src/areas/productos/components/Titulo.vue"

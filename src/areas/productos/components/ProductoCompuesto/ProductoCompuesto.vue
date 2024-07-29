@@ -158,7 +158,7 @@
   
   ////////////////////////////////////////////////////////////////////////// Componibles
   import {  servicesProductos   } from "src/areas/productos/services/servicesProductos"
-  import {  useControlProductos } from "src/areas/productos/controllers/ControlProductosDolibarr"
+  import {  useControlProductos } from "src/areas/productos/controllers/ControlProductos"
   import {  useApiDolibarr      } from "src/composables/useApiDolibarr"
   import {  Tool,
             ToolArray, useTools } from "src/composables/useTools"

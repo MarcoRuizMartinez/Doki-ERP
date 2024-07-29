@@ -315,7 +315,12 @@ const routes: RouteRecordRaw[] = [
       {
         path:       '',
         name:       'productos',
-        component:  () => import('src/areas/productos/pages/PageProductosBuscar.vue'),
+        component:  () => import('src/areas/productos/pages/PageProductosBuscarOld.vue'),
+      },
+      {
+        path:       '/productos/new',
+        name:       'productosNew',
+        component:  () => import('src/areas/productos/pages/PageProductosBuscarNew.vue'),
       },
       {
         path:       '/productos/:id',
@@ -336,7 +341,7 @@ const routes: RouteRecordRaw[] = [
       {
         path:       '/productos/proveedor',
         name:       'productosProveedor',
-        component:  () => import('src/areas/productos/pages/PageProductosProveedor.vue'),
+        component:  () => import('src/areas/productos/pages/PageProductosBuscarProveedor.vue'),
       },
       /* {
         path:       '/productos/categorias',

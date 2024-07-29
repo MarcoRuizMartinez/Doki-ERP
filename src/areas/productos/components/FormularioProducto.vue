@@ -283,7 +283,7 @@
   import {  Format,
             confeti               } from "src/composables/useTools"
   import {  style                 } from "src/composables/useEstilos"
-  import {  useControlProductos   } from "src/areas/productos/controllers/ControlProductosDolibarr"
+  import {  useControlProductos   } from "src/areas/productos/controllers/ControlProductos"
   import {  dexieUnidades, 
             dexieNaturaleza,
             dexieCategoriasProducto

@@ -42,26 +42,26 @@
   
   /////////////////////////////////////////////////////////////////////// Componibles
   import {  useTitle            } from "@vueuse/core"
-  import {  useControlProductosProveedor
-                                } from "src/areas/productos/controllers/ControlProductosProveedor"
+  import {  useControlProductosDolibarr
+                                } from "src/areas/productos/controllers/ControlProductosNew"
 
   // * /////////////////////////////////////////////////////////////////////// Modelos
   import {  TModosVentana       } from "src/models/TiposVarios"  
 
   // * /////////////////////////////////////////////////////////////////////// Componentes
   import    ventana               from "components/utilidades/Ventana.vue"    
-  import    barraBusqueda         from "./../ProductosProveedor/BarraBusquedaProductosProveedor.vue"
-  import    tabsBusqueda          from "./../ProductosProveedor/TabsBusquedaProductosProveedor.vue"
-  import    tablaProductos        from "../ProductosProveedor/TablaProductosPro.vue"
+  import    barraBusqueda         from "./../Productos/BarraBusquedaProductos.vue"
+  import    tabsBusqueda          from "./../Productos/TabsBusquedaProductos.vue"
+  import    tablaProductos        from "./../Productos/TablaProductos.vue"
 
   
-  const { productosPro,
+  const { productos,
           loading               } = storeToRefs( useStoreProducto() )
 
   const { buscar,
           iniciar,
           desmontar
-                                } = useControlProductosProveedor()
+                                } = useControlProductosDolibarr()
   const modo                      = ref< TModosVentana >("esperando-busqueda")
 
   onMounted   ( iniciar )
@@ -70,21 +70,19 @@
   //* Titulo Ventana busqueda
   const titulo                    = computed(()=>
   {
-    let title                     = "Productos de proveedor"
-    const total                   = productosPro.value.length
+    let title                     = "Nuestros productos"
+    const total                   = productos.value.length
     const labelP                  = total >= 2 ? "productos" : "producto"
     if(!!total)
-      title                       = `Resultado: ${total} ${labelP} de proveedor`
+      title                       = `Resultado: ${total} ${labelP} nuestros`
     return title
   })  
 
   //* Titulo Pestaña navegador 
   watchEffect(()=>{
-    const largo                   = productosPro.value.length
+    const largo                   = productos.value.length
     const extra                   = !!largo ? ` (${largo}) ` : " "
-    useTitle(`🔍${extra}Productos proveedor`)
+    useTitle(`🔍${extra}Productos nuestros`)
     if(!!largo) modo.value        = "normal"
-  })    
-
-
+  })
 </script>
