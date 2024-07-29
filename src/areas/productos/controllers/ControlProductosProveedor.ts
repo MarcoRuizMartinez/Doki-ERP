@@ -465,10 +465,7 @@ export function useControlProductosProveedor()
       if( !hayLimite )query.limite  = 25
   
       const hayOffset               = "offset" in query
-      if( !hayOffset )  query.offset= 0
-
-      const hayActivo               = "activo" in query
-      if( !hayActivo )  query.activo= "1"
+      if( !hayOffset )  query.offset= 0      
   
       query.proveedorId             = usuario.value.tercero_id      
     }

@@ -865,7 +865,7 @@ export function useControlAcuerdo()
   async function buscarEnlacesAcuerdo()
   {
     const objeto            = { ref: acuerdo.value.ref, id: acuerdo.value.id }
-    const { ok, data }      = await miFetch( getURL("listas", "varios"), { method: "POST", body: getFormData( "buscarEnlacesAcuerdo2", objeto ) }, { mensaje: "buscar enlaces", conLoadingBar: false, dataEsArray: true } )
+    const { ok, data }      = await miFetch( getURL("listas", "varios"), { method: "POST", body: getFormData( "buscarEnlacesAcuerdo", objeto ) }, { mensaje: "buscar enlaces", conLoadingBar: false, dataEsArray: true } )
     if(ok && Array.isArray(data) )
       acuerdo.value.enlaces = EnlaceAcuerdo.enlacesApiToEnlaces2( data, acuerdo.value.tipo, acuerdo.value.id )
   }
@@ -944,10 +944,16 @@ export function useControlAcuerdo()
 
   async function setRecibirProveedor( on : boolean )
   {
-    loading.value.recibidoProveedor = true
-    const objeto                    = { on: +on, id: acuerdo.value.id, acuerdo: acuerdo.value.tipo }
+    loading.value.recibidoProveedor = true    
+    const objeto                    = { array_options: {
+                                          options_aceptada: +acuerdo.value.aceptadaProveedor,
+                                          options_recibida: +acuerdo.value.recibidaProveedor
+                                        }
+                                      }    
+    /*const objeto                    = { on: +on, id: acuerdo.value.id, acuerdo: acuerdo.value.tipo }
     const objetoForData             = { body: getFormData("recibirProveedor", objeto), method: "POST"}
-    const { ok  }                   = await miFetch( endPoint("servicios"), objetoForData, { mensaje: "recibir proveedor" } )
+    const { ok  }                   = await miFetch( endPoint("servicios"), objetoForData, { mensaje: "recibir proveedor" } )*/
+    const { ok  }              = await apiDolibarr("editar", "pedidoPro", objeto, acuerdo.value.id )
     if(ok){      
       aviso("positive", on ? "Marcado recibido" : 'Marcado no visto')
     }
@@ -955,14 +961,21 @@ export function useControlAcuerdo()
       aviso("negative", `Error al cambiar recibido por proveedor`)
 
     loading.value.recibidoProveedor = false
-  }
+  }  
 
   async function setAceptarProveedor( on : boolean )
   {
-    loading.value.aceptarProveedor  = true
-    const objeto                    = { on: +on, id: acuerdo.value.id, acuerdo: acuerdo.value.tipo }
-    const objetoForData             = { body: getFormData("aceptarProveedor", objeto), method: "POST"}
-    const { ok  }                   = await miFetch( endPoint("servicios"), objetoForData, { mensaje: "aceptar proveedor" } )
+    loading.value.aceptarProveedor  = true    
+    const objeto                    = { array_options: {
+                                          options_aceptada: +acuerdo.value.aceptadaProveedor,
+                                          options_recibida: +acuerdo.value.recibidaProveedor
+                                        }
+                                      }
+
+    //const objeto                    = { on: +on, id: acuerdo.value.id, acuerdo: acuerdo.value.tipo }
+    //const objetoForData             = { body: getFormData("aceptarProveedor", objeto), method: "POST"}
+    //const { ok  }                   = await miFetch( endPoint("servicios"), objetoForData, { mensaje: "aceptar proveedor" } )
+    const { ok  }              = await apiDolibarr("editar", "pedidoPro", objeto, acuerdo.value.id )
     if(ok){      
       aviso("positive", on ? "Marcado en progreso" : 'Marcado pendiente')
     }

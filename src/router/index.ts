@@ -7,7 +7,9 @@ import {
 } from 'vue-router';
 
 import routes from './routes';
+import {  storeToRefs           } from 'pinia'
 import {  useStoreUser          } from 'stores/user'
+
 
 /*
  * If not building with SSR mode, you can
@@ -35,21 +37,27 @@ export default route(function (/* { store, ssrContext } */) {
 
   Router.beforeResolve((to, from, next) =>
     {
-      const storeUser = useStoreUser()
+      const { usuario, logueado, permisos } = storeToRefs( useStoreUser() )
+      
 
-      if(to.name      !== 'login'                 && !storeUser.logueado)
+      if(to.name      !== 'login'                 && !logueado.value)
         next({ name:  'login' })
       else
-      if(to.name      === 'login'                 && storeUser.logueado)
+      if(to.name      === 'login'                 && logueado.value)
         next({ name:  'index' })
+
+      // Redireccion a pedidos de proveedor cuando se es un usuario externo de proveedor 
+      if(to.name === "index" && usuario.value.externo){
+        next({ name:  'pedidosProveedor' })       
+      }
       
       if
       (
-        ( to.name     === 'crearCliente'          && !storeUser.permisos.terceros_crear )
+        ( to.name     === 'crearCliente'          &&    !permisos.value.terceros_crear )
         ||        
-        ( to.name     === 'crearProveedor'        && ( !storeUser.permisos.terceros_crear  || !storeUser.permisos.prove_pedido_crear))
+        ( to.name     === 'crearProveedor'        && (  !permisos.value.terceros_crear  || !permisos.value.prove_pedido_crear))
         ||
-        ( to.name     === 'buscarTerceros'        && !storeUser.permisos.terceros_ver   )
+        ( to.name     === 'buscarTerceros'        &&    !permisos.value.terceros_ver   )
       )
       {
         next({ name:  'error', params: { ruta: to.path  } })

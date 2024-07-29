@@ -280,7 +280,7 @@ export function useMenu()
         { ...new ItemMenu({
                               label:    "Productos de proveedores",
                               icon:     "mdi-layers-triple-outline",
-                              to:       "/productos/proveedor",
+                              to:       "/productos/proveedor?activo=1&limite=50&offset=50",
                               visible:  true
                           } ),
         },
