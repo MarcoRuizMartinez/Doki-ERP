@@ -5,7 +5,7 @@
     class-contenido           ="column items-center"
     height                    ="100%"
     size-icon-carga           ="22em"
-    icono                     ="mdi-package-variant-closed"
+    icono                     ="mdi-star-box"
     mensaje-sin-resultados    ="No se encontraron productos"
     mensaje-esperando         ="Busca los productos que necesites..."
     :modo                     ="modo"

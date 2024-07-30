@@ -19,10 +19,11 @@ export const Col =
     type                  = undefined,
     headerClass           = undefined,
     cellClassRules        = undefined,
+    minWidth              = undefined,
   }                       : TParam
   )                       : ColDef
   {
-    const col : ColDef    = { headerName, field, editable, columnGroupShow, hide, type, headerClass, cellClassRules, width : 120 }
+    const col : ColDef    = { headerName, field, editable, columnGroupShow, hide, type, headerClass, cellClassRules, width : 120, minWidth}
     col.filter            = "agSetColumnFilter"
     col.enableRowGroup    = true
     col.filterParams      = { defaultToNothingSelected: true, 
@@ -61,11 +62,12 @@ export const Col =
     type                  = undefined,
     cellClassRules        = undefined,
     headerClass           = undefined,
+    minWidth              = undefined,
   }                       : TParam
   , mostrar : boolean     = true
   )                       : ColDef
   {
-    const col : ColDef    = { headerName, field, width, editable, columnGroupShow, hide, cellClassRules, headerClass }
+    const col : ColDef    = { headerName, field, width, editable, columnGroupShow, hide, cellClassRules, headerClass, minWidth }
     col.filter            = "agNumberColumnFilter"
 
     col.valueParser       = ( p : any ) => {
@@ -105,8 +107,8 @@ export const Col =
   
   Objeto({
     opciones,
-    key                   = undefined ?? "",
-    field                 = undefined ?? "",
+    key                   = "",//undefined ?? "",
+    field                 = "",//undefined ?? "",
     headerName            = undefined,
     editable              = undefined,
     hide                  = undefined,
@@ -115,6 +117,7 @@ export const Col =
     width                 = undefined,
     cellClassRules        = undefined,
     headerClass           = undefined,
+    minWidth              = undefined,
   }                       : TParam
   )                       : ColDef
   {
@@ -127,7 +130,8 @@ export const Col =
       type,
       width,
       cellClassRules,
-      field               : field,
+      minWidth,
+      field,
       filter              : 'agSetColumnFilter',
       cellRenderer        : renderAUsar,
       enableRowGroup      : true,

@@ -11,7 +11,7 @@ import {  MesesGarantia           } from "src/models/Diccionarios/MesesGarantia"
 import {  OriginesMadeIn          } from "src/models/Diccionarios/MadeIn"
 import {  ToolType, Format        } from "src/composables/useTools"
 import {  IProductoProveedor      } from "../../models/ProductoProveedor"
-import imagen                       from "./ImagenProductoAG.vue"
+import imagen                       from "./../ImagenProductoAG.vue"
 import proveedor                    from "components/utilidades/AgGrid/ProveedorBadge.vue"
 
 export const reglasCSS = {
@@ -28,7 +28,7 @@ export const autoSizeStrategy = {
   columnLimits          : [{ colId: 'ref', minWidth: 900}]
 }
 
-export const columnTypes : { [key: string]: ColTypeDef<IProductoProveedor> } = {
+export const columnTypes : { [key: string]: ColTypeDef < IProductoProveedor > } = {
   moneda:
   { 
     valueFormatter  : Format.precioAG,

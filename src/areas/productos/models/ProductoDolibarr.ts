@@ -2,6 +2,7 @@ import {  IUnidad,
           Unidad              } from "src/models/Diccionarios/Unidad"
 import {  getUnidadDB,
           getCategoriaDB,
+          getUsuarioDB,
           getNaturalezaDB     } from "src/composables/useDexie"
 import {  ToolNum, ToolType   } from "src/composables/useTools"
 import {  ICategoriaProducto,
@@ -20,7 +21,8 @@ import {  IImagenProducto,
           ImagenProducto      } from "./ImagenProducto"
 import {  IProductoHijo,
           ProductoHijo        } from "./ProductoHijo"
-
+import {  IUsuario,
+          Usuario             } from "src/areas/usuarios/models/Usuario"
 
 const ivaX100                 = parseInt( process.env.IVA ?? "0" )
 
@@ -32,7 +34,7 @@ export interface IProductoDoli {
   refProv                   : string
   categoria                 : ICategoriaProducto
   nombre                    : string
-  urlDolibarr               : string
+  urlDolibarr               : string        // get
   sigla                     : string
   descripcion               : string
   iva                       : number
@@ -59,11 +61,13 @@ export interface IProductoDoli {
   costo                     : number        // precio que viene de la tabla llx_product > cost_price
   costo_adicional           : number
   costoTotal                : number
+  creador                   : IUsuario
   creador_id                : number
   disponible                : boolean       // Disponible proveedor
   activoEnCompra            : boolean
   activoEnVenta             : boolean
   sin_proveedor             : boolean
+  con_proveedor             : boolean
   fecha_creacion            : string
   fecha_llegada             : string        // Fecha llegada proveedor
   garantia                  : string        // "1_year"
@@ -71,12 +75,12 @@ export interface IProductoDoli {
   id_extra                  : number        // ID extra field
   id_producto_pro           : number        // ID producto proveedor
   id_proveedor              : number
-  precio_proveedor          : number        // precio que es el minimo de la tabla productos_proveedor > precio
-  precio_publico            : number
-  precio_promocion          : number
+  //precio_proveedor          : number        // precio que es el minimo de la tabla productos_proveedor > precio
+  precio                    : number        // Precio guardado en llx_product en columna price. Precio final, el menor entre publico y promocion  
+  precio_publico            : number        // Precio guardado en extrafields
+  precio_promocion          : number        // Precio guardado en extrafields
   precioPublicoConIVA       : number        // get
   precioPromocionConIVA     : number        // get
-  precio                    : number        // Precio final, el menor entre publico y promocion  
   competencia               : number
   esProducto                : boolean
   esServicio                : boolean
@@ -94,7 +98,6 @@ export interface IProductoDoli {
   urlTienda                 : string
   stockGestionado           : boolean
   stockProveedor            : number
-
 }
 
 export class ProductoDoli implements IProductoDoli
@@ -120,6 +123,7 @@ export class ProductoDoli implements IProductoDoli
   aumento_loco              : number              = 0
   costo                     : number              = 0
   costo_adicional           : number              = 0
+  creador                   : IUsuario            = new Usuario()
   creador_id                : number              = 0
   activoEnCompra            : boolean             = true
   activoEnVenta             : boolean             = true
@@ -131,10 +135,10 @@ export class ProductoDoli implements IProductoDoli
   id_extra                  : number              = 0
   id_producto_pro           : number              = 0
   id_proveedor              : number              = 0
-  precio_proveedor          : number              = 0
+  //precio_proveedor          : number              = 0
+  precio                    : number              = 0
   precio_publico            : number              = 0
   precio_promocion          : number              = 0
-  precio                    : number              = 0
   siigo                     : TCodigosSiigo       = new CodigosSiigo()
   competencia               : number              = 0
   elegido                   : boolean             = false
@@ -151,9 +155,11 @@ export class ProductoDoli implements IProductoDoli
   get precio_aumento_descuento():number { return this.calcularPrecioConAumento( this.aumento_descuento  ) }
   get precio_aumento_loco()     :number { return this.calcularPrecioConAumento( this.aumento_loco       ) }
 
-  get precio_publico_final() : number
+  get precio_publico_final()    : number
   {
-    let precio = !!this.precio_aumento ? this.precio_aumento : this.precio_aumento_escom
+    const precio                = !!this.precio_aumento
+                                  ? this.precio_aumento
+                                  : this.precio_aumento_escom
     return precio
   }
 
@@ -290,6 +296,8 @@ export class ProductoDoli implements IProductoDoli
     return this.productosProveedor.some( p => p.activo && p.disponible )
   }
 
+  get con_proveedor() : boolean { return !this.sin_proveedor }
+
   get productoForApi() : any
   {
     const proForApi : any = {
@@ -382,49 +390,50 @@ export class ProductoDoli implements IProductoDoli
     return productos
  }  
 
-  static async getProductoFromAPI( productoApi : any, editable : boolean = false ) : Promise<IProductoDoli>
+  static async getProductoFromAPI( pApi : any, editable : boolean = false ) : Promise<IProductoDoli>
   {
-    if(!productoApi)                return new ProductoDoli()
-    const producto                  = Object.assign( new ProductoDoli(), productoApi ) as IProductoDoli
+    if(!pApi)                return new ProductoDoli()
+    const producto                  = Object.assign( new ProductoDoli(), pApi ) as IProductoDoli
 
-    producto.id                     = +productoApi.id
-    producto.id_extra               = +productoApi.id_extra
-    producto.id_producto_pro        = +productoApi.id_producto_pro
-    producto.id_proveedor           = +productoApi.id_proveedor
-    producto.unidadId               = +productoApi.unidadId
-    producto.creador_id             = +productoApi.creador_id
-    producto.siigo.codigo           = +productoApi.codigo
-    producto.iva                    = +productoApi.iva
-    producto.tipo                   =   productoApi.tipo == 1 ? 1
-                                      : productoApi.tipo == 9 ? 9
+    producto.id                     = ToolType.keyNumberValido( pApi, "id" )
+    producto.id_extra               = ToolType.keyNumberValido( pApi, "id_extra"        )
+    producto.id_producto_pro        = ToolType.keyNumberValido( pApi, "id_producto_pro" )
+    producto.id_proveedor           = ToolType.keyNumberValido( pApi, "id_proveedor"    )
+    producto.unidadId               = ToolType.keyNumberValido( pApi, "unidadId"        )
+    producto.creador_id             = ToolType.keyNumberValido( pApi, "creador_id"      )
+    producto.siigo.codigo           = ToolType.keyNumberValido( pApi, "codigo"          )
+    producto.iva                    = ToolType.keyNumberValido( pApi, "iva"             )
+    producto.tipo                   =   pApi.tipo == 1 ? 1
+                                      : pApi.tipo == 9 ? 9
                                       : 0
     producto.tipoLabelValue         =   producto.tipo == 0 ? { value : 0, label:'Producto'}
                                       : producto.tipo == 1 ? { value : 1, label:'Servicio'}
                                       : labelValueNulo
-    producto.activoEnCompra         = ToolType.keyBoolean ( productoApi, 'en_compra'        )
-    producto.activoEnVenta          = ToolType.keyBoolean ( productoApi, 'en_venta'         )
-    producto.sin_proveedor          = ToolType.keyBoolean ( productoApi, 'sin_proveedor'    )
-    producto.siigo.enSiigo          = ToolType.keyBoolean ( productoApi, 'enSiigo'          )
-    producto.requiereAcabado        = ToolType.keyBoolean ( productoApi, 'requiereAcabado'  )
-    producto.requiereMedida         = ToolType.keyBoolean ( productoApi, 'requiereMedida'   )
-    producto.requiereEntregado      = ToolType.keyBoolean ( productoApi, 'requiereEntregado')
-    producto.stockGestionado        = ToolType.keyBoolean ( productoApi, 'stockGestionado' )
+                                      
+    producto.activoEnCompra         = ToolType.keyBoolean ( pApi, 'en_compra'        )
+    producto.activoEnVenta          = ToolType.keyBoolean ( pApi, 'en_venta'         )
+    producto.sin_proveedor          = ToolType.keyBoolean ( pApi, 'sin_proveedor'    )
+    producto.siigo.enSiigo          = ToolType.keyBoolean ( pApi, 'enSiigo'          )
+    producto.requiereAcabado        = ToolType.keyBoolean ( pApi, 'requiereAcabado'  )
+    producto.requiereMedida         = ToolType.keyBoolean ( pApi, 'requiereMedida'   )
+    producto.requiereEntregado      = ToolType.keyBoolean ( pApi, 'requiereEntregado')
+    producto.stockGestionado        = ToolType.keyBoolean ( pApi, 'stockGestionado'  )
 
-    producto.stockProveedor         = ToolType.keyNumberValido ( productoApi, 'stockProveedor')    
+    producto.stockProveedor         = ToolType.keyNumberValido ( pApi, 'stockProveedor')    
 
-    producto.aumento                = parseFloat( productoApi.aumento             )
-    producto.aumento_escom          = parseFloat( productoApi.aumento_escom       )
-    producto.aumento_descuento      = parseFloat( productoApi.aumento_descuento   )
-    producto.aumento_loco           = parseFloat( productoApi.aumento_loco        )
-    producto.costo                  = parseFloat( productoApi.costo               )
-    producto.costo_adicional        = parseFloat( productoApi.costo_adicional     )
-    producto.precio                 = parseFloat( productoApi.precio              )
-    producto.precio_promocion       = parseFloat( productoApi.precio_promocion    )
-    producto.precio_proveedor       = parseFloat( productoApi.precio_proveedor    )
-    producto.precio_publico         = parseFloat( productoApi.precio_publico      )
-    producto.competencia            = parseFloat( productoApi.competencia         )
+    producto.aumento                = parseFloat( pApi.aumento             )
+    producto.aumento_escom          = parseFloat( pApi.aumento_escom       )
+    producto.aumento_descuento      = parseFloat( pApi.aumento_descuento   )
+    producto.aumento_loco           = parseFloat( pApi.aumento_loco        )
+    producto.costo                  = parseFloat( pApi.costo               )
+    producto.costo_adicional        = parseFloat( pApi.costo_adicional     )
+    producto.precio                 = parseFloat( pApi.precio              )
+    producto.precio_promocion       = parseFloat( pApi.precio_promocion    )
+    //producto.precio_proveedor       = parseFloat( productoApi.precio_proveedor    )
+    producto.precio_publico         = parseFloat( pApi.precio_publico      )
+    producto.competencia            = parseFloat( pApi.competencia         )
 
-    producto.img.url                = productoApi?.imagen ?? IMAGEN_DEFAULT
+    producto.img.url                = pApi?.imagen ?? IMAGEN_DEFAULT
 
     if(!producto.precio             && !!producto.aumento_escom ){
       producto.precio               = producto.precio_aumento_escom
@@ -434,10 +443,11 @@ export class ProductoDoli implements IProductoDoli
       producto.precio_publico       = producto.precio_aumento_escom
     }
 
-    producto.unidad                 = await getUnidadDB( producto.unidadId )
-    producto.categoria              = await getCategoriaDB( producto.sigla )
-    producto.naturaleza             = await getNaturalezaDB( productoApi?.naturaleza_id ?? "0" )
-    producto.productosProveedor     = await ProductoProveedor.getProductosProveedorFromAPI( productoApi?.productosPro ?? {} )
+    producto.unidad                 = await getUnidadDB     ( producto.unidadId )
+    producto.categoria              = await getCategoriaDB  ( producto.sigla )
+    producto.naturaleza             = await getNaturalezaDB ( pApi?.naturaleza_id ?? "0" )
+    producto.productosProveedor     = await ProductoProveedor.getProductosProveedorFromAPI( pApi?.productosPro ?? {} )
+    producto.creador                = await getUsuarioDB    ( ToolType.keyNumberValido( pApi, "creador_id" ) ) 
 
     return producto
   }
