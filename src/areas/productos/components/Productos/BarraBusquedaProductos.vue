@@ -35,100 +35,6 @@
         titulo                  ="Búsqueda" 
         class-contenido         ="grilla-ribom fit"
         >
-        <!-- //* ///////////////////////////////////////////////// Proveedores -->
-        <select-label-value     use-input hundido clearable flat bordered
-          v-if                  ="!usuario.externo"
-          v-model               ="b.f.proveedores"
-          label                 ="Proveedor"
-          icon                  ="mdi-storefront"
-          class                 ="width160"
-          :options              ="b.o.proveedores"
-          @clear                ="b.f.l6 = labelValueNulo"
-        />
-        <!-- //* ///////////////////////////////////////////////////////////// Campo Categoría -->
-        <select-label-value     use-input hundido clearable flat bordered
-          v-model               ="b.f.categorias"
-          label                 ="Categoría"
-          icon                  ="mdi-file-tree-outline"
-          options-sort          ="nombre"
-          class                 ="width160"
-          :options              ="b.o.categorias"          
-        />     
-        <!-- //* ///////////////////////////////////////////////// Activo -->        
-        <select-label-value     use-input hundido clearable flat bordered
-          v-model               ="b.f.activo"
-          label                 ="Activo"
-          icon                  ="mdi-book-check"
-          class                 ="width160"
-          :options              ="Busqueda.listaActivoProducto"
-        />
-        <!-- //* ///////////////////////////////////////////////// Disponible -->        
-        <select-label-value     use-input hundido clearable flat bordered
-          v-model               ="b.f.disponible"
-          label                 ="Disponible"
-          icon                  ="mdi-clipboard-check"
-          class                 ="width160"
-          :options              ="Busqueda.listaDisponible"
-        />
-        <!-- //* ///////////////////////////////////////////////// Tipo -->
-        <multi-label-value
-          v-model               ="b.f.tiposProProve"
-          label                 ="Tipo"
-          class                 ="width160"
-          icon                  ="mdi-shape"
-          :options              ="b.o.tiposProductosProv"
-        />
-        <!-- //* ///////////////////////////////////////////////// Ordenado -->        
-        <select-label-value     use-input hundido clearable flat bordered
-          v-if                  ="!usuario.externo"
-          v-model               ="b.f.l1"
-          label                 ="Ordenado"
-          icon                  ="mdi-sort-ascending"
-          class                 ="width160"
-          :options              ="[{ value : 1, label : 'Ordenado' }, { value : 0, label : 'Sin orden' }]"
-        />        
-        <!-- //* ///////////////////////////////////////////////// Familia proveedor -->
-        <input-buscar           clearable hundido
-          v-model               ="b.f.buscar1"
-          label                 ="Familia proveedor"
-          class                 ="width160"
-          icon                  ="mdi-account-group"
-          debounce              ="800"
-        />
-        <!-- //* ///////////////////////////////////////////////// Familia Nuestra -->
-        <input-buscar           clearable hundido
-          v-if                  ="!usuario.externo"
-          v-model               ="b.f.buscar2"
-          label                 ="Familia nuestra"
-          class                 ="width160"
-          icon                  ="mdi-account-group-outline"
-          debounce              ="800"
-        />
-        <!-- //* ///////////////////////////////////////////////// Documento -->
-        <input-buscar           clearable hundido
-          v-model               ="b.f.buscar3"
-          label                 ="Documento"
-          class                 ="width160"
-          icon                  ="mdi-file-document"
-          debounce              ="800"
-        />
-
-        <!-- //* ///////////////////////////////////////////////// Precio actualizado -->
-        <select-label-value     use-input hundido clearable flat bordered
-          v-model               ="b.f.actualizado"
-          label                 ="Precio actualizado"
-          icon                  ="mdi-cash-check"
-          class                 ="width160"
-          :options              ="Busqueda.listaActualizado"
-        />
-        <!-- //* ///////////////////////////////////////////////// Proveedores -->
-        <!-- <select-label-value     use-input hundido clearable flat bordered
-          v-model               ="b.f.proveedores"
-          label                 ="Proveedor"
-          icon                  ="mdi-storefront"
-          class                 ="width190"
-          :options              ="b.o.proveedores"
-        /> -->
       </fieldset-filtro>          
       <!-- //* /////////////////////////////////////////////////// Paginación -->
       <fieldset-filtro
@@ -224,135 +130,6 @@
         </div>
       </fieldset-filtro>      
     </q-tab-panel>
-    <!-- //* /////////////////////////////////////////////////////// Tab 2 -->
-    <q-tab-panel
-      name                      ="tab_2"
-      class                     ="row q-pa-none no-wrap scroll"
-      >
-      <fieldset-filtro
-        v-if                    ="!usuario.externo"
-        titulo                  ="Nuestros productos"
-        class-contenido         ="grilla-ribom"
-        >
-        <!-- //* ///////////////////////////////////////////////// Busqueda general -->
-        <input-buscar           clearable hundido
-          v-model               ="b.f.buscar4"
-          label                 ="Búsqueda nuestra"
-          class                 ="width170"
-          icon                  ="mdi-account-search"
-          debounce              ="800"
-        />        
-        <!-- //* ///////////////////////////////////////////////// Productos vinculados -->        
-        <select-label-value     use-input hundido clearable flat bordered
-          v-model               ="b.f.l5"
-          label                 ="Vinculados"
-          icon                  ="mdi-link-variant"
-          class                 ="width170"
-          :options              ="[ { value: 1, label: 'Vinculado' }, { value: 0, label: 'Sin vinculo' }]"
-        />
-        <!-- //* ///////////////////////////////////////////////// En venta -->        
-        <select-label-value     use-input hundido clearable flat bordered
-          v-model               ="b.f.l2"
-          label                 ="En venta"
-          icon                  ="mdi-book-check"
-          class                 ="width170"
-          :options              ="Busqueda.listaActivo"
-        />
-        <!-- //* ///////////////////////////////////////////////// Otros proveedores -->        
-        <select-label-value     use-input hundido clearable flat bordered
-          v-if                  ="!usuario.externo"
-          v-model               ="b.f.l6"
-          label                 ="Otros proveedores"
-          icon                  ="mdi-account-group"
-          class                 ="width170"
-          :disable              ="!b.f.proveedores.label"
-          :options              ="[ { value: 1, label: 'Varios proveedores' }, { value: 0, label: 'Un proveedor' }]"
-        />           
-      </fieldset-filtro>
-      <fieldset-filtro
-        titulo                  ="Precio"
-        class-contenido         ="column q-gutter-xs"
-        >
-        <!-- //* ///////////////////////////////////////////////// Precio Minimo -->
-        <input-number           hundido clearable
-          v-model               ="b.f.valorMin"
-          label                 ="Mínimo"
-          icon                  ="mdi-currency-usd"
-          class                 ="width140"
-          :minimo               ="0"
-          :maximo               ="!!b.f.valorMax ? b.f.valorMax : undefined"
-        />
-        <!-- //* ///////////////////////////////////////////////// Precio Maximo -->
-        <input-number           hundido clearable
-          v-model               ="b.f.valorMax"
-          label                 ="Máximo"
-          icon                  ="mdi-currency-usd"
-          class                 ="width140"
-          :minimo               ="!!b.f.valorMin ? b.f.valorMin : undefined"
-          :maximo               ="999_999_999"
-        />
-      </fieldset-filtro>
-      <fieldset-filtro
-        titulo                  ="Nuestros productos"
-        class-contenido         ="grilla-ribom"
-        >
-        <!-- //* ///////////////////////////////////////////////// Con familia -->        
-        <select-label-value     use-input hundido clearable flat bordered
-          v-model               ="b.f.l4"
-          label                 ="Con familia"
-          icon                  ="mdi-account-group"
-          class                 ="width170"
-          :options              ="[ { value: 1, label: 'Con familia' }, { value: 0, label: 'Sin familia' }]"
-        />        
-        <!-- //* ///////////////////////////////////////////////// Con documento -->        
-        <select-label-value     use-input hundido clearable flat bordered
-          v-model               ="b.f.l3"
-          label                 ="Con documento"
-          icon                  ="mdi-file-document"
-          class                 ="width170"
-          :options              ="[ { value: 1, label: 'Con documento' }, { value: 0, label: 'Sin documento' }]"
-        />        
-      </fieldset-filtro>      
-      <!-- //* /////////////////////////////////////////////////// Fecha creacion -->
-      <fieldset-filtro
-        titulo                  ="Fechas creación"
-        class-contenido         ="column q-gutter-xs"
-        >
-        <!-- //* ///////////////////////////////////////////////// Fecha desde -->
-        <input-fecha            hundido no-futuro clearable
-          v-model               ="b.f.desde"
-          label                 ="Desde"
-          class                 ="width160"
-          :hasta                ="b.f.hasta"
-        />
-        <!-- //* ///////////////////////////////////////////////// Fecha hasta -->
-        <input-fecha            hundido no-futuro clearable
-          v-model               ="b.f.hasta"
-          label                 ="Hasta"
-          class                 ="width160"
-          :desde                ="b.f.desde"
-        />
-      </fieldset-filtro>
-      <fieldset-filtro
-        titulo                  ="Usuarios"
-        class-contenido         ="grilla-ribom"
-        >
-        <!-- //* ///////////////////////////////////////////////// Creador -->
-        <select-usuario         hundido clearable          
-          v-model               ="b.f.creador"
-          class                 ="width180"
-          label                 ="Creador"
-          :grupos               ="[GRUPO_USUARIO.PRODUCTOS]"          
-        />
-        <!-- //* ///////////////////////////////////////////////// Editor -->
-        <select-usuario         hundido clearable          
-          v-model               ="b.f.usuario"
-          class                 ="width180"
-          label                 ="Editor"          
-          :grupos               =[GRUPO_USUARIO.PRODUCTOS]
-        />        
-      </fieldset-filtro>      
-    </q-tab-panel>
     <!-- //* /////////////////////////////////////////////////////// Tab 3 Crear Editar -->
     <q-tab-panel
       name                      ="tab_3"
@@ -398,84 +175,6 @@
         </q-btn>
       </fieldset-filtro>    
 
-      <!-- //* /////////////////////////////////////////////////// Acciones -->
-      <fieldset-filtro  
-        titulo                  ="Acciones"
-        class-contenido         ="grilla-ribom fit"
-        >
-        <div class              ="centerh">
-          <q-btn
-            v-bind              ="style.btnBaseMd"
-            label               ="Copiar valores"
-            icon                ="mdi-content-duplicate"
-            color               ="blue-8"
-            class               ="full-width"
-            @click              ="copiarADatosTemporales"
-            >
-            <Tooltip label      ="Copiar valores a campos temporales"/>
-          </q-btn>
-        </div>
-        <div class              ="centerh">
-          <q-btn
-            v-bind              ="style.btnBaseMd"
-            label               ="Cambiar precios"
-            icon                ="mdi-cash-usd"
-            color               ="positive"           
-            class               ="full-width"
-            >
-            <confirmar @ok      ="actualizarPrecios"/>
-            <Tooltip label      ="Copiar precios de temporales precios de proveedor"/>
-          </q-btn>
-        </div>
-        <div class              ="centerh">
-          <q-btn
-            v-bind              ="style.btnBaseMd"
-            label               ="Precios actualizados"
-            icon                ="mdi-cash-check"
-            color               ="teal-9"
-            class               ="full-width"            
-            >
-            <confirmar @ok      ="marcarPreciosActualizados( true )"/>
-            <Tooltip label      ="Marcar precios como actualizados"/>
-          </q-btn>
-        </div>
-        <div class              ="centerh">
-          <q-btn
-            v-bind              ="style.btnBaseMd"
-            label               ="Precios desactualizados"
-            icon                ="mdi-cash-remove"
-            color               ="deep-orange-9"
-            class               ="full-width"            
-            >
-            <confirmar @ok      ="marcarPreciosActualizados( false )"/>
-            <Tooltip label      ="Marcar precios como desactualizados"/>
-          </q-btn>
-        </div>
-        <!-- <div class              ="centerh">
-          <q-btn
-            v-bind              ="style.btnBaseMd"
-            label               ="Subir IVA"
-            icon                ="mdi-arrow-up-bold-box"
-            color               ="indigo"
-            class               ="full-width"            
-            >
-            <confirmar  @ok     ="cambiarPreciosPorIVA('subir')"/>
-            <Tooltip :label     ="`Aumenta un ${IVA}% de IVA a los precios temporales`"/>
-          </q-btn>
-        </div> -->
-        <div class              ="centerh">
-          <q-btn
-            v-bind              ="style.btnBaseMd"
-            label               ="Bajar IVA"
-            icon                ="mdi-arrow-down-bold-box"
-            color               ="indigo"
-            class               ="full-width"            
-            >
-            <confirmar  @ok     ="cambiarPreciosPorIVA('bajar')"/>
-            <Tooltip :label     ="`Disminuye un ${IVA}% de IVA a los precios temporales`"/>
-          </q-btn>
-        </div>              
-      </fieldset-filtro>
       <!-- //* /////////////////////////////////////////////////// Modo Edicion -->
       <fieldset-filtro
         titulo                  ="Modo de edición"
@@ -499,15 +198,7 @@
           </q-btn-toggle>
         </div>
       </fieldset-filtro>      
-    </q-tab-panel>    
-    <!-- //* /////////////////////////////////////////////////////// Tab 4 Vistas -->
-    <q-tab-panel
-      name                      ="tab_4"
-      class                     ="row q-pa-none no-wrap scroll"
-      >
-      <vistas :ref-vista        ="VISTAS_AG.PRODUCTOS_PROVEEDORES"/>
     </q-tab-panel>
-
   </q-tab-panels>
   <inner-loading :cargando      ="loading.carga || b.f.copiando"/>
 </template>
@@ -558,13 +249,9 @@
   
   const { crearProductos,
           limpiarFiltros,
-          limpiarBusqueda,
-          actualizarPrecios,
-          cambiarPreciosPorIVA,
+          limpiarBusqueda,          
           setEdicionEnProductos,
-          copiarADatosTemporales,
           crearFilasNuevosProductos,
-          marcarPreciosActualizados,
                             } = useControlProductosProveedor()
 
   type TEmit                  = {
@@ -572,8 +259,7 @@
     exportar        : [ value : void    ]
   }
   const emit                  = defineEmits<TEmit>()
-  const IVA                   = parseInt( process.env.IVA ?? "0" )
-
+  
   const totalACrear           = ref<number>(1)
   const hayProductosNuevos    = computed(()=> !!(productosPro.value.filter( p => p.esNuevo ).length) )  
 

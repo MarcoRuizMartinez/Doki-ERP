@@ -108,7 +108,7 @@ const limpiarRef   = ( p : any ) => ToolType.keyStringValido(p, "newValue").repl
 
 
 // * ////////////////////////////////////////////////////////////////////////////////////////////////// COLUMNAS
-export function columnasProductos( conPrecios : boolean, usuarioExterno : boolean ) : (ColDef<IProductoProveedor>  | ColGroupDef)[] 
+export function columnasProductos( conPrecios : boolean ) : (ColDef<IProductoProveedor>  | ColGroupDef)[] 
 {
   const columnas : (ColDef<IProductoProveedor>  | ColGroupDef)[] = [
     { // * //////////////////////////////////////////////////////////////////////////////// Imagen
@@ -191,33 +191,32 @@ export function columnasProductos( conPrecios : boolean, usuarioExterno : boolea
     },
   ]
 
-  if(!usuarioExterno)
-  {
-    columnas.push(
-      { // * //////////////////////////////////////////////////////////////////////////////// REF y nombre nuestros  
-        headerName          : "🏠Datos de nuestros",                      
-        headerClass         : "bg-light-blue-10 text-white",
-        marryChildren       : false,
-        children            :
-        [
-          { headerName      : "🏠Ref nuestra",
-            field           : "refNuestra",
-            headerClass     : "bg-light-blue-6 text-white",
-            tooltipField    : "proveedor.label"
-          },
-          { headerName      : "🏠Nombre nuestro",
-            field           : "nombreNuestro",
-            headerClass     : "bg-light-blue-6 text-white",
-            minWidth        : 340
-          },
-          { headerName      : "🏠Activo nuestro",
-            field           : "activoNuestro",
-            headerClass     : "bg-light-blue-6 text-white",
-          },        
-        ]
-      }, 
-    )
-  }
+
+  columnas.push(
+    { // * //////////////////////////////////////////////////////////////////////////////// REF y nombre nuestros  
+      headerName          : "🏠Datos de nuestros",                      
+      headerClass         : "bg-light-blue-10 text-white",
+      marryChildren       : false,
+      children            :
+      [
+        { headerName      : "🏠Ref nuestra",
+          field           : "refNuestra",
+          headerClass     : "bg-light-blue-6 text-white",
+          tooltipField    : "proveedor.label"
+        },
+        { headerName      : "🏠Nombre nuestro",
+          field           : "nombreNuestro",
+          headerClass     : "bg-light-blue-6 text-white",
+          minWidth        : 340
+        },
+        { headerName      : "🏠Activo nuestro",
+          field           : "activoNuestro",
+          headerClass     : "bg-light-blue-6 text-white",
+        },        
+      ]
+    }, 
+  )
+
 
   columnas.push(
     { // * //////////////////////////////////////////////////////////////////////////////// Disponibilidad
@@ -273,93 +272,90 @@ export function columnasProductos( conPrecios : boolean, usuarioExterno : boolea
     },
   )
 
-  if(!usuarioExterno)
-  {
-
-    columnas.push(
-      { // * //////////////////////////////////////////////////////////////////////////////// Categorización
-        headerName          : "🗃️Categorización de producto",                      
-        headerClass         : "bg-deep-purple-10 text-white",
-        marryChildren       : false,
-        children            :
-        [
-          Col.Objeto(
-          {
-            headerName      : "🆎Categoría",
-            field           : "categoria",
-            headerClass     : "bg-deep-purple-6 text-white",
-            opciones        : getCategoriasDB,
-            key             : "label",
-            type            : "editarYCrear",
-            cellClassRules  : { 'bg-deep-orange-2': p => ( p.data?.esNuevo ?? false ) && !p.data.okCategoria }
-          }),
-          Col.Objeto(
-          {
-            headerName      : "🔢Tipo",
-            field           : "tipo",
-            headerClass     : "bg-deep-purple-6 text-white",
-            opciones        : TiposProductosProveedor,
-            key             : "label",
-            type            : "editarYCrear",
-            cellClassRules  : { 'bg-deep-orange-2': p => ( p.data?.esNuevo ?? false ) && !p.data.okTipo }
-          }),
-          {
-            headerName      : "👩‍👧‍👦Padre",
-            field           : "refPadre",
-            headerClass     : "bg-deep-purple-6 text-white",
-            hide            : false,
-            type            : "editarYCrear",
-            valueParser     : p => ToolType.keyStringValido(p, "newValue").trim(),
-            cellClassRules  : { 'bg-deep-orange-2': p => ( p.data?.esNuevo ?? false ) && !p.data.okRefPadre }
-            
+  columnas.push(
+    { // * //////////////////////////////////////////////////////////////////////////////// Categorización
+      headerName          : "🗃️Categorización de producto",                      
+      headerClass         : "bg-deep-purple-10 text-white",
+      marryChildren       : false,
+      children            :
+      [
+        Col.Objeto(
+        {
+          headerName      : "🆎Categoría",
+          field           : "categoria",
+          headerClass     : "bg-deep-purple-6 text-white",
+          opciones        : getCategoriasDB,
+          key             : "label",
+          type            : "editarYCrear",
+          cellClassRules  : { 'bg-deep-orange-2': p => ( p.data?.esNuevo ?? false ) && !p.data.okCategoria }
+        }),
+        Col.Objeto(
+        {
+          headerName      : "🔢Tipo",
+          field           : "tipo",
+          headerClass     : "bg-deep-purple-6 text-white",
+          opciones        : TiposProductosProveedor,
+          key             : "label",
+          type            : "editarYCrear",
+          cellClassRules  : { 'bg-deep-orange-2': p => ( p.data?.esNuevo ?? false ) && !p.data.okTipo }
+        }),
+        {
+          headerName      : "👩‍👧‍👦Padre",
+          field           : "refPadre",
+          headerClass     : "bg-deep-purple-6 text-white",
+          hide            : false,
+          type            : "editarYCrear",
+          valueParser     : p => ToolType.keyStringValido(p, "newValue").trim(),
+          cellClassRules  : { 'bg-deep-orange-2': p => ( p.data?.esNuevo ?? false ) && !p.data.okRefPadre }
+          
+        },
+        {
+          headerName      : "⬇️Orden",
+          field           : "orden",
+          headerClass     : "bg-deep-purple-6 text-white",
+          type            : ["editarYCrear", "numero" ],
+          width           : 110,
+          comparator      : (valueA, valueB, nodeA, nodeB, isDescending) => {
+            const vA      = ToolType.anyToNum( valueA )
+            const vB      = ToolType.anyToNum( valueB )
+            const orden   =   vA == vB ? 0 
+                            : vA > vB  ? 1
+                            : -1
+            return orden
           },
-          {
-            headerName      : "⬇️Orden",
-            field           : "orden",
-            headerClass     : "bg-deep-purple-6 text-white",
-            type            : ["editarYCrear", "numero" ],
-            width           : 110,
-            comparator      : (valueA, valueB, nodeA, nodeB, isDescending) => {
-              const vA      = ToolType.anyToNum( valueA )
-              const vB      = ToolType.anyToNum( valueB )
-              const orden   =   vA == vB ? 0 
-                              : vA > vB  ? 1
-                              : -1
-              return orden
-            },
-            //sortingOrder    : ["asc", "desc"]
-          },
-          {
-            headerName      : "👨‍👩‍👧‍👦🏠Familia nuestra", 
-            field           : "familiaNuestra", 
-            headerClass     : "bg-deep-purple-6 text-white",
-            hide            : true,
-            type            : "editarYCrear",
-            enableRowGroup  : true,
-            valueParser     : p => ToolType.keyStringValido(p, "newValue").trim()
-          },
-          {
-            headerName      : "👨‍👩‍👧‍👦🏪Familia proveedor", 
-            field           : "familiaProveedor",
-            headerClass     : "bg-deep-purple-6 text-white",
-            hide            : true,
-            type            : "editarYCrear",
-            enableRowGroup  : true,
-            valueParser     : p => ToolType.keyStringValido(p, "newValue").trim()
-          },
-          {
-            headerName      : "📑Documento", 
-            headerClass     : "bg-deep-purple-6 text-white",
-            field           : "documento",
-            hide            : true,
-            type            : "editarYCrear",
-            enableRowGroup  : true,
-            valueParser     : p => ToolType.keyStringValido(p, "newValue").trim()
-          },
-        ]
-      },
-    )
-  }
+          //sortingOrder    : ["asc", "desc"]
+        },
+        {
+          headerName      : "👨‍👩‍👧‍👦🏠Familia nuestra", 
+          field           : "familiaNuestra", 
+          headerClass     : "bg-deep-purple-6 text-white",
+          hide            : true,
+          type            : "editarYCrear",
+          enableRowGroup  : true,
+          valueParser     : p => ToolType.keyStringValido(p, "newValue").trim()
+        },
+        {
+          headerName      : "👨‍👩‍👧‍👦🏪Familia proveedor", 
+          field           : "familiaProveedor",
+          headerClass     : "bg-deep-purple-6 text-white",
+          hide            : true,
+          type            : "editarYCrear",
+          enableRowGroup  : true,
+          valueParser     : p => ToolType.keyStringValido(p, "newValue").trim()
+        },
+        {
+          headerName      : "📑Documento", 
+          headerClass     : "bg-deep-purple-6 text-white",
+          field           : "documento",
+          hide            : true,
+          type            : "editarYCrear",
+          enableRowGroup  : true,
+          valueParser     : p => ToolType.keyStringValido(p, "newValue").trim()
+        },
+      ]
+    },
+  )
+  
 
   if(conPrecios)
   {

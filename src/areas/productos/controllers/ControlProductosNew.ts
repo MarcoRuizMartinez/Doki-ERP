@@ -8,45 +8,36 @@ import {  useStoreProducto      } from 'stores/producto'
 import {  useStoreUser          } from 'stores/user'
 
 //* ///////////////////////////////////////////////////////////////////////////////// Modelos
-import {  IProductoProveedor,
-          ProductoProveedor,
-          THijoPadre            } from '../models/ProductoProveedor'
+import {  IProductoDoli,
+          ProductoDoli          } from '../models/ProductoDolibarr'
 import {  IQuery                } from "src/models/Busqueda"
-import {  TIPO_PRO_PROVEEDOR    } from '../models/TipoProductoProveedor'
 import {  TIPO_EDICION,
           TDatosEvento
                                 } from "components/utilidades/AgGrid/AGTools"
 
 //* ///////////////////////////////////////////////////////////////////////////////// Componibles
-//import {  useFetch              } from "src/composables/useFetch"
-//import {  getURL, getFormData   } from "src/composables/APIMaco"
-
 import {  useTools, 
           ToolType,
           ToolNum               } from "src/composables/useTools"
-import {  servicesProductosPro  } from "src/areas/productos/services/servicesProductosProveedor"
+import {  servicesProductosPro  } from "src/areas/productos/services/servicesProductosNew"
 import {  IRowNode              } from "ag-grid-community"
-
 
 export function useControlProductosDolibarr() 
 {
-  
   const { aviso               } = useTools() 
-  // const { apiDolibarr         } = useApiDolibarr()
-  // const { miFetch             } = useFetch()
+
   //* //////////////////////////////////////////////////////////////////////////////// 🤵🏻‍♂️🤵🏻‍♂️🤵🏻‍♂️🤵🏻‍♂️🤵🏻‍♂️🤵🏻‍♂️🤵🏻‍♂️🤵🏻‍♂️🤵🏻‍♂️🤵🏻‍♂️🤵🏻‍♂️🤵🏻‍♂️🤵🏻‍♂️🤵🏻‍♂️🤵🏻‍♂️🤵🏻‍♂️ Servicios
-  const { CrearProductos,
+  const { //CrearProductos,
           BuscarProductos,
-          BuscarProductoByRef,
+          //BuscarProductoByRef,
           EditarCampoEnLote,
-          RelacionarHijosYPadres,
                               } = servicesProductosPro()
 
   //* //////////////////////////////////////////////////////////////////////////////// 🍍🍍🍍🍍🍍🍍🍍🍍🍍🍍🍍🍍🍍🍍🍍🍍🍍 Pinia
   const { usuario             } = storeToRefs( useStoreUser() )  
 
   const { busquedaPro : b,
-          productosPro,
+          productos,
           loading             } = storeToRefs( useStoreProducto() )
 
   const { tabs,
@@ -60,17 +51,18 @@ export function useControlProductosDolibarr()
   {
     function crearFilasNuevosProductos( filas : number )
     {
-      const nuevosProductos :IProductoProveedor[] = []
+      const nuevosProductos :IProductoDoli[] = []
   
-      for (let i = 0; i < filas; i++){
-        const newProducto           = new ProductoProveedor( "nuevo" )
-        newProducto.id              = ( productosPro.value.length + i + 1 ) + 1_000_000
+      for (let i = 0; i < filas; i++)
+      {
+        /* const newProducto           = new ProductoDoli( "nuevo" )
+        newProducto.id              = ( productos.value.length + i + 1 ) + 1_000_000
         nuevosProductos.push( newProducto )
-        productosPro.value.unshift( newProducto )
+        productos.value.unshift( newProducto ) */
       }
     }
 
-    function crearNuevasFilas( nuevosProductos : IProductoProveedor[] )
+    function crearNuevasFilas( nuevosProductos : IProductoDoli[] )
     {
       tablaAG.value?.gridApi?.applyTransaction({
           add: nuevosProductos,
@@ -81,10 +73,10 @@ export function useControlProductosDolibarr()
     function eliminarFila( id : number = 0 )
     {
       if(!id) return
-      const index                 = productosPro.value.findIndex( p => p.id === id )
+      const index                 = productos.value.findIndex( p => p.id === id )
       if(index < 0 ) return 
       
-      productosPro.value.splice( index, 1 )
+      productos.value.splice( index, 1 )
     }
 
 
@@ -97,13 +89,13 @@ export function useControlProductosDolibarr()
   
     function copiarADatosTemporales()
     {
-      productosPro.value.forEach( p => p.copiarDatos() )
+      //productos.value.forEach( p => p.copiarDatos() )
       tablaAG.value?.refreshCells( false )
     }
   
     function setEdicionEnProductos(){
       const editar                = modoEdicion.value === TIPO_EDICION.RANGO || modoEdicion.value === TIPO_EDICION.CELDA
-      productosPro.value.forEach( p => p.editable = editar )
+      //productos.value.forEach( p => p.editable = editar )
       tablaAG.value?.refreshCells( true )
     }
   
@@ -115,9 +107,9 @@ export function useControlProductosDolibarr()
     function limpiarTabla()
     {
       limpiarFiltros()
-      productosPro.value          = []
+      productos.value             = []
 
-      const rowData : IRowNode<IProductoProveedor>[] = [];
+      const rowData : IRowNode<IProductoDoli>[] = [];
       tablaAG.value?.gridApi?.forEachNode     ( node => rowData.push( node.data ) )
       tablaAG.value?.gridApi?.applyTransaction( { remove: rowData } )
     }
@@ -144,7 +136,8 @@ export function useControlProductosDolibarr()
   {
     async function crearProductos()
     {
-      const productosCrear        = productosPro.value.filter( p => p.sePuedeCrear )
+      /* const productosCrear        = productos.value.filter( p => p.sePuedeCrear )
+      
       if(!productosCrear.length){
         aviso("negative", "No hay productos listos para crear", "table")
         return
@@ -169,18 +162,9 @@ export function useControlProductosDolibarr()
       })
 
       crearNuevasFilas( productosCrear )
-      const relaciones            = productosCrear.filter( p => !!p.idPadre ).map( p => p.productoPadreApi )  
-      relacionarHijosConPadres( relaciones )
+      const relaciones            = productosCrear.filter( p => !!p.idPadre ).map( p => p.productoPadreApi ) */
     }
-  
-    async function relacionarHijosConPadres( relaciones : THijoPadre[] )
-    {
-      if(!relaciones.length) return
-  
-      loading.value.crear         = true
-      const ok                    = await RelacionarHijosYPadres( relaciones )
-      loading.value.crear         = false
-    }
+
   
     //* //////////////////////////////////////////////////////////////////////////////// ☁️☁️☁️☁️☁️☁️☁️☁️☁️☁️☁️☁️☁️☁️☁️☁️ Actualizar datos
     const cambios : TDatosEvento[]= []
@@ -208,31 +192,32 @@ export function useControlProductosDolibarr()
     async function gestionarCambiosEnNuevo( d : TDatosEvento )
     {
       let revisarCampos         = false
-      if(d.campo === "refPadre" || d.campo === "tipo")
+      /* if(d.campo === "refPadre" || d.campo === "tipo")
       {
         if(d.data.tipo.value    === TIPO_PRO_PROVEEDOR.HIJO && d.data.refPadre.length > 3)
         {
           const producto        = await BuscarProductoByRef( d.data.refPadre )
           if(!!producto.id)
           {
-            d.data              = ProductoProveedor.getCopiaProducto( producto, d.data ) 
+            d.data              = ProductoDoli.getCopiaProducto( producto, d.data ) 
             d.data.idPadre      = producto.id
             revisarCampos       = true
           }
   
           d.data.okRefPadre     = !!producto.id
         }
-      }
+      } */
   
+      /*
       if(d.campo                === "ref"       || revisarCampos){
         const producto          = await BuscarProductoByRef( d.data.ref )
-        const repetido          = productosPro.value.some( p => p.ref === d.data.ref && p.id != d.data.id ) 
+        const repetido          = productos.value.some( p => p.ref === d.data.ref && p.id != d.data.id ) 
         const muyCorto          = d.data.ref.length <= 2
         d.data.okRef            = !(!!producto.id || repetido || muyCorto )
-      }
+      }*/
   
       if(d.campo                === "nombre"    || revisarCampos){
-        const repetido          = productosPro.value.some( p => p.nombre === d.data.nombre && p.id != d.data.id ) 
+        const repetido          = productos.value.some( p => p.nombre === d.data.nombre && p.id != d.data.id ) 
         d.data.okNombre         = d.data.nombre.length >= 8 && !repetido
       }
       
@@ -345,76 +330,6 @@ export function useControlProductosDolibarr()
   //* //////////////////////////////////////////////////////////////////////////////// 🪙🪙🪙🪙🪙🪙🪙🪙🪙🪙🪙🪙🪙🪙 Gestion precios
   function usePrecios()
   {
-    async function actualizarPrecios()
-    {
-      await copiarYSubirPreciosDeTemporales( "precio" )
-      await copiarYSubirPreciosDeTemporales( "precioCredito" )
-      tablaAG.value?.refreshCells( false )
-    }
-  
-    async function copiarYSubirPreciosDeTemporales( key : "precio" | "precioCredito" )
-    {
-      cambios.length = 0
-      for (const p of productosPro.value)
-      {
-        if(key === "precio"         && p.precio         === p.precio_n)         continue
-        if(key === "precioCredito"  && p.precioCredito  === p.precioCredito_n)  continue
-  
-        p.copiarPrecios( key )
-  
-        const valor   = key === "precio" ? p.precio : p.precioCredito
-        if(!valor) continue
-        
-        cambios.push({
-          campo     : key,
-          data      : p,
-          value     : valor,
-          index     : 0,
-          oldValue  : 0,
-          source    : "",
-        })
-      }
-  
-      await subirCambiosEnLote()
-    }
-
-    function cambiarPreciosPorIVA( accion : "subir" | "bajar" )
-    {
-      const IVA                     = parseInt( process.env.IVA ?? "0" )
-      tablaAG.value?.gridApi?.forEachNode((fila : IRowNode<IProductoProveedor>) =>
-      {
-        if(!fila.data) return 
-  
-        const precioCon             = ToolType.keyNumberValido( fila.data, "precio" )
-        const precioCre             = ToolType.keyNumberValido( fila.data, "precioCredito" )
-  
-        if(accion                   == "subir"){
-          if(!!precioCon)   fila.data.precio_n          = ToolNum.roundInt( ToolNum.X100_Aumento( precioCon, IVA ), 0 )
-          if(!!precioCre)   fila.data.precioCredito_n   = ToolNum.roundInt( ToolNum.X100_Aumento( precioCre, IVA ), 0 )
-        }
-        else{
-          if(!!precioCon)   fila.data.precio_n          = ToolNum.roundInt( ToolNum.X100_Reduccion( precioCon, IVA ), 0 )
-          if(!!precioCre)   fila.data.precioCredito_n   = ToolNum.roundInt( ToolNum.X100_Reduccion( precioCre, IVA ), 0 )
-        }
-  
-        if(!!precioCon)     fila.setDataValue("precio_n",         fila.data.precio_n)
-        if(!!precioCre)     fila.setDataValue("precioCredito_n",  fila.data.precioCredito_n)
-      })
-    }
-
-    function marcarPreciosActualizados( actualizado : boolean )
-    {
-      tablaAG.value?.gridApi?.forEachNode((fila : IRowNode<IProductoProveedor>) => {
-          fila.setDataValue("precioActualizado", actualizado)
-        }
-      )
-    }
-
-    return { 
-      actualizarPrecios, 
-      cambiarPreciosPorIVA,
-      marcarPreciosActualizados
-    }
   }
 
   //* //////////////////////////////////////////////////////////////////////////////// 🏁🏁🏁🏁🏁🏁🏁 Funciones de Page: iniciar y desmontar
@@ -424,17 +339,15 @@ export function useControlProductosDolibarr()
 
     async function iniciar()
     {
-      productosPro.value          = []    
+      productos.value             = []    
       tabs.value.activa           = "tab_1"
       modoEdicion.value           = TIPO_EDICION.BLOQUEDA
       await b.value.montarBusqueda( usuario.value.id, router, false, true, 50 )
-
-      if(usuario.value.externo) buscar({})
     }
   
     function desmontar()
     {
-      productosPro.value          = []
+      productos.value             = []
       b.value.desmontarBusqueda()
     }
 
@@ -452,22 +365,9 @@ export function useControlProductosDolibarr()
       loading.value.carga         = true
       const editable              = modoEdicion.value === TIPO_EDICION.RANGO || modoEdicion.value === TIPO_EDICION.CELDA
       limpiarTabla()
-      corregirQueryUsuarioExterno( query )
-      productosPro.value          = await BuscarProductos( query, editable )
+      productos.value             = await BuscarProductos( query, editable )
+      console.log("Buscar productos.value: ", productos.value);
       loading.value.carga         = false
-    }
-
-    function corregirQueryUsuarioExterno( query : IQuery )
-    {
-      if(!usuario.value.externo || !usuario.value.tercero_id ) return
-  
-      const hayLimite               = "limite" in query
-      if( !hayLimite )query.limite  = 25
-  
-      const hayOffset               = "offset" in query
-      if( !hayOffset )  query.offset= 0      
-  
-      query.proveedorId             = usuario.value.tercero_id      
     }
 
     async function limpiarBusqueda(){
@@ -495,12 +395,8 @@ export function useControlProductosDolibarr()
                                   } = useGestionTabla()
   const { cambios,
           crearProductos,
-          procesarEdicionEnLote,          
-          subirCambiosEnLote,      
+          procesarEdicionEnLote,
                                   } = useCRUD()         
-  const { actualizarPrecios,
-          marcarPreciosActualizados,
-          cambiarPreciosPorIVA    } = usePrecios()
   const { buscar, limpiarBusqueda } = useBuscar()
   const { iniciar, desmontar      } = useCicloDeVida()
 
@@ -513,9 +409,6 @@ export function useControlProductosDolibarr()
     buscar,
     limpiarBusqueda,
     // * ///////////////////////////////// ☁️ Actualizar datos
-    actualizarPrecios,
-    cambiarPreciosPorIVA,
-    marcarPreciosActualizados,
     procesarEdicionEnLote,
     // * ///////////////////////////////// 📋 Gestion de datos
     crearFilasNuevosProductos,

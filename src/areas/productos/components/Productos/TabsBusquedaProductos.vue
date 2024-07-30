@@ -10,14 +10,14 @@
       :alert          ="alertTab1 ? 'red' : false"      
       >
     </q-tab>
-    <q-tab
+    <!-- <q-tab
       label           ="Mas"
       name            ="tab_2"
       icon            ="mdi-magnify"
       :alert          ="alertTab2 ? 'red' : false"
       >
       <Tooltip label  ="Mas opciones"/>
-    </q-tab>    
+    </q-tab>   -->  
     <q-tab
       v-if            ="!usuario.esComercial && !usuario.externo"
       label           ="Crear y Editar"
@@ -26,32 +26,14 @@
       >
       <Tooltip label  ="Opciones de edición"/>
     </q-tab>
-    <q-tab
+    <!-- <q-tab
       v-if            ="!usuario.externo"
       label           ="Vistas"
       name            ="tab_4"
       icon            ="mdi-table-headers-eye"
       >
       <Tooltip label  ="Vistas de columnas"/>
-    </q-tab>
-<!--
-    <q-tab
-      label           ="Fechas"
-      name            ="tab_2"
-      icon            ="mdi-calendar-month"
-      :alert          ="alertTab2 ? 'red' : false"      
-      >
-    </q-tab>
- -->
-<!--
-    <q-tab
-      label           ="Busquedas"
-      name            ="tab_4"
-      icon            ="mdi-magnify-scan"      
-      >
-      <Tooltip label  ="Búsquedas rápidas"/>
-    </q-tab>
--->
+    </q-tab> -->
   </q-tabs>
 </template>
 

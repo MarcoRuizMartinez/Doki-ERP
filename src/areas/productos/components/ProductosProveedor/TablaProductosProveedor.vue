@@ -1,11 +1,11 @@
 <template>
   <tabla-agrid
     v-model                 ="productosPro"
+    ref                     ="AGProProvee"
     key-id                  ="id"
     :rango-activo           ="rangoActivo"
     :auto-size-strategy
     :columnas
-    ref                     ="AGProProvee"
     :row-class-rules        ="reglasCSS"
     :tipos-columnas         ="columnTypes"
     :get-context-menu-items ="getMenuContextual"
@@ -27,7 +27,6 @@
 
   // * ///////////////////////////////////////////////////////////////////////////////// Modelos
   import {  TIPO_EDICION        } from "components/utilidades/AgGrid/AGTools"
-  import {  VISTAS_AG           } from "components/utilidades/AgGrid/VistaAG"
   import {  columnasProductos,
             autoSizeStrategy,
             reglasCSS,

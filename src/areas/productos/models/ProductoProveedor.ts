@@ -258,7 +258,7 @@ export class ProductoProveedor implements IProductoProveedor
   }
 
  // * ////////////////////////////////////////////////////////////////////////// Get new LineaAcuerdo data de API
- static async getProductosFromAPI( dataAPI : any, editable : boolean = false ) : Promise< IProductoProveedor[] >
+ static async getProductosProveedorFromAPI( dataAPI : any, editable : boolean = false ) : Promise< IProductoProveedor[] >
  {
    
     const productos : IProductoProveedor[]  = []
@@ -270,14 +270,14 @@ export class ProductoProveedor implements IProductoProveedor
     
     for (const pp of dataAPI)
     {
-      const pro               = await ProductoProveedor.getProductoFromAPI( pp, editable )
+      const pro               = await ProductoProveedor.getProductoProveedorFromAPI( pp, editable )
       productos.push( pro )
     }
     return productos
  }
 
  // * ////////////////////////////////////////////////////////////////////////// Get new LineaAcuerdo data de API
- static async getProductoFromAPI( productoApi : any, editable : boolean = false ) : Promise< IProductoProveedor >
+ static async getProductoProveedorFromAPI( productoApi : any, editable : boolean = false ) : Promise< IProductoProveedor >
  {
     if(!productoApi)          return new ProductoProveedor()
 

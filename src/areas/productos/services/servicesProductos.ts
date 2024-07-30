@@ -52,7 +52,7 @@ export function servicesProductos()
       {
         for (const item of data)
         {
-          const p : IProductoDoli = await ProductoDoli.productoAPItoProducto( item ) 
+          const p : IProductoDoli = await ProductoDoli.getProductoFromAPI( item ) 
           productos.push( p )
         }
         resolver( productos )
@@ -90,7 +90,7 @@ export function servicesProductos()
               hijo.costo            = ToolType.keyNumberValido( item, "costo"       )
 
               hijo.img              = new ImagenProducto( item?.img  ?? "" )
-              hijo.productosPro     = await ProductoProveedor.getProductosFromAPI( item?.proveedores ?? "" )
+              hijo.productosPro     = await ProductoProveedor.getProductosProveedorFromAPI( item?.proveedores ?? "" )
               hijo.productosPro     = ToolArray.ordenar( hijo.productosPro, "precio" )
               hijo.naturaleza       = await getNaturalezaDB( item?.naturaleza_id ?? "0" )
               hijo.unidad           = await getUnidadDB( ToolType.keyNumberValido( item, "unidad_id" ) )

@@ -253,27 +253,27 @@ export class Accion implements IAccion
   static async accionApiToAccion( cApi : any, usuarioNowId : number ) : Promise<IAccion>
   {
     const c         = Object.assign( new Accion( usuarioNowId ), cApi ) as IAccion
-    c.id            = +cApi?.id           ?? 0
+    c.id            = +(cApi?.id           ?? 0)
     c.tipoAccion    = +(cApi?.tipoAccion  ?? 40) === 40 ? "sistema" : "manual"
-    const creadorId = +cApi?.creadorId    ?? 0
-    const asignadoId= +cApi?.asignadoId   ?? 0
-    const modificoId= +cApi?.modificoId   ?? 0
-    c.elementoId    = +cApi?.elementoId   ?? 0
-    c.progreso      = +cApi?.progreso     ?? 0
-    c.terceroId     = +cApi?.terceroId    ?? 0
-    c.proyectoId    = +cApi?.proyectoId   ?? 0
-    c.publico       = Boolean( +cApi?.publico       ?? 0)
-    c.conAlerta     = Boolean( +cApi?.conAlerta     ?? 0)
-    c.aceptado      = Boolean( +cApi?.aceptado      ?? 0)
-    c.eventoDiaFull = Boolean( +cApi?.eventoDiaFull ?? 0)
+    const creadorId = +(cApi?.creadorId    ?? 0)
+    const asignadoId= +(cApi?.asignadoId   ?? 0)
+    const modificoId= +(cApi?.modificoId   ?? 0)
+    c.elementoId    = +(cApi?.elementoId   ?? 0)
+    c.progreso      = +(cApi?.progreso     ?? 0)
+    c.terceroId     = +(cApi?.terceroId    ?? 0)
+    c.proyectoId    = +(cApi?.proyectoId   ?? 0)
+    c.publico       = Boolean( +(cApi?.publico       ?? 0))
+    c.conAlerta     = Boolean( +(cApi?.conAlerta     ?? 0))
+    c.aceptado      = Boolean( +(cApi?.aceptado      ?? 0))
+    c.eventoDiaFull = Boolean( +(cApi?.eventoDiaFull ?? 0))
     c.comentario    = c.comentario.replaceAll('\n', "<br/>")
     c.fechaInicio   = !!cApi.fechaInicio  ? new Date( cApi.fechaInicio  ) : new Date()
     c.fechaFin      = !!cApi.fechaFin     ? new Date( cApi.fechaFin     ) : new Date()
     c.creacion      = !!cApi.creacion     ? new Date( cApi.creacion     ) : new Date()
     c.modificado    = !!cApi.modificado   ? new Date( cApi.modificado   ) : new Date()
     
-    const cuando    = +cApi?.cuando       ?? 0
-    const priori    = +cApi?.prioridad    ?? 0
+    const cuando    = +(cApi?.cuando       ?? 0)
+    const priori    = +(cApi?.prioridad    ?? 0)
     c.cuando        = Cuando      .find( c => c.value === cuando ) ?? labelValueNulo
     c.prioridad     = Prioridades .find( c => c.value === priori ) ?? labelValueNulo
 

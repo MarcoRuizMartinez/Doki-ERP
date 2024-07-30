@@ -180,7 +180,7 @@ export function useControlAcuerdo()
     {
       for (const pp of data)
       {
-        const pProveedor          = await ProductoProveedor.getProductoFromAPI( pp )
+        const pProveedor          = await ProductoProveedor.getProductoProveedorFromAPI( pp )
         if(linea.id               === pProveedor.idNuestro)
           linea.productosProveedor.push( pProveedor )
       }

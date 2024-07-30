@@ -32,7 +32,7 @@ export function servicesProductosPro()
       //console.log("data: ", data);
       if(ok && Array.isArray( data ))
       {        
-        productos = await ProductoProveedor.getProductosFromAPI( data, editable )         
+        productos = await ProductoProveedor.getProductosProveedorFromAPI( data, editable )         
         //console.log("//* //////////// Productos: ", productos);
         resolver( productos )
       }
@@ -59,7 +59,7 @@ export function servicesProductosPro()
                                                   )
       if(ok)
       {        
-        const producto        = await ProductoProveedor.getProductoFromAPI( data, editable )         
+        const producto        = await ProductoProveedor.getProductoProveedorFromAPI( data, editable )         
         //console.log("//* //////////// Productos: ", productos);
         resolver( producto )
       }

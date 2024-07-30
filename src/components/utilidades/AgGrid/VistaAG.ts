@@ -97,5 +97,6 @@ export class VistaAG implements IVistaAG
 
 export enum VISTAS_AG
 {
-  PRODUCTOS_PROVEEDORES         = "AGProProvee"
+  PRODUCTOS_NUESTROS            = "AGProductos",
+  PRODUCTOS_PROVEEDORES         = "AGProProvee",
 }

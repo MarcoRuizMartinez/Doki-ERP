@@ -1,11 +1,11 @@
 <template>
   <tabla-agrid
-    v-model                 ="productosPro"
+    v-model                 ="productos"
+    ref                     ="AGProductos"
     key-id                  ="id"
     :rango-activo           ="rangoActivo"
     :auto-size-strategy
     :columnas
-    ref                     ="AGProProvee"
     :row-class-rules        ="reglasCSS"
     :tipos-columnas         ="columnTypes"
     :get-context-menu-items ="getMenuContextual"
@@ -27,40 +27,40 @@
 
   // * ///////////////////////////////////////////////////////////////////////////////// Modelos
   import {  TIPO_EDICION        } from "components/utilidades/AgGrid/AGTools"
-  import {  VISTAS_AG           } from "components/utilidades/AgGrid/VistaAG"
   import {  columnasProductos,
             autoSizeStrategy,
             reglasCSS,
             columnTypes,
                                 } from "./ColumnasProductos"
-  import {  IProductoProveedor  } from "../../models/ProductoProveedor"
+  import {  IProductoDoli       } from "../../models/ProductoDolibarr"
   import {  MenuItemDef,
             GetContextMenuItems,
             GetContextMenuItemsParams,
                                 } from "ag-grid-community";
+
   // * ///////////////////////////////////////////////////////////////////////////////// Componibles
-  import {  useControlProductosProveedor
-                                } from "src/areas/productos/controllers/ControlProductosProveedor"
+  import {  useControlProductosDolibarr
+                                } from "src/areas/productos/controllers/ControlProductosNew"
   // * ///////////////////////////////////////////////////////////////////////////////// Componentes
   import tablaAgrid               from "components/utilidades/AgGrid/TablaAG.vue"
   
-  const { productosPro          } = storeToRefs( useStoreProducto() )
+  const { productos             } = storeToRefs( useStoreProducto() )
   const { usuario               } = storeToRefs( useStoreUser() )
   const { tablaAG, 
           campo_1 : modoEdicion } = storeToRefs( useStoreApp() )
 
   const { eliminarFila,
-          procesarEdicionEnLote } = useControlProductosProveedor()
+          procesarEdicionEnLote } = useControlProductosDolibarr()
 
-  const AGProProvee               = ref< InstanceType<typeof tablaAgrid> | null>( null )
-  const columnas                  = ref( columnasProductos( !usuario.value.esComercial, usuario.value.externo ) )
+  const AGProductos               = ref< InstanceType<typeof tablaAgrid> | null>( null )
+  const columnas                  = ref( columnasProductos( !usuario.value.esComercial ) )
   const rangoActivo               = computed(()=> modoEdicion.value === TIPO_EDICION.RANGO ) 
 
   onMounted(()=>{
-    tablaAG.value                 = AGProProvee.value
+    tablaAG.value                 = AGProductos.value
   })
 
-  function getMenuContextual( params : GetContextMenuItemsParams<IProductoProveedor> ) : (string | MenuItemDef)[] | GetContextMenuItems
+  function getMenuContextual( params : GetContextMenuItemsParams<IProductoDoli> ) : (string | MenuItemDef)[] | GetContextMenuItems
   {
     return [
       "autoSizeAll",

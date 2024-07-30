@@ -363,8 +363,26 @@ export class ProductoDoli implements IProductoDoli
   }
 
 
+ // * ////////////////////////////////////////////////////////////////////////// Get new LineaAcuerdo data de API
+ static async getProductosFromAPI( dataAPI : any, editable : boolean = false ) : Promise< IProductoDoli[] >
+ {
+   
+    const productos : IProductoDoli[]  = []
 
-  static async productoAPItoProducto( productoApi : any ) : Promise<IProductoDoli>
+    if(typeof dataAPI === "string")
+      dataAPI                 = JSON.parse( dataAPI )
+    
+    if( !Array.isArray( dataAPI ) ) return []
+    
+    for (const pp of dataAPI)
+    {
+      const pro               = await ProductoDoli.getProductoFromAPI( pp, editable )
+      productos.push( pro )
+    }
+    return productos
+ }  
+
+  static async getProductoFromAPI( productoApi : any, editable : boolean = false ) : Promise<IProductoDoli>
   {
     if(!productoApi)                return new ProductoDoli()
     const producto                  = Object.assign( new ProductoDoli(), productoApi ) as IProductoDoli
@@ -419,7 +437,7 @@ export class ProductoDoli implements IProductoDoli
     producto.unidad                 = await getUnidadDB( producto.unidadId )
     producto.categoria              = await getCategoriaDB( producto.sigla )
     producto.naturaleza             = await getNaturalezaDB( productoApi?.naturaleza_id ?? "0" )
-    producto.productosProveedor     = await ProductoProveedor.getProductosFromAPI( productoApi?.productosPro ?? {} ) // TODO *
+    producto.productosProveedor     = await ProductoProveedor.getProductosProveedorFromAPI( productoApi?.productosPro ?? {} )
 
     return producto
   }
