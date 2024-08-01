@@ -122,6 +122,7 @@ const claseHPrecios         = claseCol("deep-orange")
 const claseHAumentos        = claseCol("deep-purple")
 const claseHCostos          = claseCol("indigo")
 const claseHExtras          = claseCol("blue-grey")
+const claseHRegistro        = claseCol("pink")
 
 // * ////////////////////////////////////////////////////////////////////////////////////////////////// COLUMNAS
 export function columnasProductos( conPrecios : boolean ) : ( ColDef< IProductoDoli >  | ColGroupDef )[] 
@@ -148,7 +149,7 @@ export function columnasProductos( conPrecios : boolean ) : ( ColDef< IProductoD
         { headerName        : "🏠Ref",
           field             : "ref",
           headerClass       : claseHDatos.col,
-          hide: false,
+          hide: true,
         },
         { headerName        : "🏠Nombre",
           field             : "nombre",
@@ -164,6 +165,7 @@ export function columnasProductos( conPrecios : boolean ) : ( ColDef< IProductoD
             opciones        : getCategoriasDB,
             key             : "label",
             type            : "editarYCrear",
+            hide: true,
             cellClassRules  : { 'bg-deep-orange-2': p => ( p.data?.esNuevo ?? false ) && !p.data.okCategoria },
           }
         ),
@@ -171,7 +173,7 @@ export function columnasProductos( conPrecios : boolean ) : ( ColDef< IProductoD
           field             : "tipoProducto",
           headerClass       : claseHDatos.col,
           cellClass         : "text-capitalize",
-          hide: false,
+          hide: true,
           editable          : false,          
         },
         Col.Objeto(
@@ -180,7 +182,7 @@ export function columnasProductos( conPrecios : boolean ) : ( ColDef< IProductoD
             field           : "naturaleza",
             headerClass     : claseHDatos.col,
             key             : "nombre",
-            hide: false,
+            hide: true,
             editable        : false,
             minWidth        : 160,
           }
@@ -191,7 +193,7 @@ export function columnasProductos( conPrecios : boolean ) : ( ColDef< IProductoD
             field           : "unidad",
             headerClass     : claseHDatos.col,
             key             : "label",
-            hide: false,
+            hide: true,
             editable        : false,
           }
         ),
@@ -220,7 +222,7 @@ export function columnasProductos( conPrecios : boolean ) : ( ColDef< IProductoD
           headerClass       : claseHDispo.col,
           type              : "editarYCrear",
           minWidth          : 140,
-          hide: false,
+          hide: true,
         }),
         Col.Boolean({
           headerName        : "✅En compra",
@@ -228,23 +230,31 @@ export function columnasProductos( conPrecios : boolean ) : ( ColDef< IProductoD
           headerClass       : claseHDispo.col,
           type              : "editarYCrear",
           minWidth          : 140,
-          hide: false,
+          hide: true,
         }),
         Col.Boolean({
           headerName        : "🏪Con proveedor",
           field             : "con_proveedor",
-          headerClass       : claseHDispo.col,          
+          headerClass       : claseHDispo.col,
           minWidth          : 170,
-          hide: false,
+          hide: true,
           editable          : false,
-        }),    
+        }),
+        Col.Boolean({
+          headerName        : "📦Stock gestionado",
+          field             : "stockGestionado",
+          headerClass       : claseHDispo.col,          
+          minWidth          : 180,
+          hide: true,
+          editable          : false,
+        }),        
         Col.Boolean({
           headerName        : "📦Stock proveedor",
           field             : "stockProveedor",
           headerClass       : claseHDispo.col,          
           minWidth          : 180,
-          hide: false,
-          editable          : false,          
+          hide: true,
+          editable          : false,
         }),
       ]
     },
@@ -264,7 +274,7 @@ export function columnasProductos( conPrecios : boolean ) : ( ColDef< IProductoD
           headerClass       : claseHRequi.col,
           type              : "editarYCrear",
           minWidth          : 130,
-          hide: false,
+          hide: true,
         }),
         Col.Boolean({
           headerName        : "✅Medida",
@@ -272,7 +282,7 @@ export function columnasProductos( conPrecios : boolean ) : ( ColDef< IProductoD
           headerClass       : claseHRequi.col,
           type              : "editarYCrear",
           minWidth          : 130,
-          hide: false,
+          hide: true,
         }),
         Col.Boolean({
           headerName        : "✅Entrega",
@@ -280,7 +290,7 @@ export function columnasProductos( conPrecios : boolean ) : ( ColDef< IProductoD
           headerClass       : claseHRequi.col,
           type              : "editarYCrear",
           minWidth          : 130,
-          hide: false,
+          hide: true,
         }),
       ]
     },
@@ -299,24 +309,26 @@ export function columnasProductos( conPrecios : boolean ) : ( ColDef< IProductoD
           headerName        : "🪙Precio final",
           field             : "precio",
           headerClass       : claseHPrecios.col,
+          hide: true,
         }),
         Col.Precio({
           headerName        : "💲Normal",
           field             : "precio_publico",
           headerClass       : claseHPrecios.col,
-          hide: false,
+          hide: true,
         }),
         Col.Precio({
           headerName        : "💲Descuento",
           field             : "precio_promocion",
           headerClass       : claseHPrecios.col,
-          hide: false,
+          hide: true,
         }),
         { headerName        : "🏦IVA",
           field             : "iva",
           headerClass       : claseHPrecios.col,
           type              : "porcentaje",
           width             : 90,
+          hide: true,
         },                
       ]
     },
@@ -334,57 +346,57 @@ export function columnasProductos( conPrecios : boolean ) : ( ColDef< IProductoD
           field             : "aumento",
           headerClass       : claseHAumentos.col,
           type              : "porcentaje",
-          width             : 100,          
-          hide: false,
+          width             : 100,
+          hide: true,
         },        
         Col.Precio({
           headerName        : "💲Base",
           field             : "precio_aumento",
           headerClass       : claseHAumentos.col,
           minWidth          : 100,
-          hide: false,
+          hide: true,
         }),
         { headerName        : "↗️Descuento",
           field             : "aumento_descuento",
           headerClass       : claseHAumentos.col,
           type              : "porcentaje",
           width             : 140,          
-          hide: false,
+          hide: true,
         },        
         Col.Precio({
           headerName        : "💲Descuento",
           field             : "precio_aumento_descuento",
           headerClass       : claseHAumentos.col,
           minWidth          : 140,
-          hide: false,
+          hide: true,
         }),
         { headerName        : "↗️Escom",
           field             : "aumento_escom",
           headerClass       : claseHAumentos.col,
           type              : "porcentaje",
           width             : 110,
-          hide: false,
+          hide: true,
         },        
         Col.Precio({
           headerName        : "💲Escom",
           field             : "precio_aumento_escom",
           headerClass       : claseHAumentos.col,
           minWidth          : 110,
-          hide: false,
+          hide: true,
         }),
         { headerName        : "↗️Black Friday",
           field             : "aumento_loco",
           headerClass       : claseHAumentos.col,
           type              : "porcentaje",
           width             : 150,          
-          hide: false,
+          hide: true,
         },        
         Col.Precio({
           headerName        : "💲Black Friday",
           field             : "precio_aumento_loco",
           headerClass       : claseHAumentos.col,
           width             : 150,
-          hide: false,
+          hide: true,
         }),           
       ]
     }
@@ -403,22 +415,56 @@ export function columnasProductos( conPrecios : boolean ) : ( ColDef< IProductoD
           field             : "costo",
           headerClass       : claseHCostos.col,
           width             : 150,
-          hide: false,
+          hide: true,
         }),
         Col.Precio({
           headerName        : "💲Costo extra",
           field             : "costo_adicional",
           headerClass       : claseHCostos.col,
           width             : 150,
-          hide: false,
+          hide: true,
         }),
         Col.Precio({
           headerName        : "💲Costo total",
           field             : "costoTotal",
           headerClass       : claseHCostos.col,
           width             : 150,
-          hide: false,
+          hide: true,
         }),        
+      ]
+    }
+  )
+
+  // * //////////////////////////////////////////////////////////////////////////////// Otros valores
+  columnas.push(
+    {
+      headerName            : "📋Registro de cambios",
+      headerClass           : claseHRegistro.header,
+      marryChildren         : false,
+      children              :      
+      [
+        { headerName        : "👤Creador",
+          field             : "creador.label",  
+          hide: false,          
+          headerClass       : claseHRegistro.col,
+        },
+        { headerName        : "📅Fecha Creación",
+          field             : "fechaCreacion",  
+          hide: false,            
+          minWidth          : 170,
+          headerClass       : claseHRegistro.col,
+        },
+        { headerName        : "👤Edito",
+          field             : "edito.label",  
+          hide: false,          
+          headerClass       : claseHRegistro.col,
+        },
+        { headerName        : "📅Fecha Edición",
+          field             : "fechaEdicion",  
+          hide: false,            
+          minWidth          : 170,
+          headerClass       : claseHRegistro.col,
+        }
       ]
     }
   )
@@ -431,23 +477,13 @@ export function columnasProductos( conPrecios : boolean ) : ( ColDef< IProductoD
       marryChildren         : false,
       children              :      
       [
-        { headerName        : "👤Creador",
-          field             : "creador.label",  
-          hide: false,          
-          headerClass       : claseHExtras.col,
-        },        
-        { headerName        : "📅Fecha Creación",
-          field             : "fecha_creacion",  
-          hide: false,            
-          headerClass       : claseHExtras.col,
-        },
         { headerName        : "Codigo Siigo",
           field             : "siigo.codigo",
           hide: false, 
           headerClass       : claseHExtras.col,
           width             : 130,
           cellClass         : "fuente-mono text-right"
-        },                   
+        },
       ]
     }
   )
@@ -519,14 +555,14 @@ export interface IProductoTrabajo
   
   //fecha_creacion            : string  
   //siigo                     : TCodigosSiigo  // Codigo siigo que se utiliza en los productos
-  //creador_id                : number
-
+  
   // * //////////////////// Datos contables
 
   // * //////////////////// Botones
   /*   
   urlDolibarr               : string
   urlTienda                 : string
+  Modifico
   */
   // * //////////////////// Proveedor
   /*

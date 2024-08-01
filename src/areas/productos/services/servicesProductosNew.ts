@@ -28,11 +28,9 @@ export function servicesProductosPro()
                                                     }
                                                   )
       let productos : IProductoDoli[]   = []
-      console.log("BuscarProductos data: ", data);
       if(ok && Array.isArray( data ))
       {        
         productos = await ProductoDoli.getProductosFromAPI( data, editable )         
-        console.log("productos: ", productos);
         resolver( productos )
       }
       else

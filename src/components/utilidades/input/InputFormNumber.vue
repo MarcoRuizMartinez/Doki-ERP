@@ -3,7 +3,7 @@
     <!-- v-bind              ="$attrs" -->
     <q-input              dense hide-bottom-space      
       v-model             ="modelo"
-      class               ="transi input-numero"
+      class               ="transi input-numero text-0_9em"
       input-class         ="fuente-mono"
       lazy-rules          ="ondemand"
       type                ="text"
@@ -75,6 +75,7 @@
         </div>
       </template>
     </q-input>
+    <Tooltip v-if="!!tooltip" :label="tooltip"/>
   </div>
 </template>
 
@@ -107,6 +108,7 @@
       hundido:      { default:  false,            type: Boolean             },
       icon:         { default:  "",               type: String              },
       label:        { default:  "",               type: String              },
+      tooltip:      { default:  "",               type: String              },
       bgColor:      { default:  undefined,        type: String              },
       clearable:    { default:  false,            type: Boolean             },
       noUndefined:  { default:  false,            type: Boolean             },

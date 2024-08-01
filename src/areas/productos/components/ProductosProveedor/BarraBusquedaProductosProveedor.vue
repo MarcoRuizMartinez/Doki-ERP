@@ -333,6 +333,7 @@
           :desde                ="b.f.desde"
         />
       </fieldset-filtro>
+      <!-- //* /////////////////////////////////////////////////// Usuario Creacion y Edición -->
       <fieldset-filtro
         titulo                  ="Usuarios"
         class-contenido         ="grilla-ribom"
@@ -349,7 +350,7 @@
           v-model               ="b.f.usuario"
           class                 ="width180"
           label                 ="Editor"          
-          :grupos               =[GRUPO_USUARIO.PRODUCTOS]
+          :grupos               ="[GRUPO_USUARIO.PRODUCTOS]"
         />        
       </fieldset-filtro>      
     </q-tab-panel>

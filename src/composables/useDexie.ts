@@ -663,6 +663,8 @@ export async function getFormasPagoDB() : Promise < IFormaPago[] >
 }
 
 
+
+
 export async function getMetodoDeEntregaDB( id : number ) : Promise < IMetodoEntrega >
 {
   // const{ db }               = storeToRefs( useStoreApp() )
@@ -719,6 +721,13 @@ export async function getUnidadDB( id : number ) : Promise < IUnidad >
     }
   )
 }
+
+export async function getUnidadesDB() : Promise < IUnidad[] >
+{
+  // const{ db }               = storeToRefs( useStoreApp() )
+  return db.transaction('r', db[ TABLAS.UNIDAD ], async () => await db[ TABLAS.UNIDAD ].toArray() )
+}
+
 
 export async function getTiempoEntregaDB( id : number ) : Promise < ITiempoEntrega >
 {
@@ -840,6 +849,14 @@ export async function getNaturalezaDB( codigo : string ) : Promise < INaturaleza
     }
   )
 }
+
+
+export async function getNaturalezasDB() : Promise < INaturalezaProducto[] >
+{
+  // const{ db }               = storeToRefs( useStoreApp() )
+  return db.transaction('r', db[ TABLAS.NATURALEZA_PRODUCTO ], async () => await db[ TABLAS.NATURALEZA_PRODUCTO ].toArray() )
+}
+
 
 export async function getTransportadoraDB( id : number ) : Promise < ITransportadora >
 {

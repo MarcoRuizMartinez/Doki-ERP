@@ -32,6 +32,10 @@
           :color              ="!!modelo && !!modelo.label ? 'primary' : 'grey-6'"
         />
       </template>
+      <Tooltip
+        v-if                  ="!!tooltip"
+        :label                ="tooltip"
+      />
     </q-select>
   </div>
 </template>
@@ -72,7 +76,8 @@
   {
     modelValue:   { default: labelValueNulo,  type: Object   as PropType<ILabelValue>   },
     alerta:       { default:  false,          type: [Boolean, String  ]                 },
-    label:        { default: undefined,              type: String,                             },
+    label:        { default: undefined,       type: String,                             },
+    tooltip:      { default: undefined,       type: String,                             },
     readonly:     { default: false,           type: Boolean                             },
     useInput:     { default: false,           type: Boolean                             },
     hundido:      { default: false,           type: Boolean                             },

@@ -366,7 +366,6 @@ export function useControlProductosDolibarr()
       const editable              = modoEdicion.value === TIPO_EDICION.RANGO || modoEdicion.value === TIPO_EDICION.CELDA
       limpiarTabla()
       productos.value             = await BuscarProductos( query, editable )
-      console.log("Buscar productos.value: ", productos.value);
       loading.value.carga         = false
     }
 

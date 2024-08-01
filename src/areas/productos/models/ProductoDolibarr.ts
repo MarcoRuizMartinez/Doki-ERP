@@ -4,7 +4,9 @@ import {  getUnidadDB,
           getCategoriaDB,
           getUsuarioDB,
           getNaturalezaDB     } from "src/composables/useDexie"
-import {  ToolNum, ToolType   } from "src/composables/useTools"
+import {  ToolNum,
+          ToolType,
+          ToolDate            } from "src/composables/useTools"
 import {  ICategoriaProducto,
           CategoriaProducto   } from "src/areas/productos/models/CategoriaProducto"
 import {  INaturalezaProducto,
@@ -24,6 +26,8 @@ import {  IProductoHijo,
 import {  IUsuario,
           Usuario             } from "src/areas/usuarios/models/Usuario"
 
+
+          
 const ivaX100                 = parseInt( process.env.IVA ?? "0" )
 
 export type TTipoPDF          = "quote" | "cuentaCobro"
@@ -61,15 +65,22 @@ export interface IProductoDoli {
   costo                     : number        // precio que viene de la tabla llx_product > cost_price
   costo_adicional           : number
   costoTotal                : number
+
   creador                   : IUsuario
-  creador_id                : number
+  edito                     : IUsuario
+  
   disponible                : boolean       // Disponible proveedor
   activoEnCompra            : boolean
   activoEnVenta             : boolean
   sin_proveedor             : boolean
-  con_proveedor             : boolean
-  fecha_creacion            : string
+  con_proveedor             : boolean 
+
   fecha_llegada             : string        // Fecha llegada proveedor
+  fechaCreacion             : Date
+  fechaCreacionCorta        : string
+  fechaEdicion              : Date
+  fechaEdicionCorta         : string
+
   garantia                  : string        // "1_year"
   hecho_en                  : string        // "colombia"
   id_extra                  : number        // ID extra field
@@ -124,12 +135,15 @@ export class ProductoDoli implements IProductoDoli
   costo                     : number              = 0
   costo_adicional           : number              = 0
   creador                   : IUsuario            = new Usuario()
-  creador_id                : number              = 0
+  edito                     : IUsuario            = new Usuario()  
   activoEnCompra            : boolean             = true
   activoEnVenta             : boolean             = true
   sin_proveedor             : boolean             = false
-  fecha_creacion            : string              = ""
+  
   fecha_llegada             : string              = ""
+  fechaCreacion             : Date                = new Date(0)
+  fechaEdicion              : Date                = new Date(0)  
+
   garantia                  : string              = ""
   hecho_en                  : string              = ""
   id_extra                  : number              = 0
@@ -149,6 +163,10 @@ export class ProductoDoli implements IProductoDoli
   urlTienda                 : string              = ""
   stockGestionado           : boolean             = false
   stockProveedor            : number              = -1
+
+
+  get fechaCreacionCorta()      : string { return ToolDate.fechaCorta( this.fechaCreacion    ) }
+  get fechaEdicionCorta()       : string { return ToolDate.fechaCorta( this.fechaEdicion     ) }
 
   get precio_aumento()          :number { return this.calcularPrecioConAumento( this.aumento            ) }
   get precio_aumento_escom()    :number { return this.calcularPrecioConAumento( this.aumento_escom      ) }
@@ -399,10 +417,10 @@ export class ProductoDoli implements IProductoDoli
     producto.id_extra               = ToolType.keyNumberValido( pApi, "id_extra"        )
     producto.id_producto_pro        = ToolType.keyNumberValido( pApi, "id_producto_pro" )
     producto.id_proveedor           = ToolType.keyNumberValido( pApi, "id_proveedor"    )
-    producto.unidadId               = ToolType.keyNumberValido( pApi, "unidadId"        )
-    producto.creador_id             = ToolType.keyNumberValido( pApi, "creador_id"      )
+    producto.unidadId               = ToolType.keyNumberValido( pApi, "unidadId"        )    
     producto.siigo.codigo           = ToolType.keyNumberValido( pApi, "codigo"          )
     producto.iva                    = ToolType.keyNumberValido( pApi, "iva"             )
+    producto.stockProveedor         = ToolType.keyNumberValido( pApi, 'stockProveedor')    
     producto.tipo                   =   pApi.tipo == 1 ? 1
                                       : pApi.tipo == 9 ? 9
                                       : 0
@@ -417,9 +435,10 @@ export class ProductoDoli implements IProductoDoli
     producto.requiereAcabado        = ToolType.keyBoolean ( pApi, 'requiereAcabado'  )
     producto.requiereMedida         = ToolType.keyBoolean ( pApi, 'requiereMedida'   )
     producto.requiereEntregado      = ToolType.keyBoolean ( pApi, 'requiereEntregado')
-    producto.stockGestionado        = ToolType.keyBoolean ( pApi, 'stockGestionado'  )
+    producto.stockGestionado        = ToolType.keyBoolean ( pApi, 'stockGestionado'  )   
 
-    producto.stockProveedor         = ToolType.keyNumberValido ( pApi, 'stockProveedor')    
+    producto.fechaCreacion          = ToolDate.getDateToStr( ToolType.keyStringValido( pApi, "fecha_creacion"  ) )  
+    producto.fechaEdicion           = ToolDate.getDateToStr( ToolType.keyStringValido( pApi, "fecha_edicion"   ) )
 
     producto.aumento                = parseFloat( pApi.aumento             )
     producto.aumento_escom          = parseFloat( pApi.aumento_escom       )
@@ -448,6 +467,7 @@ export class ProductoDoli implements IProductoDoli
     producto.naturaleza             = await getNaturalezaDB ( pApi?.naturaleza_id ?? "0" )
     producto.productosProveedor     = await ProductoProveedor.getProductosProveedorFromAPI( pApi?.productosPro ?? {} )
     producto.creador                = await getUsuarioDB    ( ToolType.keyNumberValido( pApi, "creador_id" ) ) 
+    producto.edito                  = await getUsuarioDB    ( ToolType.keyNumberValido( pApi, "edito_id" ) ) 
 
     return producto
   }

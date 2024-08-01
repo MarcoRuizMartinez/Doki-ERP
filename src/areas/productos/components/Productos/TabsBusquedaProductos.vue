@@ -10,30 +10,38 @@
       :alert          ="alertTab1 ? 'red' : false"      
       >
     </q-tab>
-    <!-- <q-tab
+    <q-tab
       label           ="Mas"
       name            ="tab_2"
       icon            ="mdi-magnify"
       :alert          ="alertTab2 ? 'red' : false"
       >
-      <Tooltip label  ="Mas opciones"/>
-    </q-tab>   -->  
+      <Tooltip label  ="Mas opciones búsqueda"/>
+    </q-tab> 
+    <q-tab
+      label           ="Precios"
+      name            ="tab_3"
+      icon            ="mdi-currency-usd"
+      :alert          ="alertTab3 ? 'red' : false"
+      >
+      <Tooltip label  ="Precios"/>
+    </q-tab> 
     <q-tab
       v-if            ="!usuario.esComercial && !usuario.externo"
       label           ="Crear y Editar"
-      name            ="tab_3"
+      name            ="tab_4"
       icon            ="mdi-clipboard-edit"
       >
       <Tooltip label  ="Opciones de edición"/>
     </q-tab>
-    <!-- <q-tab
+    <q-tab
       v-if            ="!usuario.externo"
       label           ="Vistas"
-      name            ="tab_4"
+      name            ="tab_5"
       icon            ="mdi-table-headers-eye"
       >
       <Tooltip label  ="Vistas de columnas"/>
-    </q-tab> -->
+    </q-tab>
   </q-tabs>
 </template>
 
@@ -53,47 +61,52 @@
   onMounted(()=> tabs.value = { activa : "tab_1", alerts: [ false, false, false, false ]} )
 
   const alertTab1 = computed(()=>       !!b.value.f.buscar
-                                    ||  !!b.value.f.proveedores.label
+                                    ||  !!b.value.f.buscar1
+                                    ||  !!b.value.f.l16.label
                                     ||  !!b.value.f.categorias.label
+                                    ||  !!b.value.f.l1.label
+                                    ||  !!b.value.f.l3.label
+                                    ||  !!b.value.f.proveedores.label
                                     ||  !!b.value.f.activo.label
                                     ||  !!b.value.f.disponible.label
-                                    ||  !!b.value.f.tiposProProve.length
-                                    ||  !!b.value.f.l1.label
-                                    ||  !!b.value.f.buscar1
-                                    ||  !!b.value.f.buscar2
-                                    ||  !!b.value.f.buscar3
-                                    ||  !!b.value.f.actualizado.label
+                                    ||  !!b.value.f.ntz.label
+                                    ||  !!b.value.f.l15.label
                             )
 
-  const alertTab2 = computed(()=>       !!b.value.f.buscar4
-                                    ||  !!b.value.f.l5.label
-                                    ||  !!b.value.f.l6.label
+  const alertTab2 = computed(()=>       !!b.value.f.und.label
                                     ||  !!b.value.f.l2.label
-                                    ||  b.value.f.valorMin != undefined
-                                    ||  b.value.f.valorMax != undefined
+                                    ||  !!b.value.f.l17.label
                                     ||  !!b.value.f.l4.label
-                                    ||  !!b.value.f.l3.label
+                                    ||  !!b.value.f.l5.label
                                     ||  !!b.value.f.desde
                                     ||  !!b.value.f.hasta
+                                    ||  !!b.value.f.desde2
+                                    ||  !!b.value.f.hasta2
                                     ||  !!b.value.f.creador?.nombre
                                     ||  !!b.value.f.usuario?.nombre
+                                    ||  !!b.value.f.l6.label
+                                    ||  !!b.value.f.l7.label
+                                    ||  !!b.value.f.l8.label
                             )
                             
-  const alertTab3 = computed(()=>   false
-                                    /*    !!b.value.f.formaPago.length
-                                    ||  !!b.value.f.origenes.length
-                                    ||  !!b.value.f.conIva.label
-                                    ||  !!b.value.f.area.label
-                                    ||  !!b.value.f.municipio.id
-                                    ||  !!b.value.f.totalizado.label
-                                    ||  !!b.value.f.estadoAnticipo.length
-                                    ||  !!b.value.f.tipoAnticipo.length
-                                    ||  !!b.value.f.listoDespacho.label
-                                    ||  !!b.value.f.tipoTercero.label 
-                                    ||  !!b.value.f.conOrdenes.label
+  const alertTab3 = computed(()=>       !!b.value.f.valorMax
                                     ||  !!b.value.f.valorMin
-                                    ||  !!b.value.f.valorMax
-                                    ||  !!b.value.f.incPago.label
-                                    ||  ( !!b.value.f.entrega.length  && !b.value.esEntrega )*/
+                                    ||  !!b.value.f.max1
+                                    ||  !!b.value.f.min1
+                                    ||  !!b.value.f.max2
+                                    ||  !!b.value.f.min2
+                                    ||  !!b.value.f.max3
+                                    ||  !!b.value.f.min3
+                                    ||  !!b.value.f.max4
+                                    ||  !!b.value.f.min4
+                                    ||  !!b.value.f.max5
+                                    ||  !!b.value.f.min5
+                                    ||  !!b.value.f.max6
+                                    ||  !!b.value.f.min6
+                                    ||  !!b.value.f.l11.label
+                                    ||  !!b.value.f.l12.label
+                                    ||  !!b.value.f.l13.label
+                                    ||  !!b.value.f.l14.label
+                                    ||  !!b.value.f.l9.label
                             )
 </script>

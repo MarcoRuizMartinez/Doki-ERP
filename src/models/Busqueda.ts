@@ -17,9 +17,11 @@ import {  Incentivo                     } from "src/areas/nomina//models/Incenti
 import {  estadosCtz, estadosPed,
           estadosOC,  estadosEnt        } from "src/areas/acuerdos/models/ConstantesAcuerdos"
 import {  getUsuarioDB,
+          getUnidadesDB,
           getMunicipioDB,
           getFormasPagoDB,
           getCategoriasDB,
+          getNaturalezasDB,
           getProveedoresDB,
           getMetodosEntregaDB,
           getUsuariosByGrupoDB,
@@ -59,6 +61,9 @@ export interface      IQuery {
 
   fechaDesde           ?: string
   fechaHasta           ?: string
+  desde2               ?: string
+  hasta2               ?: string  
+
   diasDesde            ?: number
   diasHasta            ?: number
   diasDDesde           ?: number
@@ -76,6 +81,8 @@ export interface      IQuery {
 
   proveedorId          ?: number
   categoriaId          ?: number
+  und                  ?: number
+  ntz                  ?: number
   facturado            ?: number
   conIva               ?: number
   conTotal             ?: number
@@ -88,6 +95,18 @@ export interface      IQuery {
   l4                   ?: number
   l5                   ?: number
   l6                   ?: number
+  l7                   ?: number
+  l8                   ?: number
+  l9                   ?: number
+  l11                  ?: number
+  l12                  ?: number
+  l13                  ?: number
+  l14                  ?: number
+  l15                  ?: number
+  l16                  ?: number
+  l17                  ?: number
+  l18                  ?: number
+  l19                  ?: number
   aprobado             ?: number
   extra                ?: number
   limite               ?: number
@@ -100,6 +119,18 @@ export interface      IQuery {
   origenId             ?: number
   valorMin             ?: number
   valorMax             ?: number
+  min1                 ?: number
+  max1                 ?: number
+  min2                 ?: number
+  max2                 ?: number
+  min3                 ?: number
+  max3                 ?: number
+  min4                 ?: number
+  max4                 ?: number
+  min5                 ?: number
+  max5                 ?: number      
+  min6                 ?: number
+  max6                 ?: number
   incEstado            ?: INCENTIVO_ESTADO
   incRazon             ?: INCENTIVO_RAZON
   incOrigen            ?: INCENTIVO_ORIGEN
@@ -154,6 +185,8 @@ interface               IOpciones {
   origenes              : ILabelValue[]
   estados               : ILabelValue[]
   tiposProductosProv    : ILabelValue[]
+  naturalezas           : ILabelValue[]
+  unidades              : ILabelValue[]
 }
 
 interface               ICampos {
@@ -167,6 +200,8 @@ interface               ICampos {
 
   desde                 : Date | string
   hasta                 : Date | string
+  desde2                : Date | string
+  hasta2                : Date | string  
   diasDesde             : number | undefined
   diasHasta             : number | undefined
   diasDDesde            : number | undefined
@@ -184,6 +219,19 @@ interface               ICampos {
 
   valorMin              : number | undefined
   valorMax              : number | undefined
+  min1                  : number | undefined
+  max1                  : number | undefined
+  min2                  : number | undefined
+  max2                  : number | undefined
+  min3                  : number | undefined
+  max3                  : number | undefined
+  min4                  : number | undefined
+  max4                  : number | undefined
+  min5                  : number | undefined
+  max5                  : number | undefined      
+  min6                  : number | undefined
+  max6                  : number | undefined
+  
   estados               : ILabelValue[]
   tiposProProve         : ILabelValue[]
   cuando                : ILabelValue[]
@@ -213,10 +261,24 @@ interface               ICampos {
   l4                    : ILabelValue
   l5                    : ILabelValue
   l6                    : ILabelValue
+  l7                    : ILabelValue
+  l8                    : ILabelValue
+  l9                    : ILabelValue
+  l11                   : ILabelValue
+  l12                   : ILabelValue
+  l13                   : ILabelValue
+  l14                   : ILabelValue
+  l15                   : ILabelValue
+  l16                   : ILabelValue
+  l17                   : ILabelValue
+  l18                   : ILabelValue
+  l19                   : ILabelValue
   aprobado              : ILabelValue
   extra                 : ILabelValue
   proveedores           : ILabelValue  
   categorias            : ILabelValue  
+  und                   : ILabelValue  
+  ntz                   : ILabelValue  
   incPago               : ILabelValue
   incEstado             : ILabelValue
   incRazon              : ILabelValue
@@ -329,21 +391,30 @@ export class Busqueda implements IBusqueda
     this.o.opcionesOk                       = false
     this.o.usuarios                         = await getUsuariosByGrupoDB( grupoUsuarios )
     this.o.creadores                        = await getUsuariosByGrupoDB( "Producci" )
-    this.o.origenes                         = await getOrigenesContactoDB()
-    this.o.condicionesPago                  = await getCondicionesPagoDB()
-    this.o.formasPago                       = await getFormasPagoDB()
-    this.o.metodosEntrega                   = await getMetodosEntregaDB()
-    this.o.tiposProductosProv               = TiposProductosProveedor        
-    this.o.estados                          =   this.esCotizacion ? estadosCtz.filter(e => e.value >= -1)
-                                              : this.esPedido     ? estadosPed.filter(e => e.value >= -1)
-                                              : this.esOCProveedor? estadosOC .filter(e => e.value >= -1)
-                                              : this.esEntrega    ? estadosEnt.filter(e => e.value >= -1)
-                                              : []
+
     if(this.esOCProveedor || this.esProducto)
       this.o.proveedores                    = await getProveedoresDB()
 
     if(this.esProducto)
+    {
+      this.o.tiposProductosProv             = TiposProductosProveedor        
       this.o.categorias                     = await getCategoriasDB()
+      this.o.unidades                       = await getUnidadesDB()
+      this.o.naturalezas                    = await getNaturalezasDB()
+    }
+    else
+    {
+      this.o.origenes                       = await getOrigenesContactoDB()
+      this.o.condicionesPago                = await getCondicionesPagoDB()
+      this.o.formasPago                     = await getFormasPagoDB()
+      this.o.metodosEntrega                 = await getMetodosEntregaDB()
+      
+      this.o.estados                        =   this.esCotizacion ? estadosCtz.filter(e => e.value >= -1)
+                                              : this.esPedido     ? estadosPed.filter(e => e.value >= -1)
+                                              : this.esOCProveedor? estadosOC .filter(e => e.value >= -1)
+                                              : this.esEntrega    ? estadosEnt.filter(e => e.value >= -1)
+                                              : []
+    }
 
     this.o.opcionesOk                       = true
   }
@@ -354,6 +425,8 @@ export class Busqueda implements IBusqueda
     this.rourterQ             = this.router?.currentRoute.value.query ?? {}    
     this.f.desde              = ToolQuery.getQueryRouterDate      ( this.rourterQ .fechaDesde     )
     this.f.hasta              = ToolQuery.getQueryRouterDate      ( this.rourterQ .fechaHasta     )
+    this.f.desde2             = ToolQuery.getQueryRouterDate      ( this.rourterQ .desde2         )
+    this.f.hasta2             = ToolQuery.getQueryRouterDate      ( this.rourterQ .hasta2         )
 
     this.f.diasDesde          = ToolQuery.getQueryRouterNumber    ( this.rourterQ .diasDesde      )
     this.f.diasHasta          = ToolQuery.getQueryRouterNumber    ( this.rourterQ .diasHasta      )
@@ -372,7 +445,19 @@ export class Busqueda implements IBusqueda
     this.f.contacto           = ToolQuery.getQueryRouterString    ( this.rourterQ .contacto     )
     this.f.nombre             = ToolQuery.getQueryRouterString    ( this.rourterQ .nombre       )
     this.f.valorMin           = ToolQuery.getQueryRouterNumber    ( this.rourterQ .valorMin     )
-    this.f.valorMax           = ToolQuery.getQueryRouterNumber    ( this.rourterQ .valorMax     )
+    this.f.valorMax           = ToolQuery.getQueryRouterNumber    ( this.rourterQ .valorMax     )    
+    this.f.min1               = ToolQuery.getQueryRouterNumber    ( this.rourterQ .min1         )
+    this.f.max1               = ToolQuery.getQueryRouterNumber    ( this.rourterQ .max1         )
+    this.f.min2               = ToolQuery.getQueryRouterNumber    ( this.rourterQ .min2         )
+    this.f.max2               = ToolQuery.getQueryRouterNumber    ( this.rourterQ .max2         )
+    this.f.min3               = ToolQuery.getQueryRouterNumber    ( this.rourterQ .min3         )
+    this.f.max3               = ToolQuery.getQueryRouterNumber    ( this.rourterQ .max3         )    
+    this.f.min4               = ToolQuery.getQueryRouterNumber    ( this.rourterQ .min4         )
+    this.f.max4               = ToolQuery.getQueryRouterNumber    ( this.rourterQ .max4         )    
+    this.f.min5               = ToolQuery.getQueryRouterNumber    ( this.rourterQ .min5         )
+    this.f.max5               = ToolQuery.getQueryRouterNumber    ( this.rourterQ .max5         )    
+    this.f.min6               = ToolQuery.getQueryRouterNumber    ( this.rourterQ .min6         )
+    this.f.max6               = ToolQuery.getQueryRouterNumber    ( this.rourterQ .max6         )
     this.f.qty                = ToolQuery.getQueryRouterNumber    ( this.rourterQ .qty          )
     this.f.peso               = ToolQuery.getQueryRouterNumber    ( this.rourterQ .peso         )
     this.f.altura             = ToolQuery.getQueryRouterNumber    ( this.rourterQ .altura       )
@@ -402,6 +487,18 @@ export class Busqueda implements IBusqueda
     this.f.l4                 = ToolQuery.getQueryRouterLabelValue( this.rourterQ .l4,                    Busqueda.listaBase            )
     this.f.l5                 = ToolQuery.getQueryRouterLabelValue( this.rourterQ .l5,                    Busqueda.listaBase            )
     this.f.l6                 = ToolQuery.getQueryRouterLabelValue( this.rourterQ .l6,                    Busqueda.listaBase            )
+    this.f.l7                 = ToolQuery.getQueryRouterLabelValue( this.rourterQ .l7,                    Busqueda.listaBase            )
+    this.f.l8                 = ToolQuery.getQueryRouterLabelValue( this.rourterQ .l8,                    Busqueda.listaBase            )
+    this.f.l9                 = ToolQuery.getQueryRouterLabelValue( this.rourterQ .l9,                    Busqueda.listaBase            )
+    this.f.l11                = ToolQuery.getQueryRouterLabelValue( this.rourterQ .l11,                   Busqueda.listaBase            )
+    this.f.l12                = ToolQuery.getQueryRouterLabelValue( this.rourterQ .l12,                   Busqueda.listaBase            )
+    this.f.l13                = ToolQuery.getQueryRouterLabelValue( this.rourterQ .l13,                   Busqueda.listaBase            )
+    this.f.l14                = ToolQuery.getQueryRouterLabelValue( this.rourterQ .l14,                   Busqueda.listaBase            )
+    this.f.l15                = ToolQuery.getQueryRouterLabelValue( this.rourterQ .l15,                   Busqueda.listaBase            )
+    this.f.l16                = ToolQuery.getQueryRouterLabelValue( this.rourterQ .l16,                   Busqueda.listaBase            )
+    this.f.l17                = ToolQuery.getQueryRouterLabelValue( this.rourterQ .l17,                   Busqueda.listaBase            )
+    this.f.l18                = ToolQuery.getQueryRouterLabelValue( this.rourterQ .l18,                   Busqueda.listaBase            )
+    this.f.l19                = ToolQuery.getQueryRouterLabelValue( this.rourterQ .l19,                   Busqueda.listaBase            )
     this.f.aprobado           = ToolQuery.getQueryRouterLabelValue( this.rourterQ .aprobado,              Busqueda.listaAprobado        )
     this.f.extra              = ToolQuery.getQueryRouterLabelValue( this.rourterQ .extra,                 Busqueda.listaExtra           )
     this.f.tipoTercero        = ToolQuery.getQueryRouterLabelValue( this.rourterQ .tipoTercero,           Busqueda.listaTipoTercero     )
@@ -412,6 +509,8 @@ export class Busqueda implements IBusqueda
     this.f.actualizado        = ToolQuery.getQueryRouterLabelValue( this.rourterQ .actualizado,           Busqueda.listaActualizado     )
     this.f.proveedores        = ToolQuery.getQueryRouterLabelValue( this.rourterQ .proveedorId,           this.o.proveedores            )
     this.f.categorias         = ToolQuery.getQueryRouterLabelValue( this.rourterQ .categoriaId,           this.o.categorias             )
+    this.f.und                = ToolQuery.getQueryRouterLabelValue( this.rourterQ .und,                   this.o.unidades               )
+    this.f.ntz                = ToolQuery.getQueryRouterLabelValue( this.rourterQ .ntz,                   this.o.naturalezas            )
     this.f.dimension          = ToolQuery.getQueryRouterLabelValue( this.rourterQ .dimension,             Busqueda.listaDimensiones,  "string")    
     this.f.periodo            = ToolQuery.getQueryRouterLabelValue( this.rourterQ .periodo,               Busqueda.listaPeriodos,     "string")
 
@@ -617,6 +716,18 @@ export class Busqueda implements IBusqueda
     if(this.f.color)                    q.color             = 1
     if(!!this.f.valorMin)               q.valorMin          = this.f.valorMin
     if(!!this.f.valorMax)               q.valorMax          = this.f.valorMax
+    if(!!this.f.min1)                   q.min1              = this.f.min1
+    if(!!this.f.max1)                   q.max1              = this.f.max1    
+    if(!!this.f.min2)                   q.min2              = this.f.min2
+    if(!!this.f.max2)                   q.max2              = this.f.max2
+    if(!!this.f.min3)                   q.min3              = this.f.min3
+    if(!!this.f.max3)                   q.max3              = this.f.max3
+    if(!!this.f.min4)                   q.min4              = this.f.min4
+    if(!!this.f.max4)                   q.max4              = this.f.max4
+    if(!!this.f.min5)                   q.min5              = this.f.min5
+    if(!!this.f.max5)                   q.max5              = this.f.max5
+    if(!!this.f.min6)                   q.min6              = this.f.min6
+    if(!!this.f.max6)                   q.max6              = this.f.max6
     if(!!this.f.peso)                   q.peso              = this.f.peso
     if(!!this.f.qty)                    q.qty               = this.f.qty
     if(!!this.f.altura)                 q.altura            = this.f.altura
@@ -664,6 +775,18 @@ export class Busqueda implements IBusqueda
     if(!!this.f.l4.label)               q.l4                = this.f.l4.value
     if(!!this.f.l5.label)               q.l5                = this.f.l5.value
     if(!!this.f.l6.label)               q.l6                = this.f.l6.value
+    if(!!this.f.l7.label)               q.l7                = this.f.l7.value
+    if(!!this.f.l8.label)               q.l8                = this.f.l8.value
+    if(!!this.f.l9.label)               q.l9                = this.f.l9.value
+    if(!!this.f.l11.label)              q.l11               = this.f.l11.value
+    if(!!this.f.l12.label)              q.l12               = this.f.l12.value
+    if(!!this.f.l13.label)              q.l13               = this.f.l13.value
+    if(!!this.f.l14.label)              q.l14               = this.f.l14.value
+    if(!!this.f.l15.label)              q.l15               = this.f.l15.value
+    if(!!this.f.l16.label)              q.l16               = this.f.l16.value
+    if(!!this.f.l17.label)              q.l17               = this.f.l17.value
+    if(!!this.f.l18.label)              q.l18               = this.f.l18.value
+    if(!!this.f.l19.label)              q.l19               = this.f.l19.value
     if(!!this.f.aprobado.label)         q.aprobado          = this.f.aprobado.value
     if(!!this.f.extra.label)            q.extra             = this.f.extra.value
     if(!!this.f.tipoTercero.label)      q.tipoTercero       = this.f.tipoTercero.value
@@ -681,11 +804,17 @@ export class Busqueda implements IBusqueda
     if((this.esOCProveedor || this.esProducto ) && !!this.f.proveedores.label)
       q.proveedorId                                       = this.f.proveedores.value
 
-    if(this.esProducto && !!this.f.categorias.label)
-      q.categoriaId                                       = this.f.categorias.value    
-    
+    if(this.esProducto)
+    {
+      if(!!this.f.categorias.label) q.categoriaId         = this.f.categorias.value
+      if(!!this.f.und.label)        q.und                 = this.f.und.value
+      if(!!this.f.ntz.label)        q.ntz                 = this.f.ntz.value
+    }
+        
     if(this.f.desde       instanceof Date && !isNaN(this.f.desde.valueOf()))      q.fechaDesde  = this.f.desde.toLocaleDateString('sv-SE')
     if(this.f.hasta       instanceof Date && !isNaN(this.f.hasta.valueOf()))      q.fechaHasta  = this.f.hasta.toLocaleDateString('sv-SE')
+    if(this.f.desde2      instanceof Date && !isNaN(this.f.desde2.valueOf()))     q.desde2      = this.f.desde2.toLocaleDateString('sv-SE')
+    if(this.f.hasta2      instanceof Date && !isNaN(this.f.hasta2.valueOf()))     q.hasta2      = this.f.hasta2.toLocaleDateString('sv-SE')
 
     if(!!Object.keys(q).length){
       q.limite                    = this.f.resultadosXPage
@@ -752,6 +881,8 @@ export class Busqueda implements IBusqueda
       origenes            : [],
       estados             : [],
       tiposProductosProv  : [],
+      naturalezas         : [],
+      unidades            : [],
     }
   }
                                                                   
@@ -768,6 +899,8 @@ export class Busqueda implements IBusqueda
 
       desde               : "",
       hasta               : "",
+      desde2              : "",
+      hasta2              : "",      
       diasDesde           : undefined,
       diasHasta           : undefined,
       diasDDesde          : undefined,
@@ -775,16 +908,27 @@ export class Busqueda implements IBusqueda
 
       //valiDesde           : "",
       //valiHasta           : "",
-      aproDesdeDia         : undefined,
-      aproHastaDia         : undefined,
+      aproDesdeDia        : undefined,
+      aproHastaDia        : undefined,
 
       //enviaDesde          : "",
       //enviaHasta          : "",
-      enviaDesdeDia        : undefined,
-      enviaHastaDia        : undefined,
-
+      enviaDesdeDia       : undefined,
+      enviaHastaDia       : undefined,
       valorMin            : undefined,
       valorMax            : undefined,
+      min1                : undefined,
+      max1                : undefined,
+      min2                : undefined,
+      max2                : undefined,
+      min3                : undefined,
+      max3                : undefined,
+      min4                : undefined,
+      max4                : undefined,
+      min5                : undefined,
+      max5                : undefined,
+      min6                : undefined,
+      max6                : undefined,
       estados             : [],
       tiposProProve       : [],
       cuando              : [],
@@ -814,10 +958,24 @@ export class Busqueda implements IBusqueda
       l4                  : labelValueNulo,
       l5                  : labelValueNulo,
       l6                  : labelValueNulo,
+      l7                  : labelValueNulo,
+      l8                  : labelValueNulo,
+      l9                  : labelValueNulo,
+      l11                 : labelValueNulo,
+      l12                 : labelValueNulo,
+      l13                 : labelValueNulo,
+      l14                 : labelValueNulo,
+      l15                 : labelValueNulo,
+      l16                 : labelValueNulo,
+      l17                 : labelValueNulo,
+      l18                 : labelValueNulo,
+      l19                 : labelValueNulo,
       aprobado            : labelValueNulo,
       extra               : labelValueNulo,
       proveedores         : labelValueNulo,
       categorias          : labelValueNulo,
+      und                 : labelValueNulo,
+      ntz                 : labelValueNulo,
       incPago             : labelValueNulo,
       incEstado           : labelValueNulo,
       incRazon            : labelValueNulo,
