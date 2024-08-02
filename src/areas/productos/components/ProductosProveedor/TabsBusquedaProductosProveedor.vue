@@ -91,6 +91,8 @@
                                     ||  b.value.f.valorMax != undefined
                                     ||  !!b.value.f.l4.label
                                     ||  !!b.value.f.l3.label
+                                    ||  !!b.value.f.l7.label
+                                    ||  !!b.value.f.l8.label
                                     ||  !!b.value.f.desde
                                     ||  !!b.value.f.hasta
                                     ||  !!b.value.f.creador?.nombre

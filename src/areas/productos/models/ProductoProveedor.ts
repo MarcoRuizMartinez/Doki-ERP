@@ -4,6 +4,8 @@ import {  ToolDate,
           ToolType,                 } from "src/composables/useTools"  
 import {  IUsuario,
           Usuario                   } from "src/areas/usuarios/models/Usuario"
+import {  IProducto,
+          Producto                  } from './Producto';          
 import {  IProveedor,
           Proveedor                 } from "src/models/Diccionarios/Proveedor"
 import {  ICategoriaProducto,
@@ -33,16 +35,14 @@ export type THijoPadre = {
   cantidad            : number
 }
 
-export interface IProductoProveedor {
+export interface IProductoProveedor extends IProducto {
   id                  : number
   idNuestro           : number
-  ref                 : string
   ref_n               : string                //* ///////////////////////////////// _n
   refComparacion_n    : string                //* Ref que se utiliza para comprar si el precio esta bien
   refNuestra          : string
   refPadre            : string
   idPadre             : number
-  nombre              : string
   nombre_n            : string                //* ///////////////////////////////// _n
   nombreNuestro       : string
   estado              : string                //  published, draft, deleted
@@ -92,17 +92,6 @@ export interface IProductoProveedor {
   fechaLlegada        : Date
   fechaLlegadaCorta   : string
 
-  esNuevo             : boolean
-  editable            : boolean
-
-  okRef               : boolean     // Para validar que la referencia no exista
-  okNombre            : boolean
-  okTipo              : boolean
-  okProveedor         : boolean
-  okCategoria         : boolean
-  okHechoEn           : boolean
-  //okGarantiaMeses     : boolean
-  okPrecio            : boolean
   sePuedeCrear        : boolean
   okRefPadre          : boolean
 
@@ -114,17 +103,15 @@ export interface IProductoProveedor {
   copiarPrecios       : ( key : "precio" | "precioCredito" )=> void
 }
 
-export class ProductoProveedor implements IProductoProveedor
+export class ProductoProveedor extends Producto implements IProductoProveedor
 {
   id                  : number                  = 0
-  idNuestro           : number                  = 0
-  ref                 : string                  = ""
+  idNuestro           : number                  = 0  
   ref_n               : string                  = ""
   refComparacion_n    : string                  = ""
   refNuestra          : string                  = ""
   refPadre            : string                  = ""
-  idPadre             : number                  = 0
-  nombre              : string                  = ""
+  idPadre             : number                  = 0  
   nombre_n            : string                  = ""
   nombreNuestro       : string                  = ""
   estado              : string                  = ""
@@ -165,23 +152,16 @@ export class ProductoProveedor implements IProductoProveedor
   fechaCreacion       : Date                    = new Date(0)
   fechaEdicion        : Date                    = new Date(0)
   fechaLlegada        : Date                    = new Date(0)  
-  editable            : boolean                 = false
-  esNuevo             : boolean                 = false
 
-  okRef               : boolean                 = false
-  okNombre            : boolean                 = false
-  okTipo              : boolean                 = true
-  okProveedor         : boolean                 = false
-  okCategoria         : boolean                 = false
-  okHechoEn           : boolean                 = false
   //okGarantiaMeses     : boolean                 = false
-  okPrecio            : boolean                 = false
   okRefPadre          : boolean                 = true
 
   cantidad            : number                  = 1
 
   constructor( modo : "nuevo" | "" = "" )
   {
+    super()
+
     this.esNuevo      = modo === "nuevo" 
   }
 

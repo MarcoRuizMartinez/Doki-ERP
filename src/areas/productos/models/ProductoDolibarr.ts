@@ -15,7 +15,9 @@ import {  ILabelValue,
           labelValueNulo      } from "src/models/TiposVarios"
 import {  IAccion             } from "src/areas/comunicacion/models/Accion"
 import {  TCodigosSiigo,
-          CodigosSiigo        } from 'src/areas/productos/models/Siigo';          
+          CodigosSiigo        } from 'src/areas/productos/models/Siigo';
+import {  IProducto,
+          Producto            } from './Producto';
 import {  IProductoProveedor,
           ProductoProveedor   } from './ProductoProveedor';          
 import {  IImagenProducto,
@@ -32,15 +34,16 @@ const ivaX100                 = parseInt( process.env.IVA ?? "0" )
 
 export type TTipoPDF          = "quote" | "cuentaCobro"
 
-export interface IProductoDoli {
+export interface IProductoDoli extends IProducto {
   id                        : number
-  ref                       : string
   refProv                   : string
   categoria                 : ICategoriaProducto
-  nombre                    : string
   urlDolibarr               : string        // get
   sigla                     : string
   descripcion               : string
+  nota                      : string
+  documento                 : string
+  familia                   : string
   iva                       : number
   unidadId                  : number
   unidad                    : IUnidad
@@ -111,15 +114,16 @@ export interface IProductoDoli {
   stockProveedor            : number
 }
 
-export class ProductoDoli implements IProductoDoli
+export class ProductoDoli extends Producto implements IProductoDoli
 {
   id                        : number              = 0
-  ref                       : string              = ""
   refProv                   : string              = ""
   categoria                 : ICategoriaProducto  = new CategoriaProducto()
-  nombre                    : string              = ""
   sigla                     : string              = ""
   descripcion               : string              = ""
+  nota                      : string              = ""
+  documento                 : string              = ""
+  familia                   : string              = ""
   iva                       : number              = parseInt( process.env.IVA ?? "0" )
   unidadId                  : number              = 0
   unidad                    : IUnidad             = new Unidad()

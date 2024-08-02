@@ -114,9 +114,9 @@ export function useControlProductosDolibarr()
       tablaAG.value?.gridApi?.applyTransaction( { remove: rowData } )
     }
 
-    function ordenarPorOrden(){
+    /* function ordenarPorOrden(){
       tablaAG.value?.volverAOrdenar()
-    }
+    } */
 
     return {
       eliminarFila,
@@ -126,7 +126,7 @@ export function useControlProductosDolibarr()
       crearNuevasFilas,
       crearFilasNuevosProductos,
       copiarADatosTemporales,
-      ordenarPorOrden,
+      //ordenarPorOrden,
       setEdicionEnProductos,
     }
   }
@@ -176,7 +176,10 @@ export function useControlProductosDolibarr()
     let   timeoutId : ReturnType<typeof setTimeout> | null = null;
     function procesarEdicionEnLote( d : TDatosEvento )
     {
-      if(!!d.data.esNuevo || d.campo === "esNuevo") {
+      console.log("d: ", d);
+      if(!!d.data.esNuevo || d.campo === "esNuevo")
+      {
+        console.log("d.data.esNuevo: ");
         gestionarCambiosEnNuevo(d)
         return
       }
@@ -257,6 +260,7 @@ export function useControlProductosDolibarr()
   
       for (const c of cambios)
       {
+        console.log("c: ", c);
         if(typeof c.value         ==  "boolean")
           c.value = ToolType.anyToNum( c.value )
         else if(c.value           === null && typeof c.oldValue == "boolean") c.value  = 0
@@ -273,7 +277,12 @@ export function useControlProductosDolibarr()
           c.value                 = ToolType.anyToNumOStr( c.value?.value )
         }
 
-        if(campo                  === "stock" && c.data.gestionStock)
+        c.value
+        console.log("c.value: ", c.value);
+
+
+
+        /* if(campo                  === "stock" && c.data.gestionStock)
         {
           const hayStock          = !!c.value
           c.data.disponible       = hayStock
@@ -285,8 +294,8 @@ export function useControlProductosDolibarr()
             oldValue  : c.oldValue,
             source    : "",
           })
-        }
-        if(campo                  === "activo")
+        } */
+        /* if(campo                  === "activo")
         {
           const activo            = !!c.value
           if(!activo)
@@ -301,15 +310,16 @@ export function useControlProductosDolibarr()
               source    : "",
             })            
           }          
-        }        
+        } */
       }
 
+      console.log("EditarCampoEnLote cambios: ", cambios);
       const ok                    = await EditarCampoEnLote( campo, cambios, usuario.value.id )    
       cambios.length              = 0
       loading.value.carga         = false
 
-      if(campo                    === "orden")
-        ordenarPorOrden()
+      /* if(campo                    === "orden")
+        ordenarPorOrden() */
 
       if(!!nuevosCambios.length)
       {
@@ -388,7 +398,7 @@ export function useControlProductosDolibarr()
           eliminarFilasPorId,
           copiarADatosTemporales,
           setEdicionEnProductos,
-          ordenarPorOrden,
+          //ordenarPorOrden,
           limpiarFiltros,
           limpiarTabla,
                                   } = useGestionTabla()

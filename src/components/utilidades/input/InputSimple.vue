@@ -27,6 +27,10 @@
       <template v-slot:append>
         <slot></slot>
       </template>
+      <Tooltip
+        v-if                  ="!!tooltip"
+        :label                ="tooltip"
+      />
     </q-input>
   </div>
 </template>
@@ -40,6 +44,7 @@
     {
       modelValue: { type: String,   required: true          },
       label:      { type: String,   required: true          },
+      tooltip:    { type: String,   default:  undefined     },
       icon:       { type: String,   default:  "mdi-magnify" },
       hundido:    { type: Boolean,  default:  false         },
       debounce:   { type: String,   default:  "400"         },

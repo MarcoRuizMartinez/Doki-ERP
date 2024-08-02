@@ -62,6 +62,8 @@
 
   const alertTab1 = computed(()=>       !!b.value.f.buscar
                                     ||  !!b.value.f.buscar1
+                                    ||  !!b.value.f.buscar2
+                                    ||  !!b.value.f.buscar3
                                     ||  !!b.value.f.l16.label
                                     ||  !!b.value.f.categorias.label
                                     ||  !!b.value.f.l1.label
@@ -69,13 +71,12 @@
                                     ||  !!b.value.f.proveedores.label
                                     ||  !!b.value.f.activo.label
                                     ||  !!b.value.f.disponible.label
-                                    ||  !!b.value.f.ntz.label
-                                    ||  !!b.value.f.l15.label
                             )
 
   const alertTab2 = computed(()=>       !!b.value.f.und.label
+                                    ||  !!b.value.f.ntz.label
+                                    ||  !!b.value.f.l15.label
                                     ||  !!b.value.f.l2.label
-                                    ||  !!b.value.f.l17.label
                                     ||  !!b.value.f.l4.label
                                     ||  !!b.value.f.l5.label
                                     ||  !!b.value.f.desde
@@ -108,5 +109,6 @@
                                     ||  !!b.value.f.l13.label
                                     ||  !!b.value.f.l14.label
                                     ||  !!b.value.f.l9.label
+                                    ||  !!b.value.f.l17.label
                             )
 </script>

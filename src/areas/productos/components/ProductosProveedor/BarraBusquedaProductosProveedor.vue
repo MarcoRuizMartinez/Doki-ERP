@@ -293,7 +293,7 @@
         />
       </fieldset-filtro>
       <fieldset-filtro
-        titulo                  ="Nuestros productos"
+        titulo                  ="Con datos"
         class-contenido         ="grilla-ribom"
         >
         <!-- //* ///////////////////////////////////////////////// Con familia -->        
@@ -313,6 +313,29 @@
           :options              ="[ { value: 1, label: 'Con documento' }, { value: 0, label: 'Sin documento' }]"
         />        
       </fieldset-filtro>      
+      <fieldset-filtro
+        titulo                  ="Stock"
+        class-contenido         ="grilla-ribom"
+        >
+        <!-- //* ///////////////////////////////////////////////////////////// Stock gestionado -->
+        <select-label-value     use-input hundido clearable flat bordered
+          v-model               ="b.f.l7"
+          label                 ="Gestion stock"
+          tooltip               ="Productos cuyo proveedor maneja un nivel de stock"
+          icon                  ="mdi-package-variant"
+          class                 ="width160"
+          :options              ="Busqueda.listaBase"
+        />
+        <!-- //* ///////////////////////////////////////////////////////////// Con Stock -->
+        <select-label-value     use-input hundido clearable flat bordered
+          v-model               ="b.f.l8"
+          label                 ="Con Stock"
+          tooltip               ="Proveedor tiene mas de una unidad de stock"
+          icon                  ="mdi-clipboard-check"
+          class                 ="width160"
+          :options              ="Busqueda.listaBase"
+        />
+      </fieldset-filtro>
       <!-- //* /////////////////////////////////////////////////// Fecha creacion -->
       <fieldset-filtro
         titulo                  ="Fechas creación"

@@ -75,18 +75,18 @@ export const columnTypes : { [key: string]: ColTypeDef< IProductoDoli > } = {
   },
   editarYCrear:
   {
-    /* editable: p => {
+    editable: p => {
       if(!p.data) 
         return false
 
       const columna         = p.colDef?.field ?? "" 
-      const campoEspecial   = esFieldDeEditarHijo( columna ) 
+      /* const campoEspecial   = esFieldDeEditarHijo( columna ) 
       const hijoNoEspecial  = p.data.tipo.esHijo && !campoEspecial
       if(hijoNoEspecial)
-        return false
+        return false */
 
       return  ( p.data?.esNuevo ?? false )  ||  p.data.editable
-    } */
+    }
   }     
 }
 
@@ -146,17 +146,37 @@ export function columnasProductos( conPrecios : boolean ) : ( ColDef< IProductoD
       marryChildren         : false,
       children              :
       [
-        { headerName        : "🏠Ref",
+        { headerName        : "🆔Ref",
           field             : "ref",
           headerClass       : claseHDatos.col,
-          hide: true,
+          hide: false,
         },
-        { headerName        : "🏠Nombre",
+        { headerName        : "👤Nombre",
           field             : "nombre",
           headerClass       : claseHDatos.col,
           minWidth          : 340,
           hide: false,
         },
+        { headerName        : "📝Nota",
+          field             : "nota",
+          headerClass       : claseHDatos.col,          
+          hide: false,
+          type              : "editarYCrear",
+        },
+        { headerName        : "📙Documento",
+          field             : "documento",
+          headerClass       : claseHDatos.col,          
+          hide: false,
+          type              : "editarYCrear",
+        },
+        { headerName        : "👨‍👩‍👧‍👦Familia",
+          field             : "familia",
+          headerClass       : claseHDatos.col,          
+          hide: false,
+          type              : "editarYCrear",
+          enableRowGroup    : true,
+          valueParser       : p => ToolType.keyStringValido(p, "newValue").trim()          
+        },                
         Col.Objeto(
           {
             headerName      : "🆎Categoría",
@@ -348,7 +368,7 @@ export function columnasProductos( conPrecios : boolean ) : ( ColDef< IProductoD
           type              : "porcentaje",
           width             : 100,
           hide: true,
-        },        
+        },
         Col.Precio({
           headerName        : "💲Base",
           field             : "precio_aumento",
@@ -362,7 +382,7 @@ export function columnasProductos( conPrecios : boolean ) : ( ColDef< IProductoD
           type              : "porcentaje",
           width             : 140,          
           hide: true,
-        },        
+        },
         Col.Precio({
           headerName        : "💲Descuento",
           field             : "precio_aumento_descuento",
@@ -376,7 +396,7 @@ export function columnasProductos( conPrecios : boolean ) : ( ColDef< IProductoD
           type              : "porcentaje",
           width             : 110,
           hide: true,
-        },        
+        },
         Col.Precio({
           headerName        : "💲Escom",
           field             : "precio_aumento_escom",
@@ -390,7 +410,7 @@ export function columnasProductos( conPrecios : boolean ) : ( ColDef< IProductoD
           type              : "porcentaje",
           width             : 150,          
           hide: true,
-        },        
+        },
         Col.Precio({
           headerName        : "💲Black Friday",
           field             : "precio_aumento_loco",
@@ -408,7 +428,7 @@ export function columnasProductos( conPrecios : boolean ) : ( ColDef< IProductoD
       headerName            : "🫰🏻 Costos",                      
       headerClass           : claseHCostos.header,
       marryChildren         : false,
-      children              :      
+      children              :
       [
         Col.Precio({
           headerName        : "💲Compra",
@@ -441,27 +461,27 @@ export function columnasProductos( conPrecios : boolean ) : ( ColDef< IProductoD
       headerName            : "📋Registro de cambios",
       headerClass           : claseHRegistro.header,
       marryChildren         : false,
-      children              :      
+      children              :
       [
         { headerName        : "👤Creador",
           field             : "creador.label",  
-          hide: false,          
+          hide: false,
           headerClass       : claseHRegistro.col,
         },
         { headerName        : "📅Fecha Creación",
           field             : "fechaCreacion",  
-          hide: false,            
+          hide: false,
           minWidth          : 170,
           headerClass       : claseHRegistro.col,
         },
         { headerName        : "👤Edito",
           field             : "edito.label",  
-          hide: false,          
+          hide: false,
           headerClass       : claseHRegistro.col,
         },
         { headerName        : "📅Fecha Edición",
           field             : "fechaEdicion",  
-          hide: false,            
+          hide: false,
           minWidth          : 170,
           headerClass       : claseHRegistro.col,
         }

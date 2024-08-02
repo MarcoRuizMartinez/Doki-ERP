@@ -468,7 +468,7 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
         const lineaFinal    = Object.assign( new LineaAcuerdo(), linea ) as ILineaAcuerdo
 
         lineaFinal.siigo.codigo         = +linea.codigo
-        lineaFinal.siigo.enSiigo        = Boolean( +linea?.enSiigo ?? 0 )
+        lineaFinal.siigo.enSiigo        = Boolean( +(linea?.enSiigo ?? 0) )
         lineaFinal.comsionX100Division  = +(linea?.divisionComision ?? 100)
         lineaFinal.img.url              = ToolType.keyStringValido( linea, "imagen", IMAGEN_DEFAULT)        
         

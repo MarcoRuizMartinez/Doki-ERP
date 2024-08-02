@@ -30,10 +30,27 @@
           icon                  ="mdi-filter"
           :disable              ="!productos.length"
         />
-        <!-- //* ///////////////////////////////////////////////////////////// Busqueda general -->
+        <!-- //* ///////////////////////////////////////////////////////////// Busqueda Documento -->
+        <input-buscar           clearable hundido
+          v-model               ="b.f.buscar2"
+          label                 ="Documento"
+          class                 ="width170"
+          icon                  ="mdi-file-document"
+          debounce              ="800"
+        />  
+        <!-- //* ///////////////////////////////////////////////////////////// Busqueda Familia -->
+        <input-buscar           clearable hundido
+          v-model               ="b.f.buscar3"
+          label                 ="Familia"
+          class                 ="width170"
+          icon                  ="mdi-account-group"
+          debounce              ="800"
+        />
+        <!-- //* ///////////////////////////////////////////////////////////// Busqueda Descripción y Notas -->
         <input-buscar           clearable hundido
           v-model               ="b.f.buscar1"
           label                 ="Descripción"
+          tooltip               ="Buscar en descripción y notas"
           class                 ="width170"
           icon                  ="mdi-text-box"
           debounce              ="800"
@@ -101,22 +118,6 @@
           icon                  ="mdi-cart-arrow-down"
           class                 ="width160"
           :options              ="Busqueda.listaActivo"
-        />
-        <!-- //* ///////////////////////////////////////////////////////////// Naturaleza -->        
-        <select-label-value     use-input hundido clearable flat bordered
-          v-model               ="b.f.ntz"
-          label                 ="Naturaleza"
-          icon                  ="mdi-leaf"
-          class                 ="width160"
-          :options              ="b.o.naturalezas"
-        />        
-        <!-- //* ///////////////////////////////////////////////////////////// En tienda -->        
-        <select-label-value     use-input hundido clearable flat bordered
-          v-model               ="b.f.l15"
-          label                 ="En tienda"
-          icon                  ="mdi-storefront"
-          class                 ="width160"
-          :options              ="Busqueda.listaBase"
         />
       </fieldset-filtro>
       <!-- //* /////////////////////////////////////////////////// Paginación -->
@@ -238,15 +239,22 @@
           class                 ="width160"
           :options              ="[{ value : 1, label : 'Con imagen' }, { value : 0, label : 'Sin imagen' }]"
         />
-        <!-- //* ///////////////////////////////////////////////////////////// Stock gestionado -->
+        <!-- //* ///////////////////////////////////////////////////////////// Naturaleza -->        
         <select-label-value     use-input hundido clearable flat bordered
-          v-model               ="b.f.l17"
-          label                 ="Codigo contable"
-          tooltip               ="Con código contable"
-          icon                  ="mdi-barcode"
+          v-model               ="b.f.ntz"
+          label                 ="Naturaleza"
+          icon                  ="mdi-leaf"
+          class                 ="width160"
+          :options              ="b.o.naturalezas"
+        />        
+        <!-- //* ///////////////////////////////////////////////////////////// En tienda -->        
+        <select-label-value     use-input hundido clearable flat bordered
+          v-model               ="b.f.l15"
+          label                 ="En tienda"
+          icon                  ="mdi-storefront"
           class                 ="width160"
           :options              ="Busqueda.listaBase"
-        />        
+        />
       </fieldset-filtro>      
       <fieldset-filtro
         titulo                  ="Stock"
@@ -573,7 +581,7 @@
         />        
       </fieldset-filtro>
       <fieldset-filtro
-        titulo                  ="IVA"
+        titulo                  ="Contable"
         class-contenido         ="grilla-ribom"
         >
         <!-- //* ///////////////////////////////////////////////////////////// Con IVA -->
@@ -581,9 +589,18 @@
           v-model               ="b.f.l9"
           label                 ="Con IVA"
           icon                  ="mdi-bank"
-          class                 ="width130"
+          class                 ="width140"
           :options              ="Busqueda.listaBase"
-        />      
+        />
+        <!-- //* ///////////////////////////////////////////////////////////// Codigo contable -->
+        <select-label-value     use-input hundido clearable flat bordered
+          v-model               ="b.f.l17"
+          label                 ="Codigo contable"
+          tooltip               ="Con código contable"
+          icon                  ="mdi-barcode"
+          class                 ="width140"
+          :options              ="Busqueda.listaBase"
+        />
       </fieldset-filtro>      
     </q-tab-panel>
     <!-- //* /////////////////////////////////////////////////////// Tab 4 Crear Editar -->

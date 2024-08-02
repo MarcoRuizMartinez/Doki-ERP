@@ -42,19 +42,22 @@ export function servicesProductosPro()
 
   async function EditarCampoEnLote( campo : string, datos : TDatosEvento[], usuarioId : number ) : Promise< boolean >
   {
+    console.log("campo: ", campo, datos);
+
     const datosEnviar         = datos.map( d => { return { id: d.data?.id, value: d.value }})
     return new Promise( async (resolver, rechazar ) =>
     {
       const objeto            = { field: campo, usuario: usuarioId, datos: JSON.stringify( datosEnviar ) }  
-      const { data, ok      } = await miFetch( getURL("servicios", "productos-proveedores-new"),
+      const { data, ok      } = await miFetch( getURL("servicios", "productos-dolibarr-new"),
                                                     {
                                                       body: getFormData( "editarCampoLote", objeto ),
                                                       method: "POST" 
                                                     },
-                                                    { mensaje:      "editar productos proveedores" }
+                                                    { mensaje:      "editar productos" }
                                                   )
                                                   
-      if(!ok) aviso("negative", "Error al editar productos")
+      console.log("data: ", data);
+      if(!ok) aviso("negative", "Error al editar productos")      
       resolver( ok )
     })
   }
