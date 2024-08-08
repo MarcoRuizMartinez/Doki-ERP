@@ -7,51 +7,36 @@ import {  getUnidadDB,
 import {  ToolNum,
           ToolType,
           ToolDate            } from "src/composables/useTools"
-import {  ICategoriaProducto,
-          CategoriaProducto   } from "src/areas/productos/models/CategoriaProducto"
 import {  INaturalezaProducto,
           NaturalezaProducto  } from "src/models/Diccionarios/NaturalezaProducto"
-import {  ILabelValue,
-          labelValueNulo      } from "src/models/TiposVarios"
 import {  IAccion             } from "src/areas/comunicacion/models/Accion"
 import {  TCodigosSiigo,
           CodigosSiigo        } from 'src/areas/productos/models/Siigo';
 import {  IProducto,
           Producto            } from './Producto';
 import {  IProductoProveedor,
-          ProductoProveedor   } from './ProductoProveedor';          
-import {  IImagenProducto,
-          IMAGEN_DEFAULT,
-          ImagenProducto      } from "./ImagenProducto"
+          ProductoProveedor   } from './ProductoProveedor';
+import {  ITipoProducto,
+          TipoProducto,
+          TIPO_PRODUCTO       } from './TipoProducto';          
+import {  IMAGEN_DEFAULT      } from "./ImagenProducto"
 import {  IProductoHijo,
           ProductoHijo        } from "./ProductoHijo"
-import {  IUsuario,
-          Usuario             } from "src/areas/usuarios/models/Usuario"
-
-
           
 const ivaX100                 = parseInt( process.env.IVA ?? "0" )
 
 export type TTipoPDF          = "quote" | "cuentaCobro"
 
-export interface IProductoDoli extends IProducto {
-  id                        : number
-  refProv                   : string
-  categoria                 : ICategoriaProducto
+export interface IProductoDoli extends IProducto {  
+  refProv                   : string  
   urlDolibarr               : string        // get
   sigla                     : string
-  descripcion               : string
-  nota                      : string
-  documento                 : string
-  familia                   : string
+
   iva                       : number
   unidadId                  : number
   unidad                    : IUnidad
-  tipo                      : 0 | 1 | 9     // 0 producto 1 servicio 9 subtotal
-  tipoLabelValue            : ILabelValue
-  tipoProducto              : string
+  tipo                      : ITipoProducto   // 0 producto 1 servicio 9 subtotal
   naturaleza                : INaturalezaProducto
-  img                       : IImagenProducto
   productosProveedor        : IProductoProveedor[]
   activo_proveedor          : boolean       // Activo proveedor
   aumento                   : number
@@ -62,42 +47,31 @@ export interface IProductoDoli extends IProducto {
   precio_aumento_escom      : number        // get
   precio_aumento_descuento  : number        // get
   precio_aumento_loco       : number        // get
-  precio_publico_final      : number        // get
+  precio_publico_final      : number        // get Si no existe precio precio aumento entonces es precio Escom  
   precio_escom              : number        // get
+  precio_final              : number        // get Mejor precio entre precio_publico_final y precio_aumento_descuento
   descuentoCalculado        : number
-  costo                     : number        // precio que viene de la tabla llx_product > cost_price
-  costo_adicional           : number
+  costo                     : number        // precio que viene de la tabla llx_product > cost_price  
   costoTotal                : number
-
-  creador                   : IUsuario
-  edito                     : IUsuario
   
   disponible                : boolean       // Disponible proveedor
   activoEnCompra            : boolean
   activoEnVenta             : boolean
   sin_proveedor             : boolean
-  con_proveedor             : boolean 
-
+  //con_proveedor             : boolean 
   fecha_llegada             : string        // Fecha llegada proveedor
-  fechaCreacion             : Date
-  fechaCreacionCorta        : string
-  fechaEdicion              : Date
-  fechaEdicionCorta         : string
-
-  garantia                  : string        // "1_year"
   hecho_en                  : string        // "colombia"
   id_extra                  : number        // ID extra field
   id_producto_pro           : number        // ID producto proveedor
   id_proveedor              : number
   //precio_proveedor          : number        // precio que es el minimo de la tabla productos_proveedor > precio
-  precio                    : number        // Precio guardado en llx_product en columna price. Precio final, el menor entre publico y promocion  
   precio_publico            : number        // Precio guardado en extrafields
   precio_promocion          : number        // Precio guardado en extrafields
   precioPublicoConIVA       : number        // get
   precioPromocionConIVA     : number        // get
   competencia               : number
-  esProducto                : boolean
-  esServicio                : boolean
+  //esProducto                : boolean
+  //esServicio                : boolean
   elegido                   : boolean       // Se utiliza para indicar que el producto a sido agregado a lista
   esRefEspecial             : boolean
   activo                    : boolean
@@ -116,45 +90,30 @@ export interface IProductoDoli extends IProducto {
 
 export class ProductoDoli extends Producto implements IProductoDoli
 {
-  id                        : number              = 0
-  refProv                   : string              = ""
-  categoria                 : ICategoriaProducto  = new CategoriaProducto()
+  
+  refProv                   : string              = ""  
   sigla                     : string              = ""
-  descripcion               : string              = ""
-  nota                      : string              = ""
-  documento                 : string              = ""
-  familia                   : string              = ""
   iva                       : number              = parseInt( process.env.IVA ?? "0" )
   unidadId                  : number              = 0
   unidad                    : IUnidad             = new Unidad()
-  tipo                      : 0 | 1 | 9           = 0
-  tipoLabelValue            : ILabelValue         = labelValueNulo
-  naturaleza                : INaturalezaProducto = new NaturalezaProducto()
-  img                       : IImagenProducto     = new ImagenProducto()
+  tipo                      : ITipoProducto       = new TipoProducto( TIPO_PRODUCTO.PRODUCTO ) // 0 producto 1 servicio 9 subtotal
+  naturaleza                : INaturalezaProducto = new NaturalezaProducto()  
   productosProveedor        : IProductoProveedor[]=[]
   aumento                   : number              = 0
   aumento_escom             : number              = 0
   aumento_descuento         : number              = 0
   aumento_loco              : number              = 0
   costo                     : number              = 0
-  costo_adicional           : number              = 0
-  creador                   : IUsuario            = new Usuario()
-  edito                     : IUsuario            = new Usuario()  
+
   activoEnCompra            : boolean             = true
   activoEnVenta             : boolean             = true
-  sin_proveedor             : boolean             = false
-  
+  sin_proveedor             : boolean             = false  
   fecha_llegada             : string              = ""
-  fechaCreacion             : Date                = new Date(0)
-  fechaEdicion              : Date                = new Date(0)  
-
-  garantia                  : string              = ""
   hecho_en                  : string              = ""
   id_extra                  : number              = 0
   id_producto_pro           : number              = 0
   id_proveedor              : number              = 0
-  //precio_proveedor          : number              = 0
-  precio                    : number              = 0
+  //precio_proveedor          : number              = 0  
   precio_publico            : number              = 0
   precio_promocion          : number              = 0
   siigo                     : TCodigosSiigo       = new CodigosSiigo()
@@ -169,8 +128,6 @@ export class ProductoDoli extends Producto implements IProductoDoli
   stockProveedor            : number              = -1
 
 
-  get fechaCreacionCorta()      : string { return ToolDate.fechaCorta( this.fechaCreacion    ) }
-  get fechaEdicionCorta()       : string { return ToolDate.fechaCorta( this.fechaEdicion     ) }
 
   get precio_aumento()          :number { return this.calcularPrecioConAumento( this.aumento            ) }
   get precio_aumento_escom()    :number { return this.calcularPrecioConAumento( this.aumento_escom      ) }
@@ -186,13 +143,28 @@ export class ProductoDoli extends Producto implements IProductoDoli
   }
 
 
+
+  get precio_final() : number {
+    const precio                =   this.precio_aumento_descuento > 0
+                                  ? this.precio_aumento_descuento
+                                  : this.precio_publico_final    
+
+    return precio
+  }
+
+
+
   calcularPrecioConAumento( aumento : number) : number {
     if(!this.costo || !aumento) return 0
-    else                        return ToolNum.roundInt( ToolNum.X100_Aumento( this.costoTotal, aumento), 2 )
+
+    const precioAumentado       = ToolNum.X100_Aumento( this.costo, aumento) + this.costoExtra 
+    const redondeado            = ToolNum.roundInt( precioAumentado, 2 )
+
+    return redondeado
   }
 
   get costoTotal() : number {
-    return ( ToolType.valorValido( this.costo ) ? this.costo : 0 ) + ( ToolType.valorValido( this.costo_adicional ) ? this.costo_adicional : 0 )
+    return ( ToolType.valorValido( this.costo ) ? this.costo : 0 ) + ( ToolType.valorValido( this.costoExtra ) ? this.costoExtra : 0 )
   }
 
   get precio_escom() : number {
@@ -214,13 +186,6 @@ export class ProductoDoli extends Producto implements IProductoDoli
 
 
   get urlDolibarr() : string { return process.env.URL_DOLIBARR + "/product/card.php?id=" + this.id }
-
-  get tipoProducto() :string {
-    return  this.tipo == 0 ?  "producto"
-          : this.tipo == 1 ?  "servicio"
-          : this.tipo == 9 ?  "especial"
-          :                   "desconocido"
-  }
 
   get precioPublicoConIVA(): number {
     return ToolNum.X100_Aumento( this.precio_publico, ivaX100 )
@@ -257,8 +222,8 @@ export class ProductoDoli extends Producto implements IProductoDoli
             ||    this.esRefEspecial
   }
 
-  get esProducto() : boolean  { return this.tipo === 0 }
-  get esServicio() : boolean  { return this.tipo === 1 }
+  //get esProducto() : boolean  { return this.tipo === 0 }
+  //get esServicio() : boolean  { return this.tipo === 1 }
   get esRefEspecial() : boolean {
     return  ( this.activoEnCompra && this.activoEnVenta )
             &&
@@ -318,7 +283,7 @@ export class ProductoDoli extends Producto implements IProductoDoli
     return this.productosProveedor.some( p => p.activo && p.disponible )
   }
 
-  get con_proveedor() : boolean { return !this.sin_proveedor }
+  //get con_proveedor() : boolean { return !this.sin_proveedor }
 
   get productoForApi() : any
   {
@@ -333,14 +298,14 @@ export class ProductoDoli extends Producto implements IProductoDoli
       status_buy:             +this.activoEnCompra,
       fk_unit:                this.unidad.id ?? 28,
       finished:               this.naturaleza.codigo,
-      type:                  +this.tipo,
+      type:                   this.tipo.value,
       array_options:
       {
         options_aumento_escom         : this.aumento_escom,
         options_aumento               : this.aumento,
         options_aumento_precio_desc   : this.aumento_descuento,
         options_aumento_precio_loco   : this.aumento_loco,
-        options_costo_adicional       : this.costo_adicional,
+        options_costo_adicional       : this.costoExtra,
         options_precio_publico        : this.precio_aumento,
         options_precio_promocion      : this.precio_promocion,
         options_sin_proveedor         : +this.sin_proveedor,
@@ -364,7 +329,7 @@ export class ProductoDoli extends Producto implements IProductoDoli
         options_aumento:              this.aumento,
         options_aumento_precio_desc:  this.aumento_descuento,
         options_aumento_precio_loco:  this.aumento_loco,
-        options_costo_adicional:      this.costo_adicional,
+        options_costo_adicional:      this.costoExtra,
         options_precio_publico:       this.precio_aumento,
         options_precio_promocion:     this.precio_promocion,
         options_sin_proveedor:        +this.sin_proveedor,
@@ -414,6 +379,7 @@ export class ProductoDoli extends Producto implements IProductoDoli
 
   static async getProductoFromAPI( pApi : any, editable : boolean = false ) : Promise<IProductoDoli>
   {
+    console.log("pApi: ", pApi.tipo, typeof pApi.tipo );
     if(!pApi)                return new ProductoDoli()
     const producto                  = Object.assign( new ProductoDoli(), pApi ) as IProductoDoli
 
@@ -424,14 +390,8 @@ export class ProductoDoli extends Producto implements IProductoDoli
     producto.unidadId               = ToolType.keyNumberValido( pApi, "unidadId"        )    
     producto.siigo.codigo           = ToolType.keyNumberValido( pApi, "codigo"          )
     producto.iva                    = ToolType.keyNumberValido( pApi, "iva"             )
-    producto.stockProveedor         = ToolType.keyNumberValido( pApi, 'stockProveedor')    
-    producto.tipo                   =   pApi.tipo == 1 ? 1
-                                      : pApi.tipo == 9 ? 9
-                                      : 0
-    producto.tipoLabelValue         =   producto.tipo == 0 ? { value : 0, label:'Producto'}
-                                      : producto.tipo == 1 ? { value : 1, label:'Servicio'}
-                                      : labelValueNulo
-                                      
+    producto.stockProveedor         = ToolType.keyNumberValido( pApi, 'stockProveedor')
+    producto.tipo                   = new TipoProducto( ToolType.keyNumberValido( pApi, "tipo", TIPO_PRODUCTO.NULO ) )
     producto.activoEnCompra         = ToolType.keyBoolean ( pApi, 'en_compra'        )
     producto.activoEnVenta          = ToolType.keyBoolean ( pApi, 'en_venta'         )
     producto.sin_proveedor          = ToolType.keyBoolean ( pApi, 'sin_proveedor'    )
@@ -449,7 +409,8 @@ export class ProductoDoli extends Producto implements IProductoDoli
     producto.aumento_descuento      = parseFloat( pApi.aumento_descuento   )
     producto.aumento_loco           = parseFloat( pApi.aumento_loco        )
     producto.costo                  = parseFloat( pApi.costo               )
-    producto.costo_adicional        = parseFloat( pApi.costo_adicional     )
+    producto.costoExtra             = parseFloat( pApi.costo_adicional     )
+    console.log("producto.costoExtra: ", producto.costoExtra);
     producto.precio                 = parseFloat( pApi.precio              )
     producto.precio_promocion       = parseFloat( pApi.precio_promocion    )
     //producto.precio_proveedor       = parseFloat( productoApi.precio_proveedor    )

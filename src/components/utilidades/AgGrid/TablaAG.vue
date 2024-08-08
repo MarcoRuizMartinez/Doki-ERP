@@ -25,6 +25,7 @@
     :enable-range-selection       ="true"
     :enable-fill-handle           ="rangoActivo"
     @cell-value-changed           ="eventoCambio"
+    @cell-edit-request            ="solicitudCambio"
     @grid-ready                   ="tablaLista"
     @displayed-columns-changed    ="cambioEnColumna"
     @sort-changed                 ="cambioEnColumna"
@@ -67,6 +68,7 @@ single-click-edit
             ColumnState,
             MenuItemDef,            
             CellValueChangedEvent,
+            CellEditRequestEvent,
             GetContextMenuItems,  
             GetRowIdParams        } from "ag-grid-community";
 
@@ -82,7 +84,7 @@ single-click-edit
   const { keyId,
           rangoActivo = false  }  = defineProps<TProps>()
 
-  type TEmit                      = { edicionCelda : [ value : TDatosEvento ] }
+  type TEmit                      = { edicionCelda : [ value : TDatosEvento<any> ] }
   const emit                      = defineEmits<TEmit>()          
   const datos                     = defineModel< any[] >( { required: true })
   const getRowId                  = ref< any >( null )
@@ -126,8 +128,9 @@ single-click-edit
 
   function eventoCambio( e : CellValueChangedEvent )
   {
+    console.log("eventoCambio: ", e);
     //"rangeService" | "paste"
-    const datosEvento  : TDatosEvento = {
+    const datosEvento  : TDatosEvento<any>= {
       campo     : ToolType.anyToStr( e.colDef.field ),
       data      : e.data,
       value     : e.value,
@@ -138,6 +141,12 @@ single-click-edit
 
     emit("edicionCelda", datosEvento)
   }
+
+  function solicitudCambio( e : CellEditRequestEvent )
+  {
+    console.log( "solicitudCambio e", e)
+  }
+
 
   function setId(){
     getRowId.value                = ( params : GetRowIdParams ) => {

@@ -217,7 +217,7 @@
       new Columna           ({ name: "ref",               clase: "text-bold"        }),
       new Columna           ({ name: "nombre"                                       }),
       new Columna           ({ name: "precio",            sortable: false           }),
-      new Columna           ({ name: "tipoProducto",      label: "Tipo",  clase: "text-capitalize" }),
+      //new Columna           ({ name: "tipoProducto",      label: "Tipo",  clase: "text-capitalize" }),
       Columna.ColumnaSiNo   ({ name: "requiereAcabado",   label: "Indicar acabado"  }),
       Columna.ColumnaSiNo   ({ name: "requiereEntregado", label: "Indicar entrega"  }),
       Columna.ColumnaSiNo   ({ name: "requiereMedida",    label: "Indicar medida"   }),

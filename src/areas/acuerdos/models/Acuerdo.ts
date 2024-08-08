@@ -701,8 +701,8 @@ https://dolibarr.mublex.com/fichinter/card.php?
   get municipioTercero()  : string  { return this.tercero.municipio.label               }
   get area()              : string  { return this.tercero.areaNombre                    }
   get vinculado()         : boolean { return !!this.enlaces.length                      }
-  get hayServicios()      : boolean { return this.productos.some( p => p.esServicio )   }
-  get hayProductos()      : boolean { return this.productos.some( p => p.esProducto )   }
+  get hayServicios()      : boolean { return this.productos.some( p => p.tipo.esServicio )   }
+  get hayProductos()      : boolean { return this.productos.some( p => p.tipo.esProducto )   }
   get listoEntregar()     : boolean { return !!this.fechaListo.valueOf()   }
 
   //get comercialNombre() : string { return this.comercial.nombreCompleto }
@@ -1253,7 +1253,7 @@ https://dolibarr.mublex.com/fichinter/card.php?
   get productosNoSiigo        () : number { return this.productos.filter( p => !p.siigo.enSiigo ).length }
   get productosAlertaSiigo    () : number { return this.productosCompuestosTotal + this.productosNoSiigo }
 
-  get soloServicios           () : boolean { return this.productos.every( p => p.esTituloOsubTotal || p.esServicio ) }
+  get soloServicios           () : boolean { return this.productos.every( p => p.esTituloOsubTotal || p.tipo.esServicio ) }
 
   static  getTipoAcuerdoPlural( tipo : TTipoAcuerdo ) : string {
     const singular                = tipo === TIPO_ACUERDO.COTIZACION_CLI  ? "cotizaciones"

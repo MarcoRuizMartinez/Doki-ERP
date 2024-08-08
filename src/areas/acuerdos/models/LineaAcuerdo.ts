@@ -13,6 +13,7 @@ import {  NivelesComision,
           NIVELES_COMISION  } from "src/areas/acuerdos/models/Comisiones/NivelesComision"
 import {  ComisionLinea,
           IComisionLinea    } from "src/areas/acuerdos/models/Comisiones/ComisionLinea"
+import {  TipoProducto      } from 'src/areas/productos/models/TipoProducto'
 import {  Bodega,
           IBodega           } from "src/models/Diccionarios/Bodega"
 import {  IMAGEN_DEFAULT    } from "src/areas/productos/models/ImagenProducto"
@@ -177,7 +178,7 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
   // * /////////////////////////////////////////////////////////////////////////////// Tipo de linea
   get tipoLinea() : TipoLinea {
     let tipo  : TipoLinea   = "producto"
-    if(this.tipo            == 0 )
+    if(this.tipo.esProducto)
     {
       // Caso extraño de desconocido origen que corrompe los datos de la linea de titulo 
       if(!!this.nombre && !this.id && !this.iva && !this.qty && !this.descuentoX100 && !this.precioFinal  && !this.codeX && !this.unidadId && !this.ref)
@@ -186,9 +187,9 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
         tipo                = "producto"
     }
     else
-    if(this.tipo            == 1 )  tipo = "servicio"
+    if(this.tipo.esServicio) tipo = "servicio"
     else
-    if(this.tipo            == 9  && this.codeX == 104777)
+    if(this.tipo.esEspecial  && this.codeX == 104777)
     {
       tipo                  =   this.qty == 1   ? "titulo"
                               : this.qty == 99  ? "subtotal"
@@ -199,9 +200,9 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
     return tipo
   }
 
-  get esTitulo()          : boolean { return this.tipo === 9 && this.codeX === 104777 && this.qty === 1 }
-  get esSubTotal()        : boolean { return this.tipo === 9 && this.codeX === 104777 && this.qty === 99 }
-  get esTituloOsubTotal() : boolean { return this.tipo === 9 && this.codeX === 104777 && ( this.qty === 99 || this.qty === 1 )}
+  get esTitulo()          : boolean { return this.tipo.esEspecial && this.codeX === 104777 && this.qty === 1 }
+  get esSubTotal()        : boolean { return this.tipo.esEspecial && this.codeX === 104777 && this.qty === 99 }
+  get esTituloOsubTotal() : boolean { return this.tipo.esEspecial && this.codeX === 104777 && ( this.qty === 99 || this.qty === 1 )}
 
   get aumentoFromCosto()  : number { 
     let aumento = 0
@@ -452,7 +453,7 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
         linea.iva           = parseFloat( linea?.iva            ?? 0 )
         linea.descuentoX100 = parseFloat( linea?.descuentoX100  ?? 0 )
 
-        linea.tipo          = +linea.tipo
+        linea.tipo          = new TipoProducto( ToolType.keyNumberValido( linea, "tipo" ) )
         linea.lineaId       = +linea.lineaId
         linea.qty           = +linea.qty
         linea.orden         = +linea.orden
@@ -505,32 +506,32 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
 
   static getLineaEspecial( tipo : "titulo" | "subtotal", lineaId : number, orden : number, nombre : string = "" ) : ILineaAcuerdo
   {
-    let linea               = new LineaAcuerdo()
-        linea.codeX         = 104777
-        linea.qty           = tipo == "titulo" ? 1 : 99
-        linea.tipo          = 9
-        linea.lineaId       = lineaId
-        linea.nombre        = nombre
-        linea.orden         = orden
+    const linea         = new LineaAcuerdo()
+    linea.codeX         = 104777
+    linea.qty           = tipo == "titulo" ? 1 : 99
+    linea.tipo.value    = 9
+    linea.lineaId       = lineaId
+    linea.nombre        = nombre
+    linea.orden         = orden
     return linea
   }
 
   static getTitulo( nombre : string ) : ILineaAcuerdo
   {
-    let linea               = new LineaAcuerdo()
-        linea.codeX         = 104777
-        linea.qty           = 1
-        linea.tipo          = 9
-        linea.nombre        = nombre
+    const linea         = new LineaAcuerdo()
+    linea.codeX         = 104777
+    linea.qty           = 1
+    linea.tipo.value    = 9
+    linea.nombre        = nombre
     return linea
   }
 
   static getSubTotal() : ILineaAcuerdo
   {
-    const linea               = new LineaAcuerdo()
-          linea.codeX         = 104777
-          linea.qty           = 99
-          linea.tipo          = 9
+    const linea         = new LineaAcuerdo()
+    linea.codeX         = 104777
+    linea.qty           = 99
+    linea.tipo.value    = 9
     return linea
   }
 
@@ -567,7 +568,8 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
         linea.costo             = ToolType.keyNumberValido(producto, "costo")
         linea.iva               = ToolType.keyNumberValido(producto, "iva")
         linea.descuentoX100     = ToolType.keyNumberValido(producto, "descuentoX100")
-        linea.tipo              = ToolType.keyNumberValido(producto, "tipo") as 0 | 1
+        linea.tipo              = new TipoProducto( ToolType.keyNumberValido( producto, "tipo" ) )
+        linea.tipo.value        = ToolType.keyNumberValido(producto, "tipo") as 0 | 1
         linea.lineaId           = ToolType.keyNumberValido(producto, "lineaId")
         linea.unidadId          = ToolType.keyNumberValido(producto, "unidadId")
         linea.img.url           = ToolType.keyStringValido(producto, "imagen", IMAGEN_DEFAULT)
@@ -586,7 +588,7 @@ export class LineaAcuerdo extends ProductoDoli implements ILineaAcuerdo
     let lineaApi = {
       id:             linea.lineaId,
       fk_product:     linea.id,
-      product_type:   linea.tipo,
+      product_type:   linea.tipo.value,
       qty:            linea.qty,
       tva_tx:         linea.iva,
       subprice:       linea.precioBase,

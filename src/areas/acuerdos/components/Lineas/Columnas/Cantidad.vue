@@ -102,7 +102,7 @@
 
   const clase               = computed(()=>{
     let clase               = ""
-    if( linea.value.esProducto
+    if( linea.value.tipo.esProducto
         &&
         ( acuerdo.value.esEntrega
           ||

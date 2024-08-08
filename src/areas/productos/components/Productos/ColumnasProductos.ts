@@ -3,10 +3,10 @@ import {  ColDef,
           ColTypeDef,
           ColGroupDef             } from "ag-grid-community"
 import {  getCategoriasDB,
-          //getProveedoresDB,
-          //getDiasDespachoDB,
+          getNaturalezasDB,
+          getUnidadesDB,
                                   } from "src/composables/useDexie"
-//import {  TiposProductosProveedor } from "src/areas/productos/models/TipoProductoProveedor"
+import {  TiposProductos          } from "src/areas/productos/models/TipoProducto"
 //import {  MesesGarantia           } from "src/models/Diccionarios/MesesGarantia"
 //import {  OriginesMadeIn          } from "src/models/Diccionarios/MadeIn"
 import {  Format,
@@ -104,10 +104,10 @@ export const columnTypes : { [key: string]: ColTypeDef< IProductoDoli > } = {
           ||  field == "orden"
           ||  field == "tipo"
           ||  field == "categoria"
-          ||  field == "familiaProveedor"
+          ||  field == "familia"
           ||  field == "costoExtra"
           ||  field == "garantiaMeses"
-          ||  field == "gestionStock"
+          ||  field == "stockGestionado"
 } */
 
 //const limpiarRef   = ( p : any ) => ToolType.keyStringValido(p, "newValue").replaceAll(" ", "").trim()
@@ -119,7 +119,6 @@ const claseHDatos           = claseCol("light-blue")
 const claseHDispo           = claseCol("purple")
 const claseHRequi           = claseCol("brown")
 const claseHPrecios         = claseCol("deep-orange")
-const claseHAumentos        = claseCol("deep-purple")
 const claseHCostos          = claseCol("indigo")
 const claseHExtras          = claseCol("blue-grey")
 const claseHRegistro        = claseCol("pink")
@@ -154,26 +153,27 @@ export function columnasProductos( conPrecios : boolean ) : ( ColDef< IProductoD
         { headerName        : "👤Nombre",
           field             : "nombre",
           headerClass       : claseHDatos.col,
+          type              : "editarYCrear",
           minWidth          : 340,
-          hide: false,
+          hide: true,
         },
         { headerName        : "📝Nota",
           field             : "nota",
           headerClass       : claseHDatos.col,          
-          hide: false,
+          hide: true,
           type              : "editarYCrear",
         },
         { headerName        : "📙Documento",
           field             : "documento",
           headerClass       : claseHDatos.col,          
-          hide: false,
+          hide: true,
           type              : "editarYCrear",
         },
         { headerName        : "👨‍👩‍👧‍👦Familia",
           field             : "familia",
           headerClass       : claseHDatos.col,          
-          hide: false,
           type              : "editarYCrear",
+          hide: true,
           enableRowGroup    : true,
           valueParser       : p => ToolType.keyStringValido(p, "newValue").trim()          
         },                
@@ -184,27 +184,35 @@ export function columnasProductos( conPrecios : boolean ) : ( ColDef< IProductoD
             headerClass     : claseHDatos.col,
             opciones        : getCategoriasDB,
             key             : "label",
-            type            : "editarYCrear",
+            type            : "creacion",
             hide: true,
             cellClassRules  : { 'bg-deep-orange-2': p => ( p.data?.esNuevo ?? false ) && !p.data.okCategoria },
+            noNulo          : true,
           }
         ),
-        { headerName        : "🔢Tipo",
-          field             : "tipoProducto",
-          headerClass       : claseHDatos.col,
-          cellClass         : "text-capitalize",
-          hide: true,
-          editable          : false,          
-        },
+        Col.Objeto(
+          {
+            headerName      : "🔢Tipo",
+            field           : "tipo",
+            headerClass     : claseHDatos.col,
+            opciones        : TiposProductos,
+            key             : "label",
+            type            : "editarYCrear",
+            noNulo          : true,
+            hide: false,
+          } 
+        ),
         Col.Objeto(
           {
             headerName      : "🌱Naturaleza",
             field           : "naturaleza",
             headerClass     : claseHDatos.col,
-            key             : "nombre",
-            hide: true,
-            editable        : false,
+            opciones        : getNaturalezasDB,
+            key             : "label",
+            type            : "editarYCrear",
             minWidth        : 160,
+            noNulo          : true,
+            hide: true,
           }
         ),
         Col.Objeto(
@@ -212,17 +220,19 @@ export function columnasProductos( conPrecios : boolean ) : ( ColDef< IProductoD
             headerName      : "📐Unidad",
             field           : "unidad",
             headerClass     : claseHDatos.col,
+            opciones        : getUnidadesDB,
             key             : "label",
+            type            : "editarYCrear",
+            noNulo          : true,
             hide: true,
-            editable        : false,
           }
         ),
         { headerName        : "📄Descripción",
           field             : "descripcion",
           headerClass       : claseHDatos.col,
           minWidth          : 340,
-          hide: false,
-          editable          : true,
+          type              : "editarYCrear",
+          hide: true,
         },
       ]
     },
@@ -253,28 +263,30 @@ export function columnasProductos( conPrecios : boolean ) : ( ColDef< IProductoD
           hide: true,
         }),
         Col.Boolean({
-          headerName        : "🏪Con proveedor",
-          field             : "con_proveedor",
+          headerName        : "⛔Sin proveedor",
+          field             : "sin_proveedor",
           headerClass       : claseHDispo.col,
+          type              : "editarYCrear",
           minWidth          : 170,
-          hide: true,
           editable          : false,
+          hide: true,
         }),
         Col.Boolean({
           headerName        : "📦Stock gestionado",
           field             : "stockGestionado",
-          headerClass       : claseHDispo.col,          
+          headerClass       : claseHDispo.col,
           minWidth          : 180,
-          hide: true,
           editable          : false,
+          hide: true,
         }),        
         Col.Boolean({
           headerName        : "📦Stock proveedor",
           field             : "stockProveedor",
-          headerClass       : claseHDispo.col,          
+          headerClass       : claseHDispo.col,
+          type              : "editarYCrear",
           minWidth          : 180,
-          hide: true,
           editable          : false,
+          hide: true,
         }),
       ]
     },
@@ -285,7 +297,7 @@ export function columnasProductos( conPrecios : boolean ) : ( ColDef< IProductoD
     {
       headerName            : "✔️ Requerimientos",                      
       headerClass           : claseHRequi.header,
-      marryChildren         : false,      
+      marryChildren         : false,
       children              :
       [
         Col.Boolean({
@@ -327,21 +339,9 @@ export function columnasProductos( conPrecios : boolean ) : ( ColDef< IProductoD
       [
         Col.Precio({
           headerName        : "🪙Precio final",
-          field             : "precio",
+          field             : "precio_final",
           headerClass       : claseHPrecios.col,
-          hide: true,
-        }),
-        Col.Precio({
-          headerName        : "💲Normal",
-          field             : "precio_publico",
-          headerClass       : claseHPrecios.col,
-          hide: true,
-        }),
-        Col.Precio({
-          headerName        : "💲Descuento",
-          field             : "precio_promocion",
-          headerClass       : claseHPrecios.col,
-          hide: true,
+          hide: false,
         }),
         { headerName        : "🏦IVA",
           field             : "iva",
@@ -349,78 +349,72 @@ export function columnasProductos( conPrecios : boolean ) : ( ColDef< IProductoD
           type              : "porcentaje",
           width             : 90,
           hide: true,
-        },                
-      ]
-    },
-  )
-
-  // * //////////////////////////////////////////////////////////////////////////////// Aumentos
-  columnas.push(
-    {
-      headerName            : "📟 Precios calculados",                      
-      headerClass           : claseHAumentos.header,
-      marryChildren         : false,
-      children              :
-      [
+        },
         { headerName        : "↗️Base",
           field             : "aumento",
-          headerClass       : claseHAumentos.col,
-          type              : "porcentaje",
+          headerClass       : claseHPrecios.col,
+          type              : ["porcentaje", "editarYCrear"],
           width             : 100,
-          hide: true,
-        },
+          hide: false,
+          valueParser       : reglaAumento
+        },        
         Col.Precio({
           headerName        : "💲Base",
           field             : "precio_aumento",
-          headerClass       : claseHAumentos.col,
+          headerClass       : claseHPrecios.col,
           minWidth          : 100,
-          hide: true,
+          hide: false,
         }),
         { headerName        : "↗️Descuento",
           field             : "aumento_descuento",
-          headerClass       : claseHAumentos.col,
-          type              : "porcentaje",
-          width             : 140,          
-          hide: true,
+          headerClass       : claseHPrecios.col,
+          type              : ["porcentaje", "editarYCrear"],
+          width             : 140,
+          hide: false,
+          valueParser       : reglaAumento,
         },
         Col.Precio({
           headerName        : "💲Descuento",
           field             : "precio_aumento_descuento",
-          headerClass       : claseHAumentos.col,
+          headerClass       : claseHPrecios.col,
           minWidth          : 140,
-          hide: true,
+          hide: false,
         }),
         { headerName        : "↗️Escom",
           field             : "aumento_escom",
-          headerClass       : claseHAumentos.col,
-          type              : "porcentaje",
+          headerClass       : claseHPrecios.col,
+          type              : ["porcentaje", "editarYCrear"],
           width             : 110,
-          hide: true,
+          hide: false,
+          valueParser       : reglaAumento
         },
         Col.Precio({
           headerName        : "💲Escom",
           field             : "precio_aumento_escom",
-          headerClass       : claseHAumentos.col,
+          headerClass       : claseHPrecios.col,
           minWidth          : 110,
           hide: true,
         }),
+        /*
         { headerName        : "↗️Black Friday",
           field             : "aumento_loco",
           headerClass       : claseHAumentos.col,
-          type              : "porcentaje",
+          type              : ["porcentaje", "editarYCrear"],
           width             : 150,          
           hide: true,
-        },
-        Col.Precio({
+        }, */
+        /* Col.Precio({
           headerName        : "💲Black Friday",
           field             : "precio_aumento_loco",
           headerClass       : claseHAumentos.col,
           width             : 150,
           hide: true,
-        }),           
+        }),
+        */            
       ]
-    }
-  )  
+    },
+  )
+
 
   // * //////////////////////////////////////////////////////////////////////////////// Costos
   columnas.push(
@@ -434,22 +428,24 @@ export function columnasProductos( conPrecios : boolean ) : ( ColDef< IProductoD
           headerName        : "💲Compra",
           field             : "costo",
           headerClass       : claseHCostos.col,
+          type              : "editarYCrear",
           width             : 150,
-          hide: true,
+          hide: false,
         }),
         Col.Precio({
           headerName        : "💲Costo extra",
-          field             : "costo_adicional",
+          field             : "costoExtra",
           headerClass       : claseHCostos.col,
+          type              : "editarYCrear",
           width             : 150,
-          hide: true,
+          hide: false,
         }),
         Col.Precio({
           headerName        : "💲Costo total",
           field             : "costoTotal",
           headerClass       : claseHCostos.col,
           width             : 150,
-          hide: true,
+          hide: false,
         }),        
       ]
     }
@@ -465,25 +461,25 @@ export function columnasProductos( conPrecios : boolean ) : ( ColDef< IProductoD
       [
         { headerName        : "👤Creador",
           field             : "creador.label",  
-          hide: false,
           headerClass       : claseHRegistro.col,
+          hide: true,
         },
         { headerName        : "📅Fecha Creación",
           field             : "fechaCreacion",  
-          hide: false,
           minWidth          : 170,
           headerClass       : claseHRegistro.col,
+          hide: true,
         },
         { headerName        : "👤Edito",
           field             : "edito.label",  
-          hide: false,
           headerClass       : claseHRegistro.col,
+          hide: true,
         },
         { headerName        : "📅Fecha Edición",
           field             : "fechaEdicion",  
-          hide: false,
           minWidth          : 170,
           headerClass       : claseHRegistro.col,
+          hide: true,
         }
       ]
     }
@@ -499,10 +495,10 @@ export function columnasProductos( conPrecios : boolean ) : ( ColDef< IProductoD
       [
         { headerName        : "Codigo Siigo",
           field             : "siigo.codigo",
-          hide: false, 
           headerClass       : claseHExtras.col,
           width             : 130,
-          cellClass         : "fuente-mono text-right"
+          cellClass         : "fuente-mono text e-right",
+          hide: true, 
         },
       ]
     }
@@ -511,122 +507,8 @@ export function columnasProductos( conPrecios : boolean ) : ( ColDef< IProductoD
   return columnas
 }
 
+
 /* 
-import {  ICategoriaProducto    } from "src/areas/productos/models/CategoriaProducto"
-import {  IUnidad               } from "src/models/Diccionarios/Unidad"
-import {  ILabelValue           } from "src/models/TiposVarios"
-import {  INaturalezaProducto   } from "src/models/Diccionarios/NaturalezaProducto"
-import {  IImagenProducto       } from "src/areas/productos/models/ImagenProducto"
-import {  IProductoProveedor    } from "src/areas/productos/models/ProductoProveedor"
-import {  IAccion               } from "src/areas/comunicacion/models/Accion"
-import {  TCodigosSiigo         } from "src/areas/productos/models/Siigo"         
-import {  IProductoHijo         } from "src/areas/productos/models/ProductoHijo"
-*/
-
-export interface IProductoTrabajo
-{
-  // * //////////////////// Basicos
-  //img                       : IImagenProducto
-  //ref                       : string
-  //nombre                    : string
-  //categoria                 : ICategoriaProducto
-  //tipoProducto              : string
-  //naturaleza                : INaturalezaProducto
-  //unidad                    : IUnidad
-  //descripcion               : string
-  
-  // * //////////////////// Disponibilidad
-  //activoEnCompra            : boolean
-  //activoEnVenta             : boolean
-  //sin_proveedor             : boolean
-  //stockGestionado           : boolean
-  //stockProveedor            : number
-
-  // * //////////////////// Requisitos
-  //requiereAcabado           : boolean
-  //requiereMedida            : boolean
-  //requiereEntregado         : boolean
-
-  // * //////////////////// Precios
-  //precio                    : number        // Precio guardado en llx_product en columna price. Precio final, el menor entre publico y promocion  
-  //precio_publico            : number        // Precio guardado en extrafields
-  //precio_promocion          : number        // Precio guardado en extrafields
-  //iva                       : number
-
-  // * //////////////////// Aumentos
-  //aumento                   : number
-  //precio_aumento            : number        // get
-
-  //aumento_escom             : number
-  //precio_aumento_escom      : number        // get
-
-  //aumento_descuento         : number
-  //precio_aumento_descuento  : number        // get
-
-  //aumento_loco              : number
-  //precio_aumento_loco       : number        // get
-
-  // * //////////////////// Costo
-  //costo                     : number        // precio que viene de la tabla llx_product > cost_price
-  //costo_adicional           : number
-  //costoTotal                : number
-  
-  // * //////////////////// Otros datos
-  
-  //fecha_creacion            : string  
-  //siigo                     : TCodigosSiigo  // Codigo siigo que se utiliza en los productos
-  
-  // * //////////////////// Datos contables
-
-  // * //////////////////// Botones
-  /*   
-  urlDolibarr               : string
-  urlTienda                 : string
-  Modifico
-  */
-  // * //////////////////// Proveedor
-  /*
-  refProv                   : string  
-  productosProveedor        : IProductoProveedor[]
-  activo_proveedor          : boolean       // Activo proveedor
-  disponible                : boolean       // Disponible proveedor
-  fecha_llegada             : string        // Fecha llegada proveedor
-  id_producto_pro           : number        // ID producto proveedor
-  id_proveedor              : number
-  */
-  // * //////////////////// No esta listo
-  /*   
-  garantia                  : string        // "1_year"
-  hecho_en                  : string        // "colombia"  
-  competencia               : number
-  
-  */
-  // * //////////////////// No
-  /*   
-  id                        : number
-  sigla                     : string
-  activo                    : boolean
-  unidadId                  : number  
-  tipo                      : 0 | 1 | 9     // 0 producto 1 servicio 9 subtotal
-  id_extra                  : number        // ID extra field
-  elegido                   : boolean       // Se utiliza para indicar que el producto a sido agregado a lista
-  comentarios               : IAccion[]
-  esRefEspecial             : boolean
-  productoForApi            : any
-  productoForApiPrecios     : any  
-  getComoProductoHijo       : IProductoHijo
-  tipoLabelValue            : ILabelValue
-  esProducto                : boolean
-  esServicio                : boolean
-  precioPublicoConIVA       : number        // get
-  precioPromocionConIVA     : number        // get
-  descuentoCalculado        : number
-  precio_escom              : number        // get
-  precio_publico_final      : number        // get
- */
-}
-
-/*
 function parserNumber( p : any )
 {
   if( ToolType.keyStringValido(p, "newValue" ) === "" )
@@ -634,4 +516,29 @@ function parserNumber( p : any )
   else
     return ToolType.keyNumberValido(p, "newValue")
 }
-*/
+ */
+function reglaAumento( p : any )
+{
+  let   aumento       = 0  
+  const campo         = ToolType.keyStringValido( p.column, "colId" )
+
+  if( ToolType.keyStringValido(p, "newValue" ) === "" )
+    aumento           = ToolType.keyNumberValido(p, "oldValue")
+  else
+    aumento           = ToolType.keyNumberValido(p, "newValue")  
+
+  if(campo            === "aumento_descuento")
+  {
+    const aumento2    = ToolType.keyNumberValido(p.data, "aumento")
+    if( aumento       >= aumento2)
+      aumento         = aumento2 - 1
+  }
+  else
+  {
+    const aumento2    = ToolType.keyNumberValido(p.data, "aumento_descuento")
+    if( aumento       <= aumento2)
+      aumento         = aumento2 + 1
+  }
+
+  return aumento
+}

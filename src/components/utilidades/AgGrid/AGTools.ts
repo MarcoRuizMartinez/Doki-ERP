@@ -20,10 +20,10 @@ export enum TIPO_EDICION
   { label: 'Edición por rango',   value: TIPO_EDICION.RANGO,    icon: "mdi-table-arrow-down"  },
 ] */
 
-export type TDatosEvento = {
+export type TDatosEvento<T> = {
   campo     : string
   index     : number
-  data      : IProductoProveedor
+  data      : T
   value     : any
   oldValue  : any
   source    : string // "rangeService" | "paste"

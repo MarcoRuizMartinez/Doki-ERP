@@ -1,6 +1,6 @@
 <template>
   <ventana                    cerrar full-screen scroll
-    titulo                    ="Buscar"
+    titulo                    ="Buscar productos"
     icono                     ="mdi-magnify"
     class-contenido           ="row justify-start"
     mensaje-sin-resultados    ="No se encontraron productos o servicios"
@@ -34,6 +34,7 @@
           v-model             ="busquedaTxt"
           label               ="Buscar..."
           class               ="col-md-2 col-6"
+          debounce            ="1500"
           :disable            ="buscando"
           @clear              ="buscar"
           @update:model-value ="editarBusqueda"

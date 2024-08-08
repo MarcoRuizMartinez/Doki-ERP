@@ -5,6 +5,7 @@ import {  ColDef              } from "ag-grid-community";
 type TParam = ColDef & {
   opciones              ?: any
   key                   ?: string
+  noNulo                ?: boolean
 } 
 
 //const fnboolean = ( p : any ) => Boolean( p.value ) ? "✅ Si" : "❌ No"
@@ -105,21 +106,23 @@ export const Col =
     return mostrar ? col : col
   },
   
-  Objeto({
-    opciones,
-    key                   = "",//undefined ?? "",
-    field                 = "",//undefined ?? "",
-    headerName            = undefined,
-    editable              = undefined,
-    hide                  = undefined,
-    type                  = undefined,
-    cellRenderer          = undefined,
-    width                 = undefined,
-    cellClassRules        = undefined,
-    headerClass           = undefined,
-    minWidth              = undefined,
-  }                       : TParam
-  )                       : ColDef
+  Objeto(
+    {
+      opciones,
+      key                   = "",//undefined ?? "",
+      field                 = "",//undefined ?? "",
+      headerName            = undefined,
+      editable              = undefined,
+      hide                  = undefined,
+      type                  = undefined,
+      cellRenderer          = undefined,
+      width                 = undefined,
+      cellClassRules        = undefined,
+      headerClass           = undefined,
+      minWidth              = undefined,
+      noNulo                = false,
+    }                       : TParam,    
+  )                         : ColDef
   {
     const renderAUsar     = getRender()
     const col : ColDef    = { 
@@ -148,7 +151,19 @@ export const Col =
                               formatValue     : ( value : any ) => value?.[key],
                               useFormatter    : true,
                             }
+    }
 
+    if(noNulo)
+    {
+      col.valueParser = ( p : any ) =>
+        {
+          let valor   = p.newValue
+
+          if(typeof p.newValue == "string" && p.newValue == "" && typeof p.oldValue == "object" )
+            valor     = p.oldValue
+
+          return valor
+        }
     }
 
     return col

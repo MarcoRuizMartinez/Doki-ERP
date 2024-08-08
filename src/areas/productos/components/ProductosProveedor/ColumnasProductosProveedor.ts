@@ -6,13 +6,13 @@ import {  getProveedoresDB,
           getCategoriasDB,
           getDiasDespachoDB,
                                   } from "src/composables/useDexie"
-import {  TiposProductosProveedor } from "src/areas/productos/models/TipoProductoProveedor"
+import {  TiposProductosProveedor } from "src/areas/productos/models/TipoProducto"
 import {  MesesGarantia           } from "src/models/Diccionarios/MesesGarantia"
 import {  OriginesMadeIn          } from "src/models/Diccionarios/MadeIn"
 import {  ToolType, Format        } from "src/composables/useTools"
 import {  IProductoProveedor      } from "../../models/ProductoProveedor"
-import imagen                       from "./../ImagenProductoAG.vue"
-import proveedor                    from "components/utilidades/AgGrid/ProveedorBadge.vue"
+import    imagen                    from "./../ImagenProductoAG.vue"
+import    proveedor                 from "components/utilidades/AgGrid/ProveedorBadge.vue"
 
 export const reglasCSS = {
   'bg-grey-10 text-grey-2 text-bold'  : ( params : any ) =>  !params.data,
@@ -97,10 +97,10 @@ function esFieldDeEditarHijo( field : string )
           ||  field == "orden"
           ||  field == "tipo"
           ||  field == "categoria"
-          ||  field == "familiaProveedor"
+          ||  field == "familia"
           ||  field == "costoExtra"
           ||  field == "garantiaMeses"
-          ||  field == "gestionStock"
+          ||  field == "stockGestionado"
 }
 
 const limpiarRef   = ( p : any ) => ToolType.keyStringValido(p, "newValue").replaceAll(" ", "").trim()
@@ -240,7 +240,7 @@ export function columnasProductos( conPrecios : boolean, usuarioExterno : boolea
         }),
         Col.Boolean({
           headerName      : "📦Gestión de stock",
-          field           : "gestionStock",
+          field           : "stockGestionado",
           headerClass     : "bg-purple-6 text-white",
           type            : "editarYCrear",
           hide            : true,
@@ -340,7 +340,7 @@ export function columnasProductos( conPrecios : boolean, usuarioExterno : boolea
           },
           {
             headerName      : "👨‍👩‍👧‍👦🏪Familia proveedor", 
-            field           : "familiaProveedor",
+            field           : "familia",
             headerClass     : "bg-deep-purple-6 text-white",
             hide            : true,
             type            : "editarYCrear",
@@ -557,8 +557,8 @@ export function columnasProductos( conPrecios : boolean, usuarioExterno : boolea
 
 function parserNumber( p : any )
 {
-  if( ToolType.keyStringValido(p, "newValue" ) === "" )
-    return ToolType.keyNumberValido(p, "oldValue")
+  if(       ToolType.keyStringValido(p, "newValue" ) === "" )
+    return  ToolType.keyNumberValido(p, "oldValue")
   else
-    return ToolType.keyNumberValido(p, "newValue")
+    return  ToolType.keyNumberValido(p, "newValue")
 }

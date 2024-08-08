@@ -80,3 +80,50 @@ export const TiposProductosProveedor       = [
   new TipoProductoProveedor ( TIPO_PRO_PROVEEDOR.KIT         ),
   new TipoProductoProveedor ( TIPO_PRO_PROVEEDOR.MARKETPLACE ),
 ]
+
+export enum TIPO_PRODUCTO
+{
+  NULO                = -1,
+  PRODUCTO            = 0,
+  SERVICIO            = 1,
+  SUBTOTAL_TITULO     = 9,      // Subtotal o titulo
+}
+
+export interface ITipoProducto
+{
+  label               : string 
+  value               : TIPO_PRODUCTO
+  esProducto          : boolean
+  esServicio          : boolean
+  esEspecial          : boolean  // Subtotal o titulo
+}
+
+
+export class TipoProducto implements ITipoProducto
+{
+  value               : TIPO_PRODUCTO
+  
+  constructor( value  : TIPO_PRODUCTO = TIPO_PRODUCTO.PRODUCTO )
+  {
+    this.value        = value
+  }
+
+  get label() : string {
+    const label       =   this.esProducto     ? "Producto" 
+                        : this.esServicio     ? "Servicio" 
+                        : this.esEspecial     ? "Especial"
+                        : this.esNull         ? "Nulo"
+                        :                       "Desconocido"
+    return label
+  }
+
+  get esNull()          : boolean { return this.value === TIPO_PRODUCTO.NULO            } 
+  get esProducto()      : boolean { return this.value === TIPO_PRODUCTO.PRODUCTO        } 
+  get esServicio()      : boolean { return this.value === TIPO_PRODUCTO.SERVICIO        }
+  get esEspecial()      : boolean { return this.value === TIPO_PRODUCTO.SUBTOTAL_TITULO }  
+}
+
+export const TiposProductos       = [
+  new TipoProducto ( TIPO_PRODUCTO.PRODUCTO ),
+  new TipoProducto ( TIPO_PRODUCTO.SERVICIO ),
+]

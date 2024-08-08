@@ -215,7 +215,8 @@
 
   onMounted( () => {
     acuerdo.value.calcularEntregado()
-    lineas.value                    = acuerdo.value.productos.filter( p => p.esProducto )
+    lineas.value                    = acuerdo.value.productos.filter( p => p.tipo.esProducto )
+    console.log("acuerdo.value.productos: ", acuerdo.value.productos);
     entrega.value.productos         = lineas.value
     entrega.value.metodoEntrega     = Object.assign( acuerdo.value.metodoEntrega,   {} )
     entrega.value.contactoEntrega   = Object.assign( acuerdo.value.contactoEntrega, {} )

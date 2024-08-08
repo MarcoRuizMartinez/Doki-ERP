@@ -12,7 +12,7 @@ import {  Prioridades, Cuando, Progresos} from "src/areas/comunicacion/models/Ac
 import {  Anticipo                      } from "src/areas/acuerdos/models/Anticipo"
 import {  DIMENSIONES                   } from "src/areas/acuerdos/models/SerieAcuerdo"
 import {  Periodo, PERIODO              } from "src/models/TiposInformes"
-import {  TiposProductosProveedor       } from "src/areas/productos/models/TipoProductoProveedor"
+import {  TiposProductosProveedor       } from "src/areas/productos/models/TipoProducto"
 import {  Incentivo                     } from "src/areas/nomina//models/Incentivo"
 import {  estadosCtz, estadosPed,
           estadosOC,  estadosEnt        } from "src/areas/acuerdos/models/ConstantesAcuerdos"

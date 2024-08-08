@@ -12,7 +12,7 @@ import {  IProductoProveedor,
           ProductoProveedor,
           THijoPadre            } from '../models/ProductoProveedor'
 import {  IQuery                } from "src/models/Busqueda"
-import {  TIPO_PRO_PROVEEDOR    } from '../models/TipoProductoProveedor'
+import {  TIPO_PRO_PROVEEDOR    } from '../models/TipoProducto'
 import {  TIPO_EDICION,
           TDatosEvento
                                 } from "components/utilidades/AgGrid/AGTools"
@@ -183,14 +183,14 @@ export function useControlProductosProveedor()
     }
   
     //* //////////////////////////////////////////////////////////////////////////////// ☁️☁️☁️☁️☁️☁️☁️☁️☁️☁️☁️☁️☁️☁️☁️☁️ Actualizar datos
-    const cambios : TDatosEvento[]= []
+    const cambios : TDatosEvento<IProductoProveedor>[]= []
   
     // * ////////////////////////////////////////////////////////////////////////////////////////////////////// Procesar Edicion En Lote
     // * ///////////////////////////////////////////////////////////////////// Aca se reciben todos los cambios que se hacen en la tabla
     // * // Como recibe cabios por cada celda, y en una misma edicion, se pueden editar cientos de celdas, se hace el timeout 
     // * // ....para espererar que lleguen todas las ediciones de las cientos de celdas
     let   timeoutId : ReturnType<typeof setTimeout> | null = null;
-    function procesarEdicionEnLote( d : TDatosEvento )
+    function procesarEdicionEnLote( d : TDatosEvento<IProductoProveedor> )
     {
       if(!!d.data.esNuevo || d.campo === "esNuevo") {
         gestionarCambiosEnNuevo(d)
@@ -205,7 +205,7 @@ export function useControlProductosProveedor()
     
     // * ///////////////////////////////////////////////////////////////////////////////////////////////// gestionar Cambios En Nuevo
     // * ////////////////////////////////////////////////////////////////////////////// Aca se reciben los de filas nuevas en la tabla
-    async function gestionarCambiosEnNuevo( d : TDatosEvento )
+    async function gestionarCambiosEnNuevo( d : TDatosEvento<IProductoProveedor> )
     {
       let revisarCampos         = false
       if(d.campo === "refPadre" || d.campo === "tipo")
@@ -260,7 +260,7 @@ export function useControlProductosProveedor()
     async function subirCambiosEnLote()
     {
       if(!cambios.length) return
-      const nuevosCambios : TDatosEvento[]= []
+      const nuevosCambios : TDatosEvento<IProductoProveedor>[]= []
   
       const campo                 = cambios[0].campo
       if(campo.includes("_n")) {
@@ -288,7 +288,7 @@ export function useControlProductosProveedor()
           c.value                 = ToolType.anyToNumOStr( c.value?.value )
         }
 
-        if(campo                  === "stock" && c.data.gestionStock)
+        if(campo                  === "stock" && c.data.stockGestionado)
         {
           const hayStock          = !!c.value
           c.data.disponible       = hayStock

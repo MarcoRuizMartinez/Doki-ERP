@@ -84,7 +84,7 @@
           label                 ="Tipo producto"
           icon                  ="mdi-ballot"
           class                 ="width160"
-          :options              ="[{ value : 0, label : 'Productos' }, { value : 1, label : 'Servicios' }]"
+          :options              ="TiposProductos"
         />          
         <!-- //* ///////////////////////////////////////////////////////////// Con proveedor -->
         <select-label-value     use-input hundido clearable flat bordered
@@ -692,6 +692,7 @@
             labelValueNulo      } from "src/models/TiposVarios"
   import {  VISTAS_AG           } from "components/utilidades/AgGrid/VistaAG"
   import {  TIPO_EDICION        } from "components/utilidades/AgGrid/AGTools"
+  import {  TiposProductos      } from "src/areas/productos/models/TipoProducto"
 
   // * /////////////////////////////////////////////////////////////////////// Componibles
   import {  style               } from "src/composables/useEstilos"  

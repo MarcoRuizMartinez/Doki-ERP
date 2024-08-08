@@ -59,14 +59,13 @@
       />
       <!-- //* //////////////   Tipo Servicio y Producto -->
       <select-label-value       use-input flat bordered
-        v-model                 ="proModel.tipoLabelValue"
+        v-model                 ="proModel.tipo"
         label                   ="Tipo"
         icon                    ="mdi-format-list-checks"
         class                   ="col-12 col-md-6"
         defecto                 ="Producto"
         :readonly               ="readonly"
-        :options                ="[{value : 0, label:'Producto'}, {value: 1, label:'Servicio'}]"
-        @select                 ="( i : ILabelValue )=> proModel.tipo = i.value"
+        :options                ="TiposProductos"
       />
       <!-- //* //////////////   Campo Categoría -->
       <select-label-value       use-input flat bordered
@@ -95,7 +94,7 @@
       />
       <!-- //* //////////////   Costo Adicional -->
       <input-number
-        v-model                 ="proModel.costo_adicional"
+        v-model                 ="proModel.costoExtra"
         label                   ="Costo adicional:"
         class                   ="col-12 col-md-6"
         tipo                    ="precio"
@@ -278,6 +277,7 @@
   import {  ILabelValue           } from "src/models/TiposVarios"
   import {  IProductoDoli,
             ProductoDoli          } from "src/areas/productos/models/ProductoDolibarr"
+  import {  TiposProductos        } from "src/areas/productos/models/TipoProducto"            
 
   //* ///////////////////////////////////////////////////////////////////////////////// Componibles
   import {  Format,

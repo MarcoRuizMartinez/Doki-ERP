@@ -193,7 +193,7 @@
           @click                ="emit('clickRotulos')"
         />
       </q-btn-group>
-      <q-btn 
+      <!-- <q-btn 
         v-if                  ="acuerdo.esPedido && !acuerdo.soloServicios && ( acuerdo.esEstadoValidado )"
         v-bind                ="style.btnBaseMd"
         color                 ="positive"
@@ -203,7 +203,7 @@
         @click                ="emit('clickNuevaEntrega')"
         > 
         <Tooltip label        ="Generar nueva entrega"/>
-      </q-btn>
+      </q-btn> -->
 
       <btn-toggle
         v-if                  ="acuerdo.esOCProveedor && acuerdo.esEstadoValido && ( usuario.esProduccion || usuario.externo )"

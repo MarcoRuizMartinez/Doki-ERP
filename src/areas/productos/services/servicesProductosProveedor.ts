@@ -70,7 +70,7 @@ export function servicesProductosPro()
     })
   }
 
-  async function EditarCampoEnLote( campo : string, datos : TDatosEvento[], usuarioId : number ) : Promise< boolean >
+  async function EditarCampoEnLote( campo : string, datos : TDatosEvento<IProductoProveedor>[], usuarioId : number ) : Promise< boolean >
   {
     const datosEnviar         = datos.map( d => { return { id: d.data?.id, value: d.value }})
     return new Promise( async (resolver, rechazar ) =>

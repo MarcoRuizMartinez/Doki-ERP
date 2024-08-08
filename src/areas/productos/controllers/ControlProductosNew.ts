@@ -167,19 +167,17 @@ export function useControlProductosDolibarr()
 
   
     //* //////////////////////////////////////////////////////////////////////////////// ☁️☁️☁️☁️☁️☁️☁️☁️☁️☁️☁️☁️☁️☁️☁️☁️ Actualizar datos
-    const cambios : TDatosEvento[]= []
+    const cambios : TDatosEvento<IProductoDoli>[]= []
   
     // * ////////////////////////////////////////////////////////////////////////////////////////////////////// Procesar Edicion En Lote
     // * ///////////////////////////////////////////////////////////////////// Aca se reciben todos los cambios que se hacen en la tabla
     // * // Como recibe cabios por cada celda, y en una misma edicion, se pueden editar cientos de celdas, se hace el timeout 
     // * // ....para espererar que lleguen todas las ediciones de las cientos de celdas
     let   timeoutId : ReturnType<typeof setTimeout> | null = null;
-    function procesarEdicionEnLote( d : TDatosEvento )
+    function procesarEdicionEnLote( d : TDatosEvento<IProductoDoli> )
     {
-      console.log("d: ", d);
       if(!!d.data.esNuevo || d.campo === "esNuevo")
       {
-        console.log("d.data.esNuevo: ");
         gestionarCambiosEnNuevo(d)
         return
       }
@@ -192,7 +190,7 @@ export function useControlProductosDolibarr()
     
     // * ///////////////////////////////////////////////////////////////////////////////////////////////// gestionar Cambios En Nuevo
     // * ////////////////////////////////////////////////////////////////////////////// Aca se reciben los de filas nuevas en la tabla
-    async function gestionarCambiosEnNuevo( d : TDatosEvento )
+    async function gestionarCambiosEnNuevo( d : TDatosEvento<IProductoDoli> )
     {
       let revisarCampos         = false
       /* if(d.campo === "refPadre" || d.campo === "tipo")
@@ -227,20 +225,20 @@ export function useControlProductosDolibarr()
       if(d.campo                === "tipo"      || revisarCampos)
         d.data.okTipo           = !!d.data.tipo.value
   
-      if(d.campo                === "proveedor" || revisarCampos)
-        d.data.okProveedor      = !!d.data.proveedor.id
+      /* if(d.campo                === "proveedor" || revisarCampos)
+        d.data.okProveedor      = !!d.data.proveedor.id */
   
       if(d.campo                === "categoria" || revisarCampos)
         d.data.okCategoria      = !!d.data.categoria.id
   
-      if(d.campo                === "hechoEn"   || revisarCampos)
+      /* if(d.campo                === "hechoEn"   || revisarCampos)
         d.data.okHechoEn        = !!d.data.hechoEn.value
-      
+       */
       if(d.campo                === "precio"    || revisarCampos)
         d.data.okPrecio         = ToolType.anyToNum( d.data.precio ) != 0
   
-      const refrescarTodo       = !!d.data.sePuedeCrear
-      tablaAG.value?.refreshCells( refrescarTodo )
+      //const refrescarTodo       = !!d.data.sePuedeCrear
+      //tablaAG.value?.refreshCells( refrescarTodo )
     }
   
     // * //////////////////////////////////////////////////////////////////////////////////////////////////////// subir Cambios En Lote
@@ -248,7 +246,7 @@ export function useControlProductosDolibarr()
     async function subirCambiosEnLote()
     {
       if(!cambios.length) return
-      const nuevosCambios : TDatosEvento[]= []
+      const nuevosCambios : TDatosEvento<IProductoDoli>[]= []
   
       const campo                 = cambios[0].campo
       if(campo.includes("_n")) {
@@ -260,32 +258,45 @@ export function useControlProductosDolibarr()
   
       for (const c of cambios)
       {
+        console.group("subirCambiosEnLote");
         console.log("c: ", c);
+        console.log("campo", campo);
+        console.groupEnd();
         if(typeof c.value         ==  "boolean")
           c.value = ToolType.anyToNum( c.value )
         else if(c.value           === null && typeof c.oldValue == "boolean") c.value  = 0
         else if(c.value           === null && typeof c.oldValue == "number")  c.value  = 0
         else if(c.value           === null && typeof c.oldValue == "string")  c.value  = ""
         else if(                  // Objetos
-              campo               === "diasDespacho"
-          ||  campo               === "categoria"
+              campo               === "categoria"
+          ||  campo               === "tipo"
+          ||  campo               === "naturaleza"
+          ||  campo               === "unidad"
           ||  campo               === "garantiaMeses"
           ||  campo               === "hechoEn"
-          ||  campo               === "tipo"
         )
         {
           c.value                 = ToolType.anyToNumOStr( c.value?.value )
         }
 
         c.value
-        console.log("c.value: ", c.value);
+        
 
 
-
-        /* if(campo                  === "stock" && c.data.gestionStock)
+        if( c.data.costo > 0
+            &&
+            (
+                  campo  === "aumento"
+              ||  campo  === "aumento_descuento"
+              ||  campo  === "costo"
+              ||  campo  === "costoExtra"
+            )
+        )
         {
-          const hayStock          = !!c.value
-          c.data.disponible       = hayStock
+          /* IFNULL(px.precio_publico,       0)          AS precio_publico,
+          IFNULL(px.precio_promocion,     0)          AS precio_promocion,
+
+          const campoEditar = 
           nuevosCambios.push({
             campo     : "disponible",
             index     : c.index,
@@ -293,8 +304,8 @@ export function useControlProductosDolibarr()
             value     : hayStock,
             oldValue  : c.oldValue,
             source    : "",
-          })
-        } */
+          }) */
+        }
         /* if(campo                  === "activo")
         {
           const activo            = !!c.value
@@ -312,8 +323,7 @@ export function useControlProductosDolibarr()
           }          
         } */
       }
-
-      console.log("EditarCampoEnLote cambios: ", cambios);
+      
       const ok                    = await EditarCampoEnLote( campo, cambios, usuario.value.id )    
       cambios.length              = 0
       loading.value.carga         = false

@@ -2,17 +2,13 @@
 import {  ToolDate,
           ToolNum,
           ToolType,                 } from "src/composables/useTools"  
-import {  IUsuario,
-          Usuario                   } from "src/areas/usuarios/models/Usuario"
 import {  IProducto,
           Producto                  } from './Producto';          
 import {  IProveedor,
           Proveedor                 } from "src/models/Diccionarios/Proveedor"
-import {  ICategoriaProducto,
-          CategoriaProducto         } from "src/areas/productos/models/CategoriaProducto"
 import {  ITipoProductoProveedor,
           TipoProductoProveedor,
-          TIPO_PRO_PROVEEDOR       } from "src/areas/productos/models/TipoProductoProveedor"    
+          TIPO_PRO_PROVEEDOR       } from "src/areas/productos/models/TipoProducto"    
 import {  IDiasDespacho,
           DiasDespacho              } from "src/models/Diccionarios/DiasDespacho"
 import {  MesesGarantia             } from "src/models/Diccionarios/MesesGarantia"
@@ -20,9 +16,7 @@ import {  OriginesMadeIn            } from "src/models/Diccionarios/MadeIn"
 import {  ILabelValue,  
           labelValueNulo,
           BuscarLabelValue          } from "src/models/TiposVarios"
-import {  IImagenProducto,
-          IMAGEN_DEFAULT,
-          ImagenProducto            } from "src/areas/productos/models/ImagenProducto"
+import {  IMAGEN_DEFAULT            } from "src/areas/productos/models/ImagenProducto"
 import {  getDiaDespachoDB,
           getCategoriaDB,
           getProveedorDB,
@@ -35,60 +29,45 @@ export type THijoPadre = {
   cantidad            : number
 }
 
-export interface IProductoProveedor extends IProducto {
-  id                  : number
+export interface IProductoProveedor extends IProducto {  
   idNuestro           : number
-  ref_n               : string                //* ///////////////////////////////// _n
   refComparacion_n    : string                //* Ref que se utiliza para comprar si el precio esta bien
   refNuestra          : string
   refPadre            : string
   idPadre             : number
-  nombre_n            : string                //* ///////////////////////////////// _n
   nombreNuestro       : string
   estado              : string                //  published, draft, deleted
   tipo                : ITipoProductoProveedor
   orden               : number | null
-  proveedor           : IProveedor
-  categoria           : ICategoriaProducto
-  img                 : IImagenProducto
+  proveedor           : IProveedor  
   urlImagen           : string
 
   activo              : boolean
   activoNuestro       : boolean
   disponible          : boolean
-  gestionStock        : boolean
+  stockGestionado     : boolean
   stock               : number    
 
-  descripcion         : string  
   url                 : string  
   familiaNuestra      : string
-  familiaProveedor    : string
-  documento           : string
+  familia             : string  
   hechoEn             : ILabelValue
-  garantia            : string
-  garantiaMeses       : ILabelValue
+
   diasDespacho        : IDiasDespacho
 
-  precio              : number
-  precioConIVA        : number
-  precio_n            : number                //* ///////////////////////////////// _n
+  //precio              : number  
+  //precio_n            : number  
+  precioConIVA        : number  
   diferencia          : number
   diferenciaX100      : number
   precioCredito       : number
   precioCredito_n     : number                //* ///////////////////////////////// _n
   precioDolar         : number
-  precioPromocion     : number  
-  costoExtra          : number
+  precioPromocion     : number
   descuento           : number
   calcularDescuento   : boolean
   precioActualizado   : boolean
 
-  creador             : IUsuario
-  edito               : IUsuario
-  fechaCreacion       : Date
-  fechaCreacionCorta  : string
-  fechaEdicion        : Date
-  fechaEdicionCorta   : string
   fechaLlegada        : Date
   fechaLlegadaCorta   : string
 
@@ -105,52 +84,39 @@ export interface IProductoProveedor extends IProducto {
 
 export class ProductoProveedor extends Producto implements IProductoProveedor
 {
-  id                  : number                  = 0
   idNuestro           : number                  = 0  
-  ref_n               : string                  = ""
   refComparacion_n    : string                  = ""
   refNuestra          : string                  = ""
   refPadre            : string                  = ""
   idPadre             : number                  = 0  
-  nombre_n            : string                  = ""
+  
   nombreNuestro       : string                  = ""
   estado              : string                  = ""
   tipo                : ITipoProductoProveedor  = new TipoProductoProveedor( TIPO_PRO_PROVEEDOR.SIMPLE )
   orden               : number                  = 0
-  proveedor           : IProveedor              = new Proveedor()  
-  categoria           : ICategoriaProducto      = new CategoriaProducto()
-  img                 : IImagenProducto         = new ImagenProducto()
+  proveedor           : IProveedor              = new Proveedor()
   urlImagen           : string                  = ""
   activo              : boolean                 = true
   activoNuestro       : boolean                 = false
   disponible          : boolean                 = true
-  gestionStock        : boolean                 = false
-  stock               : number                  = 0
-  descripcion         : string                  = ""
+  stockGestionado     : boolean                 = false
+  stock               : number                  = 0  
   url                 : string                  = ""
   familiaNuestra      : string                  = ""
-  familiaProveedor    : string                  = ""
-  documento           : string                  = ""
+  familia             : string                  = ""  
   hechoEn             : ILabelValue             = labelValueNulo
-  garantia            : string                  = ""
-  garantiaMeses       : ILabelValue             = labelValueNulo
-  diasDespacho        : IDiasDespacho           = new DiasDespacho()
 
-  precio              : number                  = 0
-  precio_n            : number                  = 0
+  diasDespacho        : IDiasDespacho           = new DiasDespacho()
+ 
+  
   precioCredito       : number                  = 0
   precioCredito_n     : number                  = 0
   precioDolar         : number                  = 0
   precioPromocion     : number                  = 0  
-  costoExtra          : number                  = 0
   descuento           : number                  = 0  
   calcularDescuento   : boolean                 = false
   precioActualizado   : boolean                 = true  
 
-  creador             : IUsuario                = new Usuario()
-  edito               : IUsuario                = new Usuario()
-  fechaCreacion       : Date                    = new Date(0)
-  fechaEdicion        : Date                    = new Date(0)
   fechaLlegada        : Date                    = new Date(0)  
 
   //okGarantiaMeses     : boolean                 = false
@@ -166,8 +132,6 @@ export class ProductoProveedor extends Producto implements IProductoProveedor
   }
 
   get sePuedeCrear()          : boolean{ return this.esNuevo  && this.okRef && this.okNombre && this.okTipo && this.okProveedor && this.okCategoria && this.okHechoEn && this.okPrecio && this.okRefPadre }
-  get fechaCreacionCorta()    : string { return ToolDate.fechaCorta( this.fechaCreacion    ) }
-  get fechaEdicionCorta()     : string { return ToolDate.fechaCorta( this.fechaEdicion     ) }
   get fechaLlegadaCorta()     : string { return ToolDate.fechaCorta( this.fechaLlegada     ) } 
   get diferencia()            : number { return this.precio_n - this.precio } 
   get precioConIVA()          : number { return ToolNum.X100_Aumento( this.precio, ToolType.anyToNum( process.env.IVA ) ) }
@@ -189,13 +153,13 @@ export class ProductoProveedor extends Producto implements IProductoProveedor
       activo              : +this.activo,
       disponible          : +this.disponible,
       fechaLlegada        : this.fechaLlegadaCorta,
-      gestionStock        : +this.gestionStock,
+      gestionStock        : +this.stockGestionado,
       stock               : this.stock,    
       descripcion         : this.descripcion, 
       url                 : this.url, 
       urlImagen           : this.urlImagen,
       familiaNuestra      : this.familiaNuestra,
-      familiaProveedor    : this.familiaProveedor,
+      familia             : this.familia,
       documento           : this.documento,
       hechoEn             : this.hechoEn.value,
       garantiaMeses       : this.garantiaMeses.value,
@@ -266,7 +230,7 @@ export class ProductoProveedor extends Producto implements IProductoProveedor
     pApi.activo               = ToolType.keyBoolean       ( pApi, "activo" )
     pApi.activoNuestro        = ToolType.keyBoolean       ( pApi, "activoNuestro" )
     pApi.disponible           = ToolType.keyBoolean       ( pApi, "disponible" )
-    pApi.gestionStock         = ToolType.keyBoolean       ( pApi, "gestionStock" )
+    pApi.stockGestionado      = ToolType.keyBoolean       ( pApi, "gestionStock" )
     pApi.calcularDescuento    = ToolType.keyBoolean       ( pApi, "calcularDescuento" )
     pApi.precioActualizado    = ToolType.keyBoolean       ( pApi, "precioActualizado" )
     pApi.id                   = ToolType.keyNumberValido  ( pApi, "id" )
@@ -301,34 +265,34 @@ export class ProductoProveedor extends Producto implements IProductoProveedor
  
  static getCopiaProducto( origen : IProductoProveedor, destino : IProductoProveedor ) : IProductoProveedor
  {
-    destino.ref                = !!destino.ref    ? destino.ref    : origen.ref
-    destino.nombre             = !!destino.nombre ? destino.nombre : origen.nombre
-    destino.estado             = origen.estado
+    destino.ref                 = !!destino.ref    ? destino.ref    : origen.ref
+    destino.nombre              = !!destino.nombre ? destino.nombre : origen.nombre
+    destino.estado              = origen.estado
     //destino.orden              = +(origen.orden ?? 0)
-    destino.proveedor          = origen.proveedor
-    destino.categoria          = origen.categoria
-    destino.activo             = origen.activo
-    destino.activoNuestro      = origen.activoNuestro
-    destino.disponible         = origen.disponible
-    destino.gestionStock       = origen.gestionStock
-    destino.descripcion        = origen.descripcion
-    destino.url                = origen.url
-    destino.familiaNuestra     = origen.familiaNuestra
-    destino.familiaProveedor   = origen.familiaProveedor
-    destino.documento          = origen.documento
-    destino.hechoEn            = origen.hechoEn
-    destino.garantia           = origen.garantia
-    destino.garantiaMeses      = origen.garantiaMeses
-    destino.diasDespacho       = origen.diasDespacho
-    destino.precio             = origen.precio
-    destino.precioCredito      = origen.precioCredito
-    destino.precioDolar        = origen.precioDolar
-    destino.precioPromocion    = origen.precioPromocion
-    destino.costoExtra         = origen.costoExtra
-    destino.descuento          = origen.descuento
-    destino.calcularDescuento  = origen.calcularDescuento
-    destino.precioActualizado  = origen.precioActualizado
-    destino.fechaLlegada       = origen.fechaLlegada
+    destino.proveedor           = origen.proveedor
+    destino.categoria           = origen.categoria
+    destino.activo              = origen.activo
+    destino.activoNuestro       = origen.activoNuestro
+    destino.disponible          = origen.disponible
+    destino.stockGestionado     = origen.stockGestionado
+    destino.descripcion         = origen.descripcion
+    destino.url                 = origen.url
+    destino.familiaNuestra      = origen.familiaNuestra
+    destino.familia             = origen.familia
+    destino.documento           = origen.documento
+    destino.hechoEn             = origen.hechoEn
+    destino.garantia            = origen.garantia
+    destino.garantiaMeses       = origen.garantiaMeses
+    destino.diasDespacho        = origen.diasDespacho
+    destino.precio              = origen.precio
+    destino.precioCredito       = origen.precioCredito
+    destino.precioDolar         = origen.precioDolar
+    destino.precioPromocion     = origen.precioPromocion
+    destino.costoExtra          = origen.costoExtra
+    destino.descuento           = origen.descuento
+    destino.calcularDescuento   = origen.calcularDescuento
+    destino.precioActualizado   = origen.precioActualizado
+    destino.fechaLlegada        = origen.fechaLlegada
 
     return destino
  }
@@ -336,7 +300,7 @@ export class ProductoProveedor extends Producto implements IProductoProveedor
 
 
 
-interface      camposQuePuedeServirDeQuery {
+/* interface      camposQuePuedeServirDeQuery {
   
   diasDesde            ?: number
   diasHasta            ?: number
@@ -349,15 +313,10 @@ interface      camposQuePuedeServirDeQuery {
 
   
   origenId             ?: number  
-  elementoTipo         ?: string
-  
-}
-interface CamposPendientesDeBuscar {  
-  idNuestro           : number  // Asignado o no asignadoen la base de datos
-  tipo                : ITipoProductoProveedor
-  categoria           : ICategoriaProducto  
-  
-  gestionStock        : boolean  
+  elementoTipo         ?: string  
+} */
+
+/* interface CamposPendientesDeBuscar {  
   hechoEn             : string
   garantia            : string
   diasEntrega         : number
@@ -367,7 +326,7 @@ interface CamposPendientesDeBuscar {
   calcularDescuento   : boolean
   precioActualizado   : boolean
   imagen              : IImagenProducto 
-}
+} */
 
 
 
