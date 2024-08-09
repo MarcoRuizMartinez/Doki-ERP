@@ -93,7 +93,7 @@
   import    ventana               from "components/utilidades/Ventana.vue"  
   //import    selectColumnas        from "components/utilidades/select/SelectColumnas.vue"  
   //import    tabsBusqueda          from "src/areas/productos/components/Busqueda/TabsBusquedaProductos.vue"
-  import    barraBusqueda         from "src/areas/productos/components/Busqueda/BarraBusquedaProductos.vue"
+  import    barraBusqueda         from "src/areas/productos/components/Busqueda/BarraBusquedaProductosOld.vue"
   import    tabla                 from "src/areas/productos/components/TablaProductos/TablaProductos.vue"  
   import    formulario            from "src/areas/productos/components/FormularioProducto.vue"  
   import    botonesSeleccion      from "src/areas/productos/components/BotonesSeleccion.vue"

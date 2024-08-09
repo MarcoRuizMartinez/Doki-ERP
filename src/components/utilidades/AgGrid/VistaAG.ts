@@ -20,6 +20,7 @@ export interface IVistaAG
   ref               : string
   icon              : string
   label             : string
+  ruta              : string
   vistaApi          : any
 }
 
@@ -31,6 +32,7 @@ export class VistaAG implements IVistaAG
   label             : string    = ""
   ref               : string    = ""
   icon              : string    = ""
+  ruta              : string    = ""
   orden             : number    = 0
   creador           : IUsuario  = new Usuario()
   fechaCreacion     : Date      = new Date(0)
@@ -44,6 +46,7 @@ export class VistaAG implements IVistaAG
       creador       : this.creador.id,
       vista         : JSON.stringify( this.vista ),
       label         : this.label,
+      ruta          : this.ruta,
       ref           : this.ref,
       icon          : this.icon,
     }
@@ -79,7 +82,7 @@ export class VistaAG implements IVistaAG
 
     const vApi                  = vistaApi
     vApi.id                     = ToolType.keyNumberValido  ( vApi, "id"    )
-    vApi.orden                  = ToolType.keyNumberValido  ( vApi, "sort"  )
+    vApi.orden                  = ToolType.keyNumberValido  ( vApi, "orden" )
     vApi.vista                  = ToolType.keyStringValido  ( vApi, "vista" )
 
     vApi.fechaCreacion          = ToolDate.getDateToStr( ToolType.keyStringValido( vApi, "created_on"  ) )  

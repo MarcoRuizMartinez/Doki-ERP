@@ -110,6 +110,7 @@ export function useControlProductosDolibarr()
       productos.value             = []
 
       const rowData : IRowNode<IProductoDoli>[] = [];
+
       tablaAG.value?.gridApi?.forEachNode     ( node => rowData.push( node.data ) )
       tablaAG.value?.gridApi?.applyTransaction( { remove: rowData } )
     }
@@ -258,10 +259,6 @@ export function useControlProductosDolibarr()
   
       for (const c of cambios)
       {
-        console.group("subirCambiosEnLote");
-        console.log("c: ", c);
-        console.log("campo", campo);
-        console.groupEnd();
         if(typeof c.value         ==  "boolean")
           c.value = ToolType.anyToNum( c.value )
         else if(c.value           === null && typeof c.oldValue == "boolean") c.value  = 0

@@ -96,8 +96,8 @@ export function useControlProductos()
 
     const codigos         = new CodigosSiigo()
           codigos.codigo  = codigo 
-          codigos.linea   = +data?.codigo_linea ?? 0
-          codigos.grupo   = +data?.codigo_grupo ?? 0 
+          codigos.linea   = +(data?.codigo_linea ?? 0)
+          codigos.grupo   = +(data?.codigo_grupo ?? 0)
           codigos.enSiigo = enSiigo
   
     return codigos

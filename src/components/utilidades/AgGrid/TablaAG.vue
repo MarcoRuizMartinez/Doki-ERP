@@ -25,7 +25,6 @@
     :enable-range-selection       ="true"
     :enable-fill-handle           ="rangoActivo"
     @cell-value-changed           ="eventoCambio"
-    @cell-edit-request            ="solicitudCambio"
     @grid-ready                   ="tablaLista"
     @displayed-columns-changed    ="cambioEnColumna"
     @sort-changed                 ="cambioEnColumna"
@@ -45,6 +44,7 @@ single-click-edit
   import {  ref,
             watch,
             computed,
+            onUnmounted,
             watchEffect           } from "vue"
 
   // * ///////////////////////////////////////////////////////////////////////////////// Store
@@ -56,6 +56,8 @@ single-click-edit
 
   //* ///////////////////////////////////////////////////////////////////////////////// Ag Grid
   import {  AgGridVue             } from "ag-grid-vue3"       // Vue Data Grid Component
+  import {  VistaAG               } from "components/utilidades/AgGrid/VistaAG"
+
   import {  IniciarAG,
             Spanish,
             TDatosEvento          } from "./AGTools"
@@ -68,7 +70,6 @@ single-click-edit
             ColumnState,
             MenuItemDef,            
             CellValueChangedEvent,
-            CellEditRequestEvent,
             GetContextMenuItems,  
             GetRowIdParams        } from "ag-grid-community";
 
@@ -89,11 +90,17 @@ single-click-edit
   const datos                     = defineModel< any[] >( { required: true })
   const getRowId                  = ref< any >( null )
   const gridApi                   = ref< GridApi >()
-  const { vista, filtro         } = storeToRefs( useStoreApp() )  
+  const { vista, filtro, tablaAG }= storeToRefs( useStoreApp() )  
 
 
   watch(filtro, aplicarFiltroRapido)  
   watch(vista,  gestionarCambiosEnVista, { deep: false })
+
+  onUnmounted(()=>{
+    vista.value   = new VistaAG()
+    filtro.value  = ""
+    tablaAG.value = null
+  })
 
   const estilo                    = computed(()=>
   {
@@ -128,7 +135,6 @@ single-click-edit
 
   function eventoCambio( e : CellValueChangedEvent )
   {
-    console.log("eventoCambio: ", e);
     //"rangeService" | "paste"
     const datosEvento  : TDatosEvento<any>= {
       campo     : ToolType.anyToStr( e.colDef.field ),
@@ -140,11 +146,6 @@ single-click-edit
     }
 
     emit("edicionCelda", datosEvento)
-  }
-
-  function solicitudCambio( e : CellEditRequestEvent )
-  {
-    console.log( "solicitudCambio e", e)
   }
 
 

@@ -38,7 +38,7 @@
     </q-btn>
   </fieldset-filtro>
   <fieldset-filtro
-    titulo                  ="Vistas de columnas" 
+    titulo                  ="Vistas guardadas" 
     class-contenido         ="row full-height q-gutter-sm items-center"
     style                   ="min-height: 120px;"
     >
@@ -77,6 +77,7 @@
     v-bind                  ="style.dialogo"
     >
     <formulario
+      :ruta
       @vista-creada         ="vistaCreada"
     />    
   </q-dialog>  
@@ -84,7 +85,9 @@
 <script setup lang="ts">
   // * /////////////////////////////////////////////////////////////////////// Core
   import {  ref,
-            onMounted             } from "vue";
+            computed,
+            onMounted           } from "vue";
+  import {  useRouter           } from 'vue-router'            
 
   // * /////////////////////////////////////////////////////////////////////// Store
   import {  storeToRefs         } from 'pinia'
@@ -95,9 +98,10 @@
   import {  IVistaAG,
             VistaAG,
             TAccion             } from "components/utilidades/AgGrid/VistaAG"
-  
+  import {  IBusqueda           } from "src/models/Busqueda"
+
   // * /////////////////////////////////////////////////////////////////////// Componibles
-  import {  useTools            } from "src/composables/useTools"
+  import {  useTools, Tool      } from "src/composables/useTools"
   import {  style               } from "src/composables/useEstilos"
   import {  useFetch            } from "src/composables/useFetch"
   import {  getURL,
@@ -107,18 +111,31 @@
   import    fieldsetFiltro        from "components/utilidades/Fieldset.vue"            
   import    confirmar             from "components/utilidades/MenuConfirmar.vue"
   import    formulario            from "./VistaFormulario.vue"
-
   
-  type TProps                 = { refVista : string }
+  type TProps                 = {
+    refVista                  : string
+    busqueda                  : IBusqueda
+    largoResultados           : number
+  }
+
   const { miFetch           } = useFetch()
   const { aviso             } = useTools()
-  const { refVista }          = defineProps<TProps>() 
+  const { refVista,
+          busqueda,
+          largoResultados   } = defineProps<TProps>() 
   const { vista             } = storeToRefs( useStoreApp() )
   const { usuario           } = storeToRefs( useStoreUser() )
   const vistas                = ref< IVistaAG[] >([])  
   const vistaIdSelect         = ref< number > (0)  
   const formularioOn          = ref< boolean >(false)  
   const cargando              = ref<boolean>(false)
+  const router                = useRouter()
+  const ruta                  = computed( () => router.currentRoute.value.fullPath )
+
+  /* type TEmit                  = {
+    nuevaRuta                 : [ value : string  ]    
+  }
+  const emit                  = defineEmits<TEmit>() */
 
   onMounted(()=>{
     buscarVistas()
@@ -151,26 +168,38 @@
                                                 { method: "POST", body: getFormData( "vistasTablas", { ref: refVista } ) },
                                                 { dataEsArray: true, mensaje: "buscar vistas", conLoadingBar: false }
                                               )
-
+    cargando.value            = false
     if(ok)
     {
       if(!Array.isArray(data) || !data.length) return
       vistas.value            = await VistaAG.getVistasFromAPI( data )
-    }
-    cargando.value            = false
+    }    
   }
 
-  function cambiarVista( id : number )
+  async function cambiarVista( id : number )
   {
     vistaIdSelect.value       = id
     const index               = vistas.value.findIndex( v => v.id === id )
     if(index === -1) return 
-    vista.value               = vistas.value[index]
+    const vistaTem            = vistas.value[index]
+    
+    if(!!vistaTem.ruta)
+    {
+      //emit("nuevaRuta", vista.value.ruta )
+      await colocarNuevaRuta( vistaTem.ruta )
+    }
+
+    if(largoResultados        == 0) // Este caso se da cuando la tabla AG aun no se montado. Si se aplicala vista cuando no se ha montado, la vista no funciona. Por eso toca esperar un tiempo a que se monte la tabla AG
+      await Tool.pausa(1_500)
+
+    vista.value               = vistaTem
   }
 
   async function editarVistaEnDB()
   {
     cargando.value                = true
+    if(!!vista.value.ruta) 
+         vista.value.ruta         = ruta.value.split('?')[1]
     const objeto                  = { body:   getFormData( "editarVista", vista.value.vistaApi ), method: "POST" }
     const { ok }                  = await miFetch( getURL("servicios", "varios"), objeto, { mensaje: "editar vista" } )
     if(ok)
@@ -218,4 +247,11 @@
     vistaIdSelect.value     = id
     formularioOn.value      = false
   }
+
+  async function colocarNuevaRuta( ruta : string )
+  {
+    router.push( "?" + ruta )
+    await Tool.pausa(200) // Toca esperar un tiempo a que la ruta nueva quede bien registrada en router para luego si copiar la querey a los campos 
+    busqueda.copiarQueryACampos()
+  }  
 </script>

@@ -529,10 +529,14 @@
       name                      ="tab_4"
       class                     ="row q-pa-none no-wrap scroll"
       >
-      <vistas :ref-vista        ="VISTAS_AG.PRODUCTOS_PROVEEDORES"/>
+      <vistas
+        :ref-vista              ="VISTAS_AG.PRODUCTOS_PROVEEDORES"
+        :busqueda               ="b"
+        :largo-resultados       ="productosPro.length"
+      />
     </q-tab-panel>
-
   </q-tab-panels>
+  <!-- //* ///////////////////////////////////////////////////////// Loading -->
   <inner-loading :cargando      ="loading.carga || b.f.copiando"/>
 </template>
 

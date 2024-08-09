@@ -53,7 +53,6 @@ export function servicesProductosPro()
                                                     },
                                                     { mensaje:      "editar productos" }
                                                   )
-      console.log("data: ", data);
       if(!ok) aviso("negative", "Error al editar productos")      
       resolver( ok )
     })

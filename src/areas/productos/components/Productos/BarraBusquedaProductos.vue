@@ -669,9 +669,21 @@
             <template v-slot:rango>     <Tooltip label="saEdición por rango"  /></template>
           </q-btn-toggle>
         </div>
-      </fieldset-filtro>     
+      </fieldset-filtro>
     </q-tab-panel>
+    <!-- //* /////////////////////////////////////////////////////// Tab 5 Vistas -->
+    <q-tab-panel
+      name                      ="tab_5"
+      class                     ="row q-pa-none no-wrap scroll"
+      >
+      <vistas
+        :ref-vista              ="VISTAS_AG.PRODUCTOS_NUESTROS"
+        :busqueda               ="b"
+        :largo-resultados       ="productos.length"
+      />
+    </q-tab-panel>    
   </q-tab-panels>
+  <!-- //* ///////////////////////////////////////////////////////// Loading -->
   <inner-loading :cargando      ="loading.carga || b.f.copiando"/>
 </template>
 
@@ -702,7 +714,6 @@
   import    fieldsetFiltro        from "components/utilidades/Fieldset.vue"
   import    inputNumber           from "components/utilidades/input/InputFormNumber.vue"
   import    selectLabelValue      from "components/utilidades/select/SelectLabelValue.vue"  
-  import    multiLabelValue       from "components/utilidades/select/SelectLabelValueMulti.vue"
   import    inputFecha            from "components/utilidades/input/InputFecha.vue"
   import    selectUsuario         from "src/areas/usuarios/components/SelectUsuario.vue"
   import    inputBuscar           from "components/utilidades/input/InputSimple.vue"

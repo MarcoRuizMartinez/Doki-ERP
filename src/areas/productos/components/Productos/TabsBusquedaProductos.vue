@@ -40,7 +40,7 @@
       name            ="tab_5"
       icon            ="mdi-table-headers-eye"
       >
-      <Tooltip label  ="Vistas de columnas"/>
+      <Tooltip label  ="Vistas guardadas"/>
     </q-tab>
   </q-tabs>
 </template>

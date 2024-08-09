@@ -82,7 +82,6 @@ export function servicesAcuerdos()
                                                       conLoadingBar
                                                     }
                                                     )
-      console.log("getAcuerdo: ", data);
       if(ok && typeof data == "object" )
       {
         const acuerdo    = await Acuerdo.convertirDataApiToAcuerdo( data, tipo )

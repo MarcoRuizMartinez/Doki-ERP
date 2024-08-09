@@ -35,6 +35,12 @@
           <Tooltip label      ="Ver iconos"/>
         </q-btn>
       </div>
+      <div>
+        <q-checkbox
+          v-model             ="conRuta" 
+          label               ="Guardar busqueda"
+        />
+      </div>
       <q-btn
         v-bind                ="style.btnBaseMd"
         color                 ="positive"
@@ -43,10 +49,9 @@
         icon                  ="mdi-content-save"
         class                 ="full-width"
         :disable              ="vista.label.length < 4"
-      />
+      />      
     </q-form>
     <template                 #acciones>
-
     </template>    
   </ventana>
 </template>
@@ -75,17 +80,21 @@
   const { vista                 } = storeToRefs( useStoreApp() )  
   const { aviso                 } = useTools()
   const { miFetch               } = useFetch()
+  type TProps                     = { ruta : string }  
+  const { ruta }                  = defineProps<TProps>() 
 
   type TEmit                      = { vistaCreada : [ id : number ] }
   const emits                     = defineEmits<TEmit>()
   const cargando                  = ref< boolean >(false)
+  const conRuta                   = ref< boolean >(false)
   const formulario                = ref< InstanceType<typeof QForm> | null>(null)
-
 
   async function onSubmit()
   {
     cargando.value                = true
-    const objeto                  = { body:   getFormData( "nuevaVista", vista.value.vistaApi), method: "POST" }
+
+    vista.value.ruta              = !!conRuta.value ? ruta.split('?')[1] : ""    
+    const objeto                  = { body:   getFormData( "nuevaVista", vista.value.vistaApi ), method: "POST" }
     const { ok, data }            = await miFetch( getURL("servicios", "varios"), objeto, { mensaje: "nueva vista" } )
     if(ok)
     {

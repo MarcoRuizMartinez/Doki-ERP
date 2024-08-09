@@ -213,6 +213,7 @@ export function columnasProductos( conPrecios : boolean, usuarioExterno : boolea
           { headerName      : "🏠Activo nuestro",
             field           : "activoNuestro",
             headerClass     : "bg-light-blue-6 text-white",
+            hide            : true,
           },        
         ]
       }, 
@@ -231,6 +232,7 @@ export function columnasProductos( conPrecios : boolean, usuarioExterno : boolea
           field           : "activo",
           headerClass     : "bg-purple-6 text-white",
           type            : "editarYCrear",
+          hide            : true,
         }),
         Col.Boolean({
           headerName      : "💁🏻‍♂️Disponible",
@@ -273,6 +275,111 @@ export function columnasProductos( conPrecios : boolean, usuarioExterno : boolea
     },
   )
 
+
+  if(conPrecios)
+    {
+      columnas.push(
+        { // * //////////////////////////////////////////////////////////////////////////////// Precios
+          headerName          : "🪙Precios proveedor",                      
+          headerClass         : "bg-deep-orange-14 text-white",
+          marryChildren       : false,
+          children            :
+          [
+            Col.Precio({
+              headerName      : "🪙Precio",
+              field           : "precio",
+              headerClass     : "bg-deep-orange-6 text-white",
+              type            : "editarYCrear",
+              cellClassRules  : { 'bg-deep-orange-2': p => ( p.data?.esNuevo ?? false ) && !p.data.okPrecio }
+            }),
+            Col.Precio({
+              headerName      : "🪙Precio con IVA",
+              field           : "precioConIVA",
+              headerClass     : "bg-deep-orange-6 text-white",
+              hide            : true,
+            }),          
+            Col.Precio({
+              headerName      : "🪙Credito",
+              headerClass     : "bg-deep-orange-6 text-white",
+              field           : "precioCredito",
+              type            : "editarYCrear",
+              hide            : true,
+              cellClassRules  : { 'bg-deep-orange-2': ( p : any ) => 
+                { 
+                  const contado = ToolType.keyNumberValido( p.data, "precio" )
+                  const credito = ToolType.keyNumberValido( p.data, "precioCredito" )
+    
+                  if(contado < 1 || credito < 1) return false
+    
+                  return credito <= contado
+                }
+              }
+            }),
+            Col.Precio({
+              headerName      : "🔜Precio",
+              headerClass     : "bg-deep-orange-6 text-white",
+              field           : "precio_n",
+              hide            : true,
+              type            : "editarYCrear"
+            }),
+            Col.Precio({
+              headerName      : "🔜Credito",
+              headerClass     : "bg-deep-orange-6 text-white",
+              field           : "precioCredito_n",
+              hide            : true,
+              type            : "editarYCrear"
+            }),
+            Col.Precio({
+              headerName      : "📊Diferencia",
+              headerClass     : "bg-deep-orange-6 text-white",
+              field           : "diferencia",
+              hide            : true
+            }),
+            {
+              headerName      : "📊Variación %",
+              headerClass     : "bg-deep-orange-6 text-white",
+              field           : "diferenciaX100",
+              hide            : true,
+            },
+            Col.Precio({
+              headerName      : "🏷️Precio Promoción",
+              headerClass     : "bg-deep-orange-6 text-white",
+              field           : "precioPromocion",
+              hide            : true,
+            }),
+            Col.Precio({
+              headerName      : "💰Costo extra", 
+              headerClass     : "bg-deep-orange-6 text-white",
+              field           : "costoExtra",
+              hide            : true,
+              type            : "editarYCrear"
+            }),
+            {
+              headerName      : "🔖Descuento", 
+              headerClass     : "bg-deep-orange-6 text-white",
+              field           : "descuento",
+              hide            : true,
+              type            : "editarYCrear"
+            },
+            {
+              headerName      : "🔖Calcular descuento", 
+              headerClass     : "bg-deep-orange-6 text-white",
+              field           : "calcularDescuento",
+              hide            : true,
+              type            : "editarYCrear"
+            },
+            Col.Boolean({
+              headerName      : "🤝Precio vigente",
+              field           : "precioActualizado",
+              headerClass     : "bg-deep-orange-6 text-white",
+              type            : "editarYCrear",
+              hide            : true,
+            }),
+          ]
+        },
+      )
+    }
+
   if(!usuarioExterno)
   {
 
@@ -307,7 +414,7 @@ export function columnasProductos( conPrecios : boolean, usuarioExterno : boolea
             headerName      : "👩‍👧‍👦Padre",
             field           : "refPadre",
             headerClass     : "bg-deep-purple-6 text-white",
-            hide            : false,
+            hide            : true,
             type            : "editarYCrear",
             valueParser     : p => ToolType.keyStringValido(p, "newValue").trim(),
             cellClassRules  : { 'bg-deep-orange-2': p => ( p.data?.esNuevo ?? false ) && !p.data.okRefPadre }
@@ -361,107 +468,6 @@ export function columnasProductos( conPrecios : boolean, usuarioExterno : boolea
     )
   }
 
-  if(conPrecios)
-  {
-    columnas.push(
-      { // * //////////////////////////////////////////////////////////////////////////////// Precios
-        headerName          : "🪙Precios proveedor",                      
-        headerClass         : "bg-deep-orange-14 text-white",
-        marryChildren       : false,
-        children            :
-        [
-          Col.Precio({
-            headerName      : "🪙Precio",
-            field           : "precio",
-            headerClass     : "bg-deep-orange-6 text-white",
-            type            : "editarYCrear",
-            cellClassRules  : { 'bg-deep-orange-2': p => ( p.data?.esNuevo ?? false ) && !p.data.okPrecio }
-          }),
-          Col.Precio({
-            headerName      : "🪙Precio con IVA",
-            field           : "precioConIVA",
-            headerClass     : "bg-deep-orange-6 text-white",
-          }),          
-          Col.Precio({
-            headerName      : "🪙Credito",
-            headerClass     : "bg-deep-orange-6 text-white",
-            field           : "precioCredito",
-            type            : "editarYCrear",
-            cellClassRules  : { 'bg-deep-orange-2': ( p : any ) => 
-              { 
-                const contado = ToolType.keyNumberValido( p.data, "precio" )
-                const credito = ToolType.keyNumberValido( p.data, "precioCredito" )
-  
-                if(contado < 1 || credito < 1) return false
-  
-                return credito <= contado
-              }
-            }
-          }),
-          Col.Precio({
-            headerName      : "🔜Precio",
-            headerClass     : "bg-deep-orange-6 text-white",
-            field           : "precio_n",
-            hide            : true,
-            type            : "editarYCrear"
-          }),
-          Col.Precio({
-            headerName      : "🔜Credito",
-            headerClass     : "bg-deep-orange-6 text-white",
-            field           : "precioCredito_n",
-            hide            : true,
-            type            : "editarYCrear"
-          }),
-          Col.Precio({
-            headerName      : "📊Diferencia",
-            headerClass     : "bg-deep-orange-6 text-white",
-            field           : "diferencia",
-            hide            : true
-          }),
-          {
-            headerName      : "📊Variación %",
-            headerClass     : "bg-deep-orange-6 text-white",
-            field           : "diferenciaX100",
-            hide            : true,
-          },
-          Col.Precio({
-            headerName      : "🏷️Precio Promoción",
-            headerClass     : "bg-deep-orange-6 text-white",
-            field           : "precioPromocion",
-            hide            : true,
-          }),
-          Col.Precio({
-            headerName      : "💰Costo extra", 
-            headerClass     : "bg-deep-orange-6 text-white",
-            field           : "costoExtra",
-            hide            : true,
-            type            : "editarYCrear"
-          }),
-          {
-            headerName      : "🔖Descuento", 
-            headerClass     : "bg-deep-orange-6 text-white",
-            field           : "descuento",
-            hide            : true,
-            type            : "editarYCrear"
-          },
-          {
-            headerName      : "🔖Calcular descuento", 
-            headerClass     : "bg-deep-orange-6 text-white",
-            field           : "calcularDescuento",
-            hide            : true,
-            type            : "editarYCrear"
-          },
-          Col.Boolean({
-            headerName      : "🤝Precio vigente",
-            field           : "precioActualizado",
-            headerClass     : "bg-deep-orange-6 text-white",
-            type            : "editarYCrear",
-            hide            : true,
-          }),
-        ]
-      },
-    )
-  }
 
   columnas.push(
     { // * //////////////////////////////////////////////////////////////////////////////// Propiedades productos
@@ -478,6 +484,7 @@ export function columnasProductos( conPrecios : boolean, usuarioExterno : boolea
           opciones        : OriginesMadeIn,
           key             : "label",
           type            : "editarYCrear",
+          hide            : true,
           cellClassRules  : { 'bg-deep-orange-2': p => ( p.data?.esNuevo ?? false ) && !p.data.okHechoEn }
         }),
         Col.Objeto(
@@ -486,6 +493,7 @@ export function columnasProductos( conPrecios : boolean, usuarioExterno : boolea
           field           : "garantiaMeses",
           headerClass     : "bg-cyan-6 text-white",
           opciones        : MesesGarantia,
+          hide            : true,
           key             : "label",
           type            : "editarYCrear",
           //cellClassRules  : { 'bg-deep-orange-2': p => ( p.data?.esNuevo ?? false ) && !p.data.okGarantiaMeses }

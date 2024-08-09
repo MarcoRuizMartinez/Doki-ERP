@@ -379,7 +379,6 @@ export class ProductoDoli extends Producto implements IProductoDoli
 
   static async getProductoFromAPI( pApi : any, editable : boolean = false ) : Promise<IProductoDoli>
   {
-    console.log("pApi: ", pApi.tipo, typeof pApi.tipo );
     if(!pApi)                return new ProductoDoli()
     const producto                  = Object.assign( new ProductoDoli(), pApi ) as IProductoDoli
 
@@ -410,7 +409,6 @@ export class ProductoDoli extends Producto implements IProductoDoli
     producto.aumento_loco           = parseFloat( pApi.aumento_loco        )
     producto.costo                  = parseFloat( pApi.costo               )
     producto.costoExtra             = parseFloat( pApi.costo_adicional     )
-    console.log("producto.costoExtra: ", producto.costoExtra);
     producto.precio                 = parseFloat( pApi.precio              )
     producto.precio_promocion       = parseFloat( pApi.precio_promocion    )
     //producto.precio_proveedor       = parseFloat( productoApi.precio_proveedor    )

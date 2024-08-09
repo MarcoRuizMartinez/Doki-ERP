@@ -7,21 +7,17 @@ import {  getCategoriasDB,
           getUnidadesDB,
                                   } from "src/composables/useDexie"
 import {  TiposProductos          } from "src/areas/productos/models/TipoProducto"
-//import {  MesesGarantia           } from "src/models/Diccionarios/MesesGarantia"
-//import {  OriginesMadeIn          } from "src/models/Diccionarios/MadeIn"
 import {  Format,
           ToolType
                                   } from "src/composables/useTools"
 import {  IProductoDoli           } from "../../models/ProductoDolibarr"
 import imagen                       from "./../ImagenProductoAG.vue"
-//import proveedor                    from "components/utilidades/AgGrid/ProveedorBadge.vue"
 
 export const reglasCSS = {
-/*   'bg-grey-10 text-grey-2 text-bold'  : ( params : any ) =>  !params.data,
-  'bg-grey-3 text-grey-7'             : ( params : any ) =>  !!params.data && !params.data?.activo     && !params.data?.esNuevo,
-  'text-deep-purple-3'                : ( params : any ) => { return !params.data?.disponible && !!params.data?.activo && !params.data?.esNuevo },
-  'bg-green-2'                        : ( params : any ) => { return params.data?.esNuevo },
-  'bg-amber-1'                        : ( params : any ) => { return params.data?.tipo?.esCompuesto || params.data?.tipo?.esHijo }, */
+  'bg-grey-10 text-grey-2 text-bold'  : ( params : any ) =>  !params.data,
+  'bg-grey-3 text-grey-7'             : ( params : any ) =>  !!params.data && !params.data?.activoEnVenta && !params.data?.esNuevo,
+  'text-deep-purple-3'                : ( params : any ) => { return !params.data?.activoEnCompra && !!params.data?.activoEnVenta && !params.data?.esNuevo },
+  'bg-green-2'                        : ( params : any ) => { return params.data?.esNuevo },  
 }
 
 export const autoSizeStrategy = {
@@ -31,47 +27,20 @@ export const autoSizeStrategy = {
 }
 
 export const columnTypes : { [key: string]: ColTypeDef< IProductoDoli > } = {
-  moneda:
-  { 
+  moneda:{ 
     valueFormatter  : Format.precioAG,
     cellClass       : "text-right fuente-mono",
   },
-  porcentaje:
-  { 
+  porcentaje:{ 
     valueFormatter  : p => p.value + "%",
     cellClass       : "text-right fuente-mono",
-  },  
-  numero:
-  {
-    cellClass       : "text-right",
-  },
-  editable:
-  {
-    /* editable: p => {
-      if(!p.data) return false
-
-      const columna         = p.colDef?.field ?? "" 
-      const campoEspecial   = esFieldDeEditarHijo( columna ) 
-      const hijoNoEspecial  = p.data.tipo.esHijo && !campoEspecial
-      if(hijoNoEspecial)
-        return false
-
-      return p.data.editable
-    } */
   },
   creacion:
   {
-    /* editable: p => {
+    editable: p => {
       if(!p.data) return false
-
-      const columna         = p.colDef?.field ?? "" 
-      const campoEspecial   = esFieldDeEditarHijo( columna ) 
-      const hijoNoEspecial  = p.data.tipo.esHijo && !campoEspecial
-      if(hijoNoEspecial)
-        return false
-
       return ( p.data?.esNuevo ?? false )
-    } */
+    }
   },
   editarYCrear:
   {
@@ -79,39 +48,11 @@ export const columnTypes : { [key: string]: ColTypeDef< IProductoDoli > } = {
       if(!p.data) 
         return false
 
-      const columna         = p.colDef?.field ?? "" 
-      /* const campoEspecial   = esFieldDeEditarHijo( columna ) 
-      const hijoNoEspecial  = p.data.tipo.esHijo && !campoEspecial
-      if(hijoNoEspecial)
-        return false */
-
+      const columna         = p.colDef?.field ?? ""
       return  ( p.data?.esNuevo ?? false )  ||  p.data.editable
     }
   }     
 }
-
-/* function esFieldDeEditarHijo( field : string )
-{
-  return      field == "ref"
-          ||  field == "nombre"
-          ||  field == "urlImagen"
-          ||  field == "activo"
-          ||  field == "disponible"
-          ||  field == "stock"
-          ||  field == "fechaLlegada"
-          ||  field == "refPadre"
-          ||  field == "descripcion"
-          ||  field == "orden"
-          ||  field == "tipo"
-          ||  field == "categoria"
-          ||  field == "familia"
-          ||  field == "costoExtra"
-          ||  field == "garantiaMeses"
-          ||  field == "stockGestionado"
-} */
-
-//const limpiarRef   = ( p : any ) => ToolType.keyStringValido(p, "newValue").replaceAll(" ", "").trim()
-
 
 const claseColFn            = ( color : string, nivel : number ) => `bg-${color}-${nivel} text-white`
 const claseCol              = ( color : string ) => { return { col: claseColFn( color, 6 ),  header: claseColFn( color, 10 )} }
@@ -149,6 +90,7 @@ export function columnasProductos( conPrecios : boolean ) : ( ColDef< IProductoD
           field             : "ref",
           headerClass       : claseHDatos.col,
           hide: false,
+          valueParser       : ( p : any ) => ToolType.keyStringValido(p, "newValue").replaceAll(" ", "").trim()
         },
         { headerName        : "👤Nombre",
           field             : "nombre",
@@ -507,16 +449,6 @@ export function columnasProductos( conPrecios : boolean ) : ( ColDef< IProductoD
   return columnas
 }
 
-
-/* 
-function parserNumber( p : any )
-{
-  if( ToolType.keyStringValido(p, "newValue" ) === "" )
-    return ToolType.keyNumberValido(p, "oldValue")
-  else
-    return ToolType.keyNumberValido(p, "newValue")
-}
- */
 function reglaAumento( p : any )
 {
   let   aumento       = 0  
